@@ -1,0 +1,15 @@
+# Versioning file (generated on build)
+include/arg_router/version.hpp
+
+# Death test main (modified by tests)
+test/death_test/main.cpp
+
+# Generated docs
+docs/doxygen
+
+# IDE cruft
+build/
+*.creator.user
+*.txt.user
+.vscode/
+.vs/
