@@ -1,0 +1,94 @@
+# This workflow runs a barrage of tests in order to valid a PR
+name: Pull Request Checker
+
+on:
+  pull_request:
+    branches: [ main ]
+
+env:
+  SKIP_COVERAGE_UPDATE: 0
+
+jobs:
+  # Builds the unit tests and executes them
+  unit_tests:
+    runs-on: ubuntu-latest
+
+    env:
+      BUILD_DIR: ${{ github.workspace }}/build
+      AR_REPO_PATH: ${{ github.workspace }}
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+        ref: ${{ github.head_ref }}
+
+    - name: Update packages
+      run: |
+        sudo apt install g++-11 lcov valgrind
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 20 \
+          --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-11 \
+          --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-11 \
+          --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-11 \
+          --slave /usr/bin/g++ g++ /usr/bin/g++-11
+
+    - name: Restore artifacts, or setup vcpkg (do not install any packages)
+      uses: friendlyanon/setup-vcpkg@v1
+      with:
+        path: ./vcpkg
+
+    - name: Build
+      uses: lukka/run-cmake@main
+      with:
+        buildDirectory: ${{ env.BUILD_DIR }}
+        buildWithCMakeArgs: --target arg_router_test_coverage
+
+    - name: Run
+      run: |
+        cd ${{ env.BUILD_DIR }}/test
+        ./arg_router_test_coverage -l test_suite
+
+    - name: Valgrind run
+      run: |
+        cd ${{ env.BUILD_DIR }}/test
+        valgrind ./arg_router_test_coverage -l test_suite
+
+    - name: Calculate unit test coverage
+      run: |
+        cd ${{ github.workspace }}/test
+        ./calculate_test_coverage.sh ${{ env.BUILD_DIR }}
+
+    - name: Update README unit test coverage badge
+      run: |
+        cd ${{ github.workspace }}
+        BADGE_URL=$(./test/create_badge_url.sh -e)
+        sed -i -e "s/https:\/\/img\.shields\.io\/badge\/Unit_Test_Coverage-[0-9\.]\+%25-[a-z]\+/${BADGE_URL}/" ./README.md
+
+    - name: Push updated README and old_coverage
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: Updating README.md unit test coverage badge
+        file_pattern: README.md test/old_coverage
+
+  # Makes sure there is no errors when generating the documentation
+  documentation:
+    runs-on: ubuntu-latest
+
+    env:
+      BUILD_DIR: ${{ github.workspace }}/build
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - name: Update packages
+      run: |
+        sudo apt install doxygen graphviz
+
+    - name: Generate API documentation
+      uses: lukka/run-cmake@main
+      with:
+        cmakeAppendedArgs: -DDOCS_ONLY=ON
+        buildDirectory: ${{ env.BUILD_DIR }}
+        buildWithCMakeArgs: --target documentation
