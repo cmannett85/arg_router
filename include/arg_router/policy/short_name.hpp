@@ -24,7 +24,7 @@ public:
      *
      * @return Short name
      */
-    constexpr static char short_name() { return S{}; }
+    constexpr static char short_name() { return S::value; }
 
 private:
     static_assert(algorithm::is_alnum(S::value),

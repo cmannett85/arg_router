@@ -36,8 +36,7 @@ public:
      *
      * @param str String to parse
      * @return Representation of @a str
-     * @exception std::invalid_argument Should be thrown in case of parse
-     * failure
+     * @exception parse_exception Should be thrown in case of parse failure
      */
     value_type parse(std::string_view str) const { return parser_(str); }
 

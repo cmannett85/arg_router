@@ -12,57 +12,93 @@ namespace arg_router
 namespace parsing
 {
 /** Enum for the prefix type on a token. */
-enum class prefix_type { LONG, SHORT, NONE };
+enum class prefix_type : std::uint8_t { LONG, SHORT, NONE };
+
+/** Creates a string version of @a prefix.
+ *
+ * This uses config::long_prefix and config::short_prefix.
+ * @param prefix Prefix type to convert
+ * @return String version of @a prefix
+ */
+std::string_view to_string(prefix_type prefix);
+
+/** Pair-like structure carrying the token's prefix type and the token itself
+ * (stripped of prefix).
+ */
+struct token_type {
+    /** Long form name constructor.
+     *
+     * @param p Prefix type
+     * @param n Token name, stripped of prefix (if any)
+     */
+    token_type(prefix_type p, std::string n) : prefix{p}, name{std::move(n)} {}
+
+    /** Short from name constructor.
+     *
+     * @param n Token name, stripped of prefix (if any)
+     */
+    token_type(char n) : prefix{prefix_type::SHORT}, name{n} {}
+
+    /** Equality operator.
+     *
+     * @param other Instance to compare against
+     * @return True if equal
+     */
+    bool operator==(const token_type& other) const
+    {
+        return prefix == other.prefix && name == other.name;
+    }
+
+    /** Inequality operator.
+     *
+     * @param other Instance to compare against
+     * @return True if not equal
+     */
+    bool operator!=(const token_type& other) const { return !(*this == other); }
+
+    prefix_type prefix;  ///< Prefix type
+    std::string name;    ///< Token name, stripped of prefix (if any)
+};
+
+/** Creates a string representation of @a token, it effectively recreates the
+ * original token on the command line.
+ * 
+ * @param token Token to convert
+ * @return String representation of @a token
+ */
+std::string to_string(const token_type& token);
+
+/** List of tokens. */
+using token_list = std::deque<token_type>;
 
 /** Analyse @a token and return a pair consisting of the prefix type and
  * @a token stripped of the token.
  *
  * @param token Token to analyse
- * @return Prefix type and prefix stripped @a token
+ * @return Token type
  */
-constexpr std::pair<prefix_type, std::string_view>  //
-get_prefix_type(std::string_view token)
-{
-    if (token.substr(0, config::long_prefix.size()) == config::long_prefix) {
-        return {prefix_type::LONG, token.substr(config::long_prefix.size())};
-    } else if (token.substr(0, config::short_prefix.size()) ==
-               config::short_prefix) {
-        return {prefix_type::SHORT, token.substr(config::short_prefix.size())};
-    } else {
-        return {prefix_type::NONE, token};
-    }
-}
+token_type get_token_type(std::string_view token);
 
-inline std::deque<std::string> expand_arguments(int argc, const char* argv[])
-{
-    auto result = std::deque<std::string>{};
-
-    for (auto i = 0; i < argc; ++i) {
-        const auto token = std::string_view{argv[i]};
-        const auto [prefix, stripped] = parsing::get_prefix_type(token);
-
-        if (prefix == parsing::prefix_type::SHORT && token.size() > 2) {
-            for (auto c : stripped) {
-                result.push_back(std::string{"-"} + c);
-            }
-        } else {
-            result.push_back(std::string{token});
-        }
-    }
-
-    return result;
-}
+/** Takes the main function arguments and creates a token_list from it.
+ *
+ * This function will ignore the first argument (program name) and expand out
+ * any collapsed short form arguments.
+ * @param argc Argument count
+ * @param argv Argument string array
+ * @return Token list
+ */
+token_list expand_arguments(int argc, const char* argv[]);
 
 /** Result type when attempting to match a token. */
 struct match_result {
     /** A nice label for the matching state. */
-    enum match_type {
+    enum match_type : std::uint8_t {
         NO_MATCH,  ///< Token has not matched
         MATCH      ///< Token has matched
     };
 
     /** A nice label for the requires-a-parse state. */
-    enum argument_type {
+    enum argument_type : std::uint8_t {
         HAS_NO_ARGUMENT,  ///< No arguments are expected to follow
         HAS_ARGUMENT,     ///< One or more arguments is expected to follow
     };
@@ -79,9 +115,36 @@ struct match_result {
     {
     }
 
+    /** Equality operator.
+     *
+     * @param other Instance to compare against
+     * @return True if equal
+     */
+    bool operator==(const match_result& other) const
+    {
+        return matched == other.matched && has_argument == other.has_argument;
+    }
+
+    /** Inequality operator.
+     *
+     * @param other Instance to compare against
+     * @return True if not equal
+     */
+    bool operator!=(const match_result& other) const
+    {
+        return !(*this == other);
+    }
+
     match_type matched;          ///< Match state
     argument_type has_argument;  ///< Argument state
 };
+
+/** Creates a string representation of @a mr.
+ * 
+ * @param mr match_result to convert
+ * @return String representation of @a mr
+ */
+std::string to_string(match_result mr);
 
 /** Can be used by traits::is_detected to determine if a type has a long name.
  *
@@ -103,26 +166,27 @@ using has_short_name_checker = decltype(T::short_name());
  * @tparam T Type to query
  */
 template <typename T>
-using has_match_checker = decltype(T::match(std::declval<std::string_view>()));
+using has_match_checker =
+    decltype(std::declval<const T&>().match(std::declval<const token_type&>()));
 
-/** The standard implementation of the match(std::string_view) method.
+/** The standard implementation of the match method.
  *
- * This checks if a long_name() method exists and attempts to match @a token
- * against it, otherwise it tries the same with the short_name() method.
  * @tparam T Type to implement the method for
- * @param token The token to match against, must have had its prefix removed!
+ * @param token The token to match against
  * @return Match result
  */
 template <typename T>
-constexpr match_result default_match(std::string_view token)
+match_result default_match(const token_type& token)
 {
     if constexpr (traits::is_detected_v<has_long_name_checker, T>) {
-        if (token == T::long_name()) {
+        if ((token.prefix == prefix_type::LONG) &&
+            (token.name == T::long_name())) {
             return {match_result::MATCH, match_result::HAS_NO_ARGUMENT};
         }
     }
     if constexpr (traits::is_detected_v<has_short_name_checker, T>) {
-        if ((token.size() == 1) && (token.front() == T::short_name())) {
+        if ((token.prefix == prefix_type::SHORT) &&
+            (token.name.front() == T::short_name())) {
             return {match_result::MATCH, match_result::HAS_NO_ARGUMENT};
         }
     }
@@ -162,7 +226,7 @@ using build_router_args_t = typename build_router_args<Child>::type;
  *
  * Visitor needs to be equivalent to:
  * @code
- * template <typename Child
+ * template <typename Child>
  * operator()(std::size_t i, Child&&, match_result) {}
  * @endcode
  * <TT>i</TT> is the index into the children tuple.  If child has a
@@ -172,18 +236,17 @@ using build_router_args_t = typename build_router_args<Child>::type;
  * called on it - in that circumstance match_result::matched will be
  * match_result::NO_MATCH.
  * 
- * @tparam PType Prefix type
  * @tparam ChildrenTuple Tuple of child types
  * @tparam Fn Visitor Callable type
+ * @param token Token
  * @param children Children tuple instance
- * @param name Token to search for in long or short form
  * @param visitor Visitor callable
  * @return True if a valid child was found
  */
-template <prefix_type PType, typename ChildrenTuple, typename Fn>
-constexpr bool visit_child(const ChildrenTuple& children,
-                           std::string_view name,
-                           Fn&& visitor)
+template <typename ChildrenTuple, typename Fn>
+bool visit_child(const token_type& token,
+                 const ChildrenTuple& children,
+                 Fn&& visitor)
 {
     // Iterate over the children and use the prefix type to use the correct
     // name method
@@ -194,12 +257,12 @@ constexpr bool visit_child(const ChildrenTuple& children,
 
             if constexpr (traits::is_detected_v<parsing::has_match_checker,
                                                 child_type>) {
-                const auto result = child.match(name);
+                const auto result = child.match(token);
                 if (result.matched) {
                     visitor(i, child, result);
                     found_child = true;
                 }
-            } else if constexpr (PType == prefix_type::NONE) {
+            } else if (token.prefix == prefix_type::NONE) {
                 // A positional arg type will always accept a token
                 visitor(
                     i,
@@ -210,7 +273,7 @@ constexpr bool visit_child(const ChildrenTuple& children,
             }
 
             // No need to check that it has matched again, as the compiler
-            // has already done that
+            // has already done that via a rule
         },
         children);
 

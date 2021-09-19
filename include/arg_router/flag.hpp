@@ -39,10 +39,10 @@ public:
     /** Match the token to the long form names assigned to this flag by its
      * policies.
      *
-     * @param token Command line token to match, stripped of prefix
+     * @param token Command line token to matchx
      * @return Match result
      */
-    constexpr static parsing::match_result match(std::string_view token)
+    parsing::match_result match(const parsing::token_type& token) const
     {
         return parsing::default_match<flag>(token);
     }

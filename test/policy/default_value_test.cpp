@@ -28,8 +28,8 @@ BOOST_AUTO_TEST_CASE(constructor_and_get_test)
         const auto result = dv.get_default_value();
         BOOST_CHECK(input == result);
 
-        using result_type = decltype(
-            std::declval<policy::default_value<T>>().get_default_value());
+        using result_type = decltype(std::declval<policy::default_value<T>>()
+                                         .get_default_value());
         if (is_ref) {
             BOOST_CHECK((std::is_same_v<result_type, const T&>));
         } else {

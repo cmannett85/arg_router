@@ -25,6 +25,7 @@ jobs:
     - name: Generate API documentation
       uses: lukka/run-cmake@main
       with:
+        cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
         cmakeAppendedArgs: -DDOCS_ONLY=ON
         buildDirectory: ${{ env.BUILD_DIR }}
         buildWithCMakeArgs: --target documentation --parallel 4

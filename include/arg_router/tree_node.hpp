@@ -76,7 +76,7 @@ private:
         return result_t{std::move(ref_result)};
     }
 
-public:
+protected:
     /** Constructor.
      *
      * @param params Policy and child instances
@@ -88,6 +88,7 @@ public:
     {
     }
 
+public:
     /** Returns a reference to the children.
      *
      * @return Children

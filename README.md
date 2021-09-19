@@ -157,7 +157,7 @@ auto arg_router::parse<theme_t>(std::string_view arg)
         return theme_t::SOLARIZED;
     }
 
-    throw std::invalid_argument{"Unknown theme argument: "s + arg};
+    throw parse_exception{"Unknown theme argument: "s + arg};
 }
 ```
 With this declared in a place visible to the parse tree declaration, `theme_t` can be converted from a string without the need for a `custom_parser`.  It should be noted that `custom_parser` can still be used, and will be preferred over the `parse()` specialisation.
@@ -192,7 +192,7 @@ ar::mode{
 ```
 The number of times `-v` appears in the command line will increment the returned value, e.g. `-vv` will result in `verbosity_level_t::INFO`.
 
-Note that even though we are using a custom enum, we haven't specified a `custom_parser`.  `counting_flag` will count up in `std::size_t` and then `static_cast` to the user-specified type, so as long as your requested type is explicitly convertible from `std::size_` it will just work.  If it isn't, then you'll have to modify your type or not use counting arguments, as attaching a `custom_parser` to any kind of flag will result in a build failure.
+Note that even though we are using a custom enum, we haven't specified a `custom_parser`.  `counting_flag` will count up in `std::size_t` and then `static_cast` to the user-specified type, so as long as your requested type is explicitly convertible from `std::size_t` it will just work.  If it isn't, then you'll have to modify your type or not use counting arguments, as attaching a `custom_parser` to any kind of flag will result in a build failure.
 
 Short name collapsing still works as expected, so passing `-Evnv` will result in `show_ends` and `show_non_printing` being true, and `verbosity_level` will be `verbosity_level_t::INFO` in the `router` call.
 
@@ -396,4 +396,4 @@ ar::root{
 `ar::list` is just a `std::tuple` alias, `mode` and `root` instances detect this and add the contents to its child/policy lists - it's nicer than having an instance per type.  Also don't be afraid of the copies, the majority of `arg_router` types hold no data (the advantage of compile-time!) and those that do (e.g. `default_value`) generally have small types like primitives or `std::string_view`.
 
 ## Error Handling
-Currently `arg_router` only supports exceptions as error handling.  If a parsing fails for some reason a `std::invalid_argument` is thrown carrying information on the failure.
+Currently `arg_router` only supports exceptions as error handling.  If a parsing fails for some reason a `arg_router::parse_exception` is thrown carrying information on the failure.

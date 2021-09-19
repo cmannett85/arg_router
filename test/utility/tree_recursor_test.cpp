@@ -21,19 +21,19 @@ struct test_Fn {
 
         if constexpr (std::is_same_v<
                           Current,
-                          std::decay_t<decltype(
-                              policy::validation::default_validator)>>) {
+                          std::decay_t<decltype(policy::validation::
+                                                    default_validator)>>) {
             static_assert(
                 std::is_same_v<
                     parents_type,
-                    std::tuple<
-                        root<std::decay_t<decltype(
-                                 policy::validation::default_validator)>,
-                             flag<policy::description_t<S_("test1")>,
-                                  policy::long_name_t<S_("test")>>,
-                             flag<policy::description_t<S_("test2")>,
-                                  policy::short_name_t<
-                                      traits::integral_constant<'a'>>>>>>);
+                    std::tuple<root<
+                        std::decay_t<
+                            decltype(policy::validation::default_validator)>,
+                        flag<policy::description_t<S_("test1")>,
+                             policy::long_name_t<S_("test")>>,
+                        flag<policy::description_t<S_("test2")>,
+                             policy::short_name_t<
+                                 traits::integral_constant<'a'>>>>>>);
         } else if constexpr (std::is_same_v<
                                  Current,
                                  policy::description_t<S_("test1")>>) {
@@ -43,8 +43,8 @@ struct test_Fn {
                     std::tuple<
                         flag<policy::description_t<S_("test1")>,
                              policy::long_name_t<S_("test")>>,
-                        root<std::decay_t<decltype(
-                                 policy::validation::default_validator)>,
+                        root<std::decay_t<decltype(policy::validation::
+                                                       default_validator)>,
                              flag<policy::description_t<S_("test1")>,
                                   policy::long_name_t<S_("test")>>,
                              flag<policy::description_t<S_("test2")>,
@@ -58,8 +58,8 @@ struct test_Fn {
                     std::tuple<
                         flag<policy::description_t<S_("test1")>,
                              policy::long_name_t<S_("test")>>,
-                        root<std::decay_t<decltype(
-                                 policy::validation::default_validator)>,
+                        root<std::decay_t<decltype(policy::validation::
+                                                       default_validator)>,
                              flag<policy::description_t<S_("test1")>,
                                   policy::long_name_t<S_("test")>>,
                              flag<policy::description_t<S_("test2")>,
@@ -75,8 +75,8 @@ struct test_Fn {
                         flag<policy::description_t<S_("test2")>,
                              policy::short_name_t<
                                  traits::integral_constant<'a'>>>,
-                        root<std::decay_t<decltype(
-                                 policy::validation::default_validator)>,
+                        root<std::decay_t<decltype(policy::validation::
+                                                       default_validator)>,
                              flag<policy::description_t<S_("test1")>,
                                   policy::long_name_t<S_("test")>>,
                              flag<policy::description_t<S_("test2")>,
@@ -93,8 +93,8 @@ struct test_Fn {
                         flag<policy::description_t<S_("test2")>,
                              policy::short_name_t<
                                  traits::integral_constant<'a'>>>,
-                        root<std::decay_t<decltype(
-                                 policy::validation::default_validator)>,
+                        root<std::decay_t<decltype(policy::validation::
+                                                       default_validator)>,
                              flag<policy::description_t<S_("test1")>,
                                   policy::long_name_t<S_("test")>>,
                              flag<policy::description_t<S_("test2")>,
@@ -107,14 +107,14 @@ struct test_Fn {
             static_assert(
                 std::is_same_v<
                     parents_type,
-                    std::tuple<
-                        root<std::decay_t<decltype(
-                                 policy::validation::default_validator)>,
-                             flag<policy::description_t<S_("test1")>,
-                                  policy::long_name_t<S_("test")>>,
-                             flag<policy::description_t<S_("test2")>,
-                                  policy::short_name_t<
-                                      traits::integral_constant<'a'>>>>>>);
+                    std::tuple<root<
+                        std::decay_t<
+                            decltype(policy::validation::default_validator)>,
+                        flag<policy::description_t<S_("test1")>,
+                             policy::long_name_t<S_("test")>>,
+                        flag<policy::description_t<S_("test2")>,
+                             policy::short_name_t<
+                                 traits::integral_constant<'a'>>>>>>);
         } else if constexpr (std::is_same_v<
                                  Current,
                                  flag<policy::description_t<S_("test2")>,
@@ -123,23 +123,24 @@ struct test_Fn {
             static_assert(
                 std::is_same_v<
                     parents_type,
-                    std::tuple<
-                        root<std::decay_t<decltype(
-                                 policy::validation::default_validator)>,
-                             flag<policy::description_t<S_("test1")>,
-                                  policy::long_name_t<S_("test")>>,
-                             flag<policy::description_t<S_("test2")>,
-                                  policy::short_name_t<
-                                      traits::integral_constant<'a'>>>>>>);
+                    std::tuple<root<
+                        std::decay_t<
+                            decltype(policy::validation::default_validator)>,
+                        flag<policy::description_t<S_("test1")>,
+                             policy::long_name_t<S_("test")>>,
+                        flag<policy::description_t<S_("test2")>,
+                             policy::short_name_t<
+                                 traits::integral_constant<'a'>>>>>>);
         } else if constexpr (
-            std::is_same_v<Current,
-                           root<std::decay_t<decltype(
-                                    policy::validation::default_validator)>,
-                                flag<policy::description_t<S_("test1")>,
-                                     policy::long_name_t<S_("test")>>,
-                                flag<policy::description_t<S_("test2")>,
-                                     policy::short_name_t<
-                                         traits::integral_constant<'a'>>>>>) {
+            std::is_same_v<
+                Current,
+                root<std::decay_t<
+                         decltype(policy::validation::default_validator)>,
+                     flag<policy::description_t<S_("test1")>,
+                          policy::long_name_t<S_("test")>>,
+                     flag<policy::description_t<S_("test2")>,
+                          policy::short_name_t<
+                              traits::integral_constant<'a'>>>>>) {
             static_assert(std::is_same_v<parents_type, std::tuple<>>);
         }
     }
