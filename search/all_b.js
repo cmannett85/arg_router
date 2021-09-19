@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['operator_28_29_88',['operator()',['../classarg__router_1_1policy_1_1router.html#a9c6b83e5220c345014114ad19438b2d3',1,'arg_router::policy::router']]],
-  ['operator_2b_89',['operator+',['../namespacearg__router_1_1utility_1_1string__view__ops.html#a700baffd30dc15233a2290787e322135',1,'arg_router::utility::string_view_ops::operator+(std::basic_string&lt; CharT, Traits, Allocator &gt; lhs, std::basic_string_view&lt; CharT, Traits &gt; rhs)'],['../namespacearg__router_1_1utility_1_1string__view__ops.html#a0593ed52064d5856855ec138d1480239',1,'arg_router::utility::string_view_ops::operator+(std::basic_string_view&lt; CharT, Traits &gt; lhs, std::basic_string&lt; CharT, Traits, Allocator &gt; rhs)']]]
+  ['name_90',['name',['../structarg__router_1_1parsing_1_1token__type.html#a0bbaee66856e90a1f9ff00c6bfb56d20',1,'arg_router::parsing::token_type']]],
+  ['no_5fmatch_91',['NO_MATCH',['../structarg__router_1_1parsing_1_1match__result.html#ac557fd68d85aa59141ab324af70b0491a9f5489ea72698ca0526982b7086bbbc6',1,'arg_router::parsing::match_result']]]
 ];

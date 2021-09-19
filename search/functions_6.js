@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['match_191',['match',['../classarg__router_1_1flag.html#a0fbd0604b5bd98497c33ecf0ba606b94',1,'arg_router::flag']]],
-  ['match_5fresult_192',['match_result',['../structarg__router_1_1parsing_1_1match__result.html#aac08b40f3be571c156cbf19449cacea9',1,'arg_router::parsing::match_result']]],
-  ['maximum_5fcount_193',['maximum_count',['../classarg__router_1_1policy_1_1max__count__t.html#aeaaaba857b7faca8ac4f9d4aea8e4221',1,'arg_router::policy::max_count_t']]],
-  ['minimum_5fcount_194',['minimum_count',['../classarg__router_1_1policy_1_1min__count__t.html#a26103c27bd456ddfdca4b41c1a39d3fe',1,'arg_router::policy::min_count_t']]]
+  ['l1_5fcache_5fsize_203',['l1_cache_size',['../namespacearg__router_1_1traits.html#a59db0f0ce1c89dd093e712343a1088c6',1,'arg_router::traits']]],
+  ['long_5fname_204',['long_name',['../classarg__router_1_1policy_1_1long__name__t.html#a05f3d42a1a873c3cf4e0018d4455abc0',1,'arg_router::policy::long_name_t']]]
 ];

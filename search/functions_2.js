@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['flag_183',['flag',['../classarg__router_1_1flag.html#adf73a7a6e93aec37efc80e4d1e6cbd96',1,'arg_router::flag']]]
+  ['expand_5farguments_196',['expand_arguments',['../namespacearg__router_1_1parsing.html#aaaebcb5efd6de2e232c2a74699ac8d39',1,'arg_router::parsing']]]
 ];

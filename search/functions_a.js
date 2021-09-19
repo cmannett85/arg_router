@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['short_5fname_200',['short_name',['../classarg__router_1_1policy_1_1short__name__t.html#a92223322b7a9fb22c952bc1513490859',1,'arg_router::policy::short_name_t']]]
+  ['root_215',['root',['../classarg__router_1_1root.html#a72fe36fd31b064a5a960e00ef7e6e2fa',1,'arg_router::root']]],
+  ['router_216',['router',['../classarg__router_1_1policy_1_1router.html#a26d195b79a41d7ef21e0f9eeb6b39d6d',1,'arg_router::policy::router']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['short_5fname_232',['short_name',['../namespacearg__router_1_1policy.html#a5eeeaadd8d711b8a761c57fbbc8c312c',1,'arg_router::policy']]]
+  ['required_252',['required',['../namespacearg__router_1_1policy.html#a0960d76b9e22cfed95ba19a463384d3c',1,'arg_router::policy']]]
 ];

@@ -67,7 +67,7 @@ $(function() {
 <div class="title">arg_router Documentation</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><object type="image/svg+xml" data="https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg" style="pointer-events: none;">Documentation Generator</object> <img src="https://img.shields.io/badge/Unit_Test_Coverage-92.5%25-brightgreen" alt="Unit test coverage" class="inline"/></p>
+<div class="textblock"><p><object type="image/svg+xml" data="https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg" style="pointer-events: none;">Documentation Generator</object> <img src="https://img.shields.io/badge/Unit_Test_Coverage-98.2%25-brightgreen" alt="Unit test coverage" class="inline"/></p>
 <h1><a class="el" href="namespacearg__router.html">arg_router</a></h1>
 <p><code><a class="el" href="namespacearg__router.html">arg_router</a></code> is a C++17 command line parser and router. It uses policy-based objects hierarchically, so the parsing code is self-describing. Rather than just providing a parsing service that returns a map of <code>variant</code>s/<code>any</code>s, it allows you to bind <code>Callable</code> instances to points in the parse structure, so complex command line arguments can directly call functions with the expected arguments - rather than you having to do this yourself.</p>
 <h2>Features</h2>
@@ -199,7 +199,7 @@ $(function() {
 <div class="line">        <span class="keywordflow">return</span> theme_t::SOLARIZED;</div>
 <div class="line">    }</div>
 <div class="line"> </div>
-<div class="line">    <span class="keywordflow">throw</span> std::invalid_argument{<span class="stringliteral">&quot;Unknown theme argument: &quot;</span>s + arg};</div>
+<div class="line">    <span class="keywordflow">throw</span> parse_exception{<span class="stringliteral">&quot;Unknown theme argument: &quot;</span>s + arg};</div>
 <div class="line">}</div>
 </div><!-- fragment --><p>With this declared in a place visible to the parse tree declaration, <code>theme_t</code> can be converted from a string without the need for a <code>custom_parser</code>. It should be noted that <code>custom_parser</code> can still be used, and will be preferred over the <code>parse()</code> specialisation.</p>
 <h2>Counting Flags</h2>
@@ -228,7 +228,7 @@ $(function() {
 <div class="line">        verbosity_level_t verbosity_level,</div>
 <div class="line">        std::vector&lt;std::string_view&gt;&gt; files) { ... }}}</div>
 </div><!-- fragment --><p>The number of times <code>-v</code> appears in the command line will increment the returned value, e.g. <code>-vv</code> will result in <code>verbosity_level_t::INFO</code>.</p>
-<p>Note that even though we are using a custom enum, we haven't specified a <code>custom_parser</code>. <code>counting_flag</code> will count up in <code>std::size_t</code> and then <code>static_cast</code> to the user-specified type, so as long as your requested type is explicitly convertible from <code>std::size_</code> it will just work. If it isn't, then you'll have to modify your type or not use counting arguments, as attaching a <code>custom_parser</code> to any kind of flag will result in a build failure.</p>
+<p>Note that even though we are using a custom enum, we haven't specified a <code>custom_parser</code>. <code>counting_flag</code> will count up in <code>std::size_t</code> and then <code>static_cast</code> to the user-specified type, so as long as your requested type is explicitly convertible from <code>std::size_t</code> it will just work. If it isn't, then you'll have to modify your type or not use counting arguments, as attaching a <code>custom_parser</code> to any kind of flag will result in a build failure.</p>
 <p>Short name collapsing still works as expected, so passing <code>-Evnv</code> will result in <code>show_ends</code> and <code>show_non_printing</code> being true, and <code>verbosity_level</code> will be <code>verbosity_level_t::INFO</code> in the <code>router</code> call.</p>
 <p>We can constrain the amount of flags the user can provide by using the <code>max_count</code> policy, so passing <code>-vvvv</code> will result in a runtime error.</p>
 <p>The <code>long_name</code> policy is not allowed, but we can use the knowledge gained so far to provide the best of both: </p><div class="fragment"><div class="line">ar::mode{</div>
@@ -404,7 +404,7 @@ $(function() {
 <div class="line">}</div>
 </div><!-- fragment --><p><code>ar::list</code> is just a <code>std::tuple</code> alias, <code>mode</code> and <code>root</code> instances detect this and add the contents to its child/policy lists - it's nicer than having an instance per type. Also don't be afraid of the copies, the majority of <code><a class="el" href="namespacearg__router.html">arg_router</a></code> types hold no data (the advantage of compile-time!) and those that do (e.g. <code>default_value</code>) generally have small types like primitives or <code>std::string_view</code>.</p>
 <h2>Error Handling</h2>
-<p>Currently <code><a class="el" href="namespacearg__router.html">arg_router</a></code> only supports exceptions as error handling. If a parsing fails for some reason a <code>std::invalid_argument</code> is thrown carrying information on the failure. </p>
+<p>Currently <code><a class="el" href="namespacearg__router.html">arg_router</a></code> only supports exceptions as error handling. If a parsing fails for some reason a <code>arg_router::parse_exception</code> is thrown carrying information on the failure. </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00010">algorithm.hpp:10</a></div></div>

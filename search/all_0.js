@@ -7,7 +7,7 @@ var searchData=
   ['always_5ffalse_5fv_4',['always_false_v',['../namespacearg__router_1_1traits.html#aa534c7727cc999a1bfb9da5cbed2d8c5',1,'arg_router::traits']]],
   ['arg_5fextractor_5',['arg_extractor',['../namespacearg__router_1_1traits.html#a748cff33bc10d2ff930b8783e72a287b',1,'arg_router::traits']]],
   ['arg_5frouter_6',['arg_router',['../namespacearg__router.html',1,'']]],
-  ['argument_5ftype_7',['argument_type',['../structarg__router_1_1parsing_1_1match__result.html#ad53bc1e91c36ee19bf19371965528467',1,'arg_router::parsing::match_result']]],
+  ['argument_5ftype_7',['argument_type',['../structarg__router_1_1parsing_1_1match__result.html#a006faf2ef208b6d99e779425d0d98ad3',1,'arg_router::parsing::match_result']]],
   ['config_8',['config',['../namespacearg__router_1_1config.html',1,'arg_router']]],
   ['parsing_9',['parsing',['../namespacearg__router_1_1parsing.html',1,'arg_router']]],
   ['policy_10',['policy',['../namespacearg__router_1_1policy.html',1,'arg_router']]],

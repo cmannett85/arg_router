@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['l1_5fcache_5fsize_189',['l1_cache_size',['../namespacearg__router_1_1traits.html#a59db0f0ce1c89dd093e712343a1088c6',1,'arg_router::traits']]],
-  ['long_5fname_190',['long_name',['../classarg__router_1_1policy_1_1long__name__t.html#a05f3d42a1a873c3cf4e0018d4455abc0',1,'arg_router::policy::long_name_t']]]
+  ['is_5falnum_201',['is_alnum',['../namespacearg__router_1_1algorithm.html#a637eeac0609176c7e2409b16fc40543f',1,'arg_router::algorithm']]],
+  ['is_5fwhitespace_202',['is_whitespace',['../namespacearg__router_1_1algorithm.html#a18059ecb7d0a465aac629148d21e4056',1,'arg_router::algorithm']]]
 ];

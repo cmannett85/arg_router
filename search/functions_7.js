@@ -1,5 +1,8 @@
 var searchData=
 [
-  ['operator_28_29_195',['operator()',['../classarg__router_1_1policy_1_1router.html#a9c6b83e5220c345014114ad19438b2d3',1,'arg_router::policy::router']]],
-  ['operator_2b_196',['operator+',['../namespacearg__router_1_1utility_1_1string__view__ops.html#a700baffd30dc15233a2290787e322135',1,'arg_router::utility::string_view_ops::operator+(std::basic_string&lt; CharT, Traits, Allocator &gt; lhs, std::basic_string_view&lt; CharT, Traits &gt; rhs)'],['../namespacearg__router_1_1utility_1_1string__view__ops.html#a0593ed52064d5856855ec138d1480239',1,'arg_router::utility::string_view_ops::operator+(std::basic_string_view&lt; CharT, Traits &gt; lhs, std::basic_string&lt; CharT, Traits, Allocator &gt; rhs)']]]
+  ['match_205',['match',['../classarg__router_1_1flag.html#afbc641beb94c19b4a279fa9f8790a1c3',1,'arg_router::flag::match()'],['../classarg__router_1_1mode.html#a5262bda2a70b31701854e775fce51c65',1,'arg_router::mode::match()']]],
+  ['match_5fresult_206',['match_result',['../structarg__router_1_1parsing_1_1match__result.html#aac08b40f3be571c156cbf19449cacea9',1,'arg_router::parsing::match_result']]],
+  ['maximum_5fcount_207',['maximum_count',['../classarg__router_1_1policy_1_1max__count__t.html#aeaaaba857b7faca8ac4f9d4aea8e4221',1,'arg_router::policy::max_count_t']]],
+  ['minimum_5fcount_208',['minimum_count',['../classarg__router_1_1policy_1_1min__count__t.html#a26103c27bd456ddfdca4b41c1a39d3fe',1,'arg_router::policy::min_count_t']]],
+  ['mode_209',['mode',['../classarg__router_1_1mode.html#abda9591b6385ac710a611e6862fb0e57',1,'arg_router::mode']]]
 ];

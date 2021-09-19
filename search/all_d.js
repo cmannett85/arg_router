@@ -1,8 +1,12 @@
 var searchData=
 [
-  ['required_98',['required',['../namespacearg__router_1_1policy.html#a0960d76b9e22cfed95ba19a463384d3c',1,'arg_router::policy']]],
-  ['required_5ft_99',['required_t',['../structarg__router_1_1policy_1_1required__t.html',1,'arg_router::policy']]],
-  ['root_100',['root',['../classarg__router_1_1root.html',1,'arg_router::root&lt; Params &gt;'],['../classarg__router_1_1root.html#a72fe36fd31b064a5a960e00ef7e6e2fa',1,'arg_router::root::root()']]],
-  ['router_101',['router',['../classarg__router_1_1policy_1_1router.html',1,'arg_router::policy::router&lt; Fn &gt;'],['../classarg__router_1_1policy_1_1router.html#a26d195b79a41d7ef21e0f9eeb6b39d6d',1,'arg_router::policy::router::router()']]],
-  ['rules_5ftype_102',['rules_type',['../classarg__router_1_1policy_1_1validation_1_1validator.html#adca5b43d5f0fd325ab37e188fbb6b338',1,'arg_router::policy::validation::validator']]]
+  ['parameters_5ftype_96',['parameters_type',['../classarg__router_1_1tree__node.html#a7b0eea2e055bd9b353d6ddbf154568a7',1,'arg_router::tree_node']]],
+  ['parent_5ftype_97',['parent_type',['../structarg__router_1_1policy_1_1validation_1_1parent__type.html',1,'arg_router::policy::validation']]],
+  ['parse_98',['parse',['../classarg__router_1_1policy_1_1custom__parser.html#aae0ab6d7c4b39d4542484039c0a26bbc',1,'arg_router::policy::custom_parser::parse()'],['../classarg__router_1_1root.html#a4455a93d9712453df4caa5ab7564eb17',1,'arg_router::root::parse()']]],
+  ['parser_5ftype_99',['parser_type',['../classarg__router_1_1policy_1_1custom__parser.html#afa60af08741106e17b21c46799dc8add',1,'arg_router::policy::custom_parser']]],
+  ['policies_5ftype_100',['policies_type',['../classarg__router_1_1tree__node.html#aec3a4f4e8c0b7d0b7a5d911b18fb9bc3',1,'arg_router::tree_node']]],
+  ['policy_5funique_5ffrom_5fowner_5fparent_5fto_5fmode_5for_5froot_101',['policy_unique_from_owner_parent_to_mode_or_root',['../structarg__router_1_1policy_1_1validation_1_1policy__unique__from__owner__parent__to__mode__or__root.html',1,'arg_router::policy::validation']]],
+  ['prefix_102',['prefix',['../structarg__router_1_1parsing_1_1token__type.html#a69550c5abd5215a2df313d7e41203652',1,'arg_router::parsing::token_type']]],
+  ['prefix_5ftype_103',['prefix_type',['../namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3',1,'arg_router::parsing']]],
+  ['project_5fversion_104',['project_version',['../namespacearg__router.html#a085bce3c67f7256e3b8fee69311fab99',1,'arg_router']]]
 ];
