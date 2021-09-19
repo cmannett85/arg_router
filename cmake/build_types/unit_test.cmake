@@ -4,6 +4,7 @@ find_package(Boost ${BOOST_VERSION} REQUIRED COMPONENTS
 )
 
 set(TEST_HEADERS
+    ${CMAKE_CURRENT_SOURCE_DIR}/test_printers.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/test_helpers.hpp
 )
 
@@ -11,6 +12,7 @@ set(TEST_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/main_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/algorithm_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/flag_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/mode_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/parsing_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/policy/custom_parser_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/policy/default_value_test.cpp
@@ -58,7 +60,7 @@ target_link_libraries(arg_router_test
     PUBLIC Boost::unit_test_framework
     PUBLIC Boost::filesystem
     PUBLIC Threads::Threads
-    INTERFACE arg_router
+    PUBLIC arg_router
 )
 
 add_test(NAME arg_router_test COMMAND arg_router_test -l message)

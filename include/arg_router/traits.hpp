@@ -290,6 +290,14 @@ class unpack_and_derive<T<Params...>> : public Params...
     {
     }
 
+    // This empty tuple overload is just to prevent an
+    // -Werror=unused-but-set-parameter on the params parameter
+    template <std::size_t... I>
+    constexpr explicit unpack_and_derive(T<Params...>,
+                                         std::integer_sequence<std::size_t>)
+    {
+    }
+
 public:
     constexpr explicit unpack_and_derive(T<Params...> params) :
         unpack_and_derive{std::move(params),

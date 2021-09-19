@@ -1,4 +1,5 @@
 #include "arg_router/tree_node.hpp"
+#include "arg_router/flag.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/short_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
@@ -9,14 +10,6 @@ using namespace arg_router;
 using namespace std::string_view_literals;
 
 BOOST_AUTO_TEST_SUITE(tree_node_suite)
-
-BOOST_AUTO_TEST_CASE(tree_node_test)
-{
-    auto tn =
-        tree_node{policy::long_name<S_("hello")>, policy::short_name<'A'>};
-    static_assert(tn.long_name() == "hello"sv, "Long name does not match");
-    static_assert(tn.short_name() == 'A', "Short name does not match");
-}
 
 BOOST_AUTO_TEST_CASE(mixed_tree_node_types_test)
 {
@@ -66,6 +59,59 @@ BOOST_AUTO_TEST_CASE(only_policies_tree_node_types_test)
 
     static_assert(std::is_same_v<typename tn::children_type, std::tuple<>>,
                   "children_type does not match");
+}
+
+BOOST_AUTO_TEST_CASE(one_child_tree_node_types_test)
+{
+    using tn =
+        tree_node<flag<policy::long_name_t<S_("hello")>,
+                       policy::short_name_t<traits::integral_constant<'A'>>>>;
+    static_assert(
+        std::is_same_v<
+            typename tn::parameters_type,
+            std::tuple<
+                flag<policy::long_name_t<S_("hello")>,
+                     policy::short_name_t<traits::integral_constant<'A'>>>>>,
+        "parameters_type does not match");
+
+    static_assert(std::is_same_v<typename tn::policies_type, std::tuple<>>,
+                  "policies_type does not match");
+
+    static_assert(
+        std::is_same_v<
+            typename tn::children_type,
+            std::tuple<
+                flag<policy::long_name_t<S_("hello")>,
+                     policy::short_name_t<traits::integral_constant<'A'>>>>>,
+        "children_type does not match");
+}
+
+BOOST_AUTO_TEST_CASE(two_children_tree_node_types_test)
+{
+    using tn =
+        tree_node<flag<policy::long_name_t<S_("hello")>,
+                       policy::short_name_t<traits::integral_constant<'A'>>>,
+                  flag<policy::short_name_t<traits::integral_constant<'B'>>>>;
+    static_assert(
+        std::is_same_v<
+            typename tn::parameters_type,
+            std::tuple<
+                flag<policy::long_name_t<S_("hello")>,
+                     policy::short_name_t<traits::integral_constant<'A'>>>,
+                flag<policy::short_name_t<traits::integral_constant<'B'>>>>>,
+        "parameters_type does not match");
+
+    static_assert(std::is_same_v<typename tn::policies_type, std::tuple<>>,
+                  "policies_type does not match");
+
+    static_assert(
+        std::is_same_v<
+            typename tn::children_type,
+            std::tuple<
+                flag<policy::long_name_t<S_("hello")>,
+                     policy::short_name_t<traits::integral_constant<'A'>>>,
+                flag<policy::short_name_t<traits::integral_constant<'B'>>>>>,
+        "children_type does not match");
 }
 
 BOOST_AUTO_TEST_CASE(empty_tree_node_types_test)

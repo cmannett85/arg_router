@@ -231,10 +231,8 @@ template <typename First, typename Second>
 class zip
 {
     static_assert(
-        (std::tuple_size_v<First> == std::tuple_size_v<Second>)&&  //
-        (std::tuple_size_v<First> > 0),
-        "First and Second tuples must contain the same number of elements, and "
-        "must have one or more elements");
+        (std::tuple_size_v<First> == std::tuple_size_v<Second>),
+        "First and Second tuples must contain the same number of elements");
 
     template <std::size_t... N>
     constexpr static auto zip_impl_t(std::integer_sequence<std::size_t, N...>)

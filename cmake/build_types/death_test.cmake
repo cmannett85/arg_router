@@ -21,5 +21,5 @@ target_include_directories(arg_router_death_test
 )
 
 target_link_libraries(arg_router_death_test
-    INTERFACE arg_router
+    PUBLIC arg_router
 )

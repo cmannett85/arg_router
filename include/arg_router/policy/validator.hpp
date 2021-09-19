@@ -1,6 +1,7 @@
 #pragma once
 
 #include "arg_router/flag.hpp"
+#include "arg_router/mode.hpp"
 #include "arg_router/policy/custom_parser.hpp"
 #include "arg_router/policy/default_value.hpp"
 #include "arg_router/policy/description.hpp"
@@ -150,7 +151,10 @@ struct despecialised_unique_in_owner {
 
 /** A rule condition that checks a policy is unique up to the nearest mode or
  * root - but skips the owner.
+ * 
+ * @tparam ModeType Mode type
  */
+template <template <typename...> typename ModeType>
 struct policy_unique_from_owner_parent_to_mode_or_root {
     template <typename Policy, typename PathToThis>
     struct checker {
@@ -171,14 +175,25 @@ struct policy_unique_from_owner_parent_to_mode_or_root {
     template <typename T, typename... Parents>
     constexpr static void check()
     {
+        using ParentTuple = std::tuple<Parents...>;
+        constexpr auto NumParents = sizeof...(Parents);
+
         // Make sure there's at least one parent beyond the owner
-        if constexpr (sizeof...(Parents) > 1) {
+        if constexpr (NumParents > 1) {
             // Find a mode type, if there's one present we stop moving up through
             // the ancestors at that point, otherwise we go up to the root
-            //constexpr auto generation_count =
-            //algorithm::find_specialisation_in_tuple_v<mode, older_generations> + 1;
-            using start_type = boost::mp11::mp_back<std::tuple<Parents...>>;
-            using path_type = std::tuple<Parents...>;
+            constexpr auto mode_index =
+                algorithm::find_specialisation_v<ModeType, ParentTuple>;
+            using start_type = boost::mp11::mp_eval_if_c<
+                mode_index == NumParents,
+                boost::mp11::mp_back<ParentTuple>,
+                boost::mp11::mp_at,
+                ParentTuple,
+                traits::integral_constant<mode_index>>;
+
+            using path_type =
+                boost::mp11::mp_take_c<ParentTuple,
+                                       std::min(mode_index + 1, NumParents)>;
 
             // Recurse the tree from the oldest generation, testing that no
             // other policy matches ours
@@ -265,14 +280,40 @@ struct child_must_have_policy {
     }
 };
 
+/** A rule condition that checks if there are more than one child of T that is a
+ * mode, all must be named.
+ *
+ * @tparam ModeType Mode type
+ */
+template <template <typename...> typename ModeType>
+struct multiple_named_modes {
+    template <typename Child>
+    using mode_filter = traits::is_specialisation_of<Child, ModeType>;
+
+    template <typename Mode>
+    using has_long_name =
+        traits::is_detected<parsing::has_long_name_checker, Mode>;
+
+    template <typename T, typename...>
+    constexpr static void check()
+    {
+        using modes =
+            boost::mp11::mp_filter<mode_filter, typename T::children_type>;
+        if constexpr (std::tuple_size_v < modes >> 1) {
+            static_assert(boost::mp11::mp_all_of<modes, has_long_name>::value,
+                          "If there are multiple modes, all must be named");
+        }
+    }
+};
+
 /** The default validator instance. */
 inline constexpr auto default_validator =
     validator<rule<policy::long_name_t<S_("rule")>,
                    despecialised_unique_in_owner,
-                   policy_unique_from_owner_parent_to_mode_or_root>,
+                   policy_unique_from_owner_parent_to_mode_or_root<mode>>,
               rule<policy::short_name_t<traits::integral_constant<'a'>>,
                    despecialised_unique_in_owner,
-                   policy_unique_from_owner_parent_to_mode_or_root>,
+                   policy_unique_from_owner_parent_to_mode_or_root<mode>>,
               rule<policy::description_t<S_("rule")>,  //
                    despecialised_unique_in_owner>,
               rule<policy::router<std::less<>>,  //
@@ -285,9 +326,17 @@ inline constexpr auto default_validator =
                    must_not_have_policy<policy::custom_parser>,
                    must_not_have_policy<policy::validation::validator>,
                    must_have_policy<policy::description_t>>,
+              rule<mode<>,  //
+                   must_have_policy<policy::router>,
+                   must_not_have_policy<policy::short_name_t>,
+                   must_not_have_policy<policy::custom_parser>,
+                   must_not_have_policy<policy::default_value>,
+                   must_not_have_policy<policy::required_t>,
+                   parent_type<0, root<policy::validation::validator<>>>>,
               rule<root<policy::validation::validator<>>,  //
                    must_have_policy<policy::validation::validator>,
-                   child_must_have_policy<policy::router>>>{};
+                   child_must_have_policy<policy::router>,
+                   multiple_named_modes<mode>>>{};
 }  // namespace validation
 }  // namespace policy
 }  // namespace arg_router

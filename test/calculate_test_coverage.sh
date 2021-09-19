@@ -16,10 +16,11 @@ SRC_PATH=${PWD}
 OLD_COVERAGE="$(cat ./old_coverage)"
 
 cd ${BUILD_DIR}
-lcov -d ./test/CMakeFiles/arg_router_test_coverage.dir    \
+lcov -d ./CMakeFiles/arg_router_coverage.dir/src           \
+     -d ./test/CMakeFiles/arg_router_test_coverage.dir    \
      -c -o temp.info --rc geninfo_gcov_tool=${GCOV}
 lcov --remove temp.info "/usr/include/*" \
-     --remove temp.info "${BUILD_DIR}/vcpkg_installed/x64-linux/include/*" \
+     --remove temp.info "${BUILD_DIR}/vcpkg_installed/*" \
      --remove temp.info "${SRC_PATH}/*" \
      --output-file arg_router.info
 

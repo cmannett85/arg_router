@@ -32,7 +32,9 @@ endif()
 set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/algorithm.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/config.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/exception.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/flag.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/mode.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/parsing.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/custom_parser.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/default_value.hpp
@@ -54,6 +56,11 @@ set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/tuple_iterator.hpp
 )
 
+set(SRCS
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/exception.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/parsing.cpp
+)
+
 set(FOR_IDE
     ${CMAKE_CURRENT_SOURCE_DIR}/.github/workflows/docs_pusher.yml
     ${CMAKE_CURRENT_SOURCE_DIR}/.github/workflows/pr_checker.yml
@@ -72,6 +79,7 @@ if(NOT DOCS_ONLY)
 
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/clang-format.cmake)
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/library.cmake)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/library_coverage.cmake)
 
     enable_testing()
     add_subdirectory(test)

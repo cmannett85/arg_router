@@ -29,23 +29,30 @@ BOOST_AUTO_TEST_CASE(despecialised_unique_in_owner_test)
 
 BOOST_AUTO_TEST_CASE(policy_unique_from_owner_parent_to_mode_or_root_test)
 {
-    policy::validation::policy_unique_from_owner_parent_to_mode_or_root::check<
-        policy::long_name_t<S_("test")>>();
+    policy::validation::policy_unique_from_owner_parent_to_mode_or_root<
+        mode>::check<policy::long_name_t<S_("test")>>();
 
-    policy::validation::policy_unique_from_owner_parent_to_mode_or_root::check<
-        policy::long_name_t<S_("test")>,
-        flag<policy::short_name_t<traits::integral_constant<'a'>>,
-             policy::long_name_t<S_("test")>>>();
+    policy::validation::policy_unique_from_owner_parent_to_mode_or_root<
+        mode>::check<policy::long_name_t<S_("test")>,
+                     flag<policy::short_name_t<traits::integral_constant<'a'>>,
+                          policy::long_name_t<S_("test")>>>();
 
-    policy::validation::policy_unique_from_owner_parent_to_mode_or_root::check<
-        policy::long_name_t<S_("test1")>,
-        flag<policy::short_name_t<traits::integral_constant<'a'>>,
-             policy::long_name_t<S_("test1")>>,
-        root<flag<policy::short_name_t<traits::integral_constant<'a'>>,
-                  policy::long_name_t<S_("test2")>>,
-             flag<policy::short_name_t<traits::integral_constant<'a'>>,
-                  policy::long_name_t<S_("test1")>>,
-             std::decay_t<decltype(policy::validation::default_validator)>>>();
+    policy::validation::policy_unique_from_owner_parent_to_mode_or_root<mode>::
+        check<
+            policy::long_name_t<S_("test1")>,
+            flag<policy::short_name_t<traits::integral_constant<'a'>>,
+                 policy::long_name_t<S_("test1")>>,
+            mode<policy::long_name_t<S_("mode1")>,
+                 flag<policy::short_name_t<traits::integral_constant<'a'>>,
+                      policy::long_name_t<S_("test1")>>>,
+            root<mode<policy::long_name_t<S_("mode1")>,
+                      flag<policy::short_name_t<traits::integral_constant<'a'>>,
+                           policy::long_name_t<S_("test1")>>>,
+                 mode<policy::long_name_t<S_("mode2")>,
+                      flag<policy::short_name_t<traits::integral_constant<'a'>>,
+                           policy::long_name_t<S_("test1")>>>,
+                 std::decay_t<
+                     decltype(policy::validation::default_validator)>>>();
 }
 
 BOOST_AUTO_TEST_CASE(parent_type_test)
@@ -92,6 +99,29 @@ BOOST_AUTO_TEST_CASE(child_must_have_policy_test)
              flag<policy::short_name_t<traits::integral_constant<'b'>>,
                   policy::long_name_t<S_("test2")>,
                   policy::router<std::less<>>>,
+             std::decay_t<decltype(policy::validation::default_validator)>>>();
+}
+
+BOOST_AUTO_TEST_CASE(multiple_named_modes_test)
+{
+    policy::validation::multiple_named_modes<mode>::check<
+        root<mode<policy::long_name_t<S_("mode1")>,
+                  flag<policy::short_name_t<traits::integral_constant<'a'>>,
+                       policy::long_name_t<S_("test1")>>>,
+             mode<policy::long_name_t<S_("mode2")>,
+                  flag<policy::short_name_t<traits::integral_constant<'a'>>,
+                       policy::long_name_t<S_("test1")>>>,
+             std::decay_t<decltype(policy::validation::default_validator)>>>();
+
+    policy::validation::multiple_named_modes<mode>::check<
+        root<mode<policy::long_name_t<S_("mode1")>,
+                  flag<policy::short_name_t<traits::integral_constant<'a'>>,
+                       policy::long_name_t<S_("test1")>>>,
+             std::decay_t<decltype(policy::validation::default_validator)>>>();
+
+    policy::validation::multiple_named_modes<mode>::check<
+        root<mode<flag<policy::short_name_t<traits::integral_constant<'a'>>,
+                       policy::long_name_t<S_("test1")>>>,
              std::decay_t<decltype(policy::validation::default_validator)>>>();
 }
 
@@ -145,7 +175,7 @@ BOOST_AUTO_TEST_CASE(policy_unique_from_owner_parent_to_mode_or_root_test)
 using namespace arg_router;
 
 int main() {
-    policy::validation::policy_unique_from_owner_parent_to_mode_or_root::check<
+    policy::validation::policy_unique_from_owner_parent_to_mode_or_root<mode>::check<
         policy::long_name_t<S_("test")>,
         flag<
             policy::short_name_t<
@@ -268,6 +298,27 @@ int main() {
 }
     )",
         "All children of T must have this policy");
+}
+
+BOOST_AUTO_TEST_CASE(multiple_named_modes_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/validator.hpp"
+using namespace arg_router;
+
+int main() {
+    policy::validation::multiple_named_modes<mode>::check<
+        root<mode<policy::long_name_t<S_("mode1")>,
+                  flag<policy::short_name_t<traits::integral_constant<'a'>>,
+                       policy::long_name_t<S_("test1")>>>,
+             mode<flag<policy::short_name_t<traits::integral_constant<'a'>>,
+                       policy::long_name_t<S_("test1")>>>,
+             std::decay_t<decltype(policy::validation::default_validator)>>>();
+    return 0;
+}
+    )",
+        "If there are multiple modes, all must be named");
 }
 
 BOOST_AUTO_TEST_SUITE_END()
