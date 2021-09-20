@@ -274,6 +274,26 @@ constexpr auto tuple_filter_and_construct_impl(U&& input, std::tuple<I...>)
 {
     return std::tuple{std::get<I::value>(input)...};
 }
+
+template <template <typename...> typename Tuple,
+          typename Insert,
+          typename... Args,
+          std::size_t... I>
+constexpr auto tuple_push_back_impl(Tuple<Args...> tuple,
+                                    Insert insert,
+                                    std::integer_sequence<std::size_t, I...>)
+{
+    return Tuple{std::move(std::get<I>(tuple))..., std::move(insert)};
+}
+
+// Empty tuple specialisation
+template <template <typename...> typename Tuple, typename Insert>
+constexpr auto tuple_push_back_impl(Tuple<>,
+                                    Insert insert,
+                                    std::integer_sequence<std::size_t>)
+{
+    return Tuple{std::move(insert)};
+}
 }  // namespace detail
 
 /** Moves (or copies if unable to) elements from @a input if their type passes
@@ -306,6 +326,23 @@ constexpr auto tuple_filter_and_construct(U&& input)
     return detail::tuple_filter_and_construct_impl(
         input,
         typename unzip<filtered>::first_type{});
+}
+
+/** Appends @a insert to @a tuple.
+ *
+ * @tparam Tuple A tuple-like type
+ * @tparam Insert The type to append
+ * @param tuple Tuple instance
+ * @param insert Instance to append
+ * @return A Tuple with @a insert appended
+ */
+template <typename Tuple, typename Insert, std::size_t... I>
+constexpr auto tuple_push_back(Tuple tuple, Insert insert)
+{
+    return detail::tuple_push_back_impl(
+        std::move(tuple),
+        std::move(insert),
+        std::make_index_sequence<std::tuple_size_v<Tuple>>{});
 }
 }  // namespace algorithm
 }  // namespace arg_router
