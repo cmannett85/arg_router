@@ -419,6 +419,89 @@ BOOST_AUTO_TEST_CASE(named_multi_mode_parse_test)
         });
 }
 
+BOOST_AUTO_TEST_CASE(named_multi_mode_using_list_parse_test)
+{
+    auto router_hit1 = false;
+    auto router_hit2 = false;
+    auto result1 = std::array<bool, 3>{};
+    auto result2 = std::array<bool, 2>{};
+
+    const auto flag1 = list{flag{policy::long_name<S_("flag1")>,
+                                 policy::description<S_("First description")>}};
+
+    const auto r =
+        root{mode{policy::long_name<S_("mode1")>,
+                  flag1,
+                  flag{policy::long_name<S_("flag2")>,
+                       policy::description<S_("Second description")>},
+                  flag{policy::short_name<'t'>,
+                       policy::description<S_("Third description")>},
+                  policy::router{[&](bool flag1, bool flag2, bool t) {
+                      result1 = {flag1, flag2, t};
+                      router_hit1 = true;
+                  }}},
+             mode{policy::long_name<S_("mode2")>,
+                  flag1,
+                  flag{policy::short_name<'b'>,
+                       policy::description<S_("Fourth description")>},
+                  policy::router{[&](bool flag1, bool b) {
+                      result2 = {flag1, b};
+                      router_hit2 = true;
+                  }}},
+             policy::validation::default_validator};
+
+    auto f = [&](auto args,
+                 auto router_index,
+                 auto expected,
+                 std::string fail_message) {
+        router_hit1 = false;
+        router_hit2 = false;
+        result1.fill(false);
+        result2.fill(false);
+
+        try {
+            r.parse(args.size(), const_cast<char**>(args.data()));
+            BOOST_CHECK(fail_message.empty());
+
+            if (router_index == 0) {
+                BOOST_CHECK(router_hit1);
+                BOOST_CHECK(!router_hit2);
+                BOOST_CHECK_EQUAL(result1[0], expected[0]);
+                BOOST_CHECK_EQUAL(result1[1], expected[1]);
+                BOOST_CHECK_EQUAL(result1[2], expected[2]);
+            } else {
+                BOOST_CHECK(!router_hit1);
+                BOOST_CHECK(router_hit2);
+                BOOST_CHECK_EQUAL(result2[0], expected[0]);
+                BOOST_CHECK_EQUAL(result2[1], expected[1]);
+            }
+        } catch (parse_exception& e) {
+            BOOST_CHECK_EQUAL(fail_message, e.what());
+        }
+    };
+
+    test::data_set(
+        f,
+        {
+            std::tuple{std::vector{"foo", "mode1", "--flag1"},
+                       0,
+                       std::vector{true, false, false},
+                       ""},
+            std::tuple{std::vector{"foo", "mode2", "--flag1"},
+                       1,
+                       std::vector{true, false},
+                       ""},
+            std::tuple{std::vector{"foo", "mode1", "mode2", "--flag1"},
+                       0,
+                       std::vector{false, false, false},
+                       "Unknown argument: mode2"},
+            std::tuple{std::vector{"foo", "mode2", "-b"},
+                       1,
+                       std::vector{false, true},
+                       ""},
+        });
+}
+
 BOOST_AUTO_TEST_SUITE(death_suite)
 
 BOOST_AUTO_TEST_CASE(must_have_validator_policy_test)

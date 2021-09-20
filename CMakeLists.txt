@@ -34,6 +34,7 @@ set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/config.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/exception.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/flag.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/list.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/mode.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/parsing.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/custom_parser.hpp
@@ -49,6 +50,7 @@ set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/root.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/traits.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/tree_node.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/tree_node_fwd.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/compile_time_string.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/span.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/string_view_ops.hpp

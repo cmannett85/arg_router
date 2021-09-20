@@ -1,0 +1,104 @@
+#pragma once
+
+#include "arg_router/algorithm.hpp"
+#include "arg_router/tree_node_fwd.hpp"
+
+#include <tuple>
+
+namespace arg_router
+{
+/** This is arg and flag container, that when used a child in another tree_node
+ * is 'flattened' i.e. the children of the list become the direct children of
+ * the parent.
+ *
+ * This is used to easily copy groups of args and flags into multiple modes.
+ * @tparam Params Child types
+ */
+template <typename... Children>
+class list
+{
+public:
+    /** A tuple of all the child tree node types in parameters_type. */
+    using children_type = std::tuple<Children...>;
+
+    static_assert(boost::mp11::mp_all_of<children_type, is_tree_node>::value,
+                  "All list children must be tree_nodes (i.e. not policies)");
+
+    /** Constructor.
+     *
+     * @param children Child instances
+     */
+    explicit list(Children... children) : children_{std::move(children)...} {}
+
+    /** Returns a reference to the children.
+     *
+     * @return Children
+     */
+    children_type& children() { return children_; }
+
+    /** Const overload.
+     *
+     * @return Children
+     */
+    const children_type& children() const { return children_; }
+
+private:
+    children_type children_;
+};
+
+namespace detail
+{
+// Forward declared
+template <typename Result, typename Next, typename... Others>
+constexpr auto list_expander_impl(Result, Next, Others...);
+
+template <typename Result, typename ListChildren, std::size_t... I>
+constexpr auto list_expander_unpacker(Result result,
+                                      ListChildren list_children,
+                                      std::integer_sequence<std::size_t, I...>)
+{
+    return list_expander_impl(std::move(result),
+                              std::move(std::get<I>(list_children))...);
+}
+
+// Recursion end condition
+template <typename Result>
+constexpr auto list_expander_impl(Result result)
+{
+    return result;
+}
+
+template <typename Result, typename Next, typename... Others>
+constexpr auto list_expander_impl(Result result, Next next, Others... others)
+{
+    if constexpr (traits::is_specialisation_of_v<std::decay_t<Next>, list>) {
+        return list_expander_impl(
+            list_expander_unpacker(
+                std::move(result),
+                next.children(),
+                std::make_index_sequence<
+                    std::tuple_size_v<typename Next::children_type>>{}),
+            std::move(others)...);
+    } else {
+        return list_expander_impl(
+            algorithm::tuple_push_back(std::move(result), std::move(next)),
+            std::move(others)...);
+    }
+}
+}  // namespace detail
+
+/** Takes a tuple of node parameters and flattens any list types within it.
+ *
+ * @tparam Params Parameter types
+ * @param params Parameter instances
+ * @return Flattened tuple of nodes
+ */
+template <typename... Params>
+constexpr auto list_expander(Params... params)
+{
+    // Break params into tuples, where contiguous non-list types are collected
+    // up into tuples and so are the list children.  Eventually yielding a
+    // tuple of tuples, which can be flattened into a single level tuple
+    return detail::list_expander_impl(std::tuple{}, params...);
+}
+}  // namespace arg_router
