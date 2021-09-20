@@ -67,7 +67,7 @@ $(function() {
 <div class="title">arg_router Documentation</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><object type="image/svg+xml" data="https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg" style="pointer-events: none;">Documentation Generator</object> <img src="https://img.shields.io/badge/Unit_Test_Coverage-98.2%25-brightgreen" alt="Unit test coverage" class="inline"/></p>
+<div class="textblock"><p><object type="image/svg+xml" data="https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg" style="pointer-events: none;">Documentation Generator</object> <img src="https://img.shields.io/badge/Unit_Test_Coverage-98.4%25-brightgreen" alt="Unit test coverage" class="inline"/></p>
 <h1><a class="el" href="namespacearg__router.html">arg_router</a></h1>
 <p><code><a class="el" href="namespacearg__router.html">arg_router</a></code> is a C++17 command line parser and router. It uses policy-based objects hierarchically, so the parsing code is self-describing. Rather than just providing a parsing service that returns a map of <code>variant</code>s/<code>any</code>s, it allows you to bind <code>Callable</code> instances to points in the parse structure, so complex command line arguments can directly call functions with the expected arguments - rather than you having to do this yourself.</p>
 <h2>Features</h2>
@@ -402,7 +402,7 @@ $(function() {
 <div class="line">                       std::filesystem::path src) { ... }}</div>
 <div class="line">    }</div>
 <div class="line">}</div>
-</div><!-- fragment --><p><code>ar::list</code> is just a <code>std::tuple</code> alias, <code>mode</code> and <code>root</code> instances detect this and add the contents to its child/policy lists - it's nicer than having an instance per type. Also don't be afraid of the copies, the majority of <code><a class="el" href="namespacearg__router.html">arg_router</a></code> types hold no data (the advantage of compile-time!) and those that do (e.g. <code>default_value</code>) generally have small types like primitives or <code>std::string_view</code>.</p>
+</div><!-- fragment --><p><code>ar::list</code> is a simple <code>arg</code> and <code>flag</code> container that <code>mode</code> and <code>root</code> instances detect and add the contents to their child/policy lists - it's nicer than having an instance per type. Also don't be afraid of the copies, the majority of <code><a class="el" href="namespacearg__router.html">arg_router</a></code> types hold no data (the advantage of compile-time!) and those that do (e.g. <code>default_value</code>) generally have small types like primitives or <code>std::string_view</code>.</p>
 <h2>Error Handling</h2>
 <p>Currently <code><a class="el" href="namespacearg__router.html">arg_router</a></code> only supports exceptions as error handling. If a parsing fails for some reason a <code>arg_router::parse_exception</code> is thrown carrying information on the failure. </p>
 </div></div><!-- PageDoc -->

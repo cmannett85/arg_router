@@ -66,6 +66,7 @@ $(function() {
   <div class="summary">
 <a href="#namespaces">Namespaces</a> &#124;
 <a href="#nested-classes">Classes</a> &#124;
+<a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
 <div class="title">arg_router Namespace Reference</div>  </div>
@@ -93,12 +94,20 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structarg__router_1_1is__tree__node.html">is_tree_node</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1list.html">list</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1mode.html">mode</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1root.html">root</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html">tree_node</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:ac82f3cd910cc0b13f74865681898b078"><td class="memTemplParams" colspan="2">template&lt;typename... Params&gt; </td></tr>
+<tr class="memitem:ac82f3cd910cc0b13f74865681898b078"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router.html#ac82f3cd910cc0b13f74865681898b078">list_expander</a> (Params... params)</td></tr>
+<tr class="separator:ac82f3cd910cc0b13f74865681898b078"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
@@ -107,14 +116,59 @@ Variables</h2></td></tr>
 <tr class="separator:a4c3ee7dfa23bf543d5384c0a9150634e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a085bce3c67f7256e3b8fee69311fab99"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router.html#a085bce3c67f7256e3b8fee69311fab99">project_version</a> = &quot;0.0.1&quot;</td></tr>
 <tr class="separator:a085bce3c67f7256e3b8fee69311fab99"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a398d5ec8547fe9e1ad7dee8af88c2310"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router.html#a398d5ec8547fe9e1ad7dee8af88c2310">git_revision</a> = &quot;2578f2d41a5922229c12bc2c983f49d1ee7c174c&quot;</td></tr>
+<tr class="memitem:a398d5ec8547fe9e1ad7dee8af88c2310"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router.html#a398d5ec8547fe9e1ad7dee8af88c2310">git_revision</a> = &quot;3bb97b72351040910991adeb9f16784169320a5e&quot;</td></tr>
 <tr class="separator:a398d5ec8547fe9e1ad7dee8af88c2310"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af4cd92a6007eabf135ad3732ab648d66"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router.html#af4cd92a6007eabf135ad3732ab648d66">version_string</a> = &quot;0.0.1.2578f2d41a5922229c12bc2c983f49d1ee7c174c&quot;</td></tr>
+<tr class="memitem:af4cd92a6007eabf135ad3732ab648d66"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router.html#af4cd92a6007eabf135ad3732ab648d66">version_string</a> = &quot;0.0.1.3bb97b72351040910991adeb9f16784169320a5e&quot;</td></tr>
 <tr class="separator:af4cd92a6007eabf135ad3732ab648d66"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Namespace for all <a class="el" href="namespacearg__router.html">arg_router</a> types and functions. </p>
-</div><h2 class="groupheader">Variable Documentation</h2>
+</div><h2 class="groupheader">Function Documentation</h2>
+<a id="ac82f3cd910cc0b13f74865681898b078"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac82f3cd910cc0b13f74865681898b078">&#9670;&nbsp;</a></span>list_expander()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename... Params&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr auto arg_router::list_expander </td>
+          <td>(</td>
+          <td class="paramtype">Params...&#160;</td>
+          <td class="paramname"><em>params</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Takes a tuple of node parameters and flattens any list types within it.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Params</td><td>Parameter types </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">params</td><td>Parameter instances </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Flattened tuple of nodes </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="list_8hpp_source.html#l00097">97</a> of file <a class="el" href="list_8hpp_source.html">list.hpp</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
 <a id="a398d5ec8547fe9e1ad7dee8af88c2310"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a398d5ec8547fe9e1ad7dee8af88c2310">&#9670;&nbsp;</a></span>git_revision</h2>
 
@@ -125,7 +179,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr auto arg_router::git_revision = &quot;2578f2d41a5922229c12bc2c983f49d1ee7c174c&quot;</td>
+          <td class="memname">constexpr auto arg_router::git_revision = &quot;3bb97b72351040910991adeb9f16784169320a5e&quot;</td>
         </tr>
       </table>
   </td>
@@ -169,7 +223,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00029">29</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node__fwd_8hpp_source.html#l00028">28</a> of file <a class="el" href="tree__node__fwd_8hpp_source.html">tree_node_fwd.hpp</a>.</p>
 
 </div>
 </div>
@@ -208,7 +262,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr auto arg_router::version_string = &quot;0.0.1.2578f2d41a5922229c12bc2c983f49d1ee7c174c&quot;</td>
+          <td class="memname">constexpr auto arg_router::version_string = &quot;0.0.1.3bb97b72351040910991adeb9f16784169320a5e&quot;</td>
         </tr>
       </table>
   </td>

@@ -74,92 +74,93 @@ $(function() {
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &quot;arg_router/algorithm.hpp&quot;</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;arg_router/policy/policy.hpp&quot;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacearg__router.html">arg_router</a></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;{</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Params&gt;</div>
-<div class="line"><a name="l00009"></a><span class="lineno"><a class="line" href="classarg__router_1_1tree__node.html">    9</a></span>&#160;<span class="keyword">class </span><a class="code" href="classarg__router_1_1tree__node.html">tree_node</a>;</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="structarg__router_1_1is__tree__node.html">   16</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structarg__router_1_1is__tree__node.html">is_tree_node</a> : std::false_type {</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;};</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>...&gt; <span class="keyword">typename</span> T, <span class="keyword">typename</span>... Args&gt;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">struct </span><a class="code" href="structarg__router_1_1is__tree__node.html">is_tree_node</a>&lt;T&lt;Args...&gt;&gt; :</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    std::is_base_of&lt;tree_node&lt;Args...&gt;, T&lt;Args...&gt;&gt; {</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;};</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="namespacearg__router.html#a4c3ee7dfa23bf543d5384c0a9150634e">   29</a></span>&#160;constexpr <span class="keywordtype">bool</span> <a class="code" href="namespacearg__router.html#a4c3ee7dfa23bf543d5384c0a9150634e">is_tree_node_v</a> = <a class="code" href="structarg__router_1_1is__tree__node.html">is_tree_node&lt;T&gt;::value</a>;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Params&gt;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keyword">class </span><a class="code" href="classarg__router_1_1tree__node.html">tree_node</a> :</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keyword">public</span> <a class="code" href="classarg__router_1_1traits_1_1unpack__and__derive.html">traits::unpack_and_derive</a>&lt;  <span class="comment">//</span></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        boost::mp11::mp_filter&lt;policy::is_policy, std::tuple&lt;Params...&gt;&gt;&gt;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;{</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="classarg__router_1_1tree__node.html#a7b0eea2e055bd9b353d6ddbf154568a7">   42</a></span>&#160;    <span class="keyword">using</span> <a class="code" href="classarg__router_1_1tree__node.html#a7b0eea2e055bd9b353d6ddbf154568a7">parameters_type</a> = std::tuple&lt;Params...&gt;;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keyword">using</span> <a class="code" href="classarg__router_1_1tree__node.html#aec3a4f4e8c0b7d0b7a5d911b18fb9bc3">policies_type</a> =</div>
-<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="classarg__router_1_1tree__node.html#aec3a4f4e8c0b7d0b7a5d911b18fb9bc3">   46</a></span>&#160;        boost::mp11::mp_filter&lt;policy::is_policy, parameters_type&gt;;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
-<div class="line"><a name="l00049"></a><span class="lineno"><a class="line" href="classarg__router_1_1tree__node.html#a6805260e53f9b30a208c17d95c1039cb">   49</a></span>&#160;    <span class="keyword">using</span> <a class="code" href="classarg__router_1_1tree__node.html#a6805260e53f9b30a208c17d95c1039cb">children_type</a> = boost::mp11::mp_filter&lt;is_tree_node, parameters_type&gt;;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>...&gt; <span class="keyword">typename</span> Fn&gt;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keyword">static</span> <span class="keyword">auto</span> common_filter(Params&amp;... params)</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    {</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="comment">// Send references to the filter method so we don&#39;t copy anything</span></div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="comment">// unnecessarily</span></div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        <span class="keyword">using</span> ref_tuple = std::tuple&lt;std::reference_wrapper&lt;Params&gt;...&gt;;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <span class="comment">// We have to wrap Fn because we&#39;re now giving it a</span></div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        <span class="comment">// std::reference_wrapper</span></div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        <span class="keyword">using</span> ref_fn = boost::mp11::mp_bind&lt;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;            Fn,</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;            boost::mp11::mp_bind&lt;traits::get_type, boost::mp11::_1&gt;&gt;;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <span class="comment">// We have our result tuple, but it only contains references so we now</span></div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <span class="comment">// have to move construct them into the &#39;real&#39; types</span></div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        <span class="keyword">auto</span> ref_result =</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;            algorithm::tuple_filter_and_construct&lt;ref_fn::template fn&gt;(</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;                ref_tuple{params...});</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <span class="keyword">using</span> ref_result_t = std::decay_t&lt;decltype(ref_result)&gt;;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        <span class="keyword">using</span> result_t =</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;            boost::mp11::mp_transform&lt;traits::get_type, ref_result_t&gt;;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        <span class="comment">// Converting move-constructor of std::tuple</span></div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        <span class="keywordflow">return</span> result_t{std::move(ref_result)};</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    }</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00084"></a><span class="lineno"><a class="line" href="classarg__router_1_1tree__node.html#a48cb8499032eb97d0b69367956780d1a">   84</a></span>&#160;    <span class="keyword">explicit</span> <a class="code" href="classarg__router_1_1tree__node.html#a48cb8499032eb97d0b69367956780d1a">tree_node</a>(Params... params) :</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        traits::unpack_and_derive&lt;<a class="code" href="classarg__router_1_1tree__node.html#aec3a4f4e8c0b7d0b7a5d911b18fb9bc3">policies_type</a>&gt;{</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;            common_filter&lt;policy::is_policy&gt;(params...)},</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        children_{common_filter&lt;is_tree_node&gt;(params...)}</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    {</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    }</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00096"></a><span class="lineno"><a class="line" href="classarg__router_1_1tree__node.html#acf2a7147e9bf1612578dc6f1a10d48c8">   96</a></span>&#160;    <span class="keyword">const</span> <a class="code" href="classarg__router_1_1tree__node.html#a6805260e53f9b30a208c17d95c1039cb">children_type</a>&amp; <a class="code" href="classarg__router_1_1tree__node.html#acf2a7147e9bf1612578dc6f1a10d48c8">children</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> children_; }</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160; </div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    <a class="code" href="classarg__router_1_1tree__node.html#a6805260e53f9b30a208c17d95c1039cb">children_type</a> children_;</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;};</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;arg_router/list.hpp&quot;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;arg_router/policy/policy.hpp&quot;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacearg__router.html">arg_router</a></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;{</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Params&gt;</div>
+<div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="classarg__router_1_1tree__node.html">   14</a></span>&#160;<span class="keyword">class </span><a class="code" href="classarg__router_1_1tree__node.html">tree_node</a> :</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    <span class="keyword">public</span> <a class="code" href="classarg__router_1_1traits_1_1unpack__and__derive.html">traits::unpack_and_derive</a>&lt;  <span class="comment">//</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        boost::mp11::mp_filter&lt;policy::is_policy, std::tuple&lt;Params...&gt;&gt;&gt;</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;{</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="classarg__router_1_1tree__node.html#a7b0eea2e055bd9b353d6ddbf154568a7">   20</a></span>&#160;    <span class="keyword">using</span> <a class="code" href="classarg__router_1_1tree__node.html#a7b0eea2e055bd9b353d6ddbf154568a7">parameters_type</a> = std::tuple&lt;Params...&gt;;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keyword">using</span> <a class="code" href="classarg__router_1_1tree__node.html#aec3a4f4e8c0b7d0b7a5d911b18fb9bc3">policies_type</a> =</div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="classarg__router_1_1tree__node.html#aec3a4f4e8c0b7d0b7a5d911b18fb9bc3">   24</a></span>&#160;        boost::mp11::mp_filter&lt;policy::is_policy, parameters_type&gt;;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keyword">using</span> <a class="code" href="classarg__router_1_1tree__node.html#ada9714c3089bb29077dd1475d902db0a">children_type</a> = boost::mp11::mp_filter&lt;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        <a class="code" href="structarg__router_1_1is__tree__node.html">is_tree_node</a>,</div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="classarg__router_1_1tree__node.html#ada9714c3089bb29077dd1475d902db0a">   31</a></span>&#160;        std::decay_t&lt;decltype(list_expander(std::declval&lt;Params&gt;()...))&gt;&gt;;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>...&gt; <span class="keyword">typename</span> Fn, <span class="keyword">typename</span>... ExpandedParams&gt;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keyword">static</span> <span class="keyword">auto</span> common_filter(ExpandedParams&amp;... expanded_params)</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    {</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <span class="comment">// Send references to the filter method so we don&#39;t copy anything</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="comment">// unnecessarily</span></div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <span class="keyword">using</span> ref_tuple = std::tuple&lt;std::reference_wrapper&lt;ExpandedParams&gt;...&gt;;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="comment">// We have to wrap Fn because we&#39;re now giving it a</span></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="comment">// std::reference_wrapper</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <span class="keyword">using</span> ref_fn = boost::mp11::mp_bind&lt;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;            Fn,</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;            boost::mp11::mp_bind&lt;traits::get_type, boost::mp11::_1&gt;&gt;;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="comment">// We have our result tuple, but it only contains references so we now</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="comment">// have to move construct them into the &#39;real&#39; types</span></div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <span class="keyword">auto</span> ref_result =</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;            algorithm::tuple_filter_and_construct&lt;ref_fn::template fn&gt;(</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;                ref_tuple{expanded_params...});</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="keyword">using</span> ref_result_t = std::decay_t&lt;decltype(ref_result)&gt;;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="keyword">using</span> result_t =</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;            boost::mp11::mp_transform&lt;traits::get_type, ref_result_t&gt;;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        <span class="comment">// Converting move-constructor of std::tuple</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <span class="keywordflow">return</span> result_t{std::move(ref_result)};</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    }</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="comment">// Tuple overload</span></div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>...&gt; <span class="keyword">typename</span> Fn, <span class="keyword">typename</span>... ExpandedParams&gt;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keyword">static</span> <span class="keyword">auto</span> common_filter(std::tuple&lt;ExpandedParams...&gt; expanded_params)</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    {</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <span class="comment">// std::apply does not like templates, so we have to wrap in a lambda</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <span class="keywordflow">return</span> std::apply(</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;            [](<span class="keyword">auto</span>&amp;... args) {</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                <span class="keywordflow">return</span> common_filter&lt;Fn&gt;(std::forward&lt;decltype(args)&gt;(args)...);</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;            },</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;            expanded_params);</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    }</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00078"></a><span class="lineno"><a class="line" href="classarg__router_1_1tree__node.html#a48cb8499032eb97d0b69367956780d1a">   78</a></span>&#160;    <span class="keyword">explicit</span> <a class="code" href="classarg__router_1_1tree__node.html#a48cb8499032eb97d0b69367956780d1a">tree_node</a>(Params... params) :</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        traits::unpack_and_derive&lt;<a class="code" href="classarg__router_1_1tree__node.html#aec3a4f4e8c0b7d0b7a5d911b18fb9bc3">policies_type</a>&gt;{</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;            common_filter&lt;policy::is_policy&gt;(params...)},</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        children_(</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;            common_filter&lt;is_tree_node&gt;(<a class="code" href="namespacearg__router.html#ac82f3cd910cc0b13f74865681898b078">list_expander</a>(std::move(params)...)))</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    {</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    }</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00091"></a><span class="lineno"><a class="line" href="classarg__router_1_1tree__node.html#acf2a7147e9bf1612578dc6f1a10d48c8">   91</a></span>&#160;    <span class="keyword">const</span> <a class="code" href="classarg__router_1_1tree__node.html#ada9714c3089bb29077dd1475d902db0a">children_type</a>&amp; <a class="code" href="classarg__router_1_1tree__node.html#acf2a7147e9bf1612578dc6f1a10d48c8">children</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> children_; }</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    <a class="code" href="classarg__router_1_1tree__node.html#ada9714c3089bb29077dd1475d902db0a">children_type</a> children_;</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;};</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclassarg__router_1_1tree__node_html_a7b0eea2e055bd9b353d6ddbf154568a7"><div class="ttname"><a href="classarg__router_1_1tree__node.html#a7b0eea2e055bd9b353d6ddbf154568a7">arg_router::tree_node&lt; Policies... &gt;::parameters_type</a></div><div class="ttdeci">std::tuple&lt; Params... &gt; parameters_type</div><div class="ttdef"><b>Definition:</b> <a href="tree__node_8hpp_source.html#l00042">tree_node.hpp:42</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1tree__node_html"><div class="ttname"><a href="classarg__router_1_1tree__node.html">arg_router::tree_node</a></div><div class="ttdef"><b>Definition:</b> <a href="tree__node_8hpp_source.html#l00009">tree_node.hpp:9</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1tree__node_html_aec3a4f4e8c0b7d0b7a5d911b18fb9bc3"><div class="ttname"><a href="classarg__router_1_1tree__node.html#aec3a4f4e8c0b7d0b7a5d911b18fb9bc3">arg_router::tree_node&lt; Policies... &gt;::policies_type</a></div><div class="ttdeci">boost::mp11::mp_filter&lt; policy::is_policy, parameters_type &gt; policies_type</div><div class="ttdef"><b>Definition:</b> <a href="tree__node_8hpp_source.html#l00046">tree_node.hpp:46</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1tree__node_html_acf2a7147e9bf1612578dc6f1a10d48c8"><div class="ttname"><a href="classarg__router_1_1tree__node.html#acf2a7147e9bf1612578dc6f1a10d48c8">arg_router::tree_node::children</a></div><div class="ttdeci">const children_type &amp; children() const</div><div class="ttdef"><b>Definition:</b> <a href="tree__node_8hpp_source.html#l00096">tree_node.hpp:96</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1tree__node_html_a7b0eea2e055bd9b353d6ddbf154568a7"><div class="ttname"><a href="classarg__router_1_1tree__node.html#a7b0eea2e055bd9b353d6ddbf154568a7">arg_router::tree_node&lt; Policies... &gt;::parameters_type</a></div><div class="ttdeci">std::tuple&lt; Params... &gt; parameters_type</div><div class="ttdef"><b>Definition:</b> <a href="tree__node_8hpp_source.html#l00020">tree_node.hpp:20</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1tree__node_html_ada9714c3089bb29077dd1475d902db0a"><div class="ttname"><a href="classarg__router_1_1tree__node.html#ada9714c3089bb29077dd1475d902db0a">arg_router::tree_node&lt; Policies... &gt;::children_type</a></div><div class="ttdeci">boost::mp11::mp_filter&lt; is_tree_node, std::decay_t&lt; decltype(list_expander(std::declval&lt; Params &gt;()...))&gt; &gt; children_type</div><div class="ttdef"><b>Definition:</b> <a href="tree__node_8hpp_source.html#l00031">tree_node.hpp:31</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1tree__node_html"><div class="ttname"><a href="classarg__router_1_1tree__node.html">arg_router::tree_node</a></div><div class="ttdef"><b>Definition:</b> <a href="tree__node_8hpp_source.html#l00014">tree_node.hpp:14</a></div></div>
+<div class="ttc" id="anamespacearg__router_html_ac82f3cd910cc0b13f74865681898b078"><div class="ttname"><a href="namespacearg__router.html#ac82f3cd910cc0b13f74865681898b078">arg_router::list_expander</a></div><div class="ttdeci">constexpr auto list_expander(Params... params)</div><div class="ttdef"><b>Definition:</b> <a href="list_8hpp_source.html#l00097">list.hpp:97</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1tree__node_html_aec3a4f4e8c0b7d0b7a5d911b18fb9bc3"><div class="ttname"><a href="classarg__router_1_1tree__node.html#aec3a4f4e8c0b7d0b7a5d911b18fb9bc3">arg_router::tree_node&lt; Policies... &gt;::policies_type</a></div><div class="ttdeci">boost::mp11::mp_filter&lt; policy::is_policy, parameters_type &gt; policies_type</div><div class="ttdef"><b>Definition:</b> <a href="tree__node_8hpp_source.html#l00024">tree_node.hpp:24</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1tree__node_html_acf2a7147e9bf1612578dc6f1a10d48c8"><div class="ttname"><a href="classarg__router_1_1tree__node.html#acf2a7147e9bf1612578dc6f1a10d48c8">arg_router::tree_node::children</a></div><div class="ttdeci">const children_type &amp; children() const</div><div class="ttdef"><b>Definition:</b> <a href="tree__node_8hpp_source.html#l00091">tree_node.hpp:91</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1traits_1_1unpack__and__derive_html"><div class="ttname"><a href="classarg__router_1_1traits_1_1unpack__and__derive.html">arg_router::traits::unpack_and_derive</a></div><div class="ttdef"><b>Definition:</b> <a href="traits_8hpp_source.html#l00276">traits.hpp:276</a></div></div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00010">algorithm.hpp:10</a></div></div>
-<div class="ttc" id="astructarg__router_1_1is__tree__node_html"><div class="ttname"><a href="structarg__router_1_1is__tree__node.html">arg_router::is_tree_node</a></div><div class="ttdef"><b>Definition:</b> <a href="tree__node_8hpp_source.html#l00016">tree_node.hpp:16</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1tree__node_html_a48cb8499032eb97d0b69367956780d1a"><div class="ttname"><a href="classarg__router_1_1tree__node.html#a48cb8499032eb97d0b69367956780d1a">arg_router::tree_node::tree_node</a></div><div class="ttdeci">tree_node(Params... params)</div><div class="ttdef"><b>Definition:</b> <a href="tree__node_8hpp_source.html#l00084">tree_node.hpp:84</a></div></div>
-<div class="ttc" id="anamespacearg__router_html_a4c3ee7dfa23bf543d5384c0a9150634e"><div class="ttname"><a href="namespacearg__router.html#a4c3ee7dfa23bf543d5384c0a9150634e">arg_router::is_tree_node_v</a></div><div class="ttdeci">constexpr bool is_tree_node_v</div><div class="ttdef"><b>Definition:</b> <a href="tree__node_8hpp_source.html#l00029">tree_node.hpp:29</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1tree__node_html_a6805260e53f9b30a208c17d95c1039cb"><div class="ttname"><a href="classarg__router_1_1tree__node.html#a6805260e53f9b30a208c17d95c1039cb">arg_router::tree_node&lt; Policies... &gt;::children_type</a></div><div class="ttdeci">boost::mp11::mp_filter&lt; is_tree_node, parameters_type &gt; children_type</div><div class="ttdef"><b>Definition:</b> <a href="tree__node_8hpp_source.html#l00049">tree_node.hpp:49</a></div></div>
+<div class="ttc" id="astructarg__router_1_1is__tree__node_html"><div class="ttname"><a href="structarg__router_1_1is__tree__node.html">arg_router::is_tree_node</a></div><div class="ttdef"><b>Definition:</b> <a href="tree__node__fwd_8hpp_source.html#l00015">tree_node_fwd.hpp:15</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1tree__node_html_a48cb8499032eb97d0b69367956780d1a"><div class="ttname"><a href="classarg__router_1_1tree__node.html#a48cb8499032eb97d0b69367956780d1a">arg_router::tree_node::tree_node</a></div><div class="ttdeci">tree_node(Params... params)</div><div class="ttdef"><b>Definition:</b> <a href="tree__node_8hpp_source.html#l00078">tree_node.hpp:78</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

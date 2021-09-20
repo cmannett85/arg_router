@@ -78,6 +78,12 @@ $(function() {
 <div class="contents">
 
 <p><code>#include &lt;<a class="el" href="tree__node_8hpp_source.html">arg_router/tree_node.hpp</a>&gt;</code></p>
+<div class="dynheader">
+Inheritance diagram for arg_router::tree_node&lt; Params &gt;:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="classarg__router_1_1tree__node__inherit__graph.svg" width="406" height="96"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+<center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
@@ -85,12 +91,12 @@ Public Types</h2></td></tr>
 <tr class="separator:a7b0eea2e055bd9b353d6ddbf154568a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aec3a4f4e8c0b7d0b7a5d911b18fb9bc3"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#aec3a4f4e8c0b7d0b7a5d911b18fb9bc3">policies_type</a> = boost::mp11::mp_filter&lt; <a class="el" href="structarg__router_1_1policy_1_1is__policy.html">policy::is_policy</a>, <a class="el" href="classarg__router_1_1tree__node.html#a7b0eea2e055bd9b353d6ddbf154568a7">parameters_type</a> &gt;</td></tr>
 <tr class="separator:aec3a4f4e8c0b7d0b7a5d911b18fb9bc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6805260e53f9b30a208c17d95c1039cb"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#a6805260e53f9b30a208c17d95c1039cb">children_type</a> = boost::mp11::mp_filter&lt; <a class="el" href="structarg__router_1_1is__tree__node.html">is_tree_node</a>, <a class="el" href="classarg__router_1_1tree__node.html#a7b0eea2e055bd9b353d6ddbf154568a7">parameters_type</a> &gt;</td></tr>
-<tr class="separator:a6805260e53f9b30a208c17d95c1039cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada9714c3089bb29077dd1475d902db0a"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#ada9714c3089bb29077dd1475d902db0a">children_type</a> = boost::mp11::mp_filter&lt; <a class="el" href="structarg__router_1_1is__tree__node.html">is_tree_node</a>, std::decay_t&lt; decltype(<a class="el" href="namespacearg__router.html#ac82f3cd910cc0b13f74865681898b078">list_expander</a>(std::declval&lt; Params &gt;()...))&gt; &gt;</td></tr>
+<tr class="separator:ada9714c3089bb29077dd1475d902db0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:acf2a7147e9bf1612578dc6f1a10d48c8"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classarg__router_1_1tree__node.html#a6805260e53f9b30a208c17d95c1039cb">children_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#acf2a7147e9bf1612578dc6f1a10d48c8">children</a> () const</td></tr>
+<tr class="memitem:acf2a7147e9bf1612578dc6f1a10d48c8"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classarg__router_1_1tree__node.html#ada9714c3089bb29077dd1475d902db0a">children_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#acf2a7147e9bf1612578dc6f1a10d48c8">children</a> () const</td></tr>
 <tr class="separator:acf2a7147e9bf1612578dc6f1a10d48c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
@@ -110,10 +116,10 @@ class arg_router::tree_node&lt; Params &gt;</h3>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00009">9</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00014">14</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
-<a id="a6805260e53f9b30a208c17d95c1039cb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6805260e53f9b30a208c17d95c1039cb">&#9670;&nbsp;</a></span>children_type</h2>
+<a id="ada9714c3089bb29077dd1475d902db0a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ada9714c3089bb29077dd1475d902db0a">&#9670;&nbsp;</a></span>children_type</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -121,13 +127,13 @@ class arg_router::tree_node&lt; Params &gt;</h3>
 template&lt;typename... Params&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node</a>&lt; Params &gt;::<a class="el" href="classarg__router_1_1tree__node.html#a6805260e53f9b30a208c17d95c1039cb">children_type</a> =  boost::mp11::mp_filter&lt;<a class="el" href="structarg__router_1_1is__tree__node.html">is_tree_node</a>, <a class="el" href="classarg__router_1_1tree__node.html#a7b0eea2e055bd9b353d6ddbf154568a7">parameters_type</a>&gt;</td>
+          <td class="memname">using <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node</a>&lt; Params &gt;::<a class="el" href="classarg__router_1_1tree__node.html#ada9714c3089bb29077dd1475d902db0a">children_type</a> =  boost::mp11::mp_filter&lt; <a class="el" href="structarg__router_1_1is__tree__node.html">is_tree_node</a>, std::decay_t&lt;decltype(<a class="el" href="namespacearg__router.html#ac82f3cd910cc0b13f74865681898b078">list_expander</a>(std::declval&lt;Params&gt;()...))&gt; &gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>A tuple of all the child tree node types in parameters_type. </p>
+<p>A tuple of all the child tree node types in parameters_type, with any lists expanded </p>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00049">49</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00031">31</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>
@@ -146,7 +152,7 @@ template&lt;typename... Params&gt; </div>
 </div><div class="memdoc">
 <p>The policies and child node types. </p>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00042">42</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00020">20</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>
@@ -165,7 +171,7 @@ template&lt;typename... Params&gt; </div>
 </div><div class="memdoc">
 <p>A tuple of all the policy types in parameters_type. </p>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00046">46</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00024">24</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>
@@ -203,7 +209,7 @@ template&lt;typename... Params&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00084">84</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00078">78</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>
@@ -220,7 +226,7 @@ template&lt;typename... Params&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const <a class="el" href="classarg__router_1_1tree__node.html#a6805260e53f9b30a208c17d95c1039cb">children_type</a>&amp; <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node</a>&lt; Params &gt;::children </td>
+          <td class="memname">const <a class="el" href="classarg__router_1_1tree__node.html#ada9714c3089bb29077dd1475d902db0a">children_type</a>&amp; <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node</a>&lt; Params &gt;::children </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -235,7 +241,7 @@ template&lt;typename... Params&gt; </div>
 <p>Returns a reference to the children.</p>
 <dl class="section return"><dt>Returns</dt><dd>Children </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00096">96</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00091">91</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>
