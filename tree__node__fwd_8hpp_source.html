@@ -73,14 +73,14 @@ $(function() {
 <div class="contents">
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;type_traits&gt;</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &quot;arg_router/policy/policy.hpp&quot;</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacearg__router.html">arg_router</a></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;{</div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Params&gt;</div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">class </span>tree_node;</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> Enable = <span class="keywordtype">void</span>&gt;</div>
 <div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="structarg__router_1_1is__tree__node.html">   15</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structarg__router_1_1is__tree__node.html">is_tree_node</a> : std::false_type {</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;};</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>

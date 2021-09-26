@@ -1,8 +1,7 @@
 var searchData=
 [
-  ['match_213',['match',['../classarg__router_1_1flag.html#afbc641beb94c19b4a279fa9f8790a1c3',1,'arg_router::flag::match()'],['../classarg__router_1_1mode.html#a5262bda2a70b31701854e775fce51c65',1,'arg_router::mode::match()']]],
-  ['match_5fresult_214',['match_result',['../structarg__router_1_1parsing_1_1match__result.html#aac08b40f3be571c156cbf19449cacea9',1,'arg_router::parsing::match_result']]],
-  ['maximum_5fcount_215',['maximum_count',['../classarg__router_1_1policy_1_1max__count__t.html#aeaaaba857b7faca8ac4f9d4aea8e4221',1,'arg_router::policy::max_count_t']]],
-  ['minimum_5fcount_216',['minimum_count',['../classarg__router_1_1policy_1_1min__count__t.html#a26103c27bd456ddfdca4b41c1a39d3fe',1,'arg_router::policy::min_count_t']]],
-  ['mode_217',['mode',['../classarg__router_1_1mode.html#abda9591b6385ac710a611e6862fb0e57',1,'arg_router::mode']]]
+  ['l1_5fcache_5fsize_222',['l1_cache_size',['../namespacearg__router_1_1traits.html#a59db0f0ce1c89dd093e712343a1088c6',1,'arg_router::traits']]],
+  ['list_223',['list',['../classarg__router_1_1list.html#a62334ae3870dc121724839de14c0e76a',1,'arg_router::list']]],
+  ['list_5fexpander_224',['list_expander',['../namespacearg__router.html#ac82f3cd910cc0b13f74865681898b078',1,'arg_router::list_expander(Params... params)'],['../namespacearg__router.html#a0ed251acaeb78e0f923df791302fb2f2',1,'arg_router::list_expander(std::tuple&lt; Params... &gt; params)']]],
+  ['long_5fname_225',['long_name',['../classarg__router_1_1policy_1_1long__name__t.html#a05f3d42a1a873c3cf4e0018d4455abc0',1,'arg_router::policy::long_name_t']]]
 ];

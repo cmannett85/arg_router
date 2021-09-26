@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>arg_router: arg_router::policy::validation::child_must_have_policy&lt; Policy &gt; Struct Template Reference</title>
+<title>arg_router: arg_router::policy::validation::one_of_policies_if_parent_is_not_root&lt; Policies &gt; Struct Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -63,31 +63,31 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="namespacearg__router.html">arg_router</a></li><li class="navelem"><a class="el" href="namespacearg__router_1_1policy.html">policy</a></li><li class="navelem"><b>validation</b></li><li class="navelem"><a class="el" href="structarg__router_1_1policy_1_1validation_1_1child__must__have__policy.html">child_must_have_policy</a></li>  </ul>
+<li class="navelem"><a class="el" href="namespacearg__router.html">arg_router</a></li><li class="navelem"><a class="el" href="namespacearg__router_1_1policy.html">policy</a></li><li class="navelem"><b>validation</b></li><li class="navelem"><a class="el" href="structarg__router_1_1policy_1_1validation_1_1one__of__policies__if__parent__is__not__root.html">one_of_policies_if_parent_is_not_root</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="structarg__router_1_1policy_1_1validation_1_1child__must__have__policy-members.html">List of all members</a>  </div>
+<a href="structarg__router_1_1policy_1_1validation_1_1one__of__policies__if__parent__is__not__root-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">arg_router::policy::validation::child_must_have_policy&lt; Policy &gt; Struct Template Reference</div>  </div>
+<div class="title">arg_router::policy::validation::one_of_policies_if_parent_is_not_root&lt; Policies &gt; Struct Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
 <p><code>#include &lt;<a class="el" href="validator_8hpp_source.html">arg_router/policy/validator.hpp</a>&gt;</code></p>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h3>template&lt;template&lt; typename... &gt; typename Policy&gt;<br />
-struct arg_router::policy::validation::child_must_have_policy&lt; Policy &gt;</h3>
+<div class="textblock"><h3>template&lt;template&lt; typename... &gt; typename... Policies&gt;<br />
+struct arg_router::policy::validation::one_of_policies_if_parent_is_not_root&lt; Policies &gt;</h3>
 
-<p>A rule condition that checks that every child under <em>T</em> has a particular policy.</p>
+<p>A rule condition that checks one of the <em>Policies</em> is in T.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">Policy</td><td>Despecialised policy to check for </td></tr>
+    <tr><td class="paramname">Policies</td><td>Pack of policies </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="validator_8hpp_source.html#l00269">269</a> of file <a class="el" href="validator_8hpp_source.html">validator.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="validator_8hpp_source.html#l00359">359</a> of file <a class="el" href="validator_8hpp_source.html">validator.hpp</a>.</p>
 </div><hr/>The documentation for this struct was generated from the following file:<ul>
 <li>arg_router/policy/<a class="el" href="validator_8hpp_source.html">validator.hpp</a></li>
 </ul>

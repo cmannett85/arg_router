@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['validate_234',['validate',['../classarg__router_1_1policy_1_1validation_1_1validator.html#a9686205838d77b07192ea3491a4b96f0',1,'arg_router::policy::validation::validator']]],
-  ['visit_5fchild_235',['visit_child',['../namespacearg__router_1_1parsing.html#a2faf8aa019c3e016f048363766994f46',1,'arg_router::parsing']]]
+  ['short_5fname_241',['short_name',['../classarg__router_1_1policy_1_1short__name__t.html#a2bb6f3e0d1dc6b77502afdbde9ee8667',1,'arg_router::policy::short_name_t']]]
 ];

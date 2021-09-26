@@ -85,28 +85,31 @@ $(function() {
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;{</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    static_assert(std::is_convertible_v&lt;S, char&gt;,</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;                  <span class="stringliteral">&quot;Short name type must be implicitly convertible to char&quot;</span>);</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1short__name__t.html#a92223322b7a9fb22c952bc1513490859">   27</a></span>&#160;    constexpr <span class="keyword">static</span> <span class="keywordtype">char</span> <a class="code" href="classarg__router_1_1policy_1_1short__name__t.html#a92223322b7a9fb22c952bc1513490859">short_name</a>() { <span class="keywordflow">return</span> S::value; }</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    static_assert(<a class="code" href="namespacearg__router_1_1algorithm.html#a637eeac0609176c7e2409b16fc40543f">algorithm::is_alnum</a>(S::value),</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;                  <span class="stringliteral">&quot;Short name character must be alphanumeric&quot;</span>);</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;};</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="keyword">template</span> &lt;<span class="keywordtype">char</span> S&gt;</div>
-<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1policy.html#a5eeeaadd8d711b8a761c57fbbc8c312c">   39</a></span>&#160;constexpr <span class="keyword">auto</span> <a class="code" href="namespacearg__router_1_1policy.html#a5eeeaadd8d711b8a761c57fbbc8c312c">short_name</a> = <a class="code" href="classarg__router_1_1policy_1_1short__name__t.html">short_name_t&lt;traits::integral_constant&lt;S&gt;</a>&gt;{};</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> S&gt;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keyword">struct </span>is_policy&lt;short_name_t&lt;S&gt;&gt; : std::true_type {</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;};</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;}  <span class="comment">// namespace policy</span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    static_assert(<a class="code" href="namespacearg__router_1_1algorithm.html#a637eeac0609176c7e2409b16fc40543f">algorithm::is_alnum</a>(S::value),</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;                  <span class="stringliteral">&quot;Short name character must be alphanumeric&quot;</span>);</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keyword">static</span> constexpr <span class="keyword">auto</span> value = S::value;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1short__name__t.html#a2bb6f3e0d1dc6b77502afdbde9ee8667">   31</a></span>&#160;    constexpr <span class="keyword">static</span> std::string_view <a class="code" href="classarg__router_1_1policy_1_1short__name__t.html#a2bb6f3e0d1dc6b77502afdbde9ee8667">short_name</a>()</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    {</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <span class="keywordflow">return</span> std::string_view{&amp;value, 1};</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    }</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;};</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">template</span> &lt;<span class="keywordtype">char</span> S&gt;</div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1policy.html#a5eeeaadd8d711b8a761c57fbbc8c312c">   42</a></span>&#160;constexpr <span class="keyword">auto</span> <a class="code" href="namespacearg__router_1_1policy.html#a5eeeaadd8d711b8a761c57fbbc8c312c">short_name</a> = <a class="code" href="classarg__router_1_1policy_1_1short__name__t.html">short_name_t&lt;traits::integral_constant&lt;S&gt;</a>&gt;{};</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> S&gt;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="keyword">struct </span>is_policy&lt;short_name_t&lt;S&gt;&gt; : std::true_type {</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;};</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;}  <span class="comment">// namespace policy</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="anamespacearg__router_1_1algorithm_html_a637eeac0609176c7e2409b16fc40543f"><div class="ttname"><a href="namespacearg__router_1_1algorithm.html#a637eeac0609176c7e2409b16fc40543f">arg_router::algorithm::is_alnum</a></div><div class="ttdeci">constexpr bool is_alnum(char value)</div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00021">algorithm.hpp:21</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1policy_1_1short__name__t_html_a92223322b7a9fb22c952bc1513490859"><div class="ttname"><a href="classarg__router_1_1policy_1_1short__name__t.html#a92223322b7a9fb22c952bc1513490859">arg_router::policy::short_name_t::short_name</a></div><div class="ttdeci">constexpr static char short_name()</div><div class="ttdef"><b>Definition:</b> <a href="short__name_8hpp_source.html#l00027">short_name.hpp:27</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1policy_1_1short__name__t_html_a2bb6f3e0d1dc6b77502afdbde9ee8667"><div class="ttname"><a href="classarg__router_1_1policy_1_1short__name__t.html#a2bb6f3e0d1dc6b77502afdbde9ee8667">arg_router::policy::short_name_t::short_name</a></div><div class="ttdeci">constexpr static std::string_view short_name()</div><div class="ttdef"><b>Definition:</b> <a href="short__name_8hpp_source.html#l00031">short_name.hpp:31</a></div></div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00010">algorithm.hpp:10</a></div></div>
-<div class="ttc" id="anamespacearg__router_1_1policy_html_a5eeeaadd8d711b8a761c57fbbc8c312c"><div class="ttname"><a href="namespacearg__router_1_1policy.html#a5eeeaadd8d711b8a761c57fbbc8c312c">arg_router::policy::short_name</a></div><div class="ttdeci">constexpr auto short_name</div><div class="ttdef"><b>Definition:</b> <a href="short__name_8hpp_source.html#l00039">short_name.hpp:39</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1policy_html_a5eeeaadd8d711b8a761c57fbbc8c312c"><div class="ttname"><a href="namespacearg__router_1_1policy.html#a5eeeaadd8d711b8a761c57fbbc8c312c">arg_router::policy::short_name</a></div><div class="ttdeci">constexpr auto short_name</div><div class="ttdef"><b>Definition:</b> <a href="short__name_8hpp_source.html#l00042">short_name.hpp:42</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1policy_1_1short__name__t_html"><div class="ttname"><a href="classarg__router_1_1policy_1_1short__name__t.html">arg_router::policy::short_name_t</a></div><div class="ttdef"><b>Definition:</b> <a href="short__name_8hpp_source.html#l00017">short_name.hpp:17</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

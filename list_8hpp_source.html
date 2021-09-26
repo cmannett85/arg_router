@@ -143,12 +143,21 @@ $(function() {
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Params&gt;</div>
 <div class="line"><a name="l00097"></a><span class="lineno"><a class="line" href="namespacearg__router.html#ac82f3cd910cc0b13f74865681898b078">   97</a></span>&#160;constexpr <span class="keyword">auto</span> <a class="code" href="namespacearg__router.html#ac82f3cd910cc0b13f74865681898b078">list_expander</a>(Params... params)</div>
 <div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;{</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    <span class="comment">// Break params into tuples, where contiguous non-list types are collected</span></div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <span class="comment">// up into tuples and so are the list children.  Eventually yielding a</span></div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="comment">// tuple of tuples, which can be flattened into a single level tuple</span></div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    <span class="keywordflow">return</span> detail::list_expander_impl(std::tuple{}, params...);</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;}</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    <span class="keywordflow">return</span> detail::list_expander_impl(std::tuple{}, std::move(params)...);</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;}</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160; </div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Params&gt;</div>
+<div class="line"><a name="l00109"></a><span class="lineno"><a class="line" href="namespacearg__router.html#a0ed251acaeb78e0f923df791302fb2f2">  109</a></span>&#160;constexpr <span class="keyword">auto</span> <a class="code" href="namespacearg__router.html#ac82f3cd910cc0b13f74865681898b078">list_expander</a>(std::tuple&lt;Params...&gt; params)</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;{</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <span class="keywordflow">return</span> std::apply(</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        [](<span class="keyword">auto</span>&amp;... args) {</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;            <span class="keywordflow">return</span> detail::list_expander_impl(</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;                std::tuple{},</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;                std::forward&lt;decltype(args)&gt;(args)...);</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        },</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        params);</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;}</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="anamespacearg__router_1_1traits_html_a0c88d306f10e622c055813569ae5e502"><div class="ttname"><a href="namespacearg__router_1_1traits.html#a0c88d306f10e622c055813569ae5e502">arg_router::traits::is_specialisation_of_v</a></div><div class="ttdeci">constexpr bool is_specialisation_of_v</div><div class="ttdef"><b>Definition:</b> <a href="traits_8hpp_source.html#l00129">traits.hpp:129</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1list_html_a9dfee0f05ed4e823da0fda00c755efc8"><div class="ttname"><a href="classarg__router_1_1list.html#a9dfee0f05ed4e823da0fda00c755efc8">arg_router::list::children</a></div><div class="ttdeci">children_type &amp; children()</div><div class="ttdef"><b>Definition:</b> <a href="list_8hpp_source.html#l00037">list.hpp:37</a></div></div>

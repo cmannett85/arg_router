@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['validator_185',['validator',['../classarg__router_1_1policy_1_1validation_1_1validator.html',1,'arg_router::policy::validation']]]
+  ['unpack_5fand_5fderive_192',['unpack_and_derive',['../classarg__router_1_1traits_1_1unpack__and__derive.html',1,'arg_router::traits']]],
+  ['unpack_5fand_5fderive_3c_20boost_3a_3amp11_3a_3amp_5ffilter_3c_20policy_3a_3ais_5fpolicy_2c_20std_3a_3atuple_3c_20params_2e_2e_2e_20_3e_20_3e_20_3e_193',['unpack_and_derive&lt; boost::mp11::mp_filter&lt; policy::is_policy, std::tuple&lt; Params... &gt; &gt; &gt;',['../classarg__router_1_1traits_1_1unpack__and__derive.html',1,'arg_router::traits']]],
+  ['unzip_194',['unzip',['../structarg__router_1_1algorithm_1_1unzip.html',1,'arg_router::algorithm']]]
 ];
