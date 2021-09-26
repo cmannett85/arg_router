@@ -18,7 +18,7 @@ BOOST_AUTO_TEST_CASE(flag_default_match_test)
 {
     {
         const auto f =
-            flag{policy::long_name<S_("hello")>, policy::short_name<'H'>};
+            flag(policy::long_name<S_("hello")>, policy::short_name<'H'>);
         const auto result = parsing::default_match<std::decay_t<decltype(f)>>(
             {parsing::prefix_type::LONG, "hello"});
         BOOST_CHECK_EQUAL(result,
@@ -27,7 +27,7 @@ BOOST_AUTO_TEST_CASE(flag_default_match_test)
 
     {
         const auto f =
-            flag{policy::long_name<S_("hello")>, policy::short_name<'H'>};
+            flag(policy::long_name<S_("hello")>, policy::short_name<'H'>);
         const auto result =
             parsing::default_match<std::decay_t<decltype(f)>>('H');
         BOOST_CHECK_EQUAL(result,
@@ -36,14 +36,14 @@ BOOST_AUTO_TEST_CASE(flag_default_match_test)
 
     {
         const auto f =
-            flag{policy::long_name<S_("hello")>, policy::short_name<'H'>};
+            flag(policy::long_name<S_("hello")>, policy::short_name<'H'>);
         const auto result = parsing::default_match<std::decay_t<decltype(f)>>(
             {parsing::prefix_type::LONG, "foo"});
         BOOST_CHECK_EQUAL(result, parsing::match_result{});
     }
 
     {
-        const auto f = flag{policy::long_name<S_("hello")>};
+        const auto f = flag(policy::long_name<S_("hello")>);
         const auto result = parsing::default_match<std::decay_t<decltype(f)>>(
             {parsing::prefix_type::LONG, "hello"});
         BOOST_CHECK_EQUAL(result,
@@ -51,14 +51,14 @@ BOOST_AUTO_TEST_CASE(flag_default_match_test)
     }
 
     {
-        const auto f = flag{policy::long_name<S_("hello")>};
+        const auto f = flag(policy::long_name<S_("hello")>);
         const auto result = parsing::default_match<std::decay_t<decltype(f)>>(
             {parsing::prefix_type::LONG, "foo"});
         BOOST_CHECK_EQUAL(result, parsing::match_result{});
     }
 
     {
-        const auto f = flag{policy::short_name<'H'>};
+        const auto f = flag(policy::short_name<'H'>);
         const auto result =
             parsing::default_match<std::decay_t<decltype(f)>>('H');
         BOOST_CHECK_EQUAL(result,
@@ -66,7 +66,7 @@ BOOST_AUTO_TEST_CASE(flag_default_match_test)
     }
 
     {
-        const auto f = flag{policy::short_name<'H'>};
+        const auto f = flag(policy::short_name<'H'>);
         const auto result =
             parsing::default_match<std::decay_t<decltype(f)>>('a');
         BOOST_CHECK_EQUAL(result, parsing::match_result{});
@@ -152,26 +152,26 @@ BOOST_AUTO_TEST_CASE(string_from_prefix_test)
 BOOST_AUTO_TEST_CASE(build_router_args_test)
 {
     {
-        using type =
-            root<flag<policy::long_name_t<S_("hello")>>,
-                 std::decay_t<decltype(policy::validation::default_validator)>>;
+        using type = root_t<
+            flag_t<policy::long_name_t<S_("hello")>>,
+            std::decay_t<decltype(policy::validation::default_validator)>>;
         static_assert(std::is_same_v<parsing::build_router_args_t<type>,
                                      std::tuple<bool>>,
                       "Build router args test 1 fail");
     }
 
     {
-        using type =
-            root<flag<policy::long_name_t<S_("hello")>>,
-                 flag<policy::long_name_t<S_("goodbye")>>,
-                 std::decay_t<decltype(policy::validation::default_validator)>>;
+        using type = root_t<
+            flag_t<policy::long_name_t<S_("hello")>>,
+            flag_t<policy::long_name_t<S_("goodbye")>>,
+            std::decay_t<decltype(policy::validation::default_validator)>>;
         static_assert(std::is_same_v<parsing::build_router_args_t<type>,
                                      std::tuple<bool, bool>>,
                       "Build router args test 1 fail");
     }
 
     {
-        using type = flag<policy::long_name_t<S_("hello")>>;
+        using type = flag_t<policy::long_name_t<S_("hello")>>;
         static_assert(std::is_same_v<parsing::build_router_args_t<type>,
                                      std::tuple<bool>>,
                       "Build router args test 1 fail");
@@ -180,16 +180,16 @@ BOOST_AUTO_TEST_CASE(build_router_args_test)
 
 BOOST_AUTO_TEST_CASE(visit_child_test)
 {
-    const auto r = root{flag{policy::long_name<S_("hello")>,
+    const auto r = root(flag(policy::long_name<S_("hello")>,
                              policy::description<S_("Hello description")>,
-                             policy::router{[]() {}}},
-                        flag{policy::short_name<'h'>,
+                             policy::router{[]() {}}),
+                        flag(policy::short_name<'h'>,
                              policy::description<S_("h description")>,
-                             policy::router{[]() {}}},
-                        flag{policy::short_name<'b'>,
+                             policy::router{[]() {}}),
+                        flag(policy::short_name<'b'>,
                              policy::description<S_("b description")>,
-                             policy::router{[]() {}}},
-                        policy::validation::default_validator};
+                             policy::router{[]() {}}),
+                        policy::validation::default_validator);
 
     auto visitor_hit_count = 0u;
     auto v1 = [&](auto i, auto&& child, auto match) {
@@ -247,5 +247,108 @@ BOOST_AUTO_TEST_CASE(visit_child_test)
     parsing::visit_child('b', r.children(), v3);
     BOOST_CHECK_EQUAL(visitor_hit_count, 1);
 }
+
+BOOST_AUTO_TEST_CASE(numeric_parse_test)
+{
+    auto f = [](auto input, auto expected, std::string_view fail_message) {
+        using T = std::decay_t<decltype(expected)>;
+
+        try {
+            const auto result = parse<T>(input);
+            static_assert(std::is_same_v<std::decay_t<decltype(result)>, T>,
+                          "Parse result unexpected type");
+            BOOST_CHECK(fail_message.empty());
+            BOOST_CHECK_EQUAL(result, expected);
+        } catch (parse_exception& e) {
+            BOOST_CHECK_EQUAL(e.what(), fail_message);
+        }
+    };
+
+    test::data_set(f,
+                   std::tuple{
+                       std::tuple{"42", 42, ""},
+                       std::tuple{"+42", 42, ""},
+                       std::tuple{"-42", -42, ""},
+                       std::tuple{"3.14", 3.14, ""},
+                       std::tuple{"3.14", 3.14f, ""},
+                       std::tuple{"+3.14", 3.14f, ""},
+                       std::tuple{"-3.14", -3.14f, ""},
+                       std::tuple{"hello", 42, "Failed to parse: hello"},
+                       std::tuple{"23742949",
+                                  std::uint8_t{0},
+                                  "Value out of range for argument: 23742949"},
+                   });
+}
+
+BOOST_AUTO_TEST_CASE(string_view_parse_test)
+{
+    auto f = [](auto input, auto expected) {
+        const auto result = parse<std::string_view>(input);
+        static_assert(
+            std::is_same_v<std::decay_t<decltype(result)>, std::string_view>,
+            "Parse result unexpected type");
+        BOOST_CHECK_EQUAL(result, expected);
+    };
+
+    test::data_set(f,
+                   {
+                       std::tuple{"hello", "hello"},
+                       std::tuple{"a", "a"},
+                       std::tuple{"", ""},
+                   });
+}
+
+BOOST_AUTO_TEST_CASE(bool_parse_test)
+{
+    auto f = [](auto input, auto expected, std::string_view fail_message) {
+        try {
+            const auto result = parse<bool>(input);
+            static_assert(std::is_same_v<std::decay_t<decltype(result)>, bool>,
+                          "Parse result unexpected type");
+            BOOST_CHECK(fail_message.empty());
+            BOOST_CHECK_EQUAL(result, expected);
+        } catch (parse_exception& e) {
+            BOOST_CHECK_EQUAL(e.what(), fail_message);
+        }
+    };
+
+    test::data_set(f,
+                   {
+                       std::tuple{"true", true, ""},
+                       std::tuple{"yes", true, ""},
+                       std::tuple{"y", true, ""},
+                       std::tuple{"on", true, ""},
+                       std::tuple{"1", true, ""},
+                       std::tuple{"enable", true, ""},
+                       std::tuple{"false", false, ""},
+                       std::tuple{"no", false, ""},
+                       std::tuple{"n", false, ""},
+                       std::tuple{"off", false, ""},
+                       std::tuple{"0", false, ""},
+                       std::tuple{"disable", false, ""},
+                       std::tuple{"hello", false, "Failed to parse: hello"},
+                   });
+}
+
+BOOST_AUTO_TEST_SUITE(death_suite)
+
+BOOST_AUTO_TEST_CASE(unimplemented_parse_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/parsing.hpp"
+
+struct my_struct{};
+
+int main() {
+    const auto v = arg_router::parse<my_struct>("foo");
+    return 0;
+}
+    )",
+        "No parse function for this type, use a custom_parser policy or define "
+        "a parse(std::string_view) specialisation");
+}
+
+BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

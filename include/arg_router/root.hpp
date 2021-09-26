@@ -3,6 +3,7 @@
 #include "arg_router/algorithm.hpp"
 #include "arg_router/exception.hpp"
 #include "arg_router/parsing.hpp"
+#include "arg_router/policy/required.hpp"
 #include "arg_router/utility/string_view_ops.hpp"
 
 #include <bitset>
@@ -24,7 +25,7 @@ class validator;
  * @tparam Params The top-level policies and child node types
  */
 template <typename... Params>
-class root : public tree_node<Params...>
+class root_t : public tree_node<Params...>
 {
 public:
     using typename tree_node<Params...>::policies_type;
@@ -49,7 +50,7 @@ public:
      *
      * @param params Policy and child instances
      */
-    constexpr explicit root(Params... params) :
+    constexpr explicit root_t(Params... params) :
         tree_node<Params...>{std::move(params)...}
     {
         validator_type::template validate<std::decay_t<decltype(*this)>>();
@@ -73,6 +74,7 @@ public:
         // Match the initial token, the first token determines what type the
         // result tuple will be
         if (tokens.empty()) {
+            // Find the anonymous mode, and call top_level_visitor on it
             throw parse_exception{"Default value support not added yet!"};
         }
 
@@ -136,7 +138,7 @@ private:
                                               result,
                                               router_args,
                                               hit_mask,
-                                              tokens.front());
+                                              tokens);
                     });
 
                 if (!found_child) {
@@ -145,16 +147,16 @@ private:
 
                 tokens.pop_front();
             }
+
+            // If the hit mask shows that not all required args have been hit,
+            // then throw.  Required arguments can not be top-level
+            check_hit_mask(node, hit_mask, router_args);
         } else {
             static_assert(num_router_args == 1,
                           "Should only have a single router arg if child has "
                           "no children");
 
-            process_token<0>(node,
-                             m_result,
-                             router_args,
-                             hit_mask,
-                             tokens.front());
+            process_token<0>(node, m_result, router_args, hit_mask, tokens);
             tokens.pop_front();
         }
 
@@ -172,34 +174,108 @@ private:
                                    parsing::match_result m_result,
                                    RouterArgs& router_args,
                                    std::bitset<N>& hit_mask,
-                                   const parsing::token_type& token)
+                                   parsing::token_list& tokens)
     {
-        process_token<I>(node, m_result, router_args, hit_mask, token);
+        process_token<I>(node, m_result, router_args, hit_mask, tokens);
     }
 
     template <std::size_t I, typename Node, typename RouterArgs, std::size_t N>
-    static void process_token(const Node& /*node*/,
+    static void process_token(const Node& node,
                               parsing::match_result m_result,
                               RouterArgs& router_args,
                               std::bitset<N>& hit_mask,
-                              const parsing::token_type& token)
+                              parsing::token_list& tokens)
     {
         using namespace utility::string_view_ops;
         using value_type = std::tuple_element_t<I, RouterArgs>;
+        constexpr auto supports_multiple_values =
+            traits::is_detected_v<parsing::has_push_back_checker, value_type>;
 
         if (m_result.has_argument) {
-            // Parse when we support args
+            tokens.pop_front();  // Drop the argument token, the value follows
+            auto value = parse_token_argument(node, tokens.front().name);
+
+            if constexpr (supports_multiple_values) {
+                std::get<I>(router_args).push_back(std::move(value));
+            } else {
+                if (hit_mask[I]) {
+                    throw parse_exception{"Argument has already been set",
+                                          tokens.front()};
+                }
+
+                std::get<I>(router_args) = std::move(value);
+            }
         } else if constexpr (std::is_same_v<value_type, bool>) {
-            // Check that the flag has not already been set, if it has then
-            // throw
             if (hit_mask[I]) {
-                throw parse_exception{"Flag has already been set", token};
+                throw parse_exception{"Argument has already been set",
+                                      tokens.front()};
             }
 
             // We have hit the flag, so set the value to true
             std::get<I>(router_args) = true;
-            hit_mask[I] = true;
+        } else {
+            // Counting flag
+        }
+
+        hit_mask[I] = true;
+    }
+
+    template <typename Node>
+    static auto parse_token_argument(const Node& node, std::string_view token)
+    {
+        // If the node has a custom_parser-like policy, prefer it over the
+        // global parse function
+        if constexpr (traits::is_detected_v<parsing::has_custom_parser_checker,
+                                            Node>) {
+            return node.parse(token);
+        } else {
+            return arg_router::parse<typename Node::value_type>(token);
         }
     }
+
+    template <typename Node, std::size_t N, typename RouterArgs>
+    static void check_hit_mask(const Node& node,
+                               std::bitset<N> hit_mask,
+                               RouterArgs& router_args)
+    {
+        static_assert((std::tuple_size_v<typename Node::children_type>) > 0,
+                      "Node must be top-level, as its children are checked");
+
+        using namespace std::string_literals;
+        using namespace utility::string_view_ops;
+
+        utility::tuple_iterator(
+            [&](auto i, const auto& child) {
+                using node_type = std::decay_t<decltype(child)>;
+
+                if constexpr (policy::is_required_v<node_type>) {
+                    const auto name = parsing::node_name(child);
+                    if (!hit_mask[i]) {
+                        throw parse_exception{"Missing required argument: "s +
+                                              name};
+                    }
+                } else if constexpr (traits::is_detected_v<
+                                         parsing::has_default_value,
+                                         node_type>) {
+                    if (!hit_mask[i]) {
+                        std::get<i>(router_args) = child.get_default_value();
+                    }
+                }
+            },
+            node.children());
+    }
 };
+
+/** Constructs a root_t with the given policies.
+ *
+ * This is used for similarity with arg_t.
+ * @tparam Params Policies and child node types for the mode
+ * @param params Pack of policy and child node instances
+ * @return Root instance
+ */
+template <typename... Params>
+constexpr root_t<Params...> root(Params... params)
+{
+    return root_t{std::move(params)...};
+}
 }  // namespace arg_router

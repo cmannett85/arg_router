@@ -19,10 +19,10 @@ BOOST_AUTO_TEST_CASE(is_policy_test)
 BOOST_AUTO_TEST_CASE(constructor_and_get_test)
 {
     const auto c_a = policy::short_name<'a'>;
-    BOOST_CHECK_EQUAL(c_a.short_name(), 'a');
+    BOOST_CHECK_EQUAL(c_a.short_name(), "a");
 
     const auto c_4 = policy::short_name<'4'>;
-    BOOST_CHECK_EQUAL(c_4.short_name(), '4');
+    BOOST_CHECK_EQUAL(c_4.short_name(), "4");
 }
 
 BOOST_AUTO_TEST_SUITE(death_suite)

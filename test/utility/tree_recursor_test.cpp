@@ -26,14 +26,14 @@ struct test_Fn {
             static_assert(
                 std::is_same_v<
                     parents_type,
-                    std::tuple<root<
+                    std::tuple<root_t<
                         std::decay_t<
                             decltype(policy::validation::default_validator)>,
-                        flag<policy::description_t<S_("test1")>,
-                             policy::long_name_t<S_("test")>>,
-                        flag<policy::description_t<S_("test2")>,
-                             policy::short_name_t<
-                                 traits::integral_constant<'a'>>>>>>);
+                        flag_t<policy::description_t<S_("test1")>,
+                               policy::long_name_t<S_("test")>>,
+                        flag_t<policy::description_t<S_("test2")>,
+                               policy::short_name_t<
+                                   traits::integral_constant<'a'>>>>>>);
         } else if constexpr (std::is_same_v<
                                  Current,
                                  policy::description_t<S_("test1")>>) {
@@ -41,30 +41,30 @@ struct test_Fn {
                 std::is_same_v<
                     parents_type,
                     std::tuple<
-                        flag<policy::description_t<S_("test1")>,
-                             policy::long_name_t<S_("test")>>,
-                        root<std::decay_t<decltype(policy::validation::
-                                                       default_validator)>,
-                             flag<policy::description_t<S_("test1")>,
-                                  policy::long_name_t<S_("test")>>,
-                             flag<policy::description_t<S_("test2")>,
-                                  policy::short_name_t<
-                                      traits::integral_constant<'a'>>>>>>);
+                        flag_t<policy::description_t<S_("test1")>,
+                               policy::long_name_t<S_("test")>>,
+                        root_t<std::decay_t<decltype(policy::validation::
+                                                         default_validator)>,
+                               flag_t<policy::description_t<S_("test1")>,
+                                      policy::long_name_t<S_("test")>>,
+                               flag_t<policy::description_t<S_("test2")>,
+                                      policy::short_name_t<
+                                          traits::integral_constant<'a'>>>>>>);
         } else if constexpr (std::is_same_v<Current,
                                             policy::long_name_t<S_("test")>>) {
             static_assert(
                 std::is_same_v<
                     parents_type,
                     std::tuple<
-                        flag<policy::description_t<S_("test1")>,
-                             policy::long_name_t<S_("test")>>,
-                        root<std::decay_t<decltype(policy::validation::
-                                                       default_validator)>,
-                             flag<policy::description_t<S_("test1")>,
-                                  policy::long_name_t<S_("test")>>,
-                             flag<policy::description_t<S_("test2")>,
-                                  policy::short_name_t<
-                                      traits::integral_constant<'a'>>>>>>);
+                        flag_t<policy::description_t<S_("test1")>,
+                               policy::long_name_t<S_("test")>>,
+                        root_t<std::decay_t<decltype(policy::validation::
+                                                         default_validator)>,
+                               flag_t<policy::description_t<S_("test1")>,
+                                      policy::long_name_t<S_("test")>>,
+                               flag_t<policy::description_t<S_("test2")>,
+                                      policy::short_name_t<
+                                          traits::integral_constant<'a'>>>>>>);
         } else if constexpr (std::is_same_v<
                                  Current,
                                  policy::description_t<S_("test2")>>) {
@@ -72,16 +72,16 @@ struct test_Fn {
                 std::is_same_v<
                     parents_type,
                     std::tuple<
-                        flag<policy::description_t<S_("test2")>,
-                             policy::short_name_t<
-                                 traits::integral_constant<'a'>>>,
-                        root<std::decay_t<decltype(policy::validation::
-                                                       default_validator)>,
-                             flag<policy::description_t<S_("test1")>,
-                                  policy::long_name_t<S_("test")>>,
-                             flag<policy::description_t<S_("test2")>,
-                                  policy::short_name_t<
-                                      traits::integral_constant<'a'>>>>>>);
+                        flag_t<policy::description_t<S_("test2")>,
+                               policy::short_name_t<
+                                   traits::integral_constant<'a'>>>,
+                        root_t<std::decay_t<decltype(policy::validation::
+                                                         default_validator)>,
+                               flag_t<policy::description_t<S_("test1")>,
+                                      policy::long_name_t<S_("test")>>,
+                               flag_t<policy::description_t<S_("test2")>,
+                                      policy::short_name_t<
+                                          traits::integral_constant<'a'>>>>>>);
         } else if constexpr (std::is_same_v<
                                  Current,
                                  policy::short_name_t<
@@ -90,57 +90,57 @@ struct test_Fn {
                 std::is_same_v<
                     parents_type,
                     std::tuple<
-                        flag<policy::description_t<S_("test2")>,
-                             policy::short_name_t<
-                                 traits::integral_constant<'a'>>>,
-                        root<std::decay_t<decltype(policy::validation::
-                                                       default_validator)>,
-                             flag<policy::description_t<S_("test1")>,
-                                  policy::long_name_t<S_("test")>>,
-                             flag<policy::description_t<S_("test2")>,
-                                  policy::short_name_t<
-                                      traits::integral_constant<'a'>>>>>>);
-        } else if constexpr (std::is_same_v<
-                                 Current,
-                                 flag<policy::description_t<S_("test1")>,
-                                      policy::long_name_t<S_("test")>>>) {
-            static_assert(
-                std::is_same_v<
-                    parents_type,
-                    std::tuple<root<
-                        std::decay_t<
-                            decltype(policy::validation::default_validator)>,
-                        flag<policy::description_t<S_("test1")>,
-                             policy::long_name_t<S_("test")>>,
-                        flag<policy::description_t<S_("test2")>,
-                             policy::short_name_t<
-                                 traits::integral_constant<'a'>>>>>>);
-        } else if constexpr (std::is_same_v<
-                                 Current,
-                                 flag<policy::description_t<S_("test2")>,
+                        flag_t<policy::description_t<S_("test2")>,
+                               policy::short_name_t<
+                                   traits::integral_constant<'a'>>>,
+                        root_t<std::decay_t<decltype(policy::validation::
+                                                         default_validator)>,
+                               flag_t<policy::description_t<S_("test1")>,
+                                      policy::long_name_t<S_("test")>>,
+                               flag_t<policy::description_t<S_("test2")>,
                                       policy::short_name_t<
-                                          traits::integral_constant<'a'>>>>) {
+                                          traits::integral_constant<'a'>>>>>>);
+        } else if constexpr (std::is_same_v<
+                                 Current,
+                                 flag_t<policy::description_t<S_("test1")>,
+                                        policy::long_name_t<S_("test")>>>) {
             static_assert(
                 std::is_same_v<
                     parents_type,
-                    std::tuple<root<
+                    std::tuple<root_t<
                         std::decay_t<
                             decltype(policy::validation::default_validator)>,
-                        flag<policy::description_t<S_("test1")>,
-                             policy::long_name_t<S_("test")>>,
-                        flag<policy::description_t<S_("test2")>,
-                             policy::short_name_t<
-                                 traits::integral_constant<'a'>>>>>>);
+                        flag_t<policy::description_t<S_("test1")>,
+                               policy::long_name_t<S_("test")>>,
+                        flag_t<policy::description_t<S_("test2")>,
+                               policy::short_name_t<
+                                   traits::integral_constant<'a'>>>>>>);
+        } else if constexpr (std::is_same_v<
+                                 Current,
+                                 flag_t<policy::description_t<S_("test2")>,
+                                        policy::short_name_t<
+                                            traits::integral_constant<'a'>>>>) {
+            static_assert(
+                std::is_same_v<
+                    parents_type,
+                    std::tuple<root_t<
+                        std::decay_t<
+                            decltype(policy::validation::default_validator)>,
+                        flag_t<policy::description_t<S_("test1")>,
+                               policy::long_name_t<S_("test")>>,
+                        flag_t<policy::description_t<S_("test2")>,
+                               policy::short_name_t<
+                                   traits::integral_constant<'a'>>>>>>);
         } else if constexpr (
             std::is_same_v<
                 Current,
-                root<std::decay_t<
-                         decltype(policy::validation::default_validator)>,
-                     flag<policy::description_t<S_("test1")>,
-                          policy::long_name_t<S_("test")>>,
-                     flag<policy::description_t<S_("test2")>,
-                          policy::short_name_t<
-                              traits::integral_constant<'a'>>>>>) {
+                root_t<std::decay_t<
+                           decltype(policy::validation::default_validator)>,
+                       flag_t<policy::description_t<S_("test1")>,
+                              policy::long_name_t<S_("test")>>,
+                       flag_t<policy::description_t<S_("test2")>,
+                              policy::short_name_t<
+                                  traits::integral_constant<'a'>>>>>) {
             static_assert(std::is_same_v<parents_type, std::tuple<>>);
         }
     }
@@ -152,11 +152,11 @@ BOOST_AUTO_TEST_SUITE(utility_suite)
 BOOST_AUTO_TEST_CASE(tree_recursor_test)
 {
     using Root =
-        root<std::decay_t<decltype(policy::validation::default_validator)>,
-             flag<policy::description_t<S_("test1")>,
-                  policy::long_name_t<S_("test")>>,
-             flag<policy::description_t<S_("test2")>,
-                  policy::short_name_t<traits::integral_constant<'a'>>>>;
+        root_t<std::decay_t<decltype(policy::validation::default_validator)>,
+               flag_t<policy::description_t<S_("test1")>,
+                      policy::long_name_t<S_("test")>>,
+               flag_t<policy::description_t<S_("test2")>,
+                      policy::short_name_t<traits::integral_constant<'a'>>>>;
 
     utility::tree_recursor<test_Fn, Root>();
 }

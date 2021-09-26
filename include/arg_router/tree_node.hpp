@@ -58,16 +58,15 @@ private:
         return result_t{std::move(ref_result)};
     }
 
-    // Tuple overload
-    template <template <typename...> typename Fn, typename... ExpandedParams>
-    static auto common_filter(std::tuple<ExpandedParams...> expanded_params)
+    template <template <typename...> typename Fn, typename Tuple>
+    static auto common_filter_tuple(Tuple&& tuple_params)
     {
         // std::apply does not like templates, so we have to wrap in a lambda
         return std::apply(
             [](auto&... args) {
                 return common_filter<Fn>(std::forward<decltype(args)>(args)...);
             },
-            expanded_params);
+            tuple_params);
     }
 
 protected:
@@ -78,8 +77,24 @@ protected:
     explicit tree_node(Params... params) :
         traits::unpack_and_derive<policies_type>{
             common_filter<policy::is_policy>(params...)},
-        children_(
-            common_filter<is_tree_node>(list_expander(std::move(params)...)))
+        children_(common_filter_tuple<is_tree_node>(
+            list_expander(std::move(params)...)))
+    {
+    }
+
+    /** Argument constructor.
+     *
+     * This is for nodes whose first template argument is their value_type, and
+     * so must be removed before policy/child processing.
+     * @param tuple_params Tuple of policy and child instances
+     */
+    template <typename P = parameters_type,
+              typename = std::enable_if_t<(std::tuple_size_v<P> > 0)>>
+    explicit tree_node(boost::mp11::mp_drop_c<P, 1> tuple_params) :
+        traits::unpack_and_derive<policies_type>{
+            common_filter_tuple<policy::is_policy>(tuple_params)},
+        children_(common_filter_tuple<is_tree_node>(
+            list_expander(std::move(tuple_params))))
     {
     }
 

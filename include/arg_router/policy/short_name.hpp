@@ -18,17 +18,20 @@ class short_name_t
 {
     static_assert(std::is_convertible_v<S, char>,
                   "Short name type must be implicitly convertible to char");
+    static_assert(algorithm::is_alnum(S::value),
+                  "Short name character must be alphanumeric");
+
+    static constexpr auto value = S::value;
 
 public:
     /** Returns the name.
      *
      * @return Short name
      */
-    constexpr static char short_name() { return S::value; }
-
-private:
-    static_assert(algorithm::is_alnum(S::value),
-                  "Short name character must be alphanumeric");
+    constexpr static std::string_view short_name()
+    {
+        return std::string_view{&value, 1};
+    }
 };
 
 /** Constant variable helper.

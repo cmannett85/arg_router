@@ -11,6 +11,7 @@ set(TEST_HEADERS
 set(TEST_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/main_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/algorithm_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/arg_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/flag_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/list_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/mode_test.cpp

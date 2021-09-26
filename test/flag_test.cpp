@@ -12,14 +12,14 @@ BOOST_AUTO_TEST_SUITE(flag_suite)
 
 BOOST_AUTO_TEST_CASE(is_tree_node_test)
 {
-    static_assert(is_tree_node_v<flag<>>, "Tree node test has failed");
+    static_assert(is_tree_node_v<flag_t<>>, "Tree node test has failed");
 }
 
 BOOST_AUTO_TEST_CASE(policies_test)
 {
-    auto f = flag{policy::long_name<S_("hello")>, policy::short_name<'H'>};
+    auto f = flag(policy::long_name<S_("hello")>, policy::short_name<'H'>);
     static_assert(f.long_name() == "hello"sv, "Long name test fail");
-    static_assert(f.short_name() == 'H', "Short name test fail");
+    static_assert(f.short_name() == "H", "Short name test fail");
 }
 
 BOOST_AUTO_TEST_SUITE(death_suite)
@@ -36,11 +36,11 @@ BOOST_AUTO_TEST_CASE(despecialised_unique_in_owner_test)
 using namespace arg_router;
 
 int main() {
-    auto f = flag{
+    auto f = flag(
         policy::long_name<S_("hello")>,
-        flag{policy::short_name<'b'>},
+        flag(policy::short_name<'b'>),
         policy::short_name<'H'>
-    };
+    );
     return 0;
 }
     )",

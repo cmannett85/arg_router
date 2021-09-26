@@ -60,3 +60,41 @@ std::string parsing::to_string(match_result mr)
     return "{"s + (mr.matched ? "no match" : "match") + ", " +
            (mr.has_argument ? "has argument" : "no argument") + "}";
 }
+
+template <>
+bool arg_router::parse<bool>(std::string_view token)
+{
+    using namespace utility::string_view_ops;
+    using namespace std::string_literals;
+    using namespace std::string_view_literals;
+
+    constexpr auto true_tokens = std::array{
+        "true"sv,
+        "yes"sv,
+        "y"sv,
+        "on"sv,
+        "1"sv,
+        "enable"sv,
+    };
+
+    constexpr auto false_tokens = std::array{
+        "false"sv,
+        "no"sv,
+        "n"sv,
+        "off"sv,
+        "0"sv,
+        "disable"sv,
+    };
+
+    const auto match = [&](const auto& list) {
+        return std::find(list.begin(), list.end(), token) != list.end();
+    };
+
+    if (match(true_tokens)) {
+        return true;
+    } else if (match(false_tokens)) {
+        return false;
+    }
+
+    throw parse_exception{"Failed to parse: "s + token};
+}

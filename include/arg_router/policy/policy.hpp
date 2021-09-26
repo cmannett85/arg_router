@@ -16,7 +16,7 @@ namespace policy
 /** Evaluates to true if @a T is a policy.
  *
  * Unfortunately due to the way that policies form an is-a relationship with
- * their owners, we can't tag a type as a policy vai inheritance.  So all
+ * their owners, we can't tag a type as a policy via inheritance.  So all
  * policies must create a specialisation of this and manually mark themselves as
  * a policy.
  * @tparam T Type to test
