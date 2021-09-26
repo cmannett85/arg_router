@@ -64,14 +64,14 @@ BOOST_AUTO_TEST_CASE(only_policies_tree_node_types_test)
 BOOST_AUTO_TEST_CASE(one_child_tree_node_types_test)
 {
     using tn =
-        tree_node<flag<policy::long_name_t<S_("hello")>,
-                       policy::short_name_t<traits::integral_constant<'A'>>>>;
+        tree_node<flag_t<policy::long_name_t<S_("hello")>,
+                         policy::short_name_t<traits::integral_constant<'A'>>>>;
     static_assert(
         std::is_same_v<
             typename tn::parameters_type,
             std::tuple<
-                flag<policy::long_name_t<S_("hello")>,
-                     policy::short_name_t<traits::integral_constant<'A'>>>>>,
+                flag_t<policy::long_name_t<S_("hello")>,
+                       policy::short_name_t<traits::integral_constant<'A'>>>>>,
         "parameters_type does not match");
 
     static_assert(std::is_same_v<typename tn::policies_type, std::tuple<>>,
@@ -81,24 +81,24 @@ BOOST_AUTO_TEST_CASE(one_child_tree_node_types_test)
         std::is_same_v<
             typename tn::children_type,
             std::tuple<
-                flag<policy::long_name_t<S_("hello")>,
-                     policy::short_name_t<traits::integral_constant<'A'>>>>>,
+                flag_t<policy::long_name_t<S_("hello")>,
+                       policy::short_name_t<traits::integral_constant<'A'>>>>>,
         "children_type does not match");
 }
 
 BOOST_AUTO_TEST_CASE(two_children_tree_node_types_test)
 {
     using tn =
-        tree_node<flag<policy::long_name_t<S_("hello")>,
-                       policy::short_name_t<traits::integral_constant<'A'>>>,
-                  flag<policy::short_name_t<traits::integral_constant<'B'>>>>;
+        tree_node<flag_t<policy::long_name_t<S_("hello")>,
+                         policy::short_name_t<traits::integral_constant<'A'>>>,
+                  flag_t<policy::short_name_t<traits::integral_constant<'B'>>>>;
     static_assert(
         std::is_same_v<
             typename tn::parameters_type,
             std::tuple<
-                flag<policy::long_name_t<S_("hello")>,
-                     policy::short_name_t<traits::integral_constant<'A'>>>,
-                flag<policy::short_name_t<traits::integral_constant<'B'>>>>>,
+                flag_t<policy::long_name_t<S_("hello")>,
+                       policy::short_name_t<traits::integral_constant<'A'>>>,
+                flag_t<policy::short_name_t<traits::integral_constant<'B'>>>>>,
         "parameters_type does not match");
 
     static_assert(std::is_same_v<typename tn::policies_type, std::tuple<>>,
@@ -108,9 +108,9 @@ BOOST_AUTO_TEST_CASE(two_children_tree_node_types_test)
         std::is_same_v<
             typename tn::children_type,
             std::tuple<
-                flag<policy::long_name_t<S_("hello")>,
-                     policy::short_name_t<traits::integral_constant<'A'>>>,
-                flag<policy::short_name_t<traits::integral_constant<'B'>>>>>,
+                flag_t<policy::long_name_t<S_("hello")>,
+                       policy::short_name_t<traits::integral_constant<'A'>>>,
+                flag_t<policy::short_name_t<traits::integral_constant<'B'>>>>>,
         "children_type does not match");
 }
 

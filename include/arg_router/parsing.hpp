@@ -1,9 +1,15 @@
 #pragma once
 
 #include "arg_router/config.hpp"
+#include "arg_router/exception.hpp"
 #include "arg_router/tree_node.hpp"
+#include "arg_router/utility/string_view_ops.hpp"
 #include "arg_router/utility/tuple_iterator.hpp"
 
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/core/ignore_unused.hpp>
+
+#include <charconv>
 #include <deque>
 
 namespace arg_router
@@ -160,14 +166,41 @@ using has_long_name_checker = decltype(T::long_name());
 template <typename T>
 using has_short_name_checker = decltype(T::short_name());
 
+/** Can be used by traits::is_detected to determine if a type has a custom
+ * parser name.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+using has_custom_parser_checker =
+    decltype(std::declval<T>().parse(std::declval<std::string_view>()));
+
 /** Can be used by traits::is_detected to determine if a type has a
- * match(std::string_view) static method.
+ * match(std::string_view) method.
  *
  * @tparam T Type to query
  */
 template <typename T>
 using has_match_checker =
     decltype(std::declval<const T&>().match(std::declval<const token_type&>()));
+
+/** Can be used by traits::is_detected to determine if a type has a
+ * get_default_value() method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+using has_default_value =
+    decltype(std::declval<const T&>().get_default_value());
+
+/** Can be used by traits::is_detected to determine if a type has a
+ * push_back(typename T::value_type) method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+using has_push_back_checker = decltype(std::declval<T&>().push_back(
+    std::declval<typename T::value_type>()));
 
 /** The standard implementation of the match method.
  *
@@ -186,12 +219,33 @@ match_result default_match(const token_type& token)
     }
     if constexpr (traits::is_detected_v<has_short_name_checker, T>) {
         if ((token.prefix == prefix_type::SHORT) &&
-            (token.name.front() == T::short_name())) {
+            (token.name == T::short_name())) {
             return {match_result::MATCH, match_result::HAS_NO_ARGUMENT};
         }
     }
 
     return {match_result::NO_MATCH, match_result::HAS_NO_ARGUMENT};
+}
+
+/** Returns the node name, the long form name is preferred.
+ *
+ * @note If @a Node does not have a long or short name, it is a complication
+ * failure
+ * @tparam Node Node type
+ * @param node Node instance
+ * @return Node name
+ */
+template <typename Node>
+std::string_view node_name(const Node& node)
+{
+    if constexpr (traits::is_detected_v<has_long_name_checker, Node>) {
+        return node.long_name();
+    } else if constexpr (traits::is_detected_v<has_short_name_checker, Node>) {
+        return node.short_name();
+    } else {
+        static_assert(traits::always_false_v<Node>,
+                      "Node does not have a name");
+    }
 }
 
 /** Provides a tuple that can be passed to a router implementation as a part of
@@ -280,4 +334,57 @@ bool visit_child(const token_type& token,
     return found_child;
 }
 }  // namespace parsing
+
+/** Global parsing function.
+ *
+ * If you want to provide custom parsing for an entire @em type, then you should
+ * specialise this.  If you want to provide custom parsing for a particular type
+ * just for a single argument, it is usually more convenient to use a
+ * policy::custom_parser and define the conversion function inline.
+ * @tparam T Type to parse @a token into
+ * @param token Command line token to parse
+ * @return The parsed instance
+ * @exception parse_exception Thrown if parsing failed
+ */
+template <typename T, typename = std::enable_if_t<!std::is_arithmetic_v<T>>>
+T parse(std::string_view token)
+{
+    boost::ignore_unused(token);
+    static_assert(traits::always_false_v<T>,
+                  "No parse function for this type, use a custom_parser policy "
+                  "or define a parse(std::string_view) specialisation");
+}
+
+template <typename T>
+std::enable_if_t<std::is_arithmetic_v<T>, T> parse(std::string_view token)
+{
+    using namespace utility::string_view_ops;
+    using namespace std::string_literals;
+
+    if (token.front() == '+') {
+        token.remove_prefix(1);
+    }
+
+    auto value = T{};
+    const auto result = std::from_chars(token.begin(), token.end(), value);
+
+    if (result.ec == std::errc{}) {
+        return value;
+    }
+
+    if (result.ec == std::errc::result_out_of_range) {
+        throw parse_exception{"Value out of range for argument: "s + token};
+    }
+
+    throw parse_exception{"Failed to parse: "s + token};
+}
+
+template <>
+inline std::string_view parse<std::string_view>(std::string_view token)
+{
+    return token;
+}
+
+template <>
+bool parse<bool>(std::string_view token);
 }  // namespace arg_router

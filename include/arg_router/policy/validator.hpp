@@ -1,5 +1,6 @@
 #pragma once
 
+#include "arg_router/arg.hpp"
 #include "arg_router/flag.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/custom_parser.hpp"
@@ -230,33 +231,61 @@ struct parent_type {
     }
 };
 
+template <bool Invert, template <typename...> typename Policy>
+struct basic_must_have_policy {
+    template <typename T, typename...>
+    constexpr static void check()
+    {
+        constexpr auto result =
+            algorithm::has_specialisation_v<Policy, typename T::policies_type>;
+
+        if constexpr (Invert) {
+            static_assert(!result, "T must not have this policy");
+        } else {
+            static_assert(result, "T must have this policy");
+        }
+    }
+};
+
 /** A rule condition that checks that @a T's policies do contain @a Policy.
  *
  * @tparam Policy Despecialised policy to check for
  */
 template <template <typename...> typename Policy>
-struct must_have_policy {
-    template <typename T, typename...>
-    constexpr static void check()
-    {
-        static_assert(
-            algorithm::has_specialisation_v<Policy, typename T::policies_type>,
-            "T must have this policy");
-    }
-};
+using must_have_policy = basic_must_have_policy<false, Policy>;
 
 /** A rule condition that checks that @a T's policies do not contain @a Policy.
  *
  * @tparam Policy Despecialised policy to check for
  */
 template <template <typename...> typename Policy>
-struct must_not_have_policy {
+using must_not_have_policy = basic_must_have_policy<true, Policy>;
+
+template <bool Invert, template <typename...> typename Policy>
+struct basic_child_must_have_policy {
+    template <typename Child>
+    using child_checker =
+        algorithm::has_specialisation<Policy, typename Child::policies_type>;
+
     template <typename T, typename...>
     constexpr static void check()
     {
-        static_assert(
-            !algorithm::has_specialisation_v<Policy, typename T::policies_type>,
-            "T must not have this policy");
+        constexpr auto num_children =
+            std::tuple_size_v<typename T::children_type>;
+
+        if constexpr (num_children > 0) {
+            constexpr auto result =
+                boost::mp11::mp_all_of<typename T::children_type,
+                                       child_checker>::value;
+
+            if constexpr (Invert) {
+                static_assert(!result,
+                              "All children of T must not have this policy");
+            } else {
+                static_assert(result,
+                              "All children of T must have this policy");
+            }
+        }
     }
 };
 
@@ -266,19 +295,15 @@ struct must_not_have_policy {
  * @tparam Policy Despecialised policy to check for
  */
 template <template <typename...> typename Policy>
-struct child_must_have_policy {
-    template <typename Child>
-    using child_checker =
-        algorithm::has_specialisation<Policy, typename Child::policies_type>;
+using child_must_have_policy = basic_child_must_have_policy<false, Policy>;
 
-    template <typename T, typename...>
-    constexpr static void check()
-    {
-        static_assert(boost::mp11::mp_all_of<typename T::children_type,
-                                             child_checker>::value,
-                      "All children of T must have this policy");
-    }
-};
+/** A rule condition that checks that every child under @a T does not have a
+ * particular policy.
+ *
+ * @tparam Policy Despecialised policy to check for
+ */
+template <template <typename...> typename Policy>
+using child_must_not_have_policy = basic_child_must_have_policy<true, Policy>;
 
 /** A rule condition that checks if there are more than one child of T that is a
  * mode, all must be named.
@@ -299,44 +324,107 @@ struct multiple_named_modes {
     {
         using modes =
             boost::mp11::mp_filter<mode_filter, typename T::children_type>;
-        if constexpr (std::tuple_size_v < modes >> 1) {
+        if constexpr ((std::tuple_size_v<modes>) > 1) {
             static_assert(boost::mp11::mp_all_of<modes, has_long_name>::value,
                           "If there are multiple modes, all must be named");
         }
     }
 };
 
+/** A rule condition that checks that one of the @a Policies is in T.
+ *
+ * @tparam Policies Pack of policies
+ */
+template <template <typename...> typename... Policies>
+struct at_least_one_of_policies {
+    static_assert(sizeof...(Policies) >= 2,
+                  "Condition requires at least two policies");
+
+    template <typename T, typename...>
+    constexpr static void check()
+    {
+        static_assert(
+            (algorithm::count_specialisation_v<Policies,
+                                               typename T::policies_type> +
+             ...) >= 1,
+            "T must have at least one of the policies");
+    }
+};
+
+/** A rule condition that checks one of the @a Policies is in T.
+ *
+ * @tparam Policies Pack of policies
+ */
+template <template <typename...> typename... Policies>
+struct one_of_policies_if_parent_is_not_root {
+    static_assert(sizeof...(Policies) >= 1,
+                  "Condition requires at least one policy");
+
+    template <typename T, typename... Parents>
+    constexpr static void check()
+    {
+        // This is needed otherwise the mp_first call fails if there aren't
+        // enough elements in Parents - even if inside a if constexpr
+        // expression
+        using parent_type = boost::mp11::mp_eval_if_c<(sizeof...(Parents) < 1),
+                                                      std::void_t<>,
+                                                      boost::mp11::mp_first,
+                                                      std::tuple<Parents...>>;
+
+        if constexpr (!(traits::is_specialisation_of_v<parent_type, root_t>)) {
+            static_assert(
+                (algorithm::count_specialisation_v<Policies,
+                                                   typename T::policies_type> +
+                 ...) == 1,
+                "T must have one of the assigned policies");
+        }
+    }
+};
+
 /** The default validator instance. */
-inline constexpr auto default_validator =
-    validator<rule<policy::long_name_t<S_("rule")>,
-                   despecialised_unique_in_owner,
-                   policy_unique_from_owner_parent_to_mode_or_root<mode>>,
-              rule<policy::short_name_t<traits::integral_constant<'a'>>,
-                   despecialised_unique_in_owner,
-                   policy_unique_from_owner_parent_to_mode_or_root<mode>>,
-              rule<policy::description_t<S_("rule")>,  //
-                   despecialised_unique_in_owner>,
-              rule<policy::router<std::less<>>,  //
-                   parent_type<1, root<policy::validation::validator<>>>>,
-              rule<policy::validation::validator<>,  //
-                   despecialised_unique_in_owner>,
-              rule<flag<>,  //
-                   must_not_have_policy<policy::required_t>,
-                   must_not_have_policy<policy::default_value>,
-                   must_not_have_policy<policy::custom_parser>,
-                   must_not_have_policy<policy::validation::validator>,
-                   must_have_policy<policy::description_t>>,
-              rule<mode<>,  //
-                   must_have_policy<policy::router>,
-                   must_not_have_policy<policy::short_name_t>,
-                   must_not_have_policy<policy::custom_parser>,
-                   must_not_have_policy<policy::default_value>,
-                   must_not_have_policy<policy::required_t>,
-                   parent_type<0, root<policy::validation::validator<>>>>,
-              rule<root<policy::validation::validator<>>,  //
-                   must_have_policy<policy::validation::validator>,
-                   child_must_have_policy<policy::router>,
-                   multiple_named_modes<mode>>>{};
+inline constexpr auto default_validator = validator<
+    rule<policy::long_name_t<S_("rule")>,
+         despecialised_unique_in_owner,
+         policy_unique_from_owner_parent_to_mode_or_root<mode_t>>,
+    rule<policy::short_name_t<traits::integral_constant<'a'>>,
+         despecialised_unique_in_owner,
+         policy_unique_from_owner_parent_to_mode_or_root<mode_t>>,
+    rule<policy::description_t<S_("rule")>,  //
+         despecialised_unique_in_owner>,
+    rule<policy::router<std::less<>>,  //
+         parent_type<1, root_t<policy::validation::validator<>>>>,
+    rule<policy::validation::validator<>,  //
+         despecialised_unique_in_owner>,
+    rule<policy::required_t<>,  //
+         despecialised_unique_in_owner>,
+    rule<policy::default_value<int>,  //
+         despecialised_unique_in_owner>,
+    rule<flag_t<>,  //
+         must_not_have_policy<policy::required_t>,
+         must_not_have_policy<policy::default_value>,
+         must_not_have_policy<policy::custom_parser>,
+         must_not_have_policy<policy::validation::validator>,
+         at_least_one_of_policies<policy::long_name_t, policy::short_name_t>,
+         must_have_policy<policy::description_t>>,
+    rule<arg_t<int>,  //
+         must_not_have_policy<policy::validation::validator>,
+         at_least_one_of_policies<policy::long_name_t, policy::short_name_t>,
+         one_of_policies_if_parent_is_not_root<policy::required_t,
+                                               policy::default_value>,
+         must_have_policy<policy::description_t>>,
+    rule<mode_t<>,  //
+         must_have_policy<policy::router>,
+         must_not_have_policy<policy::short_name_t>,
+         must_not_have_policy<policy::custom_parser>,
+         must_not_have_policy<policy::default_value>,
+         must_not_have_policy<policy::required_t>,
+         parent_type<0, root_t<policy::validation::validator<>>>>,
+    rule<root_t<policy::validation::validator<>>,  //
+         must_have_policy<policy::validation::validator>,
+         child_must_have_policy<policy::router>,
+         child_must_not_have_policy<policy::required_t>,
+         child_must_not_have_policy<policy::default_value>,
+         multiple_named_modes<mode_t>>>{};
 }  // namespace validation
 }  // namespace policy
 }  // namespace arg_router

@@ -31,6 +31,7 @@ endif()
 
 set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/algorithm.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/arg.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/config.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/exception.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/flag.hpp

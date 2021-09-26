@@ -1,4 +1,4 @@
-![Documentation Generator](https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg) ![Unit test coverage](https://img.shields.io/badge/Unit_Test_Coverage-98.4%25-brightgreen)
+![Documentation Generator](https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg) ![Unit test coverage](https://img.shields.io/badge/Unit_Test_Coverage-98.2%25-brightgreen)
 
 # arg_router
 `arg_router` is a C++17 command line parser and router.  It uses policy-based objects hierarchically, so the parsing code is self-describing.  Rather than just providing a parsing service that returns a map of `variant`s/`any`s, it allows you to bind `Callable` instances to points in the parse structure, so complex command line arguments can directly call functions with the expected arguments - rather than you having to do this yourself.
@@ -16,43 +16,43 @@ Let's start simple, with this `cat`-like program:
 ```cpp
 namespace ar = arg_router;
 namespace arp = ar::policy
-ar::root{
+ar::root(
     arp::validation::default_validator,
-    ar::help{
+    ar::help(
         arp::long_name<S_("help")>,
         arp::short_name<'h'>,
         arp::description<S_("Display this help and exit")>,
-        arp::router{[](std::string_view arg_docs) { ... }}},
-    ar::flag{
+        arp::router{[](std::string_view arg_docs) { ... }}),
+    ar::flag(
         arp::long_name<S_("version")>,
         arp::description<S_("Output version information and exit")>,
-        arp::router{[]() { ... }}},
-    ar::mode{
-        ar::flag{
+        arp::router{[]() { ... }}),
+    ar::mode(
+        ar::flag(
             arp::long_name<S_("show-all")>,
             arp::description<S_("Equivalent to -nE")>,
             arp::short_name<'A'>,
-            arp::alias<ar::short_name<'E'>, ar::short_name<'n'>>,
-        ar::flag{
+            arp::alias<ar::short_name<'E'>, ar::short_name<'n'>>),
+        ar::flag(
             arp::long_name<S_("show-ends")>,
             arp::description<S_("Display $ at end of each line")>,
-            arp::short_name<'E'>},
-        ar::flag{
+            arp::short_name<'E'>),
+        ar::flag(
             arp::long_name<S_("show-nonprinting")>,
             arp::description<S_("Use ^ and M- notation, except for LFD and TAB")>,
-            arp::short_name<'n'>},
-        ar::arg<int>{
+            arp::short_name<'n'>),
+        ar::arg<int>(
             arp::long_name<S_("max-lines")>,
             arp::description<S_("Maximum lines to output")>,
-            arp::default_value{-1}},
-        ar::positional_arg<std::vector<std::string_view>>{
+            arp::default_value{-1}),
+        ar::positional_arg<std::vector<std::string_view>>(
             arp::required,
             arp::long_name<S_("FILES")>,
-            arp::description<S_("Files to read")>},
+            arp::description<S_("Files to read")>),
         arp::router{[](bool show_ends,
                        bool show_non_printing,
                        int max_lines,
-                       std::vector<std::string_view>> files) { ... }}}}}.
+                       std::vector<std::string_view>> files) { ... }})).
     parse(argc, argv);
 ```
 Let's start from the top, as the name suggests `root` is the root of the parse tree and provides the `parse(argc, argv)` method.  Only children of the root can (and must) have a `router` policy and therefore act as access points into the program. The root's children are implicitly mutually exclusive, so trying to pass `--version --help` in the command line is a runtime error.
@@ -75,28 +75,30 @@ An `alias` policy allows you to define an argument that acts as a link to other 
 
 Assuming parsing was successful, the final `router` is called with the parsed argument e.g. if the user passed `-E file1 file2` then the `router` is passed `(true, false, -1, {"file1", "file2"})`.
 
+You may have noticed that the nodes are constructed with parentheses whilst the policies use braces, this is necessary due to CTAD rules that affect nodes which return a user-defined value type.  This can be circumvented using a function to return the required instance, for example the actual type of a flag is `flag_t`, `flag(...)` is a function that creates one for you.
+
 ## Conditional Arguments
 Let's add another feature to our cat program where we can handle lines over a certain length differently.
 ```cpp
 using namespace ard = ar::dependency;
-ar::mode{
+ar::mode(
     ...
-    ar::arg<std::optional<std::size_t>>{
+    ar::arg<std::optional<std::size_t>>(
         arp::long_name<S_("max-line-length")>,
         arp::description<S_("Maximum line length")>,
-        arp::default_value{std::optional<std::size_t>{}}},
-    ard::one_of{
+        arp::default_value{std::optional<std::size_t>{}}),
+    ard::one_of(
         ard::dependent<arp::long_name<S_("max-line-length")>>,
-        ar::flag{
+        ar::flag(
             arp::long_name<S_("skip-line")>,
             arp::short_name<'s'>,
             arp::description<S_("Skips line output if max line length "
-                                "reached")>},
-        ar::arg<std::string_view>{
+                                "reached")>),
+        ar::arg<std::string_view>(
             arp::long_name<S_("line-suffix")>,
             arp::description<S_("Shortens line length to maximum with the "
                                 "given suffix if max line length reached")>,
-            arp::default_value{"..."}}},
+            arp::default_value{"..."})),
     ...
     arp::router{[](bool show_all,
                    bool show_ends,
@@ -104,7 +106,7 @@ ar::mode{
                    int max_lines,
                    std::optional<std::size_t> max_line_length,
                    std::variant<bool, std::string_view> max_line_handling,
-                   std::vector<std::string_view>> files) { ... }}}
+                   std::vector<std::string_view>> files) { ... }})
 ```
 We've defined a new argument `--max-line-length` but rather than using `-1` as the "no limit" indicator like we did for `--max-lines`, we specify the argument type to be `std::optional<std::size_t>` and have the default value by an empty optional - this allows the code to define our intent better.
 
@@ -125,15 +127,15 @@ enum class theme_t {
     SOLARIZED
 };
 
-ar::mode{
+ar::mode(
     ...
-    ar::arg<theme_t>{
+    ar::arg<theme_t>(
         arp::long_name<S_("theme")>,
         arp::short_name<'t'>,
         arp::description<S_("Set the output colour theme")>,
         arp::default_value{theme_t::NONE},
         arp::custom_parser<theme_t>{[](std::string_view arg) {
-            return theme_from_string(arg); }}}
+            return theme_from_string(arg); }})
     ...
     arp::router{[](bool show_all,
         bool show_ends,
@@ -142,7 +144,7 @@ ar::mode{
         std::optional<std::size_t> max_line_length,
         std::variant<bool, std::string_view> max_line_handling,
         theme_t theme,
-        std::vector<std::string_view>> files) { ... }}}
+        std::vector<std::string_view>> files) { ... }})
 ```
 This is a convenient solution to one-off type parsing in-tree, I think it's pretty self-explanatory.  However this is not convenient if you have lots of arguments that should return the same custom type, as you would have to copy and paste the lambda or bind calls to the conversion function for each one.  In that case we can specialise on the `arg_router::parse` function.
 ```cpp
@@ -172,13 +174,13 @@ enum class verbosity_level_t {
     DEBUG
 };
 
-ar::mode{
+ar::mode(
     ...
-    ar::counting_flag<verbosity_level_t>{
+    ar::counting_flag<verbosity_level_t>(
         arp::short_name<'v'>,
         arp::max_count<3>,
         arp::description<S_("Verbosity level, number of 'v's sets level")>,
-        arp::default_value{verbosity_level_t::ERROR}},
+        arp::default_value{verbosity_level_t::ERROR}),
     ...
     arp::router{[](bool show_all,
         bool show_ends,
@@ -188,7 +190,7 @@ ar::mode{
         std::variant<bool, std::string_view> max_line_handling,
         theme_t theme,
         verbosity_level_t verbosity_level,
-        std::vector<std::string_view>> files) { ... }}}
+        std::vector<std::string_view>> files) { ... }})
 ```
 The number of times `-v` appears in the command line will increment the returned value, e.g. `-vv` will result in `verbosity_level_t::INFO`.
 
@@ -200,21 +202,21 @@ We can constrain the amount of flags the user can provide by using the `max_coun
 
 The `long_name` policy is not allowed, but we can use the knowledge gained so far to provide the best of both:
 ```cpp
-ar::mode{
+ar::mode(
     ...
-    ard::one_of{
-        ar::counting_flag<verbosity_level_t>{
+    ard::one_of(
+        ar::counting_flag<verbosity_level_t>(
             arp::short_name<'v'>,
             arp::max_count<3>,
             arp::description<S_("Verbosity level, number of 'v's sets level")>,
-            arp::alias<arp::long_name<S_("verbose")>>},
-        ar::arg<verbosity_level_t>{
+            arp::alias<arp::long_name<S_("verbose")>>),
+        ar::arg<verbosity_level_t>(
             arp::long_name<S_("verbose")>,
             arp::description<S_("Verbosity level")>,
             arp::default_value{verbosity_level_t::INFO},
             arp::custom_parser<verbosity_level_t>{
                 [](std::string_view arg) {
-                    return verbosity_level_from_string(arg); }}}}},
+                    return verbosity_level_from_string(arg); }}))),
     ...
     arp::router{[](bool show_all,
         bool show_ends,
@@ -235,33 +237,29 @@ $ simple-copy -f dest-dir source-path-1 source-path-2
 ```
 Our simple copier takes multiple source paths and copies the files to a single destination directory, a 'force' flag will overwrite existing files silently.
 ```cpp
-ar::root{
+ar::root(
     arp::validation::default_validator,
-    ar::help{
+    ar::help(
         arp::long_name<S_("help")>,
         arp::short_name<'h'>,
         arp::description<S_("Display this help and exit")>,
-        arp::router{[](std::string_view arg_docs) { ... }}},
-    ar::mode{
-        ar::flag{
+        arp::router{[](std::string_view arg_docs) { ... }),
+    ar::mode(
+        ar::flag(
             arp::long_name<S_("force")>,
             arp::short_name<'f'>,
-            arp::description<S_("Force overwrite existing files")>
-        },
-        ar::positional_arg<std::filesystem::path>{
+            arp::description<S_("Force overwrite existing files")>),
+        ar::positional_arg<std::filesystem::path>(
             arp::long_name<S_("DST")>,
             arp::description<S_("Destination directory")>,
-            arp::count<1>
-        },
-        ar::positional_arg<std::vector<std::filesystem::path>>{
+            arp::count<1>),
+        ar::positional_arg<std::vector<std::filesystem::path>>(
             arp::long_name<S_("SRC")>,
             arp::description<S_("Source file paths")>,
-            arp::min_count<1>
-        },
+            arp::min_count<1>),
         arp::router{[](bool force,
                        std::filesystem::path dest,
-                       std::vector<std::filesystem::path> srcs) { ... }}
-    }}
+                       std::vector<std::filesystem::path> srcs) { ... }}))
 
 ```
 It was noted in the [Basics](#basics) section that ordering does matter for positional arguments, so we can see here that the destination path is specified first and therefore comes first on the command line.  There can only be one destination path so we specify the `count` to one, this implicitly marks the argument as required.  Because the `count` is 1 the return type doesn't need to be a container.
@@ -279,63 +277,54 @@ $ simple copy -f dest-dir source-path-1 source-path-2
 $ simple move -f dest-dir source-path-1
 ```
 ```cpp
-ar::root{
+ar::root(
     arp::validation::default_validator,
-    ar::help{
+    ar::help(
         arp::long_name<S_("help")>,
         arp::short_name<'h'>,
         arp::description<S_("Display this help and exit")>,
-        arp::router{[](std::string_view arg_docs) { ... }}},
-    ar::mode{
+        arp::router{[](std::string_view arg_docs) { ... }}),
+    ar::mode(
         arp::long_name<S_("copy")>,
         arp::description<S_("Copy source files to destination")>,
-        ar::flag{
+        ar::flag(
             arp::long_name<S_("force")>,
             arp::short_name<'f'>,
-            arp::description<S_("Force overwrite existing files")>
-        },
-        ar::positional_arg<std::filesystem::path>{
+            arp::description<S_("Force overwrite existing files")>),
+        ar::positional_arg<std::filesystem::path>(
             arp::required,
             arp::long_name<S_("DST")>,
             arp::description<S_("Destination directory")>,
-            arp::count<1>
-        },
-        ar::positional_arg<std::vector<std::filesystem::path>>{
+            arp::count<1>),
+        ar::positional_arg<std::vector<std::filesystem::path>>(
             arp::required,
             arp::long_name<S_("SRC")>,
             arp::description<S_("Source file paths")>,
-            arp::min_count<1>
-        },
+            arp::min_count<1>),
         arp::router{[](bool force,
                        std::filesystem::path dest,
-                       std::vector<std::filesystem::path> srcs) { ... }}
-    },
-    ar::mode{
+                       std::vector<std::filesystem::path> srcs) { ... }}),
+    ar::mode(
         arp::long_name<S_("move")>,
         arp::description<S_("Move source file to destination")>,
-        ar::flag{
+        ar::flag(
             arp::long_name<S_("force")>,
             arp::short_name<'f'>,
-            arp::description<S_("Force overwrite existing files")>
-        },
-        ar::positional_arg<std::filesystem::path>{
+            arp::description<S_("Force overwrite existing files")>),
+        ar::positional_arg<std::filesystem::path>(
             arp::required,
             arp::long_name<S_("DST")>,
             arp::description<S_("Destination directory")>,
-            arp::count<1>
-        },
+            arp::count<1>),
         // Can only have one
-        ar::positional_arg<std::filesystem::path>{
+        ar::positional_arg<std::filesystem::path>(
             arp::required,
             arp::long_name<S_("SRC")>,
             arp::description<S_("Source file path")>,
-            arp::count<1>
-        },
+            arp::count<1>),
         arp::router{[](bool force,
                        std::filesystem::path dest,
-                       std::filesystem::path src) { ... }}
-    }
-}
+                       std::filesystem::path src) { ... }}))
 ```
 You can't have an anonymous `mode` if there are named ones, and the name can only be the long version.  So we now have two named modes: `copy` and `move`.  Notice that the double hyphen prefix is _not_ automatically added to the `mode`'s long name, this matches typical Unix patterns - it is a build error to add them yourself!
 
@@ -343,55 +332,48 @@ You can't have an anonymous `mode` if there are named ones, and the name can onl
 An obvious ugliness to the above example is that we now have duplicated code.  We can split that out, and then use copies in the root declaration.
 ```cpp
 constexpr auto common_args = ar::list{
-    ar::flag{
+    ar::flag(
         arp::long_name<S_("force")>,
         arp::short_name<'f'>,
-        arp::description<S_("Force overwrite existing files")>
-    },
-    ar::positional_arg<std::filesystem::path>{
+        arp::description<S_("Force overwrite existing files")>),
+    ar::positional_arg<std::filesystem::path>(
         arp::required,
         arp::long_name<S_("DST")>,
         arp::description<S_("Destination directory")>,
-        arp::count<1>
-    }};
+        arp::count<1>)};
 
-ar::root{
+ar::root(
     arp::validation::default_validator,
-    ar::help{
+    ar::help(
         arp::long_name<S_("help")>,
         arp::short_name<'h'>,
         arp::description<S_("Display this help and exit")>,
-        arp::router{[](std::string_view arg_docs) { ... }}},
-    ar::mode{
+        arp::router{[](std::string_view arg_docs) { ... }}),
+    ar::mode(
         arp::long_name<S_("copy")>,
         arp::description<S_("Copy source files to destination")>,
         common_args,
-        ar::positional_arg<std::vector<std::filesystem::path>>{
+        ar::positional_arg<std::vector<std::filesystem::path>>(
             arp::required,
             arp::long_name<S_("SRC")>,
             arp::description<S_("Source file paths")>,
-            arp::min_count<1>
-        },
+            arp::min_count<1>),
         arp::router{[](bool force,
                        std::filesystem::path dest,
-                       std::vector<std::filesystem::path> srcs) { ... }}
-    },
-    ar::mode{
+                       std::vector<std::filesystem::path> srcs) { ... }}),
+    ar::mode(
         arp::long_name<S_("move")>,
         arp::description<S_("Move source file to destination")>,
         common_args,
-        ar::positional_arg<std::filesystem::path>{
+        ar::positional_arg<std::filesystem::path>(
             arp::required,
             arp::long_name<S_("SRC")>,
             arp::description<S_("Source file path")>,
             arp::min_count<1>,
-            arp::max_count<1>
-        },
+            arp::max_count<1>),
         arp::router{[](bool force,
                        std::filesystem::path dest,
-                       std::filesystem::path src) { ... }}
-    }
-}
+                       std::filesystem::path src) { ... }}))
 ```
 `ar::list` is a simple `arg` and `flag` container that `mode` and `root` instances detect and add the contents to their child/policy lists - it's nicer than having an instance per type.  Also don't be afraid of the copies, the majority of `arg_router` types hold no data (the advantage of compile-time!) and those that do (e.g. `default_value`) generally have small types like primitives or `std::string_view`.
 

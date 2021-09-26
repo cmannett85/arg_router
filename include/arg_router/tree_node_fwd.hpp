@@ -1,6 +1,6 @@
 #pragma once
 
-#include <type_traits>
+#include "arg_router/policy/policy.hpp"
 
 namespace arg_router
 {
@@ -11,7 +11,7 @@ class tree_node;
  *
  * @tparam T Type to test
  */
-template <typename T>
+template <typename T, typename Enable = void>
 struct is_tree_node : std::false_type {
 };
 

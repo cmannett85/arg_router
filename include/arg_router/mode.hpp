@@ -13,14 +13,14 @@ namespace arg_router
  * @tparam Params Policies and child node types for the mode
  */
 template <typename... Params>
-class mode : public tree_node<Params...>
+class mode_t : public tree_node<Params...>
 {
 public:
     /** Constructor.
      *
      * @param params Policy and child instances
      */
-    constexpr explicit mode(Params... params) :
+    constexpr explicit mode_t(Params... params) :
         tree_node<Params...>{std::move(params)...}
     {
     }
@@ -37,9 +37,9 @@ public:
         // children
         auto result = parsing::match_result{};
         if constexpr (traits::is_detected_v<parsing::has_long_name_checker,
-                                            mode>) {
+                                            mode_t>) {
             if ((token.prefix == parsing::prefix_type::NONE) &&
-                (token.name == mode::long_name())) {
+                (token.name == mode_t::long_name())) {
                 result.matched = parsing::match_result::MATCH;
             }
         } else {
@@ -52,4 +52,17 @@ public:
         return result;
     }
 };
+
+/** Constructs a mode_t with the given policies.
+ *
+ * This is used for similarity with arg_t.
+ * @tparam Params Policies and child node types for the mode
+ * @param params Pack of policy and child node instances
+ * @return Mode instance
+ */
+template <typename... Params>
+constexpr mode_t<Params...> mode(Params... params)
+{
+    return mode_t{std::move(params)...};
+}
 }  // namespace arg_router

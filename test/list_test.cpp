@@ -22,32 +22,32 @@ BOOST_AUTO_TEST_CASE(is_policy_test)
 BOOST_AUTO_TEST_CASE(constructor_test)
 {
     const auto l =
-        list{flag{policy::short_name<'a'>}, flag{policy::short_name<'b'>}};
+        list{flag(policy::short_name<'a'>), flag(policy::short_name<'b'>)};
     static_assert(
         std::is_same_v<
             std::decay_t<decltype(l.children())>,
             std::tuple<
-                flag<policy::short_name_t<traits::integral_constant<'a'>>>,
-                flag<policy::short_name_t<traits::integral_constant<'b'>>>>>,
+                flag_t<policy::short_name_t<traits::integral_constant<'a'>>>,
+                flag_t<policy::short_name_t<traits::integral_constant<'b'>>>>>,
         "Constructor test failed");
 
-    BOOST_CHECK_EQUAL(std::get<0>(l.children()).short_name(), 'a');
+    BOOST_CHECK_EQUAL(std::get<0>(l.children()).short_name(), "a");
 }
 
 BOOST_AUTO_TEST_CASE(list_expander_test)
 {
     const auto result = list_expander(
-        flag{policy::short_name<'a'>},
-        list{flag{policy::short_name<'b'>}, flag{policy::short_name<'c'>}},
-        flag{policy::short_name<'d'>});
+        flag(policy::short_name<'a'>),
+        list{flag(policy::short_name<'b'>), flag(policy::short_name<'c'>)},
+        flag(policy::short_name<'d'>));
     static_assert(
         std::is_same_v<
             std::decay_t<decltype(result)>,
             std::tuple<
-                flag<policy::short_name_t<traits::integral_constant<'a'>>>,
-                flag<policy::short_name_t<traits::integral_constant<'b'>>>,
-                flag<policy::short_name_t<traits::integral_constant<'c'>>>,
-                flag<policy::short_name_t<traits::integral_constant<'d'>>>>>,
+                flag_t<policy::short_name_t<traits::integral_constant<'a'>>>,
+                flag_t<policy::short_name_t<traits::integral_constant<'b'>>>,
+                flag_t<policy::short_name_t<traits::integral_constant<'c'>>>,
+                flag_t<policy::short_name_t<traits::integral_constant<'d'>>>>>,
         "list_expander test failed");
 }
 
@@ -106,8 +106,8 @@ BOOST_AUTO_TEST_CASE(tree_node_policy_mix_test)
 using namespace arg_router;
 
 int main() {
-    list<flag<policy::short_name_t<traits::integral_constant<'a'>>,
-              policy::long_name_t<S_("hello")>>,
+    list<flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+                policy::long_name_t<S_("hello")>>,
          policy::short_name_t<traits::integral_constant<'b'>>>{};
         
     return 0;

@@ -7,7 +7,7 @@ namespace arg_router
 namespace policy
 {
 /** Used to a mark a command line argument type as required i.e. it is a parse
- * error if the flag is missing.
+ * error if the token is missing.
  */
 template <typename = void>  // This is needed due so it can be used in
 struct required_t {         // template template parameters

@@ -87,7 +87,7 @@ constexpr auto list_expander_impl(Result result, Next next, Others... others)
 }
 }  // namespace detail
 
-/** Takes a tuple of node parameters and flattens any list types within it.
+/** Takes a pack of node parameters and flattens any list types within it.
  *
  * @tparam Params Parameter types
  * @param params Parameter instances
@@ -96,9 +96,24 @@ constexpr auto list_expander_impl(Result result, Next next, Others... others)
 template <typename... Params>
 constexpr auto list_expander(Params... params)
 {
-    // Break params into tuples, where contiguous non-list types are collected
-    // up into tuples and so are the list children.  Eventually yielding a
-    // tuple of tuples, which can be flattened into a single level tuple
-    return detail::list_expander_impl(std::tuple{}, params...);
+    return detail::list_expander_impl(std::tuple{}, std::move(params)...);
+}
+
+/** Takes a tuple of node parameters and flattens any list types within it.
+ *
+ * @tparam Params Parameter types
+ * @param params Parameter instances
+ * @return Flattened tuple of nodes
+ */
+template <typename... Params>
+constexpr auto list_expander(std::tuple<Params...> params)
+{
+    return std::apply(
+        [](auto&... args) {
+            return detail::list_expander_impl(
+                std::tuple{},
+                std::forward<decltype(args)>(args)...);
+        },
+        params);
 }
 }  // namespace arg_router
