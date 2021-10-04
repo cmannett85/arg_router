@@ -4,9 +4,9 @@
 #include "arg_router/exception.hpp"
 #include "arg_router/parsing.hpp"
 #include "arg_router/policy/required.hpp"
-#include "arg_router/utility/string_view_ops.hpp"
 
 #include <bitset>
+#include <optional>
 #include <utility>
 
 namespace arg_router
@@ -64,20 +64,21 @@ public:
      */
     void parse(int argc, char* argv[]) const
     {
-        using namespace utility::string_view_ops;
-
         // Trying to handle collapsed short form tokens without expanding them
-        // is very painful...  Shame about the heap allocation though
+        // is very painful...  Shame about the heap allocation though, hopefully
+        // SSO will eliminate it for most cases
         auto tokens =
             parsing::expand_arguments(argc, const_cast<const char**>(argv));
 
-        // Match the initial token, the first token determines what type the
-        // result tuple will be
+        // If there are no tokens, then there must an anonymous mode that has
+        // no required arguments in it - otherwise it is an error
         if (tokens.empty()) {
-            // Find the anonymous mode, and call top_level_visitor on it
-            throw parse_exception{"Default value support not added yet!"};
+            handle_empty_args();
+            return;
         }
 
+        // Match the initial token, the first token determines what type the
+        // result tuple will be
         const auto found_child = parsing::visit_child(
             tokens.front(),
             this->children(),
@@ -91,13 +92,41 @@ public:
     }
 
 private:
+    void handle_empty_args() const
+    {
+        // To support custom modes, we don't just look for a mode_t, we need to
+        // find a top-level tree node that has no names - only mode-like types
+        // are allowed to be anonymous
+        auto found = false;
+        utility::tuple_iterator(
+            [&](auto /*i*/, auto& child) {
+                using child_type = std::decay_t<decltype(child)>;
+
+                if constexpr (is_tree_node_v<child_type> &&
+                              !traits::is_detected_v<
+                                  parsing::has_long_name_checker,
+                                  child_type> &&
+                              !traits::is_detected_v<
+                                  parsing::has_short_name_checker,
+                                  child_type>) {
+                    found = true;
+                    top_level_visitor(child,
+                                      parsing::match_result{},
+                                      parsing::token_list{});
+                }
+            },
+            this->children());
+
+        if (!found) {
+            throw parse_exception{"No arguments provided"};
+        }
+    }
+
     template <typename Node>
     static void top_level_visitor(const Node& node,
                                   parsing::match_result m_result,
                                   parsing::token_list tokens)
     {
-        using namespace utility::string_view_ops;
-
         using node_type = std::decay_t<Node>;
         constexpr auto child_count =
             std::tuple_size_v<typename node_type::children_type>;
@@ -112,17 +141,18 @@ private:
 
         auto router_args = router_args_t{};
 
-        // We use a bitset to mark which router args have been process, this is
-        // so we can catch duplicate tokens and determine which required flags
-        // have been missed or non-required ones that need their default value
-        // assigning
+        // We use a bitset to mark which router args have been processed, this
+        // is so we can catch duplicate tokens and determine which required
+        // flags have been missed or non-required ones that need their default
+        // value assigning
         auto hit_mask = std::bitset<num_router_args>{};
 
         if constexpr (child_count > 0) {
-            // A mode-like type will have a match but no prefix type, we need to
-            // remove its token.  A positional arg will never match so they
+            // A mode-like type will have a match but no prefix type, so we need
+            // to remove its token.  A positional arg will never match so they
             // are not affected by this
-            if (tokens.front().prefix == parsing::prefix_type::NONE &&
+            if (!tokens.empty() &&
+                tokens.front().prefix == parsing::prefix_type::NONE &&
                 m_result.matched) {
                 tokens.pop_front();
             }
@@ -134,11 +164,11 @@ private:
                     tokens.front(),
                     node.children(),
                     [&](auto i, const auto& child, auto result) {
-                        mode_level_visitor<i>(child,
-                                              result,
-                                              router_args,
-                                              hit_mask,
-                                              tokens);
+                        process_token<i, Node>(child,
+                                               result,
+                                               router_args,
+                                               hit_mask,
+                                               tokens);
                     });
 
                 if (!found_child) {
@@ -148,45 +178,38 @@ private:
                 tokens.pop_front();
             }
 
-            // If the hit mask shows that not all required args have been hit,
-            // then throw.  Required arguments can not be top-level
-            check_hit_mask(node, hit_mask, router_args);
+            auto [fra, fhm] =
+                filter_aliased_results<Node>(hit_mask, router_args);
+            check_hit_mask(node, fhm, fra);
+
+            call_router(node, fra, tokens);
         } else {
             static_assert(num_router_args == 1,
                           "Should only have a single router arg if child has "
                           "no children");
 
-            process_token<0>(node, m_result, router_args, hit_mask, tokens);
+            process_token<0, void>(node,
+                                   m_result,
+                                   router_args,
+                                   hit_mask,
+                                   tokens);
             tokens.pop_front();
-        }
 
-        // If there are any tokens left over, then throw as they are unhandled
-        if (!tokens.empty()) {
-            throw parse_exception{"Unhandled argument", tokens.front()};
+            call_router(node, router_args, tokens);
         }
-
-        // Call the router, we should not get here without one as it is a rule
-        std::apply(node, std::move(router_args));
     }
 
-    template <std::size_t I, typename Node, typename RouterArgs, std::size_t N>
-    static void mode_level_visitor(const Node& node,
-                                   parsing::match_result m_result,
-                                   RouterArgs& router_args,
-                                   std::bitset<N>& hit_mask,
-                                   parsing::token_list& tokens)
+    template <std::size_t I,
+              typename Parent,
+              typename Node,
+              typename RouterArgs>
+    static void process_token(
+        const Node& node,
+        parsing::match_result m_result,
+        RouterArgs& router_args,
+        std::bitset<std::tuple_size_v<RouterArgs>>& hit_mask,
+        parsing::token_list& tokens)
     {
-        process_token<I>(node, m_result, router_args, hit_mask, tokens);
-    }
-
-    template <std::size_t I, typename Node, typename RouterArgs, std::size_t N>
-    static void process_token(const Node& node,
-                              parsing::match_result m_result,
-                              RouterArgs& router_args,
-                              std::bitset<N>& hit_mask,
-                              parsing::token_list& tokens)
-    {
-        using namespace utility::string_view_ops;
         using value_type = std::tuple_element_t<I, RouterArgs>;
         constexpr auto supports_multiple_values =
             traits::is_detected_v<parsing::has_push_back_checker, value_type>;
@@ -195,7 +218,13 @@ private:
             tokens.pop_front();  // Drop the argument token, the value follows
             auto value = parse_token_argument(node, tokens.front().name);
 
-            if constexpr (supports_multiple_values) {
+            if constexpr (traits::is_detected_v<
+                              parsing::has_aliased_node_indices,
+                              Node>) {
+                process_aliased_token<Node, Parent>(value,
+                                                    router_args,
+                                                    hit_mask);
+            } else if constexpr (supports_multiple_values) {
                 std::get<I>(router_args).push_back(std::move(value));
             } else {
                 if (hit_mask[I]) {
@@ -206,13 +235,21 @@ private:
                 std::get<I>(router_args) = std::move(value);
             }
         } else if constexpr (std::is_same_v<value_type, bool>) {
-            if (hit_mask[I]) {
-                throw parse_exception{"Argument has already been set",
-                                      tokens.front()};
-            }
+            if constexpr (traits::is_detected_v<
+                              parsing::has_aliased_node_indices,
+                              Node>) {
+                process_aliased_token<Node, Parent>(true,
+                                                    router_args,
+                                                    hit_mask);
+            } else {
+                if (hit_mask[I]) {
+                    throw parse_exception{"Argument has already been set",
+                                          tokens.front()};
+                }
 
-            // We have hit the flag, so set the value to true
-            std::get<I>(router_args) = true;
+                // We have hit the flag, so set the value to true
+                std::get<I>(router_args) = true;
+            }
         } else {
             // Counting flag
         }
@@ -233,36 +270,149 @@ private:
         }
     }
 
-    template <typename Node, std::size_t N, typename RouterArgs>
-    static void check_hit_mask(const Node& node,
-                               std::bitset<N> hit_mask,
-                               RouterArgs& router_args)
+    template <typename Node,
+              typename Parent,
+              typename ArgValue,
+              typename RouterArgs>
+    static void process_aliased_token(
+        const ArgValue& arg_value,
+        RouterArgs& router_args,
+        std::bitset<std::tuple_size_v<RouterArgs>>& hit_mask)
+    {
+        using parent_alias_indices =
+            typename Node::template aliased_node_indices<Parent>;
+        constexpr auto supports_multiple_values =
+            traits::is_detected_v<parsing::has_push_back_checker, ArgValue>;
+
+        // Assign the alias value to the aliased router args, and update the
+        // hitmask
+        std::apply(
+            [&](auto... i) {
+                if constexpr (supports_multiple_values) {
+                    (std::get<i>(router_args).push_back(arg_value), ...);
+                } else {
+                    (std::get<i>(router_args) = ... = arg_value);
+                }
+
+                // We could use another fold expression here, but I need the
+                // index of the already-hit arg for the error message, so we
+                // need to iterate
+                utility::tuple_iterator(
+                    [&](auto /*i*/, auto index) {
+                        if (hit_mask[index]) {
+                            using child_type = std::tuple_element_t<
+                                index,
+                                typename Parent::children_type>;
+                            throw parse_exception{
+                                "Argument has already been set",
+                                parsing::node_token_type<child_type>()};
+                        }
+                    },
+                    parent_alias_indices{});
+
+                (hit_mask[i] = ... = true);
+            },
+            parent_alias_indices{});
+    }
+
+    template <typename T>
+    struct is_second_an_alias {
+        constexpr static auto value =
+            traits::is_detected_v<parsing::has_aliased_node_indices,
+                                  boost::mp11::mp_second<T>>;
+    };
+
+    template <typename T>
+    using is_second_not_an_alias = boost::mp11::mp_not<is_second_an_alias<T>>;
+
+    template <typename Node, template <typename...> typename Filter>
+    using alias_indices = typename algorithm::unzip<  //
+        boost::mp11::mp_filter<                       //
+            Filter,
+            algorithm::zip_t<  //
+                boost::mp11::mp_iota_c<
+                    std::tuple_size_v<typename Node::children_type>>,
+                typename Node::children_type>>>::first_type;
+
+    template <typename Node, typename RouterArgs>
+    static auto filter_aliased_results(
+        std::bitset<std::tuple_size_v<RouterArgs>> hit_mask,
+        RouterArgs& router_args)
+    {
+        // Filter any alias children from the router args
+        using non_alias_indices = alias_indices<Node, is_second_not_an_alias>;
+        auto updated_router_args = std::apply(
+            [&](auto... I) {
+                return std::tuple{std::move(std::get<I>(router_args))...};
+            },
+            non_alias_indices{});
+
+        // Reverse sort the indices so they can be used to remove the hit mask
+        // entries that are for alias entries
+        using sorted_alias_indices = boost::mp11::mp_sort<
+            alias_indices<Node, is_second_an_alias>,
+            boost::mp11::mp_not_fn<boost::mp11::mp_less>::template fn>;
+        auto hit_mask_value = hit_mask.to_ullong();
+        std::apply(
+            [&](auto... I) {
+                ((hit_mask_value = algorithm::remove_bit<I>(hit_mask_value)),
+                 ...);
+            },
+            sorted_alias_indices{});
+
+        return std::pair{
+            std::move(updated_router_args),
+            std::bitset<std::tuple_size_v<non_alias_indices>>{hit_mask_value}};
+    }
+
+    template <typename Node, typename RouterArgs>
+    static void check_hit_mask(
+        const Node& node,
+        std::bitset<std::tuple_size_v<RouterArgs>> hit_mask,
+        RouterArgs& router_args)
     {
         static_assert((std::tuple_size_v<typename Node::children_type>) > 0,
                       "Node must be top-level, as its children are checked");
 
-        using namespace std::string_literals;
-        using namespace utility::string_view_ops;
+        using non_alias_indices = alias_indices<Node, is_second_not_an_alias>;
 
         utility::tuple_iterator(
-            [&](auto i, const auto& child) {
-                using node_type = std::decay_t<decltype(child)>;
+            [&](auto i, auto orig_index) {
+                using node_type =
+                    std::tuple_element_t<orig_index,
+                                         typename Node::children_type>;
 
                 if constexpr (policy::is_required_v<node_type>) {
-                    const auto name = parsing::node_name(child);
                     if (!hit_mask[i]) {
-                        throw parse_exception{"Missing required argument: "s +
-                                              name};
+                        throw parse_exception{
+                            "Missing required argument",
+                            parsing::node_token_type<node_type>()};
                     }
                 } else if constexpr (traits::is_detected_v<
                                          parsing::has_default_value,
                                          node_type>) {
                     if (!hit_mask[i]) {
-                        std::get<i>(router_args) = child.get_default_value();
+                        std::get<i>(router_args) =
+                            std::get<orig_index>(node.children())
+                                .get_default_value();
                     }
                 }
             },
-            node.children());
+            non_alias_indices{});
+    }
+
+    template <typename Node, typename RouterArgs>
+    static void call_router(const Node& node,
+                            RouterArgs& router_args,
+                            parsing::token_list& tokens)
+    {
+        // If there are any tokens left over, then throw as they are unhandled
+        if (!tokens.empty()) {
+            throw parse_exception{"Unhandled argument", tokens.front()};
+        }
+
+        // Call the router, we should not get here without one as it is a rule
+        std::apply(node, std::move(router_args));
     }
 };
 

@@ -90,7 +90,7 @@ template <typename T>
 struct is_specialisation : std::false_type {
 };
 
-template <template <typename...> class U, typename... Args>
+template <template <typename...> typename U, typename... Args>
 struct is_specialisation<U<Args...>> : std::true_type {
 };
 
@@ -125,7 +125,7 @@ struct is_specialisation_of<U<Args...>, U> : std::true_type {
  * @tparam T Type to test
  * @tparam U Unspecialised type to test against
  */
-template <typename T, template <typename...> class U>
+template <typename T, template <typename...> typename U>
 constexpr bool is_specialisation_of_v = is_specialisation_of<T, U>::value;
 
 /** True if @a T and @a U are specialisations of the same type.
@@ -166,10 +166,10 @@ using integral_constant = std::integral_constant<decltype(Value), Value>;
 
 namespace detail
 {
-template <template <typename...> class T, typename... Args>
+template <template <typename...> typename T, typename... Args>
 constexpr auto arg_extractor_impl(const T<Args...>&) -> std::tuple<Args...>{};
 
-template <template <typename...> class T, typename R, typename... Args>
+template <template <typename...> typename T, typename R, typename... Args>
 constexpr auto arg_extractor_impl(const T<R(Args...)>&)
     -> std::tuple<R, Args...>{};
 
@@ -197,13 +197,13 @@ using arg_extractor =
 
 namespace detail
 {
-template <template <class...> typename Trait,
+template <template <typename...> typename Trait,
           typename AlwaysVoid,
           typename... Args>
 struct is_detected_impl : std::false_type {
 };
 
-template <template <class...> typename Trait, typename... Args>
+template <template <typename...> typename Trait, typename... Args>
 struct is_detected_impl<Trait, std::void_t<Trait<Args...>>, Args...> :
     std::true_type {
 };
@@ -225,7 +225,7 @@ struct is_detected_impl<Trait, std::void_t<Trait<Args...>>, Args...> :
  * @tparam Trait Trait to test with @a T
  * @tparam T Type to test against @a Trait
  */
-template <template <class...> typename Trait, typename T>
+template <template <typename...> typename Trait, typename T>
 using is_detected = detail::is_detected_impl<Trait, void, T>;
 
 /** Helper variable for is_detected.
@@ -233,7 +233,7 @@ using is_detected = detail::is_detected_impl<Trait, void, T>;
  * @tparam Trait Trait to test with @a T
  * @tparam T Type to test against @a Trait
  */
-template <template <class...> typename Trait, typename T>
+template <template <typename...> typename Trait, typename T>
 constexpr bool is_detected_v = is_detected<Trait, T>::value;
 
 /** Returns the L1 cache size.

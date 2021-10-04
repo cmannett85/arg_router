@@ -3,6 +3,7 @@
 #include "arg_router/arg.hpp"
 #include "arg_router/flag.hpp"
 #include "arg_router/mode.hpp"
+#include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/custom_parser.hpp"
 #include "arg_router/policy/default_value.hpp"
 #include "arg_router/policy/description.hpp"
@@ -231,20 +232,11 @@ struct parent_type {
     }
 };
 
-template <bool Invert, template <typename...> typename Policy>
+template <template <typename...> typename Policy>
 struct basic_must_have_policy {
-    template <typename T, typename...>
-    constexpr static void check()
-    {
-        constexpr auto result =
-            algorithm::has_specialisation_v<Policy, typename T::policies_type>;
-
-        if constexpr (Invert) {
-            static_assert(!result, "T must not have this policy");
-        } else {
-            static_assert(result, "T must have this policy");
-        }
-    }
+    template <typename T>
+    constexpr static auto value =
+        algorithm::has_specialisation_v<Policy, typename T::policies_type>;
 };
 
 /** A rule condition that checks that @a T's policies do contain @a Policy.
@@ -252,41 +244,38 @@ struct basic_must_have_policy {
  * @tparam Policy Despecialised policy to check for
  */
 template <template <typename...> typename Policy>
-using must_have_policy = basic_must_have_policy<false, Policy>;
+struct must_have_policy {
+    template <typename T, typename...>
+    constexpr static void check()
+    {
+        static_assert(basic_must_have_policy<Policy>::template value<T>,
+                      "T must have this policy");
+    }
+};
 
 /** A rule condition that checks that @a T's policies do not contain @a Policy.
  *
  * @tparam Policy Despecialised policy to check for
  */
 template <template <typename...> typename Policy>
-using must_not_have_policy = basic_must_have_policy<true, Policy>;
+struct must_not_have_policy {
+    template <typename T, typename...>
+    constexpr static void check()
+    {
+        static_assert(!basic_must_have_policy<Policy>::template value<T>,
+                      "T must not have this policy");
+    }
+};
 
-template <bool Invert, template <typename...> typename Policy>
+template <template <typename...> typename Policy>
 struct basic_child_must_have_policy {
     template <typename Child>
     using child_checker =
         algorithm::has_specialisation<Policy, typename Child::policies_type>;
 
-    template <typename T, typename...>
-    constexpr static void check()
-    {
-        constexpr auto num_children =
-            std::tuple_size_v<typename T::children_type>;
-
-        if constexpr (num_children > 0) {
-            constexpr auto result =
-                boost::mp11::mp_all_of<typename T::children_type,
-                                       child_checker>::value;
-
-            if constexpr (Invert) {
-                static_assert(!result,
-                              "All children of T must not have this policy");
-            } else {
-                static_assert(result,
-                              "All children of T must have this policy");
-            }
-        }
-    }
+    template <typename T>
+    constexpr static auto value =
+        boost::mp11::mp_all_of<typename T::children_type, child_checker>::value;
 };
 
 /** A rule condition that checks that every child under @a T has a particular
@@ -295,7 +284,14 @@ struct basic_child_must_have_policy {
  * @tparam Policy Despecialised policy to check for
  */
 template <template <typename...> typename Policy>
-using child_must_have_policy = basic_child_must_have_policy<false, Policy>;
+struct child_must_have_policy {
+    template <typename T, typename...>
+    constexpr static void check()
+    {
+        static_assert(basic_child_must_have_policy<Policy>::template value<T>,
+                      "All children of T must have this policy");
+    }
+};
 
 /** A rule condition that checks that every child under @a T does not have a
  * particular policy.
@@ -303,7 +299,17 @@ using child_must_have_policy = basic_child_must_have_policy<false, Policy>;
  * @tparam Policy Despecialised policy to check for
  */
 template <template <typename...> typename Policy>
-using child_must_not_have_policy = basic_child_must_have_policy<true, Policy>;
+struct child_must_not_have_policy {
+    template <typename T, typename...>
+    constexpr static void check()
+    {
+        if constexpr ((std::tuple_size_v<typename T::children_type>) > 0) {
+            static_assert(
+                !basic_child_must_have_policy<Policy>::template value<T>,
+                "All children of T must not have this policy");
+        }
+    }
+};
 
 /** A rule condition that checks if there are more than one child of T that is a
  * mode, all must be named.
@@ -381,6 +387,43 @@ struct one_of_policies_if_parent_is_not_root {
     }
 };
 
+/** A rule condition that checks the number of children in @a T is greater than
+ * @a MinChildren.
+ *
+ * @tparam MinChildren Minimum number of children @a T must have
+ */
+template <std::size_t MinChildren>
+struct min_child_count {
+    template <typename T, typename...>
+    constexpr static void check()
+    {
+        constexpr auto num_children =
+            std::tuple_size_v<typename T::children_type>;
+
+        static_assert(num_children >= MinChildren,
+                      "Minimum child count not reached");
+    }
+};
+
+/** A rule condition that checks the alias names of @a T are not in the owner.
+ */
+struct aliased_must_not_be_in_owner {
+    template <typename Alias, typename... Parents>
+    constexpr static void check()
+    {
+        static_assert((sizeof...(Parents) > 0), "Alias must have an owner");
+
+        using our_policies = typename Alias::aliased_policies_type;
+        using owner_type = boost::mp11::mp_first<std::tuple<Parents...>>;
+        using owner_policies = typename owner_type::policies_type;
+
+        using policy_intersection =
+            boost::mp11::mp_set_intersection<our_policies, owner_policies>;
+        static_assert(std::tuple_size_v<policy_intersection> == 0,
+                      "Alias names cannot appear in owner");
+    }
+};
+
 /** The default validator instance. */
 inline constexpr auto default_validator = validator<
     rule<policy::long_name_t<S_("rule")>,
@@ -399,6 +442,10 @@ inline constexpr auto default_validator = validator<
          despecialised_unique_in_owner>,
     rule<policy::default_value<int>,  //
          despecialised_unique_in_owner>,
+    rule<policy::alias_t<
+             policy::short_name_t<traits::integral_constant<'a'>>>,  //
+         aliased_must_not_be_in_owner,
+         despecialised_unique_in_owner>,
     rule<flag_t<>,  //
          must_not_have_policy<policy::required_t>,
          must_not_have_policy<policy::default_value>,
@@ -410,20 +457,23 @@ inline constexpr auto default_validator = validator<
          must_not_have_policy<policy::validation::validator>,
          at_least_one_of_policies<policy::long_name_t, policy::short_name_t>,
          one_of_policies_if_parent_is_not_root<policy::required_t,
-                                               policy::default_value>,
+                                               policy::default_value,
+                                               policy::alias_t>,
          must_have_policy<policy::description_t>>,
     rule<mode_t<>,  //
-         must_have_policy<policy::router>,
          must_not_have_policy<policy::short_name_t>,
          must_not_have_policy<policy::custom_parser>,
-         must_not_have_policy<policy::default_value>,
-         must_not_have_policy<policy::required_t>,
+         child_must_not_have_policy<policy::router>,
+         // By requiring its parent to be root, in 'inherits' the root's child
+         // policy requirements
          parent_type<0, root_t<policy::validation::validator<>>>>,
     rule<root_t<policy::validation::validator<>>,  //
          must_have_policy<policy::validation::validator>,
+         min_child_count<1>,
          child_must_have_policy<policy::router>,
          child_must_not_have_policy<policy::required_t>,
          child_must_not_have_policy<policy::default_value>,
+         child_must_not_have_policy<policy::alias_t>,
          multiple_named_modes<mode_t>>>{};
 }  // namespace validation
 }  // namespace policy

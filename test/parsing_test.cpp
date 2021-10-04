@@ -1,5 +1,6 @@
 #include "arg_router/parsing.hpp"
 #include "arg_router/flag.hpp"
+#include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/short_name.hpp"
 #include "arg_router/policy/validator.hpp"
@@ -13,6 +14,16 @@ using namespace arg_router;
 using namespace std::string_view_literals;
 
 BOOST_AUTO_TEST_SUITE(parsing_suite)
+
+BOOST_AUTO_TEST_CASE(has_aliased_node_indices_test)
+{
+    using flag_type = flag_t<policy::long_name_t<S_("flag1")>,
+                             policy::alias_t<policy::long_name_t<S_("Hello")>>>;
+
+    static_assert(
+        traits::is_detected_v<parsing::has_aliased_node_indices, flag_type>,
+        "Fail");
+}
 
 BOOST_AUTO_TEST_CASE(flag_default_match_test)
 {

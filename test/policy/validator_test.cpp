@@ -195,6 +195,38 @@ BOOST_AUTO_TEST_CASE(one_of_policies_if_parent_is_not_root_test)
                   arg_t<int, policy::description_t<S_("desc")>>>>();
 }
 
+BOOST_AUTO_TEST_CASE(min_child_count_test)
+{
+    policy::validation::min_child_count<2>::check<root_t<
+        flag_t<policy::long_name_t<S_("test1")>>,
+        flag_t<policy::long_name_t<S_("test2")>>,
+        std::decay_t<decltype(policy::validation::default_validator)>>>();
+
+    policy::validation::min_child_count<2>::check<root_t<
+        flag_t<policy::long_name_t<S_("test1")>>,
+        flag_t<policy::long_name_t<S_("test2")>>,
+        flag_t<policy::long_name_t<S_("test3")>>,
+        std::decay_t<decltype(policy::validation::default_validator)>>>();
+}
+
+BOOST_AUTO_TEST_CASE(aliased_must_not_be_in_owner_test)
+{
+    policy::validation::aliased_must_not_be_in_owner::check<
+        policy::alias_t<policy::long_name_t<S_("hello")>>,
+        flag_t<policy::short_name_t<traits::integral_constant<'a'>>>>();
+
+    policy::validation::aliased_must_not_be_in_owner::check<
+        policy::alias_t<policy::long_name_t<S_("hello")>>,
+        flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+               policy::long_name_t<S_("aaaa")>>>();
+
+    policy::validation::aliased_must_not_be_in_owner::check<
+        policy::alias_t<policy::long_name_t<S_("hello")>,
+                        policy::long_name_t<S_("bbbb")>>,
+        flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+               policy::long_name_t<S_("aaaa")>>>();
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE(death_suite)
@@ -431,6 +463,78 @@ int main() {
 }
     )",
         "T must have one of the assigned policies");
+}
+
+BOOST_AUTO_TEST_CASE(min_child_count_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/validator.hpp"
+using namespace arg_router;
+
+int main() {
+    policy::validation::min_child_count<5>::check<root_t<
+        flag_t<policy::long_name_t<S_("test1")>>,
+        flag_t<policy::long_name_t<S_("test2")>>,
+        flag_t<policy::long_name_t<S_("test3")>>,
+        std::decay_t<decltype(policy::validation::default_validator)>>>();
+    return 0;
+}
+    )",
+        "Minimum child count not reached");
+}
+
+BOOST_AUTO_TEST_CASE(must_have_an_owner_aliased_must_not_be_in_owner_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/validator.hpp"
+using namespace arg_router;
+
+int main() {
+    policy::validation::aliased_must_not_be_in_owner::check<
+        policy::alias_t<policy::long_name_t<S_("hello")>>>();
+    return 0;
+}
+    )",
+        "Alias must have an owner");
+}
+
+BOOST_AUTO_TEST_CASE(single_aliased_must_not_be_in_owner_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/validator.hpp"
+using namespace arg_router;
+
+int main() {
+    policy::validation::aliased_must_not_be_in_owner::check<
+        policy::alias_t<policy::long_name_t<S_("hello")>>,
+        flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+               policy::long_name_t<S_("hello")>>>();
+    return 0;
+}
+    )",
+        "Alias names cannot appear in owner");
+}
+
+BOOST_AUTO_TEST_CASE(multiple_aliased_must_not_be_in_owner_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/validator.hpp"
+using namespace arg_router;
+
+int main() {
+    policy::validation::aliased_must_not_be_in_owner::check<
+        policy::alias_t<policy::long_name_t<S_("hello")>,
+                        policy::long_name_t<S_("bbbb")>>,
+        flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+               policy::long_name_t<S_("bbbb")>>>();
+    return 0;
+}
+    )",
+        "Alias names cannot appear in owner");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

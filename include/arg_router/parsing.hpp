@@ -202,6 +202,14 @@ template <typename T>
 using has_push_back_checker = decltype(std::declval<T&>().push_back(
     std::declval<typename T::value_type>()));
 
+/** Can be used by traits::is_detected to determine if a type has a
+ * alias_node_indices typedef.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+using has_aliased_node_indices = typename T::aliased_policies_type;
+
 /** The standard implementation of the match method.
  *
  * @tparam T Type to implement the method for
@@ -229,19 +237,38 @@ match_result default_match(const token_type& token)
 
 /** Returns the node name, the long form name is preferred.
  *
- * @note If @a Node does not have a long or short name, it is a complication
+ * @note If @a Node does not have a long or short name, it is a compliation
  * failure
  * @tparam Node Node type
- * @param node Node instance
  * @return Node name
  */
 template <typename Node>
-std::string_view node_name(const Node& node)
+constexpr std::string_view node_name()
 {
     if constexpr (traits::is_detected_v<has_long_name_checker, Node>) {
-        return node.long_name();
+        return Node::long_name();
     } else if constexpr (traits::is_detected_v<has_short_name_checker, Node>) {
-        return node.short_name();
+        return Node::short_name();
+    } else {
+        static_assert(traits::always_false_v<Node>,
+                      "Node does not have a name");
+    }
+}
+
+/** Returns the token_type of @a Node, the long form name is preferred.
+ *
+ * @note If @a Node does not have a long or short name, it is a compliation
+ * failure
+ * @tparam Node Node type
+ * @return token_type
+ */
+template <typename Node>
+token_type node_token_type()
+{
+    if constexpr (traits::is_detected_v<has_long_name_checker, Node>) {
+        return {prefix_type::LONG, std::string{Node::long_name()}};
+    } else if constexpr (traits::is_detected_v<has_short_name_checker, Node>) {
+        return {prefix_type::SHORT, std::string{Node::short_name()}};
     } else {
         static_assert(traits::always_false_v<Node>,
                       "Node does not have a name");
@@ -380,7 +407,8 @@ std::enable_if_t<std::is_arithmetic_v<T>, T> parse(std::string_view token)
 }
 
 template <>
-inline std::string_view parse<std::string_view>(std::string_view token)
+constexpr inline std::string_view parse<std::string_view>(
+    std::string_view token)
 {
     return token;
 }

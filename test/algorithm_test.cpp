@@ -352,6 +352,14 @@ BOOST_AUTO_TEST_CASE(unzip_test)
     test::data_set(f, data_set{});
 }
 
+BOOST_AUTO_TEST_CASE(remove_bit_test)
+{
+    static_assert(algorithm::remove_bit<4>(0b1111u) == 0b1111u, "Fail");
+    static_assert(algorithm::remove_bit<4>(0b11111u) == 0b1111u, "Fail");
+    static_assert(algorithm::remove_bit<2>(0b100000u) == 0b10000u, "Fail");
+    static_assert(algorithm::remove_bit<2>(0b100010u) == 0b10010u, "Fail");
+}
+
 BOOST_AUTO_TEST_SUITE(death_suite)
 
 BOOST_AUTO_TEST_CASE(zip_test)
@@ -367,6 +375,42 @@ int main() {
 }
     )",
         "First and Second tuples must contain the same number of elements");
+}
+
+BOOST_AUTO_TEST_CASE(not_integral_remove_bit_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/algorithm.hpp"
+int main() {
+    return arg_router::algorithm::remove_bit<4>(3.14);
+}
+    )",
+        "T must be an unsigned integral");
+}
+
+BOOST_AUTO_TEST_CASE(not_unsigned_remove_bit_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/algorithm.hpp"
+int main() {
+    return arg_router::algorithm::remove_bit<4>(0b11111);
+}
+    )",
+        "T must be an unsigned integral");
+}
+
+BOOST_AUTO_TEST_CASE(n_too_large_remove_bit_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/algorithm.hpp"
+int main() {
+    return arg_router::algorithm::remove_bit<8, std::uint8_t>(0b11111);
+}
+    )",
+        "N is larger than the number of bit available");
 }
 
 BOOST_AUTO_TEST_SUITE_END()
