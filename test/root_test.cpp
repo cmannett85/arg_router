@@ -46,19 +46,6 @@ BOOST_AUTO_TEST_CASE(constructor_validation_test)
     BOOST_CHECK_EQUAL(std::get<1>(r.children()).long_name(), "goodbye");
 }
 
-BOOST_AUTO_TEST_CASE(no_children_parse_test)
-{
-    const auto r = root(policy::validation::default_validator);
-
-    auto args = std::vector{"foo"};
-    BOOST_CHECK_EXCEPTION(r.parse(args.size(), const_cast<char**>(args.data())),
-                          parse_exception,
-                          [](const auto& e) {
-                              return e.what() ==
-                                     "Default value support not added yet!"s;
-                          });
-}
-
 BOOST_AUTO_TEST_CASE(unknown_argument_parse_test)
 {
     auto router_hit = false;
@@ -259,7 +246,7 @@ BOOST_AUTO_TEST_CASE(required_arg_parse_test)
                           parse_exception,
                           [](const auto& e) {
                               return e.what() ==
-                                     "Missing required argument: arg"s;
+                                     "Missing required argument: --arg"s;
                           });
 }
 
@@ -277,10 +264,8 @@ BOOST_AUTO_TEST_CASE(anonymous_mode_single_arg_default_parse_test)
                            policy::required,
                            policy::description<S_("Arg2 description")>),
                   policy::router{[&](auto hello, auto arg1, auto arg2) {
+                      result = {hello, arg1, arg2};
                       router_hit = true;
-                      std::get<0>(result) = hello;
-                      std::get<1>(result) = arg1;
-                      std::get<2>(result) = arg2;
                   }}),
              policy::validation::default_validator);
 
@@ -308,6 +293,37 @@ BOOST_AUTO_TEST_CASE(anonymous_mode_single_arg_default_parse_test)
         });
 }
 
+BOOST_AUTO_TEST_CASE(anonymous_mode_no_tokens_parse_test)
+{
+    auto router_hit = false;
+    auto result = std::tuple<bool, int, int>{};
+    const auto r =
+        root(mode(flag(policy::long_name<S_("hello")>,
+                       policy::description<S_("Hello description")>),
+                  arg<int>(policy::long_name<S_("arg1")>,
+                           policy::default_value{42},
+                           policy::description<S_("Arg1 description")>),
+                  arg<int>(policy::long_name<S_("arg2")>,
+                           policy::default_value{84},
+                           policy::description<S_("Arg2 description")>),
+                  policy::router{[&](auto hello, auto arg1, auto arg2) {
+                      result = {hello, arg1, arg2};
+                      router_hit = true;
+                  }}),
+             policy::validation::default_validator);
+
+    result = {};
+    router_hit = false;
+
+    auto args = std::vector{"foo"};
+    r.parse(args.size(), const_cast<char**>(args.data()));
+    BOOST_CHECK(router_hit);
+
+    BOOST_CHECK_EQUAL(std::get<0>(result), false);
+    BOOST_CHECK_EQUAL(std::get<1>(result), 42);
+    BOOST_CHECK_EQUAL(std::get<2>(result), 84);
+}
+
 BOOST_AUTO_TEST_CASE(multiple_required_arg_parse_test)
 {
     const auto r =
@@ -329,7 +345,7 @@ BOOST_AUTO_TEST_CASE(multiple_required_arg_parse_test)
                           parse_exception,
                           [](const auto& e) {
                               return e.what() ==
-                                     "Missing required argument: arg1"s;
+                                     "Missing required argument: --arg1"s;
                           });
 }
 
@@ -682,6 +698,124 @@ BOOST_AUTO_TEST_CASE(named_multi_mode_using_list_parse_test)
                        1,
                        std::vector{false, true},
                        ""},
+        });
+}
+
+BOOST_AUTO_TEST_CASE(alias_flag_parse_test)
+{
+    auto router_hit = false;
+    auto result = std::array<bool, 3>{};
+    const auto r =
+        root(mode(flag(policy::long_name<S_("flag1")>,
+                       policy::description<S_("First description")>),
+                  flag(policy::long_name<S_("flag2")>,
+                       policy::description<S_("Second description")>),
+                  flag(policy::long_name<S_("flag3")>,
+                       policy::description<S_("Third description")>),
+                  flag(policy::short_name<'a'>,
+                       policy::alias(policy::long_name<S_("flag1")>,
+                                     policy::long_name<S_("flag3")>),
+                       policy::description<S_("Alias description")>),
+                  policy::router{[&](bool flag1, bool flag2, bool flag3) {
+                      result = {flag1, flag2, flag3};
+                      router_hit = true;
+                  }}),
+             policy::validation::default_validator);
+
+    auto f = [&](auto args, auto expected, std::string fail_message) {
+        result.fill(false);
+        router_hit = false;
+
+        try {
+            r.parse(args.size(), const_cast<char**>(args.data()));
+            BOOST_CHECK(fail_message.empty());
+            BOOST_CHECK(router_hit);
+            BOOST_CHECK_EQUAL(result[0], expected[0]);
+            BOOST_CHECK_EQUAL(result[1], expected[1]);
+            BOOST_CHECK_EQUAL(result[2], expected[2]);
+        } catch (parse_exception& e) {
+            BOOST_CHECK_EQUAL(fail_message, e.what());
+        }
+    };
+
+    test::data_set(f,
+                   {
+                       std::tuple{std::vector{"foo", "--flag1"},
+                                  std::array{true, false, false},
+                                  ""},
+                       std::tuple{std::vector{"foo", "--flag2"},
+                                  std::array{false, true, false},
+                                  ""},
+                       std::tuple{std::vector{"foo", "--flag3"},
+                                  std::array{false, false, true},
+                                  ""},
+                       std::tuple{std::vector{"foo", "-a"},
+                                  std::array{true, false, true},
+                                  ""},
+                       std::tuple{std::vector{"foo", "-a", "--flag2"},
+                                  std::array{true, true, true},
+                                  ""},
+                       std::tuple{std::vector{"foo", "-a", "--flag1"},
+                                  std::array{true, true, true},
+                                  "Argument has already been set: --flag1"},
+                   });
+}
+
+BOOST_AUTO_TEST_CASE(alias_arg_parse_test)
+{
+    auto router_hit = false;
+    auto result = std::tuple<bool, int, int>{};
+    const auto r =
+        root(mode(arg<bool>(policy::long_name<S_("arg1")>,
+                            policy::required,
+                            policy::description<S_("First description")>),
+                  arg<int>(policy::long_name<S_("arg2")>,
+                           policy::default_value(42),
+                           policy::description<S_("Second description")>),
+                  arg<int>(policy::long_name<S_("arg3")>,
+                           policy::default_value(84),
+                           policy::description<S_("Third description")>),
+                  arg<int>(policy::short_name<'a'>,
+                           policy::alias(policy::long_name<S_("arg2")>,
+                                         policy::long_name<S_("arg3")>),
+                           policy::description<S_("Alias description")>),
+                  policy::router{[&](bool arg1, int arg2, int arg3) {
+                      result = {arg1, arg2, arg3};
+                      router_hit = true;
+                  }}),
+             policy::validation::default_validator);
+
+    auto f = [&](auto args, auto expected, std::string fail_message) {
+        result = {};
+        router_hit = false;
+
+        try {
+            r.parse(args.size(), const_cast<char**>(args.data()));
+            BOOST_CHECK(fail_message.empty());
+            BOOST_CHECK(router_hit);
+            BOOST_CHECK_EQUAL(std::get<0>(result), std::get<0>(expected));
+            BOOST_CHECK_EQUAL(std::get<1>(result), std::get<1>(expected));
+            BOOST_CHECK_EQUAL(std::get<2>(result), std::get<2>(expected));
+        } catch (parse_exception& e) {
+            BOOST_CHECK_EQUAL(fail_message, e.what());
+        }
+    };
+
+    test::data_set(
+        f,
+        {
+            std::tuple{std::vector{"foo", "--arg1", "true"},
+                       std::tuple{true, 42, 84},
+                       ""},
+            std::tuple{std::vector{"foo", "--arg1", "false", "-a", "9"},
+                       std::tuple{false, 9, 9},
+                       ""},
+            std::tuple{std::vector{"foo", "--arg2", "13", "-a", "9"},
+                       std::tuple{false, 9, 9},
+                       "Argument has already been set: --arg2"},
+            std::tuple{std::vector{"foo", "-a", "9"},
+                       std::tuple{false, 9, 9},
+                       "Missing required argument: --arg1"},
         });
 }
 

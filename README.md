@@ -32,7 +32,7 @@ ar::root(
             arp::long_name<S_("show-all")>,
             arp::description<S_("Equivalent to -nE")>,
             arp::short_name<'A'>,
-            arp::alias<ar::short_name<'E'>, ar::short_name<'n'>>),
+            arp::alias(ar::short_name<'E'>, ar::short_name<'n'>)),
         ar::flag(
             arp::long_name<S_("show-ends")>,
             arp::description<S_("Display $ at end of each line")>,
@@ -209,7 +209,7 @@ ar::mode(
             arp::short_name<'v'>,
             arp::max_count<3>,
             arp::description<S_("Verbosity level, number of 'v's sets level")>,
-            arp::alias<arp::long_name<S_("verbose")>>),
+            arp::alias(arp::long_name<S_("verbose")>)),
         ar::arg<verbosity_level_t>(
             arp::long_name<S_("verbose")>,
             arp::description<S_("Verbosity level")>,
