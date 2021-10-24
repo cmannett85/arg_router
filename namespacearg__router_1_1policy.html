@@ -81,6 +81,8 @@ $(function() {
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1alias__t.html">alias_t</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1count__t.html">count_t</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1custom__parser.html">custom_parser</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1default__value.html">default_value</a></td></tr>
@@ -106,6 +108,16 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
+<tr class="memitem:abc2c59e25394199ad1c83b6c65016113"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#abc2c59e25394199ad1c83b6c65016113">has_contiguous_value_tokens_t</a> = detail::basic_has_contiguous_value_tokens_t&lt;&gt;</td></tr>
+<tr class="separator:abc2c59e25394199ad1c83b6c65016113"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43b8279565fc8673c8b404b8c99e8438"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a43b8279565fc8673c8b404b8c99e8438"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#a43b8279565fc8673c8b404b8c99e8438">has_contiguous_value_tokens</a> = std::is_base_of&lt; <a class="el" href="namespacearg__router_1_1policy.html#abc2c59e25394199ad1c83b6c65016113">has_contiguous_value_tokens_t</a>, T &gt;</td></tr>
+<tr class="separator:a43b8279565fc8673c8b404b8c99e8438"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca0a098fd684cd70d8f8e8f457357e92"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#aca0a098fd684cd70d8f8e8f457357e92">has_value_tokens_t</a> = detail::basic_has_value_tokens_t&lt;&gt;</td></tr>
+<tr class="separator:aca0a098fd684cd70d8f8e8f457357e92"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af71d754d9e9e625b098bb6c80a82eae6"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:af71d754d9e9e625b098bb6c80a82eae6"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#af71d754d9e9e625b098bb6c80a82eae6">has_value_tokens</a> = std::is_base_of&lt; <a class="el" href="namespacearg__router_1_1policy.html#aca0a098fd684cd70d8f8e8f457357e92">has_value_tokens_t</a>, T &gt;</td></tr>
+<tr class="separator:af71d754d9e9e625b098bb6c80a82eae6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a408a1ac19cbc1f4ad69630f965f976d8"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a408a1ac19cbc1f4ad69630f965f976d8"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#a408a1ac19cbc1f4ad69630f965f976d8">is_required</a> = std::is_base_of&lt; <a class="el" href="structarg__router_1_1policy_1_1required__t.html">required_t</a>&lt;&gt;, T &gt;</td></tr>
 <tr class="separator:a408a1ac19cbc1f4ad69630f965f976d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -118,18 +130,27 @@ Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
+<tr class="memitem:a88a1f88c79e069066abf89b205002cc5"><td class="memTemplParams" colspan="2">template&lt;std::size_t Value&gt; </td></tr>
+<tr class="memitem:a88a1f88c79e069066abf89b205002cc5"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#a88a1f88c79e069066abf89b205002cc5">count</a> = <a class="el" href="classarg__router_1_1policy_1_1count__t.html">count_t</a>&lt;<a class="el" href="namespacearg__router_1_1traits.html#ab335cfad0ef1eeed3ad34d06694b0244">traits::integral_constant</a>&lt;Value&gt;&gt;{}</td></tr>
+<tr class="separator:a88a1f88c79e069066abf89b205002cc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adeab7d3692839fb3dcc864b5cc1730b7"><td class="memTemplParams" colspan="2">template&lt;typename S &gt; </td></tr>
 <tr class="memitem:adeab7d3692839fb3dcc864b5cc1730b7"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#adeab7d3692839fb3dcc864b5cc1730b7">description</a> = <a class="el" href="classarg__router_1_1policy_1_1description__t.html">description_t</a>&lt;S&gt;{}</td></tr>
 <tr class="separator:adeab7d3692839fb3dcc864b5cc1730b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2410cdcdd4e88b0e155d24fb832b7719"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a2410cdcdd4e88b0e155d24fb832b7719"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#a2410cdcdd4e88b0e155d24fb832b7719">has_contiguous_value_tokens_v</a></td></tr>
+<tr class="separator:a2410cdcdd4e88b0e155d24fb832b7719"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16e00d607bc8bbdcd1b4609016fb716c"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a16e00d607bc8bbdcd1b4609016fb716c"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#a16e00d607bc8bbdcd1b4609016fb716c">has_value_tokens_v</a> = <a class="el" href="namespacearg__router_1_1policy.html#af71d754d9e9e625b098bb6c80a82eae6">has_value_tokens</a>&lt;T&gt;::value</td></tr>
+<tr class="separator:a16e00d607bc8bbdcd1b4609016fb716c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab90e775f037fb5ea273c4a67abbede85"><td class="memTemplParams" colspan="2">template&lt;typename S &gt; </td></tr>
 <tr class="memitem:ab90e775f037fb5ea273c4a67abbede85"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#ab90e775f037fb5ea273c4a67abbede85">long_name</a> = <a class="el" href="classarg__router_1_1policy_1_1long__name__t.html">long_name_t</a>&lt;S&gt;{}</td></tr>
 <tr class="separator:ab90e775f037fb5ea273c4a67abbede85"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af48ba27f975e36205df8a6a1ceb07be2"><td class="memTemplParams" colspan="2">template&lt;auto Value&gt; </td></tr>
-<tr class="memitem:af48ba27f975e36205df8a6a1ceb07be2"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#af48ba27f975e36205df8a6a1ceb07be2">min_count</a> = <a class="el" href="classarg__router_1_1policy_1_1min__count__t.html">min_count_t</a>&lt;<a class="el" href="namespacearg__router_1_1traits.html#ab335cfad0ef1eeed3ad34d06694b0244">traits::integral_constant</a>&lt;Value&gt;&gt;{}</td></tr>
-<tr class="separator:af48ba27f975e36205df8a6a1ceb07be2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1ed9134eb30f23ae83b00d4ca7300790"><td class="memTemplParams" colspan="2">template&lt;auto Value&gt; </td></tr>
+<tr class="memitem:a1ed9134eb30f23ae83b00d4ca7300790"><td class="memTemplParams" colspan="2">template&lt;std::size_t Value&gt; </td></tr>
 <tr class="memitem:a1ed9134eb30f23ae83b00d4ca7300790"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#a1ed9134eb30f23ae83b00d4ca7300790">max_count</a> = <a class="el" href="classarg__router_1_1policy_1_1max__count__t.html">max_count_t</a>&lt;<a class="el" href="namespacearg__router_1_1traits.html#ab335cfad0ef1eeed3ad34d06694b0244">traits::integral_constant</a>&lt;Value&gt;&gt;{}</td></tr>
 <tr class="separator:a1ed9134eb30f23ae83b00d4ca7300790"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af48ba27f975e36205df8a6a1ceb07be2"><td class="memTemplParams" colspan="2">template&lt;std::size_t Value&gt; </td></tr>
+<tr class="memitem:af48ba27f975e36205df8a6a1ceb07be2"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#af48ba27f975e36205df8a6a1ceb07be2">min_count</a> = <a class="el" href="classarg__router_1_1policy_1_1min__count__t.html">min_count_t</a>&lt;<a class="el" href="namespacearg__router_1_1traits.html#ab335cfad0ef1eeed3ad34d06694b0244">traits::integral_constant</a>&lt;Value&gt;&gt;{}</td></tr>
+<tr class="separator:af48ba27f975e36205df8a6a1ceb07be2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8ac6bf312e1c3d038762a575db938b88"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a8ac6bf312e1c3d038762a575db938b88"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#a8ac6bf312e1c3d038762a575db938b88">is_policy_v</a> = <a class="el" href="structarg__router_1_1policy_1_1is__policy.html">is_policy</a>&lt;T&gt;::value</td></tr>
 <tr class="separator:a8ac6bf312e1c3d038762a575db938b88"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -149,6 +170,92 @@ Variables</h2></td></tr>
 <div class="textblock"><p>Policy namespace.</p>
 <p><a class="el" href="namespacearg__router.html">arg_router</a> uses policies to compose behaviours on command line argument types. </p>
 </div><h2 class="groupheader">Typedef Documentation</h2>
+<a id="a43b8279565fc8673c8b404b8c99e8438"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a43b8279565fc8673c8b404b8c99e8438">&#9670;&nbsp;</a></span>has_contiguous_value_tokens</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="namespacearg__router_1_1policy.html#a43b8279565fc8673c8b404b8c99e8438">arg_router::policy::has_contiguous_value_tokens</a> = typedef std::is_base_of&lt;<a class="el" href="namespacearg__router_1_1policy.html#abc2c59e25394199ad1c83b6c65016113">has_contiguous_value_tokens_t</a>, T&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Evaluates to true if <em>T</em> is marked as having a value token.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>Type to test </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="has__contiguous__value__tokens_8hpp_source.html#l00032">32</a> of file <a class="el" href="has__contiguous__value__tokens_8hpp_source.html">has_contiguous_value_tokens.hpp</a>.</p>
+
+</div>
+</div>
+<a id="abc2c59e25394199ad1c83b6c65016113"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abc2c59e25394199ad1c83b6c65016113">&#9670;&nbsp;</a></span>has_contiguous_value_tokens_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="namespacearg__router_1_1policy.html#abc2c59e25394199ad1c83b6c65016113">arg_router::policy::has_contiguous_value_tokens_t</a> = typedef detail::basic_has_contiguous_value_tokens_t&lt;&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Used to a mark a node as having one or more value tokens that follow it on the command line.</p>
+<p>This is not for general users of the library, but developers of new node types. </p>
+
+<p class="definition">Definition at line <a class="el" href="has__contiguous__value__tokens_8hpp_source.html#l00024">24</a> of file <a class="el" href="has__contiguous__value__tokens_8hpp_source.html">has_contiguous_value_tokens.hpp</a>.</p>
+
+</div>
+</div>
+<a id="af71d754d9e9e625b098bb6c80a82eae6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af71d754d9e9e625b098bb6c80a82eae6">&#9670;&nbsp;</a></span>has_value_tokens</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="namespacearg__router_1_1policy.html#af71d754d9e9e625b098bb6c80a82eae6">arg_router::policy::has_value_tokens</a> = typedef std::is_base_of&lt;<a class="el" href="namespacearg__router_1_1policy.html#aca0a098fd684cd70d8f8e8f457357e92">has_value_tokens_t</a>, T&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Evaluates to true if <em>T</em> is marked as having a value token.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>Type to test </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="has__value__tokens_8hpp_source.html#l00030">30</a> of file <a class="el" href="has__value__tokens_8hpp_source.html">has_value_tokens.hpp</a>.</p>
+
+</div>
+</div>
+<a id="aca0a098fd684cd70d8f8e8f457357e92"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aca0a098fd684cd70d8f8e8f457357e92">&#9670;&nbsp;</a></span>has_value_tokens_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="namespacearg__router_1_1policy.html#aca0a098fd684cd70d8f8e8f457357e92">arg_router::policy::has_value_tokens_t</a> = typedef detail::basic_has_value_tokens_t&lt;&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Used to a mark a node as having one or more value tokens that follow it on the command line.</p>
+<p>This is not for general users of the library, but developers of new node types. </p>
+
+<p class="definition">Definition at line <a class="el" href="has__value__tokens_8hpp_source.html#l00023">23</a> of file <a class="el" href="has__value__tokens_8hpp_source.html">has_value_tokens.hpp</a>.</p>
+
+</div>
+</div>
 <a id="a408a1ac19cbc1f4ad69630f965f976d8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a408a1ac19cbc1f4ad69630f965f976d8">&#9670;&nbsp;</a></span>is_required</h2>
 
@@ -220,6 +327,39 @@ template&lt;typename... AliasedPolicies&gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
+<a id="a88a1f88c79e069066abf89b205002cc5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a88a1f88c79e069066abf89b205002cc5">&#9670;&nbsp;</a></span>count</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;std::size_t Value&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr auto arg_router::policy::count = <a class="el" href="classarg__router_1_1policy_1_1count__t.html">count_t</a>&lt;<a class="el" href="namespacearg__router_1_1traits.html#ab335cfad0ef1eeed3ad34d06694b0244">traits::integral_constant</a>&lt;Value&gt;&gt;{}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Constant variable helper.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Value</td><td>Maximum count value </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="count_8hpp_source.html#l00028">28</a> of file <a class="el" href="count_8hpp_source.html">count.hpp</a>.</p>
+
+</div>
+</div>
 <a id="adeab7d3692839fb3dcc864b5cc1730b7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#adeab7d3692839fb3dcc864b5cc1730b7">&#9670;&nbsp;</a></span>description</h2>
 
@@ -250,6 +390,74 @@ template&lt;typename S &gt; </div>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="description_8hpp_source.html#l00036">36</a> of file <a class="el" href="description_8hpp_source.html">description.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a2410cdcdd4e88b0e155d24fb832b7719"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2410cdcdd4e88b0e155d24fb832b7719">&#9670;&nbsp;</a></span>has_contiguous_value_tokens_v</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr bool arg_router::policy::has_contiguous_value_tokens_v</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">=</div>
+<div class="line">    has_contiguous_value_tokens&lt;T&gt;::value</div>
+</div><!-- fragment --><p>Helper variable for has_value_token.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>Type to test </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="has__contiguous__value__tokens_8hpp_source.html#l00039">39</a> of file <a class="el" href="has__contiguous__value__tokens_8hpp_source.html">has_contiguous_value_tokens.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a16e00d607bc8bbdcd1b4609016fb716c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a16e00d607bc8bbdcd1b4609016fb716c">&#9670;&nbsp;</a></span>has_value_tokens_v</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr bool arg_router::policy::has_value_tokens_v = <a class="el" href="namespacearg__router_1_1policy.html#af71d754d9e9e625b098bb6c80a82eae6">has_value_tokens</a>&lt;T&gt;::value</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Helper variable for has_value_token.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>Type to test </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="has__value__tokens_8hpp_source.html#l00037">37</a> of file <a class="el" href="has__value__tokens_8hpp_source.html">has_value_tokens.hpp</a>.</p>
 
 </div>
 </div>
@@ -391,7 +599,7 @@ template&lt;typename S &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;auto Value&gt; </div>
+template&lt;std::size_t Value&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -414,7 +622,7 @@ template&lt;auto Value&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00064">64</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="max__count_8hpp_source.html#l00038">38</a> of file <a class="el" href="max__count_8hpp_source.html">max_count.hpp</a>.</p>
 
 </div>
 </div>
@@ -424,7 +632,7 @@ template&lt;auto Value&gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;auto Value&gt; </div>
+template&lt;std::size_t Value&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -447,7 +655,7 @@ template&lt;auto Value&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00034">34</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="min__count_8hpp_source.html#l00038">38</a> of file <a class="el" href="min__count_8hpp_source.html">min_count.hpp</a>.</p>
 
 </div>
 </div>

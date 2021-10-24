@@ -100,6 +100,10 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1mode__t.html">mode_t</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structarg__router_1_1parser.html">parser</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1positional__arg__t.html">positional_arg_t</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1root__t.html">root_t</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html">tree_node</a></td></tr>
@@ -122,9 +126,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a3182f5a1fe3c57f89fdc27319f5db896"><td class="memTemplParams" colspan="2">template&lt;typename... Params&gt; </td></tr>
 <tr class="memitem:a3182f5a1fe3c57f89fdc27319f5db896"><td class="memTemplItemLeft" align="right" valign="top">constexpr <a class="el" href="classarg__router_1_1mode__t.html">mode_t</a>&lt; Params... &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router.html#a3182f5a1fe3c57f89fdc27319f5db896">mode</a> (Params... params)</td></tr>
 <tr class="separator:a3182f5a1fe3c57f89fdc27319f5db896"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aca899ad3409e7d68bb40d3bc89aaaf98"><td class="memTemplParams" colspan="2">template&lt;typename T , typename  = std::enable_if_t&lt;!std::is_arithmetic_v&lt;T&gt;&gt;&gt; </td></tr>
-<tr class="memitem:aca899ad3409e7d68bb40d3bc89aaaf98"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router.html#aca899ad3409e7d68bb40d3bc89aaaf98">parse</a> (std::string_view token)</td></tr>
-<tr class="separator:aca899ad3409e7d68bb40d3bc89aaaf98"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9fd03a4806faffeb903835d9eb9cdb70"><td class="memTemplParams" colspan="2">template&lt;typename T , typename... Policies&gt; </td></tr>
+<tr class="memitem:a9fd03a4806faffeb903835d9eb9cdb70"><td class="memTemplItemLeft" align="right" valign="top">constexpr <a class="el" href="classarg__router_1_1positional__arg__t.html">positional_arg_t</a>&lt; T, Policies... &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router.html#a9fd03a4806faffeb903835d9eb9cdb70">positional_arg</a> (Policies... policies)</td></tr>
+<tr class="separator:a9fd03a4806faffeb903835d9eb9cdb70"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afca481bb81a046d046e0e7fd538acb4e"><td class="memTemplParams" colspan="2">template&lt;typename... Params&gt; </td></tr>
 <tr class="memitem:afca481bb81a046d046e0e7fd538acb4e"><td class="memTemplItemLeft" align="right" valign="top">constexpr <a class="el" href="classarg__router_1_1root__t.html">root_t</a>&lt; Params... &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router.html#afca481bb81a046d046e0e7fd538acb4e">root</a> (Params... params)</td></tr>
 <tr class="separator:afca481bb81a046d046e0e7fd538acb4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -136,9 +140,9 @@ Variables</h2></td></tr>
 <tr class="separator:a4c3ee7dfa23bf543d5384c0a9150634e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a085bce3c67f7256e3b8fee69311fab99"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router.html#a085bce3c67f7256e3b8fee69311fab99">project_version</a> = &quot;0.0.1&quot;</td></tr>
 <tr class="separator:a085bce3c67f7256e3b8fee69311fab99"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a398d5ec8547fe9e1ad7dee8af88c2310"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router.html#a398d5ec8547fe9e1ad7dee8af88c2310">git_revision</a> = &quot;e4b5226728fcdcb144eb06a586805055d8a7551e&quot;</td></tr>
+<tr class="memitem:a398d5ec8547fe9e1ad7dee8af88c2310"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router.html#a398d5ec8547fe9e1ad7dee8af88c2310">git_revision</a> = &quot;c3b77a8e7698ee6a00158472bc74af0ec10bc5a0&quot;</td></tr>
 <tr class="separator:a398d5ec8547fe9e1ad7dee8af88c2310"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af4cd92a6007eabf135ad3732ab648d66"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router.html#af4cd92a6007eabf135ad3732ab648d66">version_string</a> = &quot;0.0.1.e4b5226728fcdcb144eb06a586805055d8a7551e&quot;</td></tr>
+<tr class="memitem:af4cd92a6007eabf135ad3732ab648d66"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router.html#af4cd92a6007eabf135ad3732ab648d66">version_string</a> = &quot;0.0.1.c3b77a8e7698ee6a00158472bc74af0ec10bc5a0&quot;</td></tr>
 <tr class="separator:af4cd92a6007eabf135ad3732ab648d66"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -185,7 +189,7 @@ template&lt;typename T , typename... Policies&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Argument instance </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="arg_8hpp_source.html#l00058">58</a> of file <a class="el" href="arg_8hpp_source.html">arg.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="arg_8hpp_source.html#l00064">64</a> of file <a class="el" href="arg_8hpp_source.html">arg.hpp</a>.</p>
 
 </div>
 </div>
@@ -361,49 +365,52 @@ template&lt;typename... Params&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Mode instance </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mode_8hpp_source.html#l00064">64</a> of file <a class="el" href="mode_8hpp_source.html">mode.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mode_8hpp_source.html#l00058">58</a> of file <a class="el" href="mode_8hpp_source.html">mode.hpp</a>.</p>
 
 </div>
 </div>
-<a id="aca899ad3409e7d68bb40d3bc89aaaf98"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aca899ad3409e7d68bb40d3bc89aaaf98">&#9670;&nbsp;</a></span>parse()</h2>
+<a id="a9fd03a4806faffeb903835d9eb9cdb70"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9fd03a4806faffeb903835d9eb9cdb70">&#9670;&nbsp;</a></span>positional_arg()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename  = std::enable_if_t&lt;!std::is_arithmetic_v&lt;T&gt;&gt;&gt; </div>
+template&lt;typename T , typename... Policies&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">T arg_router::parse </td>
+          <td class="memname">constexpr <a class="el" href="classarg__router_1_1positional__arg__t.html">positional_arg_t</a>&lt;T, Policies...&gt; arg_router::positional_arg </td>
           <td>(</td>
-          <td class="paramtype">std::string_view&#160;</td>
-          <td class="paramname"><em>token</em></td><td>)</td>
+          <td class="paramtype">Policies...&#160;</td>
+          <td class="paramname"><em>policies</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
-<p>Global parsing function.</p>
-<p>If you want to provide custom parsing for an entire <em>type</em>, then you should specialise this. If you want to provide custom parsing for a particular type just for a single argument, it is usually more convenient to use a <a class="el" href="classarg__router_1_1policy_1_1custom__parser.html">policy::custom_parser</a> and define the conversion function inline. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
+<p>Constructs an <a class="el" href="classarg__router_1_1positional__arg__t.html">positional_arg_t</a> with the given policies and value type.</p>
+<p>This is necessary due to CTAD being required for all template parameters or none, and unfortunately in our case we need <em>T</em> to be explicitly set by the user whilst <em>Policies</em> need to be deduced. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">T</td><td>Type to parse <em>token</em> into </td></tr>
+    <tr><td class="paramname">T</td><td>Argument value type, must have a <code>push_back(..)</code> method </td></tr>
+    <tr><td class="paramname">Policies</td><td>Pack of policies that define its behaviour </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">token</td><td>Command line token to parse </td></tr>
+    <tr><td class="paramname">policies</td><td>Pack of policy instances </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The parsed instance </dd></dl>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname">parse_exception</td><td>Thrown if parsing failed </td></tr>
-  </table>
-  </dd>
-</dl>
+<dl class="section return"><dt>Returns</dt><dd>Argument instance </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00377">377</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="positional__arg_8hpp_source.html#l00049">49</a> of file <a class="el" href="positional__arg_8hpp_source.html">positional_arg.hpp</a>.</p>
 
 </div>
 </div>
@@ -447,7 +454,7 @@ template&lt;typename... Params&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Root instance </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="root_8hpp_source.html#l00427">427</a> of file <a class="el" href="root_8hpp_source.html">root.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="root_8hpp_source.html#l00489">489</a> of file <a class="el" href="root_8hpp_source.html">root.hpp</a>.</p>
 
 </div>
 </div>
@@ -462,7 +469,7 @@ template&lt;typename... Params&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr auto arg_router::git_revision = &quot;e4b5226728fcdcb144eb06a586805055d8a7551e&quot;</td>
+          <td class="memname">constexpr auto arg_router::git_revision = &quot;c3b77a8e7698ee6a00158472bc74af0ec10bc5a0&quot;</td>
         </tr>
       </table>
   </td>
@@ -506,7 +513,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="tree__node__fwd_8hpp_source.html#l00028">28</a> of file <a class="el" href="tree__node__fwd_8hpp_source.html">tree_node_fwd.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node__fwd_8hpp_source.html#l00031">31</a> of file <a class="el" href="tree__node__fwd_8hpp_source.html">tree_node_fwd.hpp</a>.</p>
 
 </div>
 </div>
@@ -545,7 +552,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr auto arg_router::version_string = &quot;0.0.1.e4b5226728fcdcb144eb06a586805055d8a7551e&quot;</td>
+          <td class="memname">constexpr auto arg_router::version_string = &quot;0.0.1.c3b77a8e7698ee6a00158472bc74af0ec10bc5a0&quot;</td>
         </tr>
       </table>
   </td>

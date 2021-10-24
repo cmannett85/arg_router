@@ -88,6 +88,9 @@ $(function() {
 <li>contains_whitespace()
 : <a class="el" href="namespacearg__router_1_1algorithm.html#aab2a691509b83c3126b09d33ab2c5a3a">arg_router::algorithm</a>
 </li>
+<li>count
+: <a class="el" href="namespacearg__router_1_1policy.html#a88a1f88c79e069066abf89b205002cc5">arg_router::policy</a>
+</li>
 <li>count_despecialised_v
 : <a class="el" href="namespacearg__router_1_1algorithm.html#a3d10a30c1904ec37a18ac240745029f1">arg_router::algorithm</a>
 </li>
@@ -99,7 +102,7 @@ $(function() {
 
 <h3><a id="index_d"></a>- d -</h3><ul>
 <li>default_match()
-: <a class="el" href="namespacearg__router_1_1parsing.html#a72733c2e6d8667704fb5c0faa6b3c89a">arg_router::parsing</a>
+: <a class="el" href="namespacearg__router_1_1parsing.html#a6878769d75879dd093b8047ca0375e64">arg_router::parsing</a>
 </li>
 <li>description
 : <a class="el" href="namespacearg__router_1_1policy.html#adeab7d3692839fb3dcc864b5cc1730b7">arg_router::policy</a>
@@ -134,6 +137,9 @@ $(function() {
 <li>get_value_type
 : <a class="el" href="namespacearg__router_1_1traits.html#ac436bd1d964e7c584c5d40af98b95283">arg_router::traits</a>
 </li>
+<li>get_value_type_or_void
+: <a class="el" href="namespacearg__router_1_1traits.html#aaf4b6ea9c95219aa1af220e92461b78e">arg_router::traits</a>
+</li>
 <li>git_revision
 : <a class="el" href="namespacearg__router.html#a398d5ec8547fe9e1ad7dee8af88c2310">arg_router</a>
 </li>
@@ -144,17 +150,35 @@ $(function() {
 <li>has_aliased_node_indices
 : <a class="el" href="namespacearg__router_1_1parsing.html#a6f8720c8d7aba215ae9f3b3b240baaa3">arg_router::parsing</a>
 </li>
+<li>has_contiguous_value_tokens
+: <a class="el" href="namespacearg__router_1_1policy.html#a43b8279565fc8673c8b404b8c99e8438">arg_router::policy</a>
+</li>
+<li>has_contiguous_value_tokens_t
+: <a class="el" href="namespacearg__router_1_1policy.html#abc2c59e25394199ad1c83b6c65016113">arg_router::policy</a>
+</li>
+<li>has_contiguous_value_tokens_v
+: <a class="el" href="namespacearg__router_1_1policy.html#a2410cdcdd4e88b0e155d24fb832b7719">arg_router::policy</a>
+</li>
+<li>has_count_checker
+: <a class="el" href="namespacearg__router_1_1parsing.html#aaa0b85035325ff71429f4d8782b4de2f">arg_router::parsing</a>
+</li>
 <li>has_custom_parser_checker
 : <a class="el" href="namespacearg__router_1_1parsing.html#a1da9b8d78bfc380d150db408d85cd607">arg_router::parsing</a>
 </li>
-<li>has_default_value
-: <a class="el" href="namespacearg__router_1_1parsing.html#a0ae19f3d210feae699a029bf360da706">arg_router::parsing</a>
+<li>has_default_value_checker
+: <a class="el" href="namespacearg__router_1_1parsing.html#a64923058408d14d2ff227e083821310b">arg_router::parsing</a>
 </li>
 <li>has_long_name_checker
 : <a class="el" href="namespacearg__router_1_1parsing.html#af9e60c6dc7826d3db16189e808050c60">arg_router::parsing</a>
 </li>
 <li>has_match_checker
 : <a class="el" href="namespacearg__router_1_1parsing.html#a2a827b0ee8366b9ef95e28d9dcd2ad06">arg_router::parsing</a>
+</li>
+<li>has_maximum_count_checker
+: <a class="el" href="namespacearg__router_1_1parsing.html#aab467da0784f00351e1e6bb104f893ec">arg_router::parsing</a>
+</li>
+<li>has_minimum_count_checker
+: <a class="el" href="namespacearg__router_1_1parsing.html#a247bd2e001ffe4b7c170ef77e165f2a4">arg_router::parsing</a>
 </li>
 <li>has_push_back_checker
 : <a class="el" href="namespacearg__router_1_1parsing.html#ab2190148bcb15d7edf10c79387652d1e">arg_router::parsing</a>
@@ -164,6 +188,18 @@ $(function() {
 </li>
 <li>has_specialisation_v
 : <a class="el" href="namespacearg__router_1_1algorithm.html#a8008c0e24fa3cd6f4764c29f2331ba5e">arg_router::algorithm</a>
+</li>
+<li>has_value_tokens
+: <a class="el" href="namespacearg__router_1_1policy.html#af71d754d9e9e625b098bb6c80a82eae6">arg_router::policy</a>
+</li>
+<li>has_value_tokens_t
+: <a class="el" href="namespacearg__router_1_1policy.html#aca0a098fd684cd70d8f8e8f457357e92">arg_router::policy</a>
+</li>
+<li>has_value_tokens_v
+: <a class="el" href="namespacearg__router_1_1policy.html#a16e00d607bc8bbdcd1b4609016fb716c">arg_router::policy</a>
+</li>
+<li>has_value_type_checker
+: <a class="el" href="namespacearg__router_1_1traits.html#a9b2c7dcc494a859fa28ed68249d8ecb9">arg_router::traits</a>
 </li>
 </ul>
 
@@ -261,8 +297,8 @@ $(function() {
 
 
 <h3><a id="index_p"></a>- p -</h3><ul>
-<li>parse()
-: <a class="el" href="namespacearg__router.html#aca899ad3409e7d68bb40d3bc89aaaf98">arg_router</a>
+<li>positional_arg()
+: <a class="el" href="namespacearg__router.html#a9fd03a4806faffeb903835d9eb9cdb70">arg_router</a>
 </li>
 <li>prefix_type
 : <a class="el" href="namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3">arg_router::parsing</a>
@@ -323,7 +359,7 @@ $(function() {
 : <a class="el" href="namespacearg__router.html#af4cd92a6007eabf135ad3732ab648d66">arg_router</a>
 </li>
 <li>visit_child()
-: <a class="el" href="namespacearg__router_1_1parsing.html#a2faf8aa019c3e016f048363766994f46">arg_router::parsing</a>
+: <a class="el" href="namespacearg__router_1_1parsing.html#a3690ad7f7ce484064c7d3f0ae4c25695">arg_router::parsing</a>
 </li>
 </ul>
 

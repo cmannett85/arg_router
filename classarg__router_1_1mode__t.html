@@ -87,8 +87,8 @@ Inheritance diagram for arg_router::mode_t&lt; Params &gt;:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a4a207b8c75593f438c38d4840ad04201"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1mode__t.html#a4a207b8c75593f438c38d4840ad04201">mode_t</a> (Params... params)</td></tr>
 <tr class="separator:a4a207b8c75593f438c38d4840ad04201"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a676891783fa29e40ef500ac5ca6c9404"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structarg__router_1_1parsing_1_1match__result.html">parsing::match_result</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1mode__t.html#a676891783fa29e40ef500ac5ca6c9404">match</a> (const <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a> &amp;token) const</td></tr>
-<tr class="separator:a676891783fa29e40ef500ac5ca6c9404"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ad3ef64b56d553f017f682135165e45"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1mode__t.html#a6ad3ef64b56d553f017f682135165e45">match</a> (const <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a> &amp;token) const</td></tr>
+<tr class="separator:a6ad3ef64b56d553f017f682135165e45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classarg__router_1_1tree__node"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classarg__router_1_1tree__node')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node&lt; Params... &gt;</a></td></tr>
 <tr class="memitem:acf2a7147e9bf1612578dc6f1a10d48c8 inherit pub_methods_classarg__router_1_1tree__node"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classarg__router_1_1tree__node.html#ada9714c3089bb29077dd1475d902db0a">children_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#acf2a7147e9bf1612578dc6f1a10d48c8">children</a> () const</td></tr>
 <tr class="separator:acf2a7147e9bf1612578dc6f1a10d48c8 inherit pub_methods_classarg__router_1_1tree__node"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -105,8 +105,6 @@ Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_methods_classarg__router_1_1tree__node"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classarg__router_1_1tree__node')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node&lt; Params... &gt;</a></td></tr>
 <tr class="memitem:a48cb8499032eb97d0b69367956780d1a inherit pro_methods_classarg__router_1_1tree__node"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#a48cb8499032eb97d0b69367956780d1a">tree_node</a> (Params... params)</td></tr>
 <tr class="separator:a48cb8499032eb97d0b69367956780d1a inherit pro_methods_classarg__router_1_1tree__node"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7d7657b389c58cbd4600049d6b2b00c1 inherit pro_methods_classarg__router_1_1tree__node"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#a7d7657b389c58cbd4600049d6b2b00c1">tree_node</a> (boost::mp11::mp_drop_c&lt; P, 1 &gt; tuple_params)</td></tr>
-<tr class="separator:a7d7657b389c58cbd4600049d6b2b00c1 inherit pro_methods_classarg__router_1_1tree__node"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename... Params&gt;<br />
@@ -160,8 +158,8 @@ template&lt;typename... Params&gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a676891783fa29e40ef500ac5ca6c9404"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a676891783fa29e40ef500ac5ca6c9404">&#9670;&nbsp;</a></span>match()</h2>
+<a id="a6ad3ef64b56d553f017f682135165e45"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ad3ef64b56d553f017f682135165e45">&#9670;&nbsp;</a></span>match()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -172,7 +170,7 @@ template&lt;typename... Params&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structarg__router_1_1parsing_1_1match__result.html">parsing::match_result</a> <a class="el" href="classarg__router_1_1mode__t.html">arg_router::mode_t</a>&lt; Params &gt;::match </td>
+          <td class="memname">bool <a class="el" href="classarg__router_1_1mode__t.html">arg_router::mode_t</a>&lt; Params &gt;::match </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a> &amp;&#160;</td>
           <td class="paramname"><em>token</em></td><td>)</td>

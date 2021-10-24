@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['expand_5farguments_236',['expand_arguments',['../namespacearg__router_1_1parsing.html#aaaebcb5efd6de2e232c2a74699ac8d39',1,'arg_router::parsing']]]
+  ['expand_5farguments_258',['expand_arguments',['../namespacearg__router_1_1parsing.html#aaaebcb5efd6de2e232c2a74699ac8d39',1,'arg_router::parsing']]]
 ];

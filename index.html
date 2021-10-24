@@ -67,7 +67,7 @@ $(function() {
 <div class="title">arg_router Documentation</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><object type="image/svg+xml" data="https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg" style="pointer-events: none;">Documentation Generator</object> <img src="https://img.shields.io/badge/Unit_Test_Coverage-98.2%25-brightgreen" alt="Unit test coverage" class="inline"/></p>
+<div class="textblock"><p><object type="image/svg+xml" data="https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg" style="pointer-events: none;">Documentation Generator</object> <img src="https://img.shields.io/badge/Unit_Test_Coverage-98.8%25-brightgreen" alt="Unit test coverage" class="inline"/></p>
 <h1><a class="el" href="namespacearg__router.html">arg_router</a></h1>
 <p><code><a class="el" href="namespacearg__router.html">arg_router</a></code> is a C++17 command line parser and router. It uses policy-based objects hierarchically, so the parsing code is self-describing. Rather than just providing a parsing service that returns a map of <code>variant</code>s/<code>any</code>s, it allows you to bind <code>Callable</code> instances to points in the parse structure, so complex command line arguments can directly call functions with the expected arguments - rather than you having to do this yourself.</p>
 <h2>Features</h2>
@@ -112,14 +112,14 @@ $(function() {
 <div class="line">            arp::description&lt;S_(<span class="stringliteral">&quot;Maximum lines to output&quot;</span>)&gt;,</div>
 <div class="line">            arp::default_value{-1}),</div>
 <div class="line">        ar::positional_arg&lt;std::vector&lt;std::string_view&gt;&gt;(</div>
-<div class="line">            arp::required,</div>
+<div class="line">            arp::min_count&lt;1&gt;,</div>
 <div class="line">            arp::long_name&lt;S_(<span class="stringliteral">&quot;FILES&quot;</span>)&gt;,</div>
 <div class="line">            arp::description&lt;S_(<span class="stringliteral">&quot;Files to read&quot;</span>)&gt;),</div>
 <div class="line">        arp::router{[](<span class="keywordtype">bool</span> show_ends,</div>
 <div class="line">                       <span class="keywordtype">bool</span> show_non_printing,</div>
 <div class="line">                       <span class="keywordtype">int</span> max_lines,</div>
 <div class="line">                       std::vector&lt;std::string_view&gt;&gt; files) { ... }})).</div>
-<div class="line">    <a class="code" href="namespacearg__router.html#aca899ad3409e7d68bb40d3bc89aaaf98">parse</a>(argc, argv);</div>
+<div class="line">    parse(argc, argv);</div>
 </div><!-- fragment --><p>Let's start from the top, as the name suggests <code>root</code> is the root of the parse tree and provides the <code>parse(argc, argv)</code> method. Only children of the root can (and must) have a <code>router</code> policy and therefore act as access points into the program. The root's children are implicitly mutually exclusive, so trying to pass <code>--version --help</code> in the command line is a runtime error.</p>
 <p>The <code>arp::validation::default_validator</code> instance provides the default validator that the root uses to validate the parse tree at compile-time. It is a required policy of the <code>root</code>. Unless you have implemented your own policy or tree node you will never need to specify anything else.</p>
 <p>The <code>help</code> node is used by the <code>root</code> to generate the argument documentation for the help output, rather than print directly to the console, a <code>router</code> is attached that accepts a string so the user can add other documentation to it (e.g. version info, examples, etc.).</p>
@@ -189,7 +189,7 @@ $(function() {
 <div class="line">        std::variant&lt;bool, std::string_view&gt; max_line_handling,</div>
 <div class="line">        theme_t theme,</div>
 <div class="line">        std::vector&lt;std::string_view&gt;&gt; files) { ... }})</div>
-</div><!-- fragment --><p>This is a convenient solution to one-off type parsing in-tree, I think it's pretty self-explanatory. However this is not convenient if you have lots of arguments that should return the same custom type, as you would have to copy and paste the lambda or bind calls to the conversion function for each one. In that case we can specialise on the <code><a class="el" href="namespacearg__router.html#aca899ad3409e7d68bb40d3bc89aaaf98">arg_router::parse</a></code> function. </p><div class="fragment"><div class="line"><span class="keyword">template</span> &lt;&gt;</div>
+</div><!-- fragment --><p>This is a convenient solution to one-off type parsing in-tree, I think it's pretty self-explanatory. However this is not convenient if you have lots of arguments that should return the same custom type, as you would have to copy and paste the lambda or bind calls to the conversion function for each one. In that case we can specialise on the <code>arg_router::parse</code> function. </p><div class="fragment"><div class="line"><span class="keyword">template</span> &lt;&gt;</div>
 <div class="line"><span class="keyword">auto</span> arg_router::parse&lt;theme_t&gt;(std::string_view arg)</div>
 <div class="line">{</div>
 <div class="line">    <span class="keywordflow">if</span> (arg == <span class="stringliteral">&quot;NONE&quot;</span>) {</div>
@@ -388,8 +388,7 @@ $(function() {
 <p>Currently <code><a class="el" href="namespacearg__router.html">arg_router</a></code> only supports exceptions as error handling. If a parsing fails for some reason a <code>arg_router::parse_exception</code> is thrown carrying information on the failure. </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
-<div class="ttc" id="anamespacearg__router_html_ad22d99fefb929f58fe471fb7bf78d5f4"><div class="ttname"><a href="namespacearg__router.html#ad22d99fefb929f58fe471fb7bf78d5f4">arg_router::arg</a></div><div class="ttdeci">constexpr arg_t&lt; T, Policies... &gt; arg(Policies... policies)</div><div class="ttdef"><b>Definition:</b> <a href="arg_8hpp_source.html#l00058">arg.hpp:58</a></div></div>
-<div class="ttc" id="anamespacearg__router_html_aca899ad3409e7d68bb40d3bc89aaaf98"><div class="ttname"><a href="namespacearg__router.html#aca899ad3409e7d68bb40d3bc89aaaf98">arg_router::parse</a></div><div class="ttdeci">T parse(std::string_view token)</div><div class="ttdef"><b>Definition:</b> <a href="parsing_8hpp_source.html#l00377">parsing.hpp:377</a></div></div>
+<div class="ttc" id="anamespacearg__router_html_ad22d99fefb929f58fe471fb7bf78d5f4"><div class="ttname"><a href="namespacearg__router.html#ad22d99fefb929f58fe471fb7bf78d5f4">arg_router::arg</a></div><div class="ttdeci">constexpr arg_t&lt; T, Policies... &gt; arg(Policies... policies)</div><div class="ttdef"><b>Definition:</b> <a href="arg_8hpp_source.html#l00064">arg.hpp:64</a></div></div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00010">algorithm.hpp:10</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

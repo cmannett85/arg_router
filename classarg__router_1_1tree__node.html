@@ -103,9 +103,6 @@ Public Member Functions</h2></td></tr>
 Protected Member Functions</h2></td></tr>
 <tr class="memitem:a48cb8499032eb97d0b69367956780d1a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#a48cb8499032eb97d0b69367956780d1a">tree_node</a> (Params... params)</td></tr>
 <tr class="separator:a48cb8499032eb97d0b69367956780d1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7d7657b389c58cbd4600049d6b2b00c1"><td class="memTemplParams" colspan="2">template&lt;typename P  = parameters_type, typename  = std::enable_if_t&lt;(std::tuple_size_v&lt;P&gt; &gt; 0)&gt;&gt; </td></tr>
-<tr class="memitem:a7d7657b389c58cbd4600049d6b2b00c1"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#a7d7657b389c58cbd4600049d6b2b00c1">tree_node</a> (boost::mp11::mp_drop_c&lt; P, 1 &gt; tuple_params)</td></tr>
-<tr class="separator:a7d7657b389c58cbd4600049d6b2b00c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename... Params&gt;<br />
@@ -180,7 +177,7 @@ template&lt;typename... Params&gt; </div>
 </div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a48cb8499032eb97d0b69367956780d1a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a48cb8499032eb97d0b69367956780d1a">&#9670;&nbsp;</a></span>tree_node() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a48cb8499032eb97d0b69367956780d1a">&#9670;&nbsp;</a></span>tree_node()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -216,45 +213,6 @@ template&lt;typename... Params&gt; </div>
 
 </div>
 </div>
-<a id="a7d7657b389c58cbd4600049d6b2b00c1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7d7657b389c58cbd4600049d6b2b00c1">&#9670;&nbsp;</a></span>tree_node() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename... Params&gt; </div>
-<div class="memtemplate">
-template&lt;typename P  = parameters_type, typename  = std::enable_if_t&lt;(std::tuple_size_v&lt;P&gt; &gt; 0)&gt;&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node</a>&lt; Params &gt;::<a class="el" href="classarg__router_1_1tree__node.html">tree_node</a> </td>
-          <td>(</td>
-          <td class="paramtype">boost::mp11::mp_drop_c&lt; P, 1 &gt;&#160;</td>
-          <td class="paramname"><em>tuple_params</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">explicit</span><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Argument constructor.</p>
-<p>This is for nodes whose first template argument is their value_type, and so must be removed before policy/child processing. </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">tuple_params</td><td>Tuple of policy and child instances </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00093">93</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
-
-</div>
-</div>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="acf2a7147e9bf1612578dc6f1a10d48c8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#acf2a7147e9bf1612578dc6f1a10d48c8">&#9670;&nbsp;</a></span>children()</h2>
@@ -283,7 +241,7 @@ template&lt;typename... Params&gt; </div>
 <p>Returns a reference to the children.</p>
 <dl class="section return"><dt>Returns</dt><dd>Children </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00106">106</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00090">90</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>
