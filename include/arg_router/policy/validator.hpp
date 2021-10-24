@@ -4,13 +4,16 @@
 #include "arg_router/flag.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/alias.hpp"
+#include "arg_router/policy/count.hpp"
 #include "arg_router/policy/custom_parser.hpp"
 #include "arg_router/policy/default_value.hpp"
 #include "arg_router/policy/description.hpp"
+#include "arg_router/policy/has_contiguous_value_tokens.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/required.hpp"
 #include "arg_router/policy/router.hpp"
 #include "arg_router/policy/short_name.hpp"
+#include "arg_router/positional_arg.hpp"
 #include "arg_router/root.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 #include "arg_router/utility/tree_recursor.hpp"
@@ -424,6 +427,150 @@ struct aliased_must_not_be_in_owner {
     }
 };
 
+/** A rule condition that checks that positional arg @a T is at the end of the
+ * non-positional args in a node's child list.
+ * 
+ * The above is a long-winded way of saying that positional args must be at the
+ * end of a child list for a node, no policies or other node types may appear
+ * after.
+ * @tparam PositionalArgTypes The types to be regarded as positional args
+ */
+template <template <typename...> typename... PositionalArgTypes>
+struct positional_args_must_be_at_end {
+    static_assert((sizeof...(PositionalArgTypes)),
+                  "Must be at least one PositionalArgTypes");
+
+    template <typename T>
+    using pos_arg_checker = boost::mp11::mp_any_of<
+        std::tuple<traits::is_specialisation_of<T, PositionalArgTypes>...>,
+        boost::mp11::mp_to_bool>;
+
+    template <typename T, typename...>
+    constexpr static void check()
+    {
+        // Find the first index of a positional arg, then for each element type
+        // after, check that it is also a positional arg
+
+        // Remap the child types to a tuple of booleans, where true means that
+        // they are specialisations of one of the given positional arg types
+        using children_type = typename T::children_type;
+        using is_pos_arg_map =
+            boost::mp11::mp_transform<pos_arg_checker, children_type>;
+
+        constexpr auto first_pos_arg =
+            boost::mp11::mp_find<is_pos_arg_map, boost::mp11::mp_true>::value;
+        if constexpr (first_pos_arg != std::tuple_size_v<is_pos_arg_map>) {
+            using drop_before_first_pos_arg =
+                boost::mp11::mp_drop_c<is_pos_arg_map, first_pos_arg>;
+            static_assert(
+                boost::mp11::mp_all_of<drop_before_first_pos_arg,
+                                       boost::mp11::mp_to_bool>::value,
+                "Positional args must all appear at the end of "
+                "nodes/policy list for a node");
+        }
+    }
+};
+
+/** A rule condition that checks that positional arg @a T has a fixed argument
+ * count if not at the end of the positional arg list.
+ * 
+ * @tparam PositionalArgTypes The types to be regarded as positional args
+ */
+template <template <typename...> typename... PositionalArgTypes>
+struct positional_args_must_have_fixed_count_if_not_at_end {
+    static_assert((sizeof...(PositionalArgTypes)),
+                  "Must be at least one PositionalArgTypes");
+
+    template <typename T>
+    using pos_arg_checker = typename positional_args_must_be_at_end<
+        PositionalArgTypes...>::template pos_arg_checker<T>;
+
+    template <typename T>
+    struct fixed_count_checker {
+        constexpr static bool f()
+        {
+            if constexpr (traits::is_detected_v<parsing::has_count_checker,
+                                                T>) {
+                return true;
+            } else if constexpr (
+                traits::is_detected_v<parsing::has_minimum_count_checker, T> &&
+                traits::is_detected_v<parsing::has_maximum_count_checker, T>) {
+                return T::minimum_count() == T::maximum_count();
+            }
+
+            return false;
+        }
+
+        constexpr static auto value = f();
+    };
+
+    template <typename T, typename...>
+    constexpr static void check()
+    {
+        using children_type = typename T::children_type;
+        using pos_args = boost::mp11::mp_filter<pos_arg_checker, children_type>;
+
+        constexpr auto num_pos_args = std::tuple_size_v<pos_args>;
+        if constexpr (num_pos_args > 0) {
+            using needs_fixed_count =
+                boost::mp11::mp_take_c<pos_args, num_pos_args - 1>;
+            using has_fixed_count =
+                boost::mp11::mp_all_of<needs_fixed_count, fixed_count_checker>;
+            static_assert(has_fixed_count::value,
+                          "Positional args not at the end of the list must "
+                          "have a fixed count");
+        }
+    }
+};
+
+/** A rule condition that checks if @a T's <TT>min_count()</TT> and
+ * <TT>max_count()</TT> methods, if present, are logically separated.
+ */
+struct validate_counts {
+    template <typename T, typename...>
+    constexpr static void check()
+    {
+        if constexpr (traits::is_detected_v<parsing::has_minimum_count_checker,
+                                            T> &&
+                      traits::is_detected_v<parsing::has_maximum_count_checker,
+                                            T>) {
+            static_assert(T::minimum_count() <= T::maximum_count(),
+                          "Minimum count must be less than maximum count");
+        }
+    }
+};
+
+/** A rule condition that checks if @a T does not have fixed count of 1, if so
+ * then it's value_type must support a <TT>push_back()</TT> method.
+ */
+struct if_count_not_one_value_type_must_support_push_back {
+    template <typename T>
+    constexpr static bool has_fixed_count_of_one()
+    {
+        if constexpr (traits::is_detected_v<parsing::has_count_checker, T>) {
+            return T::count() == 1;
+        } else if constexpr (
+            traits::is_detected_v<parsing::has_minimum_count_checker, T> &&
+            traits::is_detected_v<parsing::has_maximum_count_checker, T>) {
+            return (T::minimum_count() == T::maximum_count()) &&
+                   (T::minimum_count() == 1);
+        }
+
+        return false;
+    }
+
+    template <typename T, typename...>
+    constexpr static void check()
+    {
+        if constexpr (!has_fixed_count_of_one<T>()) {
+            static_assert(traits::is_detected_v<parsing::has_push_back_checker,
+                                                typename T::value_type>,
+                          "If T does not have a fixed count of 1, then its "
+                          "value_type must have a push_back() method");
+        }
+    }
+};
+
 /** The default validator instance. */
 inline constexpr auto default_validator = validator<
     rule<policy::long_name_t<S_("rule")>,
@@ -442,9 +589,18 @@ inline constexpr auto default_validator = validator<
          despecialised_unique_in_owner>,
     rule<policy::default_value<int>,  //
          despecialised_unique_in_owner>,
-    rule<policy::alias_t<
-             policy::short_name_t<traits::integral_constant<'a'>>>,  //
+    rule<policy::min_count_t<traits::integral_constant<std::size_t{1}>>,  //
+         despecialised_unique_in_owner>,
+    rule<policy::max_count_t<traits::integral_constant<std::size_t{1}>>,  //
+         despecialised_unique_in_owner>,
+    rule<policy::count_t<traits::integral_constant<std::size_t{1}>>,  //
+         despecialised_unique_in_owner>,
+    rule<policy::alias_t<policy::short_name_t<traits::integral_constant<'a'>>>,
          aliased_must_not_be_in_owner,
+         despecialised_unique_in_owner>,
+    rule<policy::has_value_tokens_t,  //
+         despecialised_unique_in_owner>,
+    rule<policy::has_contiguous_value_tokens_t,  //
          despecialised_unique_in_owner>,
     rule<flag_t<>,  //
          must_not_have_policy<policy::required_t>,
@@ -460,10 +616,23 @@ inline constexpr auto default_validator = validator<
                                                policy::default_value,
                                                policy::alias_t>,
          must_have_policy<policy::description_t>>,
+    rule<positional_arg_t<std::vector<int>>,  //
+         must_not_have_policy<policy::validation::validator>,
+         must_not_have_policy<policy::short_name_t>,
+         must_not_have_policy<policy::required_t>,
+         must_not_have_policy<policy::default_value>,
+         must_not_have_policy<policy::alias_t>,
+         must_not_have_policy<policy::router>,  // Cannot be top-level now
+         must_have_policy<policy::long_name_t>,
+         must_have_policy<policy::description_t>,
+         validate_counts,
+         if_count_not_one_value_type_must_support_push_back>,
     rule<mode_t<>,  //
          must_not_have_policy<policy::short_name_t>,
          must_not_have_policy<policy::custom_parser>,
          child_must_not_have_policy<policy::router>,
+         positional_args_must_be_at_end<positional_arg_t>,
+         positional_args_must_have_fixed_count_if_not_at_end<positional_arg_t>,
          // By requiring its parent to be root, in 'inherits' the root's child
          // policy requirements
          parent_type<0, root_t<policy::validation::validator<>>>>,

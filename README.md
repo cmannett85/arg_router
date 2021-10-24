@@ -46,7 +46,7 @@ ar::root(
             arp::description<S_("Maximum lines to output")>,
             arp::default_value{-1}),
         ar::positional_arg<std::vector<std::string_view>>(
-            arp::required,
+            arp::min_count<1>,
             arp::long_name<S_("FILES")>,
             arp::description<S_("Files to read")>),
         arp::router{[](bool show_ends,

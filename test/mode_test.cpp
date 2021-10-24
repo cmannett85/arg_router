@@ -26,15 +26,10 @@ BOOST_AUTO_TEST_CASE(anonymous_single_flag_match_test)
                              policy::description<S_("Hello arg")>));
 
     auto result = m.match({parsing::prefix_type::LONG, "hello"});
-    auto expected =
-        parsing::match_result{parsing::match_result::MATCH,
-                              parsing::match_result::HAS_NO_ARGUMENT};
-    BOOST_CHECK_EQUAL(result, expected);
+    BOOST_CHECK(result);
 
     result = m.match({parsing::prefix_type::LONG, "goodbye"});
-    expected = parsing::match_result{parsing::match_result::NO_MATCH,
-                                     parsing::match_result::HAS_NO_ARGUMENT};
-    BOOST_CHECK_EQUAL(result, expected);
+    BOOST_CHECK(!result);
 }
 
 BOOST_AUTO_TEST_CASE(anonymous_triple_flag_match_test)
@@ -47,25 +42,16 @@ BOOST_AUTO_TEST_CASE(anonymous_triple_flag_match_test)
         flag(policy::short_name<'b'>, policy::description<S_("b arg")>));
 
     auto result = m.match({parsing::prefix_type::LONG, "hello"});
-    auto expected =
-        parsing::match_result{parsing::match_result::MATCH,
-                              parsing::match_result::HAS_NO_ARGUMENT};
-    BOOST_CHECK_EQUAL(result, expected);
+    BOOST_CHECK(result);
 
     result = m.match({parsing::prefix_type::LONG, "foo"});
-    expected = parsing::match_result{parsing::match_result::MATCH,
-                                     parsing::match_result::HAS_NO_ARGUMENT};
-    BOOST_CHECK_EQUAL(result, expected);
+    BOOST_CHECK(result);
 
     result = m.match('b');
-    expected = parsing::match_result{parsing::match_result::MATCH,
-                                     parsing::match_result::HAS_NO_ARGUMENT};
-    BOOST_CHECK_EQUAL(result, expected);
+    BOOST_CHECK(result);
 
     result = m.match('g');
-    expected = parsing::match_result{parsing::match_result::NO_MATCH,
-                                     parsing::match_result::HAS_NO_ARGUMENT};
-    BOOST_CHECK_EQUAL(result, expected);
+    BOOST_CHECK(!result);
 }
 
 BOOST_AUTO_TEST_CASE(named_single_flag_match_test)
@@ -76,15 +62,10 @@ BOOST_AUTO_TEST_CASE(named_single_flag_match_test)
                              policy::description<S_("Hello arg")>));
 
     auto result = m.match({parsing::prefix_type::NONE, "my-mode"});
-    auto expected =
-        parsing::match_result{parsing::match_result::MATCH,
-                              parsing::match_result::HAS_NO_ARGUMENT};
-    BOOST_CHECK_EQUAL(result, expected);
+    BOOST_CHECK(result);
 
     result = m.match({parsing::prefix_type::LONG, "hello"});
-    expected = parsing::match_result{parsing::match_result::NO_MATCH,
-                                     parsing::match_result::HAS_NO_ARGUMENT};
-    BOOST_CHECK_EQUAL(result, expected);
+    BOOST_CHECK(!result);
 }
 
 BOOST_AUTO_TEST_CASE(named_triple_flag_match_test)
@@ -98,15 +79,10 @@ BOOST_AUTO_TEST_CASE(named_triple_flag_match_test)
         flag(policy::short_name<'b'>, policy::description<S_("b arg")>));
 
     auto result = m.match({parsing::prefix_type::NONE, "my-mode"});
-    auto expected =
-        parsing::match_result{parsing::match_result::MATCH,
-                              parsing::match_result::HAS_NO_ARGUMENT};
-    BOOST_CHECK_EQUAL(result, expected);
+    BOOST_CHECK(result);
 
     result = m.match('b');
-    expected = parsing::match_result{parsing::match_result::NO_MATCH,
-                                     parsing::match_result::HAS_NO_ARGUMENT};
-    BOOST_CHECK_EQUAL(result, expected);
+    BOOST_CHECK(!result);
 }
 
 BOOST_AUTO_TEST_CASE(anonymous_empty_match_test)
@@ -114,15 +90,10 @@ BOOST_AUTO_TEST_CASE(anonymous_empty_match_test)
     const auto m = mode();
 
     auto result = m.match({parsing::prefix_type::LONG, "my-mode"});
-    auto expected =
-        parsing::match_result{parsing::match_result::NO_MATCH,
-                              parsing::match_result::HAS_NO_ARGUMENT};
-    BOOST_CHECK_EQUAL(result, expected);
+    BOOST_CHECK(!result);
 
     result = m.match('b');
-    expected = parsing::match_result{parsing::match_result::NO_MATCH,
-                                     parsing::match_result::HAS_NO_ARGUMENT};
-    BOOST_CHECK_EQUAL(result, expected);
+    BOOST_CHECK(!result);
 }
 
 BOOST_AUTO_TEST_CASE(named_empty_match_test)
@@ -130,15 +101,10 @@ BOOST_AUTO_TEST_CASE(named_empty_match_test)
     const auto m = mode(policy::long_name<S_("my-mode")>);
 
     auto result = m.match({parsing::prefix_type::NONE, "my-mode"});
-    auto expected =
-        parsing::match_result{parsing::match_result::MATCH,
-                              parsing::match_result::HAS_NO_ARGUMENT};
-    BOOST_CHECK_EQUAL(result, expected);
+    BOOST_CHECK(result);
 
     result = m.match('b');
-    expected = parsing::match_result{parsing::match_result::NO_MATCH,
-                                     parsing::match_result::HAS_NO_ARGUMENT};
-    BOOST_CHECK_EQUAL(result, expected);
+    BOOST_CHECK(!result);
 }
 
 BOOST_AUTO_TEST_CASE(anonymous_triple_flag_single_list_match_test)
@@ -152,25 +118,16 @@ BOOST_AUTO_TEST_CASE(anonymous_triple_flag_single_list_match_test)
     const auto m = mode(flags);
 
     auto result = m.match({parsing::prefix_type::LONG, "hello"});
-    auto expected =
-        parsing::match_result{parsing::match_result::MATCH,
-                              parsing::match_result::HAS_NO_ARGUMENT};
-    BOOST_CHECK_EQUAL(result, expected);
+    BOOST_CHECK(result);
 
     result = m.match({parsing::prefix_type::LONG, "foo"});
-    expected = parsing::match_result{parsing::match_result::MATCH,
-                                     parsing::match_result::HAS_NO_ARGUMENT};
-    BOOST_CHECK_EQUAL(result, expected);
+    BOOST_CHECK(result);
 
     result = m.match('b');
-    expected = parsing::match_result{parsing::match_result::MATCH,
-                                     parsing::match_result::HAS_NO_ARGUMENT};
-    BOOST_CHECK_EQUAL(result, expected);
+    BOOST_CHECK(result);
 
     result = m.match('g');
-    expected = parsing::match_result{parsing::match_result::NO_MATCH,
-                                     parsing::match_result::HAS_NO_ARGUMENT};
-    BOOST_CHECK_EQUAL(result, expected);
+    BOOST_CHECK(!result);
 }
 
 BOOST_AUTO_TEST_CASE(named_triple_flag_double_list_match_test)
@@ -185,15 +142,10 @@ BOOST_AUTO_TEST_CASE(named_triple_flag_double_list_match_test)
     const auto m = mode(policy::long_name<S_("my-mode")>, list1, list2);
 
     auto result = m.match({parsing::prefix_type::NONE, "my-mode"});
-    auto expected =
-        parsing::match_result{parsing::match_result::MATCH,
-                              parsing::match_result::HAS_NO_ARGUMENT};
-    BOOST_CHECK_EQUAL(result, expected);
+    BOOST_CHECK(result);
 
     result = m.match('b');
-    expected = parsing::match_result{parsing::match_result::NO_MATCH,
-                                     parsing::match_result::HAS_NO_ARGUMENT};
-    BOOST_CHECK_EQUAL(result, expected);
+    BOOST_CHECK(!result);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -2,6 +2,7 @@
 
 #include "arg_router/config.hpp"
 #include "arg_router/exception.hpp"
+#include "arg_router/policy/has_value_tokens.hpp"
 #include "arg_router/tree_node.hpp"
 #include "arg_router/utility/string_view_ops.hpp"
 #include "arg_router/utility/tuple_iterator.hpp"
@@ -9,6 +10,7 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/core/ignore_unused.hpp>
 
+#include <bitset>
 #include <charconv>
 #include <deque>
 
@@ -95,63 +97,6 @@ token_type get_token_type(std::string_view token);
  */
 token_list expand_arguments(int argc, const char* argv[]);
 
-/** Result type when attempting to match a token. */
-struct match_result {
-    /** A nice label for the matching state. */
-    enum match_type : std::uint8_t {
-        NO_MATCH,  ///< Token has not matched
-        MATCH      ///< Token has matched
-    };
-
-    /** A nice label for the requires-a-parse state. */
-    enum argument_type : std::uint8_t {
-        HAS_NO_ARGUMENT,  ///< No arguments are expected to follow
-        HAS_ARGUMENT,     ///< One or more arguments is expected to follow
-    };
-
-    /** Constructor
-     *
-     * @param m Match state
-     * @param a Argument state
-     */
-    constexpr match_result(match_type m = NO_MATCH,
-                           argument_type a = HAS_NO_ARGUMENT) :
-        matched{m},
-        has_argument{a}
-    {
-    }
-
-    /** Equality operator.
-     *
-     * @param other Instance to compare against
-     * @return True if equal
-     */
-    bool operator==(const match_result& other) const
-    {
-        return matched == other.matched && has_argument == other.has_argument;
-    }
-
-    /** Inequality operator.
-     *
-     * @param other Instance to compare against
-     * @return True if not equal
-     */
-    bool operator!=(const match_result& other) const
-    {
-        return !(*this == other);
-    }
-
-    match_type matched;          ///< Match state
-    argument_type has_argument;  ///< Argument state
-};
-
-/** Creates a string representation of @a mr.
- * 
- * @param mr match_result to convert
- * @return String representation of @a mr
- */
-std::string to_string(match_result mr);
-
 /** Can be used by traits::is_detected to determine if a type has a long name.
  *
  * @tparam T Type to query
@@ -190,8 +135,32 @@ using has_match_checker =
  * @tparam T Type to query
  */
 template <typename T>
-using has_default_value =
+using has_default_value_checker =
     decltype(std::declval<const T&>().get_default_value());
+
+/** Can be used by traits::is_detected to determine if a type has a
+ * maximum_count() method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+using has_maximum_count_checker = decltype(T::maximum_count());
+
+/** Can be used by traits::is_detected to determine if a type has a
+ * minimum_count() method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+using has_minimum_count_checker = decltype(T::minimum_count());
+
+/** Can be used by traits::is_detected to determine if a type has a
+ * count() method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+using has_count_checker = decltype(T::count());
 
 /** Can be used by traits::is_detected to determine if a type has a
  * push_back(typename T::value_type) method.
@@ -214,25 +183,25 @@ using has_aliased_node_indices = typename T::aliased_policies_type;
  *
  * @tparam T Type to implement the method for
  * @param token The token to match against
- * @return Match result
+ * @return True if token matches the long or short form name
  */
 template <typename T>
-match_result default_match(const token_type& token)
+bool default_match(const token_type& token)
 {
     if constexpr (traits::is_detected_v<has_long_name_checker, T>) {
         if ((token.prefix == prefix_type::LONG) &&
             (token.name == T::long_name())) {
-            return {match_result::MATCH, match_result::HAS_NO_ARGUMENT};
+            return true;
         }
     }
     if constexpr (traits::is_detected_v<has_short_name_checker, T>) {
         if ((token.prefix == prefix_type::SHORT) &&
             (token.name == T::short_name())) {
-            return {match_result::MATCH, match_result::HAS_NO_ARGUMENT};
+            return true;
         }
     }
 
-    return {match_result::NO_MATCH, match_result::HAS_NO_ARGUMENT};
+    return false;
 }
 
 /** Returns the node name, the long form name is preferred.
@@ -308,14 +277,13 @@ using build_router_args_t = typename build_router_args<Child>::type;
  * Visitor needs to be equivalent to:
  * @code
  * template <typename Child>
- * operator()(std::size_t i, Child&&, match_result) {}
+ * operator()(std::size_t i, Child&&) {}
  * @endcode
  * <TT>i</TT> is the index into the children tuple.  If child has a
  * match(std::string_view) method then the visitor is called if a match is
  * found.  If it doesn't have a match method and the prefix is prefix_type::NONE
  * then every child encountered that fits that description will have @a visitor
- * called on it - in that circumstance match_result::matched will be
- * match_result::NO_MATCH.
+ * called on it.
  * 
  * @tparam ChildrenTuple Tuple of child types
  * @tparam Fn Visitor Callable type
@@ -327,42 +295,128 @@ using build_router_args_t = typename build_router_args<Child>::type;
 template <typename ChildrenTuple, typename Fn>
 bool visit_child(const token_type& token,
                  const ChildrenTuple& children,
-                 Fn&& visitor)
+                 Fn visitor)
 {
-    // Iterate over the children and use the prefix type to use the correct
-    // name method
     auto found_child = false;
     utility::tuple_iterator(
         [&](auto i, auto&& child) {
             using child_type = std::decay_t<decltype(child)>;
 
+            auto call_visitor = [&]() {
+                visitor(i, child);
+                found_child = true;
+            };
+
             if constexpr (traits::is_detected_v<parsing::has_match_checker,
                                                 child_type>) {
                 const auto result = child.match(token);
-                if (result.matched) {
-                    visitor(i, child, result);
-                    found_child = true;
-                }
-            } else if (token.prefix == prefix_type::NONE) {
-                // A positional arg type will always accept a token
-                visitor(
-                    i,
-                    child,
-                    parsing::match_result{parsing::match_result::NO_MATCH,
-                                          parsing::match_result::HAS_ARGUMENT});
-                found_child = true;
-            }
+                if (result) {
+                    // Skip if already found
+                    if (found_child) {
+                        return;
+                    }
 
-            // No need to check that it has matched again, as the compiler
-            // has already done that via a rule
+                    call_visitor();
+                }
+            } else if (token.prefix == prefix_type::NONE &&
+                       policy::has_value_tokens_v<child_type>) {
+                // A positional arg type will always accept a token
+                call_visitor();
+            }
         },
         children);
 
     return found_child;
 }
+
+/** Positional arg-aware visitation pattern to find a named child.
+ *
+ * This is the same as other visit_child implementation except that it uses the
+ * already parsed values and hit mask to determine which positional arg-like
+ * child @a visitor should operate on.  The visitor is not called more than
+ * once per invocation.
+ * 
+ * Positional args may accept multiple values, in which case the child that
+ * represents it will be used to parse the value, until that positional arg's
+ * maximum_count() or count() is reached - at which point the next positional
+ * arg is used.
+ * @tparam ChildrenTuple Tuple of child types
+ * @tparam RouterArgs Tuple of parsed value types to be given to the router
+ * policy
+ * @tparam Fn Visitor Callable type
+ * @param token Token
+ * @param children Children tuple instance
+ * @param router_args Tuple of parsed values to be given to the router policy
+ * @param hit_mask Bitset marking which values have already been parsed
+ * @param visitor Visitor callable
+ * @return True if a valid child was found
+ */
+template <typename ChildrenTuple, typename RouterArgs, typename Fn>
+bool visit_child(const token_type& token,
+                 const ChildrenTuple& children,
+                 const RouterArgs& router_args,
+                 std::bitset<std::tuple_size_v<RouterArgs>> hit_mask,
+                 Fn visitor)
+{
+    static_assert(
+        std::tuple_size_v<ChildrenTuple> == std::tuple_size_v<RouterArgs>,
+        "Number of children must be the same as number of router args");
+
+    auto found_child = false;
+    auto wrapped_visitor = [&](auto i, const auto& child) {
+        using child_type = std::tuple_element_t<i, ChildrenTuple>;
+        using value_type = std::tuple_element_t<i, RouterArgs>;
+
+        // Skip if we have already found
+        if (found_child) {
+            return;
+        }
+
+        // Non-positional arg case just forwards onto the original visitor
+        if constexpr (traits::is_detected_v<parsing::has_match_checker,
+                                            child_type>) {
+            visitor(i, child);
+            found_child = true;
+        } else {
+            if constexpr (traits::is_detected_v<has_push_back_checker,
+                                                value_type>) {
+                // Unpleasant, there's no 'if constexpr' ternary operator though
+                constexpr auto max_count = [&]() {
+                    if constexpr (traits::is_detected_v<
+                                      has_maximum_count_checker,
+                                      child_type>) {
+                        return child_type::maximum_count();
+                    }
+
+                    return std::numeric_limits<std::size_t>::max();
+                }();
+
+                // Compare the number of values the position arg has already, to
+                // check if its maximum has been reached.  If the maximum has
+                // been reached then just skip onto the next
+                const auto num_values = std::size(std::get<i>(router_args));
+                if (num_values < max_count) {
+                    visitor(i, child);
+                    found_child = true;
+                }
+            } else {
+                // Positional args support non-container value_types if their
+                // min/max/count values are the same.  So use the hit_mask to
+                // determine whether or not to skip
+                if (!hit_mask[i]) {
+                    visitor(i, child);
+                    found_child = true;
+                }
+            }
+        }
+    };
+
+    visit_child(token, children, wrapped_visitor);
+    return found_child;
+}
 }  // namespace parsing
 
-/** Global parsing function.
+/** Global parsing struct.
  *
  * If you want to provide custom parsing for an entire @em type, then you should
  * specialise this.  If you want to provide custom parsing for a particular type
@@ -373,46 +427,68 @@ bool visit_child(const token_type& token,
  * @return The parsed instance
  * @exception parse_exception Thrown if parsing failed
  */
-template <typename T, typename = std::enable_if_t<!std::is_arithmetic_v<T>>>
-T parse(std::string_view token)
-{
-    boost::ignore_unused(token);
-    static_assert(traits::always_false_v<T>,
-                  "No parse function for this type, use a custom_parser policy "
-                  "or define a parse(std::string_view) specialisation");
-}
+template <typename T, typename Enable = void>
+struct parser {
+    constexpr static T parse(std::string_view token)
+    {
+        boost::ignore_unused(token);
+        static_assert(
+            traits::always_false_v<T>,
+            "No parse function for this type, use a custom_parser policy "
+            "or define a parse(std::string_view) specialisation");
+    }
+};
 
 template <typename T>
-std::enable_if_t<std::is_arithmetic_v<T>, T> parse(std::string_view token)
-{
-    using namespace utility::string_view_ops;
-    using namespace std::string_literals;
+struct parser<T, typename std::enable_if_t<std::is_arithmetic_v<T>>> {
+    static T parse(std::string_view token)
+    {
+        using namespace utility::string_view_ops;
+        using namespace std::string_literals;
 
-    if (token.front() == '+') {
-        token.remove_prefix(1);
+        if (token.front() == '+') {
+            token.remove_prefix(1);
+        }
+
+        auto value = T{};
+        const auto result = std::from_chars(token.begin(), token.end(), value);
+
+        if (result.ec == std::errc{}) {
+            return value;
+        }
+
+        if (result.ec == std::errc::result_out_of_range) {
+            throw parse_exception{"Value out of range for argument: "s + token};
+        }
+
+        throw parse_exception{"Failed to parse: "s + token};
     }
-
-    auto value = T{};
-    const auto result = std::from_chars(token.begin(), token.end(), value);
-
-    if (result.ec == std::errc{}) {
-        return value;
-    }
-
-    if (result.ec == std::errc::result_out_of_range) {
-        throw parse_exception{"Value out of range for argument: "s + token};
-    }
-
-    throw parse_exception{"Failed to parse: "s + token};
-}
+};
 
 template <>
-constexpr inline std::string_view parse<std::string_view>(
-    std::string_view token)
-{
-    return token;
-}
+struct parser<std::string_view> {
+    constexpr static inline std::string_view parse(std::string_view token)
+    {
+        return token;
+    }
+};
 
 template <>
-bool parse<bool>(std::string_view token);
+struct parser<bool> {
+    static bool parse(std::string_view token);
+};
+
+// The default vector-like container parser just forwards onto the value_type
+// parser, this is because an argument that can be parsed as a complete
+// container will need a custom parser.  In other words, this is only used for
+// positional arg parsing
+template <typename T>
+struct parser<T,
+              typename std::enable_if_t<
+                  traits::is_detected_v<parsing::has_push_back_checker, T>>> {
+    static typename T::value_type parse(std::string_view token)
+    {
+        return parser<typename T::value_type>::parse(token);
+    }
+};
 }  // namespace arg_router

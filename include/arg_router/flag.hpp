@@ -44,7 +44,7 @@ public:
      * @param token Command line token to match
      * @return Match result
      */
-    parsing::match_result match(const parsing::token_type& token) const
+    bool match(const parsing::token_type& token) const
     {
         return parsing::default_match<flag_t>(token);
     }

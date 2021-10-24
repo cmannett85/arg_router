@@ -1,6 +1,8 @@
 #pragma once
 
 #include "arg_router/parsing.hpp"
+#include "arg_router/policy/count.hpp"
+#include "arg_router/policy/has_value_tokens.hpp"
 
 namespace arg_router
 {
@@ -11,7 +13,10 @@ namespace arg_router
  * @tparam Policies Pack of policies that define its behaviour
  */
 template <typename T, typename... Policies>
-class arg_t : public tree_node<T, Policies...>
+class arg_t :
+    public tree_node<policy::has_value_tokens_t,
+                     policy::count_t<std::integral_constant<std::size_t, 1>>,
+                     Policies...>
 {
     static_assert(policy::is_all_policies_v<std::tuple<Policies...>>,
                   "Args must only contain policies (not other nodes)");
@@ -25,7 +30,11 @@ public:
      * @param policies Policy instances
      */
     constexpr explicit arg_t(Policies... policies) :
-        tree_node<T, Policies...>{std::tuple{std::move(policies)...}}
+        tree_node<policy::has_value_tokens_t,
+                  policy::count_t<std::integral_constant<std::size_t, 1>>,
+                  Policies...>{policy::has_value_tokens_t{},
+                               policy::count<1>,
+                               std::move(policies)...}
     {
     }
 
@@ -35,12 +44,9 @@ public:
      * @param token Command line token to match
      * @return Match result
      */
-    parsing::match_result match(const parsing::token_type& token) const
+    bool match(const parsing::token_type& token) const
     {
-        auto result = parsing::default_match<arg_t>(token);
-        result.has_argument = parsing::match_result::HAS_ARGUMENT;
-
-        return result;
+        return parsing::default_match<arg_t>(token);
     }
 };
 

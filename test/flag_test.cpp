@@ -24,7 +24,7 @@ BOOST_AUTO_TEST_CASE(policies_test)
 
 BOOST_AUTO_TEST_SUITE(death_suite)
 
-BOOST_AUTO_TEST_CASE(despecialised_unique_in_owner_test)
+BOOST_AUTO_TEST_CASE(policies_only_test)
 {
     test::death_test_compile(
         R"(
