@@ -82,22 +82,6 @@ protected:
     {
     }
 
-    /** Argument constructor.
-     *
-     * This is for nodes whose first template argument is their value_type, and
-     * so must be removed before policy/child processing.
-     * @param tuple_params Tuple of policy and child instances
-     */
-    template <typename P = parameters_type,
-              typename = std::enable_if_t<(std::tuple_size_v<P> > 0)>>
-    explicit tree_node(boost::mp11::mp_drop_c<P, 1> tuple_params) :
-        traits::unpack_and_derive<policies_type>{
-            common_filter_tuple<policy::is_policy>(tuple_params)},
-        children_(common_filter_tuple<is_tree_node>(
-            list_expander(std::move(tuple_params))))
-    {
-    }
-
 public:
     /** Returns a reference to the children.
      *

@@ -379,6 +379,7 @@ BOOST_AUTO_TEST_CASE(anonymous_triple_single_flag_parse_test)
             BOOST_CHECK_EQUAL(result[2], expected[2]);
         } catch (parse_exception& e) {
             BOOST_CHECK_EQUAL(fail_message, e.what());
+            BOOST_CHECK(!router_hit);
         }
     };
 
@@ -462,6 +463,7 @@ BOOST_AUTO_TEST_CASE(named_single_mode_parse_test)
             BOOST_CHECK_EQUAL(result[2], expected[2]);
         } catch (parse_exception& e) {
             BOOST_CHECK_EQUAL(fail_message, e.what());
+            BOOST_CHECK(!router_hit);
         }
     };
 
@@ -593,6 +595,8 @@ BOOST_AUTO_TEST_CASE(named_multi_mode_parse_test)
             }
         } catch (parse_exception& e) {
             BOOST_CHECK_EQUAL(fail_message, e.what());
+            BOOST_CHECK(!router_hit1);
+            BOOST_CHECK(!router_hit2);
         }
     };
 
@@ -676,6 +680,8 @@ BOOST_AUTO_TEST_CASE(named_multi_mode_using_list_parse_test)
             }
         } catch (parse_exception& e) {
             BOOST_CHECK_EQUAL(fail_message, e.what());
+            BOOST_CHECK(!router_hit1);
+            BOOST_CHECK(!router_hit2);
         }
     };
 
@@ -735,6 +741,7 @@ BOOST_AUTO_TEST_CASE(alias_flag_parse_test)
             BOOST_CHECK_EQUAL(result[2], expected[2]);
         } catch (parse_exception& e) {
             BOOST_CHECK_EQUAL(fail_message, e.what());
+            BOOST_CHECK(!router_hit);
         }
     };
 
@@ -798,6 +805,7 @@ BOOST_AUTO_TEST_CASE(alias_arg_parse_test)
             BOOST_CHECK_EQUAL(std::get<2>(result), std::get<2>(expected));
         } catch (parse_exception& e) {
             BOOST_CHECK_EQUAL(fail_message, e.what());
+            BOOST_CHECK(!router_hit);
         }
     };
 
@@ -816,6 +824,160 @@ BOOST_AUTO_TEST_CASE(alias_arg_parse_test)
             std::tuple{std::vector{"foo", "-a", "9"},
                        std::tuple{false, 9, 9},
                        "Missing required argument: --arg1"},
+        });
+}
+
+BOOST_AUTO_TEST_CASE(single_positional_arg_parse_test)
+{
+    auto router_hit = false;
+    auto result = std::tuple<bool, int, std::vector<std::string_view>>{};
+    const auto r =
+        root(mode(flag(policy::long_name<S_("flag1")>,
+                       policy::description<S_("First description")>),
+                  arg<int>(policy::long_name<S_("arg1")>,
+                           policy::default_value(42),
+                           policy::description<S_("Second description")>),
+                  positional_arg<std::vector<std::string_view>>(
+                      policy::long_name<S_("pos_args")>,
+                      policy::description<S_("Third description")>,
+                      policy::min_count<2>),
+                  policy::router{[&](bool flag1,
+                                     int arg1,
+                                     std::vector<std::string_view> pos_args) {
+                      result = {flag1, arg1, pos_args};
+                      router_hit = true;
+                  }}),
+             policy::validation::default_validator);
+
+    auto f = [&](auto args, auto expected, std::string fail_message) {
+        result = {};
+        router_hit = false;
+
+        try {
+            r.parse(args.size(), const_cast<char**>(args.data()));
+            BOOST_CHECK(fail_message.empty());
+            BOOST_CHECK(router_hit);
+            BOOST_CHECK_EQUAL(std::get<0>(result), std::get<0>(expected));
+            BOOST_CHECK_EQUAL(std::get<1>(result), std::get<1>(expected));
+            BOOST_CHECK(std::get<2>(result) == std::get<2>(expected));
+        } catch (parse_exception& e) {
+            BOOST_CHECK_EQUAL(fail_message, e.what());
+            BOOST_CHECK(!router_hit);
+        }
+    };
+
+    test::data_set(
+        f,
+        {
+            std::tuple{std::vector{"foo", "one", "two"},
+                       std::tuple{false,
+                                  42,
+                                  std::vector<std::string_view>{"one", "two"}},
+                       ""},
+            std::tuple{std::vector{"foo", "--flag1", "one", "two"},
+                       std::tuple{true,
+                                  42,
+                                  std::vector<std::string_view>{"one", "two"}},
+                       ""},
+            std::tuple{std::vector{"foo", "--arg1", "14", "one", "two"},
+                       std::tuple{false,
+                                  14,
+                                  std::vector<std::string_view>{"one", "two"}},
+                       ""},
+            std::tuple{
+                std::vector{"foo", "--arg1", "14", "--flag1", "one", "two"},
+                std::tuple{true,
+                           14,
+                           std::vector<std::string_view>{"one", "two"}},
+                ""},
+            std::tuple{std::vector{"foo", "--flag1"},
+                       std::tuple{true, 42, std::vector<std::string_view>{}},
+                       "Minimum count not reached: --pos_args"},
+            std::tuple{std::vector{"foo", "--flag1", "--arg1", "9"},
+                       std::tuple{true, 42, std::vector<std::string_view>{}},
+                       "Minimum count not reached: --pos_args"},
+        });
+}
+
+BOOST_AUTO_TEST_CASE(two_positional_arg_parse_test)
+{
+    auto router_hit = false;
+    auto result = std::
+        tuple<bool, int, std::vector<std::string_view>, std::vector<double>>{};
+    const auto r =
+        root(mode(flag(policy::long_name<S_("flag1")>,
+                       policy::description<S_("First description")>),
+                  arg<int>(policy::long_name<S_("arg1")>,
+                           policy::default_value(42),
+                           policy::description<S_("Second description")>),
+                  positional_arg<std::vector<std::string_view>>(
+                      policy::long_name<S_("pos_args1")>,
+                      policy::description<S_("Third description")>,
+                      policy::count<2>),
+                  positional_arg<std::vector<double>>(
+                      policy::long_name<S_("pos_args2")>,
+                      policy::description<S_("Fourth description")>),
+                  policy::router{[&](bool flag1,
+                                     int arg1,
+                                     std::vector<std::string_view> pos_args1,
+                                     std::vector<double> pos_args2) {
+                      result = {flag1, arg1, pos_args1, pos_args2};
+                      router_hit = true;
+                  }}),
+             policy::validation::default_validator);
+
+    auto f = [&](auto args, auto expected, std::string fail_message) {
+        result = {};
+        router_hit = false;
+
+        try {
+            r.parse(args.size(), const_cast<char**>(args.data()));
+            BOOST_CHECK(fail_message.empty());
+            BOOST_CHECK(router_hit);
+            BOOST_CHECK_EQUAL(std::get<0>(result), std::get<0>(expected));
+            BOOST_CHECK_EQUAL(std::get<1>(result), std::get<1>(expected));
+            BOOST_CHECK(std::get<2>(result) == std::get<2>(expected));
+            BOOST_CHECK(std::get<3>(result) == std::get<3>(expected));
+        } catch (parse_exception& e) {
+            BOOST_CHECK_EQUAL(fail_message, e.what());
+            BOOST_CHECK(!router_hit);
+        }
+    };
+
+    test::data_set(
+        f,
+        {
+            std::tuple{std::vector{"foo", "one", "two"},
+                       std::tuple{false,
+                                  42,
+                                  std::vector<std::string_view>{"one", "two"},
+                                  std::vector<double>{}},
+                       ""},
+            std::tuple{std::vector{"foo", "one", "two", "3.14"},
+                       std::tuple{false,
+                                  42,
+                                  std::vector<std::string_view>{"one", "two"},
+                                  std::vector<double>{3.14}},
+                       ""},
+            std::tuple{std::vector{"foo", "one", "two", "3.14", "443.34"},
+                       std::tuple{false,
+                                  42,
+                                  std::vector<std::string_view>{"one", "two"},
+                                  std::vector<double>{3.14, 443.34}},
+                       ""},
+            std::tuple{std::vector{"foo", "one", "two", "three"},
+                       std::tuple{false,
+                                  42,
+                                  std::vector<std::string_view>{},
+                                  std::vector<double>{}},
+                       "Failed to parse: three"},
+            std::tuple{
+                std::vector{"foo", "one", "--flag1", "two", "--arg1", "5"},
+                std::tuple{false,
+                           42,
+                           std::vector<std::string_view>{},
+                           std::vector<double>{}},
+                "Failed to parse: two"},
         });
 }
 

@@ -55,14 +55,7 @@ parsing::token_list parsing::expand_arguments(int argc, const char* argv[])
     return result;
 }
 
-std::string parsing::to_string(match_result mr)
-{
-    return "{"s + (mr.matched ? "no match" : "match") + ", " +
-           (mr.has_argument ? "has argument" : "no argument") + "}";
-}
-
-template <>
-bool arg_router::parse<bool>(std::string_view token)
+bool arg_router::parser<bool>::parse(std::string_view token)
 {
     using namespace utility::string_view_ops;
     using namespace std::string_literals;

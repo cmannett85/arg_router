@@ -58,6 +58,18 @@ using get_type = typename T::type;
 template <typename T>
 using get_value_type = typename T::value_type;
 
+/** Alias for <TT>typename T::value_type</TT> or <TT>void</TT> if @a T does not
+ * have a value_type.
+ *
+ * @tparam T Type possibly holding the typedef
+ */
+template <typename T>
+using get_value_type_or_void =
+    boost::mp11::mp_eval_if_c<!boost::mp11::mp_valid<get_value_type, T>::value,
+                              void,
+                              get_value_type,
+                              T>;
+
 /** Evaluates to true if @a T is a tuple-like type.
  *
  * A tuple-like type is one that is can be used with std::tuple_size (i.e.
@@ -235,6 +247,14 @@ using is_detected = detail::is_detected_impl<Trait, void, T>;
  */
 template <template <typename...> typename Trait, typename T>
 constexpr bool is_detected_v = is_detected<Trait, T>::value;
+
+/** Can be used by traits::is_detected to determine if a type has a
+ * value_type typedef.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+using has_value_type_checker = typename T::value_type;
 
 /** Returns the L1 cache size.
  *

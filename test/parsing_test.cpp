@@ -32,8 +32,7 @@ BOOST_AUTO_TEST_CASE(flag_default_match_test)
             flag(policy::long_name<S_("hello")>, policy::short_name<'H'>);
         const auto result = parsing::default_match<std::decay_t<decltype(f)>>(
             {parsing::prefix_type::LONG, "hello"});
-        BOOST_CHECK_EQUAL(result,
-                          parsing::match_result{parsing::match_result::MATCH});
+        BOOST_CHECK(result);
     }
 
     {
@@ -41,8 +40,7 @@ BOOST_AUTO_TEST_CASE(flag_default_match_test)
             flag(policy::long_name<S_("hello")>, policy::short_name<'H'>);
         const auto result =
             parsing::default_match<std::decay_t<decltype(f)>>('H');
-        BOOST_CHECK_EQUAL(result,
-                          parsing::match_result{parsing::match_result::MATCH});
+        BOOST_CHECK(result);
     }
 
     {
@@ -50,37 +48,35 @@ BOOST_AUTO_TEST_CASE(flag_default_match_test)
             flag(policy::long_name<S_("hello")>, policy::short_name<'H'>);
         const auto result = parsing::default_match<std::decay_t<decltype(f)>>(
             {parsing::prefix_type::LONG, "foo"});
-        BOOST_CHECK_EQUAL(result, parsing::match_result{});
+        BOOST_CHECK(!result);
     }
 
     {
         const auto f = flag(policy::long_name<S_("hello")>);
         const auto result = parsing::default_match<std::decay_t<decltype(f)>>(
             {parsing::prefix_type::LONG, "hello"});
-        BOOST_CHECK_EQUAL(result,
-                          parsing::match_result{parsing::match_result::MATCH});
+        BOOST_CHECK(result);
     }
 
     {
         const auto f = flag(policy::long_name<S_("hello")>);
         const auto result = parsing::default_match<std::decay_t<decltype(f)>>(
             {parsing::prefix_type::LONG, "foo"});
-        BOOST_CHECK_EQUAL(result, parsing::match_result{});
+        BOOST_CHECK(!result);
     }
 
     {
         const auto f = flag(policy::short_name<'H'>);
         const auto result =
             parsing::default_match<std::decay_t<decltype(f)>>('H');
-        BOOST_CHECK_EQUAL(result,
-                          parsing::match_result{parsing::match_result::MATCH});
+        BOOST_CHECK(result);
     }
 
     {
         const auto f = flag(policy::short_name<'H'>);
         const auto result =
             parsing::default_match<std::decay_t<decltype(f)>>('a');
-        BOOST_CHECK_EQUAL(result, parsing::match_result{});
+        BOOST_CHECK(!result);
     }
 }
 
@@ -202,61 +198,98 @@ BOOST_AUTO_TEST_CASE(visit_child_test)
                              policy::router{[]() {}}),
                         policy::validation::default_validator);
 
-    auto visitor_hit_count = 0u;
-    auto v1 = [&](auto i, auto&& child, auto match) {
-        BOOST_CHECK_EQUAL(i, 0);
-        if constexpr (std::is_same_v<std::decay_t<decltype(child)>,
-                                     std::tuple_element_t<
-                                         0,
-                                         typename std::decay_t<
-                                             decltype(r)>::children_type>>) {
+    auto f = [&](auto token, auto expected_child_index) {
+        auto visitor_hit_count = 0u;
+        auto v = [&](auto i, auto&& child) {
+            static_assert(
+                std::is_same_v<
+                    std::tuple_element_t<
+                        i,
+                        typename std::decay_t<decltype(r)>::children_type>,
+                    std::decay_t<decltype(child)>>,
+                "Child index and child type at index differ");
+            BOOST_CHECK_EQUAL(i, expected_child_index);
             ++visitor_hit_count;
-        }
+        };
 
-        BOOST_CHECK_EQUAL(match,
-                          parsing::match_result{parsing::match_result::MATCH});
+        parsing::visit_child(token, r.children(), v);
+        BOOST_CHECK_EQUAL(visitor_hit_count, 1);
     };
 
-    parsing::visit_child({parsing::prefix_type::LONG, "hello"},
-                         r.children(),
-                         v1);
-    BOOST_CHECK_EQUAL(visitor_hit_count, 1);
+    test::data_set(
+        f,
+        {std::tuple{parsing::token_type{parsing::prefix_type::LONG, "hello"},
+                    0},
+         std::tuple{parsing::token_type{parsing::prefix_type::SHORT, "h"}, 1},
+         std::tuple{parsing::token_type{parsing::prefix_type::SHORT, "b"}, 2}});
+}
 
-    visitor_hit_count = 0;
-    auto v2 = [&](auto i, auto&& child, auto match) {
-        BOOST_CHECK_EQUAL(i, 1);
-        if constexpr (std::is_same_v<std::decay_t<decltype(child)>,
-                                     std::tuple_element_t<
-                                         1,
-                                         typename std::decay_t<
-                                             decltype(r)>::children_type>>) {
+BOOST_AUTO_TEST_CASE(pos_arg_visit_child_test)
+{
+    using router_args_type = std::
+        tuple<bool, std::vector<std::string_view>, int, std::vector<double>>;
+
+    const auto m =
+        mode(flag(policy::long_name<S_("hello")>,
+                  policy::description<S_("Hello description")>),
+             positional_arg<std::vector<std::string_view>>(
+                 policy::long_name<S_("p1")>,
+                 policy::description<S_("p1 description")>,
+                 policy::count<2>),
+             positional_arg<int>(policy::long_name<S_("p2")>,
+                                 policy::description<S_("p2 description")>,
+                                 policy::count<1>),
+             positional_arg<std::vector<double>>(
+                 policy::long_name<S_("p3")>,
+                 policy::description<S_("p3 description")>));
+
+    auto f = [&](auto token,
+                 auto expected_child_index,
+                 auto router_args,
+                 auto hit_mask) {
+        auto visitor_hit_count = 0u;
+        auto v = [&](auto i, auto&& child) {
+            static_assert(
+                std::is_same_v<
+                    std::tuple_element_t<
+                        i,
+                        typename std::decay_t<decltype(m)>::children_type>,
+                    std::decay_t<decltype(child)>>,
+                "Child index and child type at index differ");
+            BOOST_CHECK_EQUAL(i, expected_child_index);
             ++visitor_hit_count;
-        }
+        };
 
-        BOOST_CHECK_EQUAL(match,
-                          parsing::match_result{parsing::match_result::MATCH});
+        parsing::visit_child(token, m.children(), router_args, hit_mask, v);
+        BOOST_CHECK_EQUAL(visitor_hit_count, 1);
     };
 
-    parsing::visit_child('h', r.children(), v2);
-    BOOST_CHECK_EQUAL(visitor_hit_count, 1);
-
-    visitor_hit_count = 0;
-    auto v3 = [&](auto i, auto&& child, auto match) {
-        BOOST_CHECK_EQUAL(i, 2);
-        if constexpr (std::is_same_v<std::decay_t<decltype(child)>,
-                                     std::tuple_element_t<
-                                         2,
-                                         typename std::decay_t<
-                                             decltype(r)>::children_type>>) {
-            ++visitor_hit_count;
-        }
-
-        BOOST_CHECK_EQUAL(match,
-                          parsing::match_result{parsing::match_result::MATCH});
-    };
-
-    parsing::visit_child('b', r.children(), v3);
-    BOOST_CHECK_EQUAL(visitor_hit_count, 1);
+    test::data_set(
+        f,
+        {std::tuple{parsing::token_type{parsing::prefix_type::LONG, "hello"},
+                    0,
+                    router_args_type{},
+                    0b0000},
+         std::tuple{parsing::token_type{parsing::prefix_type::NONE, "one"},
+                    1,
+                    router_args_type{},
+                    0b0000},
+         std::tuple{parsing::token_type{parsing::prefix_type::NONE, "two"},
+                    1,
+                    router_args_type{false, {"one"}, 0, {}},
+                    0b0010},
+         std::tuple{parsing::token_type{parsing::prefix_type::NONE, "42"},
+                    2,
+                    router_args_type{false, {"one", "two"}, 0, {}},
+                    0b0010},
+         std::tuple{parsing::token_type{parsing::prefix_type::NONE, "3.0"},
+                    3,
+                    router_args_type{false, {"one", "two"}, 42, {}},
+                    0b0110},
+         std::tuple{parsing::token_type{parsing::prefix_type::NONE, "3.14"},
+                    3,
+                    router_args_type{false, {"one", "two"}, 42, {3.0}},
+                    0b1110}});
 }
 
 BOOST_AUTO_TEST_CASE(numeric_parse_test)
@@ -265,7 +298,7 @@ BOOST_AUTO_TEST_CASE(numeric_parse_test)
         using T = std::decay_t<decltype(expected)>;
 
         try {
-            const auto result = parse<T>(input);
+            const auto result = parser<T>::parse(input);
             static_assert(std::is_same_v<std::decay_t<decltype(result)>, T>,
                           "Parse result unexpected type");
             BOOST_CHECK(fail_message.empty());
@@ -294,7 +327,7 @@ BOOST_AUTO_TEST_CASE(numeric_parse_test)
 BOOST_AUTO_TEST_CASE(string_view_parse_test)
 {
     auto f = [](auto input, auto expected) {
-        const auto result = parse<std::string_view>(input);
+        const auto result = parser<std::string_view>::parse(input);
         static_assert(
             std::is_same_v<std::decay_t<decltype(result)>, std::string_view>,
             "Parse result unexpected type");
@@ -313,7 +346,7 @@ BOOST_AUTO_TEST_CASE(bool_parse_test)
 {
     auto f = [](auto input, auto expected, std::string_view fail_message) {
         try {
-            const auto result = parse<bool>(input);
+            const auto result = parser<bool>::parse(input);
             static_assert(std::is_same_v<std::decay_t<decltype(result)>, bool>,
                           "Parse result unexpected type");
             BOOST_CHECK(fail_message.empty());
@@ -341,6 +374,36 @@ BOOST_AUTO_TEST_CASE(bool_parse_test)
                    });
 }
 
+BOOST_AUTO_TEST_CASE(container_parse_test)
+{
+    auto f = [](auto input, auto expected, std::string_view fail_message) {
+        using T = std::vector<std::decay_t<decltype(expected)>>;
+
+        try {
+            const auto result = parser<T>::parse(input);
+            static_assert(std::is_same_v<std::decay_t<decltype(result)>,
+                                         typename T::value_type>,
+                          "Parse result unexpected type");
+            BOOST_CHECK(fail_message.empty());
+            BOOST_CHECK_EQUAL(result, expected);
+        } catch (parse_exception& e) {
+            BOOST_CHECK_EQUAL(e.what(), fail_message);
+        }
+    };
+
+    test::data_set(f,
+                   std::tuple{
+                       std::tuple{"42", 42, ""},
+                       std::tuple{"true", true, ""},
+                       std::tuple{"3.14", 3.14f, ""},
+                       std::tuple{"hello", "hello"sv, ""},
+                       std::tuple{"hello", false, "Failed to parse: hello"},
+                       std::tuple{"23742949",
+                                  std::uint8_t{0},
+                                  "Value out of range for argument: 23742949"},
+                   });
+}
+
 BOOST_AUTO_TEST_SUITE(death_suite)
 
 BOOST_AUTO_TEST_CASE(unimplemented_parse_test)
@@ -352,7 +415,7 @@ BOOST_AUTO_TEST_CASE(unimplemented_parse_test)
 struct my_struct{};
 
 int main() {
-    const auto v = arg_router::parse<my_struct>("foo");
+    const auto v = arg_router::parser<my_struct>::parse("foo");
     return 0;
 }
     )",

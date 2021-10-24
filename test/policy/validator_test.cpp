@@ -1,4 +1,4 @@
-#include "arg_router/policy/validator.hpp"
+﻿#include "arg_router/policy/validator.hpp"
 
 #include "test_helpers.hpp"
 
@@ -225,6 +225,139 @@ BOOST_AUTO_TEST_CASE(aliased_must_not_be_in_owner_test)
                         policy::long_name_t<S_("bbbb")>>,
         flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
                policy::long_name_t<S_("aaaa")>>>();
+}
+
+BOOST_AUTO_TEST_CASE(positional_args_must_be_at_end_test)
+{
+    policy::validation::positional_args_must_be_at_end<positional_arg_t>::check<
+        arg_router::mode_t<>>();
+
+    policy::validation::positional_args_must_be_at_end<positional_arg_t>::check<
+        arg_router::mode_t<
+            flag_t<policy::long_name_t<S_("test1")>>,
+            arg_t<int, policy::long_name_t<S_("test2")>>,
+            positional_arg_t<int, policy::long_name_t<S_("test3")>>>>();
+
+    policy::validation::positional_args_must_be_at_end<positional_arg_t>::check<
+        arg_router::mode_t<
+            flag_t<policy::long_name_t<S_("test1")>>,
+            arg_t<int, policy::long_name_t<S_("test2")>>,
+            positional_arg_t<int, policy::long_name_t<S_("test3")>>,
+            positional_arg_t<int, policy::long_name_t<S_("test4")>>>>();
+}
+
+BOOST_AUTO_TEST_CASE(positional_args_must_have_fixed_count_if_not_at_end_test)
+{
+    policy::validation::positional_args_must_have_fixed_count_if_not_at_end<
+        positional_arg_t>::check<arg_router::mode_t<>>();
+
+    policy::validation::positional_args_must_have_fixed_count_if_not_at_end<
+        positional_arg_t>::
+        check<arg_router::mode_t<
+            flag_t<policy::long_name_t<S_("test1")>>,
+            arg_t<int, policy::long_name_t<S_("test2")>>,
+            positional_arg_t<int, policy::long_name_t<S_("test3")>>>>();
+
+    policy::validation::positional_args_must_have_fixed_count_if_not_at_end<
+        positional_arg_t>::
+        check<arg_router::mode_t<
+            flag_t<policy::long_name_t<S_("test1")>>,
+            arg_t<int, policy::long_name_t<S_("test2")>>,
+            positional_arg_t<
+                int,
+                policy::long_name_t<S_("test3")>,
+                policy::count_t<traits::integral_constant<std::size_t{1}>>>,
+            positional_arg_t<int, policy::long_name_t<S_("test4")>>>>();
+
+    policy::validation::positional_args_must_have_fixed_count_if_not_at_end<
+        positional_arg_t>::
+        check<arg_router::mode_t<
+            flag_t<policy::long_name_t<S_("test1")>>,
+            arg_t<int, policy::long_name_t<S_("test2")>>,
+            positional_arg_t<
+                int,
+                policy::long_name_t<S_("test3")>,
+                policy::count_t<traits::integral_constant<std::size_t{1}>>>,
+            positional_arg_t<
+                int,
+                policy::long_name_t<S_("test4")>,
+                policy::count_t<traits::integral_constant<std::size_t{3}>>>,
+            positional_arg_t<int, policy::long_name_t<S_("test5")>>>>();
+
+    policy::validation::positional_args_must_have_fixed_count_if_not_at_end<
+        positional_arg_t>::
+        check<arg_router::mode_t<
+            flag_t<policy::long_name_t<S_("test1")>>,
+            arg_t<int, policy::long_name_t<S_("test2")>>,
+            positional_arg_t<
+                int,
+                policy::long_name_t<S_("test3")>,
+                policy::min_count_t<traits::integral_constant<std::size_t{1}>>,
+                policy::max_count_t<traits::integral_constant<std::size_t{1}>>>,
+            positional_arg_t<int, policy::long_name_t<S_("test4")>>>>();
+}
+
+BOOST_AUTO_TEST_CASE(validate_counts_test)
+{
+    policy::validation::validate_counts::check<positional_arg_t<
+        int,
+        policy::long_name_t<S_("test1")>,
+        policy::min_count_t<traits::integral_constant<std::size_t{1}>>,
+        policy::max_count_t<traits::integral_constant<std::size_t{1}>>>>();
+
+    policy::validation::validate_counts::check<positional_arg_t<
+        int,
+        policy::long_name_t<S_("test1")>,
+        policy::min_count_t<traits::integral_constant<std::size_t{0}>>,
+        policy::max_count_t<traits::integral_constant<std::size_t{0}>>>>();
+
+    policy::validation::validate_counts::check<positional_arg_t<
+        int,
+        policy::long_name_t<S_("test1")>,
+        policy::min_count_t<traits::integral_constant<std::size_t{1}>>,
+        policy::max_count_t<traits::integral_constant<std::size_t{3}>>>>();
+
+    policy::validation::validate_counts::check<positional_arg_t<
+        int,
+        policy::long_name_t<S_("test1")>,
+        policy::min_count_t<traits::integral_constant<std::size_t{42}>>,
+        policy::max_count_t<traits::integral_constant<std::size_t{84}>>>>();
+}
+
+BOOST_AUTO_TEST_CASE(if_count_not_one_value_type_must_support_push_back_test)
+{
+    policy::validation::if_count_not_one_value_type_must_support_push_back::
+        check<positional_arg_t<
+            int,
+            policy::long_name_t<S_("test1")>,
+            policy::count_t<traits::integral_constant<std::size_t{1}>>>>();
+
+    policy::validation::if_count_not_one_value_type_must_support_push_back::
+        check<positional_arg_t<
+            std::vector<int>,
+            policy::long_name_t<S_("test1")>,
+            policy::count_t<traits::integral_constant<std::size_t{3}>>>>();
+
+    policy::validation::if_count_not_one_value_type_must_support_push_back::
+        check<positional_arg_t<
+            int,
+            policy::long_name_t<S_("test1")>,
+            policy::min_count_t<traits::integral_constant<std::size_t{1}>>,
+            policy::max_count_t<traits::integral_constant<std::size_t{1}>>>>();
+
+    policy::validation::if_count_not_one_value_type_must_support_push_back::
+        check<positional_arg_t<
+            std::vector<int>,
+            policy::long_name_t<S_("test1")>,
+            policy::min_count_t<traits::integral_constant<std::size_t{3}>>,
+            policy::max_count_t<traits::integral_constant<std::size_t{3}>>>>();
+
+    policy::validation::if_count_not_one_value_type_must_support_push_back::
+        check<positional_arg_t<
+            std::vector<int>,
+            policy::long_name_t<S_("test1")>,
+            policy::min_count_t<traits::integral_constant<std::size_t{1}>>,
+            policy::max_count_t<traits::integral_constant<std::size_t{3}>>>>();
 }
 
 BOOST_AUTO_TEST_SUITE_END()
@@ -535,6 +668,253 @@ int main() {
 }
     )",
         "Alias names cannot appear in owner");
+}
+
+BOOST_AUTO_TEST_CASE(positional_args_not_at_end_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/validator.hpp"
+using namespace arg_router;
+
+int main() {
+    policy::validation::positional_args_must_be_at_end<positional_arg_t>::check<
+        arg_router::mode_t<
+            flag_t<policy::long_name_t<S_("test1")>>,
+            positional_arg_t<int, policy::long_name_t<S_("test3")>>,
+            arg_t<int, policy::long_name_t<S_("test2")>>>>();
+    return 0;
+}
+    )",
+        "Positional args must all appear at the end of nodes/policy list for a "
+        "node");
+}
+
+BOOST_AUTO_TEST_CASE(positional_args_at_beginning_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/validator.hpp"
+using namespace arg_router;
+
+int main() {
+    policy::validation::positional_args_must_be_at_end<positional_arg_t>::check<
+        arg_router::mode_t<
+            positional_arg_t<int, policy::long_name_t<S_("test3")>>,
+            flag_t<policy::long_name_t<S_("test1")>>,
+            arg_t<int, policy::long_name_t<S_("test2")>>>>();
+    return 0;
+}
+    )",
+        "Positional args must all appear at the end of nodes/policy list for a "
+        "node");
+}
+
+BOOST_AUTO_TEST_CASE(
+    positional_args_must_have_fixed_count_if_not_at_end_no_counts_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/validator.hpp"
+using namespace arg_router;
+
+int main() {
+    policy::validation::positional_args_must_have_fixed_count_if_not_at_end<
+        positional_arg_t>::
+        check<arg_router::mode_t<
+            flag_t<policy::long_name_t<S_("test1")>>,
+            arg_t<int, policy::long_name_t<S_("test2")>>,
+            positional_arg_t<int, policy::long_name_t<S_("test3")>>,
+            positional_arg_t<int, policy::long_name_t<S_("test4")>>>>();
+    return 0;
+}
+    )",
+        "Positional args not at the end of the list must have a fixed count");
+}
+
+BOOST_AUTO_TEST_CASE(
+    positional_args_must_have_fixed_count_if_not_at_end_last_has_count_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/validator.hpp"
+using namespace arg_router;
+
+int main() {
+    policy::validation::positional_args_must_have_fixed_count_if_not_at_end<
+        positional_arg_t>::
+        check<arg_router::mode_t<
+            flag_t<policy::long_name_t<S_("test1")>>,
+            arg_t<int, policy::long_name_t<S_("test2")>>,
+            positional_arg_t<int, policy::long_name_t<S_("test3")>>,
+            positional_arg_t<
+                int,
+                policy::long_name_t<S_("test3")>,
+                policy::count_t<traits::integral_constant<std::size_t{1}>>>>>();
+    return 0;
+}
+    )",
+        "Positional args not at the end of the list must have a fixed count");
+}
+
+BOOST_AUTO_TEST_CASE(
+    positional_args_must_have_fixed_count_if_not_at_end_min_no_max_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/validator.hpp"
+using namespace arg_router;
+
+int main() {
+    policy::validation::positional_args_must_have_fixed_count_if_not_at_end<
+        positional_arg_t>::
+        check<arg_router::mode_t<
+            flag_t<policy::long_name_t<S_("test1")>>,
+            arg_t<int, policy::long_name_t<S_("test2")>>,
+            positional_arg_t<
+                int,
+                policy::long_name_t<S_("test3")>,
+                policy::min_count_t<traits::integral_constant<std::size_t{1}>>>,
+            positional_arg_t<int, policy::long_name_t<S_("test4")>>>>();
+    return 0;
+}
+    )",
+        "Positional args not at the end of the list must have a fixed count");
+}
+
+BOOST_AUTO_TEST_CASE(
+    positional_args_must_have_fixed_count_if_not_at_end_max_no_min_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/validator.hpp"
+using namespace arg_router;
+
+int main() {
+    policy::validation::positional_args_must_have_fixed_count_if_not_at_end<
+        positional_arg_t>::
+        check<arg_router::mode_t<
+            flag_t<policy::long_name_t<S_("test1")>>,
+            arg_t<int, policy::long_name_t<S_("test2")>>,
+            positional_arg_t<
+                int,
+                policy::long_name_t<S_("test3")>,
+                policy::max_count_t<traits::integral_constant<std::size_t{1}>>>,
+            positional_arg_t<int, policy::long_name_t<S_("test4")>>>>();
+    return 0;
+}
+    )",
+        "Positional args not at the end of the list must have a fixed count");
+}
+
+BOOST_AUTO_TEST_CASE(
+    positional_args_must_have_fixed_count_if_not_at_end_unequal_min_max_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/validator.hpp"
+using namespace arg_router;
+
+int main() {
+    policy::validation::positional_args_must_have_fixed_count_if_not_at_end<
+        positional_arg_t>::
+        check<arg_router::mode_t<
+            flag_t<policy::long_name_t<S_("test1")>>,
+            arg_t<int, policy::long_name_t<S_("test2")>>,
+            positional_arg_t<
+                int,
+                policy::long_name_t<S_("test3")>,
+                policy::min_count_t<traits::integral_constant<std::size_t{1}>>,
+                policy::max_count_t<traits::integral_constant<std::size_t{3}>>>,
+            positional_arg_t<int, policy::long_name_t<S_("test4")>>>>();
+    return 0;
+}
+    )",
+        "Positional args not at the end of the list must have a fixed count");
+}
+
+BOOST_AUTO_TEST_CASE(validate_counts_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/validator.hpp"
+using namespace arg_router;
+
+int main() {
+    policy::validation::validate_counts::check<positional_arg_t<
+        int,
+        policy::long_name_t<S_("test1")>,
+        policy::min_count_t<traits::integral_constant<std::size_t{2}>>,
+        policy::max_count_t<traits::integral_constant<std::size_t{1}>>>>();
+    return 0;
+}
+    )",
+        "Minimum count must be less than maximum count");
+}
+
+BOOST_AUTO_TEST_CASE(
+    if_count_not_one_value_type_must_support_push_back_count_3_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/validator.hpp"
+using namespace arg_router;
+
+int main() {
+    policy::validation::if_count_not_one_value_type_must_support_push_back::
+        check<positional_arg_t<
+            int,
+            policy::long_name_t<S_("test1")>,
+            policy::count_t<traits::integral_constant<std::size_t{3}>>>>();
+    return 0;
+}
+    )",
+        "If T does not have a fixed count of 1, then its value_type must have "
+        "a push_back() method");
+}
+
+BOOST_AUTO_TEST_CASE(
+    if_count_not_one_value_type_must_support_push_back_min_max_3_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/validator.hpp"
+using namespace arg_router;
+
+int main() {
+    policy::validation::if_count_not_one_value_type_must_support_push_back::
+        check<positional_arg_t<
+            int,
+            policy::long_name_t<S_("test1")>,
+            policy::min_count_t<traits::integral_constant<std::size_t{3}>>,
+            policy::max_count_t<traits::integral_constant<std::size_t{3}>>>>();
+    return 0;
+}
+    )",
+        "If T does not have a fixed count of 1, then its value_type must have "
+        "a push_back() method");
+}
+
+BOOST_AUTO_TEST_CASE(
+    if_count_not_one_value_type_must_support_push_back_min_1_max_3_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/validator.hpp"
+using namespace arg_router;
+
+int main() {
+    policy::validation::if_count_not_one_value_type_must_support_push_back::
+        check<positional_arg_t<
+            int,
+            policy::long_name_t<S_("test1")>,
+            policy::min_count_t<traits::integral_constant<std::size_t{1}>>,
+            policy::max_count_t<traits::integral_constant<std::size_t{3}>>>>();
+    return 0;
+}
+    )",
+        "If T does not have a fixed count of 1, then its value_type must have "
+        "a push_back() method");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

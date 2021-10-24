@@ -23,76 +23,31 @@ BOOST_AUTO_TEST_CASE(policies_test)
     static_assert(f.short_name() == "H", "Short name test fail");
 }
 
-BOOST_AUTO_TEST_CASE(match_test)
-{
-    {
-        const auto f =
-            arg<int>(policy::long_name<S_("hello")>, policy::short_name<'H'>);
-        const auto result = f.match({parsing::prefix_type::LONG, "hello"});
-        BOOST_CHECK_EQUAL(
-            result,
-            (parsing::match_result{parsing::match_result::MATCH,
-                                   parsing::match_result::HAS_ARGUMENT}));
-    }
-
-    {
-        const auto f =
-            arg<int>(policy::long_name<S_("hello")>, policy::short_name<'H'>);
-        const auto result = f.match('H');
-        BOOST_CHECK_EQUAL(
-            result,
-            (parsing::match_result{parsing::match_result::MATCH,
-                                   parsing::match_result::HAS_ARGUMENT}));
-    }
-
-    {
-        const auto f =
-            arg<int>(policy::long_name<S_("hello")>, policy::short_name<'H'>);
-        const auto result = f.match({parsing::prefix_type::LONG, "foo"});
-        BOOST_CHECK_EQUAL(
-            result,
-            (parsing::match_result{parsing::match_result::NO_MATCH,
-                                   parsing::match_result::HAS_ARGUMENT}));
-    }
-
-    {
-        const auto f = arg<int>(policy::long_name<S_("hello")>);
-        const auto result = f.match({parsing::prefix_type::LONG, "hello"});
-        BOOST_CHECK_EQUAL(
-            result,
-            (parsing::match_result{parsing::match_result::MATCH,
-                                   parsing::match_result::HAS_ARGUMENT}));
-    }
-
-    {
-        const auto f = arg<int>(policy::long_name<S_("hello")>);
-        const auto result = f.match({parsing::prefix_type::LONG, "foo"});
-        BOOST_CHECK_EQUAL(
-            result,
-            (parsing::match_result{parsing::match_result::NO_MATCH,
-                                   parsing::match_result::HAS_ARGUMENT}));
-    }
-
-    {
-        const auto f = arg<int>(policy::short_name<'H'>);
-        const auto result = f.match('H');
-        BOOST_CHECK_EQUAL(
-            result,
-            (parsing::match_result{parsing::match_result::MATCH,
-                                   parsing::match_result::HAS_ARGUMENT}));
-    }
-
-    {
-        const auto f = arg<int>(policy::short_name<'H'>);
-        const auto result = f.match('a');
-        BOOST_CHECK_EQUAL(
-            result,
-            (parsing::match_result{parsing::match_result::NO_MATCH,
-                                   parsing::match_result::HAS_ARGUMENT}));
-    }
-}
-
 BOOST_AUTO_TEST_SUITE(death_suite)
+
+BOOST_AUTO_TEST_CASE(only_policies_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/arg.hpp"
+#include "arg_router/flag.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/short_name.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    auto f = arg<int>(
+        policy::long_name<S_("hello")>,
+        flag(policy::short_name<'b'>),
+        policy::short_name<'H'>
+    );
+    return 0;
+}
+    )",
+        "Args must only contain policies (not other nodes)");
+}
 
 BOOST_AUTO_TEST_SUITE_END()
 

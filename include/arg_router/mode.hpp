@@ -31,25 +31,19 @@ public:
      * @param token Command line token to match, stripped of prefix
      * @return Match result
      */
-    parsing::match_result match(const parsing::token_type& token) const
+    bool match(const parsing::token_type& token) const
     {
-        // If this mode has a long name, then match it, otherwise look at the
-        // children
-        auto result = parsing::match_result{};
+        // If this mode has a long name, then match it, otherwise check if there
+        // is a child that matches
         if constexpr (traits::is_detected_v<parsing::has_long_name_checker,
                                             mode_t>) {
-            if ((token.prefix == parsing::prefix_type::NONE) &&
-                (token.name == mode_t::long_name())) {
-                result.matched = parsing::match_result::MATCH;
-            }
+            return (token.prefix == parsing::prefix_type::NONE) &&
+                   (token.name == mode_t::long_name());
         } else {
-            parsing::visit_child(
-                token,
-                this->children(),
-                [&](auto /*i*/, auto&& /*child*/, auto mr) { result = mr; });
+            return parsing::visit_child(token,
+                                        this->children(),
+                                        [&](auto /*i*/, auto&& /*child*/) {});
         }
-
-        return result;
     }
 };
 

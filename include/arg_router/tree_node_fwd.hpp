@@ -11,13 +11,16 @@ class tree_node;
  *
  * @tparam T Type to test
  */
-template <typename T, typename Enable = void>
-struct is_tree_node : std::false_type {
-};
+template <typename T>
+struct is_tree_node {
+private:
+    template <typename... Ts>
+    static constexpr std::true_type test(const tree_node<Ts...>*);
 
-template <template <typename...> typename T, typename... Args>
-struct is_tree_node<T<Args...>> :
-    std::is_base_of<tree_node<Args...>, T<Args...>> {
+    static constexpr std::false_type test(...);
+
+public:
+    constexpr static bool value = decltype(test(std::declval<T*>()))::value;
 };
 
 /** Helper variable for is_tree_node.
