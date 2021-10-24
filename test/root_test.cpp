@@ -12,7 +12,25 @@ namespace
 {
 using default_validator_type =
     std::decay_t<decltype(policy::validation::default_validator)>;
-}
+
+struct A {
+    explicit A(int v = 0) : value{v} {}
+    int value;
+};
+
+struct B {
+    explicit B(double v = 0) : value{v} {}
+    double value;
+};
+}  // namespace
+
+template <>
+struct arg_router::parser<B> {
+    static B parse(std::string_view token)
+    {
+        return B{parser<double>::parse(token)};
+    }
+};
 
 BOOST_AUTO_TEST_SUITE(root_suite)
 
@@ -193,6 +211,59 @@ BOOST_AUTO_TEST_CASE(triple_arg_parse_test)
                        std::tuple{std::vector{"foo", "-t", "hello"},
                                   std::array{false, false, true},
                                   std::tuple{0, 0.0, "hello"sv}},
+                   });
+}
+
+BOOST_AUTO_TEST_CASE(custom_parser_test)
+{
+    auto result = std::tuple<A, B, B>{};
+    auto parser_hit = false;
+
+    const auto r = root(
+        arg<A>(policy::long_name<S_("arg1")>,
+               policy::description<S_("First description")>,
+               policy::custom_parser<A>{[](auto token) -> A {
+                   return A{parser<int>::parse(token)};
+               }},
+               policy::router{[&](auto arg1) { std::get<0>(result) = arg1; }}),
+        arg<B>(policy::long_name<S_("arg2")>,
+               policy::description<S_("Second description")>,
+               policy::custom_parser<B>{[&](auto token) -> B {
+                   parser_hit = true;
+                   return B{parser<double>::parse(token)};
+               }},
+               policy::router{[&](auto arg2) { std::get<1>(result) = arg2; }}),
+        arg<B>(policy::long_name<S_("arg3")>,
+               policy::description<S_("Third description")>,
+               policy::router{[&](auto arg3) { std::get<2>(result) = arg3; }}),
+        policy::validation::default_validator);
+
+    auto f = [&](auto args, auto expected_hit, auto expected_value) {
+        result = {A{}, B{}, B{}};
+        parser_hit = false;
+
+        r.parse(args.size(), const_cast<char**>(args.data()));
+        BOOST_CHECK_EQUAL(parser_hit, expected_hit);
+
+        BOOST_CHECK_EQUAL(std::get<0>(result).value,
+                          std::get<0>(expected_value).value);
+        BOOST_CHECK_EQUAL(std::get<1>(result).value,
+                          std::get<1>(expected_value).value);
+        BOOST_CHECK_EQUAL(std::get<2>(result).value,
+                          std::get<2>(expected_value).value);
+    };
+
+    test::data_set(f,
+                   {
+                       std::tuple{std::vector{"foo", "--arg1", "42"},
+                                  false,
+                                  std::tuple{A{42}, B{}, B{}}},
+                       std::tuple{std::vector{"foo", "--arg2", "3.14"},
+                                  true,
+                                  std::tuple{A{}, B{3.14}, B{}}},
+                       std::tuple{std::vector{"foo", "--arg3", "3.3"},
+                                  false,
+                                  std::tuple{A{}, B{}, B{3.3}}},
                    });
 }
 

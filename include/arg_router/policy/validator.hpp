@@ -589,6 +589,8 @@ inline constexpr auto default_validator = validator<
          despecialised_unique_in_owner>,
     rule<policy::default_value<int>,  //
          despecialised_unique_in_owner>,
+    rule<policy::custom_parser<int>,  //
+         despecialised_unique_in_owner>,
     rule<policy::min_count_t<traits::integral_constant<std::size_t{1}>>,  //
          despecialised_unique_in_owner>,
     rule<policy::max_count_t<traits::integral_constant<std::size_t{1}>>,  //
