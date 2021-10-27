@@ -1,13 +1,15 @@
 #pragma once
 
 #include "arg_router/parsing.hpp"
+#include "arg_router/policy/default_value.hpp"
 
 namespace arg_router
 {
 /** Represents a flag in the command line.
  *
  * A flag is a boolean indicator, it has no value assigned on the command line,
- * its presence represents a positive boolean value.
+ * its presence represents a positive boolean value.  It has a default value of
+ * false.
  * 
  * Flags with shortnames can be concatenated or 'collapsed' on the command line,
  * e.g.
@@ -20,21 +22,20 @@ namespace arg_router
  * @tparam Policies Pack of policies that define its behaviour
  */
 template <typename... Policies>
-class flag_t : public tree_node<Policies...>
+class flag_t : public tree_node<policy::default_value<bool>, Policies...>
 {
     static_assert(policy::is_all_policies_v<std::tuple<Policies...>>,
                   "Flags must only contain policies (not other nodes)");
 
 public:
-    /** Flags always represent boolean values. */
-    using value_type = bool;
-
     /** Constructor.
      *
      * @param policies Policy instances
      */
     constexpr explicit flag_t(Policies... policies) :
-        tree_node<Policies...>{std::move(policies)...}
+        tree_node<policy::default_value<bool>, Policies...>{
+            policy::default_value<bool>{false},
+            std::move(policies)...}
     {
     }
 

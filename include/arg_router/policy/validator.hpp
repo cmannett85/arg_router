@@ -606,7 +606,6 @@ inline constexpr auto default_validator = validator<
          despecialised_unique_in_owner>,
     rule<flag_t<>,  //
          must_not_have_policy<policy::required_t>,
-         must_not_have_policy<policy::default_value>,
          must_not_have_policy<policy::custom_parser>,
          must_not_have_policy<policy::validation::validator>,
          at_least_one_of_policies<policy::long_name_t, policy::short_name_t>,
@@ -632,6 +631,7 @@ inline constexpr auto default_validator = validator<
     rule<mode_t<>,  //
          must_not_have_policy<policy::short_name_t>,
          must_not_have_policy<policy::custom_parser>,
+         must_not_have_policy<policy::default_value>,
          child_must_not_have_policy<policy::router>,
          positional_args_must_be_at_end<positional_arg_t>,
          positional_args_must_have_fixed_count_if_not_at_end<positional_arg_t>,
@@ -643,7 +643,6 @@ inline constexpr auto default_validator = validator<
          min_child_count<1>,
          child_must_have_policy<policy::router>,
          child_must_not_have_policy<policy::required_t>,
-         child_must_not_have_policy<policy::default_value>,
          child_must_not_have_policy<policy::alias_t>,
          multiple_named_modes<mode_t>>>{};
 }  // namespace validation

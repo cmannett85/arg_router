@@ -92,7 +92,7 @@ BOOST_AUTO_TEST_CASE(unhandled_parse_test)
     BOOST_CHECK_EXCEPTION(
         r.parse(args.size(), const_cast<char**>(args.data())),
         parse_exception,
-        [](const auto& e) { return e.what() == "Unhandled argument: --foo"s; });
+        [](const auto& e) { return e.what() == "Unknown argument: --foo"s; });
     BOOST_CHECK(!router_hit);
 }
 

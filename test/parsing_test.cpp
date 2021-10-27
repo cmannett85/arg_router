@@ -17,12 +17,17 @@ BOOST_AUTO_TEST_SUITE(parsing_suite)
 
 BOOST_AUTO_TEST_CASE(has_aliased_node_indices_test)
 {
-    using flag_type = flag_t<policy::long_name_t<S_("flag1")>,
-                             policy::alias_t<policy::long_name_t<S_("Hello")>>>;
-
+    using aliased_type =
+        flag_t<policy::long_name_t<S_("flag1")>,
+               policy::alias_t<policy::long_name_t<S_("Hello")>>>;
     static_assert(
-        traits::is_detected_v<parsing::has_aliased_node_indices, flag_type>,
+        traits::is_detected_v<parsing::has_aliased_node_indices, aliased_type>,
         "Fail");
+
+    using not_aliased_type = flag_t<policy::long_name_t<S_("flag1")>>;
+    static_assert(!traits::is_detected_v<parsing::has_aliased_node_indices,
+                                         not_aliased_type>,
+                  "Fail");
 }
 
 BOOST_AUTO_TEST_CASE(flag_default_match_test)
@@ -156,31 +161,32 @@ BOOST_AUTO_TEST_CASE(string_from_prefix_test)
                    });
 }
 
-BOOST_AUTO_TEST_CASE(build_router_args_test)
+BOOST_AUTO_TEST_CASE(optional_router_args_test)
 {
     {
         using type = root_t<
             flag_t<policy::long_name_t<S_("hello")>>,
             std::decay_t<decltype(policy::validation::default_validator)>>;
-        static_assert(std::is_same_v<parsing::build_router_args_t<type>,
-                                     std::tuple<bool>>,
+        static_assert(std::is_same_v<parsing::optional_router_args_t<type>,
+                                     std::tuple<std::optional<bool>>>,
                       "Build router args test 1 fail");
     }
 
     {
         using type = root_t<
             flag_t<policy::long_name_t<S_("hello")>>,
-            flag_t<policy::long_name_t<S_("goodbye")>>,
+            arg_t<int, policy::long_name_t<S_("goodbye")>>,
             std::decay_t<decltype(policy::validation::default_validator)>>;
-        static_assert(std::is_same_v<parsing::build_router_args_t<type>,
-                                     std::tuple<bool, bool>>,
-                      "Build router args test 1 fail");
+        static_assert(
+            std::is_same_v<parsing::optional_router_args_t<type>,
+                           std::tuple<std::optional<bool>, std::optional<int>>>,
+            "Build router args test 1 fail");
     }
 
     {
         using type = flag_t<policy::long_name_t<S_("hello")>>;
-        static_assert(std::is_same_v<parsing::build_router_args_t<type>,
-                                     std::tuple<bool>>,
+        static_assert(std::is_same_v<parsing::optional_router_args_t<type>,
+                                     std::tuple<std::optional<bool>>>,
                       "Build router args test 1 fail");
     }
 }
@@ -226,8 +232,11 @@ BOOST_AUTO_TEST_CASE(visit_child_test)
 
 BOOST_AUTO_TEST_CASE(pos_arg_visit_child_test)
 {
-    using router_args_type = std::
-        tuple<bool, std::vector<std::string_view>, int, std::vector<double>>;
+    using router_args_type =
+        std::tuple<std::optional<bool>,
+                   std::optional<std::vector<std::string_view>>,
+                   std::optional<int>,
+                   std::optional<std::vector<double>>>;
 
     const auto m =
         mode(flag(policy::long_name<S_("hello")>,
@@ -243,10 +252,7 @@ BOOST_AUTO_TEST_CASE(pos_arg_visit_child_test)
                  policy::long_name<S_("p3")>,
                  policy::description<S_("p3 description")>));
 
-    auto f = [&](auto token,
-                 auto expected_child_index,
-                 auto router_args,
-                 auto hit_mask) {
+    auto f = [&](auto token, auto expected_child_index, auto router_args) {
         auto visitor_hit_count = 0u;
         auto v = [&](auto i, auto&& child) {
             static_assert(
@@ -260,7 +266,7 @@ BOOST_AUTO_TEST_CASE(pos_arg_visit_child_test)
             ++visitor_hit_count;
         };
 
-        parsing::visit_child(token, m.children(), router_args, hit_mask, v);
+        parsing::visit_child(token, m.children(), router_args, v);
         BOOST_CHECK_EQUAL(visitor_hit_count, 1);
     };
 
@@ -268,28 +274,41 @@ BOOST_AUTO_TEST_CASE(pos_arg_visit_child_test)
         f,
         {std::tuple{parsing::token_type{parsing::prefix_type::LONG, "hello"},
                     0,
-                    router_args_type{},
-                    0b0000},
+                    router_args_type{}},
          std::tuple{parsing::token_type{parsing::prefix_type::NONE, "one"},
                     1,
-                    router_args_type{},
-                    0b0000},
+                    router_args_type{}},
          std::tuple{parsing::token_type{parsing::prefix_type::NONE, "two"},
                     1,
-                    router_args_type{false, {"one"}, 0, {}},
-                    0b0010},
-         std::tuple{parsing::token_type{parsing::prefix_type::NONE, "42"},
-                    2,
-                    router_args_type{false, {"one", "two"}, 0, {}},
-                    0b0010},
-         std::tuple{parsing::token_type{parsing::prefix_type::NONE, "3.0"},
-                    3,
-                    router_args_type{false, {"one", "two"}, 42, {}},
-                    0b0110},
-         std::tuple{parsing::token_type{parsing::prefix_type::NONE, "3.14"},
-                    3,
-                    router_args_type{false, {"one", "two"}, 42, {3.0}},
-                    0b1110}});
+                    router_args_type{
+                        false,
+                        std::optional{std::vector<std::string_view>{"one"}},
+                        {},
+                        std::optional<std::vector<double>>{}}},
+         std::tuple{
+             parsing::token_type{parsing::prefix_type::NONE, "42"},
+             2,
+             router_args_type{
+                 {},
+                 std::optional{std::vector<std::string_view>{"one", "two"}},
+                 {},
+                 std::optional<std::vector<double>>{}}},
+         std::tuple{
+             parsing::token_type{parsing::prefix_type::NONE, "3.0"},
+             3,
+             router_args_type{
+                 false,
+                 std::optional{std::vector<std::string_view>{"one", "two"}},
+                 42,
+                 std::optional<std::vector<double>>{}}},
+         std::tuple{
+             parsing::token_type{parsing::prefix_type::NONE, "3.14"},
+             3,
+             router_args_type{
+                 false,
+                 std::optional{std::vector<std::string_view>{"one", "two"}},
+                 42,
+                 std::optional<std::vector<double>>{3.0}}}});
 }
 
 BOOST_AUTO_TEST_CASE(numeric_parse_test)
