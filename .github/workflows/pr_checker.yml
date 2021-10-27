@@ -14,6 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
+      VCPKG_BINARY_SOURCES: 'clear;nuget,vcpkg-cache,readwrite'
       BUILD_DIR: ${{ github.workspace }}/build
       AR_REPO_PATH: ${{ github.workspace }}
 
@@ -32,10 +33,19 @@ jobs:
           --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-11 \
           --slave /usr/bin/g++ g++ /usr/bin/g++-11
 
-    - name: Restore artifacts, or setup vcpkg (do not install any packages)
-      uses: friendlyanon/setup-vcpkg@v1
-      with:
-        path: ./vcpkg
+    - name: Bootstrap vcpkg to build the NuGet client
+      run: |
+        ./vcpkg/bootstrap-vcpkg.sh -disableMetrics
+
+    - name: Configure NuGet client
+      run: |
+        mono `./vcpkg/vcpkg fetch nuget | tail -n 1` \
+          sources add \
+          -source "https://nuget.pkg.github.com/cmannett85/index.json" \
+          -storepasswordincleartext \
+          -name "vcpkg-cache" \
+          -username "cmannett85" \
+          -password "${{ secrets.GITHUB_TOKEN }}"
 
     - name: Build
       uses: lukka/run-cmake@v3
