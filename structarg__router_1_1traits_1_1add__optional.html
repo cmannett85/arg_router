@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>arg_router: arg_router::parsing::build_router_args&lt; Child, typename &gt; Struct Template Reference</title>
+<title>arg_router: arg_router::traits::add_optional&lt; T &gt; Struct Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -63,31 +63,33 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="namespacearg__router.html">arg_router</a></li><li class="navelem"><a class="el" href="namespacearg__router_1_1parsing.html">parsing</a></li><li class="navelem"><a class="el" href="structarg__router_1_1parsing_1_1build__router__args.html">build_router_args</a></li>  </ul>
+<li class="navelem"><a class="el" href="namespacearg__router.html">arg_router</a></li><li class="navelem"><a class="el" href="namespacearg__router_1_1traits.html">traits</a></li><li class="navelem"><a class="el" href="structarg__router_1_1traits_1_1add__optional.html">add_optional</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
+  <div class="summary">
+<a href="structarg__router_1_1traits_1_1add__optional-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">arg_router::parsing::build_router_args&lt; Child, typename &gt; Struct Template Reference</div>  </div>
+<div class="title">arg_router::traits::add_optional&lt; T &gt; Struct Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="parsing_8hpp_source.html">arg_router/parsing.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="traits_8hpp_source.html">arg_router/traits.hpp</a>&gt;</code></p>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h3>template&lt;typename Child, typename = void&gt;<br />
-struct arg_router::parsing::build_router_args&lt; Child, typename &gt;</h3>
+<div class="textblock"><h3>template&lt;typename T&gt;<br />
+struct arg_router::traits::add_optional&lt; T &gt;</h3>
 
-<p>Provides a tuple that can be passed to a router implementation as a part of a <code>std::apply</code> call.</p>
+<p>Create a <code>std::optional&lt;T&gt;</code>.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">Child</td><td>Child type build for </td></tr>
+    <tr><td class="paramname">T</td><td>Type to wrap </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00253">253</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00283">283</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
 </div><hr/>The documentation for this struct was generated from the following file:<ul>
-<li>arg_router/<a class="el" href="parsing_8hpp_source.html">parsing.hpp</a></li>
+<li>arg_router/<a class="el" href="traits_8hpp_source.html">traits.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

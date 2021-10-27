@@ -74,45 +74,46 @@ $(function() {
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &quot;arg_router/parsing.hpp&quot;</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacearg__router.html">arg_router</a></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;{</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Policies&gt;</div>
-<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="classarg__router_1_1flag__t.html">   23</a></span>&#160;<span class="keyword">class </span><a class="code" href="classarg__router_1_1flag__t.html">flag_t</a> : <span class="keyword">public</span> <a class="code" href="classarg__router_1_1tree__node.html">tree_node</a>&lt;Policies...&gt;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;{</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    static_assert(<a class="code" href="namespacearg__router_1_1policy.html#ab0b6b4c0174a2ba257d4431bda7241eb">policy::is_all_policies_v</a>&lt;std::tuple&lt;Policies...&gt;&gt;,</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                  <span class="stringliteral">&quot;Flags must only contain policies (not other nodes)&quot;</span>);</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="classarg__router_1_1flag__t.html#a52c1bf244b1e6f35d947e1ad6fbb053e">   30</a></span>&#160;    <span class="keyword">using</span> <a class="code" href="classarg__router_1_1flag__t.html#a52c1bf244b1e6f35d947e1ad6fbb053e">value_type</a> = bool;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
-<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="classarg__router_1_1flag__t.html#a950e82be054559f3829fcbfaa7aa8d2d">   36</a></span>&#160;    constexpr <span class="keyword">explicit</span> <a class="code" href="classarg__router_1_1flag__t.html#a950e82be054559f3829fcbfaa7aa8d2d">flag_t</a>(Policies... policies) :</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <a class="code" href="classarg__router_1_1tree__node.html">tree_node</a>&lt;Policies...&gt;{std::move(policies)...}</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    {</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    }</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
-<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="classarg__router_1_1flag__t.html#ada57e446f27d1b4b16aec6cf7c1dbbb6">   47</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classarg__router_1_1flag__t.html#ada57e446f27d1b4b16aec6cf7c1dbbb6">match</a>(<span class="keyword">const</span> <a class="code" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a>&amp; token)<span class="keyword"> const</span></div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="keyword">    </span>{</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <span class="keywordflow">return</span> parsing::default_match&lt;flag_t&gt;(token);</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    }</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;};</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Policies&gt;</div>
-<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="namespacearg__router.html#a14a83ac9781bb5bd80bca552113536aa">   61</a></span>&#160;constexpr <a class="code" href="classarg__router_1_1flag__t.html">flag_t</a>&lt;Policies...&gt; <a class="code" href="namespacearg__router.html#a14a83ac9781bb5bd80bca552113536aa">flag</a>(Policies... policies)</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;{</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classarg__router_1_1flag__t.html">flag_t</a>{std::move(policies)...};</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;}</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;arg_router/policy/default_value.hpp&quot;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacearg__router.html">arg_router</a></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;{</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Policies&gt;</div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="classarg__router_1_1flag__t.html">   25</a></span>&#160;<span class="keyword">class </span><a class="code" href="classarg__router_1_1flag__t.html">flag_t</a> : <span class="keyword">public</span> <a class="code" href="classarg__router_1_1tree__node.html">tree_node</a>&lt;policy::default_value&lt;bool&gt;, Policies...&gt;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;{</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    static_assert(<a class="code" href="namespacearg__router_1_1policy.html#ab0b6b4c0174a2ba257d4431bda7241eb">policy::is_all_policies_v</a>&lt;std::tuple&lt;Policies...&gt;&gt;,</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                  <span class="stringliteral">&quot;Flags must only contain policies (not other nodes)&quot;</span>);</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="classarg__router_1_1flag__t.html#a950e82be054559f3829fcbfaa7aa8d2d">   35</a></span>&#160;    constexpr <span class="keyword">explicit</span> <a class="code" href="classarg__router_1_1flag__t.html#a950e82be054559f3829fcbfaa7aa8d2d">flag_t</a>(Policies... policies) :</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <a class="code" href="classarg__router_1_1tree__node.html">tree_node</a>&lt;policy::default_value&lt;bool&gt;, Policies...&gt;{</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;            <a class="code" href="classarg__router_1_1policy_1_1default__value.html">policy::default_value&lt;bool&gt;</a>{<span class="keyword">false</span>},</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;            std::move(policies)...}</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    {</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    }</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
+<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="classarg__router_1_1flag__t.html#ada57e446f27d1b4b16aec6cf7c1dbbb6">   48</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classarg__router_1_1flag__t.html#ada57e446f27d1b4b16aec6cf7c1dbbb6">match</a>(<span class="keyword">const</span> <a class="code" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a>&amp; token)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="keyword">    </span>{</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="keywordflow">return</span> parsing::default_match&lt;flag_t&gt;(token);</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    }</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;};</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Policies&gt;</div>
+<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="namespacearg__router.html#a14a83ac9781bb5bd80bca552113536aa">   62</a></span>&#160;constexpr <a class="code" href="classarg__router_1_1flag__t.html">flag_t</a>&lt;Policies...&gt; <a class="code" href="namespacearg__router.html#a14a83ac9781bb5bd80bca552113536aa">flag</a>(Policies... policies)</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;{</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classarg__router_1_1flag__t.html">flag_t</a>{std::move(policies)...};</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;}</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="anamespacearg__router_html_a14a83ac9781bb5bd80bca552113536aa"><div class="ttname"><a href="namespacearg__router.html#a14a83ac9781bb5bd80bca552113536aa">arg_router::flag</a></div><div class="ttdeci">constexpr flag_t&lt; Policies... &gt; flag(Policies... policies)</div><div class="ttdef"><b>Definition:</b> <a href="flag_8hpp_source.html#l00061">flag.hpp:61</a></div></div>
+<div class="ttc" id="anamespacearg__router_html_a14a83ac9781bb5bd80bca552113536aa"><div class="ttname"><a href="namespacearg__router.html#a14a83ac9781bb5bd80bca552113536aa">arg_router::flag</a></div><div class="ttdeci">constexpr flag_t&lt; Policies... &gt; flag(Policies... policies)</div><div class="ttdef"><b>Definition:</b> <a href="flag_8hpp_source.html#l00062">flag.hpp:62</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1policy_1_1default__value_html"><div class="ttname"><a href="classarg__router_1_1policy_1_1default__value.html">arg_router::policy::default_value</a></div><div class="ttdef"><b>Definition:</b> <a href="default__value_8hpp_source.html#l00015">default_value.hpp:15</a></div></div>
 <div class="ttc" id="astructarg__router_1_1parsing_1_1token__type_html"><div class="ttname"><a href="structarg__router_1_1parsing_1_1token__type.html">arg_router::parsing::token_type</a></div><div class="ttdef"><b>Definition:</b> <a href="parsing_8hpp_source.html#l00036">parsing.hpp:36</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1tree__node_html"><div class="ttname"><a href="classarg__router_1_1tree__node.html">arg_router::tree_node</a></div><div class="ttdef"><b>Definition:</b> <a href="tree__node_8hpp_source.html#l00014">tree_node.hpp:14</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1policy_html_ab0b6b4c0174a2ba257d4431bda7241eb"><div class="ttname"><a href="namespacearg__router_1_1policy.html#ab0b6b4c0174a2ba257d4431bda7241eb">arg_router::policy::is_all_policies_v</a></div><div class="ttdeci">constexpr auto is_all_policies_v</div><div class="ttdef"><b>Definition:</b> <a href="policy_8hpp_source.html#l00048">policy.hpp:48</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1flag__t_html_a950e82be054559f3829fcbfaa7aa8d2d"><div class="ttname"><a href="classarg__router_1_1flag__t.html#a950e82be054559f3829fcbfaa7aa8d2d">arg_router::flag_t::flag_t</a></div><div class="ttdeci">constexpr flag_t(Policies... policies)</div><div class="ttdef"><b>Definition:</b> <a href="flag_8hpp_source.html#l00036">flag.hpp:36</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1flag__t_html_a950e82be054559f3829fcbfaa7aa8d2d"><div class="ttname"><a href="classarg__router_1_1flag__t.html#a950e82be054559f3829fcbfaa7aa8d2d">arg_router::flag_t::flag_t</a></div><div class="ttdeci">constexpr flag_t(Policies... policies)</div><div class="ttdef"><b>Definition:</b> <a href="flag_8hpp_source.html#l00035">flag.hpp:35</a></div></div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00010">algorithm.hpp:10</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1flag__t_html_ada57e446f27d1b4b16aec6cf7c1dbbb6"><div class="ttname"><a href="classarg__router_1_1flag__t.html#ada57e446f27d1b4b16aec6cf7c1dbbb6">arg_router::flag_t::match</a></div><div class="ttdeci">bool match(const parsing::token_type &amp;token) const</div><div class="ttdef"><b>Definition:</b> <a href="flag_8hpp_source.html#l00047">flag.hpp:47</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1flag__t_html_a52c1bf244b1e6f35d947e1ad6fbb053e"><div class="ttname"><a href="classarg__router_1_1flag__t.html#a52c1bf244b1e6f35d947e1ad6fbb053e">arg_router::flag_t::value_type</a></div><div class="ttdeci">bool value_type</div><div class="ttdef"><b>Definition:</b> <a href="flag_8hpp_source.html#l00030">flag.hpp:30</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1flag__t_html"><div class="ttname"><a href="classarg__router_1_1flag__t.html">arg_router::flag_t</a></div><div class="ttdef"><b>Definition:</b> <a href="flag_8hpp_source.html#l00023">flag.hpp:23</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1flag__t_html_ada57e446f27d1b4b16aec6cf7c1dbbb6"><div class="ttname"><a href="classarg__router_1_1flag__t.html#ada57e446f27d1b4b16aec6cf7c1dbbb6">arg_router::flag_t::match</a></div><div class="ttdeci">bool match(const parsing::token_type &amp;token) const</div><div class="ttdef"><b>Definition:</b> <a href="flag_8hpp_source.html#l00048">flag.hpp:48</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1flag__t_html"><div class="ttname"><a href="classarg__router_1_1flag__t.html">arg_router::flag_t</a></div><div class="ttdef"><b>Definition:</b> <a href="flag_8hpp_source.html#l00025">flag.hpp:25</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['second_5ftype_361',['second_type',['../structarg__router_1_1algorithm_1_1unzip.html#a5775c4f67b4c6dfa9ef26b9b4d1400a2',1,'arg_router::algorithm::unzip']]]
+  ['rules_5ftype_360',['rules_type',['../classarg__router_1_1policy_1_1validation_1_1validator.html#adca5b43d5f0fd325ab37e188fbb6b338',1,'arg_router::policy::validation::validator']]]
 ];

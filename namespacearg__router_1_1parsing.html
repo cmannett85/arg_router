@@ -79,8 +79,6 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structarg__router_1_1parsing_1_1build__router__args.html">build_router_args</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -118,6 +116,9 @@ Typedefs</h2></td></tr>
 <tr class="memitem:a6f8720c8d7aba215ae9f3b3b240baaa3"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a6f8720c8d7aba215ae9f3b3b240baaa3"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a6f8720c8d7aba215ae9f3b3b240baaa3">has_aliased_node_indices</a> = typename T::aliased_policies_type</td></tr>
 <tr class="separator:a6f8720c8d7aba215ae9f3b3b240baaa3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac0e0f1b9922b4ca68f9952fb81e03b7d"><td class="memTemplParams" colspan="2">template&lt;typename Child &gt; </td></tr>
+<tr class="memitem:ac0e0f1b9922b4ca68f9952fb81e03b7d"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#ac0e0f1b9922b4ca68f9952fb81e03b7d">optional_router_args_t</a> = boost::mp11::mp_transform&lt; <a class="el" href="namespacearg__router_1_1traits.html#a869c1774020d00627db3ab5e90a7b53a">traits::add_optional_t</a>, typename detail::build_router_args&lt; Child &gt;::type &gt;</td></tr>
+<tr class="separator:ac0e0f1b9922b4ca68f9952fb81e03b7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -146,9 +147,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a3690ad7f7ce484064c7d3f0ae4c25695"><td class="memTemplParams" colspan="2">template&lt;typename ChildrenTuple , typename Fn &gt; </td></tr>
 <tr class="memitem:a3690ad7f7ce484064c7d3f0ae4c25695"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a3690ad7f7ce484064c7d3f0ae4c25695">visit_child</a> (const <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> &amp;token, const ChildrenTuple &amp;children, Fn visitor)</td></tr>
 <tr class="separator:a3690ad7f7ce484064c7d3f0ae4c25695"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad5a4c09e0415e4359313146096c7fd6e"><td class="memTemplParams" colspan="2">template&lt;typename ChildrenTuple , typename RouterArgs , typename Fn &gt; </td></tr>
-<tr class="memitem:ad5a4c09e0415e4359313146096c7fd6e"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#ad5a4c09e0415e4359313146096c7fd6e">visit_child</a> (const <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> &amp;token, const ChildrenTuple &amp;children, const RouterArgs &amp;router_args, std::bitset&lt; std::tuple_size_v&lt; RouterArgs &gt;&gt; hit_mask, Fn visitor)</td></tr>
-<tr class="separator:ad5a4c09e0415e4359313146096c7fd6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a914f080b272a9c7bab9c604700b72d90"><td class="memTemplParams" colspan="2">template&lt;typename ChildrenTuple , typename RouterArgs , typename Fn &gt; </td></tr>
+<tr class="memitem:a914f080b272a9c7bab9c604700b72d90"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a914f080b272a9c7bab9c604700b72d90">visit_child</a> (const <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> &amp;token, const ChildrenTuple &amp;children, const RouterArgs &amp;router_args, Fn visitor)</td></tr>
+<tr class="separator:a914f080b272a9c7bab9c604700b72d90"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Namespace containing types and functions to aid parsing. </p>
@@ -400,6 +401,32 @@ template&lt;typename T &gt; </div>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00112">112</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ac0e0f1b9922b4ca68f9952fb81e03b7d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac0e0f1b9922b4ca68f9952fb81e03b7d">&#9670;&nbsp;</a></span>optional_router_args_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Child &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="namespacearg__router_1_1parsing.html#ac0e0f1b9922b4ca68f9952fb81e03b7d">arg_router::parsing::optional_router_args_t</a> = typedef boost::mp11::mp_transform&lt;<a class="el" href="namespacearg__router_1_1traits.html#a869c1774020d00627db3ab5e90a7b53a">traits::add_optional_t</a>, typename detail::build_router_args&lt;Child&gt;::type&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Provides a tuple that can be used in the root for router arg processing.</p>
+<p>This is a tuple of either the <em>Child's</em> <code>value_type</code> or its children's <code>value_type</code>s if it has any, wrapped in a <code>std::optional</code>. It is put in a optional so there is a difference between a default constructed argument and one that has not been set by the user.</p>
+<p>The use of <code>std::optional</code> also allows the <code>value_type</code>s to be non-default constructible. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Child</td><td>Child type build for </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00285">285</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
 
 </div>
 </div>
@@ -666,8 +693,8 @@ template&lt;typename Node &gt; </div>
 
 </div>
 </div>
-<a id="ad5a4c09e0415e4359313146096c7fd6e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad5a4c09e0415e4359313146096c7fd6e">&#9670;&nbsp;</a></span>visit_child() <span class="overload">[1/2]</span></h2>
+<a id="a914f080b272a9c7bab9c604700b72d90"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a914f080b272a9c7bab9c604700b72d90">&#9670;&nbsp;</a></span>visit_child() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -695,12 +722,6 @@ template&lt;typename ChildrenTuple , typename RouterArgs , typename Fn &gt; </di
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::bitset&lt; std::tuple_size_v&lt; RouterArgs &gt;&gt;&#160;</td>
-          <td class="paramname"><em>hit_mask</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype">Fn&#160;</td>
           <td class="paramname"><em>visitor</em>&#160;</td>
         </tr>
@@ -712,7 +733,7 @@ template&lt;typename ChildrenTuple , typename RouterArgs , typename Fn &gt; </di
       </table>
 </div><div class="memdoc">
 <p>Positional arg-aware visitation pattern to find a named child.</p>
-<p>This is the same as other visit_child implementation except that it uses the already parsed values and hit mask to determine which positional arg-like child <em>visitor</em> should operate on. The visitor is not called more than once per invocation.</p>
+<p>This is the same as other visit_child implementation except that it uses the already parsed values to determine which positional arg-like child <em>visitor</em> should operate on. The visitor is not called more than once per invocation.</p>
 <p>Positional args may accept multiple values, in which case the child that represents it will be used to parse the value, until that positional arg's maximum_count() or count() is reached - at which point the next positional arg is used. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">ChildrenTuple</td><td>Tuple of child types </td></tr>
@@ -725,15 +746,14 @@ template&lt;typename ChildrenTuple , typename RouterArgs , typename Fn &gt; </di
   <table class="params">
     <tr><td class="paramname">token</td><td>Token </td></tr>
     <tr><td class="paramname">children</td><td>Children tuple instance </td></tr>
-    <tr><td class="paramname">router_args</td><td>Tuple of parsed values to be given to the router policy </td></tr>
-    <tr><td class="paramname">hit_mask</td><td>Bitset marking which values have already been parsed </td></tr>
+    <tr><td class="paramname">router_args</td><td>Tuple of parsed <code>std::optional</code> wrapped values to be given to the router policy </td></tr>
     <tr><td class="paramname">visitor</td><td>Visitor callable </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if a valid child was found </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00355">355</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00366">366</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
 
 </div>
 </div>
@@ -791,7 +811,7 @@ template&lt;typename ChildrenTuple , typename Fn &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if a valid child was found </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00296">296</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00308">308</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
 
 </div>
 </div>
