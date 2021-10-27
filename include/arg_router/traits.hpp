@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <cstddef>
 #include <new>
+#include <optional>
 #include <string_view>
 #include <type_traits>
 
@@ -57,18 +58,6 @@ using get_type = typename T::type;
  */
 template <typename T>
 using get_value_type = typename T::value_type;
-
-/** Alias for <TT>typename T::value_type</TT> or <TT>void</TT> if @a T does not
- * have a value_type.
- *
- * @tparam T Type possibly holding the typedef
- */
-template <typename T>
-using get_value_type_or_void =
-    boost::mp11::mp_eval_if_c<!boost::mp11::mp_valid<get_value_type, T>::value,
-                              void,
-                              get_value_type,
-                              T>;
 
 /** Evaluates to true if @a T is a tuple-like type.
  *
@@ -285,6 +274,22 @@ struct add_reference_wrapper {
  */
 template <typename T>
 using add_reference_wrapper_t = typename add_reference_wrapper<T>::type;
+
+/** Create a <TT>std::optional<T></TT>.
+ *
+ * @tparam T Type to wrap
+ */
+template <typename T>
+struct add_optional {
+    using type = std::optional<T>;
+};
+
+/** Helper alias for add_optional.
+ *
+ * @tparam T Type to wrap
+ */
+template <typename T>
+using add_optional_t = typename add_optional<T>::type;
 
 /** A struct that takes a tuple-like type, unpacks it, and derives from each of
  * the elements.

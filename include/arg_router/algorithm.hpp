@@ -347,27 +347,5 @@ constexpr auto tuple_push_back(Tuple tuple, Insert insert)
         std::move(insert),
         std::make_index_sequence<std::tuple_size_v<Tuple>>{});
 }
-
-/** Removes the Nth bit of @a value and shifts the bits above it down one.
- *
- * @tparam T Unsigned integer type
- * @tparam N Index of bit to remove
- * @param value Unsigned integer value to operate on
- * @return Updated value
- */
-template <std::size_t N, typename T>
-constexpr T remove_bit(T value)
-{
-    static_assert(std::is_integral_v<T> && std::is_unsigned_v<T>,
-                  "T must be an unsigned integral");
-    static_assert(N < (sizeof(T) * 8),
-                  "N is larger than the number of bit available");
-
-    // Store the bits lower than N
-    const auto prefix = value & T{(1 << N) - 1};
-    value >>= N + 1;
-    value <<= N;
-    return value | prefix;
-}
 }  // namespace algorithm
 }  // namespace arg_router

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "arg_router/utility/span.hpp"
-
 #include <string_view>
 
 namespace arg_router

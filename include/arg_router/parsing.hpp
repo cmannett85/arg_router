@@ -244,11 +244,8 @@ token_type node_token_type()
     }
 }
 
-/** Provides a tuple that can be passed to a router implementation as a part of
- * a <TT>std::apply</TT> call.
- *
- * @tparam Child Child type build for
- */
+namespace detail
+{
 template <typename Child, typename = void>
 struct build_router_args;
 
@@ -268,9 +265,24 @@ struct build_router_args<
                      (std::tuple_size_v<typename Child::children_type> == 0)>> {
     using type = std::tuple<typename Child::value_type>;
 };
+}  // namespace detail
 
+/** Provides a tuple that can be used in the root for router arg processing.
+ *
+ * This is a tuple of either the @a Child's <TT>value_type</TT> or its
+ * children's <TT>value_type</TT>s if it has any,
+ * wrapped in a <TT>std::optional</TT>.  It is put in a optional so there is a
+ * difference between a default constructed argument and one that has not been
+ * set by the user.
+ * 
+ * The use of <TT>std::optional</TT> also allows the <TT>value_type</TT>s to be
+ * non-default constructible.
+ * @tparam Child Child type build for 
+ */
 template <typename Child>
-using build_router_args_t = typename build_router_args<Child>::type;
+using optional_router_args_t =
+    boost::mp11::mp_transform<traits::add_optional_t,
+                              typename detail::build_router_args<Child>::type>;
 
 /** Visitation pattern to find a named child.
  *
@@ -332,9 +344,8 @@ bool visit_child(const token_type& token,
 /** Positional arg-aware visitation pattern to find a named child.
  *
  * This is the same as other visit_child implementation except that it uses the
- * already parsed values and hit mask to determine which positional arg-like
- * child @a visitor should operate on.  The visitor is not called more than
- * once per invocation.
+ * already parsed values to determine which positional arg-like child @a visitor
+ * should operate on.  The visitor is not called more than once per invocation.
  * 
  * Positional args may accept multiple values, in which case the child that
  * represents it will be used to parse the value, until that positional arg's
@@ -346,8 +357,8 @@ bool visit_child(const token_type& token,
  * @tparam Fn Visitor Callable type
  * @param token Token
  * @param children Children tuple instance
- * @param router_args Tuple of parsed values to be given to the router policy
- * @param hit_mask Bitset marking which values have already been parsed
+ * @param router_args Tuple of parsed <TT>std::optional</TT> wrapped values to
+ * be given to the router policy
  * @param visitor Visitor callable
  * @return True if a valid child was found
  */
@@ -355,7 +366,6 @@ template <typename ChildrenTuple, typename RouterArgs, typename Fn>
 bool visit_child(const token_type& token,
                  const ChildrenTuple& children,
                  const RouterArgs& router_args,
-                 std::bitset<std::tuple_size_v<RouterArgs>> hit_mask,
                  Fn visitor)
 {
     static_assert(
@@ -365,7 +375,8 @@ bool visit_child(const token_type& token,
     auto found_child = false;
     auto wrapped_visitor = [&](auto i, const auto& child) {
         using child_type = std::tuple_element_t<i, ChildrenTuple>;
-        using value_type = std::tuple_element_t<i, RouterArgs>;
+        using value_type =
+            typename std::tuple_element_t<i, RouterArgs>::value_type;
 
         // Skip if we have already found
         if (found_child) {
@@ -394,7 +405,8 @@ bool visit_child(const token_type& token,
                 // Compare the number of values the position arg has already, to
                 // check if its maximum has been reached.  If the maximum has
                 // been reached then just skip onto the next
-                const auto num_values = std::size(std::get<i>(router_args));
+                const auto& value = std::get<i>(router_args);
+                const auto num_values = value ? std::size(*value) : 0u;
                 if (num_values < max_count) {
                     visitor(i, child);
                     found_child = true;
@@ -403,7 +415,7 @@ bool visit_child(const token_type& token,
                 // Positional args support non-container value_types if their
                 // min/max/count values are the same.  So use the hit_mask to
                 // determine whether or not to skip
-                if (!hit_mask[i]) {
+                if (!std::get<i>(router_args)) {
                     visitor(i, child);
                     found_child = true;
                 }
