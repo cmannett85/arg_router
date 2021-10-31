@@ -61,7 +61,6 @@ set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/tree_node.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/tree_node_fwd.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/compile_time_string.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/span.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/string_view_ops.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/tree_recursor.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/tuple_iterator.hpp
