@@ -15,7 +15,7 @@ namespace policy
 template <typename T>
 class max_count_t
 {
-    static_assert(traits::is_detected_v<traits::has_value_type_checker, T>,
+    static_assert(boost::mp11::mp_valid<traits::get_value_type, T>::value,
                   "T must have a value_type");
     static_assert(std::is_convertible_v<typename T::value_type, std::size_t>,
                   "T must have a value_type that is implicitly convertible to "

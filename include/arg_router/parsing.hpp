@@ -3,6 +3,7 @@
 #include "arg_router/config.hpp"
 #include "arg_router/exception.hpp"
 #include "arg_router/policy/has_value_tokens.hpp"
+#include "arg_router/token_type.hpp"
 #include "arg_router/tree_node.hpp"
 #include "arg_router/utility/string_view_ops.hpp"
 #include "arg_router/utility/tuple_iterator.hpp"
@@ -12,81 +13,12 @@
 
 #include <bitset>
 #include <charconv>
-#include <deque>
 
 namespace arg_router
 {
 /** Namespace containing types and functions to aid parsing. */
 namespace parsing
 {
-/** Enum for the prefix type on a token. */
-enum class prefix_type : std::uint8_t { LONG, SHORT, NONE };
-
-/** Creates a string version of @a prefix.
- *
- * This uses config::long_prefix and config::short_prefix.
- * @param prefix Prefix type to convert
- * @return String version of @a prefix
- */
-std::string_view to_string(prefix_type prefix);
-
-/** Pair-like structure carrying the token's prefix type and the token itself
- * (stripped of prefix).
- */
-struct token_type {
-    /** Long form name constructor.
-     *
-     * @param p Prefix type
-     * @param n Token name, stripped of prefix (if any)
-     */
-    token_type(prefix_type p, std::string n) : prefix{p}, name{std::move(n)} {}
-
-    /** Short from name constructor.
-     *
-     * @param n Token name, stripped of prefix (if any)
-     */
-    token_type(char n) : prefix{prefix_type::SHORT}, name{n} {}
-
-    /** Equality operator.
-     *
-     * @param other Instance to compare against
-     * @return True if equal
-     */
-    bool operator==(const token_type& other) const
-    {
-        return prefix == other.prefix && name == other.name;
-    }
-
-    /** Inequality operator.
-     *
-     * @param other Instance to compare against
-     * @return True if not equal
-     */
-    bool operator!=(const token_type& other) const { return !(*this == other); }
-
-    prefix_type prefix;  ///< Prefix type
-    std::string name;    ///< Token name, stripped of prefix (if any)
-};
-
-/** Creates a string representation of @a token, it effectively recreates the
- * original token on the command line.
- * 
- * @param token Token to convert
- * @return String representation of @a token
- */
-std::string to_string(const token_type& token);
-
-/** List of tokens. */
-using token_list = std::deque<token_type>;
-
-/** Analyse @a token and return a pair consisting of the prefix type and
- * @a token stripped of the token.
- *
- * @param token Token to analyse
- * @return Token type
- */
-token_type get_token_type(std::string_view token);
-
 /** Takes the main function arguments and creates a token_list from it.
  *
  * This function will ignore the first argument (program name) and expand out
@@ -97,88 +29,6 @@ token_type get_token_type(std::string_view token);
  */
 token_list expand_arguments(int argc, const char* argv[]);
 
-/** Can be used by traits::is_detected to determine if a type has a long name.
- *
- * @tparam T Type to query
- */
-template <typename T>
-using has_long_name_checker = decltype(T::long_name());
-
-/** Can be used by traits::is_detected to determine if a type has a short name.
- *
- * @tparam T Type to query
- */
-template <typename T>
-using has_short_name_checker = decltype(T::short_name());
-
-/** Can be used by traits::is_detected to determine if a type has a custom
- * parser name.
- *
- * @tparam T Type to query
- */
-template <typename T>
-using has_custom_parser_checker =
-    decltype(std::declval<T>().parse(std::declval<std::string_view>()));
-
-/** Can be used by traits::is_detected to determine if a type has a
- * match(std::string_view) method.
- *
- * @tparam T Type to query
- */
-template <typename T>
-using has_match_checker =
-    decltype(std::declval<const T&>().match(std::declval<const token_type&>()));
-
-/** Can be used by traits::is_detected to determine if a type has a
- * get_default_value() method.
- *
- * @tparam T Type to query
- */
-template <typename T>
-using has_default_value_checker =
-    decltype(std::declval<const T&>().get_default_value());
-
-/** Can be used by traits::is_detected to determine if a type has a
- * maximum_count() method.
- *
- * @tparam T Type to query
- */
-template <typename T>
-using has_maximum_count_checker = decltype(T::maximum_count());
-
-/** Can be used by traits::is_detected to determine if a type has a
- * minimum_count() method.
- *
- * @tparam T Type to query
- */
-template <typename T>
-using has_minimum_count_checker = decltype(T::minimum_count());
-
-/** Can be used by traits::is_detected to determine if a type has a
- * count() method.
- *
- * @tparam T Type to query
- */
-template <typename T>
-using has_count_checker = decltype(T::count());
-
-/** Can be used by traits::is_detected to determine if a type has a
- * push_back(typename T::value_type) method.
- *
- * @tparam T Type to query
- */
-template <typename T>
-using has_push_back_checker = decltype(std::declval<T&>().push_back(
-    std::declval<typename T::value_type>()));
-
-/** Can be used by traits::is_detected to determine if a type has a
- * alias_node_indices typedef.
- *
- * @tparam T Type to query
- */
-template <typename T>
-using has_aliased_node_indices = typename T::aliased_policies_type;
-
 /** The standard implementation of the match method.
  *
  * @tparam T Type to implement the method for
@@ -188,13 +38,13 @@ using has_aliased_node_indices = typename T::aliased_policies_type;
 template <typename T>
 bool default_match(const token_type& token)
 {
-    if constexpr (traits::is_detected_v<has_long_name_checker, T>) {
+    if constexpr (traits::has_long_name_method_v<T>) {
         if ((token.prefix == prefix_type::LONG) &&
             (token.name == T::long_name())) {
             return true;
         }
     }
-    if constexpr (traits::is_detected_v<has_short_name_checker, T>) {
+    if constexpr (traits::has_short_name_method_v<T>) {
         if ((token.prefix == prefix_type::SHORT) &&
             (token.name == T::short_name())) {
             return true;
@@ -214,9 +64,9 @@ bool default_match(const token_type& token)
 template <typename Node>
 constexpr std::string_view node_name()
 {
-    if constexpr (traits::is_detected_v<has_long_name_checker, Node>) {
+    if constexpr (traits::has_long_name_method_v<Node>) {
         return Node::long_name();
-    } else if constexpr (traits::is_detected_v<has_short_name_checker, Node>) {
+    } else if constexpr (traits::has_short_name_method_v<Node>) {
         return Node::short_name();
     } else {
         static_assert(traits::always_false_v<Node>,
@@ -234,9 +84,9 @@ constexpr std::string_view node_name()
 template <typename Node>
 token_type node_token_type()
 {
-    if constexpr (traits::is_detected_v<has_long_name_checker, Node>) {
+    if constexpr (traits::has_long_name_method_v<Node>) {
         return {prefix_type::LONG, std::string{Node::long_name()}};
-    } else if constexpr (traits::is_detected_v<has_short_name_checker, Node>) {
+    } else if constexpr (traits::has_short_name_method_v<Node>) {
         return {prefix_type::SHORT, std::string{Node::short_name()}};
     } else {
         static_assert(traits::always_false_v<Node>,
@@ -319,8 +169,7 @@ bool visit_child(const token_type& token,
                 found_child = true;
             };
 
-            if constexpr (traits::is_detected_v<parsing::has_match_checker,
-                                                child_type>) {
+            if constexpr (traits::has_match_method_v<child_type>) {
                 const auto result = child.match(token);
                 if (result) {
                     // Skip if already found
@@ -384,17 +233,14 @@ bool visit_child(const token_type& token,
         }
 
         // Non-positional arg case just forwards onto the original visitor
-        if constexpr (traits::is_detected_v<parsing::has_match_checker,
-                                            child_type>) {
+        if constexpr (traits::has_match_method_v<child_type>) {
             visitor(i, child);
             found_child = true;
         } else {
-            if constexpr (traits::is_detected_v<has_push_back_checker,
-                                                value_type>) {
+            if constexpr (traits::has_push_back_method_v<value_type>) {
                 // Unpleasant, there's no 'if constexpr' ternary operator though
                 constexpr auto max_count = [&]() {
-                    if constexpr (traits::is_detected_v<
-                                      has_maximum_count_checker,
+                    if constexpr (traits::has_maximum_count_method_v<
                                       child_type>) {
                         return child_type::maximum_count();
                     }
@@ -495,9 +341,7 @@ struct parser<bool> {
 // container will need a custom parser.  In other words, this is only used for
 // positional arg parsing
 template <typename T>
-struct parser<T,
-              typename std::enable_if_t<
-                  traits::is_detected_v<parsing::has_push_back_checker, T>>> {
+struct parser<T, typename std::enable_if_t<traits::has_push_back_method_v<T>>> {
     static typename T::value_type parse(std::string_view token)
     {
         return parser<typename T::value_type>::parse(token);

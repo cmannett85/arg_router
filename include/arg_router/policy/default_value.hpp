@@ -1,7 +1,7 @@
 #pragma once
 
+#include "arg_router/config.hpp"
 #include "arg_router/policy/policy.hpp"
-#include "arg_router/traits.hpp"
 
 namespace arg_router
 {
@@ -30,7 +30,7 @@ public:
      * cache line
      */
     constexpr auto get_default_value() const
-        -> std::conditional_t<traits::l1_cache_size() >= sizeof(T), T, const T&>
+        -> std::conditional_t<config::l1_cache_size() >= sizeof(T), T, const T&>
     {
         return value_;
     }

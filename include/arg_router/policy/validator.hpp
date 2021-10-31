@@ -3,6 +3,7 @@
 #include "arg_router/arg.hpp"
 #include "arg_router/flag.hpp"
 #include "arg_router/mode.hpp"
+#include "arg_router/node_category.hpp"
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/count.hpp"
 #include "arg_router/policy/custom_parser.hpp"
@@ -325,8 +326,7 @@ struct multiple_named_modes {
     using mode_filter = traits::is_specialisation_of<Child, ModeType>;
 
     template <typename Mode>
-    using has_long_name =
-        traits::is_detected<parsing::has_long_name_checker, Mode>;
+    using has_long_name = traits::has_long_name_method<Mode>;
 
     template <typename T, typename...>
     constexpr static void check()
@@ -489,12 +489,10 @@ struct positional_args_must_have_fixed_count_if_not_at_end {
     struct fixed_count_checker {
         constexpr static bool f()
         {
-            if constexpr (traits::is_detected_v<parsing::has_count_checker,
-                                                T>) {
+            if constexpr (traits::has_count_method_v<T>) {
                 return true;
-            } else if constexpr (
-                traits::is_detected_v<parsing::has_minimum_count_checker, T> &&
-                traits::is_detected_v<parsing::has_maximum_count_checker, T>) {
+            } else if constexpr (traits::has_minimum_count_method_v<T> &&
+                                 traits::has_maximum_count_method_v<T>) {
                 return T::minimum_count() == T::maximum_count();
             }
 
@@ -530,13 +528,20 @@ struct validate_counts {
     template <typename T, typename...>
     constexpr static void check()
     {
-        if constexpr (traits::is_detected_v<parsing::has_minimum_count_checker,
-                                            T> &&
-                      traits::is_detected_v<parsing::has_maximum_count_checker,
-                                            T>) {
+        if constexpr (traits::has_minimum_count_method_v<T> &&
+                      traits::has_maximum_count_method_v<T>) {
             static_assert(T::minimum_count() <= T::maximum_count(),
                           "Minimum count must be less than maximum count");
         }
+    }
+};
+
+struct cannot_have_fixed_count_of_zero {
+    template <typename T, typename...>
+    constexpr static void check()
+    {
+        static_assert(!node_category::has_fixed_count_v<T, 0>,
+                      "Cannot have a fixed count of zero");
     }
 };
 
@@ -547,11 +552,10 @@ struct if_count_not_one_value_type_must_support_push_back {
     template <typename T>
     constexpr static bool has_fixed_count_of_one()
     {
-        if constexpr (traits::is_detected_v<parsing::has_count_checker, T>) {
+        if constexpr (traits::has_count_method_v<T>) {
             return T::count() == 1;
-        } else if constexpr (
-            traits::is_detected_v<parsing::has_minimum_count_checker, T> &&
-            traits::is_detected_v<parsing::has_maximum_count_checker, T>) {
+        } else if constexpr (traits::has_minimum_count_method_v<T> &&
+                             traits::has_maximum_count_method_v<T>) {
             return (T::minimum_count() == T::maximum_count()) &&
                    (T::minimum_count() == 1);
         }
@@ -563,10 +567,10 @@ struct if_count_not_one_value_type_must_support_push_back {
     constexpr static void check()
     {
         if constexpr (!has_fixed_count_of_one<T>()) {
-            static_assert(traits::is_detected_v<parsing::has_push_back_checker,
-                                                typename T::value_type>,
-                          "If T does not have a fixed count of 1, then its "
-                          "value_type must have a push_back() method");
+            static_assert(
+                traits::has_push_back_method_v<typename T::value_type>,
+                "If T does not have a fixed count of 1, then its "
+                "value_type must have a push_back() method");
         }
     }
 };
@@ -627,8 +631,9 @@ inline constexpr auto default_validator = validator<
          must_have_policy<policy::long_name_t>,
          must_have_policy<policy::description_t>,
          validate_counts,
+         cannot_have_fixed_count_of_zero,
          if_count_not_one_value_type_must_support_push_back>,
-    rule<mode_t<>,  //
+    rule<mode_t<flag_t<>>,  //
          must_not_have_policy<policy::short_name_t>,
          must_not_have_policy<policy::custom_parser>,
          must_not_have_policy<policy::default_value>,
