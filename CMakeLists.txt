@@ -37,6 +37,7 @@ set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/flag.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/list.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/mode.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/node_category.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/parsing.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/alias.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/count.hpp
@@ -55,6 +56,7 @@ set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/validator.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/positional_arg.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/root.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/token_type.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/traits.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/tree_node.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/tree_node_fwd.hpp
@@ -68,6 +70,7 @@ set(HEADERS
 set(SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/src/exception.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/parsing.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/token_type.cpp
 )
 
 set(FOR_IDE

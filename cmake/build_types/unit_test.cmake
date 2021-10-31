@@ -15,6 +15,7 @@ set(TEST_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/flag_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/list_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/mode_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/node_category_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/parsing_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/policy/custom_parser_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/policy/alias_test.cpp

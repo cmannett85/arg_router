@@ -2,8 +2,8 @@
 
 #include "arg_router/algorithm.hpp"
 #include "arg_router/exception.hpp"
+#include "arg_router/node_category.hpp"
 #include "arg_router/parsing.hpp"
-#include "arg_router/policy/has_contiguous_value_tokens.hpp"
 #include "arg_router/policy/required.hpp"
 
 #include <utility>
@@ -98,12 +98,8 @@ private:
         // value tokens, and it has either no count policy or a count policy
         // that allows for multiple values
         if constexpr (policy::has_value_tokens_v<Node>) {
-            if constexpr (traits::is_detected_v<
-                              parsing::has_minimum_count_checker,
-                              Node> &&
-                          traits::is_detected_v<
-                              parsing::has_maximum_count_checker,
-                              Node>) {
+            if constexpr (traits::has_minimum_count_method_v<Node> &&
+                          traits::has_maximum_count_method_v<Node>) {
                 return !((Node::minimum_count() == Node::maximum_count()) &&
                          (Node::minimum_count() == 1));
             }
@@ -119,8 +115,7 @@ private:
     {
         // If Node has a fixed count then use it (maxed to tokens size) or use
         // the token size
-        if constexpr (traits::is_detected_v<parsing::has_maximum_count_checker,
-                                            Node>) {
+        if constexpr (traits::has_maximum_count_method_v<Node>) {
             return std::min(Node::maximum_count(), tokens.size());
         } else {
             return tokens.size();
@@ -137,12 +132,7 @@ private:
             [&](auto /*i*/, auto& child) {
                 using child_type = std::decay_t<decltype(child)>;
 
-                if constexpr (is_tree_node_v<child_type> &&
-                              !traits::is_detected_v<
-                                  parsing::has_long_name_checker,
-                                  child_type> &&
-                              !traits::is_detected_v<
-                                  parsing::has_short_name_checker,
+                if constexpr (node_category::is_anonymous_mode_like_v<
                                   child_type>) {
                     found = true;
                     top_level_visitor(child, parsing::token_list{});
@@ -159,14 +149,6 @@ private:
     static void top_level_visitor(const Node& node, parsing::token_list tokens)
     {
         using node_type = std::decay_t<Node>;
-        constexpr auto is_named_mode_like_type =
-            !policy::has_value_tokens_v<node_type> &&
-            traits::is_detected_v<parsing::has_match_checker, node_type> &&
-            traits::is_detected_v<parsing::has_long_name_checker, node_type> &&
-            !(traits::is_detected_v<parsing::has_maximum_count_checker,
-                                    node_type> ||
-              traits::is_detected_v<parsing::has_minimum_count_checker,
-                                    node_type>);
 
         constexpr auto child_count =
             std::tuple_size_v<typename node_type::children_type>;
@@ -183,15 +165,14 @@ private:
             }
         }();
 
-        // Non-anonymous mode-like types need to have their labels removed
+        // Named mode-like types need to have their labels removed
         if (!tokens.empty() &&
             tokens.front().prefix == parsing::prefix_type::NONE &&
-            is_named_mode_like_type) {
+            node_category::is_named_mode_like_v<node_type>) {
             tokens.pop_front();
         }
 
-        // This node has children (i.e. it is mode-like), so go into its
-        // children and process them
+        // Process the tokens
         while (!tokens.empty()) {
             const auto found_child = parsing::visit_child(
                 tokens.front(),
@@ -223,21 +204,16 @@ private:
                               RouterArgs& router_args,
                               parsing::token_list& tokens)
     {
-        using value_type =
-            typename std::tuple_element_t<I, RouterArgs>::value_type;
         auto& arg = std::get<I>(router_args);
 
-        if (policy::has_value_tokens_v<Node>) {
+        if constexpr (policy::has_value_tokens_v<Node>) {
             // Drop the token if present, the value follows
-            if constexpr (traits::is_detected_v<parsing::has_match_checker,
-                                                Node>) {
+            if constexpr (traits::has_match_method_v<Node>) {
                 tokens.pop_front();
             }
             auto value = parse_token_argument(node, tokens.front().name);
 
-            if constexpr (traits::is_detected_v<
-                              parsing::has_aliased_node_indices,
-                              Node>) {
+            if constexpr (traits::has_aliased_policies_type_v<Node>) {
                 process_aliased_token<Node, Parent>(value, router_args);
             } else if constexpr (supports_multiple_values<Node>()) {
                 if (!arg) {
@@ -263,10 +239,8 @@ private:
 
                 arg = std::move(value);
             }
-        } else if constexpr (std::is_same_v<value_type, bool>) {
-            if constexpr (traits::is_detected_v<
-                              parsing::has_aliased_node_indices,
-                              Node>) {
+        } else if constexpr (node_category::is_flag_like_v<Node>) {
+            if constexpr (traits::has_aliased_policies_type_v<Node>) {
                 process_aliased_token<Node, Parent>(true, router_args);
             } else {
                 if (arg) {
@@ -277,8 +251,11 @@ private:
                 // We have hit the flag, so set the value to true
                 arg = true;
             }
-        } else {
+        } else if constexpr (node_category::is_counting_flag_like_v<Node>) {
             // Counting flag
+        } else {
+            static_assert(traits::always_false_v<Node>,
+                          "Unhandled node category");
         }
 
         tokens.pop_front();
@@ -289,8 +266,7 @@ private:
     {
         // If the node has a custom_parser-like policy, prefer it over the
         // global parse function
-        if constexpr (traits::is_detected_v<parsing::has_custom_parser_checker,
-                                            Node>) {
+        if constexpr (traits::has_parse_method_v<Node>) {
             return node.parse(token);
         } else {
             return arg_router::parser<typename Node::value_type>::parse(token);
@@ -341,8 +317,7 @@ private:
     template <typename T>
     struct is_second_an_alias {
         constexpr static auto value =
-            traits::is_detected_v<parsing::has_aliased_node_indices,
-                                  boost::mp11::mp_second<T>>;
+            traits::has_aliased_policies_type_v<boost::mp11::mp_second<T>>;
     };
 
     template <typename T>
@@ -393,8 +368,7 @@ private:
                             "Missing required argument",
                             parsing::node_token_type<node_type>()};
                     }
-                } else if constexpr (traits::is_detected_v<
-                                         parsing::has_default_value_checker,
+                } else if constexpr (traits::has_default_value_method_v<
                                          node_type>) {
                     if (!arg) {
                         arg = std::get<orig_index>(node.children())
@@ -409,11 +383,8 @@ private:
 
                 // No need to check for max count as visit_child will skip
                 // positional_arg-like types that are full
-                if constexpr (traits::is_detected_v<
-                                  parsing::has_minimum_count_checker,
-                                  node_type>) {
-                    if constexpr (traits::is_detected_v<
-                                      parsing::has_push_back_checker,
+                if constexpr (traits::has_minimum_count_method_v<node_type>) {
+                    if constexpr (traits::has_push_back_method_v<
                                       typename node_type::value_type>) {
                         if (std::size(*arg) < node_type::minimum_count()) {
                             throw parse_exception{

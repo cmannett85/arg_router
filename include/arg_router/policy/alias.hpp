@@ -79,9 +79,8 @@ public:
 private:
     template <typename T>
     struct policy_checker {
-        constexpr static auto value =
-            traits::is_detected_v<parsing::has_long_name_checker, T> ||
-            traits::is_detected_v<parsing::has_short_name_checker, T>;
+        constexpr static auto value = traits::has_long_name_method_v<T> ||
+                                      traits::has_short_name_method_v<T>;
     };
 
     static_assert((sizeof...(AliasedPolicies) > 0),

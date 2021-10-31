@@ -230,9 +230,6 @@ BOOST_AUTO_TEST_CASE(aliased_must_not_be_in_owner_test)
 BOOST_AUTO_TEST_CASE(positional_args_must_be_at_end_test)
 {
     policy::validation::positional_args_must_be_at_end<positional_arg_t>::check<
-        arg_router::mode_t<>>();
-
-    policy::validation::positional_args_must_be_at_end<positional_arg_t>::check<
         arg_router::mode_t<
             flag_t<policy::long_name_t<S_("test1")>>,
             arg_t<int, policy::long_name_t<S_("test2")>>,
@@ -248,9 +245,6 @@ BOOST_AUTO_TEST_CASE(positional_args_must_be_at_end_test)
 
 BOOST_AUTO_TEST_CASE(positional_args_must_have_fixed_count_if_not_at_end_test)
 {
-    policy::validation::positional_args_must_have_fixed_count_if_not_at_end<
-        positional_arg_t>::check<arg_router::mode_t<>>();
-
     policy::validation::positional_args_must_have_fixed_count_if_not_at_end<
         positional_arg_t>::
         check<arg_router::mode_t<
@@ -358,6 +352,44 @@ BOOST_AUTO_TEST_CASE(if_count_not_one_value_type_must_support_push_back_test)
             policy::long_name_t<S_("test1")>,
             policy::min_count_t<traits::integral_constant<std::size_t{1}>>,
             policy::max_count_t<traits::integral_constant<std::size_t{3}>>>>();
+}
+
+BOOST_AUTO_TEST_CASE(cannot_have_fixed_count_of_zero_test)
+{
+    policy::validation::if_count_not_one_value_type_must_support_push_back::
+        check<positional_arg_t<std::vector<int>,
+                               policy::long_name_t<S_("test1")>>>();
+
+    policy::validation::if_count_not_one_value_type_must_support_push_back::
+        check<positional_arg_t<
+            std::vector<int>,
+            policy::long_name_t<S_("test1")>,
+            policy::min_count_t<traits::integral_constant<std::size_t{0}>>>>();
+
+    policy::validation::if_count_not_one_value_type_must_support_push_back::
+        check<positional_arg_t<
+            std::vector<int>,
+            policy::long_name_t<S_("test1")>,
+            policy::min_count_t<traits::integral_constant<std::size_t{3}>>>>();
+
+    policy::validation::if_count_not_one_value_type_must_support_push_back::
+        check<positional_arg_t<
+            std::vector<int>,
+            policy::long_name_t<S_("test1")>,
+            policy::max_count_t<traits::integral_constant<std::size_t{0}>>>>();
+
+    policy::validation::if_count_not_one_value_type_must_support_push_back::
+        check<positional_arg_t<
+            std::vector<int>,
+            policy::long_name_t<S_("test1")>,
+            policy::max_count_t<traits::integral_constant<std::size_t{3}>>>>();
+
+    policy::validation::if_count_not_one_value_type_must_support_push_back::
+        check<positional_arg_t<
+            std::vector<int>,
+            policy::long_name_t<S_("test1")>,
+            policy::min_count_t<traits::integral_constant<std::size_t{1}>>,
+            policy::max_count_t<traits::integral_constant<std::size_t{1}>>>>();
 }
 
 BOOST_AUTO_TEST_SUITE_END()
@@ -915,6 +947,26 @@ int main() {
     )",
         "If T does not have a fixed count of 1, then its value_type must have "
         "a push_back() method");
+}
+
+BOOST_AUTO_TEST_CASE(cannot_have_fixed_count_of_zero_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/validator.hpp"
+using namespace arg_router;
+
+int main() {
+    policy::validation::cannot_have_fixed_count_of_zero::
+        check<positional_arg_t<
+            std::vector<int>,
+            policy::long_name_t<S_("test1")>,
+            policy::min_count_t<traits::integral_constant<std::size_t{0}>>,
+            policy::max_count_t<traits::integral_constant<std::size_t{0}>>>>();
+    return 0;
+}
+    )",
+        "Cannot have a fixed count of zero");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

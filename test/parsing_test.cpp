@@ -20,13 +20,10 @@ BOOST_AUTO_TEST_CASE(has_aliased_node_indices_test)
     using aliased_type =
         flag_t<policy::long_name_t<S_("flag1")>,
                policy::alias_t<policy::long_name_t<S_("Hello")>>>;
-    static_assert(
-        traits::is_detected_v<parsing::has_aliased_node_indices, aliased_type>,
-        "Fail");
+    static_assert(traits::has_aliased_policies_type_v<aliased_type>, "Fail");
 
     using not_aliased_type = flag_t<policy::long_name_t<S_("flag1")>>;
-    static_assert(!traits::is_detected_v<parsing::has_aliased_node_indices,
-                                         not_aliased_type>,
+    static_assert(!traits::has_aliased_policies_type_v<not_aliased_type>,
                   "Fail");
 }
 

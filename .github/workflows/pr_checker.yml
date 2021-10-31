@@ -7,6 +7,7 @@ on:
 
 env:
   SKIP_COVERAGE_UPDATE: 0
+  NUGET_SOURCE_URL: "https://nuget.pkg.github.com/cmannett85/index.json"
 
 jobs:
   # Builds the unit tests and executes them
@@ -41,11 +42,14 @@ jobs:
       run: |
         mono `./vcpkg/vcpkg fetch nuget | tail -n 1` \
           sources add \
-          -source "https://nuget.pkg.github.com/cmannett85/index.json" \
+          -source ${{ env.NUGET_SOURCE_URL }} \
           -storepasswordincleartext \
           -name "vcpkg-cache" \
           -username "cmannett85" \
           -password "${{ secrets.GITHUB_TOKEN }}"
+        mono `./vcpkg/vcpkg fetch nuget | tail -n 1` \
+          setapikey "${{ secrets.GITHUB_TOKEN }}" \
+          -source ${{ env.NUGET_SOURCE_URL }}
 
     - name: Build
       uses: lukka/run-cmake@v3

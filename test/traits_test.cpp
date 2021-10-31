@@ -9,13 +9,6 @@
 using namespace arg_router;
 using namespace std::string_view_literals;
 
-namespace
-{
-template <typename T>
-using reserve_checker =
-    decltype(std::declval<T&>().reserve(std::declval<std::size_t>()));
-}
-
 BOOST_AUTO_TEST_SUITE(traits_suite)
 
 BOOST_AUTO_TEST_CASE(is_tuple_like_test)
@@ -110,31 +103,6 @@ BOOST_AUTO_TEST_CASE(integral_constant_test)
     BOOST_CHECK(
         (std::is_same_v<typename decltype(r2)::value_type, std::size_t>));
     BOOST_CHECK_EQUAL(r2.value, 42);
-}
-
-BOOST_AUTO_TEST_CASE(arg_extractor_test)
-{
-    auto f = [](auto input, auto expected) {
-        using input_type = std::decay_t<decltype(input)>;
-        using expected_type = std::decay_t<decltype(expected)>;
-        using result_type = traits::arg_extractor<input_type>;
-
-        BOOST_CHECK((std::is_same_v<result_type, expected_type>));
-    };
-
-    using data_set = std::tuple<
-        std::pair<std::vector<int>, std::tuple<int, std::allocator<int>>>,
-        std::pair<std::variant<int, double>, std::tuple<int, double>>,
-        std::pair<double, std::tuple<>>>;
-
-    test::data_set(f, data_set{});
-}
-
-BOOST_AUTO_TEST_CASE(is_detected_test)
-{
-    BOOST_CHECK((traits::is_detected_v<reserve_checker, std::vector<int>>));
-    BOOST_CHECK(!(traits::is_detected_v<reserve_checker, std::array<int, 4>>));
-    BOOST_CHECK(!(traits::is_detected_v<reserve_checker, int>));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

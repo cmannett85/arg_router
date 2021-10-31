@@ -10,11 +10,16 @@ namespace arg_router
  * If no long name policy is provided, then the node is regarded as 'anonymous',
  * and there can only be one in the parse tree.  Conversely, if any mode is
  * named, then there can only be named modes in the parse tree.
+ * 
+ * A mode must have at least one child node.
  * @tparam Params Policies and child node types for the mode
  */
 template <typename... Params>
 class mode_t : public tree_node<Params...>
 {
+    static_assert((std::tuple_size_v<typename mode_t::children_type> > 0),
+                  "mode_t must have at least one child node");
+
 public:
     /** Constructor.
      *
@@ -35,8 +40,7 @@ public:
     {
         // If this mode has a long name, then match it, otherwise check if there
         // is a child that matches
-        if constexpr (traits::is_detected_v<parsing::has_long_name_checker,
-                                            mode_t>) {
+        if constexpr (traits::has_long_name_method_v<mode_t>) {
             return (token.prefix == parsing::prefix_type::NONE) &&
                    (token.name == mode_t::long_name());
         } else {
