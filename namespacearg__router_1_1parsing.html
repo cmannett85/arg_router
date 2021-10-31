@@ -84,41 +84,11 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:ab2111c5b3c62f4935913872894c86ea4"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#ab2111c5b3c62f4935913872894c86ea4">token_list</a> = std::deque&lt; <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> &gt;</td></tr>
-<tr class="separator:ab2111c5b3c62f4935913872894c86ea4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af9e60c6dc7826d3db16189e808050c60"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:af9e60c6dc7826d3db16189e808050c60"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#af9e60c6dc7826d3db16189e808050c60">has_long_name_checker</a> = decltype(T::long_name())</td></tr>
-<tr class="separator:af9e60c6dc7826d3db16189e808050c60"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a04003f8ba6186b55d38609eb25249bf8"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a04003f8ba6186b55d38609eb25249bf8"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a04003f8ba6186b55d38609eb25249bf8">has_short_name_checker</a> = decltype(T::short_name())</td></tr>
-<tr class="separator:a04003f8ba6186b55d38609eb25249bf8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1da9b8d78bfc380d150db408d85cd607"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a1da9b8d78bfc380d150db408d85cd607"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a1da9b8d78bfc380d150db408d85cd607">has_custom_parser_checker</a> = decltype(std::declval&lt; T &gt;().parse(std::declval&lt; std::string_view &gt;()))</td></tr>
-<tr class="separator:a1da9b8d78bfc380d150db408d85cd607"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2a827b0ee8366b9ef95e28d9dcd2ad06"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a2a827b0ee8366b9ef95e28d9dcd2ad06"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a2a827b0ee8366b9ef95e28d9dcd2ad06">has_match_checker</a> = decltype(std::declval&lt; const T &amp; &gt;().match(std::declval&lt; const <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> &amp; &gt;()))</td></tr>
-<tr class="separator:a2a827b0ee8366b9ef95e28d9dcd2ad06"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a64923058408d14d2ff227e083821310b"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a64923058408d14d2ff227e083821310b"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a64923058408d14d2ff227e083821310b">has_default_value_checker</a> = decltype(std::declval&lt; const T &amp; &gt;().get_default_value())</td></tr>
-<tr class="separator:a64923058408d14d2ff227e083821310b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aab467da0784f00351e1e6bb104f893ec"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:aab467da0784f00351e1e6bb104f893ec"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#aab467da0784f00351e1e6bb104f893ec">has_maximum_count_checker</a> = decltype(T::maximum_count())</td></tr>
-<tr class="separator:aab467da0784f00351e1e6bb104f893ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a247bd2e001ffe4b7c170ef77e165f2a4"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a247bd2e001ffe4b7c170ef77e165f2a4"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a247bd2e001ffe4b7c170ef77e165f2a4">has_minimum_count_checker</a> = decltype(T::minimum_count())</td></tr>
-<tr class="separator:a247bd2e001ffe4b7c170ef77e165f2a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaa0b85035325ff71429f4d8782b4de2f"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:aaa0b85035325ff71429f4d8782b4de2f"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#aaa0b85035325ff71429f4d8782b4de2f">has_count_checker</a> = decltype(T::count())</td></tr>
-<tr class="separator:aaa0b85035325ff71429f4d8782b4de2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab2190148bcb15d7edf10c79387652d1e"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:ab2190148bcb15d7edf10c79387652d1e"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#ab2190148bcb15d7edf10c79387652d1e">has_push_back_checker</a> = decltype(std::declval&lt; T &amp; &gt;().push_back(std::declval&lt; typename T::value_type &gt;()))</td></tr>
-<tr class="separator:ab2190148bcb15d7edf10c79387652d1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6f8720c8d7aba215ae9f3b3b240baaa3"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a6f8720c8d7aba215ae9f3b3b240baaa3"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a6f8720c8d7aba215ae9f3b3b240baaa3">has_aliased_node_indices</a> = typename T::aliased_policies_type</td></tr>
-<tr class="separator:a6f8720c8d7aba215ae9f3b3b240baaa3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac0e0f1b9922b4ca68f9952fb81e03b7d"><td class="memTemplParams" colspan="2">template&lt;typename Child &gt; </td></tr>
 <tr class="memitem:ac0e0f1b9922b4ca68f9952fb81e03b7d"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#ac0e0f1b9922b4ca68f9952fb81e03b7d">optional_router_args_t</a> = boost::mp11::mp_transform&lt; <a class="el" href="namespacearg__router_1_1traits.html#a869c1774020d00627db3ab5e90a7b53a">traits::add_optional_t</a>, typename detail::build_router_args&lt; Child &gt;::type &gt;</td></tr>
 <tr class="separator:ac0e0f1b9922b4ca68f9952fb81e03b7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab2111c5b3c62f4935913872894c86ea4"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#ab2111c5b3c62f4935913872894c86ea4">token_list</a> = std::deque&lt; <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> &gt;</td></tr>
+<tr class="separator:ab2111c5b3c62f4935913872894c86ea4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -127,12 +97,6 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ae17bf2873d6146f78dbc777747b29466"><td class="memItemLeft" align="right" valign="top">std::string_view&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#ae17bf2873d6146f78dbc777747b29466">to_string</a> (<a class="el" href="namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3">prefix_type</a> prefix)</td></tr>
-<tr class="separator:ae17bf2873d6146f78dbc777747b29466"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6ef459c26e34d0003b3393d4bef7898b"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a6ef459c26e34d0003b3393d4bef7898b">to_string</a> (const <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> &amp;token)</td></tr>
-<tr class="separator:a6ef459c26e34d0003b3393d4bef7898b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a71a7566d5831eeeb4c5cd1cdaad216be"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a71a7566d5831eeeb4c5cd1cdaad216be">get_token_type</a> (std::string_view token)</td></tr>
-<tr class="separator:a71a7566d5831eeeb4c5cd1cdaad216be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaaebcb5efd6de2e232c2a74699ac8d39"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacearg__router_1_1parsing.html#ab2111c5b3c62f4935913872894c86ea4">token_list</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#aaaebcb5efd6de2e232c2a74699ac8d39">expand_arguments</a> (int argc, const char *argv[])</td></tr>
 <tr class="separator:aaaebcb5efd6de2e232c2a74699ac8d39"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6878769d75879dd093b8047ca0375e64"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
@@ -150,260 +114,16 @@ Functions</h2></td></tr>
 <tr class="memitem:a914f080b272a9c7bab9c604700b72d90"><td class="memTemplParams" colspan="2">template&lt;typename ChildrenTuple , typename RouterArgs , typename Fn &gt; </td></tr>
 <tr class="memitem:a914f080b272a9c7bab9c604700b72d90"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a914f080b272a9c7bab9c604700b72d90">visit_child</a> (const <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> &amp;token, const ChildrenTuple &amp;children, const RouterArgs &amp;router_args, Fn visitor)</td></tr>
 <tr class="separator:a914f080b272a9c7bab9c604700b72d90"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae17bf2873d6146f78dbc777747b29466"><td class="memItemLeft" align="right" valign="top">std::string_view&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#ae17bf2873d6146f78dbc777747b29466">to_string</a> (<a class="el" href="namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3">prefix_type</a> prefix)</td></tr>
+<tr class="separator:ae17bf2873d6146f78dbc777747b29466"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ef459c26e34d0003b3393d4bef7898b"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a6ef459c26e34d0003b3393d4bef7898b">to_string</a> (const <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> &amp;token)</td></tr>
+<tr class="separator:a6ef459c26e34d0003b3393d4bef7898b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71a7566d5831eeeb4c5cd1cdaad216be"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a71a7566d5831eeeb4c5cd1cdaad216be">get_token_type</a> (std::string_view token)</td></tr>
+<tr class="separator:a71a7566d5831eeeb4c5cd1cdaad216be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Namespace containing types and functions to aid parsing. </p>
 </div><h2 class="groupheader">Typedef Documentation</h2>
-<a id="a6f8720c8d7aba215ae9f3b3b240baaa3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6f8720c8d7aba215ae9f3b3b240baaa3">&#9670;&nbsp;</a></span>has_aliased_node_indices</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">using <a class="el" href="namespacearg__router_1_1parsing.html#a6f8720c8d7aba215ae9f3b3b240baaa3">arg_router::parsing::has_aliased_node_indices</a> = typedef typename T::aliased_policies_type</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Can be used by <a class="el" href="namespacearg__router_1_1traits.html#a28f7720173101dd2491d1a204059aef6">traits::is_detected</a> to determine if a type has a alias_node_indices typedef.</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">T</td><td>Type to query </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00180">180</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
-
-</div>
-</div>
-<a id="aaa0b85035325ff71429f4d8782b4de2f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaa0b85035325ff71429f4d8782b4de2f">&#9670;&nbsp;</a></span>has_count_checker</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">using <a class="el" href="namespacearg__router_1_1parsing.html#aaa0b85035325ff71429f4d8782b4de2f">arg_router::parsing::has_count_checker</a> = typedef decltype(T::count())</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Can be used by <a class="el" href="namespacearg__router_1_1traits.html#a28f7720173101dd2491d1a204059aef6">traits::is_detected</a> to determine if a type has a count() method.</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">T</td><td>Type to query </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00163">163</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a1da9b8d78bfc380d150db408d85cd607"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1da9b8d78bfc380d150db408d85cd607">&#9670;&nbsp;</a></span>has_custom_parser_checker</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">using <a class="el" href="namespacearg__router_1_1parsing.html#a1da9b8d78bfc380d150db408d85cd607">arg_router::parsing::has_custom_parser_checker</a> = typedef decltype(std::declval&lt;T&gt;().parse(std::declval&lt;std::string_view&gt;()))</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Can be used by <a class="el" href="namespacearg__router_1_1traits.html#a28f7720173101dd2491d1a204059aef6">traits::is_detected</a> to determine if a type has a custom parser name.</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">T</td><td>Type to query </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00121">121</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a64923058408d14d2ff227e083821310b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a64923058408d14d2ff227e083821310b">&#9670;&nbsp;</a></span>has_default_value_checker</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">using <a class="el" href="namespacearg__router_1_1parsing.html#a64923058408d14d2ff227e083821310b">arg_router::parsing::has_default_value_checker</a> = typedef decltype(std::declval&lt;const T&amp;&gt;().get_default_value())</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Can be used by <a class="el" href="namespacearg__router_1_1traits.html#a28f7720173101dd2491d1a204059aef6">traits::is_detected</a> to determine if a type has a get_default_value() method.</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">T</td><td>Type to query </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00139">139</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
-
-</div>
-</div>
-<a id="af9e60c6dc7826d3db16189e808050c60"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af9e60c6dc7826d3db16189e808050c60">&#9670;&nbsp;</a></span>has_long_name_checker</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">using <a class="el" href="namespacearg__router_1_1parsing.html#af9e60c6dc7826d3db16189e808050c60">arg_router::parsing::has_long_name_checker</a> = typedef decltype(T::long_name())</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Can be used by <a class="el" href="namespacearg__router_1_1traits.html#a28f7720173101dd2491d1a204059aef6">traits::is_detected</a> to determine if a type has a long name.</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">T</td><td>Type to query </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00105">105</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a2a827b0ee8366b9ef95e28d9dcd2ad06"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2a827b0ee8366b9ef95e28d9dcd2ad06">&#9670;&nbsp;</a></span>has_match_checker</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">using <a class="el" href="namespacearg__router_1_1parsing.html#a2a827b0ee8366b9ef95e28d9dcd2ad06">arg_router::parsing::has_match_checker</a> = typedef decltype(std::declval&lt;const T&amp;&gt;().match(std::declval&lt;const <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a>&amp;&gt;()))</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Can be used by <a class="el" href="namespacearg__router_1_1traits.html#a28f7720173101dd2491d1a204059aef6">traits::is_detected</a> to determine if a type has a match(std::string_view) method.</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">T</td><td>Type to query </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00130">130</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
-
-</div>
-</div>
-<a id="aab467da0784f00351e1e6bb104f893ec"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aab467da0784f00351e1e6bb104f893ec">&#9670;&nbsp;</a></span>has_maximum_count_checker</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">using <a class="el" href="namespacearg__router_1_1parsing.html#aab467da0784f00351e1e6bb104f893ec">arg_router::parsing::has_maximum_count_checker</a> = typedef decltype(T::maximum_count())</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Can be used by <a class="el" href="namespacearg__router_1_1traits.html#a28f7720173101dd2491d1a204059aef6">traits::is_detected</a> to determine if a type has a maximum_count() method.</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">T</td><td>Type to query </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00147">147</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a247bd2e001ffe4b7c170ef77e165f2a4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a247bd2e001ffe4b7c170ef77e165f2a4">&#9670;&nbsp;</a></span>has_minimum_count_checker</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">using <a class="el" href="namespacearg__router_1_1parsing.html#a247bd2e001ffe4b7c170ef77e165f2a4">arg_router::parsing::has_minimum_count_checker</a> = typedef decltype(T::minimum_count())</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Can be used by <a class="el" href="namespacearg__router_1_1traits.html#a28f7720173101dd2491d1a204059aef6">traits::is_detected</a> to determine if a type has a minimum_count() method.</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">T</td><td>Type to query </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00155">155</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
-
-</div>
-</div>
-<a id="ab2190148bcb15d7edf10c79387652d1e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab2190148bcb15d7edf10c79387652d1e">&#9670;&nbsp;</a></span>has_push_back_checker</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">using <a class="el" href="namespacearg__router_1_1parsing.html#ab2190148bcb15d7edf10c79387652d1e">arg_router::parsing::has_push_back_checker</a> = typedef decltype(std::declval&lt;T&amp;&gt;().push_back( std::declval&lt;typename T::value_type&gt;()))</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Can be used by <a class="el" href="namespacearg__router_1_1traits.html#a28f7720173101dd2491d1a204059aef6">traits::is_detected</a> to determine if a type has a push_back(typename T::value_type) method.</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">T</td><td>Type to query </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00172">172</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a04003f8ba6186b55d38609eb25249bf8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a04003f8ba6186b55d38609eb25249bf8">&#9670;&nbsp;</a></span>has_short_name_checker</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">using <a class="el" href="namespacearg__router_1_1parsing.html#a04003f8ba6186b55d38609eb25249bf8">arg_router::parsing::has_short_name_checker</a> = typedef decltype(T::short_name())</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Can be used by <a class="el" href="namespacearg__router_1_1traits.html#a28f7720173101dd2491d1a204059aef6">traits::is_detected</a> to determine if a type has a short name.</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">T</td><td>Type to query </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00112">112</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
-
-</div>
-</div>
 <a id="ac0e0f1b9922b4ca68f9952fb81e03b7d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac0e0f1b9922b4ca68f9952fb81e03b7d">&#9670;&nbsp;</a></span>optional_router_args_t</h2>
 
@@ -426,7 +146,7 @@ template&lt;typename Child &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00285">285</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00135">135</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
 
 </div>
 </div>
@@ -443,7 +163,7 @@ template&lt;typename Child &gt; </div>
 </div><div class="memdoc">
 <p>List of tokens. </p>
 
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00080">80</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00069">69</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -469,7 +189,7 @@ template&lt;typename Child &gt; </div>
 </div><div class="memdoc">
 <p>Enum for the prefix type on a token. </p>
 
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00023">23</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00012">12</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -506,7 +226,7 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if token matches the long or short form name </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00189">189</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00039">39</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
 
 </div>
 </div>
@@ -607,7 +327,7 @@ template&lt;typename Node &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Node name </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00215">215</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00065">65</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
 
 </div>
 </div>
@@ -637,7 +357,7 @@ template&lt;typename Node &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00235">235</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00085">85</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
 
 </div>
 </div>
@@ -753,7 +473,7 @@ template&lt;typename ChildrenTuple , typename RouterArgs , typename Fn &gt; </di
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if a valid child was found </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00366">366</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00215">215</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
 
 </div>
 </div>
@@ -811,7 +531,7 @@ template&lt;typename ChildrenTuple , typename Fn &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if a valid child was found </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00308">308</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00158">158</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
 
 </div>
 </div>
