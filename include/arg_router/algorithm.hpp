@@ -292,7 +292,9 @@ template <template <typename...> typename Fn, typename U>
 constexpr auto tuple_filter_and_construct(U&& input)
 {
     // Zip together an index-sequence of U and the elements of it
-    using zipped = zip_t<boost::mp11::mp_iota_c<std::tuple_size_v<U>>, U>;
+    using zipped =
+        zip_t<boost::mp11::mp_iota_c<std::tuple_size_v<std::decay_t<U>>>,
+              std::decay_t<U>>;
 
     // Filter out types not approved by Fn, we need to wrap Fn so that it only
     // operates on the second type in the pair (the type from U)

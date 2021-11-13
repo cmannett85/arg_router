@@ -2,7 +2,7 @@
 
 #include "arg_router/config.hpp"
 #include "arg_router/exception.hpp"
-#include "arg_router/policy/has_value_tokens.hpp"
+#include "arg_router/node_category.hpp"
 #include "arg_router/token_type.hpp"
 #include "arg_router/tree_node.hpp"
 #include "arg_router/utility/string_view_ops.hpp"
@@ -104,8 +104,11 @@ struct build_router_args<
     Child,
     std::enable_if_t<is_tree_node_v<Child> &&
                      (std::tuple_size_v<typename Child::children_type> > 0)>> {
-    using type = boost::mp11::mp_transform<traits::get_value_type,
-                                           typename Child::children_type>;
+    using type = boost::mp11::mp_transform<
+        traits::get_value_type,
+        // Ignore children that are modes
+        boost::mp11::mp_remove_if<typename Child::children_type,
+                                  node_category::is_generic_mode_like>>;
 };
 
 template <typename Child>
@@ -139,13 +142,12 @@ using optional_router_args_t =
  * Visitor needs to be equivalent to:
  * @code
  * template <typename Child>
- * operator()(std::size_t i, Child&&) {}
+ * operator()(std::size_t i, const Child&) {}
  * @endcode
  * <TT>i</TT> is the index into the children tuple.  If child has a
  * match(std::string_view) method then the visitor is called if a match is
- * found.  If it doesn't have a match method and the prefix is prefix_type::NONE
- * then every child encountered that fits that description will have @a visitor
- * called on it.
+ * found.  If it doesn't have a match method but evaluates to true against
+ * node_category::is_positional_arg_like, then the visitor is called.
  * 
  * @tparam ChildrenTuple Tuple of child types
  * @tparam Fn Visitor Callable type
@@ -179,8 +181,7 @@ bool visit_child(const token_type& token,
 
                     call_visitor();
                 }
-            } else if (token.prefix == prefix_type::NONE &&
-                       policy::has_value_tokens_v<child_type>) {
+            } else if (node_category::is_positional_arg_like_v<child_type>) {
                 // A positional arg type will always accept a token
                 call_visitor();
             }
@@ -271,6 +272,102 @@ bool visit_child(const token_type& token,
 
     visit_child(token, children, wrapped_visitor);
     return found_child;
+}
+
+namespace detail
+{
+template <typename Node, typename Fn>
+void find_target_mode(const Node& node, token_list& tokens, Fn visitor)
+{
+    // If there's no prefix then it might be a named mode-like type, so find
+    // the matching child.
+    const auto& token = tokens.front();
+    auto found_mode = false;
+    if (token.prefix == parsing::prefix_type::NONE) {
+        utility::tuple_iterator(
+            [&](auto /*i*/, auto&& child) {
+                using child_type = std::decay_t<decltype(child)>;
+
+                if constexpr (node_category::is_named_mode_like_v<child_type>) {
+                    if (child.match(token)) {
+                        found_mode = true;
+                        tokens.pop_front();
+                        find_target_mode(child, tokens, std::move(visitor));
+                    }
+                }
+            },
+            node.children());
+    }
+
+    // If there's no named mode, then we have our target (assuming the request
+    // was valid)
+    if (!found_mode) {
+        visitor(node, tokens);
+    }
+}
+}  // namespace detail
+
+/** Finds the 'target' node i.e. the mode-like node whose children will handle
+ * the remaining tokens, and passes it to @a f.
+ *
+ * - If @a tokens is empty, then the child anonymous mode-like type is used (or
+ *   an error is thrown if there isn't one)
+ * - If the token represents a top-level node, then the matching child is used
+ *   (or an error is thrown if the argument is unknown)
+ * - If first N tokens are named mode-like types then the most nested type is
+ *   used
+ * 
+ * @a Fn is a Callable with a signature of:
+ * @code
+ * template <typename Child>
+ * operator()(const Child&, token_list&) {}
+ * @endcode
+ * Where the child is the found node and the token list is the remaining
+ * unprocessed tokens.
+ * 
+ * @tparam Node Node type to start from (typically the root)
+ * @tparam Fn Visitor type
+ * @param node Instance of @a Node
+ * @param tokens List of tokens to process
+ * @param visitor Instance of @a Fn
+ */
+template <typename Node, typename Fn>
+void find_target_node(const Node& node, token_list& tokens, Fn visitor)
+{
+    using children_type = typename Node::children_type;
+
+    // If there are no tokens, find the anonymous mode-like type
+    if (tokens.empty()) {
+        constexpr auto anonymous_mode_index = boost::mp11::mp_find_if<
+            children_type,
+            node_category::is_anonymous_mode_like>::value;
+
+        if constexpr (anonymous_mode_index ==
+                      std::tuple_size_v<children_type>) {
+            throw parse_exception{"No arguments provided"};
+        } else {
+            visitor(std::get<anonymous_mode_index>(node.children()), tokens);
+            return;
+        }
+    }
+
+    const auto found_child = parsing::visit_child(
+        tokens.front(),
+        node.children(),
+        [&](auto /*i*/, const auto& child) {
+            using child_type = std::decay_t<decltype(child)>;
+
+            if (node_category::is_named_mode_like_v<child_type>) {
+                tokens.pop_front();
+                detail::find_target_mode(child, tokens, std::move(visitor));
+            } else {
+                visitor(child, tokens);
+            }
+        });
+
+    if (!found_child) {
+        throw parse_exception{"Unknown argument", tokens.front()};
+    }
 }
 }  // namespace parsing
 

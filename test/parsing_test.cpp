@@ -308,6 +308,302 @@ BOOST_AUTO_TEST_CASE(pos_arg_visit_child_test)
                  std::optional<std::vector<double>>{3.0}}}});
 }
 
+BOOST_AUTO_TEST_CASE(find_target_node_non_nested_test)
+{
+    const auto r = root(
+        flag(policy::long_name<S_("top-flag")>,
+             policy::description<S_("Description")>,
+             policy::router{[&](bool) {}}),
+        arg<int>(policy::long_name<S_("top-arg")>,
+                 policy::default_value(42),
+                 policy::description<S_("Description")>,
+                 policy::router{[&](int) {}}),
+        mode(policy::long_name<S_("mode1")>,
+             flag(policy::long_name<S_("flag1")>,
+                  policy::description<S_("First description")>),
+             flag(policy::long_name<S_("flag2")>,
+                  policy::description<S_("Second description")>),
+             flag(policy::short_name<'t'>,
+                  policy::description<S_("Third description")>),
+             policy::router{[&](bool, bool, bool) {}}),
+        mode(policy::long_name<S_("mode2")>,
+             flag(policy::long_name<S_("flag1")>,
+                  policy::description<S_("Other third description")>),
+             flag(policy::short_name<'b'>,
+                  policy::description<S_("Fourth description")>),
+             positional_arg<std::vector<std::string_view>>(
+                 policy::long_name<S_("pos_args")>,
+                 policy::description<S_("Description")>),
+             policy::router{[&](bool, bool, std::vector<std::string_view>) {}}),
+        policy::validation::default_validator);
+
+    auto f = [&](auto tokens,
+                 auto expected_child_name,
+                 auto expected_remaining_tokens,
+                 std::string fail_message) {
+        try {
+            parsing::find_target_node(
+                r,
+                tokens,
+                [&](const auto& child, auto& remaining_tokens) {
+                    BOOST_CHECK_EQUAL(child.long_name(), expected_child_name);
+                    BOOST_REQUIRE_EQUAL(remaining_tokens.size(),
+                                        expected_remaining_tokens.size());
+                    for (auto i = 0u; i < remaining_tokens.size(); ++i) {
+                        BOOST_CHECK_EQUAL(remaining_tokens[i],
+                                          expected_remaining_tokens[i]);
+                    }
+                });
+            BOOST_CHECK(fail_message.empty());
+        } catch (parse_exception& e) {
+            BOOST_CHECK_EQUAL(fail_message, e.what());
+        }
+    };
+
+    test::data_set(
+        f,
+        {
+            std::tuple{
+                parsing::token_list{{parsing::prefix_type::LONG, "top-flag"}},
+                "top-flag",
+                parsing::token_list{{parsing::prefix_type::LONG, "top-flag"}},
+                ""},
+            std::tuple{
+                parsing::token_list{{parsing::prefix_type::LONG, "top-arg"},
+                                    {parsing::prefix_type::NONE, "13"}},
+                "top-arg",
+                parsing::token_list{{parsing::prefix_type::LONG, "top-arg"},
+                                    {parsing::prefix_type::NONE, "13"}},
+                ""},
+            std::tuple{
+                parsing::token_list{{parsing::prefix_type::NONE, "mode1"},
+                                    {parsing::prefix_type::LONG, "flag2"},
+                                    't'},
+                "mode1",
+                parsing::token_list{{parsing::prefix_type::LONG, "flag2"}, 't'},
+                ""},
+            std::tuple{
+                parsing::token_list{{parsing::prefix_type::NONE, "mode2"},
+                                    {parsing::prefix_type::LONG, "flag1"}},
+                "mode2",
+                parsing::token_list{{parsing::prefix_type::LONG, "flag1"}},
+                ""},
+            std::tuple{
+                parsing::token_list{{parsing::prefix_type::NONE, "mode2"},
+                                    {parsing::prefix_type::NONE, "hello"}},
+                "mode2",
+                parsing::token_list{{parsing::prefix_type::NONE, "hello"}},
+                ""},
+            std::tuple{parsing::token_list{{parsing::prefix_type::LONG, "foo"}},
+                       "foo",
+                       parsing::token_list{{parsing::prefix_type::LONG, "foo"}},
+                       "Unknown argument: --foo"},
+            std::tuple{
+                parsing::token_list{{parsing::prefix_type::NONE, "mode1"},
+                                    {parsing::prefix_type::LONG, "foo"},
+                                    't'},
+                "mode1",
+                parsing::token_list{{parsing::prefix_type::LONG, "foo"}, 't'},
+                ""},
+            std::tuple{parsing::token_list{},
+                       "mode1",
+                       parsing::token_list{},
+                       "No arguments provided"},
+        });
+}
+
+BOOST_AUTO_TEST_CASE(find_target_node_anonymous_mode_test)
+{
+    const auto r = root(
+        flag(policy::long_name<S_("top-flag")>,
+             policy::description<S_("Description")>,
+             policy::router{[&](bool) {}}),
+        arg<int>(policy::long_name<S_("top-arg")>,
+                 policy::default_value(42),
+                 policy::description<S_("Description")>,
+                 policy::router{[&](int) {}}),
+        mode(policy::long_name<S_("mode1")>,
+             flag(policy::long_name<S_("flag1")>,
+                  policy::description<S_("First description")>),
+             flag(policy::long_name<S_("flag2")>,
+                  policy::description<S_("Second description")>),
+             flag(policy::short_name<'t'>,
+                  policy::description<S_("Third description")>),
+             policy::router{[&](bool, bool, bool) {}}),
+        mode(flag(policy::long_name<S_("flag1")>,
+                  policy::description<S_("Other third description")>),
+             flag(policy::short_name<'b'>,
+                  policy::description<S_("Fourth description")>),
+             positional_arg<std::vector<std::string_view>>(
+                 policy::long_name<S_("pos_args")>,
+                 policy::description<S_("Description")>),
+             policy::router{[&](bool, bool, std::vector<std::string_view>) {}}),
+        policy::validation::default_validator);
+
+    auto f = [&](auto tokens,
+                 auto expected_child_name,
+                 auto expected_remaining_tokens,
+                 std::string fail_message) {
+        try {
+            parsing::find_target_node(
+                r,
+                tokens,
+                [&](const auto& child, auto& remaining_tokens) {
+                    if constexpr (traits::has_long_name_method_v<
+                                      std::decay_t<decltype(child)>>) {
+                        BOOST_CHECK_EQUAL(child.long_name(),
+                                          expected_child_name);
+                    } else {
+                        BOOST_CHECK_EQUAL("", expected_child_name);
+                    }
+
+                    BOOST_REQUIRE_EQUAL(remaining_tokens.size(),
+                                        expected_remaining_tokens.size());
+                    for (auto i = 0u; i < remaining_tokens.size(); ++i) {
+                        BOOST_CHECK_EQUAL(remaining_tokens[i],
+                                          expected_remaining_tokens[i]);
+                    }
+                });
+            BOOST_CHECK(fail_message.empty());
+        } catch (parse_exception& e) {
+            BOOST_CHECK_EQUAL(fail_message, e.what());
+        }
+    };
+
+    test::data_set(
+        f,
+        {
+            std::tuple{
+                parsing::token_list{{parsing::prefix_type::LONG, "top-flag"}},
+                "top-flag",
+                parsing::token_list{{parsing::prefix_type::LONG, "top-flag"}},
+                ""},
+            std::tuple{
+                parsing::token_list{{parsing::prefix_type::NONE, "mode1"},
+                                    {parsing::prefix_type::LONG, "flag2"},
+                                    't'},
+                "mode1",
+                parsing::token_list{{parsing::prefix_type::LONG, "flag2"}, 't'},
+                ""},
+            std::tuple{
+                parsing::token_list{{parsing::prefix_type::LONG, "flag1"}},
+                "",
+                parsing::token_list{{parsing::prefix_type::LONG, "flag1"}},
+                ""},
+            std::tuple{
+                parsing::token_list{{parsing::prefix_type::NONE, "hello"}},
+                "",
+                parsing::token_list{{parsing::prefix_type::NONE, "hello"}},
+                ""},
+            std::tuple{
+                parsing::token_list{{parsing::prefix_type::LONG, "hello"}},
+                "",
+                parsing::token_list{{parsing::prefix_type::LONG, "hello"}},
+                ""},
+        });
+}
+
+BOOST_AUTO_TEST_CASE(find_target_node_nested_mode_test)
+{
+    const auto r =
+        root(flag(policy::long_name<S_("top-flag")>,
+                  policy::description<S_("Description")>,
+                  policy::router{[&](bool) {}}),
+             arg<int>(policy::long_name<S_("top-arg")>,
+                      policy::default_value(42),
+                      policy::description<S_("Description")>,
+                      policy::router{[&](int) {}}),
+             mode(policy::long_name<S_("mode1")>,
+                  flag(policy::long_name<S_("flag1")>,
+                       policy::description<S_("First description")>),
+                  flag(policy::long_name<S_("flag2")>,
+                       policy::description<S_("Second description")>),
+                  flag(policy::short_name<'t'>,
+                       policy::description<S_("Third description")>),
+                  policy::router{[&](bool, bool, bool) {}},
+                  mode(policy::long_name<S_("mode2")>,
+                       flag(policy::long_name<S_("flag1")>,
+                            policy::description<S_("Other third description")>),
+                       flag(policy::short_name<'b'>,
+                            policy::description<S_("Fourth description")>),
+                       positional_arg<std::vector<std::string_view>>(
+                           policy::long_name<S_("pos_args")>,
+                           policy::description<S_("Description")>),
+                       policy::router{
+                           [&](bool, bool, std::vector<std::string_view>) {}}),
+                  mode(policy::long_name<S_("mode3")>,
+                       flag(policy::long_name<S_("flag3")>,
+                            policy::description<S_("Other third description")>),
+                       flag(policy::short_name<'b'>,
+                            policy::description<S_("Fourth description")>),
+                       policy::router{[&](bool, bool) {}})),
+             policy::validation::default_validator);
+
+    auto f = [&](auto tokens,
+                 auto expected_child_name,
+                 auto expected_remaining_tokens,
+                 std::string fail_message) {
+        try {
+            parsing::find_target_node(
+                r,
+                tokens,
+                [&](const auto& child, auto& remaining_tokens) {
+                    if constexpr (traits::has_long_name_method_v<
+                                      std::decay_t<decltype(child)>>) {
+                        BOOST_CHECK_EQUAL(child.long_name(),
+                                          expected_child_name);
+                    } else {
+                        BOOST_CHECK_EQUAL("", expected_child_name);
+                    }
+
+                    BOOST_REQUIRE_EQUAL(remaining_tokens.size(),
+                                        expected_remaining_tokens.size());
+                    for (auto i = 0u; i < remaining_tokens.size(); ++i) {
+                        BOOST_CHECK_EQUAL(remaining_tokens[i],
+                                          expected_remaining_tokens[i]);
+                    }
+                });
+            BOOST_CHECK(fail_message.empty());
+        } catch (parse_exception& e) {
+            BOOST_CHECK_EQUAL(fail_message, e.what());
+        }
+    };
+
+    test::data_set(
+        f,
+        {std::tuple{
+             parsing::token_list{{parsing::prefix_type::LONG, "top-flag"}},
+             "top-flag",
+             parsing::token_list{{parsing::prefix_type::LONG, "top-flag"}},
+             ""},
+         std::tuple{parsing::token_list{{parsing::prefix_type::NONE, "mode1"},
+                                        {parsing::prefix_type::LONG, "flag2"}},
+                    "mode1",
+                    parsing::token_list{{parsing::prefix_type::LONG, "flag2"}},
+                    ""},
+         std::tuple{parsing::token_list{{parsing::prefix_type::NONE, "mode1"},
+                                        {parsing::prefix_type::NONE, "mode2"},
+                                        'b'},
+                    "mode2",
+                    parsing::token_list{'b'},
+                    ""},
+         std::tuple{parsing::token_list{{parsing::prefix_type::NONE, "mode1"},
+                                        {parsing::prefix_type::NONE, "mode3"},
+                                        'b'},
+                    "mode3",
+                    parsing::token_list{'b'},
+                    ""},
+         std::tuple{
+             parsing::token_list{{parsing::prefix_type::NONE, "mode1"},
+                                 {parsing::prefix_type::NONE, "mode2"},
+                                 {parsing::prefix_type::NONE, "hello"},
+                                 {parsing::prefix_type::NONE, "goodbye"}},
+             "mode2",
+             parsing::token_list{{parsing::prefix_type::NONE, "hello"},
+                                 {parsing::prefix_type::NONE, "goodbye"}},
+             ""}});
+}
+
 BOOST_AUTO_TEST_CASE(numeric_parse_test)
 {
     auto f = [](auto input, auto expected, std::string_view fail_message) {

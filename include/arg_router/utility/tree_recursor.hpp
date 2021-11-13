@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "arg_router/policy/policy.hpp"
 #include "arg_router/tree_node.hpp"
@@ -10,26 +10,33 @@ namespace utility
 {
 namespace detail
 {
-template <typename Fn, typename Current, typename... Parents>
+struct always_false {
+    template <typename...>
+    constexpr static bool fn()
+    {
+        return false;
+    }
+};
+
+template <typename Fn, typename SkipFn, typename Current, typename... Parents>
 constexpr void tree_recursor_impl()
 {
-    if constexpr (is_tree_node_v<Current>) {
-        // Iterate over the children (if any) and recurse into them
-        tuple_type_iterator<typename Current::children_type>(
-            [](auto /*i*/, auto ptr) {
-                using child_type = std::remove_pointer_t<decltype(ptr)>;
-                tree_recursor_impl<Fn, child_type, Current, Parents...>();
-            });
+    if constexpr (!SkipFn::template fn<Current, Parents...>()) {
+        if constexpr (is_tree_node_v<Current>) {
+            using children_and_policies = boost::mp11::mp_append<  //
+                typename Current::children_type,
+                typename Current::policies_type>;
 
-        // And the same for policies
-        tuple_type_iterator<typename Current::policies_type>(
-            [](auto /*i*/, auto ptr) {
-                using policy_type = std::remove_pointer_t<decltype(ptr)>;
-                tree_recursor_impl<Fn, policy_type, Current, Parents...>();
-            });
+            // Recurse into the types
+            tuple_type_iterator<children_and_policies>(
+                [](auto /*i*/, auto ptr) {
+                    using type = std::remove_pointer_t<decltype(ptr)>;
+                    tree_recursor_impl<Fn, SkipFn, type, Current, Parents...>();
+                });
+        }
+
+        Fn::template fn<Current, Parents...>();
     }
-
-    Fn::template fn<Current, Parents...>();
 }
 }  // namespace detail
 
@@ -57,7 +64,35 @@ constexpr void tree_recursor_impl()
 template <typename Fn, typename Root>
 constexpr void tree_recursor()
 {
-    detail::tree_recursor_impl<Fn, Root>();
+    detail::tree_recursor_impl<Fn, detail::always_false, Root>();
+}
+
+/** Specialisation of tree_recursor() where a skip function can be used to
+ * ignore subtrees.
+ *
+ * @a SkipFn must be object with the same method signatue as below:
+ * @code
+ * struct my_skip_fn {
+ *     template <typename Current, typename... Parents>
+ *     constexpr static bool fn()
+ *     {
+ *         ...
+ *         return condition_met;
+ *     }
+ * };
+ * @endcode
+ * If the return value is true, then the <TT>Current</TT> node and any subtree
+ * below it are skipped i.e. @a Fn is not called.
+ * 
+ * @tparam Fn Functional object type
+ * @tparam SkipFn Functional object type to skip recursion on current node
+ * @tparam Root Start object type in the parse tree
+ * @return void
+ */
+template <typename Fn, typename SkipFn, typename Root>
+constexpr void tree_recursor()
+{
+    detail::tree_recursor_impl<Fn, SkipFn, Root>();
 }
 }  // namespace utility
 }  // namespace arg_router

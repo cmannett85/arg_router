@@ -178,6 +178,15 @@ struct policy_unique_from_owner_parent_to_mode_or_root {
         }
     };
 
+    // Don't recurse into child modes, they effectively have their own namespace
+    struct skipper {
+        template <typename Current, typename...>
+        constexpr static bool fn()
+        {
+            return node_category::is_generic_mode_like_v<Current>;
+        }
+    };
+
     template <typename T, typename... Parents>
     constexpr static void check()
     {
@@ -203,36 +212,59 @@ struct policy_unique_from_owner_parent_to_mode_or_root {
 
             // Recurse the tree from the oldest generation, testing that no
             // other policy matches ours
-            utility::tree_recursor<checker<T, path_type>, start_type>();
+            utility::
+                tree_recursor<checker<T, path_type>, skipper, start_type>();
         }
     }
 };
 
-/** A rule condition that checks the parent index @a I is one of the types in
- * @a ParentTypes.
+/** A rule condition that checks one of the parent index and type pairs given
+ * in @a ParentIndexTypes matches @a Parents.
  * 
- * <TT>I == 0</TT> is the owner.  The comparison is done against despecialised
- * versions.
+ * @a ParentIndexTypes must be a pack of pair-like types, where the first type
+ * is a compile-time integer and the second is the parent type.  For the parent
+ * index type, 0 represents the parent of @a T.  The parent type comparison will
+ * be done despecialised. 
  * @tparam I Parent index
  * @tparam ParentTypes Parent types to check against
  */
-template <std::size_t I, typename... ParentTypes>
-struct parent_type {
+template <typename... ParentIndexTypes>
+struct parent_types {
+    static_assert(sizeof...(ParentIndexTypes) > 0,
+                  "Must be at least one index/parent pair");
+
+    template <std::size_t MaxIndex>
+    struct index_filter {
+        template <typename Pair>
+        using fn = boost::mp11::mp_bool<(boost::mp11::mp_first<Pair>::value <
+                                         MaxIndex)>;
+    };
+
+    template <typename... Parents>
+    struct checker {
+        template <typename Pair>
+        using fn = traits::is_same_when_despecialised<
+            std::tuple_element_t<boost::mp11::mp_first<Pair>::value,
+                                 std::tuple<Parents...>>,
+            boost::mp11::mp_second<Pair>>;
+    };
+
     template <typename T, typename... Parents>
     constexpr static void check()
     {
-        static_assert(sizeof...(ParentTypes) > 0,
-                      "Must be at least one owner type");
+        // Remove any entries whose index is beyond the Parents list size
+        using clamped_indices =
+            boost::mp11::mp_filter_q<index_filter<sizeof...(Parents)>,
+                                     std::tuple<ParentIndexTypes...>>;
 
-        static_assert(sizeof...(Parents) > I,
-                      "Not enough parents for condition to pass");
-
-        using parent_type = std::tuple_element_t<I, std::tuple<Parents...>>;
+        // Check that each despecialised parent type matches the corresponding
+        // parent in the tree
+        using matches =
+            boost::mp11::mp_transform_q<checker<Parents...>, clamped_indices>;
 
         static_assert(
-            algorithm::count_despecialised_v<parent_type,
-                                             std::tuple<ParentTypes...>>,
-            "Policy's owner must be one of a set of specific types");
+            boost::mp11::mp_any_of<matches, boost::mp11::mp_to_bool>::value,
+            "Parent must be one of a set of types");
     }
 };
 
@@ -316,27 +348,26 @@ struct child_must_not_have_policy {
 };
 
 /** A rule condition that checks if there are more than one child of T that is a
- * mode, all must be named.
+ * mode, only one can be anonymous.
  *
  * @tparam ModeType Mode type
  */
 template <template <typename...> typename ModeType>
-struct multiple_named_modes {
+struct single_anonymous_mode {
     template <typename Child>
     using mode_filter = traits::is_specialisation_of<Child, ModeType>;
-
-    template <typename Mode>
-    using has_long_name = traits::has_long_name_method<Mode>;
 
     template <typename T, typename...>
     constexpr static void check()
     {
         using modes =
             boost::mp11::mp_filter<mode_filter, typename T::children_type>;
-        if constexpr ((std::tuple_size_v<modes>) > 1) {
-            static_assert(boost::mp11::mp_all_of<modes, has_long_name>::value,
-                          "If there are multiple modes, all must be named");
-        }
+        constexpr auto num_anonymous = boost::mp11::mp_count_if<
+            modes,
+            boost::mp11::mp_not_fn<traits::has_long_name_method>::fn>::value;
+
+        static_assert((num_anonymous <= 1),
+                      "Only one child mode can be anonymous");
     }
 };
 
@@ -575,6 +606,67 @@ struct if_count_not_one_value_type_must_support_push_back {
     }
 };
 
+/** A rule condition that checks that any child mode-like types of @a T are
+ * named.
+ */
+struct child_mode_must_be_named {
+    template <typename T, typename...>
+    constexpr static void check()
+    {
+        using anonymous_modes =
+            boost::mp11::mp_filter<node_category::is_anonymous_mode_like,
+                                   typename T::children_type>;
+        static_assert(std::tuple_size_v<anonymous_modes> == 0,
+                      "All child modes must be named");
+    }
+};
+
+/** A rule condition that checks that mode-like type @a T has a router unless
+ * all of its children are mode-like too.
+ */
+template <template <typename...> typename... RouterTypes>
+struct mode_router_requirements {
+    static_assert(sizeof...(RouterTypes), "Must be at least one RouterTypes");
+
+    template <typename T>
+    using router_checker = boost::mp11::mp_any_of<
+        std::tuple<traits::is_specialisation_of<T, RouterTypes>...>,
+        boost::mp11::mp_to_bool>;
+
+    template <typename T, typename...>
+    constexpr static void check()
+    {
+        constexpr auto all_children_mode_like =
+            boost::mp11::mp_all_of<typename T::children_type,
+                                   node_category::is_generic_mode_like>::value;
+
+        constexpr auto has_router =
+            boost::mp11::mp_any_of<typename T::policies_type,
+                                   router_checker>::value;
+
+        static_assert(
+            has_router ^ all_children_mode_like,
+            "Mode must have a router or all its children are also modes");
+    }
+};
+
+/** A rule condition that checks that mode-like type @a T, if anonymous, does
+ * not have another mode-like child.
+ */
+struct anonymous_mode_cannot_have_mode_children {
+    template <typename T, typename...>
+    constexpr static void check()
+    {
+        if constexpr (node_category::is_anonymous_mode_like_v<T>) {
+            static_assert(
+                boost::mp11::mp_none_of<
+                    typename T::children_type,
+                    node_category::is_generic_mode_like>::value,
+                "An anonymous mode cannot have any children that are modes");
+        }
+    }
+};
+
 /** The default validator instance. */
 inline constexpr auto default_validator = validator<
     rule<policy::long_name_t<S_("rule")>,
@@ -586,7 +678,10 @@ inline constexpr auto default_validator = validator<
     rule<policy::description_t<S_("rule")>,  //
          despecialised_unique_in_owner>,
     rule<policy::router<std::less<>>,  //
-         parent_type<1, root_t<policy::validation::validator<>>>>,
+         parent_types<std::pair<traits::integral_constant<std::size_t{0}>,
+                                mode_t<flag_t<>>>,
+                      std::pair<traits::integral_constant<std::size_t{1}>,
+                                root_t<policy::validation::validator<>>>>>,
     rule<policy::validation::validator<>,  //
          despecialised_unique_in_owner>,
     rule<policy::required_t<>,  //
@@ -637,19 +732,22 @@ inline constexpr auto default_validator = validator<
          must_not_have_policy<policy::short_name_t>,
          must_not_have_policy<policy::custom_parser>,
          must_not_have_policy<policy::default_value>,
-         child_must_not_have_policy<policy::router>,
          positional_args_must_be_at_end<positional_arg_t>,
          positional_args_must_have_fixed_count_if_not_at_end<positional_arg_t>,
-         // By requiring its parent to be root, in 'inherits' the root's child
-         // policy requirements
-         parent_type<0, root_t<policy::validation::validator<>>>>,
+         child_mode_must_be_named,
+         mode_router_requirements<policy::router>,
+         anonymous_mode_cannot_have_mode_children,
+         parent_types<std::pair<traits::integral_constant<std::size_t{0}>,
+                                root_t<policy::validation::validator<>>>,
+                      std::pair<traits::integral_constant<std::size_t{0}>,
+                                mode_t<flag_t<>>>>>,
     rule<root_t<policy::validation::validator<>>,  //
          must_have_policy<policy::validation::validator>,
          min_child_count<1>,
          child_must_have_policy<policy::router>,
          child_must_not_have_policy<policy::required_t>,
          child_must_not_have_policy<policy::alias_t>,
-         multiple_named_modes<mode_t>>>{};
+         single_anonymous_mode<mode_t>>>{};
 }  // namespace validation
 }  // namespace policy
 }  // namespace arg_router

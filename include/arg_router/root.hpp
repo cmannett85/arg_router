@@ -2,11 +2,11 @@
 
 #include "arg_router/algorithm.hpp"
 #include "arg_router/exception.hpp"
-#include "arg_router/node_category.hpp"
 #include "arg_router/parsing.hpp"
 #include "arg_router/policy/required.hpp"
 
 #include <utility>
+#include <variant>
 
 namespace arg_router
 {
@@ -28,6 +28,7 @@ class root_t : public tree_node<Params...>
 {
 public:
     using typename tree_node<Params...>::policies_type;
+    using typename tree_node<Params...>::children_type;
 
 private:
     constexpr static auto validator_index =
@@ -69,28 +70,20 @@ public:
         auto tokens =
             parsing::expand_arguments(argc, const_cast<const char**>(argv));
 
-        // If there are no tokens, then there must an anonymous mode that has
-        // no required arguments in it - otherwise it is an error
-        if (tokens.empty()) {
-            handle_empty_args();
-            return;
-        }
-
-        // Match the initial token, the first token determines what type the
-        // result tuple will be
-        const auto found_child = parsing::visit_child(
-            tokens.front(),
-            this->children(),
-            [&](auto /*i*/, const auto& child) {
-                top_level_visitor(child, std::move(tokens));
-            });
-
-        if (!found_child) {
-            throw parse_exception{"Unknown argument", tokens.front()};
-        }
+        parsing::find_target_node(*this,
+                                  tokens,
+                                  [](auto const& child, auto& tokens) {
+                                      top_level_visitor(child,
+                                                        std::move(tokens));
+                                  });
     }
 
 private:
+    template <typename Node>
+    using non_mode_children_type =
+        boost::mp11::mp_remove_if<typename Node::children_type,
+                                  node_category::is_generic_mode_like>;
+
     template <typename Node>
     constexpr static bool supports_multiple_values()
     {
@@ -122,76 +115,53 @@ private:
         }
     }
 
-    void handle_empty_args() const
-    {
-        // To support custom modes, we don't just look for a mode_t, we need to
-        // find a top-level tree node that has no names - only mode-like types
-        // are allowed to be anonymous
-        auto found = false;
-        utility::tuple_iterator(
-            [&](auto /*i*/, auto& child) {
-                using child_type = std::decay_t<decltype(child)>;
-
-                if constexpr (node_category::is_anonymous_mode_like_v<
-                                  child_type>) {
-                    found = true;
-                    top_level_visitor(child, parsing::token_list{});
-                }
-            },
-            this->children());
-
-        if (!found) {
-            throw parse_exception{"No arguments provided"};
-        }
-    }
-
     template <typename Node>
     static void top_level_visitor(const Node& node, parsing::token_list tokens)
     {
         using node_type = std::decay_t<Node>;
 
-        constexpr auto child_count =
-            std::tuple_size_v<typename node_type::children_type>;
+        // From this point on, we don't care about the non-mode children, so
+        // filter them out
+        const auto non_mode_children =
+            algorithm::tuple_filter_and_construct<  //
+                boost::mp11::mp_bind<boost::mp11::mp_not,
+                                     boost::mp11::mp_bind<  //
+                                         node_category::is_generic_mode_like,
+                                         boost::mp11::_1>>::template fn>(
+                node.children());
 
         // Build results tuple
-        using router_args_t = parsing::optional_router_args_t<node_type>;
+        auto router_args = parsing::optional_router_args_t<node_type>{};
 
-        auto router_args = router_args_t{};
-        const auto& nodes = [&]() {
-            if constexpr (child_count > 0) {
-                return node.children();
-            } else {
-                return std::tuple{node};
+        // Mode-like types need handling separately
+        constexpr auto non_mode_children_size =
+            std::tuple_size_v<std::decay_t<decltype(non_mode_children)>>;
+        if constexpr (non_mode_children_size > 0) {
+            constexpr auto router_args_size =
+                std::tuple_size_v<std::decay_t<decltype(router_args)>>;
+            static_assert(non_mode_children_size == router_args_size,
+                          "Non-mode children count must match router arg size");
+
+            // Process the tokens
+            while (!tokens.empty()) {
+                const auto found_child = parsing::visit_child(
+                    tokens.front(),
+                    non_mode_children,
+                    router_args,
+                    [&](auto i, const auto& child) {
+                        process_token<i, Node>(child, router_args, tokens);
+                    });
+
+                if (!found_child) {
+                    throw parse_exception{"Unknown argument", tokens.front()};
+                }
             }
-        }();
 
-        // Named mode-like types need to have their labels removed
-        if (!tokens.empty() &&
-            tokens.front().prefix == parsing::prefix_type::NONE &&
-            node_category::is_named_mode_like_v<node_type>) {
-            tokens.pop_front();
-        }
-
-        // Process the tokens
-        while (!tokens.empty()) {
-            const auto found_child = parsing::visit_child(
-                tokens.front(),
-                nodes,
-                router_args,
-                [&](auto i, const auto& child) {
-                    process_token<i, Node>(child, router_args, tokens);
-                });
-
-            if (!found_child) {
-                throw parse_exception{"Unknown argument", tokens.front()};
-            }
-        }
-
-        if constexpr (child_count > 0) {
             auto fra = filter_aliased_results<Node>(router_args);
             check_hits(node, fra);
             call_router(node, fra, tokens);
         } else {
+            process_token<0, Node>(node, router_args, tokens);
             call_router(node, router_args, tokens);
         }
     }
@@ -315,22 +285,22 @@ private:
     }
 
     template <typename T>
-    struct is_second_an_alias {
-        constexpr static auto value =
-            traits::has_aliased_policies_type_v<boost::mp11::mp_second<T>>;
-    };
+    using is_not_an_alias = boost::mp11::mp_not<
+        traits::has_aliased_policies_type<boost::mp11::mp_second<T>>>;
 
     template <typename T>
-    using is_second_not_an_alias = boost::mp11::mp_not<is_second_an_alias<T>>;
+    using is_not_an_alias_or_mode = boost::mp11::mp_and<
+        is_not_an_alias<T>,
+        boost::mp11::mp_not<
+            node_category::is_generic_mode_like<boost::mp11::mp_second<T>>>>;
 
-    template <typename Node, template <typename...> typename Filter>
-    using alias_indices = typename algorithm::unzip<  //
-        boost::mp11::mp_filter<                       //
+    template <typename ChildrenTuple, template <typename...> typename Filter>
+    using indices_extractor = typename algorithm::unzip<  //
+        boost::mp11::mp_filter<                           //
             Filter,
             algorithm::zip_t<  //
-                boost::mp11::mp_iota_c<
-                    std::tuple_size_v<typename Node::children_type>>,
-                typename Node::children_type>>>::first_type;
+                boost::mp11::mp_iota_c<std::tuple_size_v<ChildrenTuple>>,
+                ChildrenTuple>>>::first_type;
 
     template <typename Node, typename RouterArgs>
     static auto filter_aliased_results(RouterArgs& router_args)
@@ -339,21 +309,24 @@ private:
                       "Node must be top-level, as its children are checked");
 
         // Filter any alias children from the router args
-        using non_alias_indices = alias_indices<Node, is_second_not_an_alias>;
+        using indices =
+            indices_extractor<non_mode_children_type<Node>, is_not_an_alias>;
         return std::apply(
             [&](auto... i) {
                 return std::tuple{std::move(std::get<i>(router_args))...};
             },
-            non_alias_indices{});
+            indices{});
     }
 
     template <typename Node, typename RouterArgs>
     static void check_hits(const Node& node, RouterArgs& router_args)
     {
         static_assert((std::tuple_size_v<typename Node::children_type>) > 0,
-                      "Node must be top-level, as its children are checked");
+                      "Node must have children");
 
-        using non_alias_indices = alias_indices<Node, is_second_not_an_alias>;
+        // Filter any aliases and modes from children
+        using indices = indices_extractor<typename Node::children_type,
+                                          is_not_an_alias_or_mode>;
 
         utility::tuple_iterator(
             [&](auto i, auto orig_index) {
@@ -376,8 +349,8 @@ private:
                     }
                 } else {
                     if (!arg) {
-                        arg = typename std::tuple_element_t<i, RouterArgs>::
-                            value_type{};
+                        arg =
+                            typename std::decay_t<decltype(arg)>::value_type{};
                     }
                 }
 
@@ -396,7 +369,7 @@ private:
                     }
                 }
             },
-            non_alias_indices{});
+            indices{});
     }
 
     template <typename Node, typename RouterArgs>
