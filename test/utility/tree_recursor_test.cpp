@@ -1,11 +1,6 @@
 #include "arg_router/utility/tree_recursor.hpp"
-#include "arg_router/flag.hpp"
-#include "arg_router/policy/description.hpp"
-#include "arg_router/policy/long_name.hpp"
-#include "arg_router/policy/short_name.hpp"
+#include "arg_router/node_category.hpp"
 #include "arg_router/policy/validator.hpp"
-#include "arg_router/root.hpp"
-#include "arg_router/utility/compile_time_string.hpp"
 
 #include "test_helpers.hpp"
 
@@ -145,6 +140,24 @@ struct test_Fn {
         }
     }
 };
+
+struct skip_test_fn {
+    template <typename Current, typename... Parents>
+    constexpr static void fn()
+    {
+        static_assert(
+            !std::is_same_v<Current, policy::description_t<S_("test2")>>,
+            "Fail");
+    }
+};
+
+struct skip_Fn {
+    template <typename Current, typename...>
+    constexpr static bool fn()
+    {
+        return node_category::is_generic_mode_like_v<Current>;
+    }
+};
 }  // namespace
 
 BOOST_AUTO_TEST_SUITE(utility_suite)
@@ -159,6 +172,19 @@ BOOST_AUTO_TEST_CASE(tree_recursor_test)
                       policy::short_name_t<traits::integral_constant<'a'>>>>;
 
     utility::tree_recursor<test_Fn, Root>();
+}
+
+BOOST_AUTO_TEST_CASE(tree_recursor_skip_test)
+{
+    using Root = root_t<
+        std::decay_t<decltype(policy::validation::default_validator)>,
+        flag_t<policy::description_t<S_("test1")>,
+               policy::long_name_t<S_("test")>>,
+        arg_router::mode_t<  //
+            flag_t<policy::description_t<S_("test2")>,
+                   policy::short_name_t<traits::integral_constant<'a'>>>>>;
+
+    utility::tree_recursor<skip_test_fn, skip_Fn, Root>();
 }
 
 BOOST_AUTO_TEST_SUITE_END()

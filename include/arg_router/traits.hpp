@@ -35,7 +35,7 @@ namespace traits
  *
  * @tparam T 'Sink' type
  */
-template <typename T>
+template <typename... T>
 struct always_false : std::false_type {
 };
 
@@ -43,8 +43,8 @@ struct always_false : std::false_type {
  *
  * @tparam T 'Sink' type
  */
-template <typename T>
-constexpr bool always_false_v = always_false<T>::value;
+template <typename... T>
+constexpr bool always_false_v = always_false<T...>::value;
 
 /** Alias for <TT>typename T::type</TT>.
  *

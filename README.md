@@ -1,4 +1,4 @@
-![Documentation Generator](https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg) ![Unit test coverage](https://img.shields.io/badge/Unit_Test_Coverage-98.3%25-brightgreen)
+![Documentation Generator](https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg) ![Unit test coverage](https://img.shields.io/badge/Unit_Test_Coverage-99.1%25-brightgreen)
 
 # arg_router
 `arg_router` is a C++17 command line parser and router.  It uses policy-based objects hierarchically, so the parsing code is self-describing.  Rather than just providing a parsing service that returns a map of `variant`s/`any`s, it allows you to bind `Callable` instances to points in the parse structure, so complex command line arguments can directly call functions with the expected arguments - rather than you having to do this yourself.
@@ -55,7 +55,7 @@ ar::root(
                        std::vector<std::string_view>> files) { ... }})).
     parse(argc, argv);
 ```
-Let's start from the top, as the name suggests `root` is the root of the parse tree and provides the `parse(argc, argv)` method.  Only children of the root can (and must) have a `router` policy and therefore act as access points into the program. The root's children are implicitly mutually exclusive, so trying to pass `--version --help` in the command line is a runtime error.
+Let's start from the top, as the name suggests `root` is the root of the parse tree and provides the `parse(argc, argv)` method.  Only children of the root can (and must) have a `router` policy (except for nested `mode`s, more [on that later](#modes)) and therefore act as access points into the program. The root's children are implicitly mutually exclusive, so trying to pass `--version --help` in the command line is a runtime error.
 
 The `arp::validation::default_validator` instance provides the default validator that the root uses to validate the parse tree at compile-time.  It is a required policy of the `root`.  Unless you have implemented your own policy or tree node you will never need to specify anything else.
 
@@ -63,7 +63,7 @@ The `help` node is used by the `root` to generate the argument documentation for
 
 Now let's introduce some 'policies'.  Policies define common behaviours across node types, a basic one is `long_name` which provides long form argument definition.  The standard unix double hyphen prefix for long names is added automatically when not used in a `mode`.  Having the name defined at compile-time means we detect duplicate names and fail the build - one less unit test you have to worry about.  `short_name` is the single character short form name, a single hyphen is prefixed automatically.  `arg_router` supports short name collapsing for flags, so if you have defined flags like `-a -b -c` then `-abc` will be accepted or `-bca`, etc.
 
-In order to group arguments under a specific operating mode, you put them under a `mode` instance.  In this case our simple cat program only has one mode, so it is anonymous i.e. there's not long name or description associated with it - it is a build error to have more than one anonymous mode in the parse tree.
+In order to group arguments under a specific operating mode, you put them under a `mode` instance.  In this case our simple cat program only has one mode, so it is anonymous i.e. there's no long name or description associated with it - it is a build error to have more than one anonymous mode under the root of a parse tree.
 
 `arg<T>` does exactly what you would expect, it defines an argument that expects a value to follow it on the command line.  If an argument is not `required` then it must have a `default_value`, this is passed to the `router`'s `Callable` on parsing if it isn't specified by the user on the command line.
 
@@ -269,7 +269,7 @@ Following the destination path are the source paths, as there is only a `min_cou
 Only the last `positional_arg` may be of variable length.  A runtime error will only occur if there are no variable length `postional_arg`s and there are more arguments than the maximum or less than the minimum.
 
 ## Modes
-As noted in [Basics](#Basics), `mode`s allow you to group command line components under an initial token on the command line.  A common example of this developers will be aware of is `git`, for example in our parlance `git clean -ffxd`; `clean` would be the mode and `ffxd` would be be the flags that are available under that mode.
+As noted in [Basics](#basics), `mode`s allow you to group command line components under an initial token on the command line.  A common example of this developers will be aware of is `git`, for example in our parlance `git clean -ffxd`; `clean` would be the mode and `ffxd` would be be the flags that are available under that mode.
 
 As an example, let's take the `simple-copy` above and split it into two modes:
 ```
@@ -326,7 +326,9 @@ ar::root(
                        std::filesystem::path dest,
                        std::filesystem::path src) { ... }}))
 ```
-You can't have an anonymous `mode` if there are named ones, and the name can only be the long version.  So we now have two named modes: `copy` and `move`.  Notice that the double hyphen prefix is _not_ automatically added to the `mode`'s long name, this matches typical Unix patterns - it is a build error to add them yourself!
+The name of a `mode` can only be the long version.  We now have two named modes: `copy` and `move`.  Notice that the double hyphen prefix is _not_ automatically added to the `mode`'s long name, this matches typical Unix patterns - it is a build error to add them yourself!
+
+Named `mode`s can be nested too!  Only one mode can be invoked, so attempting to use flags from parent modes is a runtime failure.  Another stipulation is that every `mode` needs a `router` unless _all_ of its children are `mode`s as well.
 
 ### Flags Common Between Nodes
 An obvious ugliness to the above example is that we now have duplicated code.  We can split that out, and then use copies in the root declaration.

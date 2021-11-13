@@ -47,9 +47,9 @@ BOOST_AUTO_TEST_CASE(contains_whitespace_test)  //
     // our strings, which means we can't use it as above because you can't
     // initialise a constexpr value from a function parameter.  So we'll have
     // to use the preprocessor to generate the code instead
-#define CONTAINS_SEQ                                                    \
-    ("he llo")("hello ")(" hello")("hell\to")("hel\nlo")("he     llo")( \
-        "h\fello")("h\rello")("h\vello")
+#define CONTAINS_SEQ      \
+    ("he llo")("hello ")( \
+        " hello")("hell\to")("hel\nlo")("he     llo")("h\fello")("h\rello")("h\vello")
 
 #define NOT_CONTAINS_SEQ ("")("hello")
 

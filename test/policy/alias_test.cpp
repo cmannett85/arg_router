@@ -78,6 +78,29 @@ BOOST_AUTO_TEST_CASE(aliased_node_indices_test)
     }
 }
 
+BOOST_AUTO_TEST_SUITE(death_suite)
+
+BOOST_AUTO_TEST_CASE(despecialised_unique_in_owner_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/alias.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+int main() {
+    using result = typename policy::alias_t<
+        policy::long_name_t<S_("aaa")>>::template
+            aliased_node_indices<policy::long_name_t<S_("bbb")>>;
+    return 0;
+}
+    )",
+        "ModeType must be a mode-like type");
+}
+
+BOOST_AUTO_TEST_SUITE_END()
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

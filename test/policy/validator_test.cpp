@@ -61,25 +61,42 @@ BOOST_AUTO_TEST_CASE(policy_unique_from_owner_parent_to_mode_or_rootest)
                     decltype(policy::validation::default_validator)>>>();
 }
 
-BOOST_AUTO_TEST_CASE(parent_type_test)
+BOOST_AUTO_TEST_CASE(parent_types_test)
 {
-    policy::validation::parent_type<0, flag_t<>>::check<
-        policy::router<std::less<>>,
-        flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
-               policy::long_name_t<S_("test")>,
-               policy::router<std::less<>>>>();
+    policy::validation::
+        parent_types<std::pair<traits::integral_constant<0>, flag_t<>>>::check<
+            policy::router<std::less<>>,
+            flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+                   policy::long_name_t<S_("test")>,
+                   policy::router<std::less<>>>>();
 
-    policy::validation::parent_type<1, root_t<>>::check<
-        policy::router<std::less<>>,
-        flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
-               policy::long_name_t<S_("test1")>,
-               policy::router<std::less<>>>,
-        root_t<flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
-                      policy::long_name_t<S_("test1")>,
-                      policy::router<std::less<>>>,
-               flag_t<policy::short_name_t<traits::integral_constant<'b'>>,
-                      policy::long_name_t<S_("test2")>,
-                      policy::router<std::less<>>>>>();
+    policy::validation::
+        parent_types<std::pair<traits::integral_constant<1>, root_t<>>>::check<
+            policy::router<std::less<>>,
+            flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+                   policy::long_name_t<S_("test1")>,
+                   policy::router<std::less<>>>,
+            root_t<flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+                          policy::long_name_t<S_("test1")>,
+                          policy::router<std::less<>>>,
+                   flag_t<policy::short_name_t<traits::integral_constant<'b'>>,
+                          policy::long_name_t<S_("test2")>,
+                          policy::router<std::less<>>>>>();
+
+    policy::validation::parent_types<
+        std::pair<traits::integral_constant<0>, arg_router::mode_t<flag_t<>>>,
+        std::pair<traits::integral_constant<1>, root_t<>>>::
+        check<
+            policy::router<std::less<>>,
+            flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+                   policy::long_name_t<S_("test1")>,
+                   policy::router<std::less<>>>,
+            root_t<flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+                          policy::long_name_t<S_("test1")>,
+                          policy::router<std::less<>>>,
+                   flag_t<policy::short_name_t<traits::integral_constant<'b'>>,
+                          policy::long_name_t<S_("test2")>,
+                          policy::router<std::less<>>>>>();
 }
 
 BOOST_AUTO_TEST_CASE(must_have_policy_test)
@@ -108,9 +125,9 @@ BOOST_AUTO_TEST_CASE(child_must_have_policy_test)
         std::decay_t<decltype(policy::validation::default_validator)>>>();
 }
 
-BOOST_AUTO_TEST_CASE(multiple_named_modes_test)
+BOOST_AUTO_TEST_CASE(single_anonymous_mode_test)
 {
-    policy::validation::multiple_named_modes<arg_router::mode_t>::check<root_t<
+    policy::validation::single_anonymous_mode<arg_router::mode_t>::check<root_t<
         arg_router::mode_t<
             policy::long_name_t<S_("mode1")>,
             flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
@@ -121,14 +138,24 @@ BOOST_AUTO_TEST_CASE(multiple_named_modes_test)
                    policy::long_name_t<S_("test1")>>>,
         std::decay_t<decltype(policy::validation::default_validator)>>>();
 
-    policy::validation::multiple_named_modes<arg_router::mode_t>::check<root_t<
+    policy::validation::single_anonymous_mode<arg_router::mode_t>::check<root_t<
+        arg_router::mode_t<
+            policy::long_name_t<S_("mode1")>,
+            flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+                   policy::long_name_t<S_("test1")>>>,
+        arg_router::mode_t<
+            flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+                   policy::long_name_t<S_("test1")>>>,
+        std::decay_t<decltype(policy::validation::default_validator)>>>();
+
+    policy::validation::single_anonymous_mode<arg_router::mode_t>::check<root_t<
         arg_router::mode_t<
             policy::long_name_t<S_("mode1")>,
             flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
                    policy::long_name_t<S_("test1")>>>,
         std::decay_t<decltype(policy::validation::default_validator)>>>();
 
-    policy::validation::multiple_named_modes<arg_router::mode_t>::check<root_t<
+    policy::validation::single_anonymous_mode<arg_router::mode_t>::check<root_t<
         arg_router::mode_t<
             flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
                    policy::long_name_t<S_("test1")>>>,
@@ -392,6 +419,56 @@ BOOST_AUTO_TEST_CASE(cannot_have_fixed_count_of_zero_test)
             policy::max_count_t<traits::integral_constant<std::size_t{1}>>>>();
 }
 
+BOOST_AUTO_TEST_CASE(child_mode_must_be_named_test)
+{
+    policy::validation::child_mode_must_be_named::check<arg_router::mode_t<
+        arg_router::mode_t<policy::long_name_t<S_("mode")>,
+                           flag_t<policy::long_name_t<S_("test1")>>>>>();
+}
+
+BOOST_AUTO_TEST_CASE(mode_router_requirements_test)
+{
+    policy::validation::mode_router_requirements<policy::router>::check<
+        arg_router::mode_t<policy::router<std::less<>>,
+                           policy::long_name_t<S_("mode1")>,
+                           flag_t<policy::long_name_t<S_("flag1")>>,
+                           flag_t<policy::long_name_t<S_("flag2")>>>>();
+
+    policy::validation::mode_router_requirements<policy::router>::check<
+        arg_router::mode_t<
+            policy::router<std::less<>>,
+            policy::long_name_t<S_("mode1")>,
+            arg_router::flag_t<policy::long_name_t<S_("flag1")>>,
+            arg_router::mode_t<policy::long_name_t<S_("mode2")>,
+                               flag_t<policy::long_name_t<S_("flag2")>>>>>();
+
+    policy::validation::mode_router_requirements<policy::router>::check<
+        arg_router::mode_t<
+            policy::long_name_t<S_("mode1")>,
+            arg_router::mode_t<policy::long_name_t<S_("mode1_1")>,
+                               flag_t<policy::long_name_t<S_("flag1")>>>,
+            arg_router::mode_t<policy::long_name_t<S_("mode1_2")>,
+                               flag_t<policy::long_name_t<S_("flag2")>>>>>();
+}
+
+BOOST_AUTO_TEST_CASE(anonymous_mode_cannot_have_mode_childrens_test)
+{
+    policy::validation::anonymous_mode_cannot_have_mode_children::check<
+        arg_router::mode_t<
+            policy::router<std::less<>>,
+            policy::long_name_t<S_("mode1")>,
+            arg_t<int, policy::long_name_t<S_("flag1")>>,
+            arg_router::mode_t<policy::router<std::less<>>,
+                               policy::long_name_t<S_("mode2")>,
+                               flag_t<policy::long_name_t<S_("flag1")>>,
+                               flag_t<policy::long_name_t<S_("flag2")>>>>>();
+
+    policy::validation::anonymous_mode_cannot_have_mode_children::check<
+        arg_router::mode_t<policy::router<std::less<>>,
+                           arg_t<int, policy::long_name_t<S_("flag1")>>,
+                           flag_t<policy::long_name_t<S_("flag1")>>>>();
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE(death_suite)
@@ -448,50 +525,51 @@ int main() {
         "root");
 }
 
-BOOST_AUTO_TEST_CASE(owner_types_test)
+BOOST_AUTO_TEST_CASE(parent_types_test)
 {
     test::death_test_compile(
         R"(
 #include "arg_router/policy/validator.hpp"
 
+using namespace arg_router;
 int main() {
-    arg_router::policy::validation::parent_type<0>::check<
-        arg_router::policy::router<std::less<>>,
-        arg_router::root_t<
-            arg_router::flag_t<
-                arg_router::policy::short_name_t<
-                    arg_router::traits::integral_constant<'a'>>,
-                arg_router::policy::long_name_t<S_("test")>>,
-            arg_router::policy::router<std::less<>>,
-            std::decay_t<decltype(arg_router::policy::validation::default_validator)>>>();
+    policy::validation::parent_types<>::check<
+        policy::router<std::less<>>,
+        root_t<
+            flag_t<
+                policy::short_name_t<
+                    traits::integral_constant<'a'>>,
+                policy::long_name_t<S_("test")>>,
+            policy::router<std::less<>>,
+            std::decay_t<decltype(policy::validation::default_validator)>>>();
     return 0;
 }
     )",
-        "Must be at least one owner type");
+        "Must be at least one index/parent pair");
 
     test::death_test_compile(
         R"(
 #include "arg_router/policy/validator.hpp"
 
+using namespace arg_router;
 int main() {
-    arg_router::policy::validation::parent_type<0, arg_router::root_t<>>::check<
-        arg_router::policy::router<std::less<>>,
-        arg_router::flag_t<
-            arg_router::policy::short_name_t<
-                arg_router::traits::integral_constant<'a'>>,
-            arg_router::policy::long_name_t<S_("test")>,
-            arg_router::policy::router<std::less<>>>,
-        arg_router::root_t<
-            arg_router::flag_t<
-                arg_router::policy::short_name_t<
-                    arg_router::traits::integral_constant<'a'>>,
-                arg_router::policy::long_name_t<S_("test")>,
-                arg_router::policy::router<std::less<>>>,
-            std::decay_t<decltype(arg_router::policy::validation::default_validator)>>>();
+    policy::validation::
+        parent_types<std::pair<traits::integral_constant<1>,
+                               arg_router::mode_t<flag_t<>>>>::check<
+            policy::router<std::less<>>,
+            flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+                   policy::long_name_t<S_("test1")>,
+                   policy::router<std::less<>>>,
+            root_t<flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+                          policy::long_name_t<S_("test1")>,
+                          policy::router<std::less<>>>,
+                   flag_t<policy::short_name_t<traits::integral_constant<'b'>>,
+                          policy::long_name_t<S_("test2")>,
+                          policy::router<std::less<>>>>>();
     return 0;
 }
     )",
-        "Policy's owner must be one of a set of specific types");
+        "Parent must be one of a set of types");
 }
 
 BOOST_AUTO_TEST_CASE(must_have_policy_test)
@@ -550,7 +628,7 @@ int main() {
         "All children of T must have this policy");
 }
 
-BOOST_AUTO_TEST_CASE(multiple_named_modes_test)
+BOOST_AUTO_TEST_CASE(single_anonymous_mode_test)
 {
     test::death_test_compile(
         R"(
@@ -558,20 +636,17 @@ BOOST_AUTO_TEST_CASE(multiple_named_modes_test)
 using namespace arg_router;
 
 int main() {
-    policy::validation::multiple_named_modes<arg_router::mode_t>::check<
-        root_t<
-            arg_router::mode_t<
-                policy::long_name_t<S_("mode1")>,
-                flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
-                       policy::long_name_t<S_("test1")>>>,
-            arg_router::mode_t<
-                flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
-                       policy::long_name_t<S_("test1")>>>,
-            std::decay_t<decltype(policy::validation::default_validator)>>>();
-    return 0;
+    policy::validation::single_anonymous_mode<arg_router::mode_t>::check<root_t<
+        arg_router::mode_t<
+            flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+                   policy::long_name_t<S_("test1")>>>,
+        arg_router::mode_t<
+            flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+                   policy::long_name_t<S_("test1")>>>,
+        std::decay_t<decltype(policy::validation::default_validator)>>>();
 }
     )",
-        "If there are multiple modes, all must be named");
+        "Only one child mode can be anonymous");
 }
 
 BOOST_AUTO_TEST_CASE(none_in_at_least_one_of_policies_test)
@@ -967,6 +1042,126 @@ int main() {
 }
     )",
         "Cannot have a fixed count of zero");
+}
+
+BOOST_AUTO_TEST_CASE(child_mode_must_be_named_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/validator.hpp"
+using namespace arg_router;
+
+int main() {
+    policy::validation::child_mode_must_be_named::check<arg_router::mode_t<
+        arg_router::mode_t<flag_t<policy::long_name_t<S_("test1")>>>>>();
+    return 0;
+}
+    )",
+        "All child modes must be named");
+}
+
+BOOST_AUTO_TEST_CASE(mode_router_requirements_no_router_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/validator.hpp"
+using namespace arg_router;
+
+int main() {
+    policy::validation::mode_router_requirements<policy::router>::check<
+        arg_router::mode_t<policy::long_name_t<S_("mode1")>,
+                           flag_t<policy::long_name_t<S_("flag1")>>,
+                           flag_t<policy::long_name_t<S_("flag2")>>>>();
+    return 0;
+}
+    )",
+        "Mode must have a router or all its children are also modes");
+}
+
+BOOST_AUTO_TEST_CASE(mode_router_requirements_no_router_mixed_children_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/validator.hpp"
+using namespace arg_router;
+
+int main() {
+    policy::validation::mode_router_requirements<policy::router>::check<
+        arg_router::mode_t<
+            policy::long_name_t<S_("mode1")>,
+            arg_router::flag_t<policy::long_name_t<S_("flag1")>>,
+            arg_router::mode_t<policy::long_name_t<S_("mode2")>,
+                               flag_t<policy::long_name_t<S_("flag2")>>>>>();
+    return 0;
+}
+    )",
+        "Mode must have a router or all its children are also modes");
+}
+
+BOOST_AUTO_TEST_CASE(mode_router_requirements_router_all_children_modes_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/validator.hpp"
+using namespace arg_router;
+
+int main() {
+    policy::validation::mode_router_requirements<policy::router>::check<
+        arg_router::mode_t<
+            policy::long_name_t<S_("mode1")>,
+            policy::router<std::less<>>,
+            arg_router::mode_t<policy::long_name_t<S_("mode1_1")>,
+                               flag_t<policy::long_name_t<S_("flag1")>>>,
+            arg_router::mode_t<policy::long_name_t<S_("mode1_2")>,
+                               flag_t<policy::long_name_t<S_("flag2")>>>>>();
+    return 0;
+}
+    )",
+        "Mode must have a router or all its children are also modes");
+}
+
+BOOST_AUTO_TEST_CASE(anonymous_mode_cannot_have_mode_children_named_mode_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/validator.hpp"
+using namespace arg_router;
+
+int main() {
+    policy::validation::anonymous_mode_cannot_have_mode_children::check<
+        arg_router::mode_t<
+            policy::router<std::less<>>,
+            arg_t<int, policy::long_name_t<S_("flag1")>>,
+            arg_router::mode_t<policy::router<std::less<>>,
+                               policy::long_name_t<S_("mode2")>,
+                               flag_t<policy::long_name_t<S_("flag1")>>,
+                               flag_t<policy::long_name_t<S_("flag2")>>>>>();
+    return 0;
+}
+    )",
+        "An anonymous mode cannot have any children that are modes");
+}
+
+BOOST_AUTO_TEST_CASE(
+    anonymous_mode_cannot_have_mode_children_anonymous_mode_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/validator.hpp"
+using namespace arg_router;
+
+int main() {
+    policy::validation::anonymous_mode_cannot_have_mode_children::check<
+        arg_router::mode_t<
+            policy::router<std::less<>>,
+            arg_t<int, policy::long_name_t<S_("flag1")>>,
+            arg_router::mode_t<policy::router<std::less<>>,
+                               flag_t<policy::long_name_t<S_("flag1")>>,
+                               flag_t<policy::long_name_t<S_("flag2")>>>>>();
+    return 0;
+}
+    )",
+        "An anonymous mode cannot have any children that are modes");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -92,7 +92,7 @@ BOOST_AUTO_TEST_CASE(unhandled_parse_test)
     BOOST_CHECK_EXCEPTION(
         r.parse(args.size(), const_cast<char**>(args.data())),
         parse_exception,
-        [](const auto& e) { return e.what() == "Unknown argument: --foo"s; });
+        [](const auto& e) { return e.what() == "Unhandled argument: --foo"s; });
     BOOST_CHECK(!router_hit);
 }
 
@@ -1049,6 +1049,173 @@ BOOST_AUTO_TEST_CASE(two_positional_arg_parse_test)
                            std::vector<std::string_view>{},
                            std::vector<double>{}},
                 "Failed to parse: two"},
+        });
+}
+
+BOOST_AUTO_TEST_CASE(nested_mode_test)
+{
+    auto router_hit = std::bitset<6>{};
+    auto result =
+        std::variant<std::tuple<bool>,
+                     std::tuple<int>,
+                     std::tuple<bool, double, bool>,
+                     std::tuple<int, bool, std::vector<std::string_view>>,
+                     std::tuple<bool, bool>,
+                     std::tuple<bool, double>>{};
+
+    const auto r = root(
+        flag(policy::long_name<S_("top-flag")>,
+             policy::description<S_("Description")>,
+             policy::router{[&](bool v) {
+                 router_hit[0] = true;
+                 result = std::tuple{v};
+             }}),
+        arg<int>(policy::long_name<S_("top-arg")>,
+                 policy::description<S_("Description")>,
+                 policy::router{[&](int v) {
+                     router_hit[1] = true;
+                     result = std::tuple{v};
+                 }}),
+        mode(policy::long_name<S_("mode1")>,
+             flag(policy::long_name<S_("flag1")>,
+                  policy::description<S_("Description")>),
+             arg<double>(policy::long_name<S_("arg1")>,
+                         policy::description<S_("Description")>,
+                         policy::default_value{3.14}),
+             flag(policy::long_name<S_("flag2")>,
+                  policy::short_name<'t'>,
+                  policy::description<S_("Description")>),
+             policy::router{[&](bool f1, double a1, bool f2) {
+                 router_hit[2] = true;
+                 result = std::tuple{f1, a1, f2};
+             }},
+             mode(policy::long_name<S_("mode2")>,
+                  arg<int>(policy::long_name<S_("arg1")>,
+                           policy::description<S_("Description")>,
+                           policy::required),
+                  flag(policy::long_name<S_("flag1")>,
+                       policy::short_name<'b'>,
+                       policy::description<S_("Description")>),
+                  positional_arg<std::vector<std::string_view>>(
+                      policy::long_name<S_("pos_args")>,
+                      policy::description<S_("Description")>),
+                  policy::router{[&](int a1,
+                                     bool f1,
+                                     std::vector<std::string_view> pos_args) {
+                      router_hit[3] = true;
+                      result = std::tuple{a1, f1, std::move(pos_args)};
+                  }}),
+             mode(policy::long_name<S_("mode3")>,
+                  flag(policy::long_name<S_("flag1")>,
+                       policy::description<S_("Description")>),
+                  flag(policy::long_name<S_("flag2")>,
+                       policy::short_name<'b'>,
+                       policy::description<S_("Description")>),
+                  policy::router{[&](bool f1, bool f2) {
+                      router_hit[4] = true;
+                      result = std::tuple{f1, f2};
+                  }})),
+        mode(flag(policy::long_name<S_("flag1")>,
+                  policy::description<S_("Description")>),
+             arg<double>(policy::long_name<S_("arg1")>,
+                         policy::default_value{4.2},
+                         policy::description<S_("Description")>),
+             policy::router{[&](bool f1, double a1) {
+                 router_hit[5] = true;
+                 result = std::tuple{f1, a1};
+             }}),
+        policy::validation::default_validator);
+
+    auto f = [&](auto args,
+                 auto expected_index,
+                 auto expected,
+                 std::string fail_message) {
+        result = std::tuple{false};
+        router_hit.reset();
+
+        try {
+            r.parse(args.size(), const_cast<char**>(args.data()));
+            BOOST_CHECK(fail_message.empty());
+            BOOST_CHECK_EQUAL(router_hit.count(), 1);
+            BOOST_CHECK(router_hit[expected_index]);
+
+            std::visit(
+                [&](const auto& result_tuple) {
+                    using result_type = std::decay_t<decltype(result_tuple)>;
+                    using expected_type = std::decay_t<decltype(expected)>;
+
+                    if constexpr (std::is_same_v<result_type, expected_type>) {
+                        BOOST_CHECK(result_tuple == expected);
+                    } else {
+                        BOOST_CHECK_MESSAGE(false,
+                                            "Unexpected router arg type");
+                    }
+                },
+                result);
+        } catch (parse_exception& e) {
+            BOOST_CHECK_EQUAL(fail_message, e.what());
+            BOOST_CHECK(router_hit.none());
+        }
+    };
+
+    test::data_set(
+        f,
+        std::tuple{
+            std::tuple{std::vector{"foo", "--top-flag"},
+                       0,
+                       std::tuple{true},
+                       ""},
+            std::tuple{std::vector{"foo", "--top-arg", "42"},
+                       1,
+                       std::tuple{42},
+                       ""},
+            std::tuple{std::vector{"foo"}, 5, std::tuple{false, 4.2}, ""},
+            std::tuple{std::vector{"foo", "--arg1", "13"},
+                       5,
+                       std::tuple{false, 13.0},
+                       ""},
+            std::tuple{std::vector{"foo", "mode1", "-t"},
+                       2,
+                       std::tuple{false, 3.14, true},
+                       ""},
+            std::tuple{std::vector{"foo", "mode1", "--arg1", "5.6", "--flag1"},
+                       2,
+                       std::tuple{true, 5.6, false},
+                       ""},
+            std::tuple{std::vector{"foo", "mode1", "mode2", "--arg1", "89"},
+                       3,
+                       std::tuple{89, false, std::vector<std::string_view>{}},
+                       ""},
+            std::tuple{
+                std::vector{"foo", "mode1", "mode2", "-b", "--arg1", "4"},
+                3,
+                std::tuple{4, true, std::vector<std::string_view>{}},
+                ""},
+            std::tuple{std::vector{"foo", "mode1", "mode3", "-b"},
+                       4,
+                       std::tuple{false, true},
+                       ""},
+            std::tuple{
+                std::vector{"foo",
+                            "mode1",
+                            "mode2",
+                            "--arg1",
+                            "8",
+                            "hello",
+                            "goodbye"},
+                3,
+                std::tuple{8,
+                           false,
+                           std::vector<std::string_view>{"hello", "goodbye"}},
+                ""},
+            std::tuple{std::vector{"foo", "--foo2"},
+                       0,
+                       std::tuple{true},
+                       "Unknown argument: --foo2"},
+            std::tuple{std::vector{"foo", "mode1", "--foo2"},
+                       0,
+                       std::tuple{true},
+                       "Unknown argument: --foo2"},
         });
 }
 

@@ -37,6 +37,9 @@ private:
     template <typename ModeType>
     constexpr static auto create_aliased_node_indices()
     {
+        static_assert(node_category::is_generic_mode_like_v<ModeType>,
+                      "ModeType must be a mode-like type");
+
         using children_type = typename ModeType::children_type;
 
         // Zip together an index-sequence of ModeType's children and the
