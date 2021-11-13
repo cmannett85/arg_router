@@ -91,6 +91,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a8c2771daff65998317f1853a68d3453b"><td class="memTemplParams" colspan="2">template&lt;typename Fn , typename Root &gt; </td></tr>
 <tr class="memitem:a8c2771daff65998317f1853a68d3453b"><td class="memTemplItemLeft" align="right" valign="top">constexpr void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1utility.html#a8c2771daff65998317f1853a68d3453b">tree_recursor</a> ()</td></tr>
 <tr class="separator:a8c2771daff65998317f1853a68d3453b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5cb15613aecdb3e4b2c497679da99e26"><td class="memTemplParams" colspan="2">template&lt;typename Fn , typename SkipFn , typename Root &gt; </td></tr>
+<tr class="memitem:a5cb15613aecdb3e4b2c497679da99e26"><td class="memTemplItemLeft" align="right" valign="top">constexpr void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1utility.html#a5cb15613aecdb3e4b2c497679da99e26">tree_recursor</a> ()</td></tr>
+<tr class="separator:a5cb15613aecdb3e4b2c497679da99e26"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a99e297c7383915d8754a23f4dcfa07b5"><td class="memTemplParams" colspan="2">template&lt;typename F , typename Tuple &gt; </td></tr>
 <tr class="memitem:a99e297c7383915d8754a23f4dcfa07b5"><td class="memTemplItemLeft" align="right" valign="top">constexpr std::enable_if_t&lt; <a class="el" href="namespacearg__router_1_1traits.html#a3fb5f200575fec97170262ab4e077699">traits::is_tuple_like_v</a>&lt; std::decay_t&lt; Tuple &gt; &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1utility.html#a99e297c7383915d8754a23f4dcfa07b5">tuple_iterator</a> (F &amp;&amp;f, Tuple &amp;&amp;tuple)</td></tr>
 <tr class="separator:a99e297c7383915d8754a23f4dcfa07b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -105,7 +108,7 @@ Functions</h2></td></tr>
 <div class="textblock"><p>Namespace for utility types and functions. </p>
 </div><h2 class="groupheader">Function Documentation</h2>
 <a id="a8c2771daff65998317f1853a68d3453b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8c2771daff65998317f1853a68d3453b">&#9670;&nbsp;</a></span>tree_recursor()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a8c2771daff65998317f1853a68d3453b">&#9670;&nbsp;</a></span>tree_recursor() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -145,7 +148,55 @@ template&lt;typename Fn , typename Root &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>void </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="tree__recursor_8hpp_source.html#l00058">58</a> of file <a class="el" href="tree__recursor_8hpp_source.html">tree_recursor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__recursor_8hpp_source.html#l00065">65</a> of file <a class="el" href="tree__recursor_8hpp_source.html">tree_recursor.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a5cb15613aecdb3e4b2c497679da99e26"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5cb15613aecdb3e4b2c497679da99e26">&#9670;&nbsp;</a></span>tree_recursor() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Fn , typename SkipFn , typename Root &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr void arg_router::utility::tree_recursor </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Specialisation of <a class="el" href="namespacearg__router_1_1utility.html#a8c2771daff65998317f1853a68d3453b">tree_recursor()</a> where a skip function can be used to ignore subtrees.</p>
+<p><em>SkipFn</em> must be object with the same method signatue as below: </p><div class="fragment"><div class="line"><span class="keyword">struct </span>my_skip_fn {</div>
+<div class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Current, <span class="keyword">typename</span>... Parents&gt;</div>
+<div class="line">    constexpr <span class="keyword">static</span> <span class="keywordtype">bool</span> fn()</div>
+<div class="line">    {</div>
+<div class="line">        ...</div>
+<div class="line">        <span class="keywordflow">return</span> condition_met;</div>
+<div class="line">    }</div>
+<div class="line">};</div>
+</div><!-- fragment --><p> If the return value is true, then the <code>Current</code> node and any subtree below it are skipped i.e. <em>Fn</em> is not called.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Fn</td><td>Functional object type </td></tr>
+    <tr><td class="paramname">SkipFn</td><td>Functional object type to skip recursion on current node </td></tr>
+    <tr><td class="paramname">Root</td><td>Start object type in the parse tree </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>void </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="tree__recursor_8hpp_source.html#l00093">93</a> of file <a class="el" href="tree__recursor_8hpp_source.html">tree_recursor.hpp</a>.</p>
 
 </div>
 </div>
