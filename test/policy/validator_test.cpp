@@ -27,51 +27,48 @@ BOOST_AUTO_TEST_CASE(despecialised_unique_in_owner_test)
         policy::long_name_t<S_("test")>>();
 }
 
-BOOST_AUTO_TEST_CASE(policy_unique_from_owner_parent_to_mode_or_rootest)
+BOOST_AUTO_TEST_CASE(policy_unique_from_owner_parent_to_mode_or_root_test)
 {
-    policy::validation::policy_unique_from_owner_parent_to_mode_or_root<
-        arg_router::mode_t>::check<policy::long_name_t<S_("test")>>();
+    policy::validation::policy_unique_from_owner_parent_to_mode_or_root::check<
+        policy::long_name_t<S_("test")>>();
 
-    policy::validation::policy_unique_from_owner_parent_to_mode_or_root<
-        arg_router::mode_t>::
-        check<policy::long_name_t<S_("test")>,
-              flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
-                     policy::long_name_t<S_("test")>>>();
+    policy::validation::policy_unique_from_owner_parent_to_mode_or_root::check<
+        policy::long_name_t<S_("test")>,
+        flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+               policy::long_name_t<S_("test")>>>();
 
-    policy::validation::policy_unique_from_owner_parent_to_mode_or_root<
-        arg_router::mode_t>::
-        check<
-            policy::long_name_t<S_("test1")>,
+    policy::validation::policy_unique_from_owner_parent_to_mode_or_root::check<
+        policy::long_name_t<S_("test1")>,
+        flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+               policy::long_name_t<S_("test1")>>,
+        arg_router::mode_t<
+            policy::long_name_t<S_("mode1")>,
             flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
-                   policy::long_name_t<S_("test1")>>,
+                   policy::long_name_t<S_("test1")>>>,
+        root_t<
             arg_router::mode_t<
                 policy::long_name_t<S_("mode1")>,
                 flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
                        policy::long_name_t<S_("test1")>>>,
-            root_t<
-                arg_router::mode_t<
-                    policy::long_name_t<S_("mode1")>,
-                    flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
-                           policy::long_name_t<S_("test1")>>>,
-                arg_router::mode_t<
-                    policy::long_name_t<S_("mode2")>,
-                    flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
-                           policy::long_name_t<S_("test1")>>>,
-                std::decay_t<
-                    decltype(policy::validation::default_validator)>>>();
+            arg_router::mode_t<
+                policy::long_name_t<S_("mode2")>,
+                flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+                       policy::long_name_t<S_("test1")>>>,
+            std::decay_t<decltype(policy::validation::default_validator)>>>();
 }
 
 BOOST_AUTO_TEST_CASE(parent_types_test)
 {
-    policy::validation::
-        parent_types<std::pair<traits::integral_constant<0>, flag_t<>>>::check<
-            policy::router<std::less<>>,
-            flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
-                   policy::long_name_t<S_("test")>,
-                   policy::router<std::less<>>>>();
+    policy::validation::parent_types<
+        policy::validation::parent_index_pair_type<0, flag_t>>::
+        check<policy::router<std::less<>>,
+              flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+                     policy::long_name_t<S_("test")>,
+                     policy::router<std::less<>>>>();
 
-    policy::validation::
-        parent_types<std::pair<traits::integral_constant<1>, root_t<>>>::check<
+    policy::validation::parent_types<
+        policy::validation::parent_index_pair_type<1, root_t>>::
+        check<
             policy::router<std::less<>>,
             flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
                    policy::long_name_t<S_("test1")>,
@@ -84,8 +81,8 @@ BOOST_AUTO_TEST_CASE(parent_types_test)
                           policy::router<std::less<>>>>>();
 
     policy::validation::parent_types<
-        std::pair<traits::integral_constant<0>, arg_router::mode_t<flag_t<>>>,
-        std::pair<traits::integral_constant<1>, root_t<>>>::
+        policy::validation::parent_index_pair_type<0, arg_router::mode_t>,
+        policy::validation::parent_index_pair_type<1, root_t>>::
         check<
             policy::router<std::less<>>,
             flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
@@ -127,7 +124,7 @@ BOOST_AUTO_TEST_CASE(child_must_have_policy_test)
 
 BOOST_AUTO_TEST_CASE(single_anonymous_mode_test)
 {
-    policy::validation::single_anonymous_mode<arg_router::mode_t>::check<root_t<
+    policy::validation::single_anonymous_mode::check<root_t<
         arg_router::mode_t<
             policy::long_name_t<S_("mode1")>,
             flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
@@ -138,7 +135,7 @@ BOOST_AUTO_TEST_CASE(single_anonymous_mode_test)
                    policy::long_name_t<S_("test1")>>>,
         std::decay_t<decltype(policy::validation::default_validator)>>>();
 
-    policy::validation::single_anonymous_mode<arg_router::mode_t>::check<root_t<
+    policy::validation::single_anonymous_mode::check<root_t<
         arg_router::mode_t<
             policy::long_name_t<S_("mode1")>,
             flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
@@ -148,14 +145,14 @@ BOOST_AUTO_TEST_CASE(single_anonymous_mode_test)
                    policy::long_name_t<S_("test1")>>>,
         std::decay_t<decltype(policy::validation::default_validator)>>>();
 
-    policy::validation::single_anonymous_mode<arg_router::mode_t>::check<root_t<
+    policy::validation::single_anonymous_mode::check<root_t<
         arg_router::mode_t<
             policy::long_name_t<S_("mode1")>,
             flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
                    policy::long_name_t<S_("test1")>>>,
         std::decay_t<decltype(policy::validation::default_validator)>>>();
 
-    policy::validation::single_anonymous_mode<arg_router::mode_t>::check<root_t<
+    policy::validation::single_anonymous_mode::check<root_t<
         arg_router::mode_t<
             flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
                    policy::long_name_t<S_("test1")>>>,
@@ -256,13 +253,13 @@ BOOST_AUTO_TEST_CASE(aliased_must_not_be_in_owner_test)
 
 BOOST_AUTO_TEST_CASE(positional_args_must_be_at_end_test)
 {
-    policy::validation::positional_args_must_be_at_end<positional_arg_t>::check<
+    policy::validation::positional_args_must_be_at_end::check<
         arg_router::mode_t<
             flag_t<policy::long_name_t<S_("test1")>>,
             arg_t<int, policy::long_name_t<S_("test2")>>,
             positional_arg_t<int, policy::long_name_t<S_("test3")>>>>();
 
-    policy::validation::positional_args_must_be_at_end<positional_arg_t>::check<
+    policy::validation::positional_args_must_be_at_end::check<
         arg_router::mode_t<
             flag_t<policy::long_name_t<S_("test1")>>,
             arg_t<int, policy::long_name_t<S_("test2")>>,
@@ -272,15 +269,13 @@ BOOST_AUTO_TEST_CASE(positional_args_must_be_at_end_test)
 
 BOOST_AUTO_TEST_CASE(positional_args_must_have_fixed_count_if_not_at_end_test)
 {
-    policy::validation::positional_args_must_have_fixed_count_if_not_at_end<
-        positional_arg_t>::
+    policy::validation::positional_args_must_have_fixed_count_if_not_at_end::
         check<arg_router::mode_t<
             flag_t<policy::long_name_t<S_("test1")>>,
             arg_t<int, policy::long_name_t<S_("test2")>>,
             positional_arg_t<int, policy::long_name_t<S_("test3")>>>>();
 
-    policy::validation::positional_args_must_have_fixed_count_if_not_at_end<
-        positional_arg_t>::
+    policy::validation::positional_args_must_have_fixed_count_if_not_at_end::
         check<arg_router::mode_t<
             flag_t<policy::long_name_t<S_("test1")>>,
             arg_t<int, policy::long_name_t<S_("test2")>>,
@@ -290,8 +285,7 @@ BOOST_AUTO_TEST_CASE(positional_args_must_have_fixed_count_if_not_at_end_test)
                 policy::count_t<traits::integral_constant<std::size_t{1}>>>,
             positional_arg_t<int, policy::long_name_t<S_("test4")>>>>();
 
-    policy::validation::positional_args_must_have_fixed_count_if_not_at_end<
-        positional_arg_t>::
+    policy::validation::positional_args_must_have_fixed_count_if_not_at_end::
         check<arg_router::mode_t<
             flag_t<policy::long_name_t<S_("test1")>>,
             arg_t<int, policy::long_name_t<S_("test2")>>,
@@ -305,8 +299,7 @@ BOOST_AUTO_TEST_CASE(positional_args_must_have_fixed_count_if_not_at_end_test)
                 policy::count_t<traits::integral_constant<std::size_t{3}>>>,
             positional_arg_t<int, policy::long_name_t<S_("test5")>>>>();
 
-    policy::validation::positional_args_must_have_fixed_count_if_not_at_end<
-        positional_arg_t>::
+    policy::validation::positional_args_must_have_fixed_count_if_not_at_end::
         check<arg_router::mode_t<
             flag_t<policy::long_name_t<S_("test1")>>,
             arg_t<int, policy::long_name_t<S_("test2")>>,
@@ -493,7 +486,7 @@ int main() {
         "Policy must be present and unique in owner");
 }
 
-BOOST_AUTO_TEST_CASE(policy_unique_from_owner_parent_to_mode_or_rootest)
+BOOST_AUTO_TEST_CASE(policy_unique_from_owner_parent_to_mode_or_root_test)
 {
     test::death_test_compile(
         R"(
@@ -501,8 +494,7 @@ BOOST_AUTO_TEST_CASE(policy_unique_from_owner_parent_to_mode_or_rootest)
 using namespace arg_router;
 
 int main() {
-    policy::validation::policy_unique_from_owner_parent_to_mode_or_root<
-        arg_router::mode_t>::check<
+    policy::validation::policy_unique_from_owner_parent_to_mode_or_root::check<
             policy::long_name_t<S_("test")>,
             flag_t<
                 policy::short_name_t<
@@ -545,7 +537,7 @@ int main() {
     return 0;
 }
     )",
-        "Must be at least one index/parent pair");
+        "Must be at least one parent_index_pair_type");
 
     test::death_test_compile(
         R"(
@@ -554,8 +546,9 @@ int main() {
 using namespace arg_router;
 int main() {
     policy::validation::
-        parent_types<std::pair<traits::integral_constant<1>,
-                               arg_router::mode_t<flag_t<>>>>::check<
+        parent_types<
+            policy::validation::parent_index_pair_type<1, arg_router::mode_t>
+            >::check<
             policy::router<std::less<>>,
             flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
                    policy::long_name_t<S_("test1")>,
@@ -636,7 +629,7 @@ BOOST_AUTO_TEST_CASE(single_anonymous_mode_test)
 using namespace arg_router;
 
 int main() {
-    policy::validation::single_anonymous_mode<arg_router::mode_t>::check<root_t<
+    policy::validation::single_anonymous_mode::check<root_t<
         arg_router::mode_t<
             flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
                    policy::long_name_t<S_("test1")>>>,
@@ -785,7 +778,7 @@ BOOST_AUTO_TEST_CASE(positional_args_not_at_end_test)
 using namespace arg_router;
 
 int main() {
-    policy::validation::positional_args_must_be_at_end<positional_arg_t>::check<
+    policy::validation::positional_args_must_be_at_end::check<
         arg_router::mode_t<
             flag_t<policy::long_name_t<S_("test1")>>,
             positional_arg_t<int, policy::long_name_t<S_("test3")>>,
@@ -805,7 +798,7 @@ BOOST_AUTO_TEST_CASE(positional_args_at_beginning_test)
 using namespace arg_router;
 
 int main() {
-    policy::validation::positional_args_must_be_at_end<positional_arg_t>::check<
+    policy::validation::positional_args_must_be_at_end::check<
         arg_router::mode_t<
             positional_arg_t<int, policy::long_name_t<S_("test3")>>,
             flag_t<policy::long_name_t<S_("test1")>>,
@@ -826,8 +819,7 @@ BOOST_AUTO_TEST_CASE(
 using namespace arg_router;
 
 int main() {
-    policy::validation::positional_args_must_have_fixed_count_if_not_at_end<
-        positional_arg_t>::
+    policy::validation::positional_args_must_have_fixed_count_if_not_at_end::
         check<arg_router::mode_t<
             flag_t<policy::long_name_t<S_("test1")>>,
             arg_t<int, policy::long_name_t<S_("test2")>>,
@@ -848,8 +840,7 @@ BOOST_AUTO_TEST_CASE(
 using namespace arg_router;
 
 int main() {
-    policy::validation::positional_args_must_have_fixed_count_if_not_at_end<
-        positional_arg_t>::
+    policy::validation::positional_args_must_have_fixed_count_if_not_at_end::
         check<arg_router::mode_t<
             flag_t<policy::long_name_t<S_("test1")>>,
             arg_t<int, policy::long_name_t<S_("test2")>>,
@@ -873,8 +864,7 @@ BOOST_AUTO_TEST_CASE(
 using namespace arg_router;
 
 int main() {
-    policy::validation::positional_args_must_have_fixed_count_if_not_at_end<
-        positional_arg_t>::
+    policy::validation::positional_args_must_have_fixed_count_if_not_at_end::
         check<arg_router::mode_t<
             flag_t<policy::long_name_t<S_("test1")>>,
             arg_t<int, policy::long_name_t<S_("test2")>>,
@@ -898,8 +888,7 @@ BOOST_AUTO_TEST_CASE(
 using namespace arg_router;
 
 int main() {
-    policy::validation::positional_args_must_have_fixed_count_if_not_at_end<
-        positional_arg_t>::
+    policy::validation::positional_args_must_have_fixed_count_if_not_at_end::
         check<arg_router::mode_t<
             flag_t<policy::long_name_t<S_("test1")>>,
             arg_t<int, policy::long_name_t<S_("test2")>>,
@@ -923,8 +912,7 @@ BOOST_AUTO_TEST_CASE(
 using namespace arg_router;
 
 int main() {
-    policy::validation::positional_args_must_have_fixed_count_if_not_at_end<
-        positional_arg_t>::
+    policy::validation::positional_args_must_have_fixed_count_if_not_at_end::
         check<arg_router::mode_t<
             flag_t<policy::long_name_t<S_("test1")>>,
             arg_t<int, policy::long_name_t<S_("test2")>>,

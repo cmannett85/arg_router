@@ -54,22 +54,43 @@ namespace validation
  * Where <TT>T</TT> is the current type from the tree, from the root down to policy
  * level, and <TT>Parents</TT> is a pack of ancestors in increasing generation
  * from <TT>T</TT>.  The last in the pack is always the root unless <TT>T</TT>
- * is itself the root.
+ * is itself the root, in which case <TT>Parents</TT> is empty.
+ *
+ * @tparam T A trait-like type that has a static bool member <TT>value</TT> that
+ * evaluates to true if the tested type is a match (e.g. <TT>std::is_same</TT>)
+ * @tparam Conditions A pack of conditions that all must be satisfied for
+ * compilation to be successful
+ */
+template <template <typename...> typename T, typename... Conditions>
+using rule = std::tuple<boost::mp11::mp_quote<T>, Conditions...>;
+
+/** Quoted metafunction rule overload.
  * 
- * @tparam T Type the rule is for.  You can use any template
- * parameters in the definition, as it is despecialised when comparing against
- * the user's tree types
+ * This is the only way to use template params when defining a rule.  The
+ * resulting type of @a T should have the form:
+ * @code
+ * template <typename MyParam>
+ * struct my_rule {
+ *     template <typename T>
+ *     struct fn {
+ *         constexpr static bool value = ...;
+ *     };
+ * };
+ * @endcode
+ * 
+ * @tparam T A quoted metafunction type with a nested template <TT>fn</TT> that
+ * has a static bool member <TT>value</TT> that evaluates to true if the tested
  * @tparam Conditions A pack of conditions that all must be satisfied for
  * compilation to be successful
  */
 template <typename T, typename... Conditions>
-using rule = std::tuple<T, Conditions...>;
+using rule_q = std::tuple<T, Conditions...>;
 
 /** A policy that provides validation checking against a parse tree root.
- *
- * Unless you have created a custom tree component, there is no need to specify
- * this on the root as it will automatically use the standard_validator if one
- * is not specified.
+ * 
+ * The rules are checked in order, so where there is overlap (i.e. a policy or
+ * tree_node could be valid in multiple entries) be sure to list the more
+ * specific rule first.
  * 
  * @tparam Rules A pack of rule types
  */
@@ -81,37 +102,27 @@ public:
     using rules_type = std::tuple<Rules...>;
 
 private:
-    template <typename T>
-    struct policy_or_tree_node {
-        constexpr static bool value =
-            policy::is_policy_v<T> || is_tree_node_v<T>;
-    };
-
-    static_assert(
-        boost::mp11::mp_all_of<
-            rules_type,
-            boost::mp11::mp_bind<
-                policy_or_tree_node,
-                boost::mp11::mp_bind<boost::mp11::mp_first,
-                                     boost::mp11::_1>>::template fn>::value,
-        "All validator keys must be policies or tree_nodes");
-
     template <typename Current>
-    using rule_lookup = boost::mp11::mp_bind<
-        traits::is_same_when_despecialised,
-        boost::mp11::mp_bind<boost::mp11::mp_first, boost::mp11::_1>,
-        Current>;
+    struct rule_lookup {
+        template <typename Rule>
+        struct fn {
+            constexpr static bool value =
+                boost::mp11::mp_first<Rule>::template fn<Current>::value;
+        };
+    };
 
     struct validate_fn {
         template <typename Current, typename... Parents>
         constexpr static void fn()
         {
-            constexpr auto rule_index = boost::mp11::mp_find_if<
+            // Find the matching rule
+            constexpr auto rule_index = boost::mp11::mp_find_if_q<  //
                 rules_type,
-                rule_lookup<Current>::template fn>::value;
+                rule_lookup<Current>>::value;
             static_assert(rule_index != std::tuple_size_v<rules_type>,
                           "No rule for Current");
 
+            // Remove the rule key so we just have a list of conditions
             using conditions = boost::mp11::
                 mp_drop_c<std::tuple_element_t<rule_index, rules_type>, 1>;
             utility::tuple_type_iterator<conditions>([](auto /*i*/, auto ptr) {
@@ -124,7 +135,7 @@ private:
 public:
     /** Trigger the validation.
      *
-     * A <TT>static_assert</TT> will fail will a useful(ish) error message if
+     * A <TT>static_assert</TT> will fail with a useful(ish) error message if
      * validation fails.
      * @tparam Root Root type to validate
      * @return void
@@ -135,6 +146,28 @@ public:
         utility::tree_recursor<validate_fn, Root>();
     }
 };
+
+/** Namespace for a collection of common rule_q types.
+ */
+namespace common_rules
+{
+/** A rule that evaluates to true when the @a Current tree type despecialised
+ * matches to any of @a T.
+ *
+ * @tparam T Despecialised types to compare to
+ */
+template <template <typename...> typename... T>
+struct despecialised_any_of_rule {
+    static_assert((sizeof...(T) > 0),
+                  "Must be at least one despecialised type");
+
+    template <typename Current>
+    struct fn {
+        constexpr static bool value = boost::mp11::mp_or<
+            traits::is_specialisation_of<Current, T>...>::value;
+    };
+};
+}  // namespace common_rules
 
 /** A rule condition that checks that the type is despecialised unique in its
  * owner.
@@ -157,10 +190,7 @@ struct despecialised_unique_in_owner {
 
 /** A rule condition that checks a policy is unique up to the nearest mode or
  * root - but skips the owner.
- * 
- * @tparam ModeType Mode type
  */
-template <template <typename...> typename ModeType>
 struct policy_unique_from_owner_parent_to_mode_or_root {
     template <typename Policy, typename PathToThis>
     struct checker {
@@ -197,8 +227,9 @@ struct policy_unique_from_owner_parent_to_mode_or_root {
         if constexpr (NumParents > 1) {
             // Find a mode type, if there's one present we stop moving up through
             // the ancestors at that point, otherwise we go up to the root
-            constexpr auto mode_index =
-                algorithm::find_specialisation_v<ModeType, ParentTuple>;
+            constexpr auto mode_index = boost::mp11::mp_find_if<
+                ParentTuple,
+                node_category::is_generic_mode_like>::value;
             using start_type = boost::mp11::mp_eval_if_c<
                 mode_index == NumParents,
                 boost::mp11::mp_back<ParentTuple>,
@@ -218,35 +249,49 @@ struct policy_unique_from_owner_parent_to_mode_or_root {
     }
 };
 
+/** Defines the mapping of a parent ancestry index against an expected node
+ * type.
+ *
+ * @tparam Index Ancestry index, 0 being the owner
+ * @tparam ParentType Despecialised type expected to be at the index
+ */
+template <std::size_t Index, template <typename...> typename ParentType>
+struct parent_index_pair_type {
+    /** Ancestry index */
+    constexpr static std::size_t index = Index;
+
+    /** Functional type that does the despecialised comparison of @a ParentType
+     * against @a T.
+     *
+     * @tparam T Type to despecialised compare against
+     */
+    template <typename T>
+    using fn = traits::is_specialisation_of<T, ParentType>;
+};
+
 /** A rule condition that checks one of the parent index and type pairs given
  * in @a ParentIndexTypes matches @a Parents.
- * 
- * @a ParentIndexTypes must be a pack of pair-like types, where the first type
- * is a compile-time integer and the second is the parent type.  For the parent
- * index type, 0 represents the parent of @a T.  The parent type comparison will
- * be done despecialised. 
- * @tparam I Parent index
- * @tparam ParentTypes Parent types to check against
+ *
+ * @a ParentIndexTypes can have multiple entries against the same index, as long
+ * as one of the types is a match then the check will pass.
+ * @tparam ParentIndexTypes Pack of parent_index_pair_type
  */
 template <typename... ParentIndexTypes>
 struct parent_types {
     static_assert(sizeof...(ParentIndexTypes) > 0,
-                  "Must be at least one index/parent pair");
+                  "Must be at least one parent_index_pair_type");
 
     template <std::size_t MaxIndex>
     struct index_filter {
         template <typename Pair>
-        using fn = boost::mp11::mp_bool<(boost::mp11::mp_first<Pair>::value <
-                                         MaxIndex)>;
+        using fn = boost::mp11::mp_bool<(Pair::index < MaxIndex)>;
     };
 
     template <typename... Parents>
     struct checker {
         template <typename Pair>
-        using fn = traits::is_same_when_despecialised<
-            std::tuple_element_t<boost::mp11::mp_first<Pair>::value,
-                                 std::tuple<Parents...>>,
-            boost::mp11::mp_second<Pair>>;
+        using fn = typename Pair::template fn<
+            std::tuple_element_t<Pair::index, std::tuple<Parents...>>>;
     };
 
     template <typename T, typename... Parents>
@@ -347,24 +392,16 @@ struct child_must_not_have_policy {
     }
 };
 
-/** A rule condition that checks if there are more than one child of T that is a
- * mode, only one can be anonymous.
- *
- * @tparam ModeType Mode type
+/** A rule condition that checks if there are more than one child of @a T that 
+ * is a mode, only one can be anonymous.
  */
-template <template <typename...> typename ModeType>
 struct single_anonymous_mode {
-    template <typename Child>
-    using mode_filter = traits::is_specialisation_of<Child, ModeType>;
-
     template <typename T, typename...>
     constexpr static void check()
     {
-        using modes =
-            boost::mp11::mp_filter<mode_filter, typename T::children_type>;
-        constexpr auto num_anonymous = boost::mp11::mp_count_if<
-            modes,
-            boost::mp11::mp_not_fn<traits::has_long_name_method>::fn>::value;
+        constexpr auto num_anonymous = boost::mp11::mp_count_if<  //
+            typename T::children_type,
+            node_category::is_anonymous_mode_like>::value;
 
         static_assert((num_anonymous <= 1),
                       "Only one child mode can be anonymous");
@@ -464,18 +501,8 @@ struct aliased_must_not_be_in_owner {
  * The above is a long-winded way of saying that positional args must be at the
  * end of a child list for a node, no policies or other node types may appear
  * after.
- * @tparam PositionalArgTypes The types to be regarded as positional args
  */
-template <template <typename...> typename... PositionalArgTypes>
 struct positional_args_must_be_at_end {
-    static_assert((sizeof...(PositionalArgTypes)),
-                  "Must be at least one PositionalArgTypes");
-
-    template <typename T>
-    using pos_arg_checker = boost::mp11::mp_any_of<
-        std::tuple<traits::is_specialisation_of<T, PositionalArgTypes>...>,
-        boost::mp11::mp_to_bool>;
-
     template <typename T, typename...>
     constexpr static void check()
     {
@@ -485,8 +512,13 @@ struct positional_args_must_be_at_end {
         // Remap the child types to a tuple of booleans, where true means that
         // they are specialisations of one of the given positional arg types
         using children_type = typename T::children_type;
-        using is_pos_arg_map =
-            boost::mp11::mp_transform<pos_arg_checker, children_type>;
+        using is_pos_arg_map = boost::mp11::mp_transform_q<
+            boost::mp11::mp_bind<
+                boost::mp11::mp_to_bool,
+                boost::mp11::mp_bind<node_category::is_positional_arg_like,
+                                     boost::mp11::_1>>,
+
+            children_type>;
 
         constexpr auto first_pos_arg =
             boost::mp11::mp_find<is_pos_arg_map, boost::mp11::mp_true>::value;
@@ -504,18 +536,8 @@ struct positional_args_must_be_at_end {
 
 /** A rule condition that checks that positional arg @a T has a fixed argument
  * count if not at the end of the positional arg list.
- * 
- * @tparam PositionalArgTypes The types to be regarded as positional args
  */
-template <template <typename...> typename... PositionalArgTypes>
 struct positional_args_must_have_fixed_count_if_not_at_end {
-    static_assert((sizeof...(PositionalArgTypes)),
-                  "Must be at least one PositionalArgTypes");
-
-    template <typename T>
-    using pos_arg_checker = typename positional_args_must_be_at_end<
-        PositionalArgTypes...>::template pos_arg_checker<T>;
-
     template <typename T>
     struct fixed_count_checker {
         constexpr static bool f()
@@ -537,7 +559,9 @@ struct positional_args_must_have_fixed_count_if_not_at_end {
     constexpr static void check()
     {
         using children_type = typename T::children_type;
-        using pos_args = boost::mp11::mp_filter<pos_arg_checker, children_type>;
+        using pos_args =
+            boost::mp11::mp_filter<node_category::is_positional_arg_like,
+                                   children_type>;
 
         constexpr auto num_pos_args = std::tuple_size_v<pos_args>;
         if constexpr (num_pos_args > 0) {
@@ -669,85 +693,75 @@ struct anonymous_mode_cannot_have_mode_children {
 
 /** The default validator instance. */
 inline constexpr auto default_validator = validator<
-    rule<policy::long_name_t<S_("rule")>,
-         despecialised_unique_in_owner,
-         policy_unique_from_owner_parent_to_mode_or_root<mode_t>>,
-    rule<policy::short_name_t<traits::integral_constant<'a'>>,
-         despecialised_unique_in_owner,
-         policy_unique_from_owner_parent_to_mode_or_root<mode_t>>,
-    rule<policy::description_t<S_("rule")>,  //
+    // List the policies first as there are more of them and therefore more
+    // likely to be the target
+    // Name policy rules
+    rule_q<common_rules::despecialised_any_of_rule<policy::long_name_t,
+                                                   policy::short_name_t>,
+           despecialised_unique_in_owner,
+           policy_unique_from_owner_parent_to_mode_or_root>,
+    // Router
+    rule_q<common_rules::despecialised_any_of_rule<policy::router>,
+           despecialised_unique_in_owner,
+           parent_types<parent_index_pair_type<0, mode_t>,
+                        parent_index_pair_type<1, root_t>>>,
+    // Alias
+    rule_q<common_rules::despecialised_any_of_rule<policy::alias_t>,
+           despecialised_unique_in_owner,
+           aliased_must_not_be_in_owner>,
+    // Generic policy rule
+    rule<policy::is_policy,  //
          despecialised_unique_in_owner>,
-    rule<policy::router<std::less<>>,  //
-         parent_types<std::pair<traits::integral_constant<std::size_t{0}>,
-                                mode_t<flag_t<>>>,
-                      std::pair<traits::integral_constant<std::size_t{1}>,
-                                root_t<policy::validation::validator<>>>>>,
-    rule<policy::validation::validator<>,  //
-         despecialised_unique_in_owner>,
-    rule<policy::required_t<>,  //
-         despecialised_unique_in_owner>,
-    rule<policy::default_value<int>,  //
-         despecialised_unique_in_owner>,
-    rule<policy::custom_parser<int>,  //
-         despecialised_unique_in_owner>,
-    rule<policy::min_count_t<traits::integral_constant<std::size_t{1}>>,  //
-         despecialised_unique_in_owner>,
-    rule<policy::max_count_t<traits::integral_constant<std::size_t{1}>>,  //
-         despecialised_unique_in_owner>,
-    rule<policy::count_t<traits::integral_constant<std::size_t{1}>>,  //
-         despecialised_unique_in_owner>,
-    rule<policy::alias_t<policy::short_name_t<traits::integral_constant<'a'>>>,
-         aliased_must_not_be_in_owner,
-         despecialised_unique_in_owner>,
-    rule<policy::has_value_tokens_t,  //
-         despecialised_unique_in_owner>,
-    rule<policy::has_contiguous_value_tokens_t,  //
-         despecialised_unique_in_owner>,
-    rule<flag_t<>,  //
-         must_not_have_policy<policy::required_t>,
-         must_not_have_policy<policy::custom_parser>,
-         must_not_have_policy<policy::validation::validator>,
-         at_least_one_of_policies<policy::long_name_t, policy::short_name_t>,
-         must_have_policy<policy::description_t>>,
-    rule<arg_t<int>,  //
-         must_not_have_policy<policy::validation::validator>,
-         at_least_one_of_policies<policy::long_name_t, policy::short_name_t>,
-         one_of_policies_if_parent_is_not_root<policy::required_t,
-                                               policy::default_value,
-                                               policy::alias_t>,
-         must_have_policy<policy::description_t>>,
-    rule<positional_arg_t<std::vector<int>>,  //
-         must_not_have_policy<policy::validation::validator>,
-         must_not_have_policy<policy::short_name_t>,
-         must_not_have_policy<policy::required_t>,
-         must_not_have_policy<policy::default_value>,
-         must_not_have_policy<policy::alias_t>,
-         must_not_have_policy<policy::router>,  // Cannot be top-level now
-         must_have_policy<policy::long_name_t>,
-         must_have_policy<policy::description_t>,
-         validate_counts,
-         cannot_have_fixed_count_of_zero,
-         if_count_not_one_value_type_must_support_push_back>,
-    rule<mode_t<flag_t<>>,  //
-         must_not_have_policy<policy::short_name_t>,
-         must_not_have_policy<policy::custom_parser>,
-         must_not_have_policy<policy::default_value>,
-         positional_args_must_be_at_end<positional_arg_t>,
-         positional_args_must_have_fixed_count_if_not_at_end<positional_arg_t>,
-         child_mode_must_be_named,
-         mode_router_requirements<policy::router>,
-         anonymous_mode_cannot_have_mode_children,
-         parent_types<std::pair<traits::integral_constant<std::size_t{0}>,
-                                root_t<policy::validation::validator<>>>,
-                      std::pair<traits::integral_constant<std::size_t{0}>,
-                                mode_t<flag_t<>>>>>,
-    rule<root_t<policy::validation::validator<>>,  //
-         must_have_policy<policy::validation::validator>,
-         min_child_count<1>,
-         child_must_have_policy<policy::router>,
-         child_must_not_have_policy<policy::required_t>,
-         child_must_not_have_policy<policy::alias_t>,
-         single_anonymous_mode<mode_t>>>{};
+
+    // Tree nodes
+    // Flag
+    rule_q<common_rules::despecialised_any_of_rule<flag_t>,
+           must_not_have_policy<policy::required_t>,
+           must_not_have_policy<policy::custom_parser>,
+           must_not_have_policy<policy::validation::validator>,
+           at_least_one_of_policies<policy::long_name_t, policy::short_name_t>,
+           must_have_policy<policy::description_t>>,
+    // Arg
+    rule_q<common_rules::despecialised_any_of_rule<arg_t>,
+           must_not_have_policy<policy::validation::validator>,
+           at_least_one_of_policies<policy::long_name_t, policy::short_name_t>,
+           one_of_policies_if_parent_is_not_root<policy::required_t,
+                                                 policy::default_value,
+                                                 policy::alias_t>,
+           must_have_policy<policy::description_t>>,
+    // Positional arg
+    rule_q<common_rules::despecialised_any_of_rule<positional_arg_t>,
+           must_not_have_policy<policy::validation::validator>,
+           must_not_have_policy<policy::short_name_t>,
+           must_not_have_policy<policy::required_t>,
+           must_not_have_policy<policy::default_value>,
+           must_not_have_policy<policy::alias_t>,
+           must_not_have_policy<policy::router>,  // Cannot be top-level now
+           must_have_policy<policy::long_name_t>,
+           must_have_policy<policy::description_t>,
+           validate_counts,
+           cannot_have_fixed_count_of_zero,
+           if_count_not_one_value_type_must_support_push_back>,
+    // Mode
+    rule_q<common_rules::despecialised_any_of_rule<mode_t>,
+           must_not_have_policy<policy::short_name_t>,
+           must_not_have_policy<policy::custom_parser>,
+           must_not_have_policy<policy::default_value>,
+           positional_args_must_be_at_end,
+           positional_args_must_have_fixed_count_if_not_at_end,
+           child_mode_must_be_named,
+           mode_router_requirements<policy::router>,
+           anonymous_mode_cannot_have_mode_children,
+           parent_types<parent_index_pair_type<0, root_t>,
+                        parent_index_pair_type<0, mode_t>>>,
+    // Root
+    rule_q<common_rules::despecialised_any_of_rule<root_t>,
+           must_have_policy<policy::validation::validator>,
+           min_child_count<1>,
+           child_must_have_policy<policy::router>,
+           child_must_not_have_policy<policy::required_t>,
+           child_must_not_have_policy<policy::alias_t>,
+           single_anonymous_mode>>{};
 }  // namespace validation
 }  // namespace policy
 }  // namespace arg_router
