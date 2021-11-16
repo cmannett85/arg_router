@@ -3,6 +3,7 @@
 #include "arg_router/token_type.hpp"
 
 #include <boost/mp11/algorithm.hpp>
+#include <boost/mp11/bind.hpp>
 #include <boost/mp11/utility.hpp>
 
 #include <algorithm>
