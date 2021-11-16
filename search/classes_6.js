@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['list_265',['list',['../classarg__router_1_1list.html',1,'arg_router']]],
-  ['long_5fname_5ft_266',['long_name_t',['../classarg__router_1_1policy_1_1long__name__t.html',1,'arg_router::policy']]]
+  ['list_271',['list',['../classarg__router_1_1list.html',1,'arg_router']]],
+  ['long_5fname_5ft_272',['long_name_t',['../classarg__router_1_1policy_1_1long__name__t.html',1,'arg_router::policy']]]
 ];

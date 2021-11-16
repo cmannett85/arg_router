@@ -94,7 +94,7 @@ Static Public Member Functions</h2></td></tr>
 class arg_router::policy::validation::validator&lt; Rules &gt;</h3>
 
 <p>A policy that provides validation checking against a parse tree root.</p>
-<p>Unless you have created a custom tree component, there is no need to specify this on the root as it will automatically use the standard_validator if one is not specified.</p>
+<p>The rules are checked in order, so where there is overlap (i.e. a policy or <a class="el" href="classarg__router_1_1tree__node.html">tree_node</a> could be valid in multiple entries) be sure to list the more specific rule first.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Rules</td><td>A pack of rule types </td></tr>
@@ -119,7 +119,7 @@ template&lt;typename... Rules&gt; </div>
 </div><div class="memdoc">
 <p>Validation rules. </p>
 
-<p class="definition">Definition at line <a class="el" href="validator_8hpp_source.html#l00081">81</a> of file <a class="el" href="validator_8hpp_source.html">validator.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="validator_8hpp_source.html#l00102">102</a> of file <a class="el" href="validator_8hpp_source.html">validator.hpp</a>.</p>
 
 </div>
 </div>
@@ -151,7 +151,7 @@ template&lt;typename Root &gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Trigger the validation.</p>
-<p>A <code>static_assert</code> will fail will a useful(ish) error message if validation fails. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
+<p>A <code>static_assert</code> will fail with a useful(ish) error message if validation fails. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Root</td><td>Root type to validate </td></tr>
   </table>
@@ -159,7 +159,7 @@ template&lt;typename Root &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>void </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="validator_8hpp_source.html#l00133">133</a> of file <a class="el" href="validator_8hpp_source.html">validator.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="validator_8hpp_source.html#l00144">144</a> of file <a class="el" href="validator_8hpp_source.html">validator.hpp</a>.</p>
 
 </div>
 </div>
