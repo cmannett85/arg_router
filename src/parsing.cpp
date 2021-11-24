@@ -14,12 +14,13 @@ parsing::token_list parsing::expand_arguments(int argc, const char* argv[])
         const auto token = std::string_view{argv[i]};
         const auto [prefix, stripped] = parsing::get_token_type(token);
 
-        if (prefix == parsing::prefix_type::SHORT && token.size() > 2) {
-            for (auto c : stripped) {
-                result.emplace_back(c);
+        if (prefix == parsing::prefix_type::SHORT) {
+            for (auto i = 0u; i < stripped.size(); ++i) {
+                result.emplace_back(prefix,
+                                    std::string_view{&(stripped[i]), 1});
             }
         } else {
-            result.emplace_back(prefix, std::move(stripped));
+            result.emplace_back(prefix, stripped);
         }
     }
 

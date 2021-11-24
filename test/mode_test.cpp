@@ -47,10 +47,10 @@ BOOST_AUTO_TEST_CASE(anonymous_triple_flag_match_test)
     result = m.match({parsing::prefix_type::LONG, "foo"});
     BOOST_CHECK(result);
 
-    result = m.match('b');
+    result = m.match({parsing::prefix_type::SHORT, "b"});
     BOOST_CHECK(result);
 
-    result = m.match('g');
+    result = m.match({parsing::prefix_type::SHORT, "g"});
     BOOST_CHECK(!result);
 }
 
@@ -81,7 +81,7 @@ BOOST_AUTO_TEST_CASE(named_triple_flag_match_test)
     auto result = m.match({parsing::prefix_type::NONE, "my-mode"});
     BOOST_CHECK(result);
 
-    result = m.match('b');
+    result = m.match({parsing::prefix_type::SHORT, "b"});
     BOOST_CHECK(!result);
 }
 
@@ -92,7 +92,7 @@ BOOST_AUTO_TEST_CASE(anonymous_empty_match_test)
     auto result = m.match({parsing::prefix_type::LONG, "my-mode"});
     BOOST_CHECK(!result);
 
-    result = m.match('b');
+    result = m.match({parsing::prefix_type::SHORT, "b"});
     BOOST_CHECK(!result);
 }
 
@@ -103,7 +103,7 @@ BOOST_AUTO_TEST_CASE(named_empty_match_test)
     auto result = m.match({parsing::prefix_type::NONE, "my-mode"});
     BOOST_CHECK(result);
 
-    result = m.match('b');
+    result = m.match({parsing::prefix_type::SHORT, "b"});
     BOOST_CHECK(!result);
 }
 
@@ -123,10 +123,10 @@ BOOST_AUTO_TEST_CASE(anonymous_triple_flag_single_list_match_test)
     result = m.match({parsing::prefix_type::LONG, "foo"});
     BOOST_CHECK(result);
 
-    result = m.match('b');
+    result = m.match({parsing::prefix_type::SHORT, "b"});
     BOOST_CHECK(result);
 
-    result = m.match('g');
+    result = m.match({parsing::prefix_type::SHORT, "g"});
     BOOST_CHECK(!result);
 }
 
@@ -144,7 +144,7 @@ BOOST_AUTO_TEST_CASE(named_triple_flag_double_list_match_test)
     auto result = m.match({parsing::prefix_type::NONE, "my-mode"});
     BOOST_CHECK(result);
 
-    result = m.match('b');
+    result = m.match({parsing::prefix_type::SHORT, "b"});
     BOOST_CHECK(!result);
 }
 

@@ -40,8 +40,8 @@ BOOST_AUTO_TEST_CASE(flag_default_match_test)
     {
         const auto f =
             flag(policy::long_name<S_("hello")>, policy::short_name<'H'>);
-        const auto result =
-            parsing::default_match<std::decay_t<decltype(f)>>('H');
+        const auto result = parsing::default_match<std::decay_t<decltype(f)>>(
+            {parsing::prefix_type::SHORT, "H"});
         BOOST_CHECK(result);
     }
 
@@ -69,15 +69,15 @@ BOOST_AUTO_TEST_CASE(flag_default_match_test)
 
     {
         const auto f = flag(policy::short_name<'H'>);
-        const auto result =
-            parsing::default_match<std::decay_t<decltype(f)>>('H');
+        const auto result = parsing::default_match<std::decay_t<decltype(f)>>(
+            {parsing::prefix_type::SHORT, "H"});
         BOOST_CHECK(result);
     }
 
     {
         const auto f = flag(policy::short_name<'H'>);
-        const auto result =
-            parsing::default_match<std::decay_t<decltype(f)>>('a');
+        const auto result = parsing::default_match<std::decay_t<decltype(f)>>(
+            {parsing::prefix_type::SHORT, "a"});
         BOOST_CHECK(!result);
     }
 }
@@ -378,9 +378,10 @@ BOOST_AUTO_TEST_CASE(find_target_node_non_nested_test)
             std::tuple{
                 parsing::token_list{{parsing::prefix_type::NONE, "mode1"},
                                     {parsing::prefix_type::LONG, "flag2"},
-                                    't'},
+                                    {parsing::prefix_type::SHORT, "t"}},
                 "mode1",
-                parsing::token_list{{parsing::prefix_type::LONG, "flag2"}, 't'},
+                parsing::token_list{{parsing::prefix_type::LONG, "flag2"},
+                                    {parsing::prefix_type::SHORT, "t"}},
                 ""},
             std::tuple{
                 parsing::token_list{{parsing::prefix_type::NONE, "mode2"},
@@ -401,9 +402,10 @@ BOOST_AUTO_TEST_CASE(find_target_node_non_nested_test)
             std::tuple{
                 parsing::token_list{{parsing::prefix_type::NONE, "mode1"},
                                     {parsing::prefix_type::LONG, "foo"},
-                                    't'},
+                                    {parsing::prefix_type::SHORT, "t"}},
                 "mode1",
-                parsing::token_list{{parsing::prefix_type::LONG, "foo"}, 't'},
+                parsing::token_list{{parsing::prefix_type::LONG, "foo"},
+                                    {parsing::prefix_type::SHORT, "t"}},
                 ""},
             std::tuple{parsing::token_list{},
                        "mode1",
@@ -481,9 +483,10 @@ BOOST_AUTO_TEST_CASE(find_target_node_anonymous_mode_test)
             std::tuple{
                 parsing::token_list{{parsing::prefix_type::NONE, "mode1"},
                                     {parsing::prefix_type::LONG, "flag2"},
-                                    't'},
+                                    {parsing::prefix_type::SHORT, "t"}},
                 "mode1",
-                parsing::token_list{{parsing::prefix_type::LONG, "flag2"}, 't'},
+                parsing::token_list{{parsing::prefix_type::LONG, "flag2"},
+                                    {parsing::prefix_type::SHORT, "t"}},
                 ""},
             std::tuple{
                 parsing::token_list{{parsing::prefix_type::LONG, "flag1"}},
@@ -583,15 +586,15 @@ BOOST_AUTO_TEST_CASE(find_target_node_nested_mode_test)
                     ""},
          std::tuple{parsing::token_list{{parsing::prefix_type::NONE, "mode1"},
                                         {parsing::prefix_type::NONE, "mode2"},
-                                        'b'},
+                                        {parsing::prefix_type::SHORT, "b"}},
                     "mode2",
-                    parsing::token_list{'b'},
+                    parsing::token_list{{parsing::prefix_type::SHORT, "b"}},
                     ""},
          std::tuple{parsing::token_list{{parsing::prefix_type::NONE, "mode1"},
                                         {parsing::prefix_type::NONE, "mode3"},
-                                        'b'},
+                                        {parsing::prefix_type::SHORT, "b"}},
                     "mode3",
-                    parsing::token_list{'b'},
+                    parsing::token_list{{parsing::prefix_type::SHORT, "b"}},
                     ""},
          std::tuple{
              parsing::token_list{{parsing::prefix_type::NONE, "mode1"},

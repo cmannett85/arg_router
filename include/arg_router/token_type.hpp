@@ -2,6 +2,7 @@
 
 #include <deque>
 #include <string>
+#include <string_view>
 
 namespace arg_router
 {
@@ -28,13 +29,7 @@ struct token_type {
      * @param p Prefix type
      * @param n Token name, stripped of prefix (if any)
      */
-    token_type(prefix_type p, std::string n) : prefix{p}, name{std::move(n)} {}
-
-    /** Short from name constructor.
-     *
-     * @param n Token name, stripped of prefix (if any)
-     */
-    token_type(char n) : prefix{prefix_type::SHORT}, name{n} {}
+    token_type(prefix_type p, std::string_view n) : prefix{p}, name{n} {}
 
     /** Equality operator.
      *
@@ -53,8 +48,8 @@ struct token_type {
      */
     bool operator!=(const token_type& other) const { return !(*this == other); }
 
-    prefix_type prefix;  ///< Prefix type
-    std::string name;    ///< Token name, stripped of prefix (if any)
+    prefix_type prefix;     ///< Prefix type
+    std::string_view name;  ///< Token name, stripped of prefix (if any)
 };
 
 /** Creates a string representation of @a token, it effectively recreates the
