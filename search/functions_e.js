@@ -1,7 +1,7 @@
 var searchData=
 [
   ['to_5fstring_358',['to_string',['../namespacearg__router_1_1parsing.html#ae17bf2873d6146f78dbc777747b29466',1,'arg_router::parsing::to_string(prefix_type prefix)'],['../namespacearg__router_1_1parsing.html#a6ef459c26e34d0003b3393d4bef7898b',1,'arg_router::parsing::to_string(const token_type &amp;token)']]],
-  ['token_5ftype_359',['token_type',['../structarg__router_1_1parsing_1_1token__type.html#aabbd5bc9f46fefbc81fb21ad7b2c24d0',1,'arg_router::parsing::token_type::token_type(prefix_type p, std::string n)'],['../structarg__router_1_1parsing_1_1token__type.html#a240ca325f6abf9879023399fea719f50',1,'arg_router::parsing::token_type::token_type(char n)']]],
+  ['token_5ftype_359',['token_type',['../structarg__router_1_1parsing_1_1token__type.html#ae04dc8a80865f0a889239512b6ce6953',1,'arg_router::parsing::token_type']]],
   ['tree_5fnode_360',['tree_node',['../classarg__router_1_1tree__node.html#a48cb8499032eb97d0b69367956780d1a',1,'arg_router::tree_node']]],
   ['tree_5frecursor_361',['tree_recursor',['../namespacearg__router_1_1utility.html#a8c2771daff65998317f1853a68d3453b',1,'arg_router::utility::tree_recursor()'],['../namespacearg__router_1_1utility.html#a5cb15613aecdb3e4b2c497679da99e26',1,'arg_router::utility::tree_recursor()']]],
   ['tuple_5ffilter_5fand_5fconstruct_362',['tuple_filter_and_construct',['../namespacearg__router_1_1algorithm.html#aae8cba8d99b55570a452492ff1ac564d',1,'arg_router::algorithm']]],
