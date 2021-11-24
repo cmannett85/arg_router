@@ -16,7 +16,7 @@ std::string_view parsing::to_string(prefix_type prefix)
 
 std::string parsing::to_string(const token_type& token)
 {
-    return to_string(token.prefix) + token.name;
+    return std::string{to_string(token.prefix)} + token.name;
 }
 
 parsing::token_type parsing::get_token_type(std::string_view token)
@@ -25,11 +25,11 @@ parsing::token_type parsing::get_token_type(std::string_view token)
 
     if (token.substr(0, long_prefix.size()) == long_prefix) {
         token.remove_prefix(long_prefix.size());
-        return {prefix_type::LONG, std::string{token.data(), token.size()}};
+        return {prefix_type::LONG, token};
     } else if (token.substr(0, short_prefix.size()) == short_prefix) {
         token.remove_prefix(short_prefix.size());
-        return {prefix_type::SHORT, std::string{token.data(), token.size()}};
+        return {prefix_type::SHORT, token};
     } else {
-        return {prefix_type::NONE, std::string{token.data(), token.size()}};
+        return {prefix_type::NONE, token};
     }
 }

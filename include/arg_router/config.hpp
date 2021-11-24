@@ -16,6 +16,9 @@ constexpr static auto long_prefix = std::string_view{"--"};
 /** Short form argument prefix. */
 constexpr static auto short_prefix = std::string_view{"-"};
 
+static_assert(long_prefix.size() > short_prefix.size(),
+              "Long prefix must be longer than short prefix");
+
 /** Returns the L1 cache size.
  *
  * @return L1 cache size in bytes

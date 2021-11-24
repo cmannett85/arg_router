@@ -85,9 +85,9 @@ template <typename Node>
 token_type node_token_type()
 {
     if constexpr (traits::has_long_name_method_v<Node>) {
-        return {prefix_type::LONG, std::string{Node::long_name()}};
+        return {prefix_type::LONG, Node::long_name()};
     } else if constexpr (traits::has_short_name_method_v<Node>) {
-        return {prefix_type::SHORT, std::string{Node::short_name()}};
+        return {prefix_type::SHORT, Node::short_name()};
     } else {
         static_assert(traits::always_false_v<Node>,
                       "Node does not have a name");
