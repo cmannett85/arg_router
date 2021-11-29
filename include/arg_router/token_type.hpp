@@ -1,8 +1,8 @@
 #pragma once
 
-#include <deque>
 #include <string>
 #include <string_view>
+#include <vector>
 
 namespace arg_router
 {
@@ -61,7 +61,7 @@ struct token_type {
 std::string to_string(const token_type& token);
 
 /** List of tokens. */
-using token_list = std::deque<token_type>;
+using token_list = std::vector<token_type>;
 
 /** Analyse @a token and return a pair consisting of the prefix type and
  * @a token stripped of the token.

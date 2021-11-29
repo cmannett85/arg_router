@@ -49,6 +49,7 @@ set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/long_name.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/max_count.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/min_count.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/no_result_value.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/policy.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/required.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/router.hpp
@@ -61,6 +62,7 @@ set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/tree_node.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/tree_node_fwd.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/compile_time_string.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/span.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/string_view_ops.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/tree_recursor.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/tuple_iterator.hpp

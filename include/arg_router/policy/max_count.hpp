@@ -1,7 +1,10 @@
 #pragma once
 
 #include "arg_router/policy/policy.hpp"
+#include "arg_router/token_type.hpp"
 #include "arg_router/traits.hpp"
+
+#include <boost/core/ignore_unused.hpp>
 
 namespace arg_router
 {
@@ -28,6 +31,26 @@ class max_count_t
 public:
     /** @return Maximum count value. */
     constexpr static std::size_t maximum_count() { return T::value; }
+
+protected:
+    /** Limit the number entries in @a view to the first maximum_count().
+     * 
+     * @tparam Parents Pack of parent tree nodes in ascending ancestry order
+     * @param tokens Token list as received from the owning node, this is not
+     * modified
+     * @param view The tokens to be used in the remaining parse phases
+     * @param parents Parents instances pack
+     */
+    template <typename... Parents>
+    void pre_parse_phase(parsing::token_list& tokens,
+                         utility::span<parsing::token_type>& view,
+                         const Parents&... parents) const
+    {
+        boost::ignore_unused(tokens, parents...);
+        if (view.size() > maximum_count()) {
+            view = view.subspan(0, maximum_count());
+        }
+    }
 };
 
 /** Constant variable helper.

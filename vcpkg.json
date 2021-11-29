@@ -4,6 +4,7 @@
   "dependencies": [
     "boost-mp11",
     "boost-process",
-    "boost-test"
+    "boost-test",
+    "span-lite"
   ]
 }

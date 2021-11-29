@@ -38,6 +38,20 @@ public:
         f_(std::forward<Args>(args)...);
     }
 
+protected:
+    /** Executes the result of the parsed command line arguments.
+     * 
+     * @tparam Args Argument types, must be implicitly convertible to the types
+     * in callable_args_type, in the order and number specified by 
+     * callable_args_type
+     * @param args Argument values
+     */
+    template <typename... Args>
+    void routing_phase(Args&&... args) const
+    {
+        f_(std::forward<Args>(args)...);
+    }
+
 private:
     Fn f_;
 };

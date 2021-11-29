@@ -179,7 +179,7 @@ private:
         if constexpr (policy::has_value_tokens_v<Node>) {
             // Drop the token if present, the value follows
             if constexpr (traits::has_match_method_v<Node>) {
-                tokens.pop_front();
+                tokens.erase(tokens.begin());
             }
             auto value = parse_token_argument(node, tokens.front().name);
 
@@ -196,7 +196,7 @@ private:
                 if constexpr (policy::has_contiguous_value_tokens_v<Node>) {
                     const auto count = contiguous_token_count<Node>(tokens);
                     for (auto i = 1u; i < count; ++i) {
-                        tokens.pop_front();
+                        tokens.erase(tokens.begin());
                         value = parse_token_argument(node, tokens.front().name);
                         arg->push_back(std::move(value));
                     }
@@ -228,7 +228,7 @@ private:
                           "Unhandled node category");
         }
 
-        tokens.pop_front();
+        tokens.erase(tokens.begin());
     }
 
     template <typename Node>
