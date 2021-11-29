@@ -1,6 +1,9 @@
 var searchData=
 [
-  ['unpack_5fand_5fderive_299',['unpack_and_derive',['../classarg__router_1_1traits_1_1unpack__and__derive.html',1,'arg_router::traits']]],
-  ['unpack_5fand_5fderive_3c_20boost_3a_3amp11_3a_3amp_5ffilter_3c_20policy_3a_3ais_5fpolicy_2c_20std_3a_3atuple_3c_20params_2e_2e_2e_20_3e_20_3e_20_3e_300',['unpack_and_derive&lt; boost::mp11::mp_filter&lt; policy::is_policy, std::tuple&lt; Params... &gt; &gt; &gt;',['../classarg__router_1_1traits_1_1unpack__and__derive.html',1,'arg_router::traits']]],
-  ['unzip_301',['unzip',['../structarg__router_1_1algorithm_1_1unzip.html',1,'arg_router::algorithm']]]
+  ['token_5ftype_320',['token_type',['../structarg__router_1_1parsing_1_1token__type.html',1,'arg_router::parsing']]],
+  ['tree_5fnode_321',['tree_node',['../classarg__router_1_1tree__node.html',1,'arg_router']]],
+  ['tree_5fnode_3c_20params_2e_2e_2e_20_3e_322',['tree_node&lt; Params... &gt;',['../classarg__router_1_1tree__node.html',1,'arg_router']]],
+  ['tree_5fnode_3c_20policy_3a_3adefault_5fvalue_3c_20bool_20_3e_2c_20policy_3a_3acount_5ft_3c_20std_3a_3aintegral_5fconstant_3c_20std_3a_3asize_5ft_2c_200_20_3e_20_3e_2c_20policies_2e_2e_2e_20_3e_323',['tree_node&lt; policy::default_value&lt; bool &gt;, policy::count_t&lt; std::integral_constant&lt; std::size_t, 0 &gt; &gt;, Policies... &gt;',['../classarg__router_1_1tree__node.html',1,'arg_router']]],
+  ['tree_5fnode_3c_20policy_3a_3ahas_5fcontiguous_5fvalue_5ftokens_5ft_2c_20policies_2e_2e_2e_20_3e_324',['tree_node&lt; policy::has_contiguous_value_tokens_t, Policies... &gt;',['../classarg__router_1_1tree__node.html',1,'arg_router']]],
+  ['tree_5fnode_3c_20policy_3a_3ahas_5fvalue_5ftokens_5ft_2c_20policy_3a_3acount_5ft_3c_20std_3a_3aintegral_5fconstant_3c_20std_3a_3asize_5ft_2c_201_20_3e_20_3e_2c_20policies_2e_2e_2e_20_3e_325',['tree_node&lt; policy::has_value_tokens_t, policy::count_t&lt; std::integral_constant&lt; std::size_t, 1 &gt; &gt;, Policies... &gt;',['../classarg__router_1_1tree__node.html',1,'arg_router']]]
 ];

@@ -99,7 +99,9 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1min__count__t.html">min_count_t</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structarg__router_1_1policy_1_1required__t.html">required_t</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structarg__router_1_1policy_1_1no__result__value.html">no_result_value</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1required__t.html">required_t</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1router.html">router</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -118,8 +120,11 @@ Typedefs</h2></td></tr>
 <tr class="memitem:af71d754d9e9e625b098bb6c80a82eae6"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:af71d754d9e9e625b098bb6c80a82eae6"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#af71d754d9e9e625b098bb6c80a82eae6">has_value_tokens</a> = std::is_base_of&lt; <a class="el" href="namespacearg__router_1_1policy.html#aca0a098fd684cd70d8f8e8f457357e92">has_value_tokens_t</a>, T &gt;</td></tr>
 <tr class="separator:af71d754d9e9e625b098bb6c80a82eae6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a751f6f886a5f7363f2ea24812738f2a7"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a751f6f886a5f7363f2ea24812738f2a7"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#a751f6f886a5f7363f2ea24812738f2a7">has_result_value</a> = std::is_base_of&lt; <a class="el" href="structarg__router_1_1policy_1_1no__result__value.html">no_result_value</a>, T &gt;</td></tr>
+<tr class="separator:a751f6f886a5f7363f2ea24812738f2a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a408a1ac19cbc1f4ad69630f965f976d8"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a408a1ac19cbc1f4ad69630f965f976d8"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#a408a1ac19cbc1f4ad69630f965f976d8">is_required</a> = std::is_base_of&lt; <a class="el" href="structarg__router_1_1policy_1_1required__t.html">required_t</a>&lt;&gt;, T &gt;</td></tr>
+<tr class="memitem:a408a1ac19cbc1f4ad69630f965f976d8"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#a408a1ac19cbc1f4ad69630f965f976d8">is_required</a> = std::is_base_of&lt; <a class="el" href="classarg__router_1_1policy_1_1required__t.html">required_t</a>&lt;&gt;, T &gt;</td></tr>
 <tr class="separator:a408a1ac19cbc1f4ad69630f965f976d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
@@ -151,13 +156,16 @@ Variables</h2></td></tr>
 <tr class="memitem:af48ba27f975e36205df8a6a1ceb07be2"><td class="memTemplParams" colspan="2">template&lt;std::size_t Value&gt; </td></tr>
 <tr class="memitem:af48ba27f975e36205df8a6a1ceb07be2"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#af48ba27f975e36205df8a6a1ceb07be2">min_count</a> = <a class="el" href="classarg__router_1_1policy_1_1min__count__t.html">min_count_t</a>&lt;<a class="el" href="namespacearg__router_1_1traits.html#ab335cfad0ef1eeed3ad34d06694b0244">traits::integral_constant</a>&lt;Value&gt;&gt;{}</td></tr>
 <tr class="separator:af48ba27f975e36205df8a6a1ceb07be2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd4d00bd4273555855b86f8ec69fb015"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:acd4d00bd4273555855b86f8ec69fb015"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#acd4d00bd4273555855b86f8ec69fb015">has_result_value_v</a> = <a class="el" href="namespacearg__router_1_1policy.html#a751f6f886a5f7363f2ea24812738f2a7">has_result_value</a>&lt;T&gt;::value</td></tr>
+<tr class="separator:acd4d00bd4273555855b86f8ec69fb015"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8ac6bf312e1c3d038762a575db938b88"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a8ac6bf312e1c3d038762a575db938b88"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#a8ac6bf312e1c3d038762a575db938b88">is_policy_v</a> = <a class="el" href="structarg__router_1_1policy_1_1is__policy.html">is_policy</a>&lt;T&gt;::value</td></tr>
 <tr class="separator:a8ac6bf312e1c3d038762a575db938b88"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab0b6b4c0174a2ba257d4431bda7241eb"><td class="memTemplParams" colspan="2">template&lt;typename Tuple &gt; </td></tr>
 <tr class="memitem:ab0b6b4c0174a2ba257d4431bda7241eb"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#ab0b6b4c0174a2ba257d4431bda7241eb">is_all_policies_v</a> = <a class="el" href="structarg__router_1_1policy_1_1is__all__policies.html">is_all_policies</a>&lt;Tuple&gt;::value</td></tr>
 <tr class="separator:ab0b6b4c0174a2ba257d4431bda7241eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0960d76b9e22cfed95ba19a463384d3c"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#a0960d76b9e22cfed95ba19a463384d3c">required</a> = <a class="el" href="structarg__router_1_1policy_1_1required__t.html">required_t</a>&lt;&gt;{}</td></tr>
+<tr class="memitem:a0960d76b9e22cfed95ba19a463384d3c"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#a0960d76b9e22cfed95ba19a463384d3c">required</a> = <a class="el" href="classarg__router_1_1policy_1_1required__t.html">required_t</a>&lt;&gt;{}</td></tr>
 <tr class="separator:a0960d76b9e22cfed95ba19a463384d3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1bdf5a24cb1daf8f2cf2996cf6c87b82"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a1bdf5a24cb1daf8f2cf2996cf6c87b82"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#a1bdf5a24cb1daf8f2cf2996cf6c87b82">is_required_v</a> = <a class="el" href="namespacearg__router_1_1policy.html#a408a1ac19cbc1f4ad69630f965f976d8">is_required</a>&lt;T&gt;::value</td></tr>
@@ -213,6 +221,31 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
+<a id="a751f6f886a5f7363f2ea24812738f2a7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a751f6f886a5f7363f2ea24812738f2a7">&#9670;&nbsp;</a></span>has_result_value</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="namespacearg__router_1_1policy.html#a751f6f886a5f7363f2ea24812738f2a7">arg_router::policy::has_result_value</a> = typedef std::is_base_of&lt;<a class="el" href="structarg__router_1_1policy_1_1no__result__value.html">no_result_value</a>, T&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Evaluates to true if <em>T</em> uses <a class="el" href="structarg__router_1_1policy_1_1no__result__value.html">no_result_value</a>.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>Type to test </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="no__result__value_8hpp_source.html#l00022">22</a> of file <a class="el" href="no__result__value_8hpp_source.html">no_result_value.hpp</a>.</p>
+
+</div>
+</div>
 <a id="af71d754d9e9e625b098bb6c80a82eae6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af71d754d9e9e625b098bb6c80a82eae6">&#9670;&nbsp;</a></span>has_value_tokens</h2>
 
@@ -265,7 +298,7 @@ template&lt;typename T &gt; </div>
 template&lt;typename T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="namespacearg__router_1_1policy.html#a408a1ac19cbc1f4ad69630f965f976d8">arg_router::policy::is_required</a> = typedef std::is_base_of&lt;<a class="el" href="structarg__router_1_1policy_1_1required__t.html">required_t</a>&lt;&gt;, T&gt;</td>
+          <td class="memname">using <a class="el" href="namespacearg__router_1_1policy.html#a408a1ac19cbc1f4ad69630f965f976d8">arg_router::policy::is_required</a> = typedef std::is_base_of&lt;<a class="el" href="classarg__router_1_1policy_1_1required__t.html">required_t</a>&lt;&gt;, T&gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -277,7 +310,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="required_8hpp_source.html#l00024">24</a> of file <a class="el" href="required_8hpp_source.html">required.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="required_8hpp_source.html#l00054">54</a> of file <a class="el" href="required_8hpp_source.html">required.hpp</a>.</p>
 
 </div>
 </div>
@@ -322,7 +355,7 @@ template&lt;typename... AliasedPolicies&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Alias instance </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="alias_8hpp_source.html#l00106">106</a> of file <a class="el" href="alias_8hpp_source.html">alias.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="alias_8hpp_source.html#l00199">199</a> of file <a class="el" href="alias_8hpp_source.html">alias.hpp</a>.</p>
 
 </div>
 </div>
@@ -425,6 +458,39 @@ template&lt;typename T &gt; </div>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="has__contiguous__value__tokens_8hpp_source.html#l00039">39</a> of file <a class="el" href="has__contiguous__value__tokens_8hpp_source.html">has_contiguous_value_tokens.hpp</a>.</p>
+
+</div>
+</div>
+<a id="acd4d00bd4273555855b86f8ec69fb015"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acd4d00bd4273555855b86f8ec69fb015">&#9670;&nbsp;</a></span>has_result_value_v</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr bool arg_router::policy::has_result_value_v = <a class="el" href="namespacearg__router_1_1policy.html#a751f6f886a5f7363f2ea24812738f2a7">has_result_value</a>&lt;T&gt;::value</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Helper variable for has_result_value.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>Type to test </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="no__result__value_8hpp_source.html#l00029">29</a> of file <a class="el" href="no__result__value_8hpp_source.html">no_result_value.hpp</a>.</p>
 
 </div>
 </div>
@@ -556,7 +622,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="required_8hpp_source.html#l00031">31</a> of file <a class="el" href="required_8hpp_source.html">required.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="required_8hpp_source.html#l00061">61</a> of file <a class="el" href="required_8hpp_source.html">required.hpp</a>.</p>
 
 </div>
 </div>
@@ -622,7 +688,7 @@ template&lt;std::size_t Value&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="max__count_8hpp_source.html#l00038">38</a> of file <a class="el" href="max__count_8hpp_source.html">max_count.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="max__count_8hpp_source.html#l00061">61</a> of file <a class="el" href="max__count_8hpp_source.html">max_count.hpp</a>.</p>
 
 </div>
 </div>
@@ -655,7 +721,7 @@ template&lt;std::size_t Value&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="min__count_8hpp_source.html#l00038">38</a> of file <a class="el" href="min__count_8hpp_source.html">min_count.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="min__count_8hpp_source.html#l00070">70</a> of file <a class="el" href="min__count_8hpp_source.html">min_count.hpp</a>.</p>
 
 </div>
 </div>
@@ -669,7 +735,7 @@ template&lt;std::size_t Value&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr auto arg_router::policy::required = <a class="el" href="structarg__router_1_1policy_1_1required__t.html">required_t</a>&lt;&gt;{}</td>
+          <td class="memname">constexpr auto arg_router::policy::required = <a class="el" href="classarg__router_1_1policy_1_1required__t.html">required_t</a>&lt;&gt;{}</td>
         </tr>
       </table>
   </td>
@@ -680,7 +746,7 @@ template&lt;std::size_t Value&gt; </div>
 </div><div class="memdoc">
 <p>Constant variable helper. </p>
 
-<p class="definition">Definition at line <a class="el" href="required_8hpp_source.html#l00017">17</a> of file <a class="el" href="required_8hpp_source.html">required.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="required_8hpp_source.html#l00047">47</a> of file <a class="el" href="required_8hpp_source.html">required.hpp</a>.</p>
 
 </div>
 </div>

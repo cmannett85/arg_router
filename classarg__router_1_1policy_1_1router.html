@@ -70,6 +70,7 @@ $(function() {
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="classarg__router_1_1policy_1_1router-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">arg_router::policy::router&lt; Fn &gt; Class Template Reference</div>  </div>
@@ -90,6 +91,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a9c6b83e5220c345014114ad19438b2d3"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; </td></tr>
 <tr class="memitem:a9c6b83e5220c345014114ad19438b2d3"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1router.html#a9c6b83e5220c345014114ad19438b2d3">operator()</a> (Args &amp;&amp;... args) const</td></tr>
 <tr class="separator:a9c6b83e5220c345014114ad19438b2d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:a209dbbebed1293b17e67c231fc4cd7e8"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; </td></tr>
+<tr class="memitem:a209dbbebed1293b17e67c231fc4cd7e8"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1router.html#a209dbbebed1293b17e67c231fc4cd7e8">routing_phase</a> (Args &amp;&amp;... args) const</td></tr>
+<tr class="separator:a209dbbebed1293b17e67c231fc4cd7e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename Fn&gt;<br />
@@ -205,6 +212,51 @@ template&lt;typename... Args&gt; </div>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="router_8hpp_source.html#l00036">36</a> of file <a class="el" href="router_8hpp_source.html">router.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a209dbbebed1293b17e67c231fc4cd7e8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a209dbbebed1293b17e67c231fc4cd7e8">&#9670;&nbsp;</a></span>routing_phase()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Fn &gt; </div>
+<div class="memtemplate">
+template&lt;typename... Args&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classarg__router_1_1policy_1_1router.html">arg_router::policy::router</a>&lt; Fn &gt;::routing_phase </td>
+          <td>(</td>
+          <td class="paramtype">Args &amp;&amp;...&#160;</td>
+          <td class="paramname"><em>args</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Executes the result of the parsed command line arguments.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Args</td><td>Argument types, must be implicitly convertible to the types in callable_args_type, in the order and number specified by callable_args_type </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">args</td><td>Argument values </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="router_8hpp_source.html#l00050">50</a> of file <a class="el" href="router_8hpp_source.html">router.hpp</a>.</p>
 
 </div>
 </div>

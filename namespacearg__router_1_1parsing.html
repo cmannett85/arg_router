@@ -87,8 +87,8 @@ Typedefs</h2></td></tr>
 <tr class="memitem:ac0e0f1b9922b4ca68f9952fb81e03b7d"><td class="memTemplParams" colspan="2">template&lt;typename Child &gt; </td></tr>
 <tr class="memitem:ac0e0f1b9922b4ca68f9952fb81e03b7d"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#ac0e0f1b9922b4ca68f9952fb81e03b7d">optional_router_args_t</a> = boost::mp11::mp_transform&lt; <a class="el" href="namespacearg__router_1_1traits.html#a869c1774020d00627db3ab5e90a7b53a">traits::add_optional_t</a>, typename detail::build_router_args&lt; Child &gt;::type &gt;</td></tr>
 <tr class="separator:ac0e0f1b9922b4ca68f9952fb81e03b7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab2111c5b3c62f4935913872894c86ea4"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#ab2111c5b3c62f4935913872894c86ea4">token_list</a> = std::deque&lt; <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> &gt;</td></tr>
-<tr class="separator:ab2111c5b3c62f4935913872894c86ea4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a514a5158bba90fd3b119e0a3d4b3c5ab"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a514a5158bba90fd3b119e0a3d4b3c5ab">token_list</a> = std::vector&lt; <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> &gt;</td></tr>
+<tr class="separator:a514a5158bba90fd3b119e0a3d4b3c5ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -97,7 +97,7 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:aaaebcb5efd6de2e232c2a74699ac8d39"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacearg__router_1_1parsing.html#ab2111c5b3c62f4935913872894c86ea4">token_list</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#aaaebcb5efd6de2e232c2a74699ac8d39">expand_arguments</a> (int argc, const char *argv[])</td></tr>
+<tr class="memitem:aaaebcb5efd6de2e232c2a74699ac8d39"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacearg__router_1_1parsing.html#a514a5158bba90fd3b119e0a3d4b3c5ab">token_list</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#aaaebcb5efd6de2e232c2a74699ac8d39">expand_arguments</a> (int argc, const char *argv[])</td></tr>
 <tr class="separator:aaaebcb5efd6de2e232c2a74699ac8d39"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6878769d75879dd093b8047ca0375e64"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a6878769d75879dd093b8047ca0375e64"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a6878769d75879dd093b8047ca0375e64">default_match</a> (const <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> &amp;token)</td></tr>
@@ -115,7 +115,7 @@ Functions</h2></td></tr>
 <tr class="memitem:a914f080b272a9c7bab9c604700b72d90"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a914f080b272a9c7bab9c604700b72d90">visit_child</a> (const <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> &amp;token, const ChildrenTuple &amp;children, const RouterArgs &amp;router_args, Fn visitor)</td></tr>
 <tr class="separator:a914f080b272a9c7bab9c604700b72d90"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5f8751343c0035385bc50980acce3c47"><td class="memTemplParams" colspan="2">template&lt;typename Node , typename Fn &gt; </td></tr>
-<tr class="memitem:a5f8751343c0035385bc50980acce3c47"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a5f8751343c0035385bc50980acce3c47">find_target_node</a> (const Node &amp;node, <a class="el" href="namespacearg__router_1_1parsing.html#ab2111c5b3c62f4935913872894c86ea4">token_list</a> &amp;tokens, Fn visitor)</td></tr>
+<tr class="memitem:a5f8751343c0035385bc50980acce3c47"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a5f8751343c0035385bc50980acce3c47">find_target_node</a> (const Node &amp;node, <a class="el" href="namespacearg__router_1_1parsing.html#a514a5158bba90fd3b119e0a3d4b3c5ab">token_list</a> &amp;tokens, Fn visitor)</td></tr>
 <tr class="separator:a5f8751343c0035385bc50980acce3c47"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae17bf2873d6146f78dbc777747b29466"><td class="memItemLeft" align="right" valign="top">std::string_view&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#ae17bf2873d6146f78dbc777747b29466">to_string</a> (<a class="el" href="namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3">prefix_type</a> prefix)</td></tr>
 <tr class="separator:ae17bf2873d6146f78dbc777747b29466"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -153,14 +153,14 @@ template&lt;typename Child &gt; </div>
 
 </div>
 </div>
-<a id="ab2111c5b3c62f4935913872894c86ea4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab2111c5b3c62f4935913872894c86ea4">&#9670;&nbsp;</a></span>token_list</h2>
+<a id="a514a5158bba90fd3b119e0a3d4b3c5ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a514a5158bba90fd3b119e0a3d4b3c5ab">&#9670;&nbsp;</a></span>token_list</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="namespacearg__router_1_1parsing.html#ab2111c5b3c62f4935913872894c86ea4">arg_router::parsing::token_list</a> = typedef std::deque&lt;<a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a>&gt;</td>
+          <td class="memname">using <a class="el" href="namespacearg__router_1_1parsing.html#a514a5158bba90fd3b119e0a3d4b3c5ab">arg_router::parsing::token_list</a> = typedef std::vector&lt;<a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a>&gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -240,7 +240,7 @@ template&lt;typename T &gt; </div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacearg__router_1_1parsing.html#ab2111c5b3c62f4935913872894c86ea4">token_list</a> arg_router::parsing::expand_arguments </td>
+          <td class="memname"><a class="el" href="namespacearg__router_1_1parsing.html#a514a5158bba90fd3b119e0a3d4b3c5ab">token_list</a> arg_router::parsing::expand_arguments </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>argc</em>, </td>
@@ -287,7 +287,7 @@ template&lt;typename Node , typename Fn &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacearg__router_1_1parsing.html#ab2111c5b3c62f4935913872894c86ea4">token_list</a> &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacearg__router_1_1parsing.html#a514a5158bba90fd3b119e0a3d4b3c5ab">token_list</a> &amp;&#160;</td>
           <td class="paramname"><em>tokens</em>, </td>
         </tr>
         <tr>
@@ -310,7 +310,7 @@ template&lt;typename Node , typename Fn &gt; </div>
 <li>If first N tokens are named mode-like types then the most nested type is used</li>
 </ul>
 <p><em>Fn</em> is a Callable with a signature of: </p><div class="fragment"><div class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> Child&gt;</div>
-<div class="line">operator()(<span class="keyword">const</span> Child&amp;, <a class="code" href="namespacearg__router_1_1parsing.html#ab2111c5b3c62f4935913872894c86ea4">token_list</a>&amp;) {}</div>
+<div class="line">operator()(<span class="keyword">const</span> Child&amp;, <a class="code" href="namespacearg__router_1_1parsing.html#a514a5158bba90fd3b119e0a3d4b3c5ab">token_list</a>&amp;) {}</div>
 </div><!-- fragment --><p> Where the child is the found node and the token list is the remaining unprocessed tokens.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
@@ -601,7 +601,7 @@ template&lt;typename ChildrenTuple , typename Fn &gt; </div>
 </div>
 </div>
 </div><!-- contents -->
-<div class="ttc" id="anamespacearg__router_1_1parsing_html_ab2111c5b3c62f4935913872894c86ea4"><div class="ttname"><a href="namespacearg__router_1_1parsing.html#ab2111c5b3c62f4935913872894c86ea4">arg_router::parsing::token_list</a></div><div class="ttdeci">std::deque&lt; token_type &gt; token_list</div><div class="ttdef"><b>Definition:</b> <a href="token__type_8hpp_source.html#l00064">token_type.hpp:64</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1parsing_html_a514a5158bba90fd3b119e0a3d4b3c5ab"><div class="ttname"><a href="namespacearg__router_1_1parsing.html#a514a5158bba90fd3b119e0a3d4b3c5ab">arg_router::parsing::token_list</a></div><div class="ttdeci">std::vector&lt; token_type &gt; token_list</div><div class="ttdef"><b>Definition:</b> <a href="token__type_8hpp_source.html#l00064">token_type.hpp:64</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

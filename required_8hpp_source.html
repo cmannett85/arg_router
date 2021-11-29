@@ -73,36 +73,59 @@ $(function() {
 <div class="contents">
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &quot;arg_router/policy/policy.hpp&quot;</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacearg__router.html">arg_router</a></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;{</div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">namespace </span>policy</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;{</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> = <span class="keywordtype">void</span>&gt;  <span class="comment">// This is needed due so it can be used in</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="structarg__router_1_1policy_1_1required__t.html">   13</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structarg__router_1_1policy_1_1required__t.html">required_t</a> {         <span class="comment">// template template parameters</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;};</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
-<div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1policy.html#a0960d76b9e22cfed95ba19a463384d3c">   17</a></span>&#160;constexpr <span class="keyword">auto</span> <a class="code" href="namespacearg__router_1_1policy.html#a0960d76b9e22cfed95ba19a463384d3c">required</a> = <a class="code" href="structarg__router_1_1policy_1_1required__t.html">required_t&lt;&gt;</a>{};</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1policy.html#a408a1ac19cbc1f4ad69630f965f976d8">   24</a></span>&#160;<span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1policy.html#a408a1ac19cbc1f4ad69630f965f976d8">is_required</a> = std::is_base_of&lt;required_t&lt;&gt;, T&gt;;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1policy.html#a1bdf5a24cb1daf8f2cf2996cf6c87b82">   31</a></span>&#160;constexpr <span class="keywordtype">bool</span> <a class="code" href="namespacearg__router_1_1policy.html#a1bdf5a24cb1daf8f2cf2996cf6c87b82">is_required_v</a> = <a class="code" href="namespacearg__router_1_1policy.html#a408a1ac19cbc1f4ad69630f965f976d8">is_required&lt;T&gt;::value</a>;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword">template</span> &lt;&gt;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">struct </span><a class="code" href="structarg__router_1_1policy_1_1is__policy.html">is_policy</a>&lt;<a class="code" href="structarg__router_1_1policy_1_1required__t.html">required_t</a>&lt;&gt;&gt; : std::true_type {</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;};</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;}  <span class="comment">// namespace policy</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &quot;arg_router/exception.hpp&quot;</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;arg_router/parsing.hpp&quot;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;boost/core/ignore_unused.hpp&gt;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;optional&gt;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacearg__router.html">arg_router</a></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;{</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">namespace </span>policy</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;{</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> = <span class="keywordtype">void</span>&gt;  <span class="comment">// This is needed due so it can be used in</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1required__t.html">   18</a></span>&#160;<span class="keyword">class </span><a class="code" href="classarg__router_1_1policy_1_1required__t.html">required_t</a>            <span class="comment">// template template parameters</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;{</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> ValueType, <span class="keyword">typename</span>... Parents&gt;</div>
+<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1required__t.html#a4be7651d2619f493e3c27f8ea0246b3a">   30</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classarg__router_1_1policy_1_1required__t.html#a4be7651d2619f493e3c27f8ea0246b3a">post_parse_phase</a>(std::optional&lt;ValueType&gt;&amp; value,</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;                          <span class="keyword">const</span> Parents&amp;... parents)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword">    </span>{</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        static_assert(<span class="keyword">sizeof</span>...(Parents) &gt;= 1,</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                      <span class="stringliteral">&quot;Alias requires at least 1 parent&quot;</span>);</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keyword">using</span> node_type = boost::mp11::mp_first&lt;std::tuple&lt;Parents...&gt;&gt;;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        boost::ignore_unused(parents...);</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <span class="keywordflow">if</span> (!value) {</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;            <span class="keywordflow">throw</span> parse_exception{<span class="stringliteral">&quot;Missing required argument&quot;</span>,</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;                                  parsing::node_token_type&lt;node_type&gt;()};</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        }</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    }</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;};</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
+<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1policy.html#a0960d76b9e22cfed95ba19a463384d3c">   47</a></span>&#160;constexpr <span class="keyword">auto</span> <a class="code" href="namespacearg__router_1_1policy.html#a0960d76b9e22cfed95ba19a463384d3c">required</a> = <a class="code" href="classarg__router_1_1policy_1_1required__t.html">required_t&lt;&gt;</a>{};</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1policy.html#a408a1ac19cbc1f4ad69630f965f976d8">   54</a></span>&#160;<span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1policy.html#a408a1ac19cbc1f4ad69630f965f976d8">is_required</a> = std::is_base_of&lt;required_t&lt;&gt;, T&gt;;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1policy.html#a1bdf5a24cb1daf8f2cf2996cf6c87b82">   61</a></span>&#160;constexpr <span class="keywordtype">bool</span> <a class="code" href="namespacearg__router_1_1policy.html#a1bdf5a24cb1daf8f2cf2996cf6c87b82">is_required_v</a> = <a class="code" href="namespacearg__router_1_1policy.html#a408a1ac19cbc1f4ad69630f965f976d8">is_required&lt;T&gt;::value</a>;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="keyword">template</span> &lt;&gt;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="keyword">struct </span><a class="code" href="structarg__router_1_1policy_1_1is__policy.html">is_policy</a>&lt;<a class="code" href="classarg__router_1_1policy_1_1required__t.html">required_t</a>&lt;&gt;&gt; : std::true_type {</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;};</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;}  <span class="comment">// namespace policy</span></div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="astructarg__router_1_1policy_1_1required__t_html"><div class="ttname"><a href="structarg__router_1_1policy_1_1required__t.html">arg_router::policy::required_t</a></div><div class="ttdef"><b>Definition:</b> <a href="required_8hpp_source.html#l00013">required.hpp:13</a></div></div>
 <div class="ttc" id="astructarg__router_1_1policy_1_1is__policy_html"><div class="ttname"><a href="structarg__router_1_1policy_1_1is__policy.html">arg_router::policy::is_policy</a></div><div class="ttdef"><b>Definition:</b> <a href="policy_8hpp_source.html#l00025">policy.hpp:25</a></div></div>
-<div class="ttc" id="anamespacearg__router_1_1policy_html_a408a1ac19cbc1f4ad69630f965f976d8"><div class="ttname"><a href="namespacearg__router_1_1policy.html#a408a1ac19cbc1f4ad69630f965f976d8">arg_router::policy::is_required</a></div><div class="ttdeci">std::is_base_of&lt; required_t&lt;&gt;, T &gt; is_required</div><div class="ttdef"><b>Definition:</b> <a href="required_8hpp_source.html#l00024">required.hpp:24</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1policy_html_a408a1ac19cbc1f4ad69630f965f976d8"><div class="ttname"><a href="namespacearg__router_1_1policy.html#a408a1ac19cbc1f4ad69630f965f976d8">arg_router::policy::is_required</a></div><div class="ttdeci">std::is_base_of&lt; required_t&lt;&gt;, T &gt; is_required</div><div class="ttdef"><b>Definition:</b> <a href="required_8hpp_source.html#l00054">required.hpp:54</a></div></div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00010">algorithm.hpp:10</a></div></div>
-<div class="ttc" id="anamespacearg__router_1_1policy_html_a1bdf5a24cb1daf8f2cf2996cf6c87b82"><div class="ttname"><a href="namespacearg__router_1_1policy.html#a1bdf5a24cb1daf8f2cf2996cf6c87b82">arg_router::policy::is_required_v</a></div><div class="ttdeci">constexpr bool is_required_v</div><div class="ttdef"><b>Definition:</b> <a href="required_8hpp_source.html#l00031">required.hpp:31</a></div></div>
-<div class="ttc" id="anamespacearg__router_1_1policy_html_a0960d76b9e22cfed95ba19a463384d3c"><div class="ttname"><a href="namespacearg__router_1_1policy.html#a0960d76b9e22cfed95ba19a463384d3c">arg_router::policy::required</a></div><div class="ttdeci">constexpr auto required</div><div class="ttdef"><b>Definition:</b> <a href="required_8hpp_source.html#l00017">required.hpp:17</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1policy_1_1required__t_html"><div class="ttname"><a href="classarg__router_1_1policy_1_1required__t.html">arg_router::policy::required_t</a></div><div class="ttdef"><b>Definition:</b> <a href="required_8hpp_source.html#l00018">required.hpp:18</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1policy_html_a1bdf5a24cb1daf8f2cf2996cf6c87b82"><div class="ttname"><a href="namespacearg__router_1_1policy.html#a1bdf5a24cb1daf8f2cf2996cf6c87b82">arg_router::policy::is_required_v</a></div><div class="ttdeci">constexpr bool is_required_v</div><div class="ttdef"><b>Definition:</b> <a href="required_8hpp_source.html#l00061">required.hpp:61</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1policy_1_1required__t_html_a4be7651d2619f493e3c27f8ea0246b3a"><div class="ttname"><a href="classarg__router_1_1policy_1_1required__t.html#a4be7651d2619f493e3c27f8ea0246b3a">arg_router::policy::required_t::post_parse_phase</a></div><div class="ttdeci">void post_parse_phase(std::optional&lt; ValueType &gt; &amp;value, const Parents &amp;... parents) const</div><div class="ttdef"><b>Definition:</b> <a href="required_8hpp_source.html#l00030">required.hpp:30</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1policy_html_a0960d76b9e22cfed95ba19a463384d3c"><div class="ttname"><a href="namespacearg__router_1_1policy.html#a0960d76b9e22cfed95ba19a463384d3c">arg_router::policy::required</a></div><div class="ttdeci">constexpr auto required</div><div class="ttdef"><b>Definition:</b> <a href="required_8hpp_source.html#l00047">required.hpp:47</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

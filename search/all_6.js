@@ -27,11 +27,15 @@ var searchData=
   ['has_5fparse_5fmethod_5fv_84',['has_parse_method_v',['../namespacearg__router_1_1traits.html#ac97b5564de888b8fc9fce0fc8e62a08e',1,'arg_router::traits']]],
   ['has_5fpush_5fback_5fmethod_85',['has_push_back_method',['../structarg__router_1_1traits_1_1has__push__back__method.html',1,'arg_router::traits']]],
   ['has_5fpush_5fback_5fmethod_5fv_86',['has_push_back_method_v',['../namespacearg__router_1_1traits.html#adff3672ffa49c8da3823272f3b2bf1a2',1,'arg_router::traits']]],
-  ['has_5fshort_5fname_5fmethod_87',['has_short_name_method',['../structarg__router_1_1traits_1_1has__short__name__method.html',1,'arg_router::traits']]],
-  ['has_5fshort_5fname_5fmethod_5fv_88',['has_short_name_method_v',['../namespacearg__router_1_1traits.html#ac3cf6a0b54214d4792ef0569ac733f05',1,'arg_router::traits']]],
-  ['has_5fspecialisation_89',['has_specialisation',['../structarg__router_1_1algorithm_1_1has__specialisation.html',1,'arg_router::algorithm']]],
-  ['has_5fspecialisation_5fv_90',['has_specialisation_v',['../namespacearg__router_1_1algorithm.html#a8008c0e24fa3cd6f4764c29f2331ba5e',1,'arg_router::algorithm']]],
-  ['has_5fvalue_5ftokens_91',['has_value_tokens',['../namespacearg__router_1_1policy.html#af71d754d9e9e625b098bb6c80a82eae6',1,'arg_router::policy']]],
-  ['has_5fvalue_5ftokens_5ft_92',['has_value_tokens_t',['../namespacearg__router_1_1policy.html#aca0a098fd684cd70d8f8e8f457357e92',1,'arg_router::policy']]],
-  ['has_5fvalue_5ftokens_5fv_93',['has_value_tokens_v',['../namespacearg__router_1_1policy.html#a16e00d607bc8bbdcd1b4609016fb716c',1,'arg_router::policy']]]
+  ['has_5fresult_5fvalue_87',['has_result_value',['../namespacearg__router_1_1policy.html#a751f6f886a5f7363f2ea24812738f2a7',1,'arg_router::policy']]],
+  ['has_5fresult_5fvalue_5fv_88',['has_result_value_v',['../namespacearg__router_1_1policy.html#acd4d00bd4273555855b86f8ec69fb015',1,'arg_router::policy']]],
+  ['has_5fshort_5fname_5fmethod_89',['has_short_name_method',['../structarg__router_1_1traits_1_1has__short__name__method.html',1,'arg_router::traits']]],
+  ['has_5fshort_5fname_5fmethod_5fv_90',['has_short_name_method_v',['../namespacearg__router_1_1traits.html#ac3cf6a0b54214d4792ef0569ac733f05',1,'arg_router::traits']]],
+  ['has_5fsize_5fmethod_91',['has_size_method',['../structarg__router_1_1traits_1_1has__size__method.html',1,'arg_router::traits']]],
+  ['has_5fsize_5fmethod_5fv_92',['has_size_method_v',['../namespacearg__router_1_1traits.html#a6315fdbc72444f3de39fc6a553ecd272',1,'arg_router::traits']]],
+  ['has_5fspecialisation_93',['has_specialisation',['../structarg__router_1_1algorithm_1_1has__specialisation.html',1,'arg_router::algorithm']]],
+  ['has_5fspecialisation_5fv_94',['has_specialisation_v',['../namespacearg__router_1_1algorithm.html#a8008c0e24fa3cd6f4764c29f2331ba5e',1,'arg_router::algorithm']]],
+  ['has_5fvalue_5ftokens_95',['has_value_tokens',['../namespacearg__router_1_1policy.html#af71d754d9e9e625b098bb6c80a82eae6',1,'arg_router::policy']]],
+  ['has_5fvalue_5ftokens_5ft_96',['has_value_tokens_t',['../namespacearg__router_1_1policy.html#aca0a098fd684cd70d8f8e8f457357e92',1,'arg_router::policy']]],
+  ['has_5fvalue_5ftokens_5fv_97',['has_value_tokens_v',['../namespacearg__router_1_1policy.html#a16e00d607bc8bbdcd1b4609016fb716c',1,'arg_router::policy']]]
 ];

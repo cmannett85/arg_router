@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['short_5fname_5ft_291',['short_name_t',['../classarg__router_1_1policy_1_1short__name__t.html',1,'arg_router::policy']]],
-  ['single_5fanonymous_5fmode_292',['single_anonymous_mode',['../structarg__router_1_1policy_1_1validation_1_1single__anonymous__mode.html',1,'arg_router::policy::validation']]]
+  ['required_5ft_315',['required_t',['../classarg__router_1_1policy_1_1required__t.html',1,'arg_router::policy']]],
+  ['root_5ft_316',['root_t',['../classarg__router_1_1root__t.html',1,'arg_router']]],
+  ['router_317',['router',['../classarg__router_1_1policy_1_1router.html',1,'arg_router::policy']]]
 ];
