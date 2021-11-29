@@ -1,6 +1,7 @@
 #pragma once
 
 #include "arg_router/token_type.hpp"
+#include "arg_router/utility/span.hpp"
 
 #include <boost/mp11/algorithm.hpp>
 #include <boost/mp11/bind.hpp>
@@ -412,6 +413,25 @@ struct has_push_back_method {
  */
 template <typename T>
 constexpr bool has_push_back_method_v = has_push_back_method<T>::value;
+
+/** Determine if a type has a <TT>size()</TT> method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+struct has_size_method {
+    template <typename U>
+    using type = decltype(std::declval<const U&>().size());
+
+    constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
+};
+
+/** Helper variable for has_size_method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+constexpr bool has_size_method_v = has_size_method<T>::value;
 
 /** Determine if a type has a <TT>aliased_policies_type</TT> typedef.
  *

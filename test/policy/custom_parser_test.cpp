@@ -1,8 +1,50 @@
 #include "arg_router/policy/custom_parser.hpp"
+#include "arg_router/parsing.hpp"
+#include "arg_router/tree_node.hpp"
 
 #include "test_helpers.hpp"
+#include "test_printers.hpp"
 
 using namespace arg_router;
+
+namespace
+{
+template <typename... Policies>
+class stub_node : public tree_node<Policies...>
+{
+public:
+    constexpr explicit stub_node(Policies... policies) :
+        tree_node<Policies...>{std::move(policies)...}
+    {
+    }
+
+    template <typename ValueType, typename... Parents>
+    std::optional<ValueType> parse_phase(const parsing::token_type& token,
+                                         const Parents&... parents) const
+    {
+        auto result = std::optional<ValueType>{};
+        utility::tuple_type_iterator<typename stub_node::policies_type>(  //
+            [&](auto /*i*/, auto ptr) {
+                using this_policy = std::remove_pointer_t<decltype(ptr)>;
+                if constexpr (stub_node::
+                                  template policy_has_parse_phase_method_v<
+                                      this_policy,
+                                      ValueType,
+                                      Parents...> &&
+                              traits::is_specialisation_of_v<
+                                  this_policy,
+                                  policy::custom_parser>) {
+                    BOOST_CHECK(!result);
+                    result = this->this_policy::template parse_phase<ValueType>(
+                        token,
+                        parents...);
+                }
+            });
+
+        return result;
+    }
+};
+}  // namespace
 
 BOOST_AUTO_TEST_SUITE(policy_suite)
 
@@ -14,28 +56,35 @@ BOOST_AUTO_TEST_CASE(is_policy_test)
                   "Policy test has failed");
 }
 
-BOOST_AUTO_TEST_CASE(echo_parse_test)
+BOOST_AUTO_TEST_CASE(parse_phase_test)
 {
-    auto cp =
-        policy::custom_parser<std::string_view>{[](auto str) { return str; }};
-    const auto result = cp.parse("hello");
+    const auto root = stub_node{
+        stub_node{policy::custom_parser<int>{
+            [](auto str) { return parser<int>::parse(str); }}},
+        stub_node{policy::custom_parser<std::string_view>{
+            [](auto str) { return parser<std::string_view>::parse(str); }}},
+        stub_node{}};
 
-    BOOST_CHECK_EQUAL(result, "hello");
-    BOOST_CHECK((std::is_same_v<decltype(cp)::value_type, std::string_view>));
-    BOOST_CHECK(
-        (std::is_same_v<decltype(cp)::parser_type,
-                        std::function<std::string_view(std::string_view)>>));
-}
+    auto f = [&](auto token, const auto& owner, auto expected_value) {
+        using value_type =
+            typename std::decay_t<decltype(expected_value)>::value_type;
+        const auto result = owner.template parse_phase<value_type>(
+            parsing::token_type{parsing::prefix_type::NONE, token},
+            owner,
+            root);
+        BOOST_CHECK_EQUAL(result, expected_value);
+    };
 
-BOOST_AUTO_TEST_CASE(num_parse_test)
-{
-    auto cp = policy::custom_parser<int>{[](auto /*str*/) { return 42; }};
-    const auto result = cp.parse("hello");
-
-    BOOST_CHECK_EQUAL(result, 42);
-    BOOST_CHECK((std::is_same_v<decltype(cp)::value_type, int>));
-    BOOST_CHECK((std::is_same_v<decltype(cp)::parser_type,
-                                std::function<int(std::string_view)>>));
+    test::data_set(f,
+                   std::tuple{std::tuple{"42",
+                                         std::get<0>(root.children()),
+                                         std::optional<int>{42}},
+                              std::tuple{"42",
+                                         std::get<1>(root.children()),
+                                         std::optional<std::string_view>{"42"}},
+                              std::tuple{"42",
+                                         std::get<2>(root.children()),
+                                         std::optional<std::string_view>{}}});
 }
 
 BOOST_AUTO_TEST_SUITE_END()

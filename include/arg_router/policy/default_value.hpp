@@ -3,6 +3,10 @@
 #include "arg_router/config.hpp"
 #include "arg_router/policy/policy.hpp"
 
+#include <boost/core/ignore_unused.hpp>
+
+#include <optional>
+
 namespace arg_router
 {
 namespace policy
@@ -33,6 +37,25 @@ public:
         -> std::conditional_t<config::l1_cache_size() >= sizeof(T), T, const T&>
     {
         return value_;
+    }
+
+protected:
+    /** If @a value is empty, then populate it with the default value.
+     * 
+     * @tparam ValueType Parsed value type, must be implicitly constructible
+     * from value_type
+     * @tparam Parents Pack of parent tree nodes in ascending ancestry order
+     * @param value Parsed value, may be empty
+     * @param parents Parents instances pack
+     */
+    template <typename ValueType, typename... Parents>
+    void post_parse_phase(std::optional<ValueType>& value,
+                          const Parents&... parents) const
+    {
+        boost::ignore_unused(parents...);
+        if (!value) {
+            value = value_;
+        }
     }
 
 private:

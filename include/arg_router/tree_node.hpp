@@ -30,6 +30,171 @@ public:
         is_tree_node,
         std::decay_t<decltype(list_expander(std::declval<Params>()...))>>;
 
+    /** Returns a reference to the children.
+     *
+     * @return Children
+     */
+    const children_type& children() const { return children_; }
+
+protected:
+    /** Constructor.
+     *
+     * @param params Policy and child instances
+     */
+    explicit tree_node(Params... params) :
+        traits::unpack_and_derive<policies_type>{
+            common_filter<policy::is_policy>(params...)},
+        children_(common_filter_tuple<is_tree_node>(
+            list_expander(std::move(params)...)))
+    {
+    }
+
+    /** Determine if a policy has a <TT>pre_parse_phase</TT> method.
+     *
+     * @tparam T Policy type to query
+     * @tparam Parents Pack of parent tree nodes in ascending ancestry order
+     */
+    template <typename T, typename... Parents>
+    struct policy_has_pre_parse_phase_method : T {
+        static_assert(policy::is_policy_v<T>, "T must be a policy");
+
+        template <typename U>
+        using type = decltype(  //
+            std::declval<const policy_has_pre_parse_phase_method&>()
+                .template pre_parse_phase<Parents...>(
+                    std::declval<parsing::token_list&>(),
+                    std::declval<utility::span<parsing::token_type>&>(),
+                    std::declval<const Parents&>()...));
+
+        constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
+    };
+
+    /** Helper variable for policy_has_pre_parse_phase_method.
+     *
+     * @tparam T Policy type to query
+     * @tparam Parents Pack of parent tree nodes in ascending ancestry order
+     */
+    template <typename T, typename... Parents>
+    static constexpr bool policy_has_pre_parse_phase_method_v =
+        policy_has_pre_parse_phase_method<T, Parents...>::value;
+
+    /** Determine if a policy has a <TT>parse_phase</TT> method.
+     *
+     * @tparam T Policy type to query
+     * @tparam ValueType Parsed type
+     * @tparam Parents Pack of parent tree nodes in ascending ancestry order
+     */
+    template <typename T, typename ValueType, typename... Parents>
+    struct policy_has_parse_phase_method : T {
+        static_assert(policy::is_policy_v<T>, "T must be a policy");
+
+        template <typename U>
+        using type = decltype(  //
+            std::declval<const policy_has_parse_phase_method&>()
+                .template parse_phase<ValueType, Parents...>(
+                    std::declval<const parsing::token_type&>(),
+                    std::declval<const Parents&>()...));
+
+        constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
+    };
+
+    /** Helper variable for policy_has_parse_phase_method.
+     *
+     * @tparam T Policy type to query
+     * @tparam ValueType Parsed type
+     * @tparam Parents Pack of parent tree nodes in ascending ancestry order
+     */
+    template <typename T, typename ValueType, typename... Parents>
+    static constexpr bool policy_has_parse_phase_method_v =
+        policy_has_parse_phase_method<T, ValueType, Parents...>::value;
+
+    /** Determine if a policy has a <TT>post_parse_phase</TT> method.
+     *
+     * @tparam T Policy type to query
+     * @tparam ValueType Parsed type
+     * @tparam Parents Pack of parent tree nodes in ascending ancestry order
+     */
+    template <typename T, typename ValueType, typename... Parents>
+    struct policy_has_post_parse_phase_method : T {
+        static_assert(policy::is_policy_v<T>, "T must be a policy");
+
+        template <typename U>
+        using type = decltype(  //
+            std::declval<const policy_has_post_parse_phase_method&>()
+                .template post_parse_phase<ValueType, Parents...>(
+                    std::declval<std::optional<ValueType>&>(),
+                    std::declval<const Parents&>()...));
+
+        constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
+    };
+
+    /** Helper variable for policy_has_pre_parse_phase_method.
+     *
+     * @tparam T Policy type to query
+     * @tparam ValueType Parsed type
+     * @tparam Parents Pack of parent tree nodes in ascending ancestry order
+     */
+    template <typename T, typename ValueType, typename... Parents>
+    static constexpr bool policy_has_post_parse_phase_method_v =
+        policy_has_post_parse_phase_method<T, ValueType, Parents...>::value;
+
+    /** Determine if a policy has a <TT>validation_phase</TT> method.
+     *
+     * @tparam T Policy type to query
+     * @tparam ValueType Parsed type
+     * @tparam Parents Pack of parent tree nodes in ascending ancestry order
+     */
+    template <typename T, typename ValueType, typename... Parents>
+    struct policy_has_validation_phase_method : T {
+        static_assert(policy::is_policy_v<T>, "T must be a policy");
+
+        template <typename U>
+        using type = decltype(  //
+            std::declval<const policy_has_validation_phase_method&>()
+                .template validation_phase<ValueType, Parents...>(
+                    std::declval<const ValueType&>(),
+                    std::declval<const Parents&>()...));
+
+        constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
+    };
+
+    /** Helper variable for policy_has_validation_phase_method.
+     *
+     * @tparam T Policy type to query
+     * @tparam ValueType Parsed type
+     * @tparam Parents Pack of parent tree nodes in ascending ancestry order
+     */
+    template <typename T, typename ValueType, typename... Parents>
+    static constexpr bool policy_has_validation_phase_method_v =
+        policy_has_validation_phase_method<T, ValueType, Parents...>::value;
+
+    /** Determine if a policy has a <TT>routing_phase</TT> method.
+     *
+     * @tparam T Policy type to query
+     * @tparam Args Pack of argument types
+     */
+    template <typename T, typename... Args>
+    struct policy_has_routing_phase_method : T {
+        static_assert(policy::is_policy_v<T>, "T must be a policy");
+
+        template <typename U>
+        using type = decltype(  //
+            std::declval<const policy_has_routing_phase_method&>()
+                .template routing_phase<Args...>(
+                    std::declval<const Args&>()...));
+
+        constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
+    };
+
+    /** Helper variable for policy_has_routing_phase_method.
+     *
+     * @tparam T Policy type to query
+     * @tparam Args Pack of argument types
+     */
+    template <typename T, typename... Args>
+    static constexpr bool policy_has_routing_phase_method_v =
+        policy_has_routing_phase_method<T, Args...>::value;
+
 private:
     template <template <typename...> typename Fn, typename... ExpandedParams>
     static auto common_filter(ExpandedParams&... expanded_params)
@@ -69,27 +234,6 @@ private:
             tuple_params);
     }
 
-protected:
-    /** Constructor.
-     *
-     * @param params Policy and child instances
-     */
-    explicit tree_node(Params... params) :
-        traits::unpack_and_derive<policies_type>{
-            common_filter<policy::is_policy>(params...)},
-        children_(common_filter_tuple<is_tree_node>(
-            list_expander(std::move(params)...)))
-    {
-    }
-
-public:
-    /** Returns a reference to the children.
-     *
-     * @return Children
-     */
-    const children_type& children() const { return children_; }
-
-private:
     children_type children_;
 };
 }  // namespace arg_router

@@ -86,7 +86,7 @@ BOOST_AUTO_TEST_CASE(get_token_type_test)
 {
     auto f = [](auto token, auto expected_token) {
         const auto result = parsing::get_token_type(token);
-        BOOST_CHECK(result == expected_token);
+        BOOST_CHECK_EQUAL(result, expected_token);
     };
 
     test::data_set(
@@ -107,7 +107,7 @@ BOOST_AUTO_TEST_CASE(expand_arguments_test)
             parsing::expand_arguments(input.size(), input.data());
         BOOST_REQUIRE_EQUAL(result.size(), expected.size());
         for (auto i = 0u; i < result.size(); ++i) {
-            BOOST_CHECK(result[i] == expected[i]);
+            BOOST_CHECK_EQUAL(result[i], expected[i]);
         }
     };
 

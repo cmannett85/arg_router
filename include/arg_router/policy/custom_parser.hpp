@@ -1,6 +1,9 @@
 #pragma once
 
 #include "arg_router/policy/policy.hpp"
+#include "arg_router/token_type.hpp"
+
+#include <boost/core/ignore_unused.hpp>
 
 #include <functional>
 #include <string_view>
@@ -39,6 +42,25 @@ public:
      * @exception parse_exception Should be thrown in case of parse failure
      */
     value_type parse(std::string_view str) const { return parser_(str); }
+
+protected:
+    /** Parse @a str to produce an equivalent instance of value_type.
+     *
+     * @tparam ValueType Parsed value type, must be implicity convertible from
+     * value_type
+     * @tparam Parents Pack of parent tree nodes in ascending ancestry order
+     * @param token Token to parse
+     * @param parents Parents instances pack
+     * @return Parsed value
+     * @exception parse_exception Thrown if parsing failed
+     */
+    template <typename ValueType, typename... Parents>
+    ValueType parse_phase(const parsing::token_type& token,
+                          const Parents&... parents) const
+    {
+        boost::ignore_unused(parents...);
+        return parser_(token.name);
+    }
 
 private:
     parser_type parser_;

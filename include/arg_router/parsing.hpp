@@ -291,7 +291,7 @@ void find_target_mode(const Node& node, token_list& tokens, Fn visitor)
                 if constexpr (node_category::is_named_mode_like_v<child_type>) {
                     if (child.match(token)) {
                         found_mode = true;
-                        tokens.pop_front();
+                        tokens.erase(tokens.begin());
                         find_target_mode(child, tokens, std::move(visitor));
                     }
                 }
@@ -358,7 +358,7 @@ void find_target_node(const Node& node, token_list& tokens, Fn visitor)
             using child_type = std::decay_t<decltype(child)>;
 
             if (node_category::is_named_mode_like_v<child_type>) {
-                tokens.pop_front();
+                tokens.erase(tokens.begin());
                 detail::find_target_mode(child, tokens, std::move(visitor));
             } else {
                 visitor(child, tokens);
