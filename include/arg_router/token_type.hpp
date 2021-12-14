@@ -29,7 +29,9 @@ struct token_type {
      * @param p Prefix type
      * @param n Token name, stripped of prefix (if any)
      */
-    token_type(prefix_type p, std::string_view n) : prefix{p}, name{n} {}
+    constexpr token_type(prefix_type p, std::string_view n) : prefix{p}, name{n}
+    {
+    }
 
     /** Equality operator.
      *
@@ -62,6 +64,13 @@ std::string to_string(const token_type& token);
 
 /** List of tokens. */
 using token_list = std::vector<token_type>;
+
+/** Creates a string representation of @a tokens.
+ * 
+ * @param tokens Tokens to convert
+ * @return String representation of @a tokens
+ */
+std::string to_string(const token_list& tokens);
 
 /** Analyse @a token and return a pair consisting of the prefix type and
  * @a token stripped of the token.

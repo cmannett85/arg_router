@@ -1,18 +1,12 @@
 #pragma once
 
-#include "arg_router/config.hpp"
 #include "arg_router/exception.hpp"
 #include "arg_router/node_category.hpp"
 #include "arg_router/token_type.hpp"
 #include "arg_router/tree_node.hpp"
-#include "arg_router/utility/string_view_ops.hpp"
 #include "arg_router/utility/tuple_iterator.hpp"
 
 #include <boost/algorithm/string/predicate.hpp>
-#include <boost/core/ignore_unused.hpp>
-
-#include <bitset>
-#include <charconv>
 
 namespace arg_router
 {
@@ -39,7 +33,8 @@ template <typename T>
 bool default_match(const token_type& token)
 {
     if constexpr (traits::has_long_name_method_v<T>) {
-        if ((token.prefix == prefix_type::LONG) &&
+        if ((token.prefix == prefix_type::LONG ||
+             token.prefix == prefix_type::NONE) &&
             (token.name == T::long_name())) {
             return true;
         }
@@ -145,7 +140,7 @@ using optional_router_args_t =
  * operator()(std::size_t i, const Child&) {}
  * @endcode
  * <TT>i</TT> is the index into the children tuple.  If child has a
- * match(std::string_view) method then the visitor is called if a match is
+ * match_old(std::string_view) method then the visitor is called if a match is
  * found.  If it doesn't have a match method but evaluates to true against
  * node_category::is_positional_arg_like, then the visitor is called.
  * 
@@ -172,7 +167,7 @@ bool visit_child(const token_type& token,
             };
 
             if constexpr (traits::has_match_method_v<child_type>) {
-                const auto result = child.match(token);
+                const auto result = child.match_old(token);
                 if (result) {
                     // Skip if already found
                     if (found_child) {
@@ -289,7 +284,7 @@ void find_target_mode(const Node& node, token_list& tokens, Fn visitor)
                 using child_type = std::decay_t<decltype(child)>;
 
                 if constexpr (node_category::is_named_mode_like_v<child_type>) {
-                    if (child.match(token)) {
+                    if (child.match_old(token)) {
                         found_mode = true;
                         tokens.erase(tokens.begin());
                         find_target_mode(child, tokens, std::move(visitor));
@@ -370,78 +365,4 @@ void find_target_node(const Node& node, token_list& tokens, Fn visitor)
     }
 }
 }  // namespace parsing
-
-/** Global parsing struct.
- *
- * If you want to provide custom parsing for an entire @em type, then you should
- * specialise this.  If you want to provide custom parsing for a particular type
- * just for a single argument, it is usually more convenient to use a
- * policy::custom_parser and define the conversion function inline.
- * @tparam T Type to parse @a token into
- * @param token Command line token to parse
- * @return The parsed instance
- * @exception parse_exception Thrown if parsing failed
- */
-template <typename T, typename Enable = void>
-struct parser {
-    constexpr static T parse(std::string_view token)
-    {
-        boost::ignore_unused(token);
-        static_assert(
-            traits::always_false_v<T>,
-            "No parse function for this type, use a custom_parser policy "
-            "or define a parse(std::string_view) specialisation");
-    }
-};
-
-template <typename T>
-struct parser<T, typename std::enable_if_t<std::is_arithmetic_v<T>>> {
-    static T parse(std::string_view token)
-    {
-        using namespace utility::string_view_ops;
-        using namespace std::string_literals;
-
-        if (token.front() == '+') {
-            token.remove_prefix(1);
-        }
-
-        auto value = T{};
-        const auto result = std::from_chars(token.begin(), token.end(), value);
-
-        if (result.ec == std::errc{}) {
-            return value;
-        }
-
-        if (result.ec == std::errc::result_out_of_range) {
-            throw parse_exception{"Value out of range for argument: "s + token};
-        }
-
-        throw parse_exception{"Failed to parse: "s + token};
-    }
-};
-
-template <>
-struct parser<std::string_view> {
-    constexpr static inline std::string_view parse(std::string_view token)
-    {
-        return token;
-    }
-};
-
-template <>
-struct parser<bool> {
-    static bool parse(std::string_view token);
-};
-
-// The default vector-like container parser just forwards onto the value_type
-// parser, this is because an argument that can be parsed as a complete
-// container will need a custom parser.  In other words, this is only used for
-// positional arg parsing
-template <typename T>
-struct parser<T, typename std::enable_if_t<traits::has_push_back_method_v<T>>> {
-    static typename T::value_type parse(std::string_view token)
-    {
-        return parser<typename T::value_type>::parse(token);
-    }
-};
 }  // namespace arg_router

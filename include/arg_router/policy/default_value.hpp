@@ -39,23 +39,20 @@ public:
         return value_;
     }
 
-protected:
-    /** If @a value is empty, then populate it with the default value.
+    /** Called when the owning node's token (if any) is missing from the command
+     * line, this will return the default value.
      * 
      * @tparam ValueType Parsed value type, must be implicitly constructible
      * from value_type
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
-     * @param value Parsed value, may be empty
      * @param parents Parents instances pack
+     * @return Default value
      */
     template <typename ValueType, typename... Parents>
-    void post_parse_phase(std::optional<ValueType>& value,
-                          const Parents&... parents) const
+    constexpr ValueType missing_phase(const Parents&... parents) const
     {
         boost::ignore_unused(parents...);
-        if (!value) {
-            value = value_;
-        }
+        return value_;
     }
 
 private:

@@ -24,7 +24,9 @@ const auto repo_env = "AR_REPO_PATH"sv;
 std::string_view get_project_repo()
 {
     const auto path = std::getenv(repo_env.data());
-    BOOST_REQUIRE(path);
+    BOOST_REQUIRE_MESSAGE(
+        path,
+        "env var AR_REPO_PATH not set, set to the absolute repository path");
 
     return path;
 }

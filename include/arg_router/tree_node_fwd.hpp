@@ -7,7 +7,7 @@ namespace arg_router
 template <typename... Params>
 class tree_node;
 
-/** Evaulates to true if @a T is a tree_node specialisation.
+/** Evaulates to true if @a T derives from a tree_node specialisation.
  *
  * @tparam T Type to test
  */

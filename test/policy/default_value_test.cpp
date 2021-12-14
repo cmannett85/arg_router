@@ -21,27 +21,25 @@ public:
     }
 
     template <typename ValueType, typename... Parents>
-    bool post_parse_phase(std::optional<ValueType>& value,
-                          const Parents&... parents) const
+    std::optional<ValueType> missing_phase(const Parents&... parents) const
     {
-        auto hit = false;
+        auto result = std::optional<ValueType>{};
         utility::tuple_type_iterator<typename stub_node::policies_type>(  //
             [&](auto /*i*/, auto ptr) {
                 using this_policy = std::remove_pointer_t<decltype(ptr)>;
-                if constexpr (stub_node::
-                                  template policy_has_post_parse_phase_method_v<
-                                      this_policy,
-                                      ValueType,
-                                      Parents...> &&
+                if constexpr (policy::has_missing_phase_method_v<this_policy,
+                                                                 ValueType,
+                                                                 Parents...> &&
                               traits::is_specialisation_of_v<
                                   this_policy,
                                   policy::default_value>) {
-                    this->this_policy::post_parse_phase(value, parents...);
-                    hit = true;
+                    result =
+                        this->this_policy::template missing_phase<ValueType>(
+                            parents...);
                 }
             });
 
-        return hit;
+        return result;
     }
 };
 }  // namespace
@@ -86,38 +84,27 @@ BOOST_AUTO_TEST_CASE(constructor_and_get_test)
                    });
 }
 
-BOOST_AUTO_TEST_CASE(post_parse_phase_test)
+BOOST_AUTO_TEST_CASE(missing_phase_test)
 {
     const auto root = stub_node{stub_node{policy::default_value{42}},
                                 stub_node{policy::default_value{3.14}},
                                 stub_node{}};
 
-    auto f = [&](auto input_value,
-                 const auto& owner,
-                 auto expected_result,
-                 auto expected_value) {
-        const auto result = owner.post_parse_phase(input_value, owner, root);
-        BOOST_CHECK_EQUAL(result, expected_result);
-        BOOST_CHECK_EQUAL(input_value, expected_value);
+    auto f = [&](const auto& owner, auto expected_value) {
+        using value_type =
+            typename std::decay_t<decltype(expected_value)>::value_type;
+        const auto result =
+            owner.template missing_phase<value_type>(owner, root);
+        BOOST_CHECK_EQUAL(result, expected_value);
     };
 
-    test::data_set(f,
-                   std::tuple{std::tuple{std::optional<int>{},
-                                         std::get<0>(root.children()),
-                                         true,
-                                         std::optional<int>{42}},
-                              std::tuple{std::optional<double>{},
-                                         std::get<1>(root.children()),
-                                         true,
-                                         std::optional<double>{3.14}},
-                              std::tuple{std::optional<double>{1.1},
-                                         std::get<1>(root.children()),
-                                         true,
-                                         std::optional<double>{1.1}},
-                              std::tuple{std::optional<double>{},
-                                         std::get<2>(root.children()),
-                                         false,
-                                         std::optional<double>{}}});
+    test::data_set(
+        f,
+        std::tuple{
+            std::tuple{std::get<0>(root.children()), std::optional<int>{42}},
+            std::tuple{std::get<1>(root.children()),
+                       std::optional<double>{3.14}},
+            std::tuple{std::get<2>(root.children()), std::optional<double>{}}});
 }
 
 BOOST_AUTO_TEST_SUITE_END()

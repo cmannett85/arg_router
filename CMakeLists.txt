@@ -35,6 +35,7 @@ set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/config.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/exception.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/flag.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/global_parser.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/list.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/mode.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/node_category.hpp
@@ -49,6 +50,7 @@ set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/long_name.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/max_count.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/min_count.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/multi_stage_value.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/no_result_value.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/policy.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/required.hpp
@@ -70,6 +72,7 @@ set(HEADERS
 
 set(SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/src/exception.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/global_parser.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/parsing.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/token_type.cpp
 )

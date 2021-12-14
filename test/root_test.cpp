@@ -2,6 +2,7 @@
 
 #include "test_helpers.hpp"
 
+#include <bitset>
 #include <optional>
 
 using namespace arg_router;

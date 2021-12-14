@@ -72,7 +72,7 @@ public:
 
         parsing::find_target_node(*this,
                                   tokens,
-                                  [](auto const& child, auto& tokens) {
+                                  [this](auto const& child, auto& tokens) {
                                       top_level_visitor(child,
                                                         std::move(tokens));
                                   });
@@ -116,7 +116,7 @@ private:
     }
 
     template <typename Node>
-    static void top_level_visitor(const Node& node, parsing::token_list tokens)
+    void top_level_visitor(const Node& node, parsing::token_list tokens) const
     {
         using node_type = std::decay_t<Node>;
 
@@ -149,7 +149,7 @@ private:
                     non_mode_children,
                     router_args,
                     [&](auto i, const auto& child) {
-                        process_token<i, Node>(child, router_args, tokens);
+                        process_token<i>(node, child, router_args, tokens);
                     });
 
                 if (!found_child) {
@@ -161,7 +161,7 @@ private:
             check_hits(node, fra);
             call_router(node, fra, tokens);
         } else {
-            process_token<0, Node>(node, router_args, tokens);
+            process_token<0>(node, node, router_args, tokens);
             call_router(node, router_args, tokens);
         }
     }
@@ -170,37 +170,18 @@ private:
               typename Parent,
               typename Node,
               typename RouterArgs>
-    static void process_token(const Node& node,
-                              RouterArgs& router_args,
-                              parsing::token_list& tokens)
+    void process_token(const Parent& parent,
+                       const Node& node,
+                       RouterArgs& router_args,
+                       parsing::token_list& tokens) const
     {
         auto& arg = std::get<I>(router_args);
 
         if constexpr (policy::has_value_tokens_v<Node>) {
-            // Drop the token if present, the value follows
-            if constexpr (traits::has_match_method_v<Node>) {
-                tokens.erase(tokens.begin());
-            }
-            auto value = parse_token_argument(node, tokens.front().name);
+            auto value = parse_token_argument(parent, node, tokens);
 
             if constexpr (traits::has_aliased_policies_type_v<Node>) {
                 process_aliased_token<Node, Parent>(value, router_args);
-            } else if constexpr (supports_multiple_values<Node>()) {
-                if (!arg) {
-                    arg = {std::move(value)};
-                } else {
-                    arg->push_back(std::move(value));
-                }
-
-                // Positional args have contiguous value tokens
-                if constexpr (policy::has_contiguous_value_tokens_v<Node>) {
-                    const auto count = contiguous_token_count<Node>(tokens);
-                    for (auto i = 1u; i < count; ++i) {
-                        tokens.erase(tokens.begin());
-                        value = parse_token_argument(node, tokens.front().name);
-                        arg->push_back(std::move(value));
-                    }
-                }
             } else {
                 if (arg) {
                     throw parse_exception{"Argument has already been set",
@@ -227,20 +208,16 @@ private:
             static_assert(traits::always_false_v<Node>,
                           "Unhandled node category");
         }
-
-        tokens.erase(tokens.begin());
     }
 
-    template <typename Node>
-    static auto parse_token_argument(const Node& node, std::string_view token)
+    template <typename Parent, typename Node>
+    auto parse_token_argument(const Parent& parent,
+                              const Node& node,
+                              parsing::token_list& tokens) const
     {
-        // If the node has a custom_parser-like policy, prefer it over the
-        // global parse function
-        if constexpr (traits::has_parse_method_v<Node>) {
-            return node.parse(token);
-        } else {
-            return arg_router::parser<typename Node::value_type>::parse(token);
-        }
+        // The ancestry is complete nonsense to appease the parser whilst we
+        // refactor for #56 and #57
+        return node.template parse(tokens, parent, *this);
     }
 
     template <typename Node,

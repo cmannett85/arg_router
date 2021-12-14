@@ -31,10 +31,9 @@ public:
         utility::tuple_type_iterator<typename stub_node::policies_type>(  //
             [&](auto /*i*/, auto ptr) {
                 using this_policy = std::remove_pointer_t<decltype(ptr)>;
-                if constexpr (stub_node::
-                                  template policy_has_pre_parse_phase_method_v<
-                                      this_policy,
-                                      Parents...> &&
+                if constexpr (policy::has_pre_parse_phase_method_v<
+                                  this_policy,
+                                  Parents...> &&
                               traits::is_specialisation_of_v<this_policy,
                                                              policy::alias_t>) {
                     this->this_policy::pre_parse_phase(tokens,
@@ -158,11 +157,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
         const auto result =
             owner.pre_parse_phase(input_tokens, view, owner, test, root);
         BOOST_CHECK_EQUAL(result, expected_result);
-
-        BOOST_REQUIRE_EQUAL(input_tokens.size(), expected_tokens.size());
-        for (auto i = 0u; i < expected_tokens.size(); ++i) {
-            BOOST_CHECK_EQUAL(input_tokens[i], expected_tokens[i]);
-        }
+        BOOST_CHECK_EQUAL(input_tokens, expected_tokens);
     };
 
     test::data_set(

@@ -19,13 +19,13 @@ struct no_result_value {
  * @tparam T Type to test
  */
 template <typename T>
-using has_result_value = std::is_base_of<no_result_value, T>;
+using has_no_result_value = std::is_base_of<no_result_value, T>;
 
-/** Helper variable for has_result_value.
+/** Helper variable for has_no_result_value.
  *
  * @tparam T Type to test
  */
 template <typename T>
-constexpr bool has_result_value_v = has_result_value<T>::value;
+constexpr bool has_no_result_value_v = has_no_result_value<T>::value;
 }  // namespace policy
 }  // namespace arg_router
