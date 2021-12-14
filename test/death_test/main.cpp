@@ -1,13 +1,12 @@
 
-#include "arg_router/policy/validator.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/positional_arg.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
 
 int main() {
-        arg_router::root_t<
-            arg_router::flag_t<
-                arg_router::policy::short_name_t<
-                    arg_router::traits::integral_constant<'a'>>,
-                arg_router::policy::long_name_t<S_("test")>,
-                arg_router::policy::router<std::less<>>>>();
+    auto f = positional_arg<int>(policy::long_name<S_("hello")>);
     return 0;
 }
     

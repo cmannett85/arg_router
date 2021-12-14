@@ -111,28 +111,16 @@ protected:
         using mode_type = boost::mp11::mp_second<std::tuple<Parents...>>;
         using aliased_indices = aliased_node_indices<mode_type>;
 
-        static_assert(traits::has_count_method_v<node_type> ||
-                          (traits::has_minimum_count_method_v<node_type> &&
-                           traits::has_maximum_count_method_v<node_type>),
+        static_assert(traits::has_minimum_count_method_v<node_type> &&
+                          traits::has_maximum_count_method_v<node_type>,
                       "Node requires a count(), or minimum_count() and "
                       "maximum_count() methods to use an alias");
-        if constexpr (!traits::has_count_method_v<node_type>) {
-            static_assert(
-                node_type::minimum_count() == node_type::maximum_count(),
-                "Node requires minimum_count() and maximum_count() "
-                "to return the same value to use an alias");
-        }
-
-        constexpr auto count = [&]() {
-            if constexpr (traits::has_count_method_v<node_type>) {
-                return node_type::count();
-            } else {
-                return node_type::minimum_count();
-            }
-        }();
+        static_assert(node_type::minimum_count() == node_type::maximum_count(),
+                      "Node requires minimum_count() and maximum_count() "
+                      "to return the same value to use an alias");
 
         auto new_tokens = parsing::token_list{};
-        if constexpr (count == 0) {
+        if constexpr (node_type::minimum_count() == 0) {
             new_tokens.reserve(std::tuple_size_v<aliased_indices>);
 
             utility::tuple_iterator(
@@ -146,13 +134,15 @@ protected:
                 aliased_indices{});
         } else {
             // The first token is the argument name, so skip that
-            if (count > view.size()) {
+            if (node_type::minimum_count() > view.size()) {
                 throw parse_exception{
-                    "Too few values for alias, needs " + std::to_string(count),
+                    "Too few values for alias, needs " +
+                        std::to_string(node_type::minimum_count()),
                     parsing::node_token_type<node_type>()};
             }
 
-            new_tokens.reserve(std::tuple_size_v<aliased_indices> * count);
+            new_tokens.reserve(std::tuple_size_v<aliased_indices> *
+                               node_type::minimum_count());
             utility::tuple_iterator(
                 [&](auto /*i*/, auto index) {
                     using alias_node_type =
@@ -160,14 +150,14 @@ protected:
                                              typename mode_type::children_type>;
                     new_tokens.push_back(
                         parsing::node_token_type<alias_node_type>());
-                    for (auto i = 0u; i < count; ++i) {
+                    for (auto i = 0u; i < node_type::minimum_count(); ++i) {
                         new_tokens.push_back(view[i]);
                     }
                 },
                 aliased_indices{});
         }
 
-        tokens.insert(tokens.begin() + count,
+        tokens.insert(tokens.begin() + node_type::minimum_count(),
                       new_tokens.begin(),
                       new_tokens.end());
     }

@@ -18,27 +18,25 @@ public:
     }
 
     template <typename ValueType, typename... Parents>
-    bool post_parse_phase(std::optional<ValueType>& value,
-                          const Parents&... parents) const
+    std::optional<ValueType> missing_phase(const Parents&... parents) const
     {
-        auto hit = false;
+        auto result = std::optional<ValueType>{};
         utility::tuple_type_iterator<typename stub_node::policies_type>(  //
             [&](auto /*i*/, auto ptr) {
                 using this_policy = std::remove_pointer_t<decltype(ptr)>;
-                if constexpr (stub_node::
-                                  template policy_has_post_parse_phase_method_v<
-                                      this_policy,
-                                      ValueType,
-                                      Parents...> &&
+                if constexpr (policy::has_missing_phase_method_v<this_policy,
+                                                                 ValueType,
+                                                                 Parents...> &&
                               traits::is_specialisation_of_v<
                                   this_policy,
                                   policy::required_t>) {
-                    this->this_policy::post_parse_phase(value, parents...);
-                    hit = true;
+                    result =
+                        this->this_policy::template missing_phase<ValueType>(
+                            parents...);
                 }
             });
 
-        return hit;
+        return result;
     }
 };
 }  // namespace
@@ -53,38 +51,25 @@ BOOST_AUTO_TEST_CASE(is_policy_test)
                   "Policy test has failed");
 }
 
-BOOST_AUTO_TEST_CASE(post_parse_phase_test)
+BOOST_AUTO_TEST_CASE(missing_phase_test)
 {
     const auto root =
         stub_node{stub_node{policy::long_name<S_("test")>, policy::required},
                   stub_node{}};
 
-    auto f = [&](auto value,
-                 const auto& owner,
-                 auto expected_result,
-                 std::string fail_message) {
+    auto f = [&](const auto& owner, std::string fail_message) {
         try {
-            const auto result = owner.post_parse_phase(value, owner, root);
+            owner.template missing_phase<int>(owner, root);
             BOOST_CHECK(fail_message.empty());
-            BOOST_CHECK_EQUAL(result, expected_result);
         } catch (parse_exception& e) {
             BOOST_CHECK_EQUAL(e.what(), fail_message);
         }
     };
 
     test::data_set(f,
-                   std::tuple{std::tuple{std::optional<int>{42},  //
-                                         std::get<0>(root.children()),
-                                         true,
-                                         ""},
-                              std::tuple{std::optional<int>{},
-                                         std::get<0>(root.children()),
-                                         true,
+                   std::tuple{std::tuple{std::get<0>(root.children()),
                                          "Missing required argument: --test"},
-                              std::tuple{std::optional<int>{},
-                                         std::get<1>(root.children()),
-                                         false,
-                                         ""}});
+                              std::tuple{std::get<1>(root.children()), ""}});
 }
 
 BOOST_AUTO_TEST_SUITE(death_suite)
@@ -112,12 +97,11 @@ public:
     }
 
     template <typename ValueType, typename... Parents>
-    void post_parse_phase(std::optional<ValueType>& value,
-                          const Parents&... parents) const
+    void missing_phase(const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<1, typename stub_node::policies_type>;
-        this->this_policy::post_parse_phase(value, parents...);
+        this->this_policy::template missing_phase<ValueType>(parents...);
     }
 };
 }  // namespace
@@ -125,8 +109,7 @@ public:
 int main() {
     const auto node = stub_node{policy::long_name<S_("test")>,
                                 policy::required};
-    auto value = std::optional<int>{42};
-    node.post_parse_phase(value);
+    node.template missing_phase<int>();
     return 0;
 }
     )",

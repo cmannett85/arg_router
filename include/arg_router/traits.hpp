@@ -298,14 +298,15 @@ struct has_parse_method {
 template <typename T>
 constexpr bool has_parse_method_v = has_parse_method<T>::value;
 
-/** Determine if a type has a <TT>match(const parsing:token_type&)</TT> method.
+/** Determine if a type has a <TT>match_old(const parsing:token_type&)</TT>
+ * method.
  *
  * @tparam T Type to query
  */
 template <typename T>
 struct has_match_method {
     template <typename U>
-    using type = decltype(std::declval<const U&>().match(
+    using type = decltype(std::declval<const U&>().match_old(
         std::declval<const parsing::token_type&>()));
 
     constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
@@ -452,5 +453,59 @@ struct has_aliased_policies_type {
 template <typename T>
 constexpr bool has_aliased_policies_type_v =
     has_aliased_policies_type<T>::value;
+
+/** Determine if a type has a <TT>value_type</TT>.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+struct has_value_type {
+    template <typename U>
+    using type = typename U::value_type;
+
+    constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
+};
+
+/** Helper variable for <TT>value_type</TT>.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+constexpr bool has_value_type_v = has_value_type<T>::value;
+
+/** Evaluates to the number of arguments the Callable @a T has.
+ *
+ * From https://stackoverflow.com/a/27867127/498437.
+ * @note The specialisations are not complete, there are no volatile or
+ * ref-qualified versions
+ * @tparam T Type to query
+ */
+template <typename T>
+struct arity /** @cond */ : arity<decltype(&T::operator())> /** @endcond */ {
+};
+
+template <typename R, typename... Args>
+struct arity<R (*)(Args...)> : integral_constant<sizeof...(Args)> {
+};
+template <typename R, typename C, typename... Args>
+struct arity<R (C::*)(Args...)> : integral_constant<sizeof...(Args)> {
+};
+template <typename R, typename C, typename... Args>
+struct arity<R (C::*)(Args...) const> : integral_constant<sizeof...(Args)> {
+};
+template <typename R, typename C, typename... Args>
+struct arity<R (C::*)(Args...) noexcept> : integral_constant<sizeof...(Args)> {
+};
+template <typename R, typename C, typename... Args>
+struct arity<R (C::*)(Args...) const noexcept> :
+    integral_constant<sizeof...(Args)> {
+};
+
+/** Helper variable for <TT>arity</TT>.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+constexpr std::size_t arity_v = arity<T>::value;
 }  // namespace traits
 }  // namespace arg_router

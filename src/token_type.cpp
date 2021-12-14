@@ -4,6 +4,7 @@
 
 using namespace arg_router;
 using namespace utility::string_view_ops;
+using namespace std::string_literals;
 
 std::string_view parsing::to_string(prefix_type prefix)
 {
@@ -17,6 +18,18 @@ std::string_view parsing::to_string(prefix_type prefix)
 std::string parsing::to_string(const token_type& token)
 {
     return std::string{to_string(token.prefix)} + token.name;
+}
+
+std::string parsing::to_string(const token_list& tokens)
+{
+    auto str = ""s;
+    for (auto i = 0u; i < tokens.size(); ++i) {
+        str += to_string(tokens[i]);
+        if (i != (tokens.size() - 1)) {
+            str += ", ";
+        }
+    }
+    return str;
 }
 
 parsing::token_type parsing::get_token_type(std::string_view token)

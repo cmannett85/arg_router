@@ -17,18 +17,18 @@ namespace policy
 template <typename = void>  // This is needed due so it can be used in
 class required_t            // template template parameters
 {
-protected:
+public:
     /** If @a value is empty, then throw an error
      * 
      * @tparam ValueType Parsed value type, must be implicitly constructible
      * from value_type
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
-     * @param value Parsed value, may be empty
      * @param parents Parents instances pack
+     * @return Nothing, it will thrown if called
+     * @exception parse_exception Thrown if this method is called
      */
     template <typename ValueType, typename... Parents>
-    void post_parse_phase(std::optional<ValueType>& value,
-                          const Parents&... parents) const
+    [[noreturn]] ValueType missing_phase(const Parents&... parents) const
     {
         static_assert(sizeof...(Parents) >= 1,
                       "Alias requires at least 1 parent");
@@ -36,10 +36,8 @@ protected:
         using node_type = boost::mp11::mp_first<std::tuple<Parents...>>;
 
         boost::ignore_unused(parents...);
-        if (!value) {
-            throw parse_exception{"Missing required argument",
-                                  parsing::node_token_type<node_type>()};
-        }
+        throw parse_exception{"Missing required argument",
+                              parsing::node_token_type<node_type>()};
     }
 };
 

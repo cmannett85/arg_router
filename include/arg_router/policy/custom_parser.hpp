@@ -35,14 +35,6 @@ public:
     {
     }
 
-    /** Parse @a str to produce a matching instance of @a T.
-     *
-     * @param str String to parse
-     * @return Representation of @a str
-     * @exception parse_exception Should be thrown in case of parse failure
-     */
-    value_type parse(std::string_view str) const { return parser_(str); }
-
 protected:
     /** Parse @a str to produce an equivalent instance of value_type.
      *
@@ -55,11 +47,11 @@ protected:
      * @exception parse_exception Thrown if parsing failed
      */
     template <typename ValueType, typename... Parents>
-    ValueType parse_phase(const parsing::token_type& token,
+    ValueType parse_phase(std::string_view token,
                           const Parents&... parents) const
     {
         boost::ignore_unused(parents...);
-        return parser_(token.name);
+        return parser_(token);
     }
 
 private:

@@ -1,8 +1,10 @@
 #pragma once
 
 #include "arg_router/algorithm.hpp"
+#include "arg_router/global_parser.hpp"
 #include "arg_router/list.hpp"
 #include "arg_router/policy/policy.hpp"
+#include "arg_router/utility/tuple_iterator.hpp"
 
 namespace arg_router
 {
@@ -30,11 +32,127 @@ public:
         is_tree_node,
         std::decay_t<decltype(list_expander(std::declval<Params>()...))>>;
 
+    /** Finds a policy that the @a PolicyChecker predicate passes.
+     *
+     * @tparam PolicyChecker Policy predicate, use one of
+     * <TT>policy::has_*_phase_method</TT>
+     * @tparam Args Auxiliary arguments to pass to @a PolicyChecker
+     */
+    template <template <typename...> typename PolicyChecker, typename... Args>
+    struct phase_finder {
+        using finder =
+            boost::mp11::mp_bind<PolicyChecker, boost::mp11::_1, Args...>;
+
+        /** The policy type that passes @a PolicyChecker, or void if one is not
+         * found.
+         */
+        using type = boost::mp11::mp_eval_if_c<
+            boost::mp11::mp_find_if_q<policies_type, finder>::value ==
+                std::tuple_size_v<policies_type>,
+            void,
+            boost::mp11::mp_at,
+            policies_type,
+            boost::mp11::mp_find_if_q<policies_type, finder>>;
+    };
+
     /** Returns a reference to the children.
      *
      * @return Children
      */
     const children_type& children() const { return children_; }
+
+    /** Finds the child matching token (if present) and calls @a visitor with a
+     * reference to it.
+     *
+     * @a visitor needs to be equivalent to:
+     * @code
+     * [](auto i, const auto& child) { ... }
+     * @endcode
+     * <TT>i</TT> is the index of <TT>child</TT> in the owner's child list.
+     * 
+     * This calls the match(..) const method on each child until it returns
+     * true.
+     * @tparam Fn Visitor type
+     * @param token Command line token to match
+     * @param visitor Visitor instance
+     * @param results_tuple Parent results tuple, used to pass the current value
+     * (if any) to the found child's match(..) const method.  Leave unset if not
+     * required
+     * @return True if a child was found
+     */
+    template <typename Fn, typename ResultsTuple = std::tuple<>>
+    bool find(const parsing::token_type& token,
+              const Fn& visitor,
+              const ResultsTuple& results_tuple = {}) const
+    {
+        auto result = false;
+        utility::tuple_iterator(
+            [&](auto i, const auto& node) {
+                using node_type = std::decay_t<decltype(node)>;
+                constexpr auto match_arity =
+                    traits::arity_v<decltype(&node_type::template match<Fn>)>;
+
+                if (result) {
+                    return;
+                }
+
+                // Wrap the caller's visitor with one that forwards the child
+                // index
+                const auto wrapped_visitor = [&](const auto& child) {
+                    visitor(i, child);
+                };
+
+                if constexpr ((i >= std::tuple_size_v<ResultsTuple>) ||
+                              (match_arity == 2)) {
+                    if (node.match(token, wrapped_visitor)) {
+                        result = true;
+                    }
+                } else {
+                    if (node.match(token,
+                                   wrapped_visitor,
+                                   std::get<i.value>(results_tuple))) {
+                        result = true;
+                    }
+                }
+            },
+            children());
+
+        return result;
+    }
+
+    // Reinstate for Issue #57
+    //protected:
+    /** Generic parse call, uses a policy that supports the parse phase if
+     * present, or the global parser.
+     *
+     * @tparam ValueType Parsed type
+     * @tparam Parents Pack of parent tree nodes in ascending ancestry order
+     * @param token Token to parse
+     * @param parents Parents instances pack
+     * @return Parsed result
+     * @exception parse_exception Thrown if parsing failed
+     */
+    template <typename ValueType, typename... Parents>
+    auto parse(std::string_view token, const Parents&... parents) const
+    {
+        using finder_type =
+            phase_finder<policy::has_parse_phase_method, ValueType, Parents...>;
+        using policy_type = typename finder_type::type;
+
+        static_assert(
+            (boost::mp11::mp_count_if_q<policies_type,
+                                        typename finder_type::finder>::value  //
+             <= 1),
+            "Only zero or one policies supporting a parse phase is supported");
+
+        if constexpr (std::is_void_v<policy_type>) {
+            return parser<ValueType>::parse(token);
+        } else {
+            return this->policy_type::template parse_phase<ValueType>(
+                token,
+                parents...);
+        }
+    }
 
 protected:
     /** Constructor.
@@ -49,153 +167,14 @@ protected:
     {
     }
 
-    /** Determine if a policy has a <TT>pre_parse_phase</TT> method.
-     *
-     * @tparam T Policy type to query
-     * @tparam Parents Pack of parent tree nodes in ascending ancestry order
-     */
-    template <typename T, typename... Parents>
-    struct policy_has_pre_parse_phase_method : T {
-        static_assert(policy::is_policy_v<T>, "T must be a policy");
-
-        template <typename U>
-        using type = decltype(  //
-            std::declval<const policy_has_pre_parse_phase_method&>()
-                .template pre_parse_phase<Parents...>(
-                    std::declval<parsing::token_list&>(),
-                    std::declval<utility::span<parsing::token_type>&>(),
-                    std::declval<const Parents&>()...));
-
-        constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
-    };
-
-    /** Helper variable for policy_has_pre_parse_phase_method.
-     *
-     * @tparam T Policy type to query
-     * @tparam Parents Pack of parent tree nodes in ascending ancestry order
-     */
-    template <typename T, typename... Parents>
-    static constexpr bool policy_has_pre_parse_phase_method_v =
-        policy_has_pre_parse_phase_method<T, Parents...>::value;
-
-    /** Determine if a policy has a <TT>parse_phase</TT> method.
-     *
-     * @tparam T Policy type to query
-     * @tparam ValueType Parsed type
-     * @tparam Parents Pack of parent tree nodes in ascending ancestry order
-     */
-    template <typename T, typename ValueType, typename... Parents>
-    struct policy_has_parse_phase_method : T {
-        static_assert(policy::is_policy_v<T>, "T must be a policy");
-
-        template <typename U>
-        using type = decltype(  //
-            std::declval<const policy_has_parse_phase_method&>()
-                .template parse_phase<ValueType, Parents...>(
-                    std::declval<const parsing::token_type&>(),
-                    std::declval<const Parents&>()...));
-
-        constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
-    };
-
-    /** Helper variable for policy_has_parse_phase_method.
-     *
-     * @tparam T Policy type to query
-     * @tparam ValueType Parsed type
-     * @tparam Parents Pack of parent tree nodes in ascending ancestry order
-     */
-    template <typename T, typename ValueType, typename... Parents>
-    static constexpr bool policy_has_parse_phase_method_v =
-        policy_has_parse_phase_method<T, ValueType, Parents...>::value;
-
-    /** Determine if a policy has a <TT>post_parse_phase</TT> method.
-     *
-     * @tparam T Policy type to query
-     * @tparam ValueType Parsed type
-     * @tparam Parents Pack of parent tree nodes in ascending ancestry order
-     */
-    template <typename T, typename ValueType, typename... Parents>
-    struct policy_has_post_parse_phase_method : T {
-        static_assert(policy::is_policy_v<T>, "T must be a policy");
-
-        template <typename U>
-        using type = decltype(  //
-            std::declval<const policy_has_post_parse_phase_method&>()
-                .template post_parse_phase<ValueType, Parents...>(
-                    std::declval<std::optional<ValueType>&>(),
-                    std::declval<const Parents&>()...));
-
-        constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
-    };
-
-    /** Helper variable for policy_has_pre_parse_phase_method.
-     *
-     * @tparam T Policy type to query
-     * @tparam ValueType Parsed type
-     * @tparam Parents Pack of parent tree nodes in ascending ancestry order
-     */
-    template <typename T, typename ValueType, typename... Parents>
-    static constexpr bool policy_has_post_parse_phase_method_v =
-        policy_has_post_parse_phase_method<T, ValueType, Parents...>::value;
-
-    /** Determine if a policy has a <TT>validation_phase</TT> method.
-     *
-     * @tparam T Policy type to query
-     * @tparam ValueType Parsed type
-     * @tparam Parents Pack of parent tree nodes in ascending ancestry order
-     */
-    template <typename T, typename ValueType, typename... Parents>
-    struct policy_has_validation_phase_method : T {
-        static_assert(policy::is_policy_v<T>, "T must be a policy");
-
-        template <typename U>
-        using type = decltype(  //
-            std::declval<const policy_has_validation_phase_method&>()
-                .template validation_phase<ValueType, Parents...>(
-                    std::declval<const ValueType&>(),
-                    std::declval<const Parents&>()...));
-
-        constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
-    };
-
-    /** Helper variable for policy_has_validation_phase_method.
-     *
-     * @tparam T Policy type to query
-     * @tparam ValueType Parsed type
-     * @tparam Parents Pack of parent tree nodes in ascending ancestry order
-     */
-    template <typename T, typename ValueType, typename... Parents>
-    static constexpr bool policy_has_validation_phase_method_v =
-        policy_has_validation_phase_method<T, ValueType, Parents...>::value;
-
-    /** Determine if a policy has a <TT>routing_phase</TT> method.
-     *
-     * @tparam T Policy type to query
-     * @tparam Args Pack of argument types
-     */
-    template <typename T, typename... Args>
-    struct policy_has_routing_phase_method : T {
-        static_assert(policy::is_policy_v<T>, "T must be a policy");
-
-        template <typename U>
-        using type = decltype(  //
-            std::declval<const policy_has_routing_phase_method&>()
-                .template routing_phase<Args...>(
-                    std::declval<const Args&>()...));
-
-        constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
-    };
-
-    /** Helper variable for policy_has_routing_phase_method.
-     *
-     * @tparam T Policy type to query
-     * @tparam Args Pack of argument types
-     */
-    template <typename T, typename... Args>
-    static constexpr bool policy_has_routing_phase_method_v =
-        policy_has_routing_phase_method<T, Args...>::value;
-
 private:
+    static_assert(
+        (boost::mp11::mp_count_if_q<
+             policies_type,
+             typename phase_finder<policy::has_routing_phase_method>::finder>::
+             value <= 1),
+        "Only zero or one policies supporting a routing phase is supported");
+
     template <template <typename...> typename Fn, typename... ExpandedParams>
     static auto common_filter(ExpandedParams&... expanded_params)
     {

@@ -13,6 +13,7 @@ set(TEST_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/algorithm_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/arg_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/flag_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/global_parser_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/list_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/mode_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/node_category_test.cpp

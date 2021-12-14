@@ -257,14 +257,17 @@ BOOST_AUTO_TEST_CASE(positional_args_must_be_at_end_test)
         arg_router::mode_t<
             flag_t<policy::long_name_t<S_("test1")>>,
             arg_t<int, policy::long_name_t<S_("test2")>>,
-            positional_arg_t<int, policy::long_name_t<S_("test3")>>>>();
+            positional_arg_t<std::vector<int>,
+                             policy::long_name_t<S_("test3")>>>>();
 
     policy::validation::positional_args_must_be_at_end::check<
         arg_router::mode_t<
             flag_t<policy::long_name_t<S_("test1")>>,
             arg_t<int, policy::long_name_t<S_("test2")>>,
-            positional_arg_t<int, policy::long_name_t<S_("test3")>>,
-            positional_arg_t<int, policy::long_name_t<S_("test4")>>>>();
+            positional_arg_t<std::vector<int>,
+                             policy::long_name_t<S_("test3")>>,
+            positional_arg_t<std::vector<int>,
+                             policy::long_name_t<S_("test4")>>>>();
 }
 
 BOOST_AUTO_TEST_CASE(positional_args_must_have_fixed_count_if_not_at_end_test)
@@ -273,7 +276,8 @@ BOOST_AUTO_TEST_CASE(positional_args_must_have_fixed_count_if_not_at_end_test)
         check<arg_router::mode_t<
             flag_t<policy::long_name_t<S_("test1")>>,
             arg_t<int, policy::long_name_t<S_("test2")>>,
-            positional_arg_t<int, policy::long_name_t<S_("test3")>>>>();
+            positional_arg_t<std::vector<int>,
+                             policy::long_name_t<S_("test3")>>>>();
 
     policy::validation::positional_args_must_have_fixed_count_if_not_at_end::
         check<arg_router::mode_t<
@@ -283,7 +287,8 @@ BOOST_AUTO_TEST_CASE(positional_args_must_have_fixed_count_if_not_at_end_test)
                 int,
                 policy::long_name_t<S_("test3")>,
                 policy::count_t<traits::integral_constant<std::size_t{1}>>>,
-            positional_arg_t<int, policy::long_name_t<S_("test4")>>>>();
+            positional_arg_t<std::vector<int>,
+                             policy::long_name_t<S_("test4")>>>>();
 
     policy::validation::positional_args_must_have_fixed_count_if_not_at_end::
         check<arg_router::mode_t<
@@ -294,10 +299,11 @@ BOOST_AUTO_TEST_CASE(positional_args_must_have_fixed_count_if_not_at_end_test)
                 policy::long_name_t<S_("test3")>,
                 policy::count_t<traits::integral_constant<std::size_t{1}>>>,
             positional_arg_t<
-                int,
+                std::vector<int>,
                 policy::long_name_t<S_("test4")>,
                 policy::count_t<traits::integral_constant<std::size_t{3}>>>,
-            positional_arg_t<int, policy::long_name_t<S_("test5")>>>>();
+            positional_arg_t<std::vector<int>,
+                             policy::long_name_t<S_("test5")>>>>();
 
     policy::validation::positional_args_must_have_fixed_count_if_not_at_end::
         check<arg_router::mode_t<
@@ -308,7 +314,8 @@ BOOST_AUTO_TEST_CASE(positional_args_must_have_fixed_count_if_not_at_end_test)
                 policy::long_name_t<S_("test3")>,
                 policy::min_count_t<traits::integral_constant<std::size_t{1}>>,
                 policy::max_count_t<traits::integral_constant<std::size_t{1}>>>,
-            positional_arg_t<int, policy::long_name_t<S_("test4")>>>>();
+            positional_arg_t<std::vector<int>,
+                             policy::long_name_t<S_("test4")>>>>();
 }
 
 BOOST_AUTO_TEST_CASE(validate_counts_test)
@@ -320,19 +327,13 @@ BOOST_AUTO_TEST_CASE(validate_counts_test)
         policy::max_count_t<traits::integral_constant<std::size_t{1}>>>>();
 
     policy::validation::validate_counts::check<positional_arg_t<
-        int,
-        policy::long_name_t<S_("test1")>,
-        policy::min_count_t<traits::integral_constant<std::size_t{0}>>,
-        policy::max_count_t<traits::integral_constant<std::size_t{0}>>>>();
-
-    policy::validation::validate_counts::check<positional_arg_t<
-        int,
+        std::vector<int>,
         policy::long_name_t<S_("test1")>,
         policy::min_count_t<traits::integral_constant<std::size_t{1}>>,
         policy::max_count_t<traits::integral_constant<std::size_t{3}>>>>();
 
     policy::validation::validate_counts::check<positional_arg_t<
-        int,
+        std::vector<int>,
         policy::long_name_t<S_("test1")>,
         policy::min_count_t<traits::integral_constant<std::size_t{42}>>,
         policy::max_count_t<traits::integral_constant<std::size_t{84}>>>>();
@@ -781,7 +782,7 @@ int main() {
     policy::validation::positional_args_must_be_at_end::check<
         arg_router::mode_t<
             flag_t<policy::long_name_t<S_("test1")>>,
-            positional_arg_t<int, policy::long_name_t<S_("test3")>>,
+            positional_arg_t<std::vector<int>, policy::long_name_t<S_("test3")>>,
             arg_t<int, policy::long_name_t<S_("test2")>>>>();
     return 0;
 }
@@ -800,7 +801,7 @@ using namespace arg_router;
 int main() {
     policy::validation::positional_args_must_be_at_end::check<
         arg_router::mode_t<
-            positional_arg_t<int, policy::long_name_t<S_("test3")>>,
+            positional_arg_t<std::vector<int>, policy::long_name_t<S_("test3")>>,
             flag_t<policy::long_name_t<S_("test1")>>,
             arg_t<int, policy::long_name_t<S_("test2")>>>>();
     return 0;
@@ -823,8 +824,8 @@ int main() {
         check<arg_router::mode_t<
             flag_t<policy::long_name_t<S_("test1")>>,
             arg_t<int, policy::long_name_t<S_("test2")>>,
-            positional_arg_t<int, policy::long_name_t<S_("test3")>>,
-            positional_arg_t<int, policy::long_name_t<S_("test4")>>>>();
+            positional_arg_t<std::vector<int>, policy::long_name_t<S_("test3")>>,
+            positional_arg_t<std::vector<int>, policy::long_name_t<S_("test4")>>>>();
     return 0;
 }
     )",
@@ -844,7 +845,7 @@ int main() {
         check<arg_router::mode_t<
             flag_t<policy::long_name_t<S_("test1")>>,
             arg_t<int, policy::long_name_t<S_("test2")>>,
-            positional_arg_t<int, policy::long_name_t<S_("test3")>>,
+            positional_arg_t<std::vector<int>, policy::long_name_t<S_("test3")>>,
             positional_arg_t<
                 int,
                 policy::long_name_t<S_("test3")>,
@@ -869,10 +870,10 @@ int main() {
             flag_t<policy::long_name_t<S_("test1")>>,
             arg_t<int, policy::long_name_t<S_("test2")>>,
             positional_arg_t<
-                int,
+                std::vector<int>,
                 policy::long_name_t<S_("test3")>,
                 policy::min_count_t<traits::integral_constant<std::size_t{1}>>>,
-            positional_arg_t<int, policy::long_name_t<S_("test4")>>>>();
+            positional_arg_t<std::vector<int>, policy::long_name_t<S_("test4")>>>>();
     return 0;
 }
     )",
@@ -893,10 +894,10 @@ int main() {
             flag_t<policy::long_name_t<S_("test1")>>,
             arg_t<int, policy::long_name_t<S_("test2")>>,
             positional_arg_t<
-                int,
+                std::vector<int>,
                 policy::long_name_t<S_("test3")>,
                 policy::max_count_t<traits::integral_constant<std::size_t{1}>>>,
-            positional_arg_t<int, policy::long_name_t<S_("test4")>>>>();
+            positional_arg_t<std::vector<int>, policy::long_name_t<S_("test4")>>>>();
     return 0;
 }
     )",
@@ -917,11 +918,11 @@ int main() {
             flag_t<policy::long_name_t<S_("test1")>>,
             arg_t<int, policy::long_name_t<S_("test2")>>,
             positional_arg_t<
-                int,
+                std::vector<int>,
                 policy::long_name_t<S_("test3")>,
                 policy::min_count_t<traits::integral_constant<std::size_t{1}>>,
                 policy::max_count_t<traits::integral_constant<std::size_t{3}>>>,
-            positional_arg_t<int, policy::long_name_t<S_("test4")>>>>();
+            positional_arg_t<std::vector<int>, policy::long_name_t<S_("test4")>>>>();
     return 0;
 }
     )",
@@ -937,7 +938,7 @@ using namespace arg_router;
 
 int main() {
     policy::validation::validate_counts::check<positional_arg_t<
-        int,
+        std::vector<int>,
         policy::long_name_t<S_("test1")>,
         policy::min_count_t<traits::integral_constant<std::size_t{2}>>,
         policy::max_count_t<traits::integral_constant<std::size_t{1}>>>>();

@@ -25,11 +25,10 @@ public:
         utility::tuple_type_iterator<typename stub_node::policies_type>(  //
             [&](auto /*i*/, auto ptr) {
                 using this_policy = std::remove_pointer_t<decltype(ptr)>;
-                if constexpr (stub_node::
-                                  template policy_has_validation_phase_method_v<
-                                      this_policy,
-                                      ValueType,
-                                      Parents...> &&
+                if constexpr (policy::has_validation_phase_method_v<
+                                  this_policy,
+                                  ValueType,
+                                  Parents...> &&
                               traits::is_specialisation_of_v<
                                   this_policy,
                                   policy::min_count_t>) {

@@ -36,7 +36,7 @@ BOOST_AUTO_TEST_CASE(has_fixed_count_test)
     }
 
     {
-        using type = decltype(positional_arg<int>(
+        using type = decltype(positional_arg<std::vector<int>>(
             policy::long_name<S_("hello")>,
             policy::description<S_("This is a hello")>));
         static_assert(!node_category::has_fixed_count_v<type, 0>, "Fail");
@@ -44,7 +44,7 @@ BOOST_AUTO_TEST_CASE(has_fixed_count_test)
     }
 
     {
-        using type = decltype(positional_arg<int>(
+        using type = decltype(positional_arg<std::vector<int>>(
             policy::long_name<S_("hello")>,
             policy::description<S_("This is a hello")>,
             policy::count<5>));
@@ -53,7 +53,7 @@ BOOST_AUTO_TEST_CASE(has_fixed_count_test)
     }
 
     {
-        using type = decltype(positional_arg<int>(
+        using type = decltype(positional_arg<std::vector<int>>(
             policy::long_name<S_("hello")>,
             policy::description<S_("This is a hello")>,
             policy::min_count<5>,
@@ -63,7 +63,7 @@ BOOST_AUTO_TEST_CASE(has_fixed_count_test)
     }
 
     {
-        using type = decltype(positional_arg<int>(
+        using type = decltype(positional_arg<std::vector<int>>(
             policy::long_name<S_("hello")>,
             policy::description<S_("This is a hello")>,
             policy::min_count<5>));
@@ -72,7 +72,7 @@ BOOST_AUTO_TEST_CASE(has_fixed_count_test)
     }
 
     {
-        using type = decltype(positional_arg<int>(
+        using type = decltype(positional_arg<std::vector<int>>(
             policy::long_name<S_("hello")>,
             policy::description<S_("This is a hello")>,
             policy::min_count<2>,
@@ -93,14 +93,14 @@ BOOST_AUTO_TEST_CASE(has_no_count_test)
     }
 
     {
-        using type = decltype(positional_arg<int>(
+        using type = decltype(positional_arg<std::vector<int>>(
             policy::long_name<S_("hello")>,
             policy::description<S_("This is a hello")>));
         static_assert(node_category::has_no_count_v<type>, "Fail");
     }
 
     {
-        using type = decltype(positional_arg<int>(
+        using type = decltype(positional_arg<std::vector<int>>(
             policy::long_name<S_("hello")>,
             policy::description<S_("This is a hello")>,
             policy::count<5>));
@@ -108,7 +108,7 @@ BOOST_AUTO_TEST_CASE(has_no_count_test)
     }
 
     {
-        using type = decltype(positional_arg<int>(
+        using type = decltype(positional_arg<std::vector<int>>(
             policy::long_name<S_("hello")>,
             policy::description<S_("This is a hello")>,
             policy::min_count<5>));
@@ -172,7 +172,7 @@ BOOST_AUTO_TEST_CASE(is_generic_flag_like_test)
     }
 
     {
-        using type = decltype(positional_arg<int>(
+        using type = decltype(positional_arg<std::vector<int>>(
             policy::long_name<S_("hello")>,
             policy::description<S_("This is a hello")>));
         static_assert(!node_category::is_generic_flag_like_v<type>, "Fail");
@@ -213,7 +213,7 @@ BOOST_AUTO_TEST_CASE(is_flag_like_test)
     }
 
     {
-        using type = decltype(positional_arg<int>(
+        using type = decltype(positional_arg<std::vector<int>>(
             policy::long_name<S_("hello")>,
             policy::description<S_("This is a hello")>));
         static_assert(!node_category::is_flag_like_v<type>, "Fail");
@@ -254,7 +254,7 @@ BOOST_AUTO_TEST_CASE(is_arg_like_test)
     }
 
     {
-        using type = decltype(positional_arg<int>(
+        using type = decltype(positional_arg<std::vector<int>>(
             policy::long_name<S_("hello")>,
             policy::description<S_("This is a hello")>));
         static_assert(!node_category::is_arg_like_v<type>, "Fail");
@@ -295,7 +295,7 @@ BOOST_AUTO_TEST_CASE(is_positional_arg_like_test)
     }
 
     {
-        using type = decltype(positional_arg<int>(
+        using type = decltype(positional_arg<std::vector<int>>(
             policy::long_name<S_("hello")>,
             policy::description<S_("This is a hello")>));
         static_assert(node_category::is_positional_arg_like_v<type>, "Fail");
@@ -336,7 +336,7 @@ BOOST_AUTO_TEST_CASE(is_generic_mode_like_test)
     }
 
     {
-        using type = decltype(positional_arg<int>(
+        using type = decltype(positional_arg<std::vector<int>>(
             policy::long_name<S_("hello")>,
             policy::description<S_("This is a hello")>));
         static_assert(!node_category::is_generic_mode_like_v<type>, "Fail");
@@ -377,7 +377,7 @@ BOOST_AUTO_TEST_CASE(is_anonymous_mode_like_test)
     }
 
     {
-        using type = decltype(positional_arg<int>(
+        using type = decltype(positional_arg<std::vector<int>>(
             policy::long_name<S_("hello")>,
             policy::description<S_("This is a hello")>));
         static_assert(!node_category::is_anonymous_mode_like_v<type>, "Fail");
@@ -418,7 +418,7 @@ BOOST_AUTO_TEST_CASE(is_named_mode_like_test)
     }
 
     {
-        using type = decltype(positional_arg<int>(
+        using type = decltype(positional_arg<std::vector<int>>(
             policy::long_name<S_("hello")>,
             policy::description<S_("This is a hello")>));
         static_assert(!node_category::is_named_mode_like_v<type>, "Fail");

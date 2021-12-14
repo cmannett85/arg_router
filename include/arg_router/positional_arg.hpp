@@ -19,7 +19,24 @@ class positional_arg_t :
         policy::is_all_policies_v<std::tuple<Policies...>>,
         "Positional args must only contain policies (not other nodes)");
 
+    using parent_type =
+        tree_node<policy::has_contiguous_value_tokens_t, Policies...>;
+
+    constexpr static bool count_of_one = []() {
+        if constexpr (traits::has_minimum_count_method_v<parent_type> &&
+                      traits::has_maximum_count_method_v<parent_type>) {
+            return (parent_type::minimum_count() == 1) &&
+                   (parent_type::maximum_count() == 1);
+        }
+        return false;
+    }();
+
+    static_assert(count_of_one || traits::has_push_back_method_v<T>,
+                  "value_type must have a push_back() method");
+
 public:
+    using typename parent_type::policies_type;
+
     /** Argument value type. */
     using value_type = T;
 
@@ -28,10 +45,111 @@ public:
      * @param policies Policy instances
      */
     constexpr explicit positional_arg_t(Policies... policies) :
-        tree_node<policy::has_contiguous_value_tokens_t, Policies...>{
-            policy::has_contiguous_value_tokens_t{},
-            std::move(policies)...}
+        parent_type{policy::has_contiguous_value_tokens_t{},
+                    std::move(policies)...}
     {
+    }
+
+    /** Always returns true as positional arguments do not have a token to
+     * match, @em unless the maximum count has been reached (if present).
+     *
+     * @a visitor needs to be equivalent to:
+     * @code
+     * [](const auto& node) { ... }
+     * @endcode
+     * <TT>node</TT> will be a reference to this node.
+     * @tparam Fn Visitor type
+     * @param token Command line token to match
+     * @param visitor Visitor instance
+     * @param result Current result from parent (if any), used to determine if
+     * the maximum number of results has been reached
+     * @return Match result, always true
+     */
+    template <typename Fn>
+    bool match(const parsing::token_type& token,
+               const Fn& visitor,
+               const std::optional<T>& result) const
+    {
+        boost::ignore_unused(token);
+        if constexpr (traits::has_push_back_method_v<T> &&
+                      traits::has_maximum_count_method_v<parent_type>) {
+            if (result &&
+                (std::size(*result) >= parent_type::maximum_count())) {
+                return false;
+            }
+        }
+
+        visitor(*this);
+        return true;
+    }
+
+    /** Parse function.
+     * 
+     * This will consume up to maximum_count() (if available) or all of the
+     * tokens.
+     * @tparam Parents Pack of parent tree nodes in ascending ancestry order
+     * @param tokens Token list
+     * @param parents Parents instances pack
+     * @return Parsed result
+     * @exception parse_exception Thrown if parsing failed
+     */
+    template <typename... Parents>
+    value_type parse(parsing::token_list& tokens,
+                     const Parents&... parents) const
+    {
+        auto view = utility::span<parsing::token_type>{tokens};
+
+        // Pre-parse
+        utility::tuple_type_iterator<policies_type>([&](auto /*i*/, auto ptr) {
+            using policy_type = std::remove_pointer_t<decltype(ptr)>;
+            if constexpr (policy::has_pre_parse_phase_method_v<policy_type,
+                                                               positional_arg_t,
+                                                               Parents...>) {
+                this->policy_type::pre_parse_phase(tokens,
+                                                   view,
+                                                   *this,
+                                                   parents...);
+            }
+        });
+
+        auto result = value_type{};
+        if constexpr (traits::has_push_back_method_v<value_type>) {
+            for (auto token : view) {
+                result.push_back(
+                    parent_type::template parse<value_type>(token.name,
+                                                            *this,
+                                                            parents...));
+            }
+        } else if (!view.empty()) {
+            result = parent_type::template parse<value_type>(view.front().name,
+                                                             *this,
+                                                             parents...);
+        }
+
+        // Pop the tokens, we don't need them anymore
+        tokens.erase(tokens.begin(), tokens.begin() + view.size());
+
+        // Validation
+        utility::tuple_type_iterator<policies_type>([&](auto /*i*/, auto ptr) {
+            using policy_type = std::remove_pointer_t<decltype(ptr)>;
+            if constexpr (policy::has_validation_phase_method_v<
+                              policy_type,
+                              value_type,
+                              positional_arg_t,
+                              Parents...>) {
+                this->policy_type::validation_phase(result, *this, parents...);
+            }
+        });
+
+        // Routing
+        using routing_policy = typename parent_type::template phase_finder<
+            policy::has_routing_phase_method,
+            value_type>::type;
+        if constexpr (!std::is_void_v<routing_policy>) {
+            this->routing_policy::routing_phase(tokens, std::move(result));
+        }
+
+        return result;
     }
 };
 

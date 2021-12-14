@@ -15,3 +15,9 @@ parse_exception::parse_exception(const std::string& message,
     std::invalid_argument{message + ": " + parsing::to_string(token)}
 {
 }
+
+parse_exception::parse_exception(const std::string& message,
+                                 const parsing::token_list& tokens) :
+    std::invalid_argument{message + ": " + parsing::to_string(tokens)}
+{
+}
