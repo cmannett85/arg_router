@@ -121,6 +121,8 @@ Functions</h2></td></tr>
 <tr class="separator:ae17bf2873d6146f78dbc777747b29466"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6ef459c26e34d0003b3393d4bef7898b"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a6ef459c26e34d0003b3393d4bef7898b">to_string</a> (const <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> &amp;token)</td></tr>
 <tr class="separator:a6ef459c26e34d0003b3393d4bef7898b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a47287982268da3f31dd46374bf17fbab"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a47287982268da3f31dd46374bf17fbab">to_string</a> (const <a class="el" href="namespacearg__router_1_1parsing.html#a514a5158bba90fd3b119e0a3d4b3c5ab">token_list</a> &amp;tokens)</td></tr>
+<tr class="separator:a47287982268da3f31dd46374bf17fbab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a71a7566d5831eeeb4c5cd1cdaad216be"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a71a7566d5831eeeb4c5cd1cdaad216be">get_token_type</a> (std::string_view token)</td></tr>
 <tr class="separator:a71a7566d5831eeeb4c5cd1cdaad216be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -149,7 +151,7 @@ template&lt;typename Child &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00138">138</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00133">133</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
 
 </div>
 </div>
@@ -166,7 +168,7 @@ template&lt;typename Child &gt; </div>
 </div><div class="memdoc">
 <p>List of tokens. </p>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00064">64</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00066">66</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -229,7 +231,7 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if token matches the long or short form name </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00039">39</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00033">33</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
 
 </div>
 </div>
@@ -328,7 +330,7 @@ template&lt;typename Node , typename Fn &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00335">335</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00330">330</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
 
 </div>
 </div>
@@ -392,7 +394,7 @@ template&lt;typename Node &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Node name </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00065">65</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00060">60</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
 
 </div>
 </div>
@@ -422,12 +424,38 @@ template&lt;typename Node &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00085">85</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00080">80</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a47287982268da3f31dd46374bf17fbab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a47287982268da3f31dd46374bf17fbab">&#9670;&nbsp;</a></span>to_string() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string arg_router::parsing::to_string </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="namespacearg__router_1_1parsing.html#a514a5158bba90fd3b119e0a3d4b3c5ab">token_list</a> &amp;&#160;</td>
+          <td class="paramname"><em>tokens</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Creates a string representation of <em>tokens</em>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">tokens</td><td>Tokens to convert </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>String representation of <em>tokens</em> </dd></dl>
 
 </div>
 </div>
 <a id="a6ef459c26e34d0003b3393d4bef7898b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6ef459c26e34d0003b3393d4bef7898b">&#9670;&nbsp;</a></span>to_string() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ef459c26e34d0003b3393d4bef7898b">&#9670;&nbsp;</a></span>to_string() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -453,7 +481,7 @@ template&lt;typename Node &gt; </div>
 </div>
 </div>
 <a id="ae17bf2873d6146f78dbc777747b29466"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae17bf2873d6146f78dbc777747b29466">&#9670;&nbsp;</a></span>to_string() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ae17bf2873d6146f78dbc777747b29466">&#9670;&nbsp;</a></span>to_string() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -538,7 +566,7 @@ template&lt;typename ChildrenTuple , typename RouterArgs , typename Fn &gt; </di
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if a valid child was found </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00216">216</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00211">211</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
 
 </div>
 </div>
@@ -578,7 +606,7 @@ template&lt;typename ChildrenTuple , typename Fn &gt; </div>
 <p>Visitation pattern to find a named child.</p>
 <p>Visitor needs to be equivalent to: </p><div class="fragment"><div class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> Child&gt;</div>
 <div class="line">operator()(std::size_t i, <span class="keyword">const</span> Child&amp;) {}</div>
-</div><!-- fragment --><p> <code>i</code> is the index into the children tuple. If child has a match(std::string_view) method then the visitor is called if a match is found. If it doesn't have a match method but evaluates to true against <a class="el" href="structarg__router_1_1node__category_1_1is__positional__arg__like.html">node_category::is_positional_arg_like</a>, then the visitor is called.</p>
+</div><!-- fragment --><p> <code>i</code> is the index into the children tuple. If child has a match_old(std::string_view) method then the visitor is called if a match is found. If it doesn't have a match method but evaluates to true against <a class="el" href="structarg__router_1_1node__category_1_1is__positional__arg__like.html">node_category::is_positional_arg_like</a>, then the visitor is called.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">ChildrenTuple</td><td>Tuple of child types </td></tr>
@@ -596,12 +624,12 @@ template&lt;typename ChildrenTuple , typename Fn &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if a valid child was found </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00160">160</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00155">155</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
-<div class="ttc" id="anamespacearg__router_1_1parsing_html_a514a5158bba90fd3b119e0a3d4b3c5ab"><div class="ttname"><a href="namespacearg__router_1_1parsing.html#a514a5158bba90fd3b119e0a3d4b3c5ab">arg_router::parsing::token_list</a></div><div class="ttdeci">std::vector&lt; token_type &gt; token_list</div><div class="ttdef"><b>Definition:</b> <a href="token__type_8hpp_source.html#l00064">token_type.hpp:64</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1parsing_html_a514a5158bba90fd3b119e0a3d4b3c5ab"><div class="ttname"><a href="namespacearg__router_1_1parsing.html#a514a5158bba90fd3b119e0a3d4b3c5ab">arg_router::parsing::token_list</a></div><div class="ttdeci">std::vector&lt; token_type &gt; token_list</div><div class="ttdef"><b>Definition:</b> <a href="token__type_8hpp_source.html#l00066">token_type.hpp:66</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

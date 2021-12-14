@@ -1,4 +1,5 @@
 <map id="arg_router::policy::no_result_value" name="arg_router::policy::no_result_value">
-<area shape="rect" id="node1" title=" " alt="" coords="38,5,174,47"/>
-<area shape="rect" id="node2" href="$classarg__router_1_1policy_1_1alias__t.html" title=" " alt="" coords="5,95,207,136"/>
+<area shape="rect" id="node1" title=" " alt="" coords="109,5,245,47"/>
+<area shape="rect" id="node2" href="$classarg__router_1_1mode__t.html" title=" " alt="" coords="5,95,152,136"/>
+<area shape="rect" id="node3" href="$classarg__router_1_1policy_1_1alias__t.html" title=" " alt="" coords="177,95,378,136"/>
 </map>

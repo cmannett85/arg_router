@@ -386,10 +386,10 @@ $(function() {
 <div class="line">                       std::filesystem::path src) { ... }}))</div>
 </div><!-- fragment --><p><code>ar::list</code> is a simple <code>arg</code> and <code>flag</code> container that <code>mode</code> and <code>root</code> instances detect and add the contents to their child/policy lists - it's nicer than having an instance per type. Also don't be afraid of the copies, the majority of <code><a class="el" href="namespacearg__router.html">arg_router</a></code> types hold no data (the advantage of compile-time!) and those that do (e.g. <code>default_value</code>) generally have small types like primitives or <code>std::string_view</code>.</p>
 <h2>Error Handling</h2>
-<p>Currently <code><a class="el" href="namespacearg__router.html">arg_router</a></code> only supports exceptions as error handling. If a parsing fails for some reason a <code>arg_router::parse_exception</code> is thrown carrying information on the failure. </p>
+<p>Currently <code><a class="el" href="namespacearg__router.html">arg_router</a></code> only supports exceptions as error handling. If a parsing fails for some reason a <code><a class="el" href="classarg__router_1_1parse__exception.html">arg_router::parse_exception</a></code> is thrown carrying information on the failure. </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
-<div class="ttc" id="anamespacearg__router_html_ad22d99fefb929f58fe471fb7bf78d5f4"><div class="ttname"><a href="namespacearg__router.html#ad22d99fefb929f58fe471fb7bf78d5f4">arg_router::arg</a></div><div class="ttdeci">constexpr arg_t&lt; T, Policies... &gt; arg(Policies... policies)</div><div class="ttdef"><b>Definition:</b> <a href="arg_8hpp_source.html#l00064">arg.hpp:64</a></div></div>
+<div class="ttc" id="anamespacearg__router_html_ad22d99fefb929f58fe471fb7bf78d5f4"><div class="ttname"><a href="namespacearg__router.html#ad22d99fefb929f58fe471fb7bf78d5f4">arg_router::arg</a></div><div class="ttdeci">constexpr arg_t&lt; T, Policies... &gt; arg(Policies... policies)</div><div class="ttdef"><b>Definition:</b> <a href="arg_8hpp_source.html#l00159">arg.hpp:159</a></div></div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00010">algorithm.hpp:10</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

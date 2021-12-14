@@ -70,7 +70,6 @@ $(function() {
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="classarg__router_1_1policy_1_1default__value-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">arg_router::policy::default_value&lt; T &gt; Class Template Reference</div>  </div>
@@ -90,12 +89,9 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a1544d1c2a40d59d21ffcac07c2734f72"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afe9391695233ef94759fc883930cb96c"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1default__value.html#afe9391695233ef94759fc883930cb96c">get_default_value</a> () const -&gt; std::conditional_t&lt; <a class="el" href="namespacearg__router_1_1config.html#a78e160dd9f602656e0ebb5a4833402a4">config::l1_cache_size</a>() &gt;=sizeof(T), T, const T &amp; &gt;</td></tr>
 <tr class="separator:afe9391695233ef94759fc883930cb96c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
-Protected Member Functions</h2></td></tr>
-<tr class="memitem:a84abed1ba075d301f4c0f37c595a1093"><td class="memTemplParams" colspan="2">template&lt;typename ValueType , typename... Parents&gt; </td></tr>
-<tr class="memitem:a84abed1ba075d301f4c0f37c595a1093"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1default__value.html#a84abed1ba075d301f4c0f37c595a1093">post_parse_phase</a> (std::optional&lt; ValueType &gt; &amp;value, const Parents &amp;... parents) const</td></tr>
-<tr class="separator:a84abed1ba075d301f4c0f37c595a1093"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f7235f5f4ac6235a07b848a4d81cc5f"><td class="memTemplParams" colspan="2">template&lt;typename ValueType , typename... Parents&gt; </td></tr>
+<tr class="memitem:a3f7235f5f4ac6235a07b848a4d81cc5f"><td class="memTemplItemLeft" align="right" valign="top">constexpr ValueType&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1default__value.html#a3f7235f5f4ac6235a07b848a4d81cc5f">missing_phase</a> (const Parents &amp;... parents) const</td></tr>
+<tr class="separator:a3f7235f5f4ac6235a07b848a4d81cc5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename T&gt;<br />
@@ -201,8 +197,8 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a84abed1ba075d301f4c0f37c595a1093"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a84abed1ba075d301f4c0f37c595a1093">&#9670;&nbsp;</a></span>post_parse_phase()</h2>
+<a id="a3f7235f5f4ac6235a07b848a4d81cc5f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3f7235f5f4ac6235a07b848a4d81cc5f">&#9670;&nbsp;</a></span>missing_phase()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -215,30 +211,20 @@ template&lt;typename ValueType , typename... Parents&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classarg__router_1_1policy_1_1default__value.html">arg_router::policy::default_value</a>&lt; T &gt;::post_parse_phase </td>
+          <td class="memname">constexpr ValueType <a class="el" href="classarg__router_1_1policy_1_1default__value.html">arg_router::policy::default_value</a>&lt; T &gt;::missing_phase </td>
           <td>(</td>
-          <td class="paramtype">std::optional&lt; ValueType &gt; &amp;&#160;</td>
-          <td class="paramname"><em>value</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype">const Parents &amp;...&#160;</td>
-          <td class="paramname"><em>parents</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td> const</td>
+          <td class="paramname"><em>parents</em></td><td>)</td>
+          <td> const</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">constexpr</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>If <em>value</em> is empty, then populate it with the default value.</p>
+<p>Called when the owning node's token (if any) is missing from the command line, this will return the default value.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">ValueType</td><td>Parsed value type, must be implicitly constructible from value_type </td></tr>
@@ -248,11 +234,11 @@ template&lt;typename ValueType , typename... Parents&gt; </div>
 </dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">value</td><td>Parsed value, may be empty </td></tr>
     <tr><td class="paramname">parents</td><td>Parents instances pack </td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>Default value </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="default__value_8hpp_source.html#l00052">52</a> of file <a class="el" href="default__value_8hpp_source.html">default_value.hpp</a>.</p>
 

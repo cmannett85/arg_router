@@ -88,41 +88,122 @@ $(function() {
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    static_assert(<a class="code" href="namespacearg__router_1_1policy.html#ab0b6b4c0174a2ba257d4431bda7241eb">policy::is_all_policies_v</a>&lt;std::tuple&lt;Policies...&gt;&gt;,</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;                  <span class="stringliteral">&quot;Args must only contain policies (not other nodes)&quot;</span>);</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classarg__router_1_1arg__t.html#a76aed7b7c7feda5d7416f67fe0984a3c">   26</a></span>&#160;    <span class="keyword">using</span> <a class="code" href="classarg__router_1_1arg__t.html#a76aed7b7c7feda5d7416f67fe0984a3c">value_type</a> = T;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
-<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="classarg__router_1_1arg__t.html#a81a20e29bac0e26596bae3867b789dfc">   32</a></span>&#160;    constexpr <span class="keyword">explicit</span> <a class="code" href="classarg__router_1_1arg__t.html#a81a20e29bac0e26596bae3867b789dfc">arg_t</a>(Policies... policies) :</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <a class="code" href="classarg__router_1_1tree__node.html">tree_node</a>&lt;policy::has_value_tokens_t,</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                  policy::count_t&lt;std::integral_constant&lt;std::size_t, 1&gt;&gt;,</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                  Policies...&gt;{<a class="code" href="namespacearg__router_1_1policy.html#aca0a098fd684cd70d8f8e8f457357e92">policy::has_value_tokens_t</a>{},</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                               policy::count&lt;1&gt;,</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;                               std::move(policies)...}</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    {</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    }</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
-<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="classarg__router_1_1arg__t.html#af4fb97e0265ef0253df6de910e3c5b72">   47</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classarg__router_1_1arg__t.html#af4fb97e0265ef0253df6de910e3c5b72">match</a>(<span class="keyword">const</span> <a class="code" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a>&amp; token)<span class="keyword"> const</span></div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="keyword">    </span>{</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <span class="keywordflow">return</span> parsing::default_match&lt;arg_t&gt;(token);</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    }</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;};</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span>... Policies&gt;</div>
-<div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="namespacearg__router.html#ad22d99fefb929f58fe471fb7bf78d5f4">   64</a></span>&#160;constexpr <a class="code" href="classarg__router_1_1arg__t.html">arg_t</a>&lt;T, Policies...&gt; <a class="code" href="namespacearg__router.html#ad22d99fefb929f58fe471fb7bf78d5f4">arg</a>(Policies... policies)</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;{</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classarg__router_1_1arg__t.html">arg_t&lt;T, std::decay_t&lt;Policies&gt;</a>...&gt;{std::move(policies)...};</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;}</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keyword">using</span> <a class="code" href="classarg__router_1_1tree__node.html">parent_type</a> =</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        <a class="code" href="classarg__router_1_1tree__node.html">tree_node</a>&lt;<a class="code" href="namespacearg__router_1_1policy.html#aca0a098fd684cd70d8f8e8f457357e92">policy::has_value_tokens_t</a>,</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                  <a class="code" href="classarg__router_1_1policy_1_1count__t.html">policy::count_t&lt;std::integral_constant&lt;std::size_t, 1&gt;</a>&gt;,</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;                  Policies...&gt;;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keyword">using</span> <span class="keyword">typename</span> <a class="code" href="classarg__router_1_1tree__node.html#aec3a4f4e8c0b7d0b7a5d911b18fb9bc3">parent_type::policies_type</a>;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
+<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="classarg__router_1_1arg__t.html#a76aed7b7c7feda5d7416f67fe0984a3c">   33</a></span>&#160;    <span class="keyword">using</span> <a class="code" href="classarg__router_1_1arg__t.html#a76aed7b7c7feda5d7416f67fe0984a3c">value_type</a> = T;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
+<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="classarg__router_1_1arg__t.html#a81a20e29bac0e26596bae3867b789dfc">   39</a></span>&#160;    constexpr <span class="keyword">explicit</span> <a class="code" href="classarg__router_1_1arg__t.html#a81a20e29bac0e26596bae3867b789dfc">arg_t</a>(Policies... policies) :</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <a class="code" href="classarg__router_1_1tree__node.html">parent_type</a>{<a class="code" href="namespacearg__router_1_1policy.html#aca0a098fd684cd70d8f8e8f457357e92">policy::has_value_tokens_t</a>{},</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;                    policy::count&lt;1&gt;,</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                    std::move(policies)...}</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    {</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    }</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
+<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="classarg__router_1_1arg__t.html#a84737f0b78a8e36643d36cc25c573a66">   52</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classarg__router_1_1arg__t.html#a84737f0b78a8e36643d36cc25c573a66">match_old</a>(<span class="keyword">const</span> <a class="code" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a>&amp; token)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">    </span>{</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="keywordflow">return</span> parsing::default_match&lt;arg_t&gt;(token);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    }</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Fn&gt;</div>
+<div class="line"><a name="l00071"></a><span class="lineno"><a class="line" href="classarg__router_1_1arg__t.html#a0143104c50ee3059abc42fbc94607658">   71</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classarg__router_1_1arg__t.html#a0143104c50ee3059abc42fbc94607658">match</a>(<span class="keyword">const</span> <a class="code" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a>&amp; token, <span class="keyword">const</span> Fn&amp; visitor)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="keyword">    </span>{</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        <span class="keywordflow">if</span> (parsing::default_match&lt;arg_t&gt;(token)) {</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;            visitor(*<span class="keyword">this</span>);</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        }</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    }</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Parents&gt;</div>
+<div class="line"><a name="l00090"></a><span class="lineno"><a class="line" href="classarg__router_1_1arg__t.html#acc5485f495000a409092e107fa7eb053">   90</a></span>&#160;    <a class="code" href="classarg__router_1_1arg__t.html#a76aed7b7c7feda5d7416f67fe0984a3c">value_type</a> <a class="code" href="classarg__router_1_1arg__t.html#acc5485f495000a409092e107fa7eb053">parse</a>(<a class="code" href="namespacearg__router_1_1parsing.html#a514a5158bba90fd3b119e0a3d4b3c5ab">parsing::token_list</a>&amp; tokens,</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;                     <span class="keyword">const</span> Parents&amp;... parents)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="keyword">    </span>{</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        <span class="comment">// Check we have enough tokens to even do a parse</span></div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        <span class="keywordflow">if</span> (tokens.size() &lt;= parent_type::count()) {</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;            <span class="keywordflow">throw</span> <a class="code" href="classarg__router_1_1parse__exception.html">parse_exception</a>{<span class="stringliteral">&quot;Missing argument&quot;</span>, tokens.front()};</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        }</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160; </div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;        <span class="comment">// Remove this node&#39;s name</span></div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        tokens.erase(tokens.begin());</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160; </div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        <span class="keyword">auto</span> view = utility::span&lt;parsing::token_type&gt;{tokens};</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160; </div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        <span class="comment">// Pre-parse</span></div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        utility::tuple_type_iterator&lt;policies_type&gt;([&amp;](<span class="keyword">auto</span> <span class="comment">/*i*/</span>, <span class="keyword">auto</span> ptr) {</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;            <span class="keyword">using</span> policy_type = std::remove_pointer_t&lt;decltype(ptr)&gt;;</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;            <span class="keywordflow">if</span> constexpr (policy::has_pre_parse_phase_method_v&lt;policy_type,</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;                                                               <a class="code" href="classarg__router_1_1arg__t.html">arg_t</a>,</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;                                                               Parents...&gt;) {</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;                this-&gt;policy_type::pre_parse_phase(tokens,</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;                                                   view,</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;                                                   *<span class="keyword">this</span>,</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;                                                   parents...);</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;            }</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;        });</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160; </div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        <span class="comment">// Parse the value token, we don&#39;t need to loop on view here as we know</span></div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        <span class="comment">// there is only one token</span></div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        <span class="keyword">auto</span> result = parent_type::template parse&lt;value_type&gt;(view.front().name,</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;                                                              *<span class="keyword">this</span>,</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;                                                              parents...);</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160; </div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;        <span class="comment">// Pop the token, we don&#39;t need it anymore</span></div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;        tokens.erase(tokens.begin());</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160; </div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;        <span class="comment">// Validation</span></div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;        utility::tuple_type_iterator&lt;policies_type&gt;([&amp;](<span class="keyword">auto</span> <span class="comment">/*i*/</span>, <span class="keyword">auto</span> ptr) {</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;            <span class="keyword">using</span> policy_type = std::remove_pointer_t&lt;decltype(ptr)&gt;;</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;            <span class="keywordflow">if</span> constexpr (policy::has_validation_phase_method_v&lt;policy_type,</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;                                                                <a class="code" href="classarg__router_1_1arg__t.html#a76aed7b7c7feda5d7416f67fe0984a3c">value_type</a>,</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;                                                                <a class="code" href="classarg__router_1_1arg__t.html">arg_t</a>,</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;                                                                Parents...&gt;) {</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;                this-&gt;policy_type::validation_phase(result, *<span class="keyword">this</span>, parents...);</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;            }</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;        });</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160; </div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;        <span class="comment">// Routing</span></div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;        <span class="keyword">using</span> routing_policy = <span class="keyword">typename</span> parent_type::template phase_finder&lt;</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;            <a class="code" href="structarg__router_1_1policy_1_1has__routing__phase__method.html">policy::has_routing_phase_method</a>,</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;            <a class="code" href="classarg__router_1_1arg__t.html#a76aed7b7c7feda5d7416f67fe0984a3c">value_type</a>&gt;::type;</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;        <span class="keywordflow">if</span> constexpr (!std::is_void_v&lt;routing_policy&gt;) {</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;            this-&gt;routing_policy::routing_phase(tokens, std::move(result));</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;        }</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160; </div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;        <span class="keywordflow">return</span> result;</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    }</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;};</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160; </div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span>... Policies&gt;</div>
+<div class="line"><a name="l00159"></a><span class="lineno"><a class="line" href="namespacearg__router.html#ad22d99fefb929f58fe471fb7bf78d5f4">  159</a></span>&#160;constexpr <a class="code" href="classarg__router_1_1arg__t.html">arg_t</a>&lt;T, Policies...&gt; <a class="code" href="namespacearg__router.html#ad22d99fefb929f58fe471fb7bf78d5f4">arg</a>(Policies... policies)</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;{</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classarg__router_1_1arg__t.html">arg_t&lt;T, std::decay_t&lt;Policies&gt;</a>...&gt;{std::move(policies)...};</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;}</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclassarg__router_1_1arg__t_html"><div class="ttname"><a href="classarg__router_1_1arg__t.html">arg_router::arg_t</a></div><div class="ttdef"><b>Definition:</b> <a href="arg_8hpp_source.html#l00016">arg.hpp:16</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1policy_html_aca0a098fd684cd70d8f8e8f457357e92"><div class="ttname"><a href="namespacearg__router_1_1policy.html#aca0a098fd684cd70d8f8e8f457357e92">arg_router::policy::has_value_tokens_t</a></div><div class="ttdeci">detail::basic_has_value_tokens_t&lt;&gt; has_value_tokens_t</div><div class="ttdef"><b>Definition:</b> <a href="has__value__tokens_8hpp_source.html#l00023">has_value_tokens.hpp:23</a></div></div>
 <div class="ttc" id="astructarg__router_1_1parsing_1_1token__type_html"><div class="ttname"><a href="structarg__router_1_1parsing_1_1token__type.html">arg_router::parsing::token_type</a></div><div class="ttdef"><b>Definition:</b> <a href="token__type_8hpp_source.html#l00026">token_type.hpp:26</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1tree__node_html"><div class="ttname"><a href="classarg__router_1_1tree__node.html">arg_router::tree_node</a></div><div class="ttdef"><b>Definition:</b> <a href="tree__node_8hpp_source.html#l00014">tree_node.hpp:14</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1arg__t_html_a81a20e29bac0e26596bae3867b789dfc"><div class="ttname"><a href="classarg__router_1_1arg__t.html#a81a20e29bac0e26596bae3867b789dfc">arg_router::arg_t::arg_t</a></div><div class="ttdeci">constexpr arg_t(Policies... policies)</div><div class="ttdef"><b>Definition:</b> <a href="arg_8hpp_source.html#l00032">arg.hpp:32</a></div></div>
-<div class="ttc" id="anamespacearg__router_html_ad22d99fefb929f58fe471fb7bf78d5f4"><div class="ttname"><a href="namespacearg__router.html#ad22d99fefb929f58fe471fb7bf78d5f4">arg_router::arg</a></div><div class="ttdeci">constexpr arg_t&lt; T, Policies... &gt; arg(Policies... policies)</div><div class="ttdef"><b>Definition:</b> <a href="arg_8hpp_source.html#l00064">arg.hpp:64</a></div></div>
-<div class="ttc" id="anamespacearg__router_1_1policy_html_ab0b6b4c0174a2ba257d4431bda7241eb"><div class="ttname"><a href="namespacearg__router_1_1policy.html#ab0b6b4c0174a2ba257d4431bda7241eb">arg_router::policy::is_all_policies_v</a></div><div class="ttdeci">constexpr auto is_all_policies_v</div><div class="ttdef"><b>Definition:</b> <a href="policy_8hpp_source.html#l00048">policy.hpp:48</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1parse__exception_html"><div class="ttname"><a href="classarg__router_1_1parse__exception.html">arg_router::parse_exception</a></div><div class="ttdef"><b>Definition:</b> <a href="exception_8hpp_source.html#l00011">exception.hpp:11</a></div></div>
+<div class="ttc" id="astructarg__router_1_1policy_1_1has__routing__phase__method_html"><div class="ttname"><a href="structarg__router_1_1policy_1_1has__routing__phase__method.html">arg_router::policy::has_routing_phase_method</a></div><div class="ttdef"><b>Definition:</b> <a href="policy_8hpp_source.html#l00148">policy.hpp:148</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1tree__node_html"><div class="ttname"><a href="classarg__router_1_1tree__node.html">arg_router::tree_node</a></div><div class="ttdef"><b>Definition:</b> <a href="tree__node_8hpp_source.html#l00016">tree_node.hpp:16</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1arg__t_html_a81a20e29bac0e26596bae3867b789dfc"><div class="ttname"><a href="classarg__router_1_1arg__t.html#a81a20e29bac0e26596bae3867b789dfc">arg_router::arg_t::arg_t</a></div><div class="ttdeci">constexpr arg_t(Policies... policies)</div><div class="ttdef"><b>Definition:</b> <a href="arg_8hpp_source.html#l00039">arg.hpp:39</a></div></div>
+<div class="ttc" id="anamespacearg__router_html_ad22d99fefb929f58fe471fb7bf78d5f4"><div class="ttname"><a href="namespacearg__router.html#ad22d99fefb929f58fe471fb7bf78d5f4">arg_router::arg</a></div><div class="ttdeci">constexpr arg_t&lt; T, Policies... &gt; arg(Policies... policies)</div><div class="ttdef"><b>Definition:</b> <a href="arg_8hpp_source.html#l00159">arg.hpp:159</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1arg__t_html_acc5485f495000a409092e107fa7eb053"><div class="ttname"><a href="classarg__router_1_1arg__t.html#acc5485f495000a409092e107fa7eb053">arg_router::arg_t::parse</a></div><div class="ttdeci">value_type parse(parsing::token_list &amp;tokens, const Parents &amp;... parents) const</div><div class="ttdef"><b>Definition:</b> <a href="arg_8hpp_source.html#l00090">arg.hpp:90</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1policy_html_ab0b6b4c0174a2ba257d4431bda7241eb"><div class="ttname"><a href="namespacearg__router_1_1policy.html#ab0b6b4c0174a2ba257d4431bda7241eb">arg_router::policy::is_all_policies_v</a></div><div class="ttdeci">constexpr auto is_all_policies_v</div><div class="ttdef"><b>Definition:</b> <a href="policy_8hpp_source.html#l00051">policy.hpp:51</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1tree__node_html_aec3a4f4e8c0b7d0b7a5d911b18fb9bc3"><div class="ttname"><a href="classarg__router_1_1tree__node.html#aec3a4f4e8c0b7d0b7a5d911b18fb9bc3">arg_router::tree_node&lt; policy::has_value_tokens_t, policy::count_t&lt; std::integral_constant&lt; std::size_t, 1 &gt; &gt;, Policies... &gt;::policies_type</a></div><div class="ttdeci">boost::mp11::mp_filter&lt; policy::is_policy, parameters_type &gt; policies_type</div><div class="ttdef"><b>Definition:</b> <a href="tree__node_8hpp_source.html#l00026">tree_node.hpp:26</a></div></div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00010">algorithm.hpp:10</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1arg__t_html_a76aed7b7c7feda5d7416f67fe0984a3c"><div class="ttname"><a href="classarg__router_1_1arg__t.html#a76aed7b7c7feda5d7416f67fe0984a3c">arg_router::arg_t::value_type</a></div><div class="ttdeci">T value_type</div><div class="ttdef"><b>Definition:</b> <a href="arg_8hpp_source.html#l00026">arg.hpp:26</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1arg__t_html_af4fb97e0265ef0253df6de910e3c5b72"><div class="ttname"><a href="classarg__router_1_1arg__t.html#af4fb97e0265ef0253df6de910e3c5b72">arg_router::arg_t::match</a></div><div class="ttdeci">bool match(const parsing::token_type &amp;token) const</div><div class="ttdef"><b>Definition:</b> <a href="arg_8hpp_source.html#l00047">arg.hpp:47</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1arg__t_html_a76aed7b7c7feda5d7416f67fe0984a3c"><div class="ttname"><a href="classarg__router_1_1arg__t.html#a76aed7b7c7feda5d7416f67fe0984a3c">arg_router::arg_t::value_type</a></div><div class="ttdeci">T value_type</div><div class="ttdef"><b>Definition:</b> <a href="arg_8hpp_source.html#l00033">arg.hpp:33</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1policy_1_1count__t_html"><div class="ttname"><a href="classarg__router_1_1policy_1_1count__t.html">arg_router::policy::count_t</a></div><div class="ttdef"><b>Definition:</b> <a href="count_8hpp_source.html#l00016">count.hpp:16</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1arg__t_html_a0143104c50ee3059abc42fbc94607658"><div class="ttname"><a href="classarg__router_1_1arg__t.html#a0143104c50ee3059abc42fbc94607658">arg_router::arg_t::match</a></div><div class="ttdeci">bool match(const parsing::token_type &amp;token, const Fn &amp;visitor) const</div><div class="ttdef"><b>Definition:</b> <a href="arg_8hpp_source.html#l00071">arg.hpp:71</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1arg__t_html_a84737f0b78a8e36643d36cc25c573a66"><div class="ttname"><a href="classarg__router_1_1arg__t.html#a84737f0b78a8e36643d36cc25c573a66">arg_router::arg_t::match_old</a></div><div class="ttdeci">bool match_old(const parsing::token_type &amp;token) const</div><div class="ttdef"><b>Definition:</b> <a href="arg_8hpp_source.html#l00052">arg.hpp:52</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1parsing_html_a514a5158bba90fd3b119e0a3d4b3c5ab"><div class="ttname"><a href="namespacearg__router_1_1parsing.html#a514a5158bba90fd3b119e0a3d4b3c5ab">arg_router::parsing::token_list</a></div><div class="ttdeci">std::vector&lt; token_type &gt; token_list</div><div class="ttdef"><b>Definition:</b> <a href="token__type_8hpp_source.html#l00066">token_type.hpp:66</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

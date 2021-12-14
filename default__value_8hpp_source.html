@@ -98,33 +98,29 @@ $(function() {
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <span class="keywordflow">return</span> value_;</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    }</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keyword">protected</span>:</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> ValueType, <span class="keyword">typename</span>... Parents&gt;</div>
-<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1default__value.html#a84abed1ba075d301f4c0f37c595a1093">   52</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classarg__router_1_1policy_1_1default__value.html#a84abed1ba075d301f4c0f37c595a1093">post_parse_phase</a>(std::optional&lt;ValueType&gt;&amp; value,</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;                          <span class="keyword">const</span> Parents&amp;... parents)<span class="keyword"> const</span></div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="keyword">    </span>{</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        boost::ignore_unused(parents...);</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="keywordflow">if</span> (!value) {</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;            value = value_;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        }</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    }</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    T value_;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;};</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="keyword">struct </span>is_policy&lt;default_value&lt;T&gt;&gt; : std::true_type {</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;};</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;}  <span class="comment">// namespace policy</span></div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
+<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1default__value.html#a3f7235f5f4ac6235a07b848a4d81cc5f">   52</a></span>&#160;    constexpr ValueType <a class="code" href="classarg__router_1_1policy_1_1default__value.html#a3f7235f5f4ac6235a07b848a4d81cc5f">missing_phase</a>(<span class="keyword">const</span> Parents&amp;... parents)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">    </span>{</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        boost::ignore_unused(parents...);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="keywordflow">return</span> value_;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    }</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    T value_;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;};</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="keyword">struct </span>is_policy&lt;default_value&lt;T&gt;&gt; : std::true_type {</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;};</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;}  <span class="comment">// namespace policy</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclassarg__router_1_1policy_1_1default__value_html"><div class="ttname"><a href="classarg__router_1_1policy_1_1default__value.html">arg_router::policy::default_value</a></div><div class="ttdef"><b>Definition:</b> <a href="default__value_8hpp_source.html#l00019">default_value.hpp:19</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1policy_1_1default__value_html_a1544d1c2a40d59d21ffcac07c2734f72"><div class="ttname"><a href="classarg__router_1_1policy_1_1default__value.html#a1544d1c2a40d59d21ffcac07c2734f72">arg_router::policy::default_value::default_value</a></div><div class="ttdeci">constexpr default_value(T value)</div><div class="ttdef"><b>Definition:</b> <a href="default__value_8hpp_source.html#l00029">default_value.hpp:29</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1policy_1_1default__value_html_afe9391695233ef94759fc883930cb96c"><div class="ttname"><a href="classarg__router_1_1policy_1_1default__value.html#afe9391695233ef94759fc883930cb96c">arg_router::policy::default_value::get_default_value</a></div><div class="ttdeci">constexpr auto get_default_value() const -&gt; std::conditional_t&lt; config::l1_cache_size() &gt;=sizeof(T), T, const T &amp; &gt;</div><div class="ttdef"><b>Definition:</b> <a href="default__value_8hpp_source.html#l00036">default_value.hpp:36</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1policy_1_1default__value_html_a3f7235f5f4ac6235a07b848a4d81cc5f"><div class="ttname"><a href="classarg__router_1_1policy_1_1default__value.html#a3f7235f5f4ac6235a07b848a4d81cc5f">arg_router::policy::default_value::missing_phase</a></div><div class="ttdeci">constexpr ValueType missing_phase(const Parents &amp;... parents) const</div><div class="ttdef"><b>Definition:</b> <a href="default__value_8hpp_source.html#l00052">default_value.hpp:52</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1policy_1_1default__value_html_a608c8c207395438c1e56aa52d5d6225d"><div class="ttname"><a href="classarg__router_1_1policy_1_1default__value.html#a608c8c207395438c1e56aa52d5d6225d">arg_router::policy::default_value::value_type</a></div><div class="ttdeci">T value_type</div><div class="ttdef"><b>Definition:</b> <a href="default__value_8hpp_source.html#l00023">default_value.hpp:23</a></div></div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00010">algorithm.hpp:10</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1policy_1_1default__value_html_a84abed1ba075d301f4c0f37c595a1093"><div class="ttname"><a href="classarg__router_1_1policy_1_1default__value.html#a84abed1ba075d301f4c0f37c595a1093">arg_router::policy::default_value::post_parse_phase</a></div><div class="ttdeci">void post_parse_phase(std::optional&lt; ValueType &gt; &amp;value, const Parents &amp;... parents) const</div><div class="ttdef"><b>Definition:</b> <a href="default__value_8hpp_source.html#l00052">default_value.hpp:52</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

@@ -68,7 +68,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classarg__router_1_1policy_1_1required__t-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">arg_router::policy::required_t&lt; typename &gt; Class Template Reference</div>  </div>
@@ -77,11 +77,11 @@ $(function() {
 
 <p><code>#include &lt;<a class="el" href="required_8hpp_source.html">arg_router/policy/required.hpp</a>&gt;</code></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
-Protected Member Functions</h2></td></tr>
-<tr class="memitem:a4be7651d2619f493e3c27f8ea0246b3a"><td class="memTemplParams" colspan="2">template&lt;typename ValueType , typename... Parents&gt; </td></tr>
-<tr class="memitem:a4be7651d2619f493e3c27f8ea0246b3a"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1required__t.html#a4be7651d2619f493e3c27f8ea0246b3a">post_parse_phase</a> (std::optional&lt; ValueType &gt; &amp;value, const Parents &amp;... parents) const</td></tr>
-<tr class="separator:a4be7651d2619f493e3c27f8ea0246b3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:a53fec68bdf2e1ff8df5fac8d682c30ba"><td class="memTemplParams" colspan="2">template&lt;typename ValueType , typename... Parents&gt; </td></tr>
+<tr class="memitem:a53fec68bdf2e1ff8df5fac8d682c30ba"><td class="memTemplItemLeft" align="right" valign="top">ValueType&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1required__t.html#a53fec68bdf2e1ff8df5fac8d682c30ba">missing_phase</a> (const Parents &amp;... parents) const</td></tr>
+<tr class="separator:a53fec68bdf2e1ff8df5fac8d682c30ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename = void&gt;<br />
@@ -91,8 +91,8 @@ class arg_router::policy::required_t&lt; typename &gt;</h3>
 
 <p class="definition">Definition at line <a class="el" href="required_8hpp_source.html#l00018">18</a> of file <a class="el" href="required_8hpp_source.html">required.hpp</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a4be7651d2619f493e3c27f8ea0246b3a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4be7651d2619f493e3c27f8ea0246b3a">&#9670;&nbsp;</a></span>post_parse_phase()</h2>
+<a id="a53fec68bdf2e1ff8df5fac8d682c30ba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a53fec68bdf2e1ff8df5fac8d682c30ba">&#9670;&nbsp;</a></span>missing_phase()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -105,26 +105,16 @@ template&lt;typename ValueType , typename... Parents&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classarg__router_1_1policy_1_1required__t.html">arg_router::policy::required_t</a>&lt; typename &gt;::post_parse_phase </td>
+          <td class="memname">ValueType <a class="el" href="classarg__router_1_1policy_1_1required__t.html">arg_router::policy::required_t</a>&lt; typename &gt;::missing_phase </td>
           <td>(</td>
-          <td class="paramtype">std::optional&lt; ValueType &gt; &amp;&#160;</td>
-          <td class="paramname"><em>value</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype">const Parents &amp;...&#160;</td>
-          <td class="paramname"><em>parents</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td> const</td>
+          <td class="paramname"><em>parents</em></td><td>)</td>
+          <td> const</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -138,13 +128,19 @@ template&lt;typename ValueType , typename... Parents&gt; </div>
 </dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">value</td><td>Parsed value, may be empty </td></tr>
     <tr><td class="paramname">parents</td><td>Parents instances pack </td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>Nothing, it will thrown if called </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classarg__router_1_1parse__exception.html">parse_exception</a></td><td>Thrown if this method is called </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p class="definition">Definition at line <a class="el" href="required_8hpp_source.html#l00030">30</a> of file <a class="el" href="required_8hpp_source.html">required.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="required_8hpp_source.html#l00031">31</a> of file <a class="el" href="required_8hpp_source.html">required.hpp</a>.</p>
 
 </div>
 </div>

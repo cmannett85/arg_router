@@ -12,12 +12,12 @@
 <!-- Node0 -->
 <g id="node1" class="node">
 <title>Node0</title>
-<g id="a_node1"><a xlink:href="structarg__router_1_1policy_1_1validation_1_1if__count__not__one__value__type__must__support__push__back.html" target="_top" xlink:title=" ">
+<g id="a_node1"><a xlink:href="structarg__router_1_1policy_1_1validation_1_1anonymous__mode__cannot__have__mode__children.html" target="_top" xlink:title=" ">
 <polygon fill="white" stroke="black" points="0,-0.5 0,-52.5 150,-52.5 150,-0.5 0,-0.5"/>
 <text text-anchor="start" x="8" y="-40.5" font-family="Helvetica,sans-Serif" font-size="10.00">arg_router::policy</text>
-<text text-anchor="start" x="8" y="-29.5" font-family="Helvetica,sans-Serif" font-size="10.00">::validation::if_count</text>
-<text text-anchor="start" x="8" y="-18.5" font-family="Helvetica,sans-Serif" font-size="10.00">_not_one_value_type_must</text>
-<text text-anchor="middle" x="75" y="-7.5" font-family="Helvetica,sans-Serif" font-size="10.00">_support_push_back</text>
+<text text-anchor="start" x="8" y="-29.5" font-family="Helvetica,sans-Serif" font-size="10.00">::validation::anonymous</text>
+<text text-anchor="start" x="8" y="-18.5" font-family="Helvetica,sans-Serif" font-size="10.00">_mode_cannot_have_mode</text>
+<text text-anchor="middle" x="75" y="-7.5" font-family="Helvetica,sans-Serif" font-size="10.00">_children</text>
 </a>
 </g>
 </g>

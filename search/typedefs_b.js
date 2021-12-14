@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['validator_5ftype_484',['validator_type',['../classarg__router_1_1root__t.html#adada7e905b970cdfaaf66668d0b7027f',1,'arg_router::root_t']]],
-  ['value_5ftype_485',['value_type',['../classarg__router_1_1arg__t.html#a76aed7b7c7feda5d7416f67fe0984a3c',1,'arg_router::arg_t::value_type()'],['../classarg__router_1_1policy_1_1custom__parser.html#ae38082173f9af152a7a97ffc62ffcdbd',1,'arg_router::policy::custom_parser::value_type()'],['../classarg__router_1_1policy_1_1default__value.html#a608c8c207395438c1e56aa52d5d6225d',1,'arg_router::policy::default_value::value_type()'],['../classarg__router_1_1positional__arg__t.html#ad7c0bc788f4a94739e15d03e91927c8d',1,'arg_router::positional_arg_t::value_type()']]]
+  ['token_5flist_502',['token_list',['../namespacearg__router_1_1parsing.html#a514a5158bba90fd3b119e0a3d4b3c5ab',1,'arg_router::parsing']]],
+  ['type_503',['type',['../classarg__router_1_1algorithm_1_1zip.html#ad6389bdb4d47979c21073d503fefe70a',1,'arg_router::algorithm::zip::type()'],['../structarg__router_1_1tree__node_1_1phase__finder.html#a5a1c0f86853640fb53f1a6b2f20a1447',1,'arg_router::tree_node::phase_finder::type()']]]
 ];

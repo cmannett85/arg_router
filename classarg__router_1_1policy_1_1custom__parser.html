@@ -90,14 +90,12 @@ Public Types</h2></td></tr>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a7b6cab30c5c99f76ef3b49eb331d3d44"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1custom__parser.html#a7b6cab30c5c99f76ef3b49eb331d3d44">custom_parser</a> (<a class="el" href="classarg__router_1_1policy_1_1custom__parser.html#afa60af08741106e17b21c46799dc8add">parser_type</a> p) noexcept</td></tr>
 <tr class="separator:a7b6cab30c5c99f76ef3b49eb331d3d44"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aae0ab6d7c4b39d4542484039c0a26bbc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classarg__router_1_1policy_1_1custom__parser.html#ae38082173f9af152a7a97ffc62ffcdbd">value_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1custom__parser.html#aae0ab6d7c4b39d4542484039c0a26bbc">parse</a> (std::string_view str) const</td></tr>
-<tr class="separator:aae0ab6d7c4b39d4542484039c0a26bbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a759f607cd5608d277496534bc95f0b9c"><td class="memTemplParams" colspan="2">template&lt;typename ValueType , typename... Parents&gt; </td></tr>
-<tr class="memitem:a759f607cd5608d277496534bc95f0b9c"><td class="memTemplItemLeft" align="right" valign="top">ValueType&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1custom__parser.html#a759f607cd5608d277496534bc95f0b9c">parse_phase</a> (const <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a> &amp;token, const Parents &amp;... parents) const</td></tr>
-<tr class="separator:a759f607cd5608d277496534bc95f0b9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a212b1909ee5b7f1fe4d47659c4145dc4"><td class="memTemplParams" colspan="2">template&lt;typename ValueType , typename... Parents&gt; </td></tr>
+<tr class="memitem:a212b1909ee5b7f1fe4d47659c4145dc4"><td class="memTemplItemLeft" align="right" valign="top">ValueType&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1custom__parser.html#a212b1909ee5b7f1fe4d47659c4145dc4">parse_phase</a> (std::string_view token, const Parents &amp;... parents) const</td></tr>
+<tr class="separator:a212b1909ee5b7f1fe4d47659c4145dc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename T&gt;<br />
@@ -190,52 +188,8 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="aae0ab6d7c4b39d4542484039c0a26bbc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aae0ab6d7c4b39d4542484039c0a26bbc">&#9670;&nbsp;</a></span>parse()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classarg__router_1_1policy_1_1custom__parser.html#ae38082173f9af152a7a97ffc62ffcdbd">value_type</a> <a class="el" href="classarg__router_1_1policy_1_1custom__parser.html">arg_router::policy::custom_parser</a>&lt; T &gt;::parse </td>
-          <td>(</td>
-          <td class="paramtype">std::string_view&#160;</td>
-          <td class="paramname"><em>str</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Parse <em>str</em> to produce a matching instance of <em>T</em>.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">str</td><td>String to parse </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Representation of <em>str</em> </dd></dl>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname">parse_exception</td><td>Should be thrown in case of parse failure </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="definition">Definition at line <a class="el" href="custom__parser_8hpp_source.html#l00044">44</a> of file <a class="el" href="custom__parser_8hpp_source.html">custom_parser.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a759f607cd5608d277496534bc95f0b9c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a759f607cd5608d277496534bc95f0b9c">&#9670;&nbsp;</a></span>parse_phase()</h2>
+<a id="a212b1909ee5b7f1fe4d47659c4145dc4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a212b1909ee5b7f1fe4d47659c4145dc4">&#9670;&nbsp;</a></span>parse_phase()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -250,7 +204,7 @@ template&lt;typename ValueType , typename... Parents&gt; </div>
         <tr>
           <td class="memname">ValueType <a class="el" href="classarg__router_1_1policy_1_1custom__parser.html">arg_router::policy::custom_parser</a>&lt; T &gt;::parse_phase </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a> &amp;&#160;</td>
+          <td class="paramtype">std::string_view&#160;</td>
           <td class="paramname"><em>token</em>, </td>
         </tr>
         <tr>
@@ -289,12 +243,12 @@ template&lt;typename ValueType , typename... Parents&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>Parsed value </dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname">parse_exception</td><td>Thrown if parsing failed </td></tr>
+    <tr><td class="paramname"><a class="el" href="classarg__router_1_1parse__exception.html">parse_exception</a></td><td>Thrown if parsing failed </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="custom__parser_8hpp_source.html#l00058">58</a> of file <a class="el" href="custom__parser_8hpp_source.html">custom_parser.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="custom__parser_8hpp_source.html#l00050">50</a> of file <a class="el" href="custom__parser_8hpp_source.html">custom_parser.hpp</a>.</p>
 
 </div>
 </div>
