@@ -75,19 +75,20 @@ $(function() {
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &quot;arg_router/exception.hpp&quot;</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;arg_router/parsing.hpp&quot;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;boost/core/ignore_unused.hpp&gt;</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;optional&gt;</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacearg__router.html">arg_router</a></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;{</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">namespace </span>policy</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;{</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> = <span class="keywordtype">void</span>&gt;  <span class="comment">// This is needed due so it can be used in</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1required__t.html">   18</a></span>&#160;<span class="keyword">class </span><a class="code" href="classarg__router_1_1policy_1_1required__t.html">required_t</a>            <span class="comment">// template template parameters</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;{</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;arg_router/policy/policy.hpp&quot;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;boost/core/ignore_unused.hpp&gt;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;optional&gt;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacearg__router.html">arg_router</a></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;{</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keyword">namespace </span>policy</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;{</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> = <span class="keywordtype">void</span>&gt;  <span class="comment">// This is needed due so it can be used in</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1required__t.html">   19</a></span>&#160;<span class="keyword">class </span><a class="code" href="classarg__router_1_1policy_1_1required__t.html">required_t</a>            <span class="comment">// template template parameters</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;{</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> ValueType, <span class="keyword">typename</span>... Parents&gt;</div>
 <div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1required__t.html#a53fec68bdf2e1ff8df5fac8d682c30ba">   31</a></span>&#160;    [[noreturn]] ValueType <a class="code" href="classarg__router_1_1policy_1_1required__t.html#a53fec68bdf2e1ff8df5fac8d682c30ba">missing_phase</a>(<span class="keyword">const</span> Parents&amp;... parents)<span class="keyword"> const</span></div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword">    </span>{</div>
@@ -120,7 +121,7 @@ $(function() {
 <div class="ttc" id="aclassarg__router_1_1parse__exception_html"><div class="ttname"><a href="classarg__router_1_1parse__exception.html">arg_router::parse_exception</a></div><div class="ttdef"><b>Definition:</b> <a href="exception_8hpp_source.html#l00011">exception.hpp:11</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1policy_html_a408a1ac19cbc1f4ad69630f965f976d8"><div class="ttname"><a href="namespacearg__router_1_1policy.html#a408a1ac19cbc1f4ad69630f965f976d8">arg_router::policy::is_required</a></div><div class="ttdeci">std::is_base_of&lt; required_t&lt;&gt;, T &gt; is_required</div><div class="ttdef"><b>Definition:</b> <a href="required_8hpp_source.html#l00052">required.hpp:52</a></div></div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00010">algorithm.hpp:10</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1policy_1_1required__t_html"><div class="ttname"><a href="classarg__router_1_1policy_1_1required__t.html">arg_router::policy::required_t</a></div><div class="ttdef"><b>Definition:</b> <a href="required_8hpp_source.html#l00018">required.hpp:18</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1policy_1_1required__t_html"><div class="ttname"><a href="classarg__router_1_1policy_1_1required__t.html">arg_router::policy::required_t</a></div><div class="ttdef"><b>Definition:</b> <a href="required_8hpp_source.html#l00019">required.hpp:19</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1policy_html_a1bdf5a24cb1daf8f2cf2996cf6c87b82"><div class="ttname"><a href="namespacearg__router_1_1policy.html#a1bdf5a24cb1daf8f2cf2996cf6c87b82">arg_router::policy::is_required_v</a></div><div class="ttdeci">constexpr bool is_required_v</div><div class="ttdef"><b>Definition:</b> <a href="required_8hpp_source.html#l00059">required.hpp:59</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1policy_html_a0960d76b9e22cfed95ba19a463384d3c"><div class="ttname"><a href="namespacearg__router_1_1policy.html#a0960d76b9e22cfed95ba19a463384d3c">arg_router::policy::required</a></div><div class="ttdeci">constexpr auto required</div><div class="ttdef"><b>Definition:</b> <a href="required_8hpp_source.html#l00045">required.hpp:45</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1policy_1_1required__t_html_a53fec68bdf2e1ff8df5fac8d682c30ba"><div class="ttname"><a href="classarg__router_1_1policy_1_1required__t.html#a53fec68bdf2e1ff8df5fac8d682c30ba">arg_router::policy::required_t::missing_phase</a></div><div class="ttdeci">ValueType missing_phase(const Parents &amp;... parents) const</div><div class="ttdef"><b>Definition:</b> <a href="required_8hpp_source.html#l00031">required.hpp:31</a></div></div>

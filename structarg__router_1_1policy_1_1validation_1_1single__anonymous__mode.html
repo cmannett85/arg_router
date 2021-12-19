@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>arg_router: arg_router::policy::validation::single_anonymous_mode Struct Reference</title>
+<title>arg_router: arg_router::policy::validation::single_anonymous_mode&lt; ModeTypes &gt; Struct Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -70,15 +70,24 @@ $(function() {
   <div class="summary">
 <a href="structarg__router_1_1policy_1_1validation_1_1single__anonymous__mode-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">arg_router::policy::validation::single_anonymous_mode Struct Reference</div>  </div>
+<div class="title">arg_router::policy::validation::single_anonymous_mode&lt; ModeTypes &gt; Struct Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
 <p><code>#include &lt;<a class="el" href="validator_8hpp_source.html">arg_router/policy/validator.hpp</a>&gt;</code></p>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>A rule condition that checks if there are more than one child of <em>T</em> that is a mode, only one can be anonymous. </p>
+<div class="textblock"><h3>template&lt;template&lt; typename... &gt; typename... ModeTypes&gt;<br />
+struct arg_router::policy::validation::single_anonymous_mode&lt; ModeTypes &gt;</h3>
 
-<p class="definition">Definition at line <a class="el" href="validator_8hpp_source.html#l00398">398</a> of file <a class="el" href="validator_8hpp_source.html">validator.hpp</a>.</p>
+<p>A rule condition that checks if there are more than one child of <em>T</em> that is a mode, only one can be anonymous.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">ModeTypes</td><td>Pack of types that are considered modes </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="validator_8hpp_source.html#l00404">404</a> of file <a class="el" href="validator_8hpp_source.html">validator.hpp</a>.</p>
 </div><hr/>The documentation for this struct was generated from the following file:<ul>
 <li>arg_router/policy/<a class="el" href="validator_8hpp_source.html">validator.hpp</a></li>
 </ul>

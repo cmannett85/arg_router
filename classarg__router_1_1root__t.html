@@ -107,12 +107,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:acf2a7147e9bf1612578dc6f1a10d48c8 inherit pub_methods_classarg__router_1_1tree__node"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a290401753b1e67a8ed37af7c66515dc9 inherit pub_methods_classarg__router_1_1tree__node"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#a290401753b1e67a8ed37af7c66515dc9">find</a> (const <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a> &amp;token, const Fn &amp;visitor, const ResultsTuple &amp;results_tuple={}) const</td></tr>
 <tr class="separator:a290401753b1e67a8ed37af7c66515dc9 inherit pub_methods_classarg__router_1_1tree__node"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2a8f5775af1259c3c3363160456dd94e inherit pub_methods_classarg__router_1_1tree__node"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#a2a8f5775af1259c3c3363160456dd94e">parse</a> (std::string_view token, const Parents &amp;... parents) const</td></tr>
-<tr class="separator:a2a8f5775af1259c3c3363160456dd94e inherit pub_methods_classarg__router_1_1tree__node"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_methods_classarg__router_1_1tree__node"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classarg__router_1_1tree__node')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node&lt; Params... &gt;</a></td></tr>
+<tr class="memitem:a2a8f5775af1259c3c3363160456dd94e inherit pro_methods_classarg__router_1_1tree__node"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#a2a8f5775af1259c3c3363160456dd94e">parse</a> (std::string_view token, const Parents &amp;... parents) const</td></tr>
+<tr class="separator:a2a8f5775af1259c3c3363160456dd94e inherit pro_methods_classarg__router_1_1tree__node"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a48cb8499032eb97d0b69367956780d1a inherit pro_methods_classarg__router_1_1tree__node"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#a48cb8499032eb97d0b69367956780d1a">tree_node</a> (Params... params)</td></tr>
 <tr class="separator:a48cb8499032eb97d0b69367956780d1a inherit pro_methods_classarg__router_1_1tree__node"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -128,7 +128,7 @@ class arg_router::root_t&lt; Params &gt;</h3>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="root_8hpp_source.html#l00027">27</a> of file <a class="el" href="root_8hpp_source.html">root.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="root_8hpp_source.html#l00026">26</a> of file <a class="el" href="root_8hpp_source.html">root.hpp</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="adada7e905b970cdfaaf66668d0b7027f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#adada7e905b970cdfaaf66668d0b7027f">&#9670;&nbsp;</a></span>validator_type</h2>
@@ -145,7 +145,7 @@ template&lt;typename... Params&gt; </div>
 </div><div class="memdoc">
 <p>Validator type. </p>
 
-<p class="definition">Definition at line <a class="el" href="root_8hpp_source.html#l00047">47</a> of file <a class="el" href="root_8hpp_source.html">root.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="root_8hpp_source.html#l00065">65</a> of file <a class="el" href="root_8hpp_source.html">root.hpp</a>.</p>
 
 </div>
 </div>
@@ -183,7 +183,7 @@ template&lt;typename... Params&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="root_8hpp_source.html#l00053">53</a> of file <a class="el" href="root_8hpp_source.html">root.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="root_8hpp_source.html#l00071">71</a> of file <a class="el" href="root_8hpp_source.html">root.hpp</a>.</p>
 
 </div>
 </div>
@@ -233,12 +233,12 @@ template&lt;typename... Params&gt; </div>
 </dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname">std::invalid_argument</td><td>Thrown if parsing has failed </td></tr>
+    <tr><td class="paramname"><a class="el" href="classarg__router_1_1parse__exception.html">parse_exception</a></td><td>Thrown if parsing has failed </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="root_8hpp_source.html#l00065">65</a> of file <a class="el" href="root_8hpp_source.html">root.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="root_8hpp_source.html#l00083">83</a> of file <a class="el" href="root_8hpp_source.html">root.hpp</a>.</p>
 
 </div>
 </div>

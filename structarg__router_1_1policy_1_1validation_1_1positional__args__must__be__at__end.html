@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>arg_router: arg_router::policy::validation::positional_args_must_be_at_end Struct Reference</title>
+<title>arg_router: arg_router::policy::validation::positional_args_must_be_at_end&lt; PositionalArgTypes &gt; Struct Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -70,16 +70,25 @@ $(function() {
   <div class="summary">
 <a href="structarg__router_1_1policy_1_1validation_1_1positional__args__must__be__at__end-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">arg_router::policy::validation::positional_args_must_be_at_end Struct Reference</div>  </div>
+<div class="title">arg_router::policy::validation::positional_args_must_be_at_end&lt; PositionalArgTypes &gt; Struct Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
 <p><code>#include &lt;<a class="el" href="validator_8hpp_source.html">arg_router/policy/validator.hpp</a>&gt;</code></p>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>A rule condition that checks that positional arg <em>T</em> is at the end of the non-positional args in a node's child list.</p>
-<p>The above is a long-winded way of saying that positional args must be at the end of a child list for a node, no policies or other node types may appear after. </p>
+<div class="textblock"><h3>template&lt;template&lt; typename... &gt; typename... PositionalArgTypes&gt;<br />
+struct arg_router::policy::validation::positional_args_must_be_at_end&lt; PositionalArgTypes &gt;</h3>
 
-<p class="definition">Definition at line <a class="el" href="validator_8hpp_source.html#l00505">505</a> of file <a class="el" href="validator_8hpp_source.html">validator.hpp</a>.</p>
+<p>A rule condition that checks that positional arg <em>T</em> is at the end of the non-positional args in a node's child list.</p>
+<p>The above is a long-winded way of saying that positional args must be at the end of a child list for a node, no policies or other node types may appear after.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">PositionalArgTypes</td><td>Pack of types that are considered positional args </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="validator_8hpp_source.html#l00494">494</a> of file <a class="el" href="validator_8hpp_source.html">validator.hpp</a>.</p>
 </div><hr/>The documentation for this struct was generated from the following file:<ul>
 <li>arg_router/policy/<a class="el" href="validator_8hpp_source.html">validator.hpp</a></li>
 </ul>

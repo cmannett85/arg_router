@@ -68,8 +68,8 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
-<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="classarg__router_1_1policy_1_1min__count__t-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">arg_router::policy::min_count_t&lt; T &gt; Class Template Reference</div>  </div>
@@ -84,16 +84,16 @@ Inheritance diagram for arg_router::policy::min_count_t&lt; T &gt;:</div>
 </div>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:a123be67b5c0673837e7f16ff16c50c7c"><td class="memTemplParams" colspan="2">template&lt;typename ValueType , typename... Parents&gt; </td></tr>
+<tr class="memitem:a123be67b5c0673837e7f16ff16c50c7c"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; <a class="el" href="namespacearg__router_1_1traits.html#a4368b240b0073156a030f4db45173904">traits::supports_std_size_v</a>&lt; ValueType &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1min__count__t.html#a123be67b5c0673837e7f16ff16c50c7c">validation_phase</a> (const ValueType &amp;value, const Parents &amp;... parents) const</td></tr>
+<tr class="separator:a123be67b5c0673837e7f16ff16c50c7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a87c8d71399b9dd3205dcf87b0791ef95"><td class="memItemLeft" align="right" valign="top">constexpr static std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1min__count__t.html#a87c8d71399b9dd3205dcf87b0791ef95">minimum_count</a> ()</td></tr>
 <tr class="separator:a87c8d71399b9dd3205dcf87b0791ef95"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
-Protected Member Functions</h2></td></tr>
-<tr class="memitem:ad7f6739b4147ad76bb6fe85172661ad8"><td class="memTemplParams" colspan="2">template&lt;typename ValueType , typename... Parents&gt; </td></tr>
-<tr class="memitem:ad7f6739b4147ad76bb6fe85172661ad8"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; <a class="el" href="namespacearg__router_1_1traits.html#a6315fdbc72444f3de39fc6a553ecd272">traits::has_size_method_v</a>&lt; ValueType &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1min__count__t.html#ad7f6739b4147ad76bb6fe85172661ad8">validation_phase</a> (const ValueType &amp;value, const Parents &amp;... parents) const</td></tr>
-<tr class="separator:ad7f6739b4147ad76bb6fe85172661ad8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename T&gt;<br />
@@ -107,7 +107,7 @@ class arg_router::policy::min_count_t&lt; T &gt;</h3>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="min__count_8hpp_source.html#l00018">18</a> of file <a class="el" href="min__count_8hpp_source.html">min_count.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="min__count_8hpp_source.html#l00019">19</a> of file <a class="el" href="min__count_8hpp_source.html">min_count.hpp</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a87c8d71399b9dd3205dcf87b0791ef95"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a87c8d71399b9dd3205dcf87b0791ef95">&#9670;&nbsp;</a></span>minimum_count()</h2>
@@ -135,12 +135,12 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>Minimum count value. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="min__count_8hpp_source.html#l00032">32</a> of file <a class="el" href="min__count_8hpp_source.html">min_count.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="min__count_8hpp_source.html#l00033">33</a> of file <a class="el" href="min__count_8hpp_source.html">min_count.hpp</a>.</p>
 
 </div>
 </div>
-<a id="ad7f6739b4147ad76bb6fe85172661ad8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad7f6739b4147ad76bb6fe85172661ad8">&#9670;&nbsp;</a></span>validation_phase()</h2>
+<a id="a123be67b5c0673837e7f16ff16c50c7c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a123be67b5c0673837e7f16ff16c50c7c">&#9670;&nbsp;</a></span>validation_phase()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -153,7 +153,7 @@ template&lt;typename ValueType , typename... Parents&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::enable_if_t&lt;<a class="el" href="namespacearg__router_1_1traits.html#a6315fdbc72444f3de39fc6a553ecd272">traits::has_size_method_v</a>&lt;ValueType&gt; &gt; <a class="el" href="classarg__router_1_1policy_1_1min__count__t.html">arg_router::policy::min_count_t</a>&lt; T &gt;::validation_phase </td>
+          <td class="memname">std::enable_if_t&lt;<a class="el" href="namespacearg__router_1_1traits.html#a4368b240b0073156a030f4db45173904">traits::supports_std_size_v</a>&lt;ValueType&gt; &gt; <a class="el" href="classarg__router_1_1policy_1_1min__count__t.html">arg_router::policy::min_count_t</a>&lt; T &gt;::validation_phase </td>
           <td>(</td>
           <td class="paramtype">const ValueType &amp;&#160;</td>
           <td class="paramname"><em>value</em>, </td>
@@ -172,7 +172,7 @@ template&lt;typename ValueType , typename... Parents&gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
