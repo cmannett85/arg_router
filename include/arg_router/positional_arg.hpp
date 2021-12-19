@@ -1,6 +1,5 @@
 #pragma once
 
-#include "arg_router/policy/has_contiguous_value_tokens.hpp"
 #include "arg_router/tree_node.hpp"
 
 namespace arg_router
@@ -12,27 +11,42 @@ namespace arg_router
  * @tparam Policies Pack of policies that define its behaviour
  */
 template <typename T, typename... Policies>
-class positional_arg_t :
-    public tree_node<policy::has_contiguous_value_tokens_t, Policies...>
+class positional_arg_t : public tree_node<Policies...>
 {
     static_assert(
         policy::is_all_policies_v<std::tuple<Policies...>>,
         "Positional args must only contain policies (not other nodes)");
 
-    using parent_type =
-        tree_node<policy::has_contiguous_value_tokens_t, Policies...>;
+    using parent_type = tree_node<Policies...>;
 
-    constexpr static bool count_of_one = []() {
+    template <std::size_t N>
+    constexpr static bool has_fixed_count = []() {
         if constexpr (traits::has_minimum_count_method_v<parent_type> &&
                       traits::has_maximum_count_method_v<parent_type>) {
-            return (parent_type::minimum_count() == 1) &&
-                   (parent_type::maximum_count() == 1);
+            return (parent_type::minimum_count() == N) &&
+                   (parent_type::maximum_count() == N);
         }
         return false;
     }();
 
-    static_assert(count_of_one || traits::has_push_back_method_v<T>,
+    constexpr static bool valid_counts = []() {
+        if constexpr (traits::has_minimum_count_method_v<parent_type> &&
+                      traits::has_maximum_count_method_v<parent_type>) {
+            return parent_type::minimum_count() <= parent_type::maximum_count();
+        }
+        return true;
+    }();
+    static_assert(valid_counts,
+                  "Minimum count must be less than or equal to maximum count");
+
+    static_assert(!has_fixed_count<0>, "Cannot have a fixed count of zero");
+    static_assert(has_fixed_count<1> || traits::has_push_back_method_v<T>,
                   "value_type must have a push_back() method");
+
+    static_assert(traits::has_long_name_method_v<positional_arg_t>,
+                  "Positional arg must have a long name policy");
+    static_assert(!traits::has_short_name_method_v<positional_arg_t>,
+                  "Positional arg must not have a short name policy");
 
 public:
     using typename parent_type::policies_type;
@@ -45,8 +59,7 @@ public:
      * @param policies Policy instances
      */
     constexpr explicit positional_arg_t(Policies... policies) :
-        parent_type{policy::has_contiguous_value_tokens_t{},
-                    std::move(policies)...}
+        parent_type{std::move(policies)...}
     {
     }
 

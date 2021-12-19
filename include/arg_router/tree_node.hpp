@@ -102,15 +102,15 @@ public:
                     visitor(i, child);
                 };
 
-                if constexpr ((i >= std::tuple_size_v<ResultsTuple>) ||
-                              (match_arity == 2)) {
-                    if (node.match(token, wrapped_visitor)) {
-                        result = true;
-                    }
-                } else {
+                if constexpr ((i <= std::tuple_size_v<ResultsTuple>)&&  //
+                              (match_arity == 3)) {
                     if (node.match(token,
                                    wrapped_visitor,
                                    std::get<i.value>(results_tuple))) {
+                        result = true;
+                    }
+                } else if constexpr (match_arity == 2) {
+                    if (node.match(token, wrapped_visitor)) {
                         result = true;
                     }
                 }
@@ -120,8 +120,7 @@ public:
         return result;
     }
 
-    // Reinstate for Issue #57
-    //protected:
+protected:
     /** Generic parse call, uses a policy that supports the parse phase if
      * present, or the global parser.
      *

@@ -2,6 +2,7 @@
 
 #include "arg_router/exception.hpp"
 #include "arg_router/parsing.hpp"
+#include "arg_router/policy/policy.hpp"
 
 #include <boost/core/ignore_unused.hpp>
 
@@ -18,13 +19,12 @@ template <typename = void>  // This is needed due so it can be used in
 class required_t            // template template parameters
 {
 public:
-    /** If @a value is empty, then throw an error
+    /** Throw an error.
      * 
-     * @tparam ValueType Parsed value type, must be implicitly constructible
-     * from value_type
+     * @tparam ValueType Parsed value type, not used in this method
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
-     * @param parents Parents instances pack
-     * @return Nothing, it will thrown if called
+     * @param parents Parents instances pack, not used in this method
+     * @return Nothing, it will throw if called
      * @exception parse_exception Thrown if this method is called
      */
     template <typename ValueType, typename... Parents>

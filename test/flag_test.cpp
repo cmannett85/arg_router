@@ -16,7 +16,8 @@ BOOST_AUTO_TEST_SUITE(flag_suite)
 
 BOOST_AUTO_TEST_CASE(is_tree_node_test)
 {
-    static_assert(is_tree_node_v<flag_t<>>, "Tree node test has failed");
+    static_assert(is_tree_node_v<flag_t<policy::long_name_t<S_("hello")>>>,
+                  "Tree node test has failed");
 }
 
 BOOST_AUTO_TEST_CASE(policies_test)
@@ -136,6 +137,47 @@ int main() {
 }
     )",
         "Flags must only contain policies (not other nodes)");
+}
+
+BOOST_AUTO_TEST_CASE(no_custom_parser_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/flag.hpp"
+#include "arg_router/policy/custom_parser.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    auto f = flag(
+        policy::long_name<S_("hello")>,
+        policy::custom_parser<bool>{[](std::string_view) { return false; }}
+    );
+
+    auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "hello"}};
+    f.parse(tokens);
+    return 0;
+}
+    )",
+        "Flag cannot have a custom parser");
+}
+
+BOOST_AUTO_TEST_CASE(must_be_named_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/flag.hpp"
+
+using namespace arg_router;
+
+int main() {
+    auto f = flag();
+    return 0;
+}
+    )",
+        "Flag must have a long and/or short name policy");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

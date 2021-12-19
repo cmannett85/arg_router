@@ -239,6 +239,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_0_parent_test)
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/count.hpp"
 #include "arg_router/policy/long_name.hpp"
+#include "arg_router/tree_node.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
@@ -290,6 +291,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_needs_counts_test)
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/count.hpp"
 #include "arg_router/policy/long_name.hpp"
+#include "arg_router/tree_node.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
@@ -341,6 +343,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_needs_fixed_count_test)
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/count.hpp"
 #include "arg_router/policy/long_name.hpp"
+#include "arg_router/tree_node.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
@@ -385,6 +388,107 @@ int main() {
     )",
         "Node requires minimum_count() and maximum_count() to return the same "
         "value to use an alias");
+}
+
+BOOST_AUTO_TEST_CASE(single_aliased_must_not_be_in_owner_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/alias.hpp"
+#include "arg_router/policy/count.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/tree_node.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+namespace
+{
+template <typename... Policies>
+class stub_node : public tree_node<Policies...>
+{
+public:
+    constexpr explicit stub_node(Policies... policies) :
+        tree_node<Policies...>{std::move(policies)...}
+    {
+    }
+
+    template <typename... Parents>
+    void pre_parse_phase(parsing::token_list& tokens,
+                         utility::span<parsing::token_type>& view,
+                         const Parents&... parents) const
+    {
+        using this_policy =
+            std::tuple_element_t<2, typename stub_node::policies_type>;
+        this->this_policy::pre_parse_phase(tokens, view, parents...);
+    }
+};
+}  // namespace
+
+int main() {
+    auto node = stub_node{policy::long_name<S_("node")>,
+                  stub_node{policy::long_name<S_("flag1")>,
+                            policy::count<1>,
+                            policy::alias(policy::long_name<S_("flag1")>)}};
+    auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "flag1"}};
+    auto view = utility::span<parsing::token_type>{tokens};
+    const auto& owner = std::get<0>(node.children());
+    
+    owner.pre_parse_phase(tokens, view, owner, node);
+    return 0;
+}
+    )",
+        "Alias names cannot appear in owner");
+}
+
+BOOST_AUTO_TEST_CASE(multiple_aliased_must_not_be_in_owner_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/alias.hpp"
+#include "arg_router/policy/count.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/tree_node.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+namespace
+{
+template <typename... Policies>
+class stub_node : public tree_node<Policies...>
+{
+public:
+    constexpr explicit stub_node(Policies... policies) :
+        tree_node<Policies...>{std::move(policies)...}
+    {
+    }
+
+    template <typename... Parents>
+    void pre_parse_phase(parsing::token_list& tokens,
+                         utility::span<parsing::token_type>& view,
+                         const Parents&... parents) const
+    {
+        using this_policy =
+            std::tuple_element_t<2, typename stub_node::policies_type>;
+        this->this_policy::pre_parse_phase(tokens, view, parents...);
+    }
+};
+}  // namespace
+
+int main() {
+    auto node = stub_node{policy::long_name<S_("node")>,
+                  stub_node{policy::long_name<S_("flag1")>,
+                            policy::count<1>,
+                            policy::alias(policy::long_name<S_("flag2")>,
+                                          policy::long_name<S_("flag1")>)}};
+    auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "flag1"}};
+    auto view = utility::span<parsing::token_type>{tokens};
+    const auto& owner = std::get<0>(node.children());
+    
+    owner.pre_parse_phase(tokens, view, owner, node);
+    return 0;
+}
+    )",
+        "Alias names cannot appear in owner");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

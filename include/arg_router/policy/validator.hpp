@@ -3,20 +3,14 @@
 #include "arg_router/arg.hpp"
 #include "arg_router/flag.hpp"
 #include "arg_router/mode.hpp"
-#include "arg_router/node_category.hpp"
 #include "arg_router/policy/alias.hpp"
-#include "arg_router/policy/count.hpp"
-#include "arg_router/policy/custom_parser.hpp"
 #include "arg_router/policy/default_value.hpp"
-#include "arg_router/policy/description.hpp"
-#include "arg_router/policy/has_contiguous_value_tokens.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/required.hpp"
 #include "arg_router/policy/router.hpp"
 #include "arg_router/policy/short_name.hpp"
 #include "arg_router/positional_arg.hpp"
 #include "arg_router/root.hpp"
-#include "arg_router/utility/compile_time_string.hpp"
 #include "arg_router/utility/tree_recursor.hpp"
 
 namespace arg_router
@@ -190,8 +184,13 @@ struct despecialised_unique_in_owner {
 
 /** A rule condition that checks a policy is unique up to the nearest mode or
  * root - but skips the owner.
+ * 
+ * @tparam ModeTypes Pack of types that are considered modes
  */
+template <template <typename...> typename... ModeTypes>
 struct policy_unique_from_owner_parent_to_mode_or_root {
+    static_assert(sizeof...(ModeTypes), "Must be at least one mode type");
+
     template <typename Policy, typename PathToThis>
     struct checker {
         template <typename Current, typename... Parents>
@@ -208,12 +207,17 @@ struct policy_unique_from_owner_parent_to_mode_or_root {
         }
     };
 
+    template <typename T>
+    using is_mode = boost::mp11::mp_any_of<
+        std::tuple<traits::is_specialisation_of<T, ModeTypes>...>,
+        boost::mp11::mp_to_bool>;
+
     // Don't recurse into child modes, they effectively have their own namespace
     struct skipper {
         template <typename Current, typename...>
         constexpr static bool fn()
         {
-            return node_category::is_generic_mode_like_v<Current>;
+            return is_mode<Current>::value;
         }
     };
 
@@ -227,9 +231,8 @@ struct policy_unique_from_owner_parent_to_mode_or_root {
         if constexpr (NumParents > 1) {
             // Find a mode type, if there's one present we stop moving up through
             // the ancestors at that point, otherwise we go up to the root
-            constexpr auto mode_index = boost::mp11::mp_find_if<
-                ParentTuple,
-                node_category::is_generic_mode_like>::value;
+            constexpr auto mode_index =
+                boost::mp11::mp_find_if<ParentTuple, is_mode>::value;
             using start_type = boost::mp11::mp_eval_if_c<
                 mode_index == NumParents,
                 boost::mp11::mp_back<ParentTuple>,
@@ -394,14 +397,34 @@ struct child_must_not_have_policy {
 
 /** A rule condition that checks if there are more than one child of @a T that 
  * is a mode, only one can be anonymous.
+ * 
+ * @tparam ModeTypes Pack of types that are considered modes
  */
+template <template <typename...> typename... ModeTypes>
 struct single_anonymous_mode {
+    static_assert(sizeof...(ModeTypes), "Must be at least one mode type");
+
+    template <typename T>
+    using is_mode = boost::mp11::mp_any_of<
+        std::tuple<traits::is_specialisation_of<T, ModeTypes>...>,
+        boost::mp11::mp_to_bool>;
+
+    template <typename T>
+    struct is_anonymous_mode {
+        constexpr static auto value = []() {
+            if constexpr (is_mode<T>::value) {
+                return T::is_anonymous;
+            }
+            return false;
+        }();
+    };
+
     template <typename T, typename...>
     constexpr static void check()
     {
         constexpr auto num_anonymous = boost::mp11::mp_count_if<  //
             typename T::children_type,
-            node_category::is_anonymous_mode_like>::value;
+            is_anonymous_mode>::value;
 
         static_assert((num_anonymous <= 1),
                       "Only one child mode can be anonymous");
@@ -458,51 +481,25 @@ struct one_of_policies_if_parent_is_not_root {
     }
 };
 
-/** A rule condition that checks the number of children in @a T is greater than
- * @a MinChildren.
- *
- * @tparam MinChildren Minimum number of children @a T must have
- */
-template <std::size_t MinChildren>
-struct min_child_count {
-    template <typename T, typename...>
-    constexpr static void check()
-    {
-        constexpr auto num_children =
-            std::tuple_size_v<typename T::children_type>;
-
-        static_assert(num_children >= MinChildren,
-                      "Minimum child count not reached");
-    }
-};
-
-/** A rule condition that checks the alias names of @a T are not in the owner.
- */
-struct aliased_must_not_be_in_owner {
-    template <typename Alias, typename... Parents>
-    constexpr static void check()
-    {
-        static_assert((sizeof...(Parents) > 0), "Alias must have an owner");
-
-        using our_policies = typename Alias::aliased_policies_type;
-        using owner_type = boost::mp11::mp_first<std::tuple<Parents...>>;
-        using owner_policies = typename owner_type::policies_type;
-
-        using policy_intersection =
-            boost::mp11::mp_set_intersection<our_policies, owner_policies>;
-        static_assert(std::tuple_size_v<policy_intersection> == 0,
-                      "Alias names cannot appear in owner");
-    }
-};
-
 /** A rule condition that checks that positional arg @a T is at the end of the
  * non-positional args in a node's child list.
  * 
  * The above is a long-winded way of saying that positional args must be at the
  * end of a child list for a node, no policies or other node types may appear
  * after.
+ * 
+ * @tparam PositionalArgTypes Pack of types that are considered positional args
  */
+template <template <typename...> typename... PositionalArgTypes>
 struct positional_args_must_be_at_end {
+    static_assert(sizeof...(PositionalArgTypes),
+                  "Must be at least one positional arg type");
+
+    template <typename T>
+    using is_positonal_arg = boost::mp11::mp_any_of<
+        std::tuple<traits::is_specialisation_of<T, PositionalArgTypes>...>,
+        boost::mp11::mp_to_bool>;
+
     template <typename T, typename...>
     constexpr static void check()
     {
@@ -515,8 +512,7 @@ struct positional_args_must_be_at_end {
         using is_pos_arg_map = boost::mp11::mp_transform_q<
             boost::mp11::mp_bind<
                 boost::mp11::mp_to_bool,
-                boost::mp11::mp_bind<node_category::is_positional_arg_like,
-                                     boost::mp11::_1>>,
+                boost::mp11::mp_bind<is_positonal_arg, boost::mp11::_1>>,
 
             children_type>;
 
@@ -536,16 +532,25 @@ struct positional_args_must_be_at_end {
 
 /** A rule condition that checks that positional arg @a T has a fixed argument
  * count if not at the end of the positional arg list.
+ * 
+ * @tparam PositionalArgTypes Pack of types that are considered positional args
  */
+template <template <typename...> typename... PositionalArgTypes>
 struct positional_args_must_have_fixed_count_if_not_at_end {
+    static_assert(sizeof...(PositionalArgTypes),
+                  "Must be at least one positional arg type");
+
+    template <typename T>
+    using is_positonal_arg = boost::mp11::mp_any_of<
+        std::tuple<traits::is_specialisation_of<T, PositionalArgTypes>...>,
+        boost::mp11::mp_to_bool>;
+
     template <typename T>
     struct fixed_count_checker {
         constexpr static bool f()
         {
-            if constexpr (traits::has_count_method_v<T>) {
-                return true;
-            } else if constexpr (traits::has_minimum_count_method_v<T> &&
-                                 traits::has_maximum_count_method_v<T>) {
+            if constexpr (traits::has_minimum_count_method_v<T> &&
+                          traits::has_maximum_count_method_v<T>) {
                 return T::minimum_count() == T::maximum_count();
             }
 
@@ -560,8 +565,7 @@ struct positional_args_must_have_fixed_count_if_not_at_end {
     {
         using children_type = typename T::children_type;
         using pos_args =
-            boost::mp11::mp_filter<node_category::is_positional_arg_like,
-                                   children_type>;
+            boost::mp11::mp_filter<is_positonal_arg, children_type>;
 
         constexpr auto num_pos_args = std::tuple_size_v<pos_args>;
         if constexpr (num_pos_args > 0) {
@@ -576,121 +580,6 @@ struct positional_args_must_have_fixed_count_if_not_at_end {
     }
 };
 
-/** A rule condition that checks if @a T's <TT>min_count()</TT> and
- * <TT>max_count()</TT> methods, if present, are logically separated.
- */
-struct validate_counts {
-    template <typename T, typename...>
-    constexpr static void check()
-    {
-        if constexpr (traits::has_minimum_count_method_v<T> &&
-                      traits::has_maximum_count_method_v<T>) {
-            static_assert(T::minimum_count() <= T::maximum_count(),
-                          "Minimum count must be less than maximum count");
-        }
-    }
-};
-
-struct cannot_have_fixed_count_of_zero {
-    template <typename T, typename...>
-    constexpr static void check()
-    {
-        static_assert(!node_category::has_fixed_count_v<T, 0>,
-                      "Cannot have a fixed count of zero");
-    }
-};
-
-/** A rule condition that checks if @a T does not have fixed count of 1, if so
- * then it's value_type must support a <TT>push_back()</TT> method.
- */
-struct if_count_not_one_value_type_must_support_push_back {
-    template <typename T>
-    constexpr static bool has_fixed_count_of_one()
-    {
-        if constexpr (traits::has_count_method_v<T>) {
-            return T::count() == 1;
-        } else if constexpr (traits::has_minimum_count_method_v<T> &&
-                             traits::has_maximum_count_method_v<T>) {
-            return (T::minimum_count() == T::maximum_count()) &&
-                   (T::minimum_count() == 1);
-        }
-
-        return false;
-    }
-
-    template <typename T, typename...>
-    constexpr static void check()
-    {
-        if constexpr (!has_fixed_count_of_one<T>()) {
-            static_assert(
-                traits::has_push_back_method_v<typename T::value_type>,
-                "If T does not have a fixed count of 1, then its "
-                "value_type must have a push_back() method");
-        }
-    }
-};
-
-/** A rule condition that checks that any child mode-like types of @a T are
- * named.
- */
-struct child_mode_must_be_named {
-    template <typename T, typename...>
-    constexpr static void check()
-    {
-        using anonymous_modes =
-            boost::mp11::mp_filter<node_category::is_anonymous_mode_like,
-                                   typename T::children_type>;
-        static_assert(std::tuple_size_v<anonymous_modes> == 0,
-                      "All child modes must be named");
-    }
-};
-
-/** A rule condition that checks that mode-like type @a T has a router unless
- * all of its children are mode-like too.
- */
-template <template <typename...> typename... RouterTypes>
-struct mode_router_requirements {
-    static_assert(sizeof...(RouterTypes), "Must be at least one RouterTypes");
-
-    template <typename T>
-    using router_checker = boost::mp11::mp_any_of<
-        std::tuple<traits::is_specialisation_of<T, RouterTypes>...>,
-        boost::mp11::mp_to_bool>;
-
-    template <typename T, typename...>
-    constexpr static void check()
-    {
-        constexpr auto all_children_mode_like =
-            boost::mp11::mp_all_of<typename T::children_type,
-                                   node_category::is_generic_mode_like>::value;
-
-        constexpr auto has_router =
-            boost::mp11::mp_any_of<typename T::policies_type,
-                                   router_checker>::value;
-
-        static_assert(
-            has_router ^ all_children_mode_like,
-            "Mode must have a router or all its children are also modes");
-    }
-};
-
-/** A rule condition that checks that mode-like type @a T, if anonymous, does
- * not have another mode-like child.
- */
-struct anonymous_mode_cannot_have_mode_children {
-    template <typename T, typename...>
-    constexpr static void check()
-    {
-        if constexpr (node_category::is_anonymous_mode_like_v<T>) {
-            static_assert(
-                boost::mp11::mp_none_of<
-                    typename T::children_type,
-                    node_category::is_generic_mode_like>::value,
-                "An anonymous mode cannot have any children that are modes");
-        }
-    }
-};
-
 /** The default validator instance. */
 inline constexpr auto default_validator = validator<
     // List the policies first as there are more of them and therefore more
@@ -699,16 +588,12 @@ inline constexpr auto default_validator = validator<
     rule_q<common_rules::despecialised_any_of_rule<policy::long_name_t,
                                                    policy::short_name_t>,
            despecialised_unique_in_owner,
-           policy_unique_from_owner_parent_to_mode_or_root>,
+           policy_unique_from_owner_parent_to_mode_or_root<arg_router::mode_t>>,
     // Router
     rule_q<common_rules::despecialised_any_of_rule<policy::router>,
            despecialised_unique_in_owner,
            parent_types<parent_index_pair_type<0, mode_t>,
                         parent_index_pair_type<1, root_t>>>,
-    // Alias
-    rule_q<common_rules::despecialised_any_of_rule<policy::alias_t>,
-           despecialised_unique_in_owner,
-           aliased_must_not_be_in_owner>,
     // Generic policy rule
     rule<policy::is_policy,  //
          despecialised_unique_in_owner>,
@@ -717,51 +602,32 @@ inline constexpr auto default_validator = validator<
     // Flag
     rule_q<common_rules::despecialised_any_of_rule<flag_t>,
            must_not_have_policy<policy::required_t>,
-           must_not_have_policy<policy::custom_parser>,
-           must_not_have_policy<policy::validation::validator>,
-           at_least_one_of_policies<policy::long_name_t, policy::short_name_t>,
-           must_have_policy<policy::description_t>>,
+           must_not_have_policy<policy::validation::validator>>,
     // Arg
     rule_q<common_rules::despecialised_any_of_rule<arg_t>,
            must_not_have_policy<policy::validation::validator>,
-           at_least_one_of_policies<policy::long_name_t, policy::short_name_t>,
            one_of_policies_if_parent_is_not_root<policy::required_t,
                                                  policy::default_value,
-                                                 policy::alias_t>,
-           must_have_policy<policy::description_t>>,
+                                                 policy::alias_t>>,
     // Positional arg
     rule_q<common_rules::despecialised_any_of_rule<positional_arg_t>,
            must_not_have_policy<policy::validation::validator>,
-           must_not_have_policy<policy::short_name_t>,
            must_not_have_policy<policy::required_t>,
-           must_not_have_policy<policy::default_value>,
-           must_not_have_policy<policy::alias_t>,
-           must_not_have_policy<policy::router>,  // Cannot be top-level now
-           must_have_policy<policy::long_name_t>,
-           must_have_policy<policy::description_t>,
-           validate_counts,
-           cannot_have_fixed_count_of_zero,
-           if_count_not_one_value_type_must_support_push_back>,
+           must_not_have_policy<policy::alias_t>>,
     // Mode
-    rule_q<common_rules::despecialised_any_of_rule<mode_t>,
-           must_not_have_policy<policy::short_name_t>,
-           must_not_have_policy<policy::custom_parser>,
-           must_not_have_policy<policy::default_value>,
-           positional_args_must_be_at_end,
-           positional_args_must_have_fixed_count_if_not_at_end,
-           child_mode_must_be_named,
-           mode_router_requirements<policy::router>,
-           anonymous_mode_cannot_have_mode_children,
-           parent_types<parent_index_pair_type<0, root_t>,
-                        parent_index_pair_type<0, mode_t>>>,
+    rule_q<
+        common_rules::despecialised_any_of_rule<mode_t>,
+        must_not_have_policy<policy::default_value>,
+        positional_args_must_be_at_end<positional_arg_t>,
+        positional_args_must_have_fixed_count_if_not_at_end<positional_arg_t>,
+        parent_types<parent_index_pair_type<0, root_t>,
+                     parent_index_pair_type<0, mode_t>>>,
     // Root
     rule_q<common_rules::despecialised_any_of_rule<root_t>,
            must_have_policy<policy::validation::validator>,
-           min_child_count<1>,
-           child_must_have_policy<policy::router>,
            child_must_not_have_policy<policy::required_t>,
            child_must_not_have_policy<policy::alias_t>,
-           single_anonymous_mode>>{};
+           single_anonymous_mode<arg_router::mode_t>>>{};
 }  // namespace validation
 }  // namespace policy
 }  // namespace arg_router

@@ -6,6 +6,7 @@
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/router.hpp"
 #include "arg_router/policy/short_name.hpp"
+#include "arg_router/positional_arg.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 #include "test_helpers.hpp"
@@ -18,8 +19,21 @@ BOOST_AUTO_TEST_SUITE(mode_suite)
 
 BOOST_AUTO_TEST_CASE(is_tree_node_test)
 {
-    static_assert(is_tree_node_v<arg_router::mode_t<flag_t<>>>,
-                  "Tree node test has failed");
+    static_assert(
+        is_tree_node_v<
+            arg_router::mode_t<flag_t<policy::long_name_t<S_("hello")>>>>,
+        "Tree node test has failed");
+}
+
+BOOST_AUTO_TEST_CASE(anonymous_test)
+{
+    static_assert(!arg_router::mode_t<
+                      policy::long_name_t<S_("mode")>,
+                      flag_t<policy::long_name_t<S_("hello")>>>::is_anonymous,
+                  "Fail");
+    static_assert(arg_router::mode_t<
+                      flag_t<policy::long_name_t<S_("hello")>>>::is_anonymous,
+                  "Fail");
 }
 
 BOOST_AUTO_TEST_CASE(anonymous_single_flag_match_test)
@@ -516,6 +530,44 @@ BOOST_AUTO_TEST_CASE(nested_modes_parse_test)
         });
 }
 
+BOOST_AUTO_TEST_CASE(no_missing_phase_test)
+{
+    {
+        auto result = 42;
+        const auto m = mode(arg<int>(policy::long_name<S_("hello")>),
+                            policy::router([&](int arg1) { result = arg1; }));
+
+        auto tokens = parsing::token_list{};
+        m.parse(tokens);
+        BOOST_CHECK_EQUAL(result, 0);
+        BOOST_CHECK(tokens.empty());
+    }
+
+    {
+        auto result = 3.14;
+        const auto m =
+            mode(arg<int>(policy::long_name<S_("hello")>),
+                 policy::router([&](double arg1) { result = arg1; }));
+
+        auto tokens = parsing::token_list{};
+        m.parse(tokens);
+        BOOST_CHECK_EQUAL(result, 0.0);
+        BOOST_CHECK(tokens.empty());
+    }
+
+    {
+        auto result = std::vector<int>{3, 4, 5};
+        const auto m = mode(
+            positional_arg<std::vector<int>>(policy::long_name<S_("hello")>),
+            policy::router([&](std::vector<int> arg1) { result = arg1; }));
+
+        auto tokens = parsing::token_list{};
+        m.parse(tokens);
+        BOOST_CHECK_EQUAL(result, std::vector<int>{});
+        BOOST_CHECK(tokens.empty());
+    }
+}
+
 BOOST_AUTO_TEST_SUITE(death_suite)
 
 BOOST_AUTO_TEST_CASE(no_children_test)
@@ -531,7 +583,7 @@ int main() {
     return 0;
 }
     )",
-        "mode_t must have at least one child node");
+        "Mode must have at least one child node");
 }
 
 BOOST_AUTO_TEST_CASE(anonymous_modes_must_have_routing_test)
@@ -553,6 +605,184 @@ int main() {
 }
     )",
         "Anonymous modes must have routing");
+}
+
+BOOST_AUTO_TEST_CASE(must_not_have_a_short_name_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/flag.hpp"
+#include "arg_router/mode.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/short_name.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    const auto m = mode(policy::short_name<'l'>,
+                        flag(policy::long_name<S_("hello")>));
+    return 0;
+}
+    )",
+        "Mode must not have a short name policy");
+}
+
+BOOST_AUTO_TEST_CASE(must_not_have_a_custom_parser_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/flag.hpp"
+#include "arg_router/mode.hpp"
+#include "arg_router/policy/custom_parser.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    const auto m = mode(policy::custom_parser<int>{[](auto) { return false; }},
+                        flag(policy::long_name<S_("hello")>));
+
+    auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "hello"}};
+    m.parse(tokens);
+    return 0;
+}
+    )",
+        "Mode cannot have a custom parser");
+}
+
+BOOST_AUTO_TEST_CASE(anonymous_child_mode_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/flag.hpp"
+#include "arg_router/mode.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/router.hpp"
+#include "arg_router/tree_node.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+namespace
+{
+template <typename... Params>
+class stub_node : public tree_node<Params...>
+{
+public:
+    constexpr explicit stub_node(Params... params) :
+        tree_node<Params...>{std::move(params)...}
+    {
+    }
+
+    void parse(parsing::token_list& tokens) const
+    {
+        std::get<0>(this->children()).parse(tokens, *this);
+    }
+};
+} // namespace
+
+int main() {
+    const auto m = stub_node(
+                        mode(policy::long_name<S_("mode")>,
+                             mode(flag(policy::long_name<S_("hello")>),
+                                  policy::router([&](bool) {}))));
+
+    auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "hello"}};
+    m.parse(tokens);
+    return 0;
+}
+    )",
+        "Anonymous modes can only exist under the root");
+}
+
+BOOST_AUTO_TEST_CASE(anonymous_mode_cannot_have_a_child_mode_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/flag.hpp"
+#include "arg_router/mode.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    const auto m = mode(
+                    mode(policy::long_name<S_("mode")>,
+                         flag(policy::long_name<S_("hello")>)));
+    return 0;
+}
+    )",
+        "Anonymous mode cannot have a child mode");
+}
+
+BOOST_AUTO_TEST_CASE(mode_has_router_or_all_children_are_modes_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/flag.hpp"
+#include "arg_router/mode.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/router.hpp"
+#include "arg_router/tree_node.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+namespace
+{
+template <typename... Params>
+class stub_node : public tree_node<Params...>
+{
+public:
+    constexpr explicit stub_node(Params... params) :
+        tree_node<Params...>{std::move(params)...}
+    {
+    }
+
+    void parse(parsing::token_list& tokens) const
+    {
+        std::get<0>(this->children()).parse(tokens, *this);
+    }
+};
+} // namespace
+
+int main() {
+    const auto m = stub_node(
+                        mode(policy::long_name<S_("mode")>,
+                             flag(policy::long_name<S_("f1")>),
+                             mode(flag(policy::long_name<S_("f2")>),
+                                  policy::router([&](bool) {}))));
+                             
+
+    auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "hello"}};
+    m.parse(tokens);
+    return 0;
+}
+    )",
+        "Mode must have a router or all its children are modes");
+}
+
+BOOST_AUTO_TEST_CASE(non_mode_children_cannot_have_children_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/flag.hpp"
+#include "arg_router/mode.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/router.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    const auto m = mode(flag(policy::long_name<S_("hello")>,
+                             policy::router([&](bool) {})),
+                        policy::router([&](bool) {}));
+    return 0;
+}
+    )",
+        "Non-mode children cannot have routing");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

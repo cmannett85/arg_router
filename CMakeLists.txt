@@ -38,15 +38,12 @@ set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/global_parser.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/list.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/mode.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/node_category.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/parsing.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/alias.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/count.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/custom_parser.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/default_value.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/description.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/has_contiguous_value_tokens.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/has_value_tokens.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/long_name.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/max_count.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/min_count.hpp

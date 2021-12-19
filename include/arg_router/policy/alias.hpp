@@ -1,9 +1,14 @@
 #pragma once
 
+#include "arg_router/algorithm.hpp"
+#include "arg_router/exception.hpp"
 #include "arg_router/parsing.hpp"
 #include "arg_router/policy/no_result_value.hpp"
+#include "arg_router/policy/policy.hpp"
 #include "arg_router/utility/span.hpp"
+#include "arg_router/utility/tuple_iterator.hpp"
 
+#include <boost/core/ignore_unused.hpp>
 #include <boost/mp11/bind.hpp>
 
 namespace arg_router
@@ -25,6 +30,20 @@ public:
     using aliased_policies_type = std::tuple<AliasedPolicies...>;
 
 private:
+    template <typename T>
+    struct policy_checker {
+        constexpr static auto value = traits::has_long_name_method_v<T> ||
+                                      traits::has_short_name_method_v<T>;
+    };
+
+    static_assert((sizeof...(AliasedPolicies) > 0),
+                  "At least one name needed for alias");
+    static_assert(policy::is_all_policies_v<aliased_policies_type>,
+                  "All parameters must be policies");
+    static_assert(
+        boost::mp11::mp_all_of<aliased_policies_type, policy_checker>::value,
+        "All parameters must provide a long and/or short form name");
+
     // You could do this a single inline mp11 expression, but it would be
     // unreadable...
     template <typename Node>
@@ -111,6 +130,18 @@ protected:
         using mode_type = boost::mp11::mp_second<std::tuple<Parents...>>;
         using aliased_indices = aliased_node_indices<mode_type>;
 
+        // Check that the alias names do not appear in the owning node (i.e.
+        // no self-references)
+        {
+            using owner_policies = typename node_type::policies_type;
+
+            using policy_intersection =
+                boost::mp11::mp_set_intersection<aliased_policies_type,
+                                                 owner_policies>;
+            static_assert(std::tuple_size_v<policy_intersection> == 0,
+                          "Alias names cannot appear in owner");
+        }
+
         static_assert(traits::has_minimum_count_method_v<node_type> &&
                           traits::has_maximum_count_method_v<node_type>,
                       "Node requires a count(), or minimum_count() and "
@@ -161,21 +192,6 @@ protected:
                       new_tokens.begin(),
                       new_tokens.end());
     }
-
-private:
-    template <typename T>
-    struct policy_checker {
-        constexpr static auto value = traits::has_long_name_method_v<T> ||
-                                      traits::has_short_name_method_v<T>;
-    };
-
-    static_assert((sizeof...(AliasedPolicies) > 0),
-                  "At least one name needed for alias");
-    static_assert(policy::is_all_policies_v<aliased_policies_type>,
-                  "All parameters must be policies");
-    static_assert(
-        boost::mp11::mp_all_of<aliased_policies_type, policy_checker>::value,
-        "All parameters must provide a long and/or short form name");
 };
 
 /** Constructs a alias_t with the given policies.
