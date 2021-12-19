@@ -14,7 +14,9 @@ BOOST_AUTO_TEST_SUITE(positional_arg_suite)
 BOOST_AUTO_TEST_CASE(is_tree_node_test)
 {
     static_assert(
-        is_tree_node_v<arg_router::positional_arg_t<std::vector<int>>>,
+        is_tree_node_v<
+            arg_router::positional_arg_t<std::vector<int>,
+                                         policy::long_name_t<S_("hello")>>>,
         "Tree node test has failed");
 }
 
@@ -161,10 +163,9 @@ BOOST_AUTO_TEST_CASE(only_policies_test)
 using namespace arg_router;
 
 int main() {
-    auto f = positional_arg<std::vector<int>>(
+    auto p = positional_arg<std::vector<int>>(
         policy::long_name<S_("hello")>,
-        flag(policy::short_name<'b'>),
-        policy::short_name<'H'>
+        flag(policy::short_name<'b'>)
     );
     return 0;
 }
@@ -183,11 +184,85 @@ BOOST_AUTO_TEST_CASE(push_back_test)
 using namespace arg_router;
 
 int main() {
-    auto f = positional_arg<int>(policy::long_name<S_("hello")>);
+    auto p = positional_arg<int>(policy::long_name<S_("hello")>);
     return 0;
 }
     )",
         "value_type must have a push_back() method");
+}
+
+BOOST_AUTO_TEST_CASE(must_have_a_long_name_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/positional_arg.hpp"
+
+using namespace arg_router;
+
+int main() {
+    auto p = positional_arg<int>();
+    return 0;
+}
+    )",
+        "Positional arg must have a long name policy");
+}
+
+BOOST_AUTO_TEST_CASE(must_not_have_a_short_name_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/short_name.hpp"
+#include "arg_router/positional_arg.hpp"
+
+using namespace arg_router;
+
+int main() {
+    auto p = positional_arg<int>(policy::short_name<'l'>);
+    return 0;
+}
+    )",
+        "Positional arg must not have a short name policy");
+}
+
+BOOST_AUTO_TEST_CASE(min_count_greater_than_max_count_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/count.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/positional_arg.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    auto p = positional_arg<int>(policy::long_name<S_("hello")>,
+                                 policy::min_count<3>,
+                                 policy::max_count<1>);
+    return 0;
+}
+    )",
+        "Minimum count must be less than or equal to maximum count");
+}
+
+BOOST_AUTO_TEST_CASE(cannot_have_fixed_count_of_zero_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/count.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/positional_arg.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    auto p = positional_arg<int>(policy::long_name<S_("hello")>,
+                                 policy::count<0>);
+    return 0;
+}
+    )",
+        "Cannot have a fixed count of zero");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

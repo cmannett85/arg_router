@@ -2,7 +2,7 @@
 
 #include "arg_router/parsing.hpp"
 #include "arg_router/policy/count.hpp"
-#include "arg_router/policy/has_value_tokens.hpp"
+#include "arg_router/tree_node.hpp"
 
 namespace arg_router
 {
@@ -14,17 +14,19 @@ namespace arg_router
  */
 template <typename T, typename... Policies>
 class arg_t :
-    public tree_node<policy::has_value_tokens_t,
-                     policy::count_t<std::integral_constant<std::size_t, 1>>,
+    public tree_node<policy::count_t<std::integral_constant<std::size_t, 1>>,
                      Policies...>
 {
     static_assert(policy::is_all_policies_v<std::tuple<Policies...>>,
                   "Args must only contain policies (not other nodes)");
 
     using parent_type =
-        tree_node<policy::has_value_tokens_t,
-                  policy::count_t<std::integral_constant<std::size_t, 1>>,
+        tree_node<policy::count_t<std::integral_constant<std::size_t, 1>>,
                   Policies...>;
+
+    static_assert(traits::has_long_name_method_v<arg_t> ||
+                      traits::has_short_name_method_v<arg_t>,
+                  "Arg must have a long and/or short name policy");
 
 public:
     using typename parent_type::policies_type;
@@ -37,21 +39,8 @@ public:
      * @param policies Policy instances
      */
     constexpr explicit arg_t(Policies... policies) :
-        parent_type{policy::has_value_tokens_t{},
-                    policy::count<1>,
-                    std::move(policies)...}
+        parent_type{policy::count<1>, std::move(policies)...}
     {
-    }
-
-    /** Match the token to the long or short form names assigned to this arg by
-     * its policies.
-     *
-     * @param token Command line token to match
-     * @return Match result
-     */
-    bool match_old(const parsing::token_type& token) const
-    {
-        return parsing::default_match<arg_t>(token);
     }
 
     /** Returns true and calls @a visitor if @a token matches the name of this

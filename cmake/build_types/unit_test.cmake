@@ -16,7 +16,6 @@ set(TEST_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/global_parser_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/list_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/mode_test.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/node_category_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/parsing_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/policy/custom_parser_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/policy/alias_test.cpp
@@ -55,7 +54,7 @@ set_target_properties(arg_router_test PROPERTIES CXX_EXTENSIONS OFF)
 
 target_compile_options(arg_router_test PRIVATE
     $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:
-        -Werror -Wall -Wextra>
+        -Werror -Wall -Wextra -ftemplate-backtrace-limit=0>
     $<$<CXX_COMPILER_ID:MSVC>:
         /W4>
 )

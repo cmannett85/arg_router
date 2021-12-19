@@ -1,5 +1,6 @@
 #include "arg_router/policy/min_count.hpp"
 #include "arg_router/policy/long_name.hpp"
+#include "arg_router/tree_node.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 #include "test_helpers.hpp"
@@ -181,6 +182,7 @@ BOOST_AUTO_TEST_CASE(validation_phase_test)
         R"(
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_count.hpp"
+#include "arg_router/tree_node.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 #include <vector>

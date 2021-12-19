@@ -3,6 +3,7 @@
 #include "arg_router/parsing.hpp"
 #include "arg_router/policy/count.hpp"
 #include "arg_router/policy/default_value.hpp"
+#include "arg_router/tree_node.hpp"
 
 namespace arg_router
 {
@@ -36,6 +37,10 @@ class flag_t :
                   policy::count_t<std::integral_constant<std::size_t, 0>>,
                   Policies...>;
 
+    static_assert(traits::has_long_name_method_v<flag_t> ||
+                      traits::has_short_name_method_v<flag_t>,
+                  "Flag must have a long and/or short name policy");
+
 public:
     using typename parent_type::policies_type;
 
@@ -51,17 +56,6 @@ public:
                     policy::count<0>,
                     std::move(policies)...}
     {
-    }
-
-    /** Match the token to the long or short form names assigned to this flag by
-     * its policies.
-     *
-     * @param token Command line token to match
-     * @return Match result
-     */
-    bool match_old(const parsing::token_type& token) const
-    {
-        return parsing::default_match<flag_t>(token);
     }
 
     /** Returns true and calls @a visitor if @a token matches the name of this
@@ -100,6 +94,15 @@ public:
     value_type parse(parsing::token_list& tokens,
                      const Parents&... parents) const
     {
+        {
+            using parse_policy = typename parent_type::template phase_finder<
+                policy::has_parse_phase_method,
+                value_type,
+                Parents...>::type;
+            static_assert(std::is_void_v<parse_policy>,
+                          "Flag cannot have a custom parser");
+        }
+
         // Remove this node's name
         tokens.erase(tokens.begin());
 

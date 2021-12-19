@@ -17,7 +17,8 @@ BOOST_AUTO_TEST_SUITE(arg_suite)
 
 BOOST_AUTO_TEST_CASE(is_tree_node_test)
 {
-    static_assert(is_tree_node_v<arg_t<int>>, "Tree node test has failed");
+    static_assert(is_tree_node_v<arg_t<int, policy::long_name_t<S_("hello")>>>,
+                  "Tree node test has failed");
 }
 
 BOOST_AUTO_TEST_CASE(policies_test)
@@ -160,6 +161,22 @@ int main() {
 }
     )",
         "Args must only contain policies (not other nodes)");
+}
+
+BOOST_AUTO_TEST_CASE(must_be_named_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/arg.hpp"
+
+using namespace arg_router;
+
+int main() {
+    auto a = arg<int>();
+    return 0;
+}
+    )",
+        "Arg must have a long and/or short name policy");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

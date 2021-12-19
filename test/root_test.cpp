@@ -1,4 +1,7 @@
+#include "arg_router/policy/custom_parser.hpp"
+#include "arg_router/policy/description.hpp"
 #include "arg_router/policy/validator.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
 
 #include "test_helpers.hpp"
 
@@ -37,15 +40,21 @@ BOOST_AUTO_TEST_SUITE(root_suite)
 
 BOOST_AUTO_TEST_CASE(is_tree_node_test)
 {
-    static_assert(is_tree_node_v<root_t<default_validator_type>>,
-                  "Tree node test has failed");
+    static_assert(
+        is_tree_node_v<root_t<flag_t<policy::long_name_t<S_("hello")>,
+                                     policy::router<std::function<void(bool)>>>,
+                              default_validator_type>>,
+        "Tree node test has failed");
 }
 
 BOOST_AUTO_TEST_CASE(validator_type_test)
 {
     static_assert(
-        std::is_same_v<typename root_t<default_validator_type>::validator_type,
-                       default_validator_type>,
+        std::is_same_v<
+            typename root_t<flag_t<policy::long_name_t<S_("hello")>,
+                                   policy::router<std::function<void(bool)>>>,
+                            default_validator_type>::validator_type,
+            default_validator_type>,
         "Tree node test has failed");
 }
 
@@ -90,10 +99,11 @@ BOOST_AUTO_TEST_CASE(unhandled_parse_test)
                         policy::validation::default_validator);
 
     auto args = std::vector{"foo", "--hello", "--foo"};
-    BOOST_CHECK_EXCEPTION(
-        r.parse(args.size(), const_cast<char**>(args.data())),
-        parse_exception,
-        [](const auto& e) { return e.what() == "Unhandled argument: --foo"s; });
+    BOOST_CHECK_EXCEPTION(r.parse(args.size(), const_cast<char**>(args.data())),
+                          parse_exception,
+                          [](const auto& e) {
+                              return e.what() == "Unhandled arguments: --foo"s;
+                          });
     BOOST_CHECK(!router_hit);
 }
 
@@ -966,7 +976,7 @@ BOOST_AUTO_TEST_CASE(single_positional_arg_parse_test)
                        std::tuple{true, 42, std::vector<std::string_view>{}},
                        "Minimum count not reached: --pos_args"},
             std::tuple{std::vector{"foo", "--flag1", "--arg1", "9"},
-                       std::tuple{true, 42, std::vector<std::string_view>{}},
+                       std::tuple{true, 9, std::vector<std::string_view>{}},
                        "Minimum count not reached: --pos_args"},
         });
 }
@@ -1227,20 +1237,61 @@ BOOST_AUTO_TEST_CASE(must_have_validator_policy_test)
     test::death_test_compile(
         R"(
 #include "arg_router/policy/validator.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
 
 int main() {
-        arg_router::root_t<
-            arg_router::flag_t<
-                arg_router::policy::short_name_t<
-                    arg_router::traits::integral_constant<'a'>>,
-                arg_router::policy::long_name_t<S_("test")>,
-                arg_router::policy::router<std::less<>>>>();
+    arg_router::root_t<
+        arg_router::flag_t<
+            arg_router::policy::short_name_t<
+                arg_router::traits::integral_constant<'a'>>,
+            arg_router::policy::long_name_t<S_("test")>,
+            arg_router::policy::router<std::less<>>>>();
     return 0;
 }
     )",
         "Root must have a validator policy, use "
         "policy::validation::default_validator unless you have created a "
         "custom one");
+}
+
+BOOST_AUTO_TEST_CASE(must_have_at_least_one_child_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/validator.hpp"
+
+using namespace arg_router;
+
+using default_validator_type =
+    std::decay_t<decltype(policy::validation::default_validator)>;
+
+int main() {
+    arg_router::root_t<default_validator_type>();
+    return 0;
+}
+    )",
+        "Root must have at least one child");
+}
+
+BOOST_AUTO_TEST_CASE(single_child_must_have_router_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/validator.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+using default_validator_type =
+    std::decay_t<decltype(policy::validation::default_validator)>;
+
+int main() {
+    arg_router::root_t<default_validator_type,
+                       flag_t<policy::long_name_t<S_("f1")>>>();
+    return 0;
+}
+    )",
+        "All root children must have routers, unless they have no value");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -168,22 +168,6 @@ constexpr bool is_same_when_despecialised_v =
 template <auto Value>
 using integral_constant = std::integral_constant<decltype(Value), Value>;
 
-/** Create a <TT>std::reference_wrapper<T></TT>.
- *
- * @tparam T Type to wrap
- */
-template <typename T>
-struct add_reference_wrapper {
-    using type = std::reference_wrapper<T>;
-};
-
-/** Helper alias for add_reference_wrapper.
- *
- * @tparam T Type to wrap
- */
-template <typename T>
-using add_reference_wrapper_t = typename add_reference_wrapper<T>::type;
-
 /** Create a <TT>std::optional<T></TT>.
  *
  * @tparam T Type to wrap
@@ -278,66 +262,6 @@ struct has_short_name_method {
 template <typename T>
 constexpr bool has_short_name_method_v = has_short_name_method<T>::value;
 
-/** Determine if a type has a <TT>parse(std::string_view)</TT> method.
- *
- * @tparam T Type to query
- */
-template <typename T>
-struct has_parse_method {
-    template <typename U>
-    using type =
-        decltype(std::declval<U>().parse(std::declval<std::string_view>()));
-
-    constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
-};
-
-/** Helper variable for has_parse_method.
- *
- * @tparam T Type to query
- */
-template <typename T>
-constexpr bool has_parse_method_v = has_parse_method<T>::value;
-
-/** Determine if a type has a <TT>match_old(const parsing:token_type&)</TT>
- * method.
- *
- * @tparam T Type to query
- */
-template <typename T>
-struct has_match_method {
-    template <typename U>
-    using type = decltype(std::declval<const U&>().match_old(
-        std::declval<const parsing::token_type&>()));
-
-    constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
-};
-
-/** Helper variable for has_match_method.
- *
- * @tparam T Type to query
- */
-template <typename T>
-constexpr bool has_match_method_v = has_match_method<T>::value;
-
-/** Determine if a type has a <TT>get_default_value() const</TT> method.
- *
- * @tparam T Type to query
- */
-template <typename T>
-struct has_default_value_method {
-    template <typename U>
-    using type = decltype(std::declval<const U&>().get_default_value());
-
-    constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
-};
-
-/** Helper variable for has_default_value.
- *
- * @tparam T Type to query
- */
-template <typename T>
-constexpr bool has_default_value_method_v = has_default_value_method<T>::value;
-
 /** Determine if a type has a <TT>maximum_count()</TT> static method.
  *
  * @tparam T Type to query
@@ -376,25 +300,6 @@ struct has_minimum_count_method {
 template <typename T>
 constexpr bool has_minimum_count_method_v = has_minimum_count_method<T>::value;
 
-/** Determine if a type has a <TT>count()</TT> static method.
- *
- * @tparam T Type to query
- */
-template <typename T>
-struct has_count_method {
-    template <typename U>
-    using type = decltype(U::count());
-
-    constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
-};
-
-/** Helper variable for has_count_method.
- *
- * @tparam T Type to query
- */
-template <typename T>
-constexpr bool has_count_method_v = has_count_method<T>::value;
-
 /** Determine if a type has a <TT>push_back(typename T::value_type)</TT> method.
  *
  * @tparam T Type to query
@@ -415,63 +320,24 @@ struct has_push_back_method {
 template <typename T>
 constexpr bool has_push_back_method_v = has_push_back_method<T>::value;
 
-/** Determine if a type has a <TT>size()</TT> method.
+/** Determine if a type can be used with <TT>std::size(..)</TT>.
  *
  * @tparam T Type to query
  */
 template <typename T>
-struct has_size_method {
+struct supports_std_size {
     template <typename U>
-    using type = decltype(std::declval<const U&>().size());
+    using type = decltype(std::size(std::declval<const U&>()));
 
     constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
 };
 
-/** Helper variable for has_size_method.
+/** Helper variable for supports_std_size.
  *
  * @tparam T Type to query
  */
 template <typename T>
-constexpr bool has_size_method_v = has_size_method<T>::value;
-
-/** Determine if a type has a <TT>aliased_policies_type</TT> typedef.
- *
- * @tparam T Type to query
- */
-template <typename T>
-struct has_aliased_policies_type {
-    template <typename U>
-    using type = typename U::aliased_policies_type;
-
-    constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
-};
-
-/** Helper variable for has_aliased_policies_type.
- *
- * @tparam T Type to query
- */
-template <typename T>
-constexpr bool has_aliased_policies_type_v =
-    has_aliased_policies_type<T>::value;
-
-/** Determine if a type has a <TT>value_type</TT>.
- *
- * @tparam T Type to query
- */
-template <typename T>
-struct has_value_type {
-    template <typename U>
-    using type = typename U::value_type;
-
-    constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
-};
-
-/** Helper variable for <TT>value_type</TT>.
- *
- * @tparam T Type to query
- */
-template <typename T>
-constexpr bool has_value_type_v = has_value_type<T>::value;
+constexpr bool supports_std_size_v = supports_std_size<T>::value;
 
 /** Evaluates to the number of arguments the Callable @a T has.
  *

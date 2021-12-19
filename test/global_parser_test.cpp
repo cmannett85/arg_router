@@ -125,7 +125,7 @@ BOOST_AUTO_TEST_CASE(unimplemented_parse_test)
 {
     test::death_test_compile(
         R"(
-#include "arg_router/parsing.hpp"
+#include "arg_router/global_parser.hpp"
 
 struct my_struct{};
 
