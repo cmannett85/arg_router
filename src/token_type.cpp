@@ -20,6 +20,39 @@ std::string parsing::to_string(const token_type& token)
     return std::string{to_string(token.prefix)} + token.name;
 }
 
+bool parsing::token_list::operator==(const token_list& other) const noexcept
+{
+    if (size() == other.size()) {
+        const auto [this_result, that_result] =
+            std::mismatch(begin(), end(), other.begin(), other.end());
+        return this_result == end();
+    }
+    return false;
+}
+
+void parsing::token_list::reserve(size_type new_cap)
+{
+    data_.reserve(new_cap);
+}
+
+void parsing::token_list::push_back(const value_type& value)
+{
+    data_.push_back(value);
+}
+
+void parsing::token_list::pop_front(size_type count)
+{
+    head_offset_ += std::min(count, size());
+}
+
+void parsing::token_list::swap(token_list& other) noexcept
+{
+    using std::swap;
+
+    swap(data_, other.data_);
+    swap(head_offset_, other.head_offset_);
+}
+
 std::string parsing::to_string(const token_list& tokens)
 {
     auto str = ""s;

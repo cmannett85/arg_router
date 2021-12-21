@@ -110,7 +110,7 @@ public:
     value_type parse(parsing::token_list& tokens,
                      const Parents&... parents) const
     {
-        auto view = utility::span<parsing::token_type>{tokens};
+        auto view = utility::span<const parsing::token_type>{tokens};
 
         // Pre-parse
         utility::tuple_type_iterator<policies_type>([&](auto /*i*/, auto ptr) {
@@ -140,7 +140,7 @@ public:
         }
 
         // Pop the tokens, we don't need them anymore
-        tokens.erase(tokens.begin(), tokens.begin() + view.size());
+        tokens.pop_front(view.size());
 
         // Validation
         utility::tuple_type_iterator<policies_type>([&](auto /*i*/, auto ptr) {

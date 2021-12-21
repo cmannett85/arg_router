@@ -136,7 +136,7 @@ public:
         auto mode_token = std::optional<parsing::token_type>{};
         if constexpr (!is_anonymous) {
             mode_token = tokens.front();
-            tokens.erase(tokens.begin());
+            tokens.pop_front();
         }
 
         // Find any matching mode type and delegate parsing into it

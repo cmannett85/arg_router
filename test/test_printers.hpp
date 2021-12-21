@@ -18,11 +18,7 @@ inline std::ostream& operator<<(std::ostream& stream, const token_type& token)
 
 inline std::ostream& operator<<(std::ostream& stream, const token_list& list)
 {
-    stream << "{";
-    for (const auto [prefix, name] : list) {
-        stream << "{" << to_string(prefix) << "," << name << "},";
-    }
-    return stream << "}";
+    return stream << to_string(list);
 }
 }  // namespace parsing
 }  // namespace arg_router

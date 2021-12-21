@@ -32,6 +32,7 @@ set(TEST_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/positional_arg_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/root_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/test_helpers.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/token_list_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/traits_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/tree_node_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/compile_time_string_test.cpp

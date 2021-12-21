@@ -85,9 +85,9 @@ public:
         }
 
         // Remove this node's name
-        tokens.erase(tokens.begin());
+        tokens.pop_front();
 
-        auto view = utility::span<parsing::token_type>{tokens};
+        auto view = utility::span<const parsing::token_type>{tokens};
 
         // Pre-parse
         utility::tuple_type_iterator<policies_type>([&](auto /*i*/, auto ptr) {
@@ -109,7 +109,7 @@ public:
                                                               parents...);
 
         // Pop the token, we don't need it anymore
-        tokens.erase(tokens.begin());
+        tokens.pop_front();
 
         // Validation
         utility::tuple_type_iterator<policies_type>([&](auto /*i*/, auto ptr) {

@@ -24,7 +24,7 @@ public:
 
     template <typename... Parents>
     bool pre_parse_phase(parsing::token_list& tokens,
-                         utility::span<parsing::token_type>& view,
+                         utility::span<const parsing::token_type>& view,
                          const Parents&... parents) const
     {
         auto hit = false;
@@ -153,7 +153,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                  const auto& test,
                  auto expected_result,
                  auto expected_tokens) {
-        auto view = utility::span<parsing::token_type>{input_tokens};
+        auto view = utility::span<const parsing::token_type>{input_tokens};
         const auto result =
             owner.pre_parse_phase(input_tokens, view, owner, test, root);
         BOOST_CHECK_EQUAL(result, expected_result);
@@ -219,7 +219,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_too_small_view_test)
                   stub_node{policy::long_name<S_("arg3")>}};
 
     auto tokens = parsing::token_list{{parsing::prefix_type::NONE, "42"}};
-    auto view = utility::span<parsing::token_type>{tokens};
+    auto view = utility::span<const parsing::token_type>{tokens};
     const auto& owner = std::get<0>(root.children());
 
     BOOST_CHECK_EXCEPTION(  //
@@ -256,7 +256,7 @@ public:
 
     template <typename... Parents>
     void pre_parse_phase(parsing::token_list& tokens,
-                         utility::span<parsing::token_type>& view,
+                         utility::span<const parsing::token_type>& view,
                          const Parents&... parents) const
     {
         using this_policy =
@@ -274,7 +274,7 @@ int main() {
                   stub_node{policy::long_name<S_("flag2")>},
                   stub_node{policy::long_name<S_("flag3")>}};
     auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "flag1"}};
-    auto view = utility::span<parsing::token_type>{tokens};
+    auto view = utility::span<const parsing::token_type>{tokens};
     const auto& owner = std::get<0>(node.children());
     
     owner.pre_parse_phase(tokens, view);
@@ -308,7 +308,7 @@ public:
 
     template <typename... Parents>
     void pre_parse_phase(parsing::token_list& tokens,
-                         utility::span<parsing::token_type>& view,
+                         utility::span<const parsing::token_type>& view,
                          const Parents&... parents) const
     {
         using this_policy =
@@ -325,7 +325,7 @@ int main() {
                   stub_node{policy::long_name<S_("flag2")>},
                   stub_node{policy::long_name<S_("flag3")>}};
     auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "flag1"}};
-    auto view = utility::span<parsing::token_type>{tokens};
+    auto view = utility::span<const parsing::token_type>{tokens};
     const auto& owner = std::get<0>(node.children());
     
     owner.pre_parse_phase(tokens, view, owner, node);
@@ -360,7 +360,7 @@ public:
 
     template <typename... Parents>
     void pre_parse_phase(parsing::token_list& tokens,
-                         utility::span<parsing::token_type>& view,
+                         utility::span<const parsing::token_type>& view,
                          const Parents&... parents) const
     {
         using this_policy =
@@ -379,7 +379,7 @@ int main() {
                   stub_node{policy::long_name<S_("flag2")>},
                   stub_node{policy::long_name<S_("flag3")>}};
     auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "flag1"}};
-    auto view = utility::span<parsing::token_type>{tokens};
+    auto view = utility::span<const parsing::token_type>{tokens};
     const auto& owner = std::get<0>(node.children());
     
     owner.pre_parse_phase(tokens, view, owner, node);
@@ -414,7 +414,7 @@ public:
 
     template <typename... Parents>
     void pre_parse_phase(parsing::token_list& tokens,
-                         utility::span<parsing::token_type>& view,
+                         utility::span<const parsing::token_type>& view,
                          const Parents&... parents) const
     {
         using this_policy =
@@ -430,7 +430,7 @@ int main() {
                             policy::count<1>,
                             policy::alias(policy::long_name<S_("flag1")>)}};
     auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "flag1"}};
-    auto view = utility::span<parsing::token_type>{tokens};
+    auto view = utility::span<const parsing::token_type>{tokens};
     const auto& owner = std::get<0>(node.children());
     
     owner.pre_parse_phase(tokens, view, owner, node);
@@ -464,7 +464,7 @@ public:
 
     template <typename... Parents>
     void pre_parse_phase(parsing::token_list& tokens,
-                         utility::span<parsing::token_type>& view,
+                         utility::span<const parsing::token_type>& view,
                          const Parents&... parents) const
     {
         using this_policy =
@@ -481,7 +481,7 @@ int main() {
                             policy::alias(policy::long_name<S_("flag2")>,
                                           policy::long_name<S_("flag1")>)}};
     auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "flag1"}};
-    auto view = utility::span<parsing::token_type>{tokens};
+    auto view = utility::span<const parsing::token_type>{tokens};
     const auto& owner = std::get<0>(node.children());
     
     owner.pre_parse_phase(tokens, view, owner, node);

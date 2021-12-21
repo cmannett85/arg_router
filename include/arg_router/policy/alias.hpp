@@ -118,7 +118,7 @@ protected:
      */
     template <typename... Parents>
     void pre_parse_phase(parsing::token_list& tokens,
-                         utility::span<parsing::token_type>& view,
+                         utility::span<const parsing::token_type>& view,
                          const Parents&... parents) const
     {
         boost::ignore_unused(parents...);
