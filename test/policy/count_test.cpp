@@ -21,7 +21,7 @@ public:
 
     template <typename... Parents>
     bool pre_parse_phase(parsing::token_list& tokens,
-                         utility::span<parsing::token_type>& view,
+                         utility::span<const parsing::token_type>& view,
                          const Parents&... parents) const
     {
         auto hit = false;
@@ -100,7 +100,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                  auto expected_result,
                  auto expected_view) {
         auto tokens_backup = input_tokens;
-        auto view = utility::span<parsing::token_type>{input_tokens};
+        auto view = utility::span<const parsing::token_type>{input_tokens};
         const auto result =
             owner.pre_parse_phase(input_tokens, view, owner, root);
         BOOST_CHECK_EQUAL(result, expected_result);
