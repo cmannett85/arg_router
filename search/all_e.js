@@ -1,9 +1,11 @@
 var searchData=
 [
-  ['second_5ftype_154',['second_type',['../structarg__router_1_1algorithm_1_1unzip.html#a5775c4f67b4c6dfa9ef26b9b4d1400a2',1,'arg_router::algorithm::unzip']]],
-  ['short_5fname_155',['short_name',['../classarg__router_1_1policy_1_1short__name__t.html#a2bb6f3e0d1dc6b77502afdbde9ee8667',1,'arg_router::policy::short_name_t::short_name()'],['../namespacearg__router_1_1policy.html#a5eeeaadd8d711b8a761c57fbbc8c312c',1,'arg_router::policy::short_name()']]],
-  ['short_5fname_5ft_156',['short_name_t',['../classarg__router_1_1policy_1_1short__name__t.html',1,'arg_router::policy']]],
-  ['single_5fanonymous_5fmode_157',['single_anonymous_mode',['../structarg__router_1_1policy_1_1validation_1_1single__anonymous__mode.html',1,'arg_router::policy::validation']]],
-  ['supports_5fstd_5fsize_158',['supports_std_size',['../structarg__router_1_1traits_1_1supports__std__size.html',1,'arg_router::traits']]],
-  ['supports_5fstd_5fsize_5fv_159',['supports_std_size_v',['../namespacearg__router_1_1traits.html#a4368b240b0073156a030f4db45173904',1,'arg_router::traits']]]
+  ['required_160',['required',['../namespacearg__router_1_1policy.html#a0960d76b9e22cfed95ba19a463384d3c',1,'arg_router::policy']]],
+  ['required_5ft_161',['required_t',['../classarg__router_1_1policy_1_1required__t.html',1,'arg_router::policy']]],
+  ['reserve_162',['reserve',['../classarg__router_1_1parsing_1_1token__list.html#af09a16f019f5241059dc4f03dbfe08f1',1,'arg_router::parsing::token_list']]],
+  ['root_163',['root',['../namespacearg__router.html#afca481bb81a046d046e0e7fd538acb4e',1,'arg_router']]],
+  ['root_5ft_164',['root_t',['../classarg__router_1_1root__t.html',1,'arg_router::root_t&lt; Params &gt;'],['../classarg__router_1_1root__t.html#a17c670e844709838dd3adc478d1b87a8',1,'arg_router::root_t::root_t()']]],
+  ['router_165',['router',['../classarg__router_1_1policy_1_1router.html',1,'arg_router::policy::router&lt; Fn &gt;'],['../classarg__router_1_1policy_1_1router.html#a26d195b79a41d7ef21e0f9eeb6b39d6d',1,'arg_router::policy::router::router()']]],
+  ['routing_5fphase_166',['routing_phase',['../classarg__router_1_1policy_1_1router.html#a2882f88263153979748a2f537bc2aca7',1,'arg_router::policy::router']]],
+  ['rules_5ftype_167',['rules_type',['../classarg__router_1_1policy_1_1validation_1_1validator.html#adca5b43d5f0fd325ab37e188fbb6b338',1,'arg_router::policy::validation::validator']]]
 ];

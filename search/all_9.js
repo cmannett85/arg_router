@@ -1,18 +1,8 @@
 var searchData=
 [
-  ['match_106',['match',['../classarg__router_1_1arg__t.html#a0143104c50ee3059abc42fbc94607658',1,'arg_router::arg_t::match()'],['../classarg__router_1_1flag__t.html#a382cb0d5fa8ba8b490ca4a88e830dd33',1,'arg_router::flag_t::match()'],['../classarg__router_1_1mode__t.html#a7871cd8ab38b6d32a443ce01730962ff',1,'arg_router::mode_t::match()'],['../classarg__router_1_1positional__arg__t.html#abcce0da4ec82eead1bd92bc0515da149',1,'arg_router::positional_arg_t::match()']]],
-  ['max_5fcount_107',['max_count',['../namespacearg__router_1_1policy.html#a1ed9134eb30f23ae83b00d4ca7300790',1,'arg_router::policy']]],
-  ['max_5fcount_5ft_108',['max_count_t',['../classarg__router_1_1policy_1_1max__count__t.html',1,'arg_router::policy']]],
-  ['maximum_5fcount_109',['maximum_count',['../classarg__router_1_1policy_1_1max__count__t.html#a1c3fbdae27b55779ffbcfbbb49e522d5',1,'arg_router::policy::max_count_t']]],
-  ['merge_110',['merge',['../classarg__router_1_1policy_1_1multi__stage__value.html#a96a51f4d9e7c3001e1015a0f7c6f5c17',1,'arg_router::policy::multi_stage_value']]],
-  ['merge_5ffn_111',['merge_fn',['../classarg__router_1_1policy_1_1multi__stage__value.html#a5a463b5dc6c149a3f5e5340886db012e',1,'arg_router::policy::multi_stage_value']]],
-  ['min_5fcount_112',['min_count',['../namespacearg__router_1_1policy.html#af48ba27f975e36205df8a6a1ceb07be2',1,'arg_router::policy']]],
-  ['min_5fcount_5ft_113',['min_count_t',['../classarg__router_1_1policy_1_1min__count__t.html',1,'arg_router::policy']]],
-  ['minimum_5fcount_114',['minimum_count',['../classarg__router_1_1policy_1_1min__count__t.html#a87c8d71399b9dd3205dcf87b0791ef95',1,'arg_router::policy::min_count_t']]],
-  ['missing_5fphase_115',['missing_phase',['../classarg__router_1_1policy_1_1default__value.html#a3f7235f5f4ac6235a07b848a4d81cc5f',1,'arg_router::policy::default_value::missing_phase()'],['../classarg__router_1_1policy_1_1required__t.html#a53fec68bdf2e1ff8df5fac8d682c30ba',1,'arg_router::policy::required_t::missing_phase()']]],
-  ['mode_116',['mode',['../namespacearg__router.html#a3182f5a1fe3c57f89fdc27319f5db896',1,'arg_router']]],
-  ['mode_5ft_117',['mode_t',['../classarg__router_1_1mode__t.html',1,'arg_router::mode_t&lt; Params &gt;'],['../classarg__router_1_1mode__t.html#a4a207b8c75593f438c38d4840ad04201',1,'arg_router::mode_t::mode_t()']]],
-  ['multi_5fstage_5fvalue_118',['multi_stage_value',['../classarg__router_1_1policy_1_1multi__stage__value.html',1,'arg_router::policy::multi_stage_value&lt; ResultType, ValueType &gt;'],['../classarg__router_1_1policy_1_1multi__stage__value.html#ab4f0e04b2f4eec4e23fd659220497f65',1,'arg_router::policy::multi_stage_value::multi_stage_value()']]],
-  ['must_5fhave_5fpolicy_119',['must_have_policy',['../structarg__router_1_1policy_1_1validation_1_1must__have__policy.html',1,'arg_router::policy::validation']]],
-  ['must_5fnot_5fhave_5fpolicy_120',['must_not_have_policy',['../structarg__router_1_1policy_1_1validation_1_1must__not__have__policy.html',1,'arg_router::policy::validation']]]
+  ['l1_5fcache_5fsize_110',['l1_cache_size',['../namespacearg__router_1_1config.html#a78e160dd9f602656e0ebb5a4833402a4',1,'arg_router::config']]],
+  ['list_111',['list',['../classarg__router_1_1list.html',1,'arg_router::list&lt; Children &gt;'],['../classarg__router_1_1list.html#a62334ae3870dc121724839de14c0e76a',1,'arg_router::list::list()']]],
+  ['list_5fexpander_112',['list_expander',['../namespacearg__router.html#ac82f3cd910cc0b13f74865681898b078',1,'arg_router::list_expander(Params... params)'],['../namespacearg__router.html#a0ed251acaeb78e0f923df791302fb2f2',1,'arg_router::list_expander(std::tuple&lt; Params... &gt; params)']]],
+  ['long_5fname_113',['long_name',['../classarg__router_1_1policy_1_1long__name__t.html#a05f3d42a1a873c3cf4e0018d4455abc0',1,'arg_router::policy::long_name_t::long_name()'],['../namespacearg__router_1_1policy.html#ab90e775f037fb5ea273c4a67abbede85',1,'arg_router::policy::long_name()']]],
+  ['long_5fname_5ft_114',['long_name_t',['../classarg__router_1_1policy_1_1long__name__t.html',1,'arg_router::policy']]]
 ];

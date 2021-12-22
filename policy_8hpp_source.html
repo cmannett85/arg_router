@@ -107,7 +107,7 @@ $(function() {
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        std::declval&lt;const has_pre_parse_phase_method&amp;&gt;()</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;            .<span class="keyword">template</span> pre_parse_phase&lt;Parents...&gt;(</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;                std::declval&lt;parsing::token_list&amp;&gt;(),</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                std::declval&lt;utility::span&lt;parsing::token_type&gt;&amp;&gt;(),</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                std::declval&lt;utility::span&lt;const parsing::token_type&gt;&amp;&gt;(),</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                std::declval&lt;const Parents&amp;&gt;()...));</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    constexpr <span class="keyword">static</span> <span class="keywordtype">bool</span> value = boost::mp11::mp_valid&lt;type, T&gt;::value;</div>
