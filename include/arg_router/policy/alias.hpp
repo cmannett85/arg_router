@@ -191,6 +191,10 @@ protected:
         tokens.insert(tokens.begin() + node_type::minimum_count(),
                       new_tokens.begin(),
                       new_tokens.end());
+
+        // Update the view in case the extra tokens have caused a reallocation
+        view = utility::span<const parsing::token_type>{tokens.data(),  //
+                                                        view.size()};
     }
 };
 

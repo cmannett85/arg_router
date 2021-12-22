@@ -79,8 +79,10 @@ public:
     value_type parse(parsing::token_list& tokens,
                      const Parents&... parents) const
     {
-        // Check we have enough tokens to even do a parse
+        // Check we have enough tokens to even do a value parse
         if (tokens.size() <= parent_type::count()) {
+            // The match operation guarantees that the node name token is
+            // present
             throw parse_exception{"Missing argument", tokens.front()};
         }
 

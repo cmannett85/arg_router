@@ -65,7 +65,7 @@ jobs:
     - name: Valgrind run
       run: |
         cd ${{ env.BUILD_DIR }}/test
-        valgrind ./arg_router_test_coverage -l test_suite
+        valgrind --error-exitcode=1 ./arg_router_test_coverage -l test_suite
 
     - name: Calculate unit test coverage
       run: |
