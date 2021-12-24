@@ -89,9 +89,6 @@ Inheritance diagram for arg_router::policy::alias_t&lt; AliasedPolicies &gt;:</d
 Public Types</h2></td></tr>
 <tr class="memitem:abd3cbec28db15f7bedea6bcaf50ea3bb"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1alias__t.html#abd3cbec28db15f7bedea6bcaf50ea3bb">aliased_policies_type</a> = std::tuple&lt; AliasedPolicies... &gt;</td></tr>
 <tr class="separator:abd3cbec28db15f7bedea6bcaf50ea3bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1285bdca1b15e43eb4b5bca80f5a6a3f"><td class="memTemplParams" colspan="2">template&lt;typename ModeType &gt; </td></tr>
-<tr class="memitem:a1285bdca1b15e43eb4b5bca80f5a6a3f"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1alias__t.html#a1285bdca1b15e43eb4b5bca80f5a6a3f">aliased_node_indices</a> = decltype(create_aliased_node_indices&lt; ModeType &gt;())</td></tr>
-<tr class="separator:a1285bdca1b15e43eb4b5bca80f5a6a3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -101,7 +98,7 @@ Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
 <tr class="memitem:a6a5293fa310cc281e6d7e2fcc361f867"><td class="memTemplParams" colspan="2">template&lt;typename... Parents&gt; </td></tr>
-<tr class="memitem:a6a5293fa310cc281e6d7e2fcc361f867"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1alias__t.html#a6a5293fa310cc281e6d7e2fcc361f867">pre_parse_phase</a> (<a class="el" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a> &amp;tokens, utility::span&lt; const <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a> &gt; &amp;view, const Parents &amp;... parents) const</td></tr>
+<tr class="memitem:a6a5293fa310cc281e6d7e2fcc361f867"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1alias__t.html#a6a5293fa310cc281e6d7e2fcc361f867">pre_parse_phase</a> (<a class="el" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a> &amp;tokens, <a class="el" href="namespacearg__router_1_1utility.html#ad352319d55d0f012d4c77a6bd851d6f5">utility::span</a>&lt; const <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a> &gt; &amp;view, const Parents &amp;... parents) const</td></tr>
 <tr class="separator:a6a5293fa310cc281e6d7e2fcc361f867"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -119,33 +116,6 @@ class arg_router::policy::alias_t&lt; AliasedPolicies &gt;</h3>
 
 <p class="definition">Definition at line <a class="el" href="alias_8hpp_source.html#l00026">26</a> of file <a class="el" href="alias_8hpp_source.html">alias.hpp</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
-<a id="a1285bdca1b15e43eb4b5bca80f5a6a3f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1285bdca1b15e43eb4b5bca80f5a6a3f">&#9670;&nbsp;</a></span>aliased_node_indices</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename... AliasedPolicies&gt; </div>
-<div class="memtemplate">
-template&lt;typename ModeType &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">using <a class="el" href="classarg__router_1_1policy_1_1alias__t.html">arg_router::policy::alias_t</a>&lt; AliasedPolicies &gt;::<a class="el" href="classarg__router_1_1policy_1_1alias__t.html#a1285bdca1b15e43eb4b5bca80f5a6a3f">aliased_node_indices</a> =  decltype(create_aliased_node_indices&lt;ModeType&gt;())</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Given a mode-like parent, iterate over its children and return the indices for those that are aliased by this policy.</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">ModeType</td><td>Mode-like type </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="definition">Definition at line <a class="el" href="alias_8hpp_source.html#l00089">89</a> of file <a class="el" href="alias_8hpp_source.html">alias.hpp</a>.</p>
-
-</div>
-</div>
 <a id="abd3cbec28db15f7bedea6bcaf50ea3bb"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abd3cbec28db15f7bedea6bcaf50ea3bb">&#9670;&nbsp;</a></span>aliased_policies_type</h2>
 
@@ -199,7 +169,7 @@ template&lt;typename... AliasedPolicies&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="alias_8hpp_source.html#l00095">95</a> of file <a class="el" href="alias_8hpp_source.html">alias.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="alias_8hpp_source.html#l00130">130</a> of file <a class="el" href="alias_8hpp_source.html">alias.hpp</a>.</p>
 
 </div>
 </div>
@@ -226,7 +196,7 @@ template&lt;typename... Parents&gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">utility::span&lt; const <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a> &gt; &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacearg__router_1_1utility.html#ad352319d55d0f012d4c77a6bd851d6f5">utility::span</a>&lt; const <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>view</em>, </td>
         </tr>
         <tr>
@@ -273,7 +243,7 @@ template&lt;typename... Parents&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="alias_8hpp_source.html#l00120">120</a> of file <a class="el" href="alias_8hpp_source.html">alias.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="alias_8hpp_source.html#l00155">155</a> of file <a class="el" href="alias_8hpp_source.html">alias.hpp</a>.</p>
 
 </div>
 </div>

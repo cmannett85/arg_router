@@ -73,27 +73,33 @@ $(function() {
 <div class="contents">
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;type_traits&gt;</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &quot;arg_router/policy/policy.hpp&quot;</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacearg__router.html">arg_router</a></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;{</div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">namespace </span>policy</div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;{</div>
-<div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="structarg__router_1_1policy_1_1no__result__value.html">   14</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structarg__router_1_1policy_1_1no__result__value.html">no_result_value</a> {</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;};</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1policy.html#a268e591fde2c17e2579818a745bd4cdc">   22</a></span>&#160;<span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1policy.html#a268e591fde2c17e2579818a745bd4cdc">has_no_result_value</a> = std::is_base_of&lt;no_result_value, T&gt;;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1policy.html#afb590ac3a25b8e2f02fd2ef5992252c0">   29</a></span>&#160;constexpr <span class="keywordtype">bool</span> <a class="code" href="namespacearg__router_1_1policy.html#afb590ac3a25b8e2f02fd2ef5992252c0">has_no_result_value_v</a> = <a class="code" href="namespacearg__router_1_1policy.html#a268e591fde2c17e2579818a745bd4cdc">has_no_result_value&lt;T&gt;::value</a>;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;}  <span class="comment">// namespace policy</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> = <span class="keywordtype">void</span>&gt;  <span class="comment">// This is needed due so it can be used in</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="structarg__router_1_1policy_1_1no__result__value.html">   15</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structarg__router_1_1policy_1_1no__result__value.html">no_result_value</a> {    <span class="comment">// template template parameters</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;};</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1policy.html#a985a31d1991b66211625593d1b07dff9">   23</a></span>&#160;<span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1policy.html#a985a31d1991b66211625593d1b07dff9">has_no_result_value</a> = std::is_base_of&lt;no_result_value&lt;&gt;, T&gt;;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1policy.html#afb590ac3a25b8e2f02fd2ef5992252c0">   30</a></span>&#160;constexpr <span class="keywordtype">bool</span> <a class="code" href="namespacearg__router_1_1policy.html#afb590ac3a25b8e2f02fd2ef5992252c0">has_no_result_value_v</a> = <a class="code" href="namespacearg__router_1_1policy.html#a985a31d1991b66211625593d1b07dff9">has_no_result_value&lt;T&gt;::value</a>;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword">template</span> &lt;&gt;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword">struct </span><a class="code" href="structarg__router_1_1policy_1_1is__policy.html">is_policy</a>&lt;<a class="code" href="structarg__router_1_1policy_1_1no__result__value.html">no_result_value</a>&lt;&gt;&gt; : std::true_type {</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;};</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;}  <span class="comment">// namespace policy</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="astructarg__router_1_1policy_1_1no__result__value_html"><div class="ttname"><a href="structarg__router_1_1policy_1_1no__result__value.html">arg_router::policy::no_result_value</a></div><div class="ttdef"><b>Definition:</b> <a href="no__result__value_8hpp_source.html#l00014">no_result_value.hpp:14</a></div></div>
-<div class="ttc" id="anamespacearg__router_1_1policy_html_a268e591fde2c17e2579818a745bd4cdc"><div class="ttname"><a href="namespacearg__router_1_1policy.html#a268e591fde2c17e2579818a745bd4cdc">arg_router::policy::has_no_result_value</a></div><div class="ttdeci">std::is_base_of&lt; no_result_value, T &gt; has_no_result_value</div><div class="ttdef"><b>Definition:</b> <a href="no__result__value_8hpp_source.html#l00022">no_result_value.hpp:22</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1policy_html_a985a31d1991b66211625593d1b07dff9"><div class="ttname"><a href="namespacearg__router_1_1policy.html#a985a31d1991b66211625593d1b07dff9">arg_router::policy::has_no_result_value</a></div><div class="ttdeci">std::is_base_of&lt; no_result_value&lt;&gt;, T &gt; has_no_result_value</div><div class="ttdef"><b>Definition:</b> <a href="no__result__value_8hpp_source.html#l00023">no_result_value.hpp:23</a></div></div>
+<div class="ttc" id="astructarg__router_1_1policy_1_1is__policy_html"><div class="ttname"><a href="structarg__router_1_1policy_1_1is__policy.html">arg_router::policy::is_policy</a></div><div class="ttdef"><b>Definition:</b> <a href="policy_8hpp_source.html#l00028">policy.hpp:28</a></div></div>
+<div class="ttc" id="astructarg__router_1_1policy_1_1no__result__value_html"><div class="ttname"><a href="structarg__router_1_1policy_1_1no__result__value.html">arg_router::policy::no_result_value</a></div><div class="ttdef"><b>Definition:</b> <a href="no__result__value_8hpp_source.html#l00015">no_result_value.hpp:15</a></div></div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00010">algorithm.hpp:10</a></div></div>
-<div class="ttc" id="anamespacearg__router_1_1policy_html_afb590ac3a25b8e2f02fd2ef5992252c0"><div class="ttname"><a href="namespacearg__router_1_1policy.html#afb590ac3a25b8e2f02fd2ef5992252c0">arg_router::policy::has_no_result_value_v</a></div><div class="ttdeci">constexpr bool has_no_result_value_v</div><div class="ttdef"><b>Definition:</b> <a href="no__result__value_8hpp_source.html#l00029">no_result_value.hpp:29</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1policy_html_afb590ac3a25b8e2f02fd2ef5992252c0"><div class="ttname"><a href="namespacearg__router_1_1policy.html#afb590ac3a25b8e2f02fd2ef5992252c0">arg_router::policy::has_no_result_value_v</a></div><div class="ttdeci">constexpr bool has_no_result_value_v</div><div class="ttdef"><b>Definition:</b> <a href="no__result__value_8hpp_source.html#l00030">no_result_value.hpp:30</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

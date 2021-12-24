@@ -68,6 +68,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="classarg__router_1_1utility_1_1compile__time__string-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -77,6 +78,11 @@ $(function() {
 
 <p><code>#include &lt;<a class="el" href="compile__time__string_8hpp_source.html">arg_router/utility/compile_time_string.hpp</a>&gt;</code></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:a1e1bf14403a841ebb9363ed7cf317e1a"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1utility_1_1compile__time__string.html#a1e1bf14403a841ebb9363ed7cf317e1a">array_type</a> = std::tuple&lt; <a class="el" href="namespacearg__router_1_1traits.html#ab335cfad0ef1eeed3ad34d06694b0244">traits::integral_constant</a>&lt; Cs &gt;... &gt;</td></tr>
+<tr class="separator:a1e1bf14403a841ebb9363ed7cf317e1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a81634a9aa138a490f185c84244de6a5d"><td class="memItemLeft" align="right" valign="top">constexpr static std::string_view&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1utility_1_1compile__time__string.html#a81634a9aa138a490f185c84244de6a5d">get</a> ()</td></tr>
@@ -95,7 +101,27 @@ class arg_router::utility::compile_time_string&lt; Cs &gt;</h3>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="compile__time__string_8hpp_source.html#l00021">21</a> of file <a class="el" href="compile__time__string_8hpp_source.html">compile_time_string.hpp</a>.</p>
-</div><h2 class="groupheader">Member Function Documentation</h2>
+</div><h2 class="groupheader">Member Typedef Documentation</h2>
+<a id="a1e1bf14403a841ebb9363ed7cf317e1a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1e1bf14403a841ebb9363ed7cf317e1a">&#9670;&nbsp;</a></span>array_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;char... Cs&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classarg__router_1_1utility_1_1compile__time__string.html">arg_router::utility::compile_time_string</a>&lt; Cs &gt;::<a class="el" href="classarg__router_1_1utility_1_1compile__time__string.html#a1e1bf14403a841ebb9363ed7cf317e1a">array_type</a> =  std::tuple&lt;<a class="el" href="namespacearg__router_1_1traits.html#ab335cfad0ef1eeed3ad34d06694b0244">traits::integral_constant</a>&lt;Cs&gt;...&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Array of characters as a type. </p>
+
+<p class="definition">Definition at line <a class="el" href="compile__time__string_8hpp_source.html#l00025">25</a> of file <a class="el" href="compile__time__string_8hpp_source.html">compile_time_string.hpp</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
 <a id="a81634a9aa138a490f185c84244de6a5d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a81634a9aa138a490f185c84244de6a5d">&#9670;&nbsp;</a></span>get()</h2>
 
@@ -123,7 +149,7 @@ template&lt;char... Cs&gt; </div>
 <p>Returns the string data as a view.</p>
 <dl class="section return"><dt>Returns</dt><dd>View of the string data </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="compile__time__string_8hpp_source.html#l00030">30</a> of file <a class="el" href="compile__time__string_8hpp_source.html">compile_time_string.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="compile__time__string_8hpp_source.html#l00031">31</a> of file <a class="el" href="compile__time__string_8hpp_source.html">compile_time_string.hpp</a>.</p>
 
 </div>
 </div>

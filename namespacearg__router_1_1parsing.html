@@ -95,9 +95,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a6878769d75879dd093b8047ca0375e64"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a6878769d75879dd093b8047ca0375e64"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a6878769d75879dd093b8047ca0375e64">default_match</a> (const <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> &amp;token)</td></tr>
 <tr class="separator:a6878769d75879dd093b8047ca0375e64"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6508962e7a3888c30700b54076593dff"><td class="memTemplParams" colspan="2">template&lt;typename Node &gt; </td></tr>
-<tr class="memitem:a6508962e7a3888c30700b54076593dff"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a6508962e7a3888c30700b54076593dff">node_token_type</a> ()</td></tr>
-<tr class="separator:a6508962e7a3888c30700b54076593dff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aea6a9b4be25d0187cd7a55d5ec799179"><td class="memTemplParams" colspan="2">template&lt;typename Node &gt; </td></tr>
+<tr class="memitem:aea6a9b4be25d0187cd7a55d5ec799179"><td class="memTemplItemLeft" align="right" valign="top">constexpr <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#aea6a9b4be25d0187cd7a55d5ec799179">node_token_type</a> ()</td></tr>
+<tr class="separator:aea6a9b4be25d0187cd7a55d5ec799179"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae17bf2873d6146f78dbc777747b29466"><td class="memItemLeft" align="right" valign="top">std::string_view&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#ae17bf2873d6146f78dbc777747b29466">to_string</a> (<a class="el" href="namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3">prefix_type</a> prefix)</td></tr>
 <tr class="separator:ae17bf2873d6146f78dbc777747b29466"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6ef459c26e34d0003b3393d4bef7898b"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a6ef459c26e34d0003b3393d4bef7898b">to_string</a> (const <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> &amp;token)</td></tr>
@@ -170,7 +170,7 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if token matches the long or short form name </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00028">28</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00027">27</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
 
 </div>
 </div>
@@ -237,24 +237,32 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a6508962e7a3888c30700b54076593dff"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6508962e7a3888c30700b54076593dff">&#9670;&nbsp;</a></span>node_token_type()</h2>
+<a id="aea6a9b4be25d0187cd7a55d5ec799179"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aea6a9b4be25d0187cd7a55d5ec799179">&#9670;&nbsp;</a></span>node_token_type()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename Node &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> arg_router::parsing::node_token_type </td>
+          <td class="memname">constexpr <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> arg_router::parsing::node_token_type </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
-<p>Returns the <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> of <em>Node</em>, the long form name is preferred.</p>
-<dl class="section note"><dt>Note</dt><dd>If <em>Node</em> does not have a long or short name, it is a compliation failure </dd></dl>
+<p>Returns the <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> of <em>Node</em>, the long form name is preferred if <em>Node</em> has both short and long form names.</p>
+<dl class="section note"><dt>Note</dt><dd>If <em>Node</em> does not have a display, none, long, or short name; it is a compliation failure </dd></dl>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Node</td><td>Node type </td></tr>
@@ -263,7 +271,7 @@ template&lt;typename Node &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00055">55</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00060">60</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
 
 </div>
 </div>

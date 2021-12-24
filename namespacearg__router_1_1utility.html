@@ -70,6 +70,7 @@ $(function() {
   <div class="summary">
 <a href="#namespaces">Namespaces</a> &#124;
 <a href="#nested-classes">Classes</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">arg_router::utility Namespace Reference</div>  </div>
@@ -85,6 +86,12 @@ Namespaces</h2></td></tr>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1utility_1_1compile__time__string.html">compile_time_string</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:ad352319d55d0f012d4c77a6bd851d6f5"><td class="memTemplParams" colspan="2">template&lt;typename T , auto Extent = nonstd::span_lite::dynamic_extent&gt; </td></tr>
+<tr class="memitem:ad352319d55d0f012d4c77a6bd851d6f5"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1utility.html#ad352319d55d0f012d4c77a6bd851d6f5">span</a> = nonstd::span_lite::span&lt; T, Extent &gt;</td></tr>
+<tr class="separator:ad352319d55d0f012d4c77a6bd851d6f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -106,7 +113,27 @@ Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Namespace for utility types and functions. </p>
-</div><h2 class="groupheader">Function Documentation</h2>
+</div><h2 class="groupheader">Typedef Documentation</h2>
+<a id="ad352319d55d0f012d4c77a6bd851d6f5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad352319d55d0f012d4c77a6bd851d6f5">&#9670;&nbsp;</a></span>span</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , auto Extent = nonstd::span_lite::dynamic_extent&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="namespacearg__router_1_1utility.html#ad352319d55d0f012d4c77a6bd851d6f5">arg_router::utility::span</a> = typedef nonstd::span_lite::span&lt;T, Extent&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>An alias for std::span if compiling with &gt;= C++20 support, otherwise nonstd::span_lite::span. </p>
+
+<p class="definition">Definition at line <a class="el" href="span_8hpp_source.html#l00022">22</a> of file <a class="el" href="span_8hpp_source.html">span.hpp</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
 <a id="a8c2771daff65998317f1853a68d3453b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8c2771daff65998317f1853a68d3453b">&#9670;&nbsp;</a></span>tree_recursor() <span class="overload">[1/2]</span></h2>
 

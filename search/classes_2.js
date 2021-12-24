@@ -1,7 +1,8 @@
 var searchData=
 [
-  ['default_5fvalue_216',['default_value',['../classarg__router_1_1policy_1_1default__value.html',1,'arg_router::policy']]],
-  ['description_5ft_217',['description_t',['../classarg__router_1_1policy_1_1description__t.html',1,'arg_router::policy']]],
-  ['despecialised_5fany_5fof_5frule_218',['despecialised_any_of_rule',['../structarg__router_1_1policy_1_1validation_1_1common__rules_1_1despecialised__any__of__rule.html',1,'arg_router::policy::validation::common_rules']]],
-  ['despecialised_5funique_5fin_5fowner_219',['despecialised_unique_in_owner',['../structarg__router_1_1policy_1_1validation_1_1despecialised__unique__in__owner.html',1,'arg_router::policy::validation']]]
+  ['default_5fvalue_232',['default_value',['../classarg__router_1_1policy_1_1default__value.html',1,'arg_router::policy']]],
+  ['description_5ft_233',['description_t',['../classarg__router_1_1policy_1_1description__t.html',1,'arg_router::policy']]],
+  ['despecialised_5fany_5fof_5frule_234',['despecialised_any_of_rule',['../structarg__router_1_1policy_1_1validation_1_1common__rules_1_1despecialised__any__of__rule.html',1,'arg_router::policy::validation::common_rules']]],
+  ['despecialised_5funique_5fin_5fowner_235',['despecialised_unique_in_owner',['../structarg__router_1_1policy_1_1validation_1_1despecialised__unique__in__owner.html',1,'arg_router::policy::validation']]],
+  ['display_5fname_5ft_236',['display_name_t',['../classarg__router_1_1policy_1_1display__name__t.html',1,'arg_router::policy']]]
 ];
