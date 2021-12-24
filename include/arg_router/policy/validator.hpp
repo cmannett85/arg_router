@@ -1,11 +1,14 @@
 #pragma once
 
 #include "arg_router/arg.hpp"
+#include "arg_router/dependency/one_of.hpp"
 #include "arg_router/flag.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/default_value.hpp"
+#include "arg_router/policy/display_name.hpp"
 #include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/none_name.hpp"
 #include "arg_router/policy/required.hpp"
 #include "arg_router/policy/router.hpp"
 #include "arg_router/policy/short_name.hpp"
@@ -395,6 +398,25 @@ struct child_must_not_have_policy {
     }
 };
 
+/** A rule condition that checks the parent node of the policy @a T does not
+ * contain @a Policy.
+ */
+template <template <typename...> typename Policy>
+struct policy_parent_must_not_have_policy {
+    template <typename T, typename... Parents>
+    constexpr static void check()
+    {
+        static_assert(policy::is_policy_v<T>, "T must be a policy");
+        static_assert(sizeof...(Parents) >= 1, "Must be at least one parent");
+
+        using parent = boost::mp11::mp_first<std::tuple<Parents...>>;
+        static_assert(
+            !algorithm::has_specialisation_v<Policy,
+                                             typename parent::policies_type>,
+            "Parent must not have this policy");
+    }
+};
+
 /** A rule condition that checks if there are more than one child of @a T that 
  * is a mode, only one can be anonymous.
  * 
@@ -448,36 +470,6 @@ struct at_least_one_of_policies {
                                                typename T::policies_type> +
              ...) >= 1,
             "T must have at least one of the policies");
-    }
-};
-
-/** A rule condition that checks one of the @a Policies is in T.
- *
- * @tparam Policies Pack of policies
- */
-template <template <typename...> typename... Policies>
-struct one_of_policies_if_parent_is_not_root {
-    static_assert(sizeof...(Policies) >= 1,
-                  "Condition requires at least one policy");
-
-    template <typename T, typename... Parents>
-    constexpr static void check()
-    {
-        // This is needed otherwise the mp_first call fails if there aren't
-        // enough elements in Parents - even if inside a if constexpr
-        // expression
-        using parent_type = boost::mp11::mp_eval_if_c<(sizeof...(Parents) < 1),
-                                                      std::void_t<>,
-                                                      boost::mp11::mp_first,
-                                                      std::tuple<Parents...>>;
-
-        if constexpr (!(traits::is_specialisation_of_v<parent_type, root_t>)) {
-            static_assert(
-                (algorithm::count_specialisation_v<Policies,
-                                                   typename T::policies_type> +
-                 ...) == 1,
-                "T must have one of the assigned policies");
-        }
     }
 };
 
@@ -589,6 +581,19 @@ inline constexpr auto default_validator = validator<
                                                    policy::short_name_t>,
            despecialised_unique_in_owner,
            policy_unique_from_owner_parent_to_mode_or_root<arg_router::mode_t>>,
+    // None name
+    rule_q<common_rules::despecialised_any_of_rule<policy::none_name_t>,
+           despecialised_unique_in_owner,
+           policy_unique_from_owner_parent_to_mode_or_root<arg_router::mode_t>,
+           policy_parent_must_not_have_policy<policy::long_name_t>,
+           policy_parent_must_not_have_policy<policy::short_name_t>,
+           policy_parent_must_not_have_policy<policy::display_name_t>>,
+    // Display name
+    rule_q<common_rules::despecialised_any_of_rule<policy::display_name_t>,
+           despecialised_unique_in_owner,
+           policy_parent_must_not_have_policy<policy::long_name_t>,
+           policy_parent_must_not_have_policy<policy::short_name_t>,
+           policy_parent_must_not_have_policy<policy::none_name_t>>,
     // Router
     rule_q<common_rules::despecialised_any_of_rule<policy::router>,
            despecialised_unique_in_owner,
@@ -605,15 +610,17 @@ inline constexpr auto default_validator = validator<
            must_not_have_policy<policy::validation::validator>>,
     // Arg
     rule_q<common_rules::despecialised_any_of_rule<arg_t>,
-           must_not_have_policy<policy::validation::validator>,
-           one_of_policies_if_parent_is_not_root<policy::required_t,
-                                                 policy::default_value,
-                                                 policy::alias_t>>,
+           must_not_have_policy<policy::validation::validator>>,
     // Positional arg
     rule_q<common_rules::despecialised_any_of_rule<positional_arg_t>,
            must_not_have_policy<policy::validation::validator>,
            must_not_have_policy<policy::required_t>,
            must_not_have_policy<policy::alias_t>>,
+    // one_of
+    rule_q<common_rules::despecialised_any_of_rule<dependency::one_of_t>,
+           must_not_have_policy<policy::validation::validator>,
+           must_not_have_policy<policy::alias_t>,
+           parent_types<parent_index_pair_type<0, mode_t>>>,
     // Mode
     rule_q<
         common_rules::despecialised_any_of_rule<mode_t>,

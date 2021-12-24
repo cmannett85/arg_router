@@ -12,6 +12,7 @@ set(TEST_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/main_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/algorithm_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/arg_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/dependency/one_of_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/flag_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/global_parser_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/list_test.cpp
@@ -22,6 +23,7 @@ set(TEST_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/policy/count_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/policy/default_value_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/policy/description_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/policy/display_name_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/policy/long_name_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/policy/max_count_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/policy/min_count_test.cpp

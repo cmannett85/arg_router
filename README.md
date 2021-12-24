@@ -47,7 +47,7 @@ ar::root(
             arp::default_value{-1}),
         ar::positional_arg<std::vector<std::string_view>>(
             arp::min_count<1>,
-            arp::long_name<S_("FILES")>,
+            arp::display_name<S_("FILES")>,
             arp::description<S_("Files to read")>),
         arp::router{[](bool show_ends,
                        bool show_non_printing,
@@ -65,13 +65,13 @@ Now let's introduce some 'policies'.  Policies define common behaviours across n
 
 In order to group arguments under a specific operating mode, you put them under a `mode` instance.  In this case our simple cat program only has one mode, so it is anonymous i.e. there's no long name or description associated with it - it is a build error to have more than one anonymous mode under the root of a parse tree.
 
-`arg<T>` does exactly what you would expect, it defines an argument that expects a value to follow it on the command line.  If an argument is not `required` then it must have a `default_value`, this is passed to the `router`'s `Callable` on parsing if it isn't specified by the user on the command line.
+`arg<T>` does exactly what you would expect, it defines an argument that expects a value to follow it on the command line.  If an argument is not `required` then it may have a `default_value` (if neither are set, then a default initialised value is used instead), this is passed to the `router`'s `Callable` on parsing if it isn't specified by the user on the command line.
 
 A `flag` is essentially an `arg<bool>{default_value{false}}`, except that it doesn't expect an argument value to follow on the command line as it _is_ the value.  Flags cannot have default arguments or be marked as required.
 
 An `alias` policy allows you to define an argument that acts as a link to other arguments, so in our example above passing `-A` on the command line would actually set the `-E` and `-n` flags to true.  You can use either the long or short name of the aliased flag, but the `value_type`s (`bool` for a flag) must be the same.
 
-`positional_arg<T>` does not use a 'marker' token on the command line for which its value follows, the values position in the command line arguments determines what it is for.  The order that arguments are specified on the command line normally don't matter, but for positional arguments they do; for example in our cat program the files must be specified after the arguments so passing `myfile.hpp -n` would trigger the parser to land on the `positional_arg` for `myfile.hpp` which would then greedily consume the `-n` causing the application to try to open the file `-n`...  We'll cover constrained `positional_arg`s in later examples.
+`positional_arg<T>` does not use a 'marker' token on the command line for which its value follows, the values position in the command line arguments determines what it is for.  The order that arguments are specified on the command line normally don't matter, but for positional arguments they do; for example in our cat program the files must be specified after the arguments so passing `myfile.hpp -n` would trigger the parser to land on the `positional_arg` for `myfile.hpp` which would then greedily consume the `-n` causing the application to try to open the file `-n`...  We'll cover constrained `positional_arg`s in later examples.  The `display_name` policy is used when generating help or error output - it is not used when parsing.
 
 Assuming parsing was successful, the final `router` is called with the parsed argument e.g. if the user passed `-E file1 file2` then the `router` is passed `(true, false, -1, {"file1", "file2"})`.
 
@@ -89,6 +89,7 @@ ar::mode(
         arp::default_value{std::optional<std::size_t>{}}),
     ard::one_of(
         ard::dependent<arp::long_name<S_("max-line-length")>>,
+        arp::default_value{"..."},
         ar::flag(
             arp::long_name<S_("skip-line")>,
             arp::short_name<'s'>,
@@ -97,8 +98,7 @@ ar::mode(
         ar::arg<std::string_view>(
             arp::long_name<S_("line-suffix")>,
             arp::description<S_("Shortens line length to maximum with the "
-                                "given suffix if max line length reached")>,
-            arp::default_value{"..."})),
+                                "given suffix if max line length reached")>)),
     ...
     arp::router{[](bool show_all,
                    bool show_ends,
@@ -110,7 +110,7 @@ ar::mode(
 ```
 We've defined a new argument `--max-line-length` but rather than using `-1` as the "no limit" indicator like we did for `--max-lines`, we specify the argument type to be `std::optional<std::size_t>` and have the default value by an empty optional - this allows the code to define our intent better.
 
-What do we do with lines that reach the limit if it has been set?  In our example we can either skip the line output, or truncate it with a suffix.  It doesn't make any sense to allow both of these options, so we declare them under a `one_of` node.  Under this node, only one is valid when parsing at runtime, if the user specifies both then it is an error.  For obvious reasons it is an error if any `arg`s under a `one_of` are marked as required, which means that they all have to have default values assigned.  This leads to an ambiguity when the user _does not_ specify any argument - which value is picked?  It is the first `arg` specified, or if there no `arg`s (i.e. only `flag`s) then it is a runtime error.
+What do we do with lines that reach the limit if it has been set?  In our example we can either skip the line output, or truncate it with a suffix.  It doesn't make any sense to allow both of these options, so we declare them under a `one_of` node.  Under this node, only one is valid when parsing at runtime, if the user specifies both then it is an error.  A `one_of` must be marked as required or have a default value in case the user passes none of the arguments it handles.
 
 To express the 'one of' concept better in code, the `one_of` node has a single representation in the `router`'s arguments - a variant that encompasses all the value types of each entry in it.  In our example's case, a bool for the `--skip-line` flag and a `string_view` for the `--line-suffix` case.
 
@@ -205,6 +205,7 @@ The `long_name` policy is not allowed, but we can use the knowledge gained so fa
 ar::mode(
     ...
     ard::one_of(
+        arp::default_value{verbosity_level_t::INFO},
         ar::counting_flag<verbosity_level_t>(
             arp::short_name<'v'>,
             arp::max_count<3>,
@@ -212,8 +213,7 @@ ar::mode(
             arp::alias(arp::long_name<S_("verbose")>)),
         ar::arg<verbosity_level_t>(
             arp::long_name<S_("verbose")>,
-            arp::description<S_("Verbosity level")>,
-            arp::default_value{verbosity_level_t::INFO},
+            arp::description<S_("Verbosity level")>
             arp::custom_parser<verbosity_level_t>{
                 [](std::string_view arg) {
                     return verbosity_level_from_string(arg); }}))),
@@ -250,11 +250,11 @@ ar::root(
             arp::short_name<'f'>,
             arp::description<S_("Force overwrite existing files")>),
         ar::positional_arg<std::filesystem::path>(
-            arp::long_name<S_("DST")>,
+            arp::display_name<S_("DST")>,
             arp::description<S_("Destination directory")>,
             arp::count<1>),
         ar::positional_arg<std::vector<std::filesystem::path>>(
-            arp::long_name<S_("SRC")>,
+            arp::display_name<S_("SRC")>,
             arp::description<S_("Source file paths")>,
             arp::min_count<1>),
         arp::router{[](bool force,
@@ -285,7 +285,7 @@ ar::root(
         arp::description<S_("Display this help and exit")>,
         arp::router{[](std::string_view arg_docs) { ... }}),
     ar::mode(
-        arp::long_name<S_("copy")>,
+        arp::none_name<S_("copy")>,
         arp::description<S_("Copy source files to destination")>,
         ar::flag(
             arp::long_name<S_("force")>,
@@ -293,19 +293,19 @@ ar::root(
             arp::description<S_("Force overwrite existing files")>),
         ar::positional_arg<std::filesystem::path>(
             arp::required,
-            arp::long_name<S_("DST")>,
+            arp::display_name<S_("DST")>,
             arp::description<S_("Destination directory")>,
             arp::count<1>),
         ar::positional_arg<std::vector<std::filesystem::path>>(
             arp::required,
-            arp::long_name<S_("SRC")>,
+            arp::display_name<S_("SRC")>,
             arp::description<S_("Source file paths")>,
             arp::min_count<1>),
         arp::router{[](bool force,
                        std::filesystem::path dest,
                        std::vector<std::filesystem::path> srcs) { ... }}),
     ar::mode(
-        arp::long_name<S_("move")>,
+        arp::none_name<S_("move")>,
         arp::description<S_("Move source file to destination")>,
         ar::flag(
             arp::long_name<S_("force")>,
@@ -313,20 +313,20 @@ ar::root(
             arp::description<S_("Force overwrite existing files")>),
         ar::positional_arg<std::filesystem::path>(
             arp::required,
-            arp::long_name<S_("DST")>,
+            arp::display_name<S_("DST")>,
             arp::description<S_("Destination directory")>,
             arp::count<1>),
         // Can only have one
         ar::positional_arg<std::filesystem::path>(
             arp::required,
-            arp::long_name<S_("SRC")>,
+            arp::display_name<S_("SRC")>,
             arp::description<S_("Source file path")>,
             arp::count<1>),
         arp::router{[](bool force,
                        std::filesystem::path dest,
                        std::filesystem::path src) { ... }}))
 ```
-The name of a `mode` can only be the long version.  We now have two named modes: `copy` and `move`.  Notice that the double hyphen prefix is _not_ automatically added to the `mode`'s long name, this matches typical Unix patterns - it is a build error to add them yourself!
+The name of a `mode` can only be the none version, as it doesn't use a prefix.  We now have two named modes: `copy` and `move`.
 
 Named `mode`s can be nested too!  Only one mode can be invoked, so attempting to use flags from parent modes is a runtime failure.  Another stipulation is that every `mode` needs a `router` unless _all_ of its children are `mode`s as well.
 
@@ -340,7 +340,7 @@ constexpr auto common_args = ar::list{
         arp::description<S_("Force overwrite existing files")>),
     ar::positional_arg<std::filesystem::path>(
         arp::required,
-        arp::long_name<S_("DST")>,
+        arp::display_name<S_("DST")>,
         arp::description<S_("Destination directory")>,
         arp::count<1>)};
 
@@ -352,24 +352,24 @@ ar::root(
         arp::description<S_("Display this help and exit")>,
         arp::router{[](std::string_view arg_docs) { ... }}),
     ar::mode(
-        arp::long_name<S_("copy")>,
+        arp::none_name<S_("copy")>,
         arp::description<S_("Copy source files to destination")>,
         common_args,
         ar::positional_arg<std::vector<std::filesystem::path>>(
             arp::required,
-            arp::long_name<S_("SRC")>,
+            arp::display_name<S_("SRC")>,
             arp::description<S_("Source file paths")>,
             arp::min_count<1>),
         arp::router{[](bool force,
                        std::filesystem::path dest,
                        std::vector<std::filesystem::path> srcs) { ... }}),
     ar::mode(
-        arp::long_name<S_("move")>,
+        arp::none_name<S_("move")>,
         arp::description<S_("Move source file to destination")>,
         common_args,
         ar::positional_arg<std::filesystem::path>(
             arp::required,
-            arp::long_name<S_("SRC")>,
+            arp::display_name<S_("SRC")>,
             arp::description<S_("Source file path")>,
             arp::min_count<1>,
             arp::max_count<1>),

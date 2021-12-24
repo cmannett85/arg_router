@@ -17,6 +17,9 @@ template <typename S>
 class long_name_t
 {
 public:
+    /** String type. */
+    using string_type = S;
+
     /** Returns the name.
      *
      * @return Long name

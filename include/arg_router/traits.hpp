@@ -9,7 +9,6 @@
 
 #include <algorithm>
 #include <optional>
-#include <string_view>
 #include <type_traits>
 
 // Surprised this is not already done somewhere in mp11, without it using
@@ -236,7 +235,7 @@ struct has_long_name_method {
     constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
 };
 
-/** Helper variable for has_long_name.
+/** Helper variable for has_long_name_method.
  *
  * @tparam T Type to query
  */
@@ -255,12 +254,50 @@ struct has_short_name_method {
     constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
 };
 
-/** Helper variable for has_short_name.
+/** Helper variable for has_short_name_method.
  *
  * @tparam T Type to query
  */
 template <typename T>
 constexpr bool has_short_name_method_v = has_short_name_method<T>::value;
+
+/** Determine if a type has a <TT>display_name()</TT> static method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+struct has_display_name_method {
+    template <typename U>
+    using type = decltype(U::display_name());
+
+    constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
+};
+
+/** Helper variable for has_display_name_method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+constexpr bool has_display_name_method_v = has_display_name_method<T>::value;
+
+/** Determine if a type has a <TT>none_name()</TT> static method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+struct has_none_name_method {
+    template <typename U>
+    using type = decltype(U::none_name());
+
+    constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
+};
+
+/** Helper variable for has_none_name_method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+constexpr bool has_none_name_method_v = has_none_name_method<T>::value;
 
 /** Determine if a type has a <TT>maximum_count()</TT> static method.
  *

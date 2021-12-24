@@ -109,7 +109,7 @@ public:
     }
 };
 
-/** Constructs a root_t with the given policies.
+/** Constructs a root_t with the given policies and children.
  *
  * This is used for similarity with arg_t.
  * @tparam Params Policies and child node types for the mode

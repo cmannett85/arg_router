@@ -24,6 +24,9 @@ class short_name_t
     static constexpr auto value = S::value;
 
 public:
+    /** String type. */
+    using string_type = S;
+
     /** Returns the name.
      *
      * @return Short name

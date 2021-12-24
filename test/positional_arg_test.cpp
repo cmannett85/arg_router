@@ -1,6 +1,6 @@
 #include "arg_router/positional_arg.hpp"
 #include "arg_router/policy/count.hpp"
-#include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/display_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 #include "test_helpers.hpp"
@@ -16,7 +16,7 @@ BOOST_AUTO_TEST_CASE(is_tree_node_test)
     static_assert(
         is_tree_node_v<
             arg_router::positional_arg_t<std::vector<int>,
-                                         policy::long_name_t<S_("hello")>>>,
+                                         policy::display_name_t<S_("hello")>>>,
         "Tree node test has failed");
 }
 
@@ -43,35 +43,35 @@ BOOST_AUTO_TEST_CASE(match_test)
         f,
         std::tuple{
             std::tuple{positional_arg<std::vector<int>>(
-                           policy::long_name<S_("hello")>),
+                           policy::display_name<S_("hello")>),
                        parsing::token_type{parsing::prefix_type::NONE, "1"},
                        std::optional<std::vector<int>>{},
                        true},
             std::tuple{positional_arg<std::vector<int>>(
-                           policy::long_name<S_("goodbye")>,
+                           policy::display_name<S_("goodbye")>,
                            policy::max_count<3>),
                        parsing::token_type{parsing::prefix_type::NONE, "1"},
                        std::optional<std::vector<int>>{},
                        true},
             std::tuple{positional_arg<std::vector<int>>(
-                           policy::long_name<S_("goodbye")>,
+                           policy::display_name<S_("goodbye")>,
                            policy::max_count<3>),
                        parsing::token_type{parsing::prefix_type::NONE, "1"},
                        std::optional{std::vector{42}},
                        true},
-            std::tuple{positional_arg<int>(policy::long_name<S_("goodbye")>,
+            std::tuple{positional_arg<int>(policy::display_name<S_("goodbye")>,
                                            policy::count<1>),
                        parsing::token_type{parsing::prefix_type::NONE, "1"},
                        std::optional<int>{},
                        true},
             std::tuple{positional_arg<std::vector<int>>(
-                           policy::long_name<S_("goodbye")>,
+                           policy::display_name<S_("goodbye")>,
                            policy::max_count<3>),
                        parsing::token_type{parsing::prefix_type::NONE, "1"},
                        std::optional{std::vector{42, 43, 44}},
                        false},
             std::tuple{positional_arg<std::vector<int>>(
-                           policy::long_name<S_("goodbye")>,
+                           policy::display_name<S_("goodbye")>,
                            policy::max_count<3>),
                        parsing::token_type{parsing::prefix_type::NONE, "1"},
                        std::optional{std::vector{42, 43, 44, 45}},
@@ -99,52 +99,52 @@ BOOST_AUTO_TEST_CASE(parse_test)
     test::data_set(
         f,
         std::tuple{
-            std::tuple{positional_arg<int>(policy::long_name<S_("node")>,
+            std::tuple{positional_arg<int>(policy::display_name<S_("node")>,
                                            policy::count<1>),
                        parsing::token_list{{parsing::prefix_type::NONE, "13"}},
                        parsing::token_list{},
                        13,
                        ""s},
-            std::tuple{
-                positional_arg<std::vector<int>>(policy::long_name<S_("node")>),
-                parsing::token_list{{parsing::prefix_type::NONE, "1"},
-                                    {parsing::prefix_type::NONE, "2"},
-                                    {parsing::prefix_type::NONE, "3"}},
-                parsing::token_list{},
-                std::vector{1, 2, 3},
-                ""s},
-            std::tuple{
-                positional_arg<std::vector<int>>(policy::long_name<S_("node")>,
-                                                 policy::min_count<2>),
-                parsing::token_list{{parsing::prefix_type::NONE, "1"},
-                                    {parsing::prefix_type::NONE, "2"}},
-                parsing::token_list{},
-                std::vector{1, 2},
-                ""s},
-            std::tuple{
-                positional_arg<std::vector<int>>(policy::long_name<S_("node")>,
-                                                 policy::min_count<2>),
-                parsing::token_list{{parsing::prefix_type::NONE, "1"}},
-                parsing::token_list{},
-                std::vector<int>{},
-                "Minimum count not reached: --node"s},
-            std::tuple{
-                positional_arg<std::vector<int>>(policy::long_name<S_("node")>,
-                                                 policy::max_count<2>),
-                parsing::token_list{{parsing::prefix_type::NONE, "1"},
-                                    {parsing::prefix_type::NONE, "2"}},
-                parsing::token_list{},
-                std::vector{1, 2},
-                ""s},
-            std::tuple{
-                positional_arg<std::vector<int>>(policy::long_name<S_("node")>,
-                                                 policy::max_count<2>),
-                parsing::token_list{{parsing::prefix_type::NONE, "1"},
-                                    {parsing::prefix_type::NONE, "2"},
-                                    {parsing::prefix_type::NONE, "3"}},
-                parsing::token_list{{parsing::prefix_type::NONE, "3"}},
-                std::vector{1, 2},
-                ""s},
+            std::tuple{positional_arg<std::vector<int>>(
+                           policy::display_name<S_("node")>),
+                       parsing::token_list{{parsing::prefix_type::NONE, "1"},
+                                           {parsing::prefix_type::NONE, "2"},
+                                           {parsing::prefix_type::NONE, "3"}},
+                       parsing::token_list{},
+                       std::vector{1, 2, 3},
+                       ""s},
+            std::tuple{positional_arg<std::vector<int>>(
+                           policy::display_name<S_("node")>,
+                           policy::min_count<2>),
+                       parsing::token_list{{parsing::prefix_type::NONE, "1"},
+                                           {parsing::prefix_type::NONE, "2"}},
+                       parsing::token_list{},
+                       std::vector{1, 2},
+                       ""s},
+            std::tuple{positional_arg<std::vector<int>>(
+                           policy::display_name<S_("node")>,
+                           policy::min_count<2>),
+                       parsing::token_list{{parsing::prefix_type::NONE, "1"}},
+                       parsing::token_list{},
+                       std::vector<int>{},
+                       "Minimum count not reached: node"s},
+            std::tuple{positional_arg<std::vector<int>>(
+                           policy::display_name<S_("node")>,
+                           policy::max_count<2>),
+                       parsing::token_list{{parsing::prefix_type::NONE, "1"},
+                                           {parsing::prefix_type::NONE, "2"}},
+                       parsing::token_list{},
+                       std::vector{1, 2},
+                       ""s},
+            std::tuple{positional_arg<std::vector<int>>(
+                           policy::display_name<S_("node")>,
+                           policy::max_count<2>),
+                       parsing::token_list{{parsing::prefix_type::NONE, "1"},
+                                           {parsing::prefix_type::NONE, "2"},
+                                           {parsing::prefix_type::NONE, "3"}},
+                       parsing::token_list{{parsing::prefix_type::NONE, "3"}},
+                       std::vector{1, 2},
+                       ""s},
         });
 }
 
@@ -155,7 +155,7 @@ BOOST_AUTO_TEST_CASE(only_policies_test)
     test::death_test_compile(
         R"(
 #include "arg_router/flag.hpp"
-#include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/display_name.hpp"
 #include "arg_router/policy/short_name.hpp"
 #include "arg_router/positional_arg.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
@@ -164,7 +164,7 @@ using namespace arg_router;
 
 int main() {
     auto p = positional_arg<std::vector<int>>(
-        policy::long_name<S_("hello")>,
+        policy::display_name<S_("hello")>,
         flag(policy::short_name<'b'>)
     );
     return 0;
@@ -174,6 +174,40 @@ int main() {
 }
 
 BOOST_AUTO_TEST_CASE(push_back_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/display_name.hpp"
+#include "arg_router/positional_arg.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    auto p = positional_arg<int>(policy::display_name<S_("hello")>);
+    return 0;
+}
+    )",
+        "value_type must have a push_back() method");
+}
+
+BOOST_AUTO_TEST_CASE(must_have_a_display_name_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/positional_arg.hpp"
+
+using namespace arg_router;
+
+int main() {
+    auto p = positional_arg<int>();
+    return 0;
+}
+    )",
+        "Positional arg must have a display name policy");
+}
+
+BOOST_AUTO_TEST_CASE(must_not_have_a_long_name_test)
 {
     test::death_test_compile(
         R"(
@@ -188,23 +222,7 @@ int main() {
     return 0;
 }
     )",
-        "value_type must have a push_back() method");
-}
-
-BOOST_AUTO_TEST_CASE(must_have_a_long_name_test)
-{
-    test::death_test_compile(
-        R"(
-#include "arg_router/positional_arg.hpp"
-
-using namespace arg_router;
-
-int main() {
-    auto p = positional_arg<int>();
-    return 0;
-}
-    )",
-        "Positional arg must have a long name policy");
+        "Positional arg must not have a long name policy");
 }
 
 BOOST_AUTO_TEST_CASE(must_not_have_a_short_name_test)

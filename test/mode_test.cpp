@@ -3,7 +3,9 @@
 #include "arg_router/flag.hpp"
 #include "arg_router/list.hpp"
 #include "arg_router/policy/description.hpp"
+#include "arg_router/policy/display_name.hpp"
 #include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/none_name.hpp"
 #include "arg_router/policy/router.hpp"
 #include "arg_router/policy/short_name.hpp"
 #include "arg_router/positional_arg.hpp"
@@ -28,7 +30,7 @@ BOOST_AUTO_TEST_CASE(is_tree_node_test)
 BOOST_AUTO_TEST_CASE(anonymous_test)
 {
     static_assert(!arg_router::mode_t<
-                      policy::long_name_t<S_("mode")>,
+                      policy::none_name_t<S_("mode")>,
                       flag_t<policy::long_name_t<S_("hello")>>>::is_anonymous,
                   "Fail");
     static_assert(arg_router::mode_t<
@@ -198,7 +200,7 @@ BOOST_AUTO_TEST_CASE(anonymous_triple_child_parse_test)
 
 BOOST_AUTO_TEST_CASE(named_single_flag_match_test)
 {
-    const auto m = mode(policy::long_name<S_("my-mode")>,
+    const auto m = mode(policy::none_name<S_("my-mode")>,
                         flag(policy::long_name<S_("hello")>,
                              policy::short_name<'l'>,
                              policy::description<S_("Hello arg")>));
@@ -228,7 +230,7 @@ BOOST_AUTO_TEST_CASE(named_single_flag_match_test)
 BOOST_AUTO_TEST_CASE(named_single_flag_parse_test)
 {
     auto result = std::optional<bool>{};
-    const auto m = mode(policy::long_name<S_("my-mode")>,
+    const auto m = mode(policy::none_name<S_("my-mode")>,
                         flag(policy::long_name<S_("hello")>,
                              policy::short_name<'l'>,
                              policy::description<S_("Hello arg")>),
@@ -275,7 +277,7 @@ BOOST_AUTO_TEST_CASE(named_single_flag_parse_test)
 BOOST_AUTO_TEST_CASE(named_triple_flag_match_test)
 {
     const auto m = mode(
-        policy::long_name<S_("my-mode")>,
+        policy::none_name<S_("my-mode")>,
         flag(policy::long_name<S_("hello")>,
              policy::short_name<'l'>,
              policy::description<S_("Hello arg")>),
@@ -296,7 +298,7 @@ BOOST_AUTO_TEST_CASE(named_triple_flag_match_test)
 
     test::data_set(
         f,
-        {std::tuple{parsing::token_type{parsing::prefix_type::LONG, "my-mode"},
+        {std::tuple{parsing::token_type{parsing::prefix_type::NONE, "my-mode"},
                     true},
          std::tuple{parsing::token_type{parsing::prefix_type::LONG, "hello"},
                     false},
@@ -310,7 +312,7 @@ BOOST_AUTO_TEST_CASE(named_triple_arg_parse_test)
 {
     auto result = std::optional<std::tuple<bool, int, bool>>{};
     const auto m =
-        mode(policy::long_name<S_("my-mode")>,
+        mode(policy::none_name<S_("my-mode")>,
              flag(policy::long_name<S_("hello")>,
                   policy::short_name<'l'>,
                   policy::description<S_("Hello arg")>),
@@ -430,7 +432,7 @@ BOOST_AUTO_TEST_CASE(named_triple_flag_double_list_match_test)
         flag(policy::long_name<S_("foo")>, policy::description<S_("Foo arg")>)};
     const auto list2 =
         list{flag(policy::short_name<'b'>, policy::description<S_("b arg")>)};
-    const auto m = mode(policy::long_name<S_("my-mode")>, list1, list2);
+    const auto m = mode(policy::none_name<S_("my-mode")>, list1, list2);
 
     auto f = [&](auto token, auto expected_result) {
         auto visitor_hit = false;
@@ -446,7 +448,7 @@ BOOST_AUTO_TEST_CASE(named_triple_flag_double_list_match_test)
 
     test::data_set(
         f,
-        {std::tuple{parsing::token_type{parsing::prefix_type::LONG, "my-mode"},
+        {std::tuple{parsing::token_type{parsing::prefix_type::NONE, "my-mode"},
                     true},
          std::tuple{parsing::token_type{parsing::prefix_type::LONG, "hello"},
                     false},
@@ -459,9 +461,9 @@ BOOST_AUTO_TEST_CASE(named_triple_flag_double_list_match_test)
 BOOST_AUTO_TEST_CASE(nested_modes_parse_test)
 {
     auto result = std::optional<std::tuple<bool, int>>{};
-    const auto m = mode(policy::long_name<S_("mode1")>,
-                        mode(policy::long_name<S_("mode2")>,
-                             mode(policy::long_name<S_("mode3")>,
+    const auto m = mode(policy::none_name<S_("mode1")>,
+                        mode(policy::none_name<S_("mode2")>,
+                             mode(policy::none_name<S_("mode3")>,
                                   flag(policy::long_name<S_("hello")>,
                                        policy::short_name<'l'>,
                                        policy::description<S_("Hello arg")>),
@@ -558,7 +560,7 @@ BOOST_AUTO_TEST_CASE(no_missing_phase_test)
     {
         auto result = std::vector<int>{3, 4, 5};
         const auto m = mode(
-            positional_arg<std::vector<int>>(policy::long_name<S_("hello")>),
+            positional_arg<std::vector<int>>(policy::display_name<S_("hello")>),
             policy::router([&](std::vector<int> arg1) { result = arg1; }));
 
         auto tokens = parsing::token_list{};
@@ -607,6 +609,26 @@ int main() {
         "Anonymous modes must have routing");
 }
 
+BOOST_AUTO_TEST_CASE(must_not_have_a_long_name_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/flag.hpp"
+#include "arg_router/mode.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    const auto m = mode(policy::long_name<S_("my-mode")>,
+                        flag(policy::long_name<S_("hello")>));
+    return 0;
+}
+    )",
+        "Mode must not have a long name policy");
+}
+
 BOOST_AUTO_TEST_CASE(must_not_have_a_short_name_test)
 {
     test::death_test_compile(
@@ -626,6 +648,27 @@ int main() {
 }
     )",
         "Mode must not have a short name policy");
+}
+
+BOOST_AUTO_TEST_CASE(must_not_have_a_display_name_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/flag.hpp"
+#include "arg_router/mode.hpp"
+#include "arg_router/policy/display_name.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    const auto m = mode(policy::display_name<S_("mode")>,
+                        flag(policy::long_name<S_("hello")>));
+    return 0;
+}
+    )",
+        "Mode must not have a display name policy");
 }
 
 BOOST_AUTO_TEST_CASE(must_not_have_a_custom_parser_test)
@@ -658,6 +701,7 @@ BOOST_AUTO_TEST_CASE(anonymous_child_mode_test)
         R"(
 #include "arg_router/flag.hpp"
 #include "arg_router/mode.hpp"
+#include "arg_router/policy/display_name.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/router.hpp"
 #include "arg_router/tree_node.hpp"
@@ -684,7 +728,7 @@ public:
 
 int main() {
     const auto m = stub_node(
-                        mode(policy::long_name<S_("mode")>,
+                        mode(policy::display_name<S_("mode")>,
                              mode(flag(policy::long_name<S_("hello")>),
                                   policy::router([&](bool) {}))));
 
@@ -702,6 +746,7 @@ BOOST_AUTO_TEST_CASE(anonymous_mode_cannot_have_a_child_mode_test)
         R"(
 #include "arg_router/flag.hpp"
 #include "arg_router/mode.hpp"
+#include "arg_router/policy/display_name.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
@@ -709,7 +754,7 @@ using namespace arg_router;
 
 int main() {
     const auto m = mode(
-                    mode(policy::long_name<S_("mode")>,
+                    mode(policy::display_name<S_("mode")>,
                          flag(policy::long_name<S_("hello")>)));
     return 0;
 }
@@ -724,6 +769,7 @@ BOOST_AUTO_TEST_CASE(mode_has_router_or_all_children_are_modes_test)
 #include "arg_router/flag.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/none_name.hpp"
 #include "arg_router/policy/router.hpp"
 #include "arg_router/tree_node.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
@@ -749,7 +795,7 @@ public:
 
 int main() {
     const auto m = stub_node(
-                        mode(policy::long_name<S_("mode")>,
+                        mode(policy::none_name<S_("mode")>,
                              flag(policy::long_name<S_("f1")>),
                              mode(flag(policy::long_name<S_("f2")>),
                                   policy::router([&](bool) {}))));
