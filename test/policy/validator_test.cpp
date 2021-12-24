@@ -46,16 +46,16 @@ BOOST_AUTO_TEST_CASE(policy_unique_from_owner_parent_to_mode_or_root_test)
             flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
                    policy::long_name_t<S_("test1")>>,
             arg_router::mode_t<
-                policy::long_name_t<S_("mode1")>,
+                policy::none_name_t<S_("mode1")>,
                 flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
                        policy::long_name_t<S_("test1")>>>,
             root_t<
                 arg_router::mode_t<
-                    policy::long_name_t<S_("mode1")>,
+                    policy::none_name_t<S_("mode1")>,
                     flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
                            policy::long_name_t<S_("test1")>>>,
                 arg_router::mode_t<
-                    policy::long_name_t<S_("mode2")>,
+                    policy::none_name_t<S_("mode2")>,
                     flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
                            policy::long_name_t<S_("test1")>>>,
                 std::decay_t<
@@ -127,32 +127,41 @@ BOOST_AUTO_TEST_CASE(child_must_have_policy_test)
         std::decay_t<decltype(policy::validation::default_validator)>>>();
 }
 
+BOOST_AUTO_TEST_CASE(policy_parent_must_not_have_policy_test)
+{
+    policy::validation::
+        policy_parent_must_not_have_policy<policy::long_name_t>::check<
+            policy::display_name_t<S_("hello")>,
+            flag_t<policy::display_name_t<S_("hello")>,
+                   policy::short_name_t<traits::integral_constant<'a'>>>>();
+}
+
 BOOST_AUTO_TEST_CASE(single_anonymous_mode_test)
 {
     policy::validation::single_anonymous_mode<arg_router::mode_t>::check<root_t<
         arg_router::mode_t<
-            policy::long_name_t<S_("mode1")>,
+            policy::none_name_t<S_("mode1")>,
             flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
                    policy::long_name_t<S_("test1")>>>,
         arg_router::mode_t<
-            policy::long_name_t<S_("mode2")>,
-            flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
-                   policy::long_name_t<S_("test1")>>>,
-        std::decay_t<decltype(policy::validation::default_validator)>>>();
-
-    policy::validation::single_anonymous_mode<arg_router::mode_t>::check<root_t<
-        arg_router::mode_t<
-            policy::long_name_t<S_("mode1")>,
-            flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
-                   policy::long_name_t<S_("test1")>>>,
-        arg_router::mode_t<
+            policy::none_name_t<S_("mode2")>,
             flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
                    policy::long_name_t<S_("test1")>>>,
         std::decay_t<decltype(policy::validation::default_validator)>>>();
 
     policy::validation::single_anonymous_mode<arg_router::mode_t>::check<root_t<
         arg_router::mode_t<
-            policy::long_name_t<S_("mode1")>,
+            policy::none_name_t<S_("mode1")>,
+            flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+                   policy::long_name_t<S_("test1")>>>,
+        arg_router::mode_t<
+            flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+                   policy::long_name_t<S_("test1")>>>,
+        std::decay_t<decltype(policy::validation::default_validator)>>>();
+
+    policy::validation::single_anonymous_mode<arg_router::mode_t>::check<root_t<
+        arg_router::mode_t<
+            policy::none_name_t<S_("mode1")>,
             flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
                    policy::long_name_t<S_("test1")>>>,
         std::decay_t<decltype(policy::validation::default_validator)>>>();
@@ -180,45 +189,6 @@ BOOST_AUTO_TEST_CASE(at_least_one_of_policies_test)
                      policy::short_name_t<traits::integral_constant<'s'>>>>();
 }
 
-BOOST_AUTO_TEST_CASE(one_of_policies_if_parent_is_not_root_test)
-{
-    policy::validation::one_of_policies_if_parent_is_not_root<
-        policy::required_t,
-        policy::default_value>::check<arg_t<int,
-                                            policy::long_name_t<S_("long")>,
-                                            policy::required_t<>>>();
-
-    policy::validation::one_of_policies_if_parent_is_not_root<
-        policy::required_t,
-        policy::default_value>::check<arg_t<int,
-                                            policy::long_name_t<S_("long")>,
-                                            policy::default_value<int>>>();
-
-    policy::validation::one_of_policies_if_parent_is_not_root<
-        policy::required_t,
-        policy::default_value>::
-        check<arg_t<int,
-                    policy::long_name_t<S_("long")>,
-                    policy::required_t<>,
-                    policy::short_name_t<traits::integral_constant<'s'>>>>();
-
-    policy::validation::one_of_policies_if_parent_is_not_root<
-        policy::required_t,
-        policy::default_value>::
-        check<arg_t<int,
-                    policy::long_name_t<S_("long")>,
-                    policy::default_value<int>,
-                    policy::short_name_t<traits::integral_constant<'s'>>>>();
-
-    policy::validation::one_of_policies_if_parent_is_not_root<
-        policy::required_t,
-        policy::default_value>::
-        check<arg_t<int, policy::long_name_t<S_("long")>>,
-              root_t<
-                  std::decay_t<decltype(policy::validation::default_validator)>,
-                  arg_t<int, policy::long_name_t<S_("long")>>>>();
-}
-
 BOOST_AUTO_TEST_CASE(positional_args_must_be_at_end_test)
 {
     policy::validation::
@@ -227,7 +197,7 @@ BOOST_AUTO_TEST_CASE(positional_args_must_be_at_end_test)
                 flag_t<policy::long_name_t<S_("test1")>>,
                 arg_t<int, policy::long_name_t<S_("test2")>>,
                 positional_arg_t<std::vector<int>,
-                                 policy::long_name_t<S_("test3")>>>>();
+                                 policy::display_name_t<S_("test3")>>>>();
 
     policy::validation::
         positional_args_must_be_at_end<arg_router::positional_arg_t>::check<
@@ -235,9 +205,9 @@ BOOST_AUTO_TEST_CASE(positional_args_must_be_at_end_test)
                 flag_t<policy::long_name_t<S_("test1")>>,
                 arg_t<int, policy::long_name_t<S_("test2")>>,
                 positional_arg_t<std::vector<int>,
-                                 policy::long_name_t<S_("test3")>>,
+                                 policy::display_name_t<S_("test3")>>,
                 positional_arg_t<std::vector<int>,
-                                 policy::long_name_t<S_("test4")>>>>();
+                                 policy::display_name_t<S_("test4")>>>>();
 }
 
 BOOST_AUTO_TEST_CASE(positional_args_must_have_fixed_count_if_not_at_end_test)
@@ -248,7 +218,7 @@ BOOST_AUTO_TEST_CASE(positional_args_must_have_fixed_count_if_not_at_end_test)
             flag_t<policy::long_name_t<S_("test1")>>,
             arg_t<int, policy::long_name_t<S_("test2")>>,
             positional_arg_t<std::vector<int>,
-                             policy::long_name_t<S_("test3")>>>>();
+                             policy::display_name_t<S_("test3")>>>>();
 
     policy::validation::positional_args_must_have_fixed_count_if_not_at_end<
         arg_router::positional_arg_t>::
@@ -257,10 +227,10 @@ BOOST_AUTO_TEST_CASE(positional_args_must_have_fixed_count_if_not_at_end_test)
             arg_t<int, policy::long_name_t<S_("test2")>>,
             positional_arg_t<
                 int,
-                policy::long_name_t<S_("test3")>,
+                policy::display_name_t<S_("test3")>,
                 policy::count_t<traits::integral_constant<std::size_t{1}>>>,
             positional_arg_t<std::vector<int>,
-                             policy::long_name_t<S_("test4")>>>>();
+                             policy::display_name_t<S_("test4")>>>>();
 
     policy::validation::positional_args_must_have_fixed_count_if_not_at_end<
         arg_router::positional_arg_t>::
@@ -269,14 +239,14 @@ BOOST_AUTO_TEST_CASE(positional_args_must_have_fixed_count_if_not_at_end_test)
             arg_t<int, policy::long_name_t<S_("test2")>>,
             positional_arg_t<
                 int,
-                policy::long_name_t<S_("test3")>,
+                policy::display_name_t<S_("test3")>,
                 policy::count_t<traits::integral_constant<std::size_t{1}>>>,
             positional_arg_t<
                 std::vector<int>,
-                policy::long_name_t<S_("test4")>,
+                policy::display_name_t<S_("test4")>,
                 policy::count_t<traits::integral_constant<std::size_t{3}>>>,
             positional_arg_t<std::vector<int>,
-                             policy::long_name_t<S_("test5")>>>>();
+                             policy::display_name_t<S_("test5")>>>>();
 
     policy::validation::positional_args_must_have_fixed_count_if_not_at_end<
         arg_router::positional_arg_t>::
@@ -285,11 +255,11 @@ BOOST_AUTO_TEST_CASE(positional_args_must_have_fixed_count_if_not_at_end_test)
             arg_t<int, policy::long_name_t<S_("test2")>>,
             positional_arg_t<
                 int,
-                policy::long_name_t<S_("test3")>,
+                policy::display_name_t<S_("test3")>,
                 policy::min_count_t<traits::integral_constant<std::size_t{1}>>,
                 policy::max_count_t<traits::integral_constant<std::size_t{1}>>>,
             positional_arg_t<std::vector<int>,
-                             policy::long_name_t<S_("test4")>>>>();
+                             policy::display_name_t<S_("test4")>>>>();
 }
 
 BOOST_AUTO_TEST_SUITE_END()
@@ -465,6 +435,64 @@ int main() {
         "All children of T must have this policy");
 }
 
+BOOST_AUTO_TEST_CASE(not_policy_policy_parent_must_not_have_policy_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/validator.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    policy::validation::
+        policy_parent_must_not_have_policy<policy::long_name_t>::check<
+            double,
+            flag_t<policy::display_name_t<S_("hello")>,
+                   policy::short_name_t<traits::integral_constant<'a'>>>>();
+}
+    )",
+        "T must be a policy");
+}
+
+BOOST_AUTO_TEST_CASE(no_parent_policy_parent_must_not_have_policy_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/validator.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    policy::validation::
+        policy_parent_must_not_have_policy<policy::long_name_t>::check<
+            policy::display_name_t<S_("hello")>>();
+}
+    )",
+        "Must be at least one parent");
+}
+
+BOOST_AUTO_TEST_CASE(has_policy_policy_parent_must_not_have_policy_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/validator.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    policy::validation::
+        policy_parent_must_not_have_policy<policy::long_name_t>::check<
+            policy::display_name_t<S_("hello")>,
+            flag_t<policy::display_name_t<S_("hello")>,
+                   policy::long_name_t<S_("flag")>>>();
+}
+    )",
+        "Parent must not have this policy");
+}
+
 BOOST_AUTO_TEST_CASE(single_anonymous_mode_test)
 {
     test::death_test_compile(
@@ -509,50 +537,6 @@ int main() {
         "T must have at least one of the policies");
 }
 
-BOOST_AUTO_TEST_CASE(none_in_one_of_policies_if_parent_is_not_root_test)
-{
-    test::death_test_compile(
-        R"(
-#include "arg_router/policy/description.hpp"
-#include "arg_router/policy/validator.hpp"
-#include "arg_router/utility/compile_time_string.hpp"
-
-using namespace arg_router;
-
-int main() {
-    policy::validation::one_of_policies_if_parent_is_not_root<
-        policy::required_t,
-        policy::default_value>::check<arg_t<int,
-                                            policy::description_t<S_("desc")>>>();
-    return 0;
-}
-    )",
-        "T must have one of the assigned policies");
-}
-
-BOOST_AUTO_TEST_CASE(multiple_in_one_of_policies_if_parent_is_not_root_test)
-{
-    test::death_test_compile(
-        R"(
-#include "arg_router/policy/description.hpp"
-#include "arg_router/policy/validator.hpp"
-#include "arg_router/utility/compile_time_string.hpp"
-
-using namespace arg_router;
-
-int main() {
-    policy::validation::one_of_policies_if_parent_is_not_root<
-        policy::required_t,
-        policy::default_value>::check<arg_t<int,
-                                            policy::required_t<>,
-                                            policy::default_value<int>,
-                                            policy::description_t<S_("desc")>>>();
-    return 0;
-}
-    )",
-        "T must have one of the assigned policies");
-}
-
 BOOST_AUTO_TEST_CASE(positional_args_not_at_end_test)
 {
     test::death_test_compile(
@@ -566,7 +550,8 @@ int main() {
     policy::validation::positional_args_must_be_at_end<positional_arg_t>::check<
         arg_router::mode_t<
             flag_t<policy::long_name_t<S_("test1")>>,
-            positional_arg_t<std::vector<int>, policy::long_name_t<S_("test3")>>,
+            positional_arg_t<std::vector<int>,
+                             policy::display_name_t<S_("test3")>>,
             arg_t<int, policy::long_name_t<S_("test2")>>>>();
     return 0;
 }
@@ -587,7 +572,8 @@ using namespace arg_router;
 int main() {
     policy::validation::positional_args_must_be_at_end<positional_arg_t>::check<
         arg_router::mode_t<
-            positional_arg_t<std::vector<int>, policy::long_name_t<S_("test3")>>,
+            positional_arg_t<std::vector<int>,
+                             policy::display_name_t<S_("test3")>>,
             flag_t<policy::long_name_t<S_("test1")>>,
             arg_t<int, policy::long_name_t<S_("test2")>>>>();
     return 0;
@@ -613,8 +599,10 @@ int main() {
             check<arg_router::mode_t<
                 flag_t<policy::long_name_t<S_("test1")>>,
                 arg_t<int, policy::long_name_t<S_("test2")>>,
-                positional_arg_t<std::vector<int>, policy::long_name_t<S_("test3")>>,
-                positional_arg_t<std::vector<int>, policy::long_name_t<S_("test4")>>>>();
+                positional_arg_t<std::vector<int>,
+                                 policy::display_name_t<S_("test3")>>,
+                positional_arg_t<std::vector<int>,
+                                 policy::display_name_t<S_("test4")>>>>();
     return 0;
 }
     )",
@@ -637,10 +625,11 @@ int main() {
             check<arg_router::mode_t<
                 flag_t<policy::long_name_t<S_("test1")>>,
                 arg_t<int, policy::long_name_t<S_("test2")>>,
-                positional_arg_t<std::vector<int>, policy::long_name_t<S_("test3")>>,
+                positional_arg_t<std::vector<int>,
+                                 policy::display_name_t<S_("test3")>>,
                 positional_arg_t<
                     int,
-                    policy::long_name_t<S_("test3")>,
+                    policy::display_name_t<S_("test3")>,
                     policy::count_t<traits::integral_constant<std::size_t{1}>>>>>();
     return 0;
 }
@@ -666,9 +655,11 @@ int main() {
                 arg_t<int, policy::long_name_t<S_("test2")>>,
                 positional_arg_t<
                     std::vector<int>,
-                    policy::long_name_t<S_("test3")>,
-                    policy::min_count_t<traits::integral_constant<std::size_t{1}>>>,
-                positional_arg_t<std::vector<int>, policy::long_name_t<S_("test4")>>>>();
+                    policy::display_name_t<S_("test3")>,
+                    policy::min_count_t<
+                        traits::integral_constant<std::size_t{1}>>>,
+                positional_arg_t<std::vector<int>,
+                                 policy::display_name_t<S_("test4")>>>>();
     return 0;
 }
     )",
@@ -693,9 +684,10 @@ int main() {
                 arg_t<int, policy::long_name_t<S_("test2")>>,
                 positional_arg_t<
                     std::vector<int>,
-                    policy::long_name_t<S_("test3")>,
+                    policy::display_name_t<S_("test3")>,
                     policy::max_count_t<traits::integral_constant<std::size_t{1}>>>,
-                positional_arg_t<std::vector<int>, policy::long_name_t<S_("test4")>>>>();
+                positional_arg_t<std::vector<int>,
+                                 policy::display_name_t<S_("test4")>>>>();
     return 0;
 }
     )",
@@ -720,10 +712,11 @@ int main() {
                 arg_t<int, policy::long_name_t<S_("test2")>>,
                 positional_arg_t<
                     std::vector<int>,
-                    policy::long_name_t<S_("test3")>,
+                    policy::display_name_t<S_("test3")>,
                     policy::min_count_t<traits::integral_constant<std::size_t{1}>>,
                     policy::max_count_t<traits::integral_constant<std::size_t{3}>>>,
-                positional_arg_t<std::vector<int>, policy::long_name_t<S_("test4")>>>>();
+                positional_arg_t<std::vector<int>,
+                                 policy::display_name_t<S_("test4")>>>>();
     return 0;
 }
     )",

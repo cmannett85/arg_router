@@ -43,8 +43,10 @@ class positional_arg_t : public tree_node<Policies...>
     static_assert(has_fixed_count<1> || traits::has_push_back_method_v<T>,
                   "value_type must have a push_back() method");
 
-    static_assert(traits::has_long_name_method_v<positional_arg_t>,
-                  "Positional arg must have a long name policy");
+    static_assert(traits::has_display_name_method_v<positional_arg_t>,
+                  "Positional arg must have a display name policy");
+    static_assert(!traits::has_long_name_method_v<positional_arg_t>,
+                  "Positional arg must not have a long name policy");
     static_assert(!traits::has_short_name_method_v<positional_arg_t>,
                   "Positional arg must not have a short name policy");
 

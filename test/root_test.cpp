@@ -9,6 +9,7 @@
 #include <optional>
 
 using namespace arg_router;
+namespace ard = arg_router::dependency;
 using namespace std::string_literals;
 using namespace std::string_view_literals;
 
@@ -519,7 +520,7 @@ BOOST_AUTO_TEST_CASE(named_single_mode_parse_test)
     auto router_hit = false;
     auto result = std::array<bool, 3>{};
     const auto r =
-        root(mode(policy::long_name<S_("my-mode")>,
+        root(mode(policy::none_name<S_("my-mode")>,
                   flag(policy::long_name<S_("flag1")>,
                        policy::description<S_("First description")>),
                   flag(policy::long_name<S_("flag2")>,
@@ -628,7 +629,7 @@ BOOST_AUTO_TEST_CASE(named_multi_mode_parse_test)
     auto result2 = std::array<bool, 2>{};
 
     const auto r =
-        root(mode(policy::long_name<S_("mode1")>,
+        root(mode(policy::none_name<S_("mode1")>,
                   flag(policy::long_name<S_("flag1")>,
                        policy::description<S_("First description")>),
                   flag(policy::long_name<S_("flag2")>,
@@ -639,7 +640,7 @@ BOOST_AUTO_TEST_CASE(named_multi_mode_parse_test)
                       result1 = {flag1, flag2, t};
                       router_hit1 = true;
                   }}),
-             mode(policy::long_name<S_("mode2")>,
+             mode(policy::none_name<S_("mode2")>,
                   flag(policy::long_name<S_("flag1")>,
                        policy::description<S_("Other third description")>),
                   flag(policy::short_name<'b'>,
@@ -715,7 +716,7 @@ BOOST_AUTO_TEST_CASE(named_multi_mode_using_list_parse_test)
                                  policy::description<S_("First description")>)};
 
     const auto r =
-        root(mode(policy::long_name<S_("mode1")>,
+        root(mode(policy::none_name<S_("mode1")>,
                   flag1,
                   flag(policy::long_name<S_("flag2")>,
                        policy::description<S_("Second description")>),
@@ -725,7 +726,7 @@ BOOST_AUTO_TEST_CASE(named_multi_mode_using_list_parse_test)
                       result1 = {flag1, flag2, t};
                       router_hit1 = true;
                   }}),
-             mode(policy::long_name<S_("mode2")>,
+             mode(policy::none_name<S_("mode2")>,
                   flag1,
                   flag(policy::short_name<'b'>,
                        policy::description<S_("Fourth description")>),
@@ -920,7 +921,7 @@ BOOST_AUTO_TEST_CASE(single_positional_arg_parse_test)
                            policy::default_value(42),
                            policy::description<S_("Second description")>),
                   positional_arg<std::vector<std::string_view>>(
-                      policy::long_name<S_("pos_args")>,
+                      policy::display_name<S_("pos_args")>,
                       policy::description<S_("Third description")>,
                       policy::min_count<2>),
                   policy::router{[&](bool flag1,
@@ -974,10 +975,10 @@ BOOST_AUTO_TEST_CASE(single_positional_arg_parse_test)
                 ""},
             std::tuple{std::vector{"foo", "--flag1"},
                        std::tuple{true, 42, std::vector<std::string_view>{}},
-                       "Minimum count not reached: --pos_args"},
+                       "Minimum count not reached: pos_args"},
             std::tuple{std::vector{"foo", "--flag1", "--arg1", "9"},
                        std::tuple{true, 9, std::vector<std::string_view>{}},
-                       "Minimum count not reached: --pos_args"},
+                       "Minimum count not reached: pos_args"},
         });
 }
 
@@ -993,11 +994,11 @@ BOOST_AUTO_TEST_CASE(two_positional_arg_parse_test)
                            policy::default_value(42),
                            policy::description<S_("Second description")>),
                   positional_arg<std::vector<std::string_view>>(
-                      policy::long_name<S_("pos_args1")>,
+                      policy::display_name<S_("pos_args1")>,
                       policy::description<S_("Third description")>,
                       policy::count<2>),
                   positional_arg<std::vector<double>>(
-                      policy::long_name<S_("pos_args2")>,
+                      policy::display_name<S_("pos_args2")>,
                       policy::description<S_("Fourth description")>),
                   policy::router{[&](bool flag1,
                                      int arg1,
@@ -1087,7 +1088,7 @@ BOOST_AUTO_TEST_CASE(nested_mode_test)
                      router_hit[1] = true;
                      result = std::tuple{v};
                  }}),
-        mode(policy::long_name<S_("mode1")>,
+        mode(policy::none_name<S_("mode1")>,
              flag(policy::long_name<S_("flag1")>,
                   policy::description<S_("Description")>),
              arg<double>(policy::long_name<S_("arg1")>,
@@ -1100,7 +1101,7 @@ BOOST_AUTO_TEST_CASE(nested_mode_test)
                  router_hit[2] = true;
                  result = std::tuple{f1, a1, f2};
              }},
-             mode(policy::long_name<S_("mode2")>,
+             mode(policy::none_name<S_("mode2")>,
                   arg<int>(policy::long_name<S_("arg1")>,
                            policy::description<S_("Description")>,
                            policy::required),
@@ -1108,7 +1109,7 @@ BOOST_AUTO_TEST_CASE(nested_mode_test)
                        policy::short_name<'b'>,
                        policy::description<S_("Description")>),
                   positional_arg<std::vector<std::string_view>>(
-                      policy::long_name<S_("pos_args")>,
+                      policy::display_name<S_("pos_args")>,
                       policy::description<S_("Description")>),
                   policy::router{[&](int a1,
                                      bool f1,
@@ -1116,7 +1117,7 @@ BOOST_AUTO_TEST_CASE(nested_mode_test)
                       router_hit[3] = true;
                       result = std::tuple{a1, f1, std::move(pos_args)};
                   }}),
-             mode(policy::long_name<S_("mode3")>,
+             mode(policy::none_name<S_("mode3")>,
                   flag(policy::long_name<S_("flag1")>,
                        policy::description<S_("Description")>),
                   flag(policy::long_name<S_("flag2")>,
@@ -1227,6 +1228,111 @@ BOOST_AUTO_TEST_CASE(nested_mode_test)
                        0,
                        std::tuple{true},
                        "Unknown argument: --foo2"},
+        });
+}
+
+BOOST_AUTO_TEST_CASE(one_of_required_test)
+{
+    auto result = std::optional<
+        std::tuple<int, std::variant<bool, int, std::string_view>>>{};
+
+    const auto r = root(
+        mode(arg<int>(policy::long_name<S_("arg1")>, policy::default_value{42}),
+             ard::one_of(flag(policy::short_name<'f'>),
+                         arg<int>(policy::long_name<S_("arg2")>),
+                         arg<std::string_view>(policy::long_name<S_("arg3")>),
+                         policy::required),
+             policy::router{
+                 [&](int arg1, std::variant<bool, int, std::string_view> of) {
+                     result = std::tuple{arg1, std::move(of)};
+                 }}),
+        policy::validation::default_validator);
+
+    auto f = [&](auto args,
+                 auto arg1_expected,
+                 auto of_expected,
+                 std::string fail_message) {
+        result.reset();
+
+        try {
+            r.parse(args.size(), const_cast<char**>(args.data()));
+            BOOST_CHECK(fail_message.empty());
+            BOOST_REQUIRE(!!result);
+
+            BOOST_CHECK_EQUAL(std::get<0>(*result), arg1_expected);
+            BOOST_CHECK_EQUAL(
+                std::get<decltype(of_expected)>(std::get<1>(*result)),
+                of_expected);
+        } catch (parse_exception& e) {
+            BOOST_CHECK_EQUAL(fail_message, e.what());
+            BOOST_CHECK(!result);
+        }
+    };
+
+    test::data_set(
+        f,
+        std::tuple{
+            std::tuple{std::vector{"foo", "-f"}, 42, true, ""},
+            std::tuple{std::vector{"foo", "--arg1", "13", "-f"}, 13, true, ""},
+            std::tuple{std::vector{"foo", "--arg3", "hello"},
+                       42,
+                       "hello"sv,
+                       ""},
+            std::tuple{std::vector{"foo"},
+                       42,
+                       true,
+                       "Missing required argument: One of: -f,--arg2,--arg3"},
+        });
+}
+
+BOOST_AUTO_TEST_CASE(one_of_default_value_test)
+{
+    auto result = std::optional<
+        std::tuple<int, std::variant<bool, int, std::string_view>>>{};
+
+    const auto r = root(
+        mode(arg<int>(policy::long_name<S_("arg1")>, policy::default_value{42}),
+             ard::one_of(flag(policy::short_name<'f'>),
+                         arg<int>(policy::long_name<S_("arg2")>),
+                         arg<std::string_view>(policy::long_name<S_("arg3")>),
+                         policy::default_value{"goodbye"}),
+             policy::router{
+                 [&](int arg1, std::variant<bool, int, std::string_view> of) {
+                     result = std::tuple{arg1, std::move(of)};
+                 }}),
+        policy::validation::default_validator);
+
+    auto f = [&](auto args,
+                 auto arg1_expected,
+                 auto of_expected,
+                 std::string fail_message) {
+        result.reset();
+
+        try {
+            r.parse(args.size(), const_cast<char**>(args.data()));
+            BOOST_CHECK(fail_message.empty());
+            BOOST_REQUIRE(!!result);
+
+            BOOST_CHECK_EQUAL(std::get<0>(*result), arg1_expected);
+            BOOST_CHECK_EQUAL(
+                std::get<decltype(of_expected)>(std::get<1>(*result)),
+                of_expected);
+        } catch (parse_exception& e) {
+            BOOST_CHECK_EQUAL(fail_message, e.what());
+            BOOST_CHECK(!result);
+        }
+    };
+
+    test::data_set(
+        f,
+        std::tuple{
+            std::tuple{std::vector{"foo", "-f"}, 42, true, ""},
+            std::tuple{std::vector{"foo", "--arg1", "13", "-f"}, 13, true, ""},
+            std::tuple{std::vector{"foo", "--arg3", "hello"},
+                       42,
+                       "hello"sv,
+                       ""},
+            std::tuple{std::vector{"foo"}, 42, "goodbye"sv, ""},
         });
 }
 

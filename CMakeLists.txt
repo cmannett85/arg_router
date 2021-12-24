@@ -33,6 +33,7 @@ set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/algorithm.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/arg.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/config.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/dependency/one_of.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/exception.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/flag.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/global_parser.hpp
@@ -44,7 +45,9 @@ set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/custom_parser.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/default_value.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/description.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/display_name.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/long_name.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/none_name.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/max_count.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/min_count.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/multi_stage_value.hpp

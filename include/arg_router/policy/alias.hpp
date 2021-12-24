@@ -23,7 +23,7 @@ namespace policy
  * @tparam AliasedPolicies Pack of policies to alias
  */
 template <typename... AliasedPolicies>
-class alias_t : public no_result_value
+class alias_t : public no_result_value<>
 {
 public:
     /** Tuple of policy types. */
@@ -44,21 +44,65 @@ private:
         boost::mp11::mp_all_of<aliased_policies_type, policy_checker>::value,
         "All parameters must provide a long and/or short form name");
 
+    template <typename ModeType>
+    struct pre_pass_check {
+        template <typename Child>
+        using get_policies = typename Child::policies_type;
+
+        // The gist of this horror is that collect all the policies from all the
+        // child nodes into a single tuple and then count how many times Alias
+        // appears in it
+        template <typename Alias>
+        struct one_matching_policy {
+            constexpr static bool value =
+                boost::mp11::mp_count<        //
+                    boost::mp11::mp_flatten<  //
+                        boost::mp11::mp_transform_q<
+                            boost::mp11::mp_bind<get_policies, boost::mp11::_1>,
+                            typename ModeType::children_type>>,
+                    Alias>::value == 1;
+        };
+
+        // Almost does the inverse of above.  It creates a tuple of how many
+        // times an alias appears in a child's policy list, it then checks that
+        // this count never exceeds one
+        template <typename Child>
+        struct one_or_zero_matching_child {
+            constexpr static bool value =
+                boost::mp11::mp_count<
+                    boost::mp11::mp_transform_q<
+                        boost::mp11::mp_bind<boost::mp11::mp_contains,
+                                             typename Child::policies_type,
+                                             boost::mp11::_1>,
+                        aliased_policies_type>,
+                    std::true_type>::value <= 1;
+        };
+
+        constexpr static bool value =
+            boost::mp11::mp_all_of<aliased_policies_type,
+                                   one_matching_policy>::value &&
+            boost::mp11::mp_all_of<typename ModeType::children_type,
+                                   one_or_zero_matching_child>::value;
+    };
+
     // You could do this a single inline mp11 expression, but it would be
     // unreadable...
-    template <typename Node>
-    struct node_match {
-        constexpr static auto value = boost::mp11::mp_any_of<
+    template <typename Child>
+    struct child_match {
+        constexpr static bool value = boost::mp11::mp_any_of_q<
             aliased_policies_type,
             boost::mp11::mp_bind<boost::mp11::mp_contains,
-                                 typename Node::policies_type,
-                                 boost::mp11::_1>::template fn>::value;
+                                 typename Child::policies_type,
+                                 boost::mp11::_1>>::value;
     };
 
     template <typename ModeType>
     constexpr static auto create_aliased_node_indices()
     {
         using children_type = typename ModeType::children_type;
+
+        static_assert(pre_pass_check<ModeType>::value,
+                      "There must one matching node per alias entry");
 
         // Zip together an index-sequence of ModeType's children and the
         // elements of it
@@ -70,7 +114,7 @@ private:
         // our alias
         using filtered = boost::mp11::mp_filter<
             boost::mp11::mp_bind<
-                node_match,
+                child_match,
                 boost::mp11::mp_bind<boost::mp11::mp_second,
                                      boost::mp11::_1>>::template fn,
             zipped>;
@@ -79,15 +123,6 @@ private:
     }
 
 public:
-    /** Given a mode-like parent, iterate over its children and return the
-     * indices for those that are aliased by this policy.
-     *
-     * @tparam ModeType Mode-like type
-     */
-    template <typename ModeType>
-    using aliased_node_indices =
-        decltype(create_aliased_node_indices<ModeType>());
-
     /** Constructor.
      *
      * @param policies Policy instances
@@ -128,7 +163,8 @@ protected:
 
         using node_type = boost::mp11::mp_first<std::tuple<Parents...>>;
         using mode_type = boost::mp11::mp_second<std::tuple<Parents...>>;
-        using aliased_indices = aliased_node_indices<mode_type>;
+        using aliased_indices =
+            decltype(create_aliased_node_indices<mode_type>());
 
         // Check that the alias names do not appear in the owning node (i.e.
         // no self-references)

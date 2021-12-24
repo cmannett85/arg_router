@@ -11,6 +11,9 @@ namespace arg_router
 {
 namespace utility
 {
+/** An alias for std::span if compiling with >= C++20 support, otherwise
+ * nonstd::span_lite::span.
+ */
 #if __cplusplus >= 202000L
 template <typename T, auto Extent = std::dynamic_extent>
 using span = std::span<T, Extent>;

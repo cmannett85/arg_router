@@ -1,6 +1,5 @@
 #pragma once
 
-#include "arg_router/token_type.hpp"
 #include "arg_router/traits.hpp"
 
 namespace arg_router
@@ -28,8 +27,7 @@ template <typename T>
 bool default_match(const token_type& token)
 {
     if constexpr (traits::has_long_name_method_v<T>) {
-        if ((token.prefix == prefix_type::LONG ||
-             token.prefix == prefix_type::NONE) &&
+        if ((token.prefix == prefix_type::LONG) &&
             (token.name == T::long_name())) {
             return true;
         }
@@ -40,24 +38,35 @@ bool default_match(const token_type& token)
             return true;
         }
     }
+    if constexpr (traits::has_none_name_method_v<T>) {
+        if ((token.prefix == prefix_type::NONE) &&
+            (token.name == T::none_name())) {
+            return true;
+        }
+    }
 
     return false;
 }
 
-/** Returns the token_type of @a Node, the long form name is preferred.
+/** Returns the token_type of @a Node, the long form name is preferred if
+ * @a Node has both short and long form names.
  *
- * @note If @a Node does not have a long or short name, it is a compliation
- * failure
+ * @note If @a Node does not have a display, none, long, or short name; it is a
+ * compliation failure
  * @tparam Node Node type
  * @return token_type
  */
 template <typename Node>
-token_type node_token_type()
+constexpr token_type node_token_type()
 {
-    if constexpr (traits::has_long_name_method_v<Node>) {
+    if constexpr (traits::has_display_name_method_v<Node>) {
+        return {prefix_type::NONE, Node::display_name()};
+    } else if constexpr (traits::has_long_name_method_v<Node>) {
         return {prefix_type::LONG, Node::long_name()};
     } else if constexpr (traits::has_short_name_method_v<Node>) {
         return {prefix_type::SHORT, Node::short_name()};
+    } else if constexpr (traits::has_none_name_method_v<Node>) {
+        return {prefix_type::NONE, Node::none_name()};
     } else {
         static_assert(traits::always_false_v<Node>,
                       "Node does not have a name");

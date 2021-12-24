@@ -20,22 +20,31 @@ namespace utility
 template <char... Cs>
 class compile_time_string
 {
-    constexpr static auto sv_ = std::array<char, sizeof...(Cs)>{Cs...};
-
 public:
+    /** Array of characters as a type. */
+    using array_type = std::tuple<traits::integral_constant<Cs>...>;
+
     /** Returns the string data as a view.
      *
      * @return View of the string data
      */
     constexpr static std::string_view get() { return {sv_.data(), sv_.size()}; }
+
+private:
+    constexpr static auto sv_ = std::array<char, sizeof...(Cs)>{Cs...};
 };
 
 namespace cts_detail
 {
 template <int N>
-constexpr char get(const char (&str)[N], int i)
+constexpr char get(const char (&str)[N], std::size_t i)
 {
     return i < N ? str[i] : '\0';
+}
+
+constexpr char get(std::string_view str, std::size_t i)
+{
+    return i < str.size() ? str[i] : '\0';
 }
 
 // Required so that the extra nulls S_ adds can be removed before defining the

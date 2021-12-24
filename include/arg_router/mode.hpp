@@ -9,7 +9,7 @@ namespace arg_router
 {
 /** Allows the grouping of nodes to define operational modes for a program.
  *
- * If no long name policy is provided, then the node is regarded as 'anonymous',
+ * If no none name policy is provided, then the node is regarded as 'anonymous',
  * and there can only be one in the parse tree.  Conversely, if any mode is
  * named, then there can only be named modes in the parse tree.
  * 
@@ -17,14 +17,18 @@ namespace arg_router
  * @tparam Params Policies and child node types for the mode
  */
 template <typename... Params>
-class mode_t : public policy::no_result_value, public tree_node<Params...>
+class mode_t : public tree_node<policy::no_result_value<>, Params...>
 {
-    using parent_type = tree_node<Params...>;
+    using parent_type = tree_node<policy::no_result_value<>, Params...>;
 
     static_assert((std::tuple_size_v<typename mode_t::children_type> > 0),
                   "Mode must have at least one child node");
+    static_assert(!traits::has_long_name_method_v<mode_t>,
+                  "Mode must not have a long name policy");
     static_assert(!traits::has_short_name_method_v<mode_t>,
                   "Mode must not have a short name policy");
+    static_assert(!traits::has_display_name_method_v<mode_t>,
+                  "Mode must not have a display name policy");
 
     struct skip_tag {
     };
@@ -69,15 +73,14 @@ public:
 
     /** True if this mode is anonymous. */
     constexpr static bool is_anonymous =
-        !traits::has_long_name_method_v<mode_t> &&
-        !traits::has_short_name_method_v<mode_t>;
+        !traits::has_none_name_method_v<mode_t>;
 
     /** Constructor.
      *
      * @param params Policy and child instances
      */
     constexpr explicit mode_t(Params... params) :
-        parent_type{std::move(params)...}
+        parent_type{policy::no_result_value<>{}, std::move(params)...}
     {
     }
 
