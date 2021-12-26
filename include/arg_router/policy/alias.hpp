@@ -49,9 +49,9 @@ private:
         template <typename Child>
         using get_policies = typename Child::policies_type;
 
-        // The gist of this horror is that collect all the policies from all the
-        // child nodes into a single tuple and then count how many times Alias
-        // appears in it
+        // The gist of this horror is that we collect all the policies from all
+        // the child nodes into a single tuple and then count how many times
+        // Alias appears in it
         template <typename Alias>
         struct one_matching_policy {
             constexpr static bool value =
@@ -96,6 +96,30 @@ private:
                                  boost::mp11::_1>>::value;
     };
 
+    // Detect cyclic dependencies.  Actually we don't do that, we just ban
+    // aliases pointing to another aliased node, it's blunt but fine for the
+    // meantime
+    template <typename ModeType>
+    struct no_alias_to_alias {
+        template <typename Child>
+        struct checker {
+            // If the child has an alias that matches, check the child doesn't
+            // also have an alias policy
+            constexpr static bool value =
+                boost::mp11::mp_any_of_q<
+                    typename Child::policies_type,
+                    boost::mp11::mp_bind<boost::mp11::mp_contains,
+                                         aliased_policies_type,
+                                         boost::mp11::_1>>::value &&
+                algorithm::has_specialisation_v<alias_t,
+                                                typename Child::policies_type>;
+        };
+
+        constexpr static bool value =
+            boost::mp11::mp_none_of<typename ModeType::children_type,
+                                    checker>::value;
+    };
+
     template <typename ModeType>
     constexpr static auto create_aliased_node_indices()
     {
@@ -103,6 +127,8 @@ private:
 
         static_assert(pre_pass_check<ModeType>::value,
                       "There must one matching node per alias entry");
+        static_assert(no_alias_to_alias<ModeType>::value,
+                      "An aliased node cannot be an alias too");
 
         // Zip together an index-sequence of ModeType's children and the
         // elements of it
