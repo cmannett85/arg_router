@@ -6,6 +6,7 @@
 #include "arg_router/policy/no_result_value.hpp"
 #include "arg_router/policy/policy.hpp"
 #include "arg_router/utility/span.hpp"
+#include "arg_router/utility/tree_recursor.hpp"
 #include "arg_router/utility/tuple_iterator.hpp"
 
 #include <boost/core/ignore_unused.hpp>
@@ -64,26 +65,8 @@ protected:
     {
         boost::ignore_unused(parents...);
 
-        static_assert(sizeof...(Parents) >= 2,
-                      "Alias requires at least 2 parents");
-
+        // Check the owning node
         using node_type = boost::mp11::mp_first<std::tuple<Parents...>>;
-        using mode_type = boost::mp11::mp_second<std::tuple<Parents...>>;
-        using aliased_indices =
-            decltype(create_aliased_node_indices<mode_type>());
-
-        // Check that the alias names do not appear in the owning node (i.e.
-        // no self-references)
-        {
-            using owner_policies = typename node_type::policies_type;
-
-            using policy_intersection =
-                boost::mp11::mp_set_intersection<aliased_policies_type,
-                                                 owner_policies>;
-            static_assert(std::tuple_size_v<policy_intersection> == 0,
-                          "Alias names cannot appear in owner");
-        }
-
         static_assert(traits::has_minimum_count_method_v<node_type> &&
                           traits::has_maximum_count_method_v<node_type>,
                       "Node requires a count(), or minimum_count() and "
@@ -92,19 +75,24 @@ protected:
                       "Node requires minimum_count() and maximum_count() "
                       "to return the same value to use an alias");
 
+        // Find the owning mode
+        using mode_type = typename nearest_mode<Parents...>::type;
+        static_assert(!std::is_void_v<mode_type>, "Cannot find parent mode");
+
+        // Find all the aliased targets
+        using targets =
+            typename alias_targets<aliased_policies_type, mode_type>::type;
+        static_assert(cyclic_dependency_checker<targets, mode_type>::value,
+                      "Cyclic dependency detected");
+
         auto new_tokens = parsing::token_list{};
         if constexpr (node_type::minimum_count() == 0) {
-            new_tokens.reserve(std::tuple_size_v<aliased_indices>);
+            new_tokens.reserve(std::tuple_size_v<targets>);
 
-            utility::tuple_iterator(
-                [&](auto /*i*/, auto index) {
-                    using alias_node_type =
-                        std::tuple_element_t<index,
-                                             typename mode_type::children_type>;
-                    new_tokens.add_pending(
-                        parsing::node_token_type<alias_node_type>());
-                },
-                aliased_indices{});
+            utility::tuple_type_iterator<targets>([&](auto i) {
+                using target_type = std::tuple_element_t<i, targets>;
+                new_tokens.add_pending(parsing::node_token_type<target_type>());
+            });
         } else {
             // The first token is the argument name, so skip that
             if (node_type::minimum_count() > view.size()) {
@@ -114,20 +102,16 @@ protected:
                     parsing::node_token_type<node_type>()};
             }
 
-            new_tokens.reserve(std::tuple_size_v<aliased_indices> *
+            new_tokens.reserve(std::tuple_size_v<targets> *
                                node_type::minimum_count());
-            utility::tuple_iterator(
-                [&](auto /*i*/, auto index) {
-                    using alias_node_type =
-                        std::tuple_element_t<index,
-                                             typename mode_type::children_type>;
-                    new_tokens.add_pending(
-                        parsing::node_token_type<alias_node_type>());
-                    for (auto i = 0u; i < node_type::minimum_count(); ++i) {
-                        new_tokens.add_pending(view[i]);
-                    }
-                },
-                aliased_indices{});
+            utility::tuple_type_iterator<targets>([&](auto i) {
+                using target_type = std::tuple_element_t<i, targets>;
+                new_tokens.add_pending(parsing::node_token_type<target_type>());
+
+                for (auto i = 0u; i < node_type::minimum_count(); ++i) {
+                    new_tokens.add_pending(view[i]);
+                }
+            });
         }
 
         tokens.insert_pending(
@@ -154,109 +138,101 @@ private:
         boost::mp11::mp_all_of<aliased_policies_type, policy_checker>::value,
         "All parameters must provide a long and/or short form name");
 
-    template <typename ModeType>
-    struct pre_pass_check {
-        template <typename Child>
-        using get_policies = typename Child::policies_type;
+    // Find the nearest parent with a routing policy
+    template <typename... Parents>
+    struct nearest_mode {
+        // By definition the aliased cannot be the owner, so filter that out
+        using parent_tuple = boost::mp11::mp_pop_front<std::tuple<Parents...>>;
 
-        // The gist of this horror is that we collect all the policies from all
-        // the child nodes into a single tuple and then count how many times
-        // Alias appears in it
-        template <typename Alias>
-        struct one_matching_policy {
+        template <typename Parent>
+        struct policy_finder {
             constexpr static bool value =
-                boost::mp11::mp_count<        //
-                    boost::mp11::mp_flatten<  //
-                        boost::mp11::mp_transform_q<
-                            boost::mp11::mp_bind<get_policies, boost::mp11::_1>,
-                            typename ModeType::children_type>>,
-                    Alias>::value == 1;
+                boost::mp11::mp_find_if_q<
+                    typename Parent::policies_type,
+                    boost::mp11::mp_bind<policy::has_routing_phase_method,
+                                         boost::mp11::_1>>::value !=
+                std::tuple_size_v<typename Parent::policies_type>;
         };
 
-        // Almost does the inverse of above.  It creates a tuple of how many
-        // times an alias appears in a child's policy list, it then checks that
-        // this count never exceeds one
-        template <typename Child>
-        struct one_or_zero_matching_child {
-            constexpr static bool value =
-                boost::mp11::mp_count<
-                    boost::mp11::mp_transform_q<
-                        boost::mp11::mp_bind<boost::mp11::mp_contains,
-                                             typename Child::policies_type,
-                                             boost::mp11::_1>,
-                        aliased_policies_type>,
-                    std::true_type>::value <= 1;
+        using parent_index =
+            boost::mp11::mp_find_if<parent_tuple, policy_finder>;
+
+        using type =
+            boost::mp11::mp_eval_if_c<parent_index::value ==
+                                          std::tuple_size_v<parent_tuple>,
+                                      void,
+                                      boost::mp11::mp_at,
+                                      parent_tuple,
+                                      parent_index>;
+    };
+
+    // Starting from ModeType, recurse down through the tree and find all the
+    // nodes referred to in AliasPolicies
+    template <typename AliasPoliciesTuple, typename ModeType>
+    struct alias_targets {
+        template <typename Current, typename... Parents>
+        struct visitor {
+            // If current is one of the AliasedPolicies and Parents is not
+            // empty, then use the first element of Parents (i.e. the owning
+            // node of the name policy).  If not, then set to void
+            using type = boost::mp11::mp_eval_if_c<
+                !(boost::mp11::mp_contains<AliasPoliciesTuple,
+                                           Current>::value &&
+                  (sizeof...(Parents) > 0)),
+                void,
+                boost::mp11::mp_at,
+                std::tuple<Parents...>,
+                traits::integral_constant<std::size_t{0}>>;
         };
 
-        constexpr static bool value =
-            boost::mp11::mp_all_of<aliased_policies_type,
-                                   one_matching_policy>::value &&
-            boost::mp11::mp_all_of<typename ModeType::children_type,
-                                   one_or_zero_matching_child>::value;
+        using type = boost::mp11::mp_remove_if<
+            utility::tree_type_recursor_t<visitor, ModeType>,
+            std::is_void>;
+
+        static_assert(std::tuple_size_v<type> ==
+                          std::tuple_size_v<AliasPoliciesTuple>,
+                      "Number of found modes must match alias policy count");
+        static_assert(
+            std::tuple_size_v<boost::mp11::mp_unique<type>> ==
+                std::tuple_size_v<type>,
+            "Node alias list must be unique, do you have short and long "
+            "names from the same node?");
     };
 
-    // You could do this a single inline mp11 expression, but it would be
-    // unreadable...
-    template <typename Child>
-    struct child_match {
-        constexpr static bool value = boost::mp11::mp_any_of_q<
-            aliased_policies_type,
-            boost::mp11::mp_bind<boost::mp11::mp_contains,
-                                 typename Child::policies_type,
-                                 boost::mp11::_1>>::value;
+    template <typename AliasNodesTuple, typename ModeType>
+    struct cyclic_dependency_checker {
+        // For each alias, find all of its alias, stop when there are no
+        // more or if you hit this policy - static_assert
+        template <std::size_t I, typename Nodes>
+        constexpr static bool check()
+        {
+            if constexpr (I >= std::tuple_size_v<Nodes>) {
+                return true;
+            } else {
+                using aliased_type = std::tuple_element_t<I, Nodes>;
+                if constexpr (algorithm::has_specialisation_v<
+                                  alias_t,
+                                  typename aliased_type::policies_type>) {
+                    if constexpr (boost::mp11::mp_contains<
+                                      typename aliased_type::policies_type,
+                                      alias_t>::value) {
+                        return false;
+                    } else {
+                        using targets = typename alias_targets<
+                            typename aliased_type::aliased_policies_type,
+                            ModeType>::type;
+
+                        return check<I + 1,
+                                     boost::mp11::mp_append<Nodes, targets>>();
+                    }
+                }
+
+                return check<I + 1, Nodes>();
+            }
+        }
+
+        constexpr static bool value = check<0, AliasNodesTuple>();
     };
-
-    // Detect cyclic dependencies.  Actually we don't do that, we just ban
-    // aliases pointing to another aliased node, it's blunt but fine for the
-    // meantime
-    template <typename ModeType>
-    struct no_alias_to_alias {
-        template <typename Child>
-        struct checker {
-            // If the child has an alias that matches, check the child doesn't
-            // also have an alias policy
-            constexpr static bool value =
-                boost::mp11::mp_any_of_q<
-                    typename Child::policies_type,
-                    boost::mp11::mp_bind<boost::mp11::mp_contains,
-                                         aliased_policies_type,
-                                         boost::mp11::_1>>::value &&
-                algorithm::has_specialisation_v<alias_t,
-                                                typename Child::policies_type>;
-        };
-
-        constexpr static bool value =
-            boost::mp11::mp_none_of<typename ModeType::children_type,
-                                    checker>::value;
-    };
-
-    template <typename ModeType>
-    constexpr static auto create_aliased_node_indices()
-    {
-        using children_type = typename ModeType::children_type;
-
-        static_assert(pre_pass_check<ModeType>::value,
-                      "There must one matching node per alias entry");
-        static_assert(no_alias_to_alias<ModeType>::value,
-                      "An aliased node cannot be an alias too");
-
-        // Zip together an index-sequence of ModeType's children and the
-        // elements of it
-        using zipped = algorithm::zip_t<
-            boost::mp11::mp_iota_c<std::tuple_size_v<children_type>>,
-            children_type>;
-
-        // Filter out the elements that have a long or short name that match
-        // our alias
-        using filtered = boost::mp11::mp_filter<
-            boost::mp11::mp_bind<
-                child_match,
-                boost::mp11::mp_bind<boost::mp11::mp_second,
-                                     boost::mp11::_1>>::template fn,
-            zipped>;
-
-        return typename algorithm::unzip<filtered>::first_type{};
-    }
 };
 
 /** Constructs a alias_t with the given policies.

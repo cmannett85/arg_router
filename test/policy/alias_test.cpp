@@ -2,6 +2,7 @@
 #include "arg_router/flag.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/router.hpp"
 #include "arg_router/policy/short_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
@@ -17,6 +18,8 @@ template <typename... Policies>
 class stub_node : public tree_node<Policies...>
 {
 public:
+    using value_type = bool;
+
     constexpr explicit stub_node(Policies... policies) :
         tree_node<Policies...>{std::move(policies)...}
     {
@@ -47,6 +50,38 @@ public:
         return hit;
     }
 };
+
+template <std::size_t I, std::size_t... Is, typename T>
+const auto& get_node(const T& parent)
+{
+    const auto& child = std::get<I>(parent.children());
+
+    if constexpr (sizeof...(Is) > 0) {
+        return get_node<Is...>(child);
+    } else {
+        return child;
+    }
+}
+
+template <std::size_t I, std::size_t... Is, typename T>
+auto get_parents(const T& parent)
+{
+    auto result = std::tuple{std::ref(get_node<I, Is...>(parent))};
+
+    if constexpr (sizeof...(Is) > 0) {
+        // All this because you can't resize a tuple in std...
+        using index_tuple = boost::mp11::mp_pop_back<
+            std::tuple<traits::integral_constant<I>,
+                       traits::integral_constant<Is>...>>;
+        return std::apply(
+            [&](auto... NewIs) {
+                return std::tuple_cat(result, get_parents<NewIs...>(parent));
+            },
+            index_tuple{});
+    } else {
+        return result;
+    }
+}
 }  // namespace
 
 BOOST_AUTO_TEST_SUITE(policy_suite)
@@ -68,38 +103,64 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                             policy::count<0>,
                             policy::alias(policy::long_name<S_("flag2")>)},
                   stub_node{policy::long_name<S_("flag2")>},
-                  stub_node{policy::long_name<S_("flag3")>}},
+                  stub_node{policy::long_name<S_("flag3")>},
+                  policy::router{[](bool, bool, bool) {}}},
         stub_node{policy::long_name<S_("test2")>,
                   stub_node{policy::long_name<S_("arg1")>,
                             policy::count<1>,
                             policy::alias(policy::long_name<S_("arg3")>)},
                   stub_node{policy::long_name<S_("arg2")>},
-                  stub_node{policy::long_name<S_("arg3")>}},
+                  stub_node{policy::long_name<S_("arg3")>},
+                  policy::router{[](bool, bool, bool) {}}},
         stub_node{policy::long_name<S_("test3")>,
                   stub_node{policy::long_name<S_("flag1")>,
                             policy::count<0>,
                             policy::alias(policy::long_name<S_("flag2")>,
                                           policy::long_name<S_("flag3")>)},
                   stub_node{policy::long_name<S_("flag2")>},
-                  stub_node{policy::long_name<S_("flag3")>}},
+                  stub_node{policy::long_name<S_("flag3")>},
+                  policy::router{[](bool, bool, bool) {}}},
         stub_node{policy::long_name<S_("test4")>,
                   stub_node{policy::long_name<S_("arg1")>,
                             policy::count<3>,
                             policy::alias(policy::long_name<S_("arg2")>,
                                           policy::long_name<S_("arg3")>)},
                   stub_node{policy::long_name<S_("arg2")>},
-                  stub_node{policy::long_name<S_("arg3")>}}};
+                  stub_node{policy::long_name<S_("arg3")>},
+                  policy::router{[](bool, bool, bool) {}}},
+        stub_node{
+            policy::long_name<S_("test5")>,
+            stub_node{policy::long_name<S_("one_of")>,
+                      stub_node{policy::long_name<S_("flag1")>,
+                                policy::count<0>,
+                                policy::alias(policy::long_name<S_("flag2")>)},
+                      stub_node{policy::long_name<S_("flag2")>}},
+            stub_node{policy::long_name<S_("flag3")>},
+            policy::router{[](bool, bool) {}}},
+        stub_node{
+            policy::long_name<S_("test6")>,
+            stub_node{policy::long_name<S_("one_of")>,
+                      stub_node{policy::long_name<S_("flag1")>,
+                                policy::count<0>,
+                                policy::alias(policy::long_name<S_("flag3")>)},
+                      stub_node{policy::long_name<S_("flag2")>}},
+            stub_node{policy::long_name<S_("flag3")>},
+            policy::router{[](bool, bool) {}}}};
 
-    auto f = [&](auto input_tokens,
-                 const auto& owner,
-                 const auto& test,
+    auto f = [&](auto tokens,
+                 const auto parents_tuple,
                  auto expected_result,
                  auto expected_tokens) {
-        auto view = input_tokens.pending_view();
-        const auto result =
-            owner.pre_parse_phase(input_tokens, view, owner, test, root);
+        auto view = tokens.pending_view();
+        const auto result = std::apply(
+            [&](auto&&... parents) {
+                return std::get<0>(parents_tuple)
+                    .get()
+                    .pre_parse_phase(tokens, view, (parents.get())..., root);
+            },
+            parents_tuple);
         BOOST_CHECK_EQUAL(result, expected_result);
-        BOOST_CHECK_EQUAL(input_tokens, expected_tokens);
+        BOOST_CHECK_EQUAL(tokens, expected_tokens);
     };
 
     test::data_set(
@@ -107,34 +168,32 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
         std::tuple{
             std::tuple{
                 parsing::token_list{},
-                std::get<0>(std::get<0>(root.children()).children()),
-                std::get<0>(root.children()),
+                get_parents<0, 0>(root),
                 true,
                 parsing::token_list{{parsing::prefix_type::LONG, "flag2"}}},
-            std::tuple{parsing::token_list{},
-                       std::get<1>(std::get<0>(root.children()).children()),
-                       std::get<0>(root.children()),
+            std::tuple{//
+                       parsing::token_list{},
+                       get_parents<0, 1>(root),
                        false,
                        parsing::token_list{}},
-            std::tuple{parsing::token_list{{parsing::prefix_type::NONE, "42"}},
-                       std::get<0>(std::get<1>(root.children()).children()),
-                       std::get<1>(root.children()),
+            std::tuple{//
+                       parsing::token_list{{parsing::prefix_type::NONE, "42"}},
+                       get_parents<1, 0>(root),
                        true,
                        parsing::token_list{{parsing::prefix_type::NONE, "42"},
                                            {parsing::prefix_type::LONG, "arg3"},
                                            {parsing::prefix_type::NONE, "42"}}},
             std::tuple{
                 parsing::token_list{},
-                std::get<0>(std::get<2>(root.children()).children()),
-                std::get<2>(root.children()),
+                get_parents<2, 0>(root),
                 true,
                 parsing::token_list{{parsing::prefix_type::LONG, "flag2"},
                                     {parsing::prefix_type::LONG, "flag3"}}},
-            std::tuple{parsing::token_list{{parsing::prefix_type::NONE, "1"},
+            std::tuple{//
+                       parsing::token_list{{parsing::prefix_type::NONE, "1"},
                                            {parsing::prefix_type::NONE, "2"},
                                            {parsing::prefix_type::NONE, "3"}},
-                       std::get<0>(std::get<3>(root.children()).children()),
-                       std::get<3>(root.children()),
+                       get_parents<3, 0>(root),
                        true,
                        parsing::token_list{{parsing::prefix_type::NONE, "1"},
                                            {parsing::prefix_type::NONE, "2"},
@@ -147,7 +206,18 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                                            {parsing::prefix_type::NONE, "1"},
                                            {parsing::prefix_type::NONE, "2"},
                                            {parsing::prefix_type::NONE, "3"}}},
-        });
+            std::tuple{
+                //
+                parsing::token_list{},
+                get_parents<4, 0, 0>(root),
+                true,
+                parsing::token_list{{parsing::prefix_type::LONG, "flag2"}}},
+            std::tuple{
+                //
+                parsing::token_list{},
+                get_parents<5, 0, 0>(root),
+                true,
+                parsing::token_list{{parsing::prefix_type::LONG, "flag3"}}}});
 }
 
 BOOST_AUTO_TEST_CASE(pre_parse_phase_too_small_view_test)
@@ -158,7 +228,8 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_too_small_view_test)
                             policy::count<2>,
                             policy::alias(policy::long_name<S_("arg2")>)},
                   stub_node{policy::long_name<S_("arg2")>},
-                  stub_node{policy::long_name<S_("arg3")>}};
+                  stub_node{policy::long_name<S_("arg3")>},
+                  policy::router{[](bool, bool, bool) {}}};
 
     auto tokens = parsing::token_list{{parsing::prefix_type::NONE, "42"}};
     auto view = tokens.pending_view();
@@ -225,58 +296,6 @@ int main() {
 }
     )",
         "All parameters must provide a long and/or short form name");
-}
-
-BOOST_AUTO_TEST_CASE(pre_parse_phase_0_parent_test)
-{
-    test::death_test_compile(
-        R"(
-#include "arg_router/policy/alias.hpp"
-#include "arg_router/policy/count.hpp"
-#include "arg_router/policy/long_name.hpp"
-#include "arg_router/tree_node.hpp"
-#include "arg_router/utility/compile_time_string.hpp"
-
-using namespace arg_router;
-namespace
-{
-template <typename... Policies>
-class stub_node : public tree_node<Policies...>
-{
-public:
-    constexpr explicit stub_node(Policies... policies) :
-        tree_node<Policies...>{std::move(policies)...}
-    {
-    }
-
-    template <typename... Parents>
-    void pre_parse_phase(parsing::token_list& tokens,
-                         utility::span<const parsing::token_type>& view,
-                         const Parents&... parents) const
-    {
-        using this_policy =
-            std::tuple_element_t<2, typename stub_node::policies_type>;
-        this->this_policy::pre_parse_phase(tokens, view, parents...);
-    }
-};
-}  // namespace
-
-int main() {
-    auto node = stub_node{policy::long_name<S_("node")>,
-                  stub_node{policy::long_name<S_("flag1")>,
-                            policy::count<0>,
-                            policy::alias(policy::long_name<S_("flag2")>)},
-                  stub_node{policy::long_name<S_("flag2")>},
-                  stub_node{policy::long_name<S_("flag3")>}};
-    auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "flag1"}};
-    auto view = tokens.pending_view();
-    const auto& owner = std::get<0>(node.children());
-    
-    owner.pre_parse_phase(tokens, view);
-    return 0;
-}
-    )",
-        "Alias requires at least 2 parents");
 }
 
 BOOST_AUTO_TEST_CASE(pre_parse_phase_needs_counts_test)
@@ -385,23 +404,24 @@ int main() {
         "value to use an alias");
 }
 
-BOOST_AUTO_TEST_CASE(single_aliased_must_not_be_in_owner_test)
+BOOST_AUTO_TEST_CASE(cannot_find_parent_node_empty_test)
 {
     test::death_test_compile(
         R"(
 #include "arg_router/policy/alias.hpp"
-#include "arg_router/policy/count.hpp"
 #include "arg_router/policy/long_name.hpp"
-#include "arg_router/tree_node.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+
 namespace
 {
 template <typename... Policies>
 class stub_node : public tree_node<Policies...>
 {
 public:
+    using value_type = bool;
+
     constexpr explicit stub_node(Policies... policies) :
         tree_node<Policies...>{std::move(policies)...}
     {
@@ -413,45 +433,43 @@ public:
                          const Parents&... parents) const
     {
         using this_policy =
-            std::tuple_element_t<2, typename stub_node::policies_type>;
-        this->this_policy::pre_parse_phase(tokens, view, parents...);
+            std::tuple_element_t<0, typename stub_node::policies_type>;
+        this->this_policy::pre_parse_phase(tokens, view, *this, parents...);
     }
 };
 }  // namespace
 
 int main() {
-    auto node = stub_node{policy::long_name<S_("node")>,
-                  stub_node{policy::long_name<S_("flag1")>,
-                            policy::count<1>,
-                            policy::alias(policy::long_name<S_("flag1")>)}};
-    auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "flag1"}};
+    const auto root = stub_node{policy::alias(policy::long_name<S_("flag2")>)};
+
+    auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "flag2"},
+                                      {parsing::prefix_type::LONG, "flag3"}};
     auto view = tokens.pending_view();
-    const auto& owner = std::get<0>(node.children());
-    
-    owner.pre_parse_phase(tokens, view, owner, node);
+    root.pre_parse_phase(tokens, view);
     return 0;
 }
     )",
-        "Alias names cannot appear in owner");
+        "Cannot find parent mode");
 }
 
-BOOST_AUTO_TEST_CASE(multiple_aliased_must_not_be_in_owner_test)
+BOOST_AUTO_TEST_CASE(cannot_find_parent_node_missing_test)
 {
     test::death_test_compile(
         R"(
 #include "arg_router/policy/alias.hpp"
-#include "arg_router/policy/count.hpp"
 #include "arg_router/policy/long_name.hpp"
-#include "arg_router/tree_node.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+
 namespace
 {
 template <typename... Policies>
 class stub_node : public tree_node<Policies...>
 {
 public:
+    using value_type = bool;
+
     constexpr explicit stub_node(Policies... policies) :
         tree_node<Policies...>{std::move(policies)...}
     {
@@ -463,134 +481,30 @@ public:
                          const Parents&... parents) const
     {
         using this_policy =
-            std::tuple_element_t<2, typename stub_node::policies_type>;
-        this->this_policy::pre_parse_phase(tokens, view, parents...);
+            std::tuple_element_t<1, typename stub_node::policies_type>;
+        this->this_policy::pre_parse_phase(tokens, view, *this, parents...);
     }
 };
 }  // namespace
 
 int main() {
-    auto node = stub_node{policy::long_name<S_("node")>,
-                  stub_node{policy::long_name<S_("flag1")>,
-                            policy::count<1>,
-                            policy::alias(policy::long_name<S_("flag2")>,
-                                          policy::long_name<S_("flag1")>)}};
-    auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "flag1"}};
+    const auto root =
+        stub_node{policy::long_name<S_("mode")>,
+              stub_node{policy::long_name<S_("flag1")>,
+                        policy::alias(policy::long_name<S_("flag2")>)},
+              stub_node{policy::long_name<S_("flag2")>},
+              stub_node{policy::long_name<S_("flag3")>}};
+
+    auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "flag2"},
+                                      {parsing::prefix_type::LONG, "flag3"}};
     auto view = tokens.pending_view();
-    const auto& owner = std::get<0>(node.children());
-    
-    owner.pre_parse_phase(tokens, view, owner, node);
+    const auto& owner = std::get<0>(root.children());
+
+    owner.pre_parse_phase(tokens, view, root);
     return 0;
 }
     )",
-        "Alias names cannot appear in owner");
-}
-
-BOOST_AUTO_TEST_CASE(one_matching_node_per_alias_test)
-{
-    test::death_test_compile(
-        R"(
-#include "arg_router/policy/alias.hpp"
-#include "arg_router/policy/count.hpp"
-#include "arg_router/policy/long_name.hpp"
-#include "arg_router/tree_node.hpp"
-#include "arg_router/utility/compile_time_string.hpp"
-
-using namespace arg_router;
-namespace
-{
-template <typename... Policies>
-class stub_node : public tree_node<Policies...>
-{
-public:
-    constexpr explicit stub_node(Policies... policies) :
-        tree_node<Policies...>{std::move(policies)...}
-    {
-    }
-
-    template <typename... Parents>
-    void pre_parse_phase(parsing::token_list& tokens,
-                         utility::span<const parsing::token_type>& view,
-                         const Parents&... parents) const
-    {
-        using this_policy =
-            std::tuple_element_t<2, typename stub_node::policies_type>;
-        this->this_policy::pre_parse_phase(tokens, view, parents...);
-    }
-};
-}  // namespace
-
-int main() {
-    auto node = stub_node{policy::long_name<S_("node")>,
-                  stub_node{policy::long_name<S_("flag1")>,
-                            policy::count<0>,
-                            policy::alias(policy::long_name<S_("flag4")>)},
-                  stub_node{policy::long_name<S_("flag2")>},
-                  stub_node{policy::long_name<S_("flag3")>}};
-    auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "flag1"}};
-    auto view = tokens.pending_view();
-    const auto& owner = std::get<0>(node.children());
-    
-    owner.pre_parse_phase(tokens, view, owner, node);
-    return 0;
-}
-    )",
-        "There must one matching node per alias entry");
-}
-
-BOOST_AUTO_TEST_CASE(multiple_alias_matching_single_node_test)
-{
-    test::death_test_compile(
-        R"(
-#include "arg_router/policy/alias.hpp"
-#include "arg_router/policy/count.hpp"
-#include "arg_router/policy/long_name.hpp"
-#include "arg_router/policy/short_name.hpp"
-#include "arg_router/tree_node.hpp"
-#include "arg_router/utility/compile_time_string.hpp"
-
-using namespace arg_router;
-namespace
-{
-template <typename... Policies>
-class stub_node : public tree_node<Policies...>
-{
-public:
-    constexpr explicit stub_node(Policies... policies) :
-        tree_node<Policies...>{std::move(policies)...}
-    {
-    }
-
-    template <typename... Parents>
-    void pre_parse_phase(parsing::token_list& tokens,
-                         utility::span<const parsing::token_type>& view,
-                         const Parents&... parents) const
-    {
-        using this_policy =
-            std::tuple_element_t<2, typename stub_node::policies_type>;
-        this->this_policy::pre_parse_phase(tokens, view, parents...);
-    }
-};
-}  // namespace
-
-int main() {
-    auto node = stub_node{policy::long_name<S_("node")>,
-                  stub_node{policy::long_name<S_("flag1")>,
-                            policy::count<0>,
-                            policy::alias(policy::long_name<S_("flag3")>,
-                                          policy::short_name<'f'>)},
-                  stub_node{policy::long_name<S_("flag2")>},
-                  stub_node{policy::long_name<S_("flag3")>,
-                            policy::short_name<'f'>}};
-    auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "flag1"}};
-    auto view = tokens.pending_view();
-    const auto& owner = std::get<0>(node.children());
-    
-    owner.pre_parse_phase(tokens, view, owner, node);
-    return 0;
-}
-    )",
-        "There must one matching node per alias entry");
+        "Cannot find parent mode");
 }
 
 BOOST_AUTO_TEST_CASE(cyclic_dependency_test)
@@ -600,16 +514,19 @@ BOOST_AUTO_TEST_CASE(cyclic_dependency_test)
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/count.hpp"
 #include "arg_router/policy/long_name.hpp"
-#include "arg_router/tree_node.hpp"
+#include "arg_router/policy/router.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+
 namespace
 {
 template <typename... Policies>
 class stub_node : public tree_node<Policies...>
 {
 public:
+    using value_type = bool;
+
     constexpr explicit stub_node(Policies... policies) :
         tree_node<Policies...>{std::move(policies)...}
     {
@@ -621,30 +538,218 @@ public:
                          const Parents&... parents) const
     {
         using this_policy =
-            std::tuple_element_t<2, typename stub_node::policies_type>;
+            std::tuple_element_t<1, typename stub_node::policies_type>;
         this->this_policy::pre_parse_phase(tokens, view, *this, parents...);
     }
 };
 }  // namespace
 
 int main() {
-    auto node = stub_node{policy::long_name<S_("node")>,
+    const auto root =
+        stub_node{policy::long_name<S_("mode")>,
                   stub_node{policy::long_name<S_("flag1")>,
-                            policy::count<0>,
-                            policy::alias(policy::long_name<S_("flag3")>)},
-                  stub_node{policy::long_name<S_("flag2")>},
+                            policy::alias(policy::long_name<S_("flag2")>),
+                            policy::count<1>},
+                  stub_node{policy::long_name<S_("flag2")>,
+                            policy::alias(policy::long_name<S_("flag3")>),
+                            policy::count<1>},
                   stub_node{policy::long_name<S_("flag3")>,
-                            policy::count<0>,
-                            policy::alias(policy::long_name<S_("flag1")>)}};
-    auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "flag1"}};
+                            policy::alias(policy::long_name<S_("flag1")>),
+                            policy::count<1>},
+                  policy::router{[](bool, bool, bool) {}}};
+
+    auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "flag2"},
+                                      {parsing::prefix_type::LONG, "flag3"}};
     auto view = tokens.pending_view();
-    const auto& owner = std::get<0>(node.children());
-    
-    owner.pre_parse_phase(tokens, view, node);
+    const auto& owner = std::get<0>(root.children());
+
+    owner.pre_parse_phase(tokens, view, root);
     return 0;
 }
     )",
-        "An aliased node cannot be an alias too");
+        "Cyclic dependency detected");
+}
+
+BOOST_AUTO_TEST_CASE(missing_target_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/alias.hpp"
+#include "arg_router/policy/count.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/router.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+namespace
+{
+template <typename... Policies>
+class stub_node : public tree_node<Policies...>
+{
+public:
+    using value_type = bool;
+
+    constexpr explicit stub_node(Policies... policies) :
+        tree_node<Policies...>{std::move(policies)...}
+    {
+    }
+
+    template <typename... Parents>
+    void pre_parse_phase(parsing::token_list& tokens,
+                         utility::span<const parsing::token_type>& view,
+                         const Parents&... parents) const
+    {
+        using this_policy =
+            std::tuple_element_t<1, typename stub_node::policies_type>;
+        this->this_policy::pre_parse_phase(tokens, view, *this, parents...);
+    }
+};
+}  // namespace
+
+int main() {
+    const auto root =
+        stub_node{policy::long_name<S_("mode")>,
+                  stub_node{policy::long_name<S_("flag1")>,
+                            policy::alias(policy::long_name<S_("flag4")>),
+                            policy::count<1>},
+                  stub_node{policy::long_name<S_("flag2")>},
+                  stub_node{policy::long_name<S_("flag3")>},
+                  policy::router{[](bool, bool, bool) {}}};
+
+    auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "flag2"},
+                                      {parsing::prefix_type::LONG, "flag3"}};
+    auto view = tokens.pending_view();
+    const auto& owner = std::get<0>(root.children());
+
+    owner.pre_parse_phase(tokens, view, root);
+    return 0;
+}
+    )",
+        "Number of found modes must match alias policy count");
+}
+
+BOOST_AUTO_TEST_CASE(duplicate_targets_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/alias.hpp"
+#include "arg_router/policy/count.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/router.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+namespace
+{
+template <typename... Policies>
+class stub_node : public tree_node<Policies...>
+{
+public:
+    using value_type = bool;
+
+    constexpr explicit stub_node(Policies... policies) :
+        tree_node<Policies...>{std::move(policies)...}
+    {
+    }
+
+    template <typename... Parents>
+    void pre_parse_phase(parsing::token_list& tokens,
+                         utility::span<const parsing::token_type>& view,
+                         const Parents&... parents) const
+    {
+        using this_policy =
+            std::tuple_element_t<1, typename stub_node::policies_type>;
+        this->this_policy::pre_parse_phase(tokens, view, *this, parents...);
+    }
+};
+}  // namespace
+
+int main() {
+    const auto root =
+        stub_node{policy::long_name<S_("mode")>,
+                  stub_node{policy::long_name<S_("flag1")>,
+                            policy::alias(policy::long_name<S_("flag2")>,
+                                          policy::long_name<S_("flag2")>),
+                            policy::count<1>},
+                  stub_node{policy::long_name<S_("flag2")>},
+                  stub_node{policy::long_name<S_("flag3")>},
+                  policy::router{[](bool, bool, bool) {}}};
+
+    auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "flag2"},
+                                      {parsing::prefix_type::LONG, "flag3"}};
+    auto view = tokens.pending_view();
+    const auto& owner = std::get<0>(root.children());
+
+    owner.pre_parse_phase(tokens, view, root);
+    return 0;
+}
+    )",
+        "Number of found modes must match alias policy count");
+}
+
+BOOST_AUTO_TEST_CASE(duplicate_target_different_name_types_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/alias.hpp"
+#include "arg_router/policy/count.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/router.hpp"
+#include "arg_router/policy/short_name.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+namespace
+{
+template <typename... Policies>
+class stub_node : public tree_node<Policies...>
+{
+public:
+    using value_type = bool;
+
+    constexpr explicit stub_node(Policies... policies) :
+        tree_node<Policies...>{std::move(policies)...}
+    {
+    }
+
+    template <typename... Parents>
+    void pre_parse_phase(parsing::token_list& tokens,
+                         utility::span<const parsing::token_type>& view,
+                         const Parents&... parents) const
+    {
+        using this_policy =
+            std::tuple_element_t<1, typename stub_node::policies_type>;
+        this->this_policy::pre_parse_phase(tokens, view, *this, parents...);
+    }
+};
+}  // namespace
+
+int main() {
+    const auto root =
+        stub_node{policy::long_name<S_("mode")>,
+                  stub_node{policy::long_name<S_("flag1")>,
+                            policy::alias(policy::long_name<S_("flag2")>,
+                                          policy::short_name<'a'>),
+                            policy::count<1>},
+                  stub_node{policy::long_name<S_("flag2")>,
+                            policy::short_name<'a'>},
+                  stub_node{policy::long_name<S_("flag3")>},
+                  policy::router{[](bool, bool, bool) {}}};
+
+    auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "flag2"},
+                                      {parsing::prefix_type::LONG, "flag3"}};
+    auto view = tokens.pending_view();
+    const auto& owner = std::get<0>(root.children());
+
+    owner.pre_parse_phase(tokens, view, root);
+    return 0;
+}
+    )",
+        "Node alias list must be unique, do you have short and long names from "
+        "the same node?");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

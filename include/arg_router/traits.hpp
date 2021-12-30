@@ -61,6 +61,25 @@ using get_type = typename T::type;
 template <typename T>
 using get_value_type = typename T::value_type;
 
+/** Determine if a type has a <TT>value_type()</TT> typedef.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+struct has_value_type {
+    template <typename U>
+    using type = decltype(U::value_type);
+
+    constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
+};
+
+/** Helper variable for has_value_type.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+constexpr bool has_value_type_v = has_value_type<T>::value;
+
 /** Evaluates to true if @a T is a tuple-like type.
  *
  * A tuple-like type is one that is can be used with std::tuple_size (i.e.

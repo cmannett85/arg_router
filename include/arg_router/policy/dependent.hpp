@@ -98,7 +98,8 @@ private:
     // Find the nearest parent with a routing policy
     template <typename... Parents>
     struct nearest_mode {
-        using parent_tuple = std::tuple<Parents...>;
+        // By definition the dependent cannot be the owner, so filter that out
+        using parent_tuple = boost::mp11::mp_pop_front<std::tuple<Parents...>>;
 
         template <typename Parent>
         struct policy_finder {
@@ -106,8 +107,7 @@ private:
                 boost::mp11::mp_find_if_q<
                     typename Parent::policies_type,
                     boost::mp11::mp_bind<policy::has_routing_phase_method,
-                                         boost::mp11::_1,
-                                         typename Parent::value_type>>::value !=
+                                         boost::mp11::_1>>::value !=
                 std::tuple_size_v<typename Parent::policies_type>;
         };
 
