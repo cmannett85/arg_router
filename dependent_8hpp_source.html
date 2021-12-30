@@ -166,16 +166,16 @@ $(function() {
 <div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <span class="comment">// Find the nearest parent with a routing policy</span></div>
 <div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Parents&gt;</div>
 <div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <span class="keyword">struct </span>nearest_mode {</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        <span class="keyword">using</span> parent_tuple = std::tuple&lt;Parents...&gt;;</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160; </div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Parent&gt;</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        <span class="keyword">struct </span>policy_finder {</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;            constexpr <span class="keyword">static</span> <span class="keywordtype">bool</span> value =</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;                boost::mp11::mp_find_if_q&lt;</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;                    <span class="keyword">typename</span> Parent::policies_type,</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;                    boost::mp11::mp_bind&lt;policy::has_routing_phase_method,</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;                                         boost::mp11::_1,</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;                                         <span class="keyword">typename</span> Parent::value_type&gt;&gt;::value !=</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        <span class="comment">// By definition the dependent cannot be the owner, so filter that out</span></div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        <span class="keyword">using</span> parent_tuple = boost::mp11::mp_pop_front&lt;std::tuple&lt;Parents...&gt;&gt;;</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Parent&gt;</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;        <span class="keyword">struct </span>policy_finder {</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;            constexpr <span class="keyword">static</span> <span class="keywordtype">bool</span> value =</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;                boost::mp11::mp_find_if_q&lt;</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;                    <span class="keyword">typename</span> Parent::policies_type,</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;                    boost::mp11::mp_bind&lt;policy::has_routing_phase_method,</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;                                         boost::mp11::_1&gt;&gt;::value !=</div>
 <div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;                std::tuple_size_v&lt;typename Parent::policies_type&gt;;</div>
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        };</div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
@@ -274,7 +274,7 @@ $(function() {
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="anamespacearg__router_1_1policy_html_a5f46c2a3bf35eae6f75aa1c4ba280aa9"><div class="ttname"><a href="namespacearg__router_1_1policy.html#a5f46c2a3bf35eae6f75aa1c4ba280aa9">arg_router::policy::dependent</a></div><div class="ttdeci">constexpr dependent_t&lt; DependsPolicies... &gt; dependent(DependsPolicies... policies)</div><div class="ttdef"><b>Definition:</b> <a href="dependent_8hpp_source.html#l00203">dependent.hpp:203</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1algorithm_html_a8008c0e24fa3cd6f4764c29f2331ba5e"><div class="ttname"><a href="namespacearg__router_1_1algorithm.html#a8008c0e24fa3cd6f4764c29f2331ba5e">arg_router::algorithm::has_specialisation_v</a></div><div class="ttdeci">constexpr auto has_specialisation_v</div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00219">algorithm.hpp:219</a></div></div>
-<div class="ttc" id="anamespacearg__router_1_1traits_html_ab335cfad0ef1eeed3ad34d06694b0244"><div class="ttname"><a href="namespacearg__router_1_1traits.html#ab335cfad0ef1eeed3ad34d06694b0244">arg_router::traits::integral_constant</a></div><div class="ttdeci">std::integral_constant&lt; decltype(Value), Value &gt; integral_constant</div><div class="ttdef"><b>Definition:</b> <a href="traits_8hpp_source.html#l00168">traits.hpp:168</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1traits_html_ab335cfad0ef1eeed3ad34d06694b0244"><div class="ttname"><a href="namespacearg__router_1_1traits.html#ab335cfad0ef1eeed3ad34d06694b0244">arg_router::traits::integral_constant</a></div><div class="ttdeci">std::integral_constant&lt; decltype(Value), Value &gt; integral_constant</div><div class="ttdef"><b>Definition:</b> <a href="traits_8hpp_source.html#l00187">traits.hpp:187</a></div></div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00010">algorithm.hpp:10</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

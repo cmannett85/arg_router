@@ -24,5 +24,7 @@ var searchData=
   ['has_5fshort_5fname_5fmethod_5fv_85',['has_short_name_method_v',['../namespacearg__router_1_1traits.html#ac3cf6a0b54214d4792ef0569ac733f05',1,'arg_router::traits']]],
   ['has_5fspecialisation_86',['has_specialisation',['../structarg__router_1_1algorithm_1_1has__specialisation.html',1,'arg_router::algorithm']]],
   ['has_5fspecialisation_5fv_87',['has_specialisation_v',['../namespacearg__router_1_1algorithm.html#a8008c0e24fa3cd6f4764c29f2331ba5e',1,'arg_router::algorithm']]],
-  ['has_5fvalidation_5fphase_5fmethod_88',['has_validation_phase_method',['../structarg__router_1_1policy_1_1has__validation__phase__method.html',1,'arg_router::policy']]]
+  ['has_5fvalidation_5fphase_5fmethod_88',['has_validation_phase_method',['../structarg__router_1_1policy_1_1has__validation__phase__method.html',1,'arg_router::policy']]],
+  ['has_5fvalue_5ftype_89',['has_value_type',['../structarg__router_1_1traits_1_1has__value__type.html',1,'arg_router::traits']]],
+  ['has_5fvalue_5ftype_5fv_90',['has_value_type_v',['../namespacearg__router_1_1traits.html#a42a4e50022840dc72ea0b930e91b51e2',1,'arg_router::traits']]]
 ];
