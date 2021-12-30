@@ -123,7 +123,8 @@ BOOST_AUTO_TEST_CASE(parse_test)
                                             policy::short_name<'g'>)),
                      arg<int>(policy::long_name<S_("second")>,
                               policy::short_name<'h'>),
-                     arg<int>(policy::short_name<'g'>))},
+                     arg<int>(policy::short_name<'g'>),
+                     policy::router{[](int, int, int) {}})},
             std::tuple{arg<int>(policy::long_name<S_("test")>,
                                 policy::router{[&](int result) {
                                     BOOST_CHECK_EQUAL(result, 42);

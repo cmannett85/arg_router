@@ -102,7 +102,8 @@ BOOST_AUTO_TEST_CASE(parse_test)
                                  policy::alias(policy::short_name<'h'>,
                                                policy::short_name<'g'>)),
                             flag(policy::short_name<'h'>),
-                            flag(policy::short_name<'g'>))},
+                            flag(policy::short_name<'g'>),
+                            policy::router{[](bool, bool, bool) {}})},
             std::tuple{flag(policy::short_name<'a'>,  //
                             policy::router{[&](bool result) {
                                 BOOST_CHECK(result);
