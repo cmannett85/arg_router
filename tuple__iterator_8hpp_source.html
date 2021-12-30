@@ -81,35 +81,33 @@ $(function() {
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;{</div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">namespace </span>utility</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;{</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> F, <span class="keyword">typename</span> Tuple&gt;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;constexpr std::enable_if_t&lt;traits::is_tuple_like_v&lt;std::decay_t&lt;Tuple&gt;&gt;&gt;</div>
-<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1utility.html#a99e297c7383915d8754a23f4dcfa07b5">   38</a></span>&#160;<a class="code" href="namespacearg__router_1_1utility.html#a99e297c7383915d8754a23f4dcfa07b5">tuple_iterator</a>(F&amp;&amp; f, Tuple&amp;&amp; tuple)</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;{</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    constexpr <span class="keyword">auto</span> N = std::tuple_size_v&lt;std::decay_t&lt;Tuple&gt;&gt;;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    boost::mp11::mp_for_each&lt;boost::mp11::mp_iota_c&lt;N&gt;&gt;(</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        [&amp;](<span class="keyword">auto</span> i) { f(i, std::get&lt;i&gt;(tuple)); });</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;}</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> F, <span class="keyword">typename</span>... T&gt;</div>
-<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1utility.html#a64433e7afb6c09275a1fae77129d1218">   56</a></span>&#160;constexpr <span class="keywordtype">void</span> <a class="code" href="namespacearg__router_1_1utility.html#a99e297c7383915d8754a23f4dcfa07b5">tuple_iterator</a>(F&amp;&amp; f, T&amp;&amp;... pack)</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;{</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <a class="code" href="namespacearg__router_1_1utility.html#a99e297c7383915d8754a23f4dcfa07b5">tuple_iterator</a>(std::forward&lt;F&gt;(f), std::tuple{std::forward&lt;T&gt;(pack)...});</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;}</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Tuple, <span class="keyword">typename</span> F&gt;</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;constexpr std::enable_if_t&lt;traits::is_tuple_like_v&lt;std::decay_t&lt;Tuple&gt;&gt;&gt;</div>
-<div class="line"><a name="l00088"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1utility.html#ab6c88e88b99b207bf36631b8d191abfa">   88</a></span>&#160;<a class="code" href="namespacearg__router_1_1utility.html#ab6c88e88b99b207bf36631b8d191abfa">tuple_type_iterator</a>(F&amp;&amp; f)</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;{</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    constexpr <span class="keyword">auto</span> N = std::tuple_size_v&lt;std::decay_t&lt;Tuple&gt;&gt;;</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    boost::mp11::mp_for_each&lt;boost::mp11::mp_iota_c&lt;N&gt;&gt;([&amp;](<span class="keyword">auto</span> i) {</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        f(i, std::add_pointer_t&lt;std::tuple_element_t&lt;i, Tuple&gt;&gt;{<span class="keyword">nullptr</span>});</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    });</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;}</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;}  <span class="comment">// namespace utility</span></div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> F, <span class="keyword">typename</span> Tuple&gt;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;constexpr std::enable_if_t&lt;traits::is_tuple_like_v&lt;std::decay_t&lt;Tuple&gt;&gt;&gt;</div>
+<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1utility.html#a99e297c7383915d8754a23f4dcfa07b5">   32</a></span>&#160;<a class="code" href="namespacearg__router_1_1utility.html#a99e297c7383915d8754a23f4dcfa07b5">tuple_iterator</a>(F&amp;&amp; f, Tuple&amp;&amp; tuple)</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;{</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    constexpr <span class="keyword">auto</span> N = std::tuple_size_v&lt;std::decay_t&lt;Tuple&gt;&gt;;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    boost::mp11::mp_for_each&lt;boost::mp11::mp_iota_c&lt;N&gt;&gt;(</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        [&amp;](<span class="keyword">auto</span> i) { f(i, std::get&lt;i&gt;(tuple)); });</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;}</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> F, <span class="keyword">typename</span>... T&gt;</div>
+<div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1utility.html#a64433e7afb6c09275a1fae77129d1218">   50</a></span>&#160;constexpr <span class="keywordtype">void</span> <a class="code" href="namespacearg__router_1_1utility.html#a99e297c7383915d8754a23f4dcfa07b5">tuple_iterator</a>(F&amp;&amp; f, T&amp;&amp;... pack)</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;{</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <a class="code" href="namespacearg__router_1_1utility.html#a99e297c7383915d8754a23f4dcfa07b5">tuple_iterator</a>(std::forward&lt;F&gt;(f), std::tuple{std::forward&lt;T&gt;(pack)...});</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;}</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Tuple, <span class="keyword">typename</span> F&gt;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;constexpr std::enable_if_t&lt;traits::is_tuple_like_v&lt;std::decay_t&lt;Tuple&gt;&gt;&gt;</div>
+<div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1utility.html#ab6c88e88b99b207bf36631b8d191abfa">   76</a></span>&#160;<a class="code" href="namespacearg__router_1_1utility.html#ab6c88e88b99b207bf36631b8d191abfa">tuple_type_iterator</a>(F&amp;&amp; f)</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;{</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    constexpr <span class="keyword">auto</span> N = std::tuple_size_v&lt;std::decay_t&lt;Tuple&gt;&gt;;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    boost::mp11::mp_for_each&lt;boost::mp11::mp_iota_c&lt;N&gt;&gt;([&amp;](<span class="keyword">auto</span> i) { f(i); });</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;}</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;}  <span class="comment">// namespace utility</span></div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="anamespacearg__router_1_1utility_html_ab6c88e88b99b207bf36631b8d191abfa"><div class="ttname"><a href="namespacearg__router_1_1utility.html#ab6c88e88b99b207bf36631b8d191abfa">arg_router::utility::tuple_type_iterator</a></div><div class="ttdeci">constexpr std::enable_if_t&lt; traits::is_tuple_like_v&lt; std::decay_t&lt; Tuple &gt; &gt; &gt; tuple_type_iterator(F &amp;&amp;f)</div><div class="ttdef"><b>Definition:</b> <a href="tuple__iterator_8hpp_source.html#l00088">tuple_iterator.hpp:88</a></div></div>
-<div class="ttc" id="anamespacearg__router_1_1utility_html_a99e297c7383915d8754a23f4dcfa07b5"><div class="ttname"><a href="namespacearg__router_1_1utility.html#a99e297c7383915d8754a23f4dcfa07b5">arg_router::utility::tuple_iterator</a></div><div class="ttdeci">constexpr std::enable_if_t&lt; traits::is_tuple_like_v&lt; std::decay_t&lt; Tuple &gt; &gt; &gt; tuple_iterator(F &amp;&amp;f, Tuple &amp;&amp;tuple)</div><div class="ttdef"><b>Definition:</b> <a href="tuple__iterator_8hpp_source.html#l00038">tuple_iterator.hpp:38</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1utility_html_ab6c88e88b99b207bf36631b8d191abfa"><div class="ttname"><a href="namespacearg__router_1_1utility.html#ab6c88e88b99b207bf36631b8d191abfa">arg_router::utility::tuple_type_iterator</a></div><div class="ttdeci">constexpr std::enable_if_t&lt; traits::is_tuple_like_v&lt; std::decay_t&lt; Tuple &gt; &gt; &gt; tuple_type_iterator(F &amp;&amp;f)</div><div class="ttdef"><b>Definition:</b> <a href="tuple__iterator_8hpp_source.html#l00076">tuple_iterator.hpp:76</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1utility_html_a99e297c7383915d8754a23f4dcfa07b5"><div class="ttname"><a href="namespacearg__router_1_1utility.html#a99e297c7383915d8754a23f4dcfa07b5">arg_router::utility::tuple_iterator</a></div><div class="ttdeci">constexpr std::enable_if_t&lt; traits::is_tuple_like_v&lt; std::decay_t&lt; Tuple &gt; &gt; &gt; tuple_iterator(F &amp;&amp;f, Tuple &amp;&amp;tuple)</div><div class="ttdef"><b>Definition:</b> <a href="tuple__iterator_8hpp_source.html#l00032">tuple_iterator.hpp:32</a></div></div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00010">algorithm.hpp:10</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

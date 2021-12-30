@@ -140,6 +140,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a748ad71e24ec795116cb721146e22701"><td class="memTemplParams" colspan="2">template&lt;typename... AliasedPolicies&gt; </td></tr>
 <tr class="memitem:a748ad71e24ec795116cb721146e22701"><td class="memTemplItemLeft" align="right" valign="top">constexpr <a class="el" href="classarg__router_1_1policy_1_1alias__t.html">alias_t</a>&lt; AliasedPolicies... &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#a748ad71e24ec795116cb721146e22701">alias</a> (AliasedPolicies... policies)</td></tr>
 <tr class="separator:a748ad71e24ec795116cb721146e22701"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5f46c2a3bf35eae6f75aa1c4ba280aa9"><td class="memTemplParams" colspan="2">template&lt;typename... DependsPolicies&gt; </td></tr>
+<tr class="memitem:a5f46c2a3bf35eae6f75aa1c4ba280aa9"><td class="memTemplItemLeft" align="right" valign="top">constexpr dependent_t&lt; DependsPolicies... &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#a5f46c2a3bf35eae6f75aa1c4ba280aa9">dependent</a> (DependsPolicies... policies)</td></tr>
+<tr class="separator:a5f46c2a3bf35eae6f75aa1c4ba280aa9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
@@ -280,7 +283,51 @@ template&lt;typename... AliasedPolicies&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Alias instance </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="alias_8hpp_source.html#l00271">271</a> of file <a class="el" href="alias_8hpp_source.html">alias.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="alias_8hpp_source.html#l00270">270</a> of file <a class="el" href="alias_8hpp_source.html">alias.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a5f46c2a3bf35eae6f75aa1c4ba280aa9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5f46c2a3bf35eae6f75aa1c4ba280aa9">&#9670;&nbsp;</a></span>dependent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename... DependsPolicies&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr dependent_t&lt;DependsPolicies...&gt; arg_router::policy::dependent </td>
+          <td>(</td>
+          <td class="paramtype">DependsPolicies...&#160;</td>
+          <td class="paramname"><em>policies</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Constructs a dependent_t with the given policies.</p>
+<p>This is used for similarity with <a class="el" href="classarg__router_1_1arg__t.html">arg_t</a>. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">DependsPolicies</td><td>Pack of policies that define its behaviour </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">policies</td><td>Pack of policy instances </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Alias instance </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="dependent_8hpp_source.html#l00203">203</a> of file <a class="el" href="dependent_8hpp_source.html">dependent.hpp</a>.</p>
 
 </div>
 </div>

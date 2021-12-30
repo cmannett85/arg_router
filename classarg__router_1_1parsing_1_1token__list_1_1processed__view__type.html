@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>arg_router: arg_router::policy::validation::must_not_have_policy&lt; Policy &gt; Struct Template Reference</title>
+<title>arg_router: arg_router::parsing::token_list::processed_view_type Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -63,33 +63,25 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="namespacearg__router.html">arg_router</a></li><li class="navelem"><a class="el" href="namespacearg__router_1_1policy.html">policy</a></li><li class="navelem"><b>validation</b></li><li class="navelem"><a class="el" href="structarg__router_1_1policy_1_1validation_1_1must__not__have__policy.html">must_not_have_policy</a></li>  </ul>
+<li class="navelem"><a class="el" href="namespacearg__router.html">arg_router</a></li><li class="navelem"><a class="el" href="namespacearg__router_1_1parsing.html">parsing</a></li><li class="navelem"><a class="el" href="classarg__router_1_1parsing_1_1token__list.html">token_list</a></li><li class="navelem"><a class="el" href="classarg__router_1_1parsing_1_1token__list_1_1processed__view__type.html">processed_view_type</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
-  <div class="summary">
-<a href="structarg__router_1_1policy_1_1validation_1_1must__not__have__policy-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">arg_router::policy::validation::must_not_have_policy&lt; Policy &gt; Struct Template Reference</div>  </div>
+<div class="title">arg_router::parsing::token_list::processed_view_type Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="validator_8hpp_source.html">arg_router/policy/validator.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="token__type_8hpp_source.html">arg_router/token_type.hpp</a>&gt;</code></p>
+
+<p>Inherits pending_view_type.</p>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h3>template&lt;template&lt; typename... &gt; typename Policy&gt;<br />
-struct arg_router::policy::validation::must_not_have_policy&lt; Policy &gt;</h3>
+<div class="textblock"><p>View type for the processed tokens.</p>
+<p>We have identical functioning but different types of views so people can't pass a processed view iterator to the insert method. </p>
 
-<p>A rule condition that checks that <em>T's</em> policies do not contain <em>Policy</em>.</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">Policy</td><td>Despecialised policy to check for </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="definition">Definition at line <a class="el" href="validator_8hpp_source.html#l00348">348</a> of file <a class="el" href="validator_8hpp_source.html">validator.hpp</a>.</p>
-</div><hr/>The documentation for this struct was generated from the following file:<ul>
-<li>arg_router/policy/<a class="el" href="validator_8hpp_source.html">validator.hpp</a></li>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00100">100</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+</div><hr/>The documentation for this class was generated from the following file:<ul>
+<li>arg_router/<a class="el" href="token__type_8hpp_source.html">token_type.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

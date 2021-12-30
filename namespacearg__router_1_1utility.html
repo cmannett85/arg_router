@@ -86,19 +86,24 @@ Namespaces</h2></td></tr>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1utility_1_1compile__time__string.html">compile_time_string</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structarg__router_1_1utility_1_1tree__type__recursor.html">tree_type_recursor</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:ad352319d55d0f012d4c77a6bd851d6f5"><td class="memTemplParams" colspan="2">template&lt;typename T , auto Extent = nonstd::span_lite::dynamic_extent&gt; </td></tr>
 <tr class="memitem:ad352319d55d0f012d4c77a6bd851d6f5"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1utility.html#ad352319d55d0f012d4c77a6bd851d6f5">span</a> = nonstd::span_lite::span&lt; T, Extent &gt;</td></tr>
 <tr class="separator:ad352319d55d0f012d4c77a6bd851d6f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a577bf999e7250f595ec2e43571b0714f"><td class="memTemplParams" colspan="2">template&lt;template&lt; typename... &gt; typename Visitor, typename Root &gt; </td></tr>
+<tr class="memitem:a577bf999e7250f595ec2e43571b0714f"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1utility.html#a577bf999e7250f595ec2e43571b0714f">tree_type_recursor_t</a> = typename <a class="el" href="structarg__router_1_1utility_1_1tree__type__recursor.html">tree_type_recursor</a>&lt; Visitor, Root &gt;::type</td></tr>
+<tr class="separator:a577bf999e7250f595ec2e43571b0714f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a8c2771daff65998317f1853a68d3453b"><td class="memTemplParams" colspan="2">template&lt;typename Fn , typename Root &gt; </td></tr>
+<tr class="memitem:a8c2771daff65998317f1853a68d3453b"><td class="memTemplParams" colspan="2">template&lt;typename Visitor , typename Root &gt; </td></tr>
 <tr class="memitem:a8c2771daff65998317f1853a68d3453b"><td class="memTemplItemLeft" align="right" valign="top">constexpr void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1utility.html#a8c2771daff65998317f1853a68d3453b">tree_recursor</a> ()</td></tr>
 <tr class="separator:a8c2771daff65998317f1853a68d3453b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5cb15613aecdb3e4b2c497679da99e26"><td class="memTemplParams" colspan="2">template&lt;typename Fn , typename SkipFn , typename Root &gt; </td></tr>
+<tr class="memitem:a5cb15613aecdb3e4b2c497679da99e26"><td class="memTemplParams" colspan="2">template&lt;typename Visitor , typename SkipFn , typename Root &gt; </td></tr>
 <tr class="memitem:a5cb15613aecdb3e4b2c497679da99e26"><td class="memTemplItemLeft" align="right" valign="top">constexpr void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1utility.html#a5cb15613aecdb3e4b2c497679da99e26">tree_recursor</a> ()</td></tr>
 <tr class="separator:a5cb15613aecdb3e4b2c497679da99e26"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a99e297c7383915d8754a23f4dcfa07b5"><td class="memTemplParams" colspan="2">template&lt;typename F , typename Tuple &gt; </td></tr>
@@ -133,6 +138,32 @@ template&lt;typename T , auto Extent = nonstd::span_lite::dynamic_extent&gt; </d
 
 </div>
 </div>
+<a id="a577bf999e7250f595ec2e43571b0714f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a577bf999e7250f595ec2e43571b0714f">&#9670;&nbsp;</a></span>tree_type_recursor_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;template&lt; typename... &gt; typename Visitor, typename Root &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="namespacearg__router_1_1utility.html#a577bf999e7250f595ec2e43571b0714f">arg_router::utility::tree_type_recursor_t</a> = typedef typename <a class="el" href="structarg__router_1_1utility_1_1tree__type__recursor.html">tree_type_recursor</a>&lt;Visitor, Root&gt;::type</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Helper alias for <a class="el" href="structarg__router_1_1utility_1_1tree__type__recursor.html">tree_type_recursor</a>.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Visitor</td><td>Visitor object type </td></tr>
+    <tr><td class="paramname">Root</td><td>Start object type in the parse tree </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="tree__recursor_8hpp_source.html#l00165">165</a> of file <a class="el" href="tree__recursor_8hpp_source.html">tree_recursor.hpp</a>.</p>
+
+</div>
+</div>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a8c2771daff65998317f1853a68d3453b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8c2771daff65998317f1853a68d3453b">&#9670;&nbsp;</a></span>tree_recursor() <span class="overload">[1/2]</span></h2>
@@ -140,7 +171,7 @@ template&lt;typename T , auto Extent = nonstd::span_lite::dynamic_extent&gt; </d
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Fn , typename Root &gt; </div>
+template&lt;typename Visitor , typename Root &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -158,7 +189,7 @@ template&lt;typename Fn , typename Root &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Depth-first recurse through the parse tree, calling <em>Fn</em> on every <a class="el" href="classarg__router_1_1tree__node.html">tree_node</a> and policy.</p>
+<p>Depth-first recurse through the parse tree, calling <em>Visitor</em> on every <a class="el" href="classarg__router_1_1tree__node.html">tree_node</a> and policy.</p>
 <p><em>Fn</em> must be object with the same method signatue as below: </p><div class="fragment"><div class="line"><span class="keyword">struct </span>my_fn {</div>
 <div class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Current, <span class="keyword">typename</span>... Parents&gt;</div>
 <div class="line">    constexpr <span class="keyword">static</span> <span class="keywordtype">void</span> fn()</div>
@@ -168,14 +199,14 @@ template&lt;typename Fn , typename Root &gt; </div>
 <div class="line">};</div>
 </div><!-- fragment --><p> Where <code>Current</code> is the current type from the tree, from the root down to policy level, and <code>Parents</code> is a pack of ancestors in increasing generation from <code>Current</code>. The last in the pack is always the root unless <code>Current</code> is itself the root. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">Fn</td><td>Functional object type </td></tr>
+    <tr><td class="paramname">Visitor</td><td>Visitor object type </td></tr>
     <tr><td class="paramname">Root</td><td>Start object type in the parse tree </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>void </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="tree__recursor_8hpp_source.html#l00065">65</a> of file <a class="el" href="tree__recursor_8hpp_source.html">tree_recursor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__recursor_8hpp_source.html#l00105">105</a> of file <a class="el" href="tree__recursor_8hpp_source.html">tree_recursor.hpp</a>.</p>
 
 </div>
 </div>
@@ -185,7 +216,7 @@ template&lt;typename Fn , typename Root &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Fn , typename SkipFn , typename Root &gt; </div>
+template&lt;typename Visitor , typename SkipFn , typename Root &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -215,7 +246,7 @@ template&lt;typename Fn , typename SkipFn , typename Root &gt; </div>
 </div><!-- fragment --><p> If the return value is true, then the <code>Current</code> node and any subtree below it are skipped i.e. <em>Fn</em> is not called.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">Fn</td><td>Functional object type </td></tr>
+    <tr><td class="paramname">Visitor</td><td>Visitor object type </td></tr>
     <tr><td class="paramname">SkipFn</td><td>Functional object type to skip recursion on current node </td></tr>
     <tr><td class="paramname">Root</td><td>Start object type in the parse tree </td></tr>
   </table>
@@ -223,7 +254,7 @@ template&lt;typename Fn , typename SkipFn , typename Root &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>void </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="tree__recursor_8hpp_source.html#l00093">93</a> of file <a class="el" href="tree__recursor_8hpp_source.html">tree_recursor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__recursor_8hpp_source.html#l00133">133</a> of file <a class="el" href="tree__recursor_8hpp_source.html">tree_recursor.hpp</a>.</p>
 
 </div>
 </div>
@@ -279,7 +310,7 @@ template&lt;typename F , typename... T&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Void </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="tuple__iterator_8hpp_source.html#l00056">56</a> of file <a class="el" href="tuple__iterator_8hpp_source.html">tuple_iterator.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tuple__iterator_8hpp_source.html#l00050">50</a> of file <a class="el" href="tuple__iterator_8hpp_source.html">tuple_iterator.hpp</a>.</p>
 
 </div>
 </div>
@@ -326,8 +357,6 @@ template&lt;typename F , typename Tuple &gt; </div>
 <div class="line"><span class="comment">// 0: hello</span></div>
 <div class="line"><span class="comment">// 1: 42.5</span></div>
 <div class="line"><span class="comment">// 2: 9</span></div>
-</div><!-- fragment --><p>The signature of <em>f</em> must be equivalent to: </p><div class="fragment"><div class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><span class="keywordtype">void</span> f(std::size_t, T&amp;&amp;);</div>
 </div><!-- fragment --> <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">F</td><td>Callable type </td></tr>
@@ -344,7 +373,7 @@ template&lt;typename F , typename Tuple &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Void </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="tuple__iterator_8hpp_source.html#l00038">38</a> of file <a class="el" href="tuple__iterator_8hpp_source.html">tuple_iterator.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tuple__iterator_8hpp_source.html#l00032">32</a> of file <a class="el" href="tuple__iterator_8hpp_source.html">tuple_iterator.hpp</a>.</p>
 
 </div>
 </div>
@@ -375,16 +404,14 @@ template&lt;typename Tuple , typename F &gt; </div>
 </div><div class="memdoc">
 <p>Iterates over <em>tuple</em> and passes a nullptr pointer of the tuple element to <em>f</em>.</p>
 <div class="fragment"><div class="line"><span class="keyword">using</span> Tuple = std::tuple&lt;std::string, double, int&gt;;</div>
-<div class="line">tuple_type_iterator&lt;Tuple&gt;([](<span class="keyword">auto</span> i, <span class="keyword">auto</span> ptr) {</div>
-<div class="line">    <span class="keyword">using</span> Arg = std::remove_pointer_t&lt;decltype(ptr)&gt;;</div>
+<div class="line">tuple_type_iterator&lt;Tuple&gt;([](<span class="keyword">auto</span> i) {</div>
+<div class="line">    <span class="keyword">using</span> Arg = std::tuple_element_t&lt;i, Tuple&gt;;</div>
 <div class="line">    std::cout &lt;&lt; i &lt;&lt; <span class="stringliteral">&quot;: &quot;</span> &lt;&lt; boost::core::demangle(<span class="keyword">typeid</span>(Arg).name())</div>
 <div class="line">              &lt;&lt; std::endl;</div>
 <div class="line">});</div>
 <div class="line"><span class="comment">// 0: std::string</span></div>
 <div class="line"><span class="comment">// 1: double</span></div>
 <div class="line"><span class="comment">// 2: int</span></div>
-</div><!-- fragment --><p>The signature of <em>f</em> must be equivalent to: </p><div class="fragment"><div class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><span class="keywordtype">void</span> f(std::size_t is, T* ptr);</div>
 </div><!-- fragment --> <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Tuple</td><td>Tuple type </td></tr>
@@ -400,12 +427,12 @@ template&lt;typename Tuple , typename F &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Void </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="tuple__iterator_8hpp_source.html#l00088">88</a> of file <a class="el" href="tuple__iterator_8hpp_source.html">tuple_iterator.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tuple__iterator_8hpp_source.html#l00076">76</a> of file <a class="el" href="tuple__iterator_8hpp_source.html">tuple_iterator.hpp</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
-<div class="ttc" id="anamespacearg__router_1_1utility_html_a99e297c7383915d8754a23f4dcfa07b5"><div class="ttname"><a href="namespacearg__router_1_1utility.html#a99e297c7383915d8754a23f4dcfa07b5">arg_router::utility::tuple_iterator</a></div><div class="ttdeci">constexpr std::enable_if_t&lt; traits::is_tuple_like_v&lt; std::decay_t&lt; Tuple &gt; &gt; &gt; tuple_iterator(F &amp;&amp;f, Tuple &amp;&amp;tuple)</div><div class="ttdef"><b>Definition:</b> <a href="tuple__iterator_8hpp_source.html#l00038">tuple_iterator.hpp:38</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1utility_html_a99e297c7383915d8754a23f4dcfa07b5"><div class="ttname"><a href="namespacearg__router_1_1utility.html#a99e297c7383915d8754a23f4dcfa07b5">arg_router::utility::tuple_iterator</a></div><div class="ttdeci">constexpr std::enable_if_t&lt; traits::is_tuple_like_v&lt; std::decay_t&lt; Tuple &gt; &gt; &gt; tuple_iterator(F &amp;&amp;f, Tuple &amp;&amp;tuple)</div><div class="ttdef"><b>Definition:</b> <a href="tuple__iterator_8hpp_source.html#l00032">tuple_iterator.hpp:32</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

@@ -1,9 +1,8 @@
 var searchData=
 [
-  ['cbegin_320',['cbegin',['../classarg__router_1_1parsing_1_1token__list.html#af12ea91cca43c732549f2da348efaa03',1,'arg_router::parsing::token_list']]],
-  ['cend_321',['cend',['../classarg__router_1_1parsing_1_1token__list.html#a62a27d5b4fdd3ab2a3fdceb474f6e721',1,'arg_router::parsing::token_list']]],
-  ['children_322',['children',['../classarg__router_1_1list.html#a9dfee0f05ed4e823da0fda00c755efc8',1,'arg_router::list::children()'],['../classarg__router_1_1list.html#a981cec9c1a4b91d9be100ff097b534d7',1,'arg_router::list::children() const'],['../classarg__router_1_1tree__node.html#acf2a7147e9bf1612578dc6f1a10d48c8',1,'arg_router::tree_node::children()']]],
-  ['contains_5fwhitespace_323',['contains_whitespace',['../namespacearg__router_1_1algorithm.html#aab2a691509b83c3126b09d33ab2c5a3a',1,'arg_router::algorithm']]],
-  ['count_324',['count',['../classarg__router_1_1policy_1_1count__t.html#a7a6e554958325877c8cc933043810de1',1,'arg_router::policy::count_t']]],
-  ['custom_5fparser_325',['custom_parser',['../classarg__router_1_1policy_1_1custom__parser.html#a7b6cab30c5c99f76ef3b49eb331d3d44',1,'arg_router::policy::custom_parser']]]
+  ['default_5fmatch_327',['default_match',['../namespacearg__router_1_1parsing.html#a6878769d75879dd093b8047ca0375e64',1,'arg_router::parsing']]],
+  ['default_5fvalue_328',['default_value',['../classarg__router_1_1policy_1_1default__value.html#a1544d1c2a40d59d21ffcac07c2734f72',1,'arg_router::policy::default_value']]],
+  ['dependent_329',['dependent',['../namespacearg__router_1_1policy.html#a5f46c2a3bf35eae6f75aa1c4ba280aa9',1,'arg_router::policy']]],
+  ['description_330',['description',['../classarg__router_1_1policy_1_1description__t.html#a1165e855d02c733c5d7a8c3faa33054b',1,'arg_router::policy::description_t']]],
+  ['display_5fname_331',['display_name',['../classarg__router_1_1policy_1_1display__name__t.html#a0b90b7103ef07e0e8cde5206495cb62d',1,'arg_router::policy::display_name_t']]]
 ];

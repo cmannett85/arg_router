@@ -94,245 +94,243 @@ $(function() {
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1alias__t.html#abd3cbec28db15f7bedea6bcaf50ea3bb">   30</a></span>&#160;    <span class="keyword">using</span> <a class="code" href="classarg__router_1_1policy_1_1alias__t.html#abd3cbec28db15f7bedea6bcaf50ea3bb">aliased_policies_type</a> = std::tuple&lt;AliasedPolicies...&gt;;</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keyword">struct </span>policy_checker {</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        constexpr <span class="keyword">static</span> <span class="keyword">auto</span> value = traits::has_long_name_method_v&lt;T&gt; ||</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                                      traits::has_short_name_method_v&lt;T&gt;;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    };</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    static_assert((<span class="keyword">sizeof</span>...(AliasedPolicies) &gt; 0),</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                  <span class="stringliteral">&quot;At least one name needed for alias&quot;</span>);</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    static_assert(policy::is_all_policies_v&lt;aliased_policies_type&gt;,</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                  <span class="stringliteral">&quot;All parameters must be policies&quot;</span>);</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    static_assert(</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        boost::mp11::mp_all_of&lt;aliased_policies_type, policy_checker&gt;::value,</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="stringliteral">&quot;All parameters must provide a long and/or short form name&quot;</span>);</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> ModeType&gt;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keyword">struct </span>pre_pass_check {</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Child&gt;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="keyword">using</span> get_policies = <span class="keyword">typename</span> Child::policies_type;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <span class="comment">// The gist of this horror is that we collect all the policies from all</span></div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="comment">// the child nodes into a single tuple and then count how many times</span></div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="comment">// Alias appears in it</span></div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Alias&gt;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="keyword">struct </span>one_matching_policy {</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;            constexpr <span class="keyword">static</span> <span class="keywordtype">bool</span> value =</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                boost::mp11::mp_count&lt;        <span class="comment">//</span></div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                    boost::mp11::mp_flatten&lt;  <span class="comment">//</span></div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                        boost::mp11::mp_transform_q&lt;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                            boost::mp11::mp_bind&lt;get_policies, boost::mp11::_1&gt;,</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                            <span class="keyword">typename</span> ModeType::children_type&gt;&gt;,</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                    Alias&gt;::value == 1;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        };</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <span class="comment">// Almost does the inverse of above.  It creates a tuple of how many</span></div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        <span class="comment">// times an alias appears in a child&#39;s policy list, it then checks that</span></div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        <span class="comment">// this count never exceeds one</span></div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Child&gt;</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keyword">struct </span>one_or_zero_matching_child {</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;            constexpr <span class="keyword">static</span> <span class="keywordtype">bool</span> value =</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                boost::mp11::mp_count&lt;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;                    boost::mp11::mp_transform_q&lt;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;                        boost::mp11::mp_bind&lt;boost::mp11::mp_contains,</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;                                             <span class="keyword">typename</span> Child::policies_type,</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;                                             boost::mp11::_1&gt;,</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;                        <a class="code" href="classarg__router_1_1policy_1_1alias__t.html#abd3cbec28db15f7bedea6bcaf50ea3bb">aliased_policies_type</a>&gt;,</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;                    std::true_type&gt;::value &lt;= 1;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        };</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        constexpr <span class="keyword">static</span> <span class="keywordtype">bool</span> value =</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;            boost::mp11::mp_all_of&lt;<a class="code" href="classarg__router_1_1policy_1_1alias__t.html#abd3cbec28db15f7bedea6bcaf50ea3bb">aliased_policies_type</a>,</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;                                   one_matching_policy&gt;::value &amp;&amp;</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;            boost::mp11::mp_all_of&lt;<span class="keyword">typename</span> ModeType::children_type,</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;                                   one_or_zero_matching_child&gt;::value;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    };</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    <span class="comment">// You could do this a single inline mp11 expression, but it would be</span></div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <span class="comment">// unreadable...</span></div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Child&gt;</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    <span class="keyword">struct </span>child_match {</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        constexpr <span class="keyword">static</span> <span class="keywordtype">bool</span> value = boost::mp11::mp_any_of_q&lt;</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;            <a class="code" href="classarg__router_1_1policy_1_1alias__t.html#abd3cbec28db15f7bedea6bcaf50ea3bb">aliased_policies_type</a>,</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;            boost::mp11::mp_bind&lt;boost::mp11::mp_contains,</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;                                 <span class="keyword">typename</span> Child::policies_type,</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;                                 boost::mp11::_1&gt;&gt;::value;</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    };</div>
+<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1alias__t.html#ac8026b56fcd31b8ae780c47fca87c45b">   36</a></span>&#160;    constexpr <span class="keyword">explicit</span> <a class="code" href="classarg__router_1_1policy_1_1alias__t.html#ac8026b56fcd31b8ae780c47fca87c45b">alias_t</a>(AliasedPolicies&amp;&amp;... policies)</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    {</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        boost::ignore_unused(policies...);</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    }</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Parents&gt;</div>
+<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1alias__t.html#a6a5293fa310cc281e6d7e2fcc361f867">   61</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classarg__router_1_1policy_1_1alias__t.html#a6a5293fa310cc281e6d7e2fcc361f867">pre_parse_phase</a>(<a class="code" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a>&amp; tokens,</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                         <a class="code" href="namespacearg__router_1_1utility.html#ad352319d55d0f012d4c77a6bd851d6f5">utility::span&lt;const parsing::token_type&gt;</a>&amp; view,</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                         <span class="keyword">const</span> Parents&amp;... parents)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="keyword">    </span>{</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        boost::ignore_unused(parents...);</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        static_assert(<span class="keyword">sizeof</span>...(Parents) &gt;= 2,</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                      <span class="stringliteral">&quot;Alias requires at least 2 parents&quot;</span>);</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keyword">using</span> node_type = boost::mp11::mp_first&lt;std::tuple&lt;Parents...&gt;&gt;;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <span class="keyword">using</span> mode_type = boost::mp11::mp_second&lt;std::tuple&lt;Parents...&gt;&gt;;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        <span class="keyword">using</span> aliased_indices =</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;            decltype(create_aliased_node_indices&lt;mode_type&gt;());</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        <span class="comment">// Check that the alias names do not appear in the owning node (i.e.</span></div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        <span class="comment">// no self-references)</span></div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        {</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;            <span class="keyword">using</span> owner_policies = <span class="keyword">typename</span> node_type::policies_type;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;            <span class="keyword">using</span> policy_intersection =</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;                boost::mp11::mp_set_intersection&lt;<a class="code" href="classarg__router_1_1policy_1_1alias__t.html#abd3cbec28db15f7bedea6bcaf50ea3bb">aliased_policies_type</a>,</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;                                                 owner_policies&gt;;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;            static_assert(std::tuple_size_v&lt;policy_intersection&gt; == 0,</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;                          <span class="stringliteral">&quot;Alias names cannot appear in owner&quot;</span>);</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        }</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        static_assert(traits::has_minimum_count_method_v&lt;node_type&gt; &amp;&amp;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                          traits::has_maximum_count_method_v&lt;node_type&gt;,</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;                      <span class="stringliteral">&quot;Node requires a count(), or minimum_count() and &quot;</span></div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;                      <span class="stringliteral">&quot;maximum_count() methods to use an alias&quot;</span>);</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        static_assert(node_type::minimum_count() == node_type::maximum_count(),</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;                      <span class="stringliteral">&quot;Node requires minimum_count() and maximum_count() &quot;</span></div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;                      <span class="stringliteral">&quot;to return the same value to use an alias&quot;</span>);</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        <span class="keyword">auto</span> new_tokens = <a class="code" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a>{};</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        <span class="keywordflow">if</span> constexpr (node_type::minimum_count() == 0) {</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;            new_tokens.<a class="code" href="classarg__router_1_1parsing_1_1token__list.html#af09a16f019f5241059dc4f03dbfe08f1">reserve</a>(std::tuple_size_v&lt;aliased_indices&gt;);</div>
 <div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    <span class="comment">// Detect cyclic dependencies.  Actually we don&#39;t do that, we just ban</span></div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <span class="comment">// aliases pointing to another aliased node, it&#39;s blunt but fine for the</span></div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="comment">// meantime</span></div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> ModeType&gt;</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    <span class="keyword">struct </span>no_alias_to_alias {</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Child&gt;</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;        <span class="keyword">struct </span>checker {</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;            <span class="comment">// If the child has an alias that matches, check the child doesn&#39;t</span></div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;            <span class="comment">// also have an alias policy</span></div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;            constexpr <span class="keyword">static</span> <span class="keywordtype">bool</span> value =</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;                boost::mp11::mp_any_of_q&lt;</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;                    <span class="keyword">typename</span> Child::policies_type,</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;                    boost::mp11::mp_bind&lt;boost::mp11::mp_contains,</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;                                         <a class="code" href="classarg__router_1_1policy_1_1alias__t.html#abd3cbec28db15f7bedea6bcaf50ea3bb">aliased_policies_type</a>,</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;                                         boost::mp11::_1&gt;&gt;::value &amp;&amp;</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;                <a class="code" href="namespacearg__router_1_1algorithm.html#a8008c0e24fa3cd6f4764c29f2331ba5e">algorithm::has_specialisation_v</a>&lt;<a class="code" href="classarg__router_1_1policy_1_1alias__t.html#ac8026b56fcd31b8ae780c47fca87c45b">alias_t</a>,</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;                                                <span class="keyword">typename</span> Child::policies_type&gt;;</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        };</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160; </div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        constexpr <span class="keyword">static</span> <span class="keywordtype">bool</span> value =</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;            boost::mp11::mp_none_of&lt;<span class="keyword">typename</span> ModeType::children_type,</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;                                    checker&gt;::value;</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    };</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160; </div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> ModeType&gt;</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    constexpr <span class="keyword">static</span> <span class="keyword">auto</span> create_aliased_node_indices()</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    {</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;        <span class="keyword">using</span> children_type = <span class="keyword">typename</span> ModeType::children_type;</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160; </div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;        static_assert(pre_pass_check&lt;ModeType&gt;::value,</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;                      <span class="stringliteral">&quot;There must one matching node per alias entry&quot;</span>);</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;        static_assert(no_alias_to_alias&lt;ModeType&gt;::value,</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;                      <span class="stringliteral">&quot;An aliased node cannot be an alias too&quot;</span>);</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;            <a class="code" href="namespacearg__router_1_1utility.html#a99e297c7383915d8754a23f4dcfa07b5">utility::tuple_iterator</a>(</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;                [&amp;](<span class="keyword">auto</span> <span class="comment">/*i*/</span>, <span class="keyword">auto</span> index) {</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;                    <span class="keyword">using</span> alias_node_type =</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;                        std::tuple_element_t&lt;index,</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;                                             <span class="keyword">typename</span> mode_type::children_type&gt;;</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;                    new_tokens.add_pending(</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;                        parsing::node_token_type&lt;alias_node_type&gt;());</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;                },</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;                aliased_indices{});</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;            <span class="comment">// The first token is the argument name, so skip that</span></div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;            <span class="keywordflow">if</span> (node_type::minimum_count() &gt; view.size()) {</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;                <span class="keywordflow">throw</span> <a class="code" href="classarg__router_1_1parse__exception.html">parse_exception</a>{</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;                    <span class="stringliteral">&quot;Too few values for alias, needs &quot;</span> +</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;                        std::to_string(node_type::minimum_count()),</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;                    parsing::node_token_type&lt;node_type&gt;()};</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;            }</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160; </div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;            new_tokens.reserve(std::tuple_size_v&lt;aliased_indices&gt; *</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;                               node_type::minimum_count());</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;            <a class="code" href="namespacearg__router_1_1utility.html#a99e297c7383915d8754a23f4dcfa07b5">utility::tuple_iterator</a>(</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;                [&amp;](<span class="keyword">auto</span> <span class="comment">/*i*/</span>, <span class="keyword">auto</span> index) {</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;                    <span class="keyword">using</span> alias_node_type =</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;                        std::tuple_element_t&lt;index,</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;                                             <span class="keyword">typename</span> mode_type::children_type&gt;;</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;                    new_tokens.add_pending(</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;                        parsing::node_token_type&lt;alias_node_type&gt;());</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;                    <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i &lt; node_type::minimum_count(); ++i) {</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;                        new_tokens.add_pending(view[i]);</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;                    }</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;                },</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;                aliased_indices{});</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;        }</div>
 <div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160; </div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;        <span class="comment">// Zip together an index-sequence of ModeType&#39;s children and the</span></div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;        <span class="comment">// elements of it</span></div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;        <span class="keyword">using</span> zipped = <a class="code" href="namespacearg__router_1_1algorithm.html#ae0c6e74281c42f23d11e9fc509f8d04e">algorithm::zip_t</a>&lt;</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;            boost::mp11::mp_iota_c&lt;std::tuple_size_v&lt;children_type&gt;&gt;,</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;            children_type&gt;;</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160; </div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;        <span class="comment">// Filter out the elements that have a long or short name that match</span></div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;        <span class="comment">// our alias</span></div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;        <span class="keyword">using</span> filtered = boost::mp11::mp_filter&lt;</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;            boost::mp11::mp_bind&lt;</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;                child_match,</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;                boost::mp11::mp_bind&lt;boost::mp11::mp_second,</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;                                     boost::mp11::_1&gt;&gt;::template fn,</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;            zipped&gt;;</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160; </div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">typename</span> <a class="code" href="structarg__router_1_1algorithm_1_1unzip.html#af3593f060d40b2d3e779adfe94c834e1">algorithm::unzip&lt;filtered&gt;::first_type</a>{};</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    }</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160; </div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00156"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1alias__t.html#ac8026b56fcd31b8ae780c47fca87c45b">  156</a></span>&#160;    constexpr <span class="keyword">explicit</span> <a class="code" href="classarg__router_1_1policy_1_1alias__t.html#ac8026b56fcd31b8ae780c47fca87c45b">alias_t</a>(AliasedPolicies&amp;&amp;... policies)</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;    {</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;        boost::ignore_unused(policies...);</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;    }</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160; </div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Parents&gt;</div>
-<div class="line"><a name="l00181"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1alias__t.html#a6a5293fa310cc281e6d7e2fcc361f867">  181</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classarg__router_1_1policy_1_1alias__t.html#a6a5293fa310cc281e6d7e2fcc361f867">pre_parse_phase</a>(<a class="code" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a>&amp; tokens,</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;                         <a class="code" href="namespacearg__router_1_1utility.html#ad352319d55d0f012d4c77a6bd851d6f5">utility::span&lt;const parsing::token_type&gt;</a>&amp; view,</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;                         <span class="keyword">const</span> Parents&amp;... parents)<span class="keyword"> const</span></div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;<span class="keyword">    </span>{</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;        boost::ignore_unused(parents...);</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160; </div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;        static_assert(<span class="keyword">sizeof</span>...(Parents) &gt;= 2,</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;                      <span class="stringliteral">&quot;Alias requires at least 2 parents&quot;</span>);</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160; </div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;        <span class="keyword">using</span> node_type = boost::mp11::mp_first&lt;std::tuple&lt;Parents...&gt;&gt;;</div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;        <span class="keyword">using</span> mode_type = boost::mp11::mp_second&lt;std::tuple&lt;Parents...&gt;&gt;;</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;        <span class="keyword">using</span> aliased_indices =</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;            decltype(create_aliased_node_indices&lt;mode_type&gt;());</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160; </div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;        <span class="comment">// Check that the alias names do not appear in the owning node (i.e.</span></div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;        <span class="comment">// no self-references)</span></div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;        {</div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;            <span class="keyword">using</span> owner_policies = <span class="keyword">typename</span> node_type::policies_type;</div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160; </div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;            <span class="keyword">using</span> policy_intersection =</div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;                boost::mp11::mp_set_intersection&lt;<a class="code" href="classarg__router_1_1policy_1_1alias__t.html#abd3cbec28db15f7bedea6bcaf50ea3bb">aliased_policies_type</a>,</div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;                                                 owner_policies&gt;;</div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;            static_assert(std::tuple_size_v&lt;policy_intersection&gt; == 0,</div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;                          <span class="stringliteral">&quot;Alias names cannot appear in owner&quot;</span>);</div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;        }</div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160; </div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;        static_assert(traits::has_minimum_count_method_v&lt;node_type&gt; &amp;&amp;</div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;                          traits::has_maximum_count_method_v&lt;node_type&gt;,</div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;                      <span class="stringliteral">&quot;Node requires a count(), or minimum_count() and &quot;</span></div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;                      <span class="stringliteral">&quot;maximum_count() methods to use an alias&quot;</span>);</div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;        static_assert(node_type::minimum_count() == node_type::maximum_count(),</div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;                      <span class="stringliteral">&quot;Node requires minimum_count() and maximum_count() &quot;</span></div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;                      <span class="stringliteral">&quot;to return the same value to use an alias&quot;</span>);</div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160; </div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;        <span class="keyword">auto</span> new_tokens = <a class="code" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a>{};</div>
-<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;        <span class="keywordflow">if</span> constexpr (node_type::minimum_count() == 0) {</div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;            new_tokens.<a class="code" href="classarg__router_1_1parsing_1_1token__list.html#af09a16f019f5241059dc4f03dbfe08f1">reserve</a>(std::tuple_size_v&lt;aliased_indices&gt;);</div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160; </div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;            <a class="code" href="namespacearg__router_1_1utility.html#a99e297c7383915d8754a23f4dcfa07b5">utility::tuple_iterator</a>(</div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;                [&amp;](<span class="keyword">auto</span> <span class="comment">/*i*/</span>, <span class="keyword">auto</span> index) {</div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;                    <span class="keyword">using</span> alias_node_type =</div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;                        std::tuple_element_t&lt;index,</div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;                                             <span class="keyword">typename</span> mode_type::children_type&gt;;</div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;                    new_tokens.push_back(</div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;                        parsing::node_token_type&lt;alias_node_type&gt;());</div>
-<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;                },</div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;                aliased_indices{});</div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;        } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;            <span class="comment">// The first token is the argument name, so skip that</span></div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;            <span class="keywordflow">if</span> (node_type::minimum_count() &gt; view.size()) {</div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;                <span class="keywordflow">throw</span> <a class="code" href="classarg__router_1_1parse__exception.html">parse_exception</a>{</div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;                    <span class="stringliteral">&quot;Too few values for alias, needs &quot;</span> +</div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;                        std::to_string(node_type::minimum_count()),</div>
-<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;                    parsing::node_token_type&lt;node_type&gt;()};</div>
-<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;            }</div>
-<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160; </div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;            new_tokens.reserve(std::tuple_size_v&lt;aliased_indices&gt; *</div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;                               node_type::minimum_count());</div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;            <a class="code" href="namespacearg__router_1_1utility.html#a99e297c7383915d8754a23f4dcfa07b5">utility::tuple_iterator</a>(</div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;                [&amp;](<span class="keyword">auto</span> <span class="comment">/*i*/</span>, <span class="keyword">auto</span> index) {</div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;                    <span class="keyword">using</span> alias_node_type =</div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;                        std::tuple_element_t&lt;index,</div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;                                             <span class="keyword">typename</span> mode_type::children_type&gt;;</div>
-<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;                    new_tokens.push_back(</div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;                        parsing::node_token_type&lt;alias_node_type&gt;());</div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;                    <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i &lt; node_type::minimum_count(); ++i) {</div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;                        new_tokens.push_back(view[i]);</div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;                    }</div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;                },</div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;                aliased_indices{});</div>
-<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;        }</div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160; </div>
-<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;        tokens.<a class="code" href="classarg__router_1_1parsing_1_1token__list.html#a0451d409999360afd84789becac0123b">insert</a>(tokens.<a class="code" href="classarg__router_1_1parsing_1_1token__list.html#a9e704901b476d8b9b0b0b99e952f3d3e">begin</a>() + node_type::minimum_count(),</div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;                      new_tokens.begin(),</div>
-<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;                      new_tokens.end());</div>
-<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160; </div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;        <span class="comment">// Update the view in case the extra tokens have caused a reallocation</span></div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;        view = <a class="code" href="namespacearg__router_1_1utility.html#ad352319d55d0f012d4c77a6bd851d6f5">utility::span&lt;const parsing::token_type&gt;</a>{tokens.<a class="code" href="classarg__router_1_1parsing_1_1token__list.html#a8de86f95831114c617adb72b73baa120">data</a>(),  <span class="comment">//</span></div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;                                                        view.size()};</div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;    }</div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;};</div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160; </div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>... AliasedPolicies&gt;</div>
-<div class="line"><a name="l00271"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1policy.html#a748ad71e24ec795116cb721146e22701">  271</a></span>&#160;constexpr <a class="code" href="classarg__router_1_1policy_1_1alias__t.html">alias_t</a>&lt;AliasedPolicies...&gt; <a class="code" href="namespacearg__router_1_1policy.html#a748ad71e24ec795116cb721146e22701">alias</a>(AliasedPolicies... policies)</div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;{</div>
-<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classarg__router_1_1policy_1_1alias__t.html">alias_t</a>{std::move(policies)...};</div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;}</div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160; </div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>... AliasedPolicies&gt;</div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;<span class="keyword">struct </span>is_policy&lt;alias_t&lt;AliasedPolicies...&gt;&gt; : std::true_type {</div>
-<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;};</div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;}  <span class="comment">// namespace policy</span></div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;        tokens.<a class="code" href="classarg__router_1_1parsing_1_1token__list.html#a4eb5ef1caa055f3e7ae563a0f01175a9">insert_pending</a>(</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;            tokens.<a class="code" href="classarg__router_1_1parsing_1_1token__list.html#ab09398fc6bd23625c4ba2d7017341b6a">pending_view</a>().begin() + node_type::minimum_count(),</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;            new_tokens.pending_view().begin(),</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;            new_tokens.pending_view().end());</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160; </div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;        <span class="comment">// Update the view in case the extra tokens have caused a reallocation</span></div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;        view = tokens.<a class="code" href="classarg__router_1_1parsing_1_1token__list.html#ab09398fc6bd23625c4ba2d7017341b6a">pending_view</a>().subspan(0, view.size());</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    }</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160; </div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;    <span class="keyword">struct </span>policy_checker {</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;        constexpr <span class="keyword">static</span> <span class="keyword">auto</span> value = traits::has_long_name_method_v&lt;T&gt; ||</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;                                      traits::has_short_name_method_v&lt;T&gt;;</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    };</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160; </div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    static_assert((<span class="keyword">sizeof</span>...(AliasedPolicies) &gt; 0),</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;                  <span class="stringliteral">&quot;At least one name needed for alias&quot;</span>);</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;    static_assert(policy::is_all_policies_v&lt;aliased_policies_type&gt;,</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;                  <span class="stringliteral">&quot;All parameters must be policies&quot;</span>);</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;    static_assert(</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;        boost::mp11::mp_all_of&lt;aliased_policies_type, policy_checker&gt;::value,</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;        <span class="stringliteral">&quot;All parameters must provide a long and/or short form name&quot;</span>);</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160; </div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> ModeType&gt;</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;    <span class="keyword">struct </span>pre_pass_check {</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Child&gt;</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;        <span class="keyword">using</span> get_policies = <span class="keyword">typename</span> Child::policies_type;</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160; </div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;        <span class="comment">// The gist of this horror is that we collect all the policies from all</span></div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;        <span class="comment">// the child nodes into a single tuple and then count how many times</span></div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;        <span class="comment">// Alias appears in it</span></div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Alias&gt;</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;        <span class="keyword">struct </span>one_matching_policy {</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;            constexpr <span class="keyword">static</span> <span class="keywordtype">bool</span> value =</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;                boost::mp11::mp_count&lt;        <span class="comment">//</span></div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;                    boost::mp11::mp_flatten&lt;  <span class="comment">//</span></div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;                        boost::mp11::mp_transform_q&lt;</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;                            boost::mp11::mp_bind&lt;get_policies, boost::mp11::_1&gt;,</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;                            <span class="keyword">typename</span> ModeType::children_type&gt;&gt;,</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;                    Alias&gt;::value == 1;</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;        };</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160; </div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;        <span class="comment">// Almost does the inverse of above.  It creates a tuple of how many</span></div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;        <span class="comment">// times an alias appears in a child&#39;s policy list, it then checks that</span></div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;        <span class="comment">// this count never exceeds one</span></div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Child&gt;</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;        <span class="keyword">struct </span>one_or_zero_matching_child {</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;            constexpr <span class="keyword">static</span> <span class="keywordtype">bool</span> value =</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;                boost::mp11::mp_count&lt;</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;                    boost::mp11::mp_transform_q&lt;</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;                        boost::mp11::mp_bind&lt;boost::mp11::mp_contains,</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;                                             <span class="keyword">typename</span> Child::policies_type,</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;                                             boost::mp11::_1&gt;,</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;                        <a class="code" href="classarg__router_1_1policy_1_1alias__t.html#abd3cbec28db15f7bedea6bcaf50ea3bb">aliased_policies_type</a>&gt;,</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;                    std::true_type&gt;::value &lt;= 1;</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;        };</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160; </div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;        constexpr <span class="keyword">static</span> <span class="keywordtype">bool</span> value =</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;            boost::mp11::mp_all_of&lt;<a class="code" href="classarg__router_1_1policy_1_1alias__t.html#abd3cbec28db15f7bedea6bcaf50ea3bb">aliased_policies_type</a>,</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;                                   one_matching_policy&gt;::value &amp;&amp;</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;            boost::mp11::mp_all_of&lt;<span class="keyword">typename</span> ModeType::children_type,</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;                                   one_or_zero_matching_child&gt;::value;</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;    };</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160; </div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;    <span class="comment">// You could do this a single inline mp11 expression, but it would be</span></div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;    <span class="comment">// unreadable...</span></div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Child&gt;</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;    <span class="keyword">struct </span>child_match {</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;        constexpr <span class="keyword">static</span> <span class="keywordtype">bool</span> value = boost::mp11::mp_any_of_q&lt;</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;            <a class="code" href="classarg__router_1_1policy_1_1alias__t.html#abd3cbec28db15f7bedea6bcaf50ea3bb">aliased_policies_type</a>,</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;            boost::mp11::mp_bind&lt;boost::mp11::mp_contains,</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;                                 <span class="keyword">typename</span> Child::policies_type,</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;                                 boost::mp11::_1&gt;&gt;::value;</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;    };</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160; </div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;    <span class="comment">// Detect cyclic dependencies.  Actually we don&#39;t do that, we just ban</span></div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;    <span class="comment">// aliases pointing to another aliased node, it&#39;s blunt but fine for the</span></div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;    <span class="comment">// meantime</span></div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> ModeType&gt;</div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;    <span class="keyword">struct </span>no_alias_to_alias {</div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Child&gt;</div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;        <span class="keyword">struct </span>checker {</div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;            <span class="comment">// If the child has an alias that matches, check the child doesn&#39;t</span></div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;            <span class="comment">// also have an alias policy</span></div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;            constexpr <span class="keyword">static</span> <span class="keywordtype">bool</span> value =</div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;                boost::mp11::mp_any_of_q&lt;</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;                    <span class="keyword">typename</span> Child::policies_type,</div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;                    boost::mp11::mp_bind&lt;boost::mp11::mp_contains,</div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;                                         <a class="code" href="classarg__router_1_1policy_1_1alias__t.html#abd3cbec28db15f7bedea6bcaf50ea3bb">aliased_policies_type</a>,</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;                                         boost::mp11::_1&gt;&gt;::value &amp;&amp;</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;                <a class="code" href="namespacearg__router_1_1algorithm.html#a8008c0e24fa3cd6f4764c29f2331ba5e">algorithm::has_specialisation_v</a>&lt;<a class="code" href="classarg__router_1_1policy_1_1alias__t.html#ac8026b56fcd31b8ae780c47fca87c45b">alias_t</a>,</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;                                                <span class="keyword">typename</span> Child::policies_type&gt;;</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;        };</div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160; </div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;        constexpr <span class="keyword">static</span> <span class="keywordtype">bool</span> value =</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;            boost::mp11::mp_none_of&lt;<span class="keyword">typename</span> ModeType::children_type,</div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;                                    checker&gt;::value;</div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;    };</div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160; </div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> ModeType&gt;</div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;    constexpr <span class="keyword">static</span> <span class="keyword">auto</span> create_aliased_node_indices()</div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;    {</div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;        <span class="keyword">using</span> children_type = <span class="keyword">typename</span> ModeType::children_type;</div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160; </div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;        static_assert(pre_pass_check&lt;ModeType&gt;::value,</div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;                      <span class="stringliteral">&quot;There must one matching node per alias entry&quot;</span>);</div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;        static_assert(no_alias_to_alias&lt;ModeType&gt;::value,</div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;                      <span class="stringliteral">&quot;An aliased node cannot be an alias too&quot;</span>);</div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160; </div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;        <span class="comment">// Zip together an index-sequence of ModeType&#39;s children and the</span></div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;        <span class="comment">// elements of it</span></div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;        <span class="keyword">using</span> zipped = <a class="code" href="namespacearg__router_1_1algorithm.html#ae0c6e74281c42f23d11e9fc509f8d04e">algorithm::zip_t</a>&lt;</div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;            boost::mp11::mp_iota_c&lt;std::tuple_size_v&lt;children_type&gt;&gt;,</div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;            children_type&gt;;</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160; </div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;        <span class="comment">// Filter out the elements that have a long or short name that match</span></div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;        <span class="comment">// our alias</span></div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;        <span class="keyword">using</span> filtered = boost::mp11::mp_filter&lt;</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;            boost::mp11::mp_bind&lt;</div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;                child_match,</div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;                boost::mp11::mp_bind&lt;boost::mp11::mp_second,</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;                                     boost::mp11::_1&gt;&gt;::template fn,</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;            zipped&gt;;</div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160; </div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">typename</span> <a class="code" href="structarg__router_1_1algorithm_1_1unzip.html#af3593f060d40b2d3e779adfe94c834e1">algorithm::unzip&lt;filtered&gt;::first_type</a>{};</div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;    }</div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;};</div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160; </div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>... AliasedPolicies&gt;</div>
+<div class="line"><a name="l00270"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1policy.html#a748ad71e24ec795116cb721146e22701">  270</a></span>&#160;constexpr <a class="code" href="classarg__router_1_1policy_1_1alias__t.html">alias_t</a>&lt;AliasedPolicies...&gt; <a class="code" href="namespacearg__router_1_1policy.html#a748ad71e24ec795116cb721146e22701">alias</a>(AliasedPolicies... policies)</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;{</div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classarg__router_1_1policy_1_1alias__t.html">alias_t</a>{std::move(policies)...};</div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;}</div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160; </div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>... AliasedPolicies&gt;</div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;<span class="keyword">struct </span>is_policy&lt;alias_t&lt;AliasedPolicies...&gt;&gt; : std::true_type {</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;};</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;}  <span class="comment">// namespace policy</span></div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
 </div><!-- fragment --></div><!-- contents -->
+<div class="ttc" id="aclassarg__router_1_1parsing_1_1token__list_html_a4eb5ef1caa055f3e7ae563a0f01175a9"><div class="ttname"><a href="classarg__router_1_1parsing_1_1token__list.html#a4eb5ef1caa055f3e7ae563a0f01175a9">arg_router::parsing::token_list::insert_pending</a></div><div class="ttdeci">pending_view_type::const_iterator insert_pending(pending_view_type::const_iterator pos, InputIt first, InputIt last)</div><div class="ttdef"><b>Definition:</b> <a href="token__type_8hpp_source.html#l00226">token_type.hpp:226</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1algorithm_html_a8008c0e24fa3cd6f4764c29f2331ba5e"><div class="ttname"><a href="namespacearg__router_1_1algorithm.html#a8008c0e24fa3cd6f4764c29f2331ba5e">arg_router::algorithm::has_specialisation_v</a></div><div class="ttdeci">constexpr auto has_specialisation_v</div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00219">algorithm.hpp:219</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1parsing_1_1token__list_html_ab09398fc6bd23625c4ba2d7017341b6a"><div class="ttname"><a href="classarg__router_1_1parsing_1_1token__list.html#ab09398fc6bd23625c4ba2d7017341b6a">arg_router::parsing::token_list::pending_view</a></div><div class="ttdeci">pending_view_type pending_view() const</div><div class="ttdef"><b>Definition:</b> <a href="token__type_8hpp_source.html#l00137">token_type.hpp:137</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1parse__exception_html"><div class="ttname"><a href="classarg__router_1_1parse__exception.html">arg_router::parse_exception</a></div><div class="ttdef"><b>Definition:</b> <a href="exception_8hpp_source.html#l00011">exception.hpp:11</a></div></div>
 <div class="ttc" id="astructarg__router_1_1algorithm_1_1unzip_html_af3593f060d40b2d3e779adfe94c834e1"><div class="ttname"><a href="structarg__router_1_1algorithm_1_1unzip.html#af3593f060d40b2d3e779adfe94c834e1">arg_router::algorithm::unzip::first_type</a></div><div class="ttdeci">boost::mp11::mp_transform&lt; boost::mp11::mp_first, T &gt; first_type</div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00264">algorithm.hpp:264</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1policy_1_1alias__t_html_ac8026b56fcd31b8ae780c47fca87c45b"><div class="ttname"><a href="classarg__router_1_1policy_1_1alias__t.html#ac8026b56fcd31b8ae780c47fca87c45b">arg_router::policy::alias_t::alias_t</a></div><div class="ttdeci">constexpr alias_t(AliasedPolicies &amp;&amp;... policies)</div><div class="ttdef"><b>Definition:</b> <a href="alias_8hpp_source.html#l00156">alias.hpp:156</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1policy_1_1alias__t_html_ac8026b56fcd31b8ae780c47fca87c45b"><div class="ttname"><a href="classarg__router_1_1policy_1_1alias__t.html#ac8026b56fcd31b8ae780c47fca87c45b">arg_router::policy::alias_t::alias_t</a></div><div class="ttdeci">constexpr alias_t(AliasedPolicies &amp;&amp;... policies)</div><div class="ttdef"><b>Definition:</b> <a href="alias_8hpp_source.html#l00036">alias.hpp:36</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1policy_1_1alias__t_html"><div class="ttname"><a href="classarg__router_1_1policy_1_1alias__t.html">arg_router::policy::alias_t</a></div><div class="ttdef"><b>Definition:</b> <a href="alias_8hpp_source.html#l00026">alias.hpp:26</a></div></div>
 <div class="ttc" id="astructarg__router_1_1policy_1_1no__result__value_html"><div class="ttname"><a href="structarg__router_1_1policy_1_1no__result__value.html">arg_router::policy::no_result_value</a></div><div class="ttdef"><b>Definition:</b> <a href="no__result__value_8hpp_source.html#l00015">no_result_value.hpp:15</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1policy_1_1alias__t_html_abd3cbec28db15f7bedea6bcaf50ea3bb"><div class="ttname"><a href="classarg__router_1_1policy_1_1alias__t.html#abd3cbec28db15f7bedea6bcaf50ea3bb">arg_router::policy::alias_t::aliased_policies_type</a></div><div class="ttdeci">std::tuple&lt; AliasedPolicies... &gt; aliased_policies_type</div><div class="ttdef"><b>Definition:</b> <a href="alias_8hpp_source.html#l00030">alias.hpp:30</a></div></div>
-<div class="ttc" id="anamespacearg__router_1_1utility_html_a99e297c7383915d8754a23f4dcfa07b5"><div class="ttname"><a href="namespacearg__router_1_1utility.html#a99e297c7383915d8754a23f4dcfa07b5">arg_router::utility::tuple_iterator</a></div><div class="ttdeci">constexpr std::enable_if_t&lt; traits::is_tuple_like_v&lt; std::decay_t&lt; Tuple &gt; &gt; &gt; tuple_iterator(F &amp;&amp;f, Tuple &amp;&amp;tuple)</div><div class="ttdef"><b>Definition:</b> <a href="tuple__iterator_8hpp_source.html#l00038">tuple_iterator.hpp:38</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1parsing_1_1token__list_html_a0451d409999360afd84789becac0123b"><div class="ttname"><a href="classarg__router_1_1parsing_1_1token__list.html#a0451d409999360afd84789becac0123b">arg_router::parsing::token_list::insert</a></div><div class="ttdeci">const_iterator insert(const_iterator pos, InputIt first, InputIt last)</div><div class="ttdef"><b>Definition:</b> <a href="token__type_8hpp_source.html#l00248">token_type.hpp:248</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1utility_html_a99e297c7383915d8754a23f4dcfa07b5"><div class="ttname"><a href="namespacearg__router_1_1utility.html#a99e297c7383915d8754a23f4dcfa07b5">arg_router::utility::tuple_iterator</a></div><div class="ttdeci">constexpr std::enable_if_t&lt; traits::is_tuple_like_v&lt; std::decay_t&lt; Tuple &gt; &gt; &gt; tuple_iterator(F &amp;&amp;f, Tuple &amp;&amp;tuple)</div><div class="ttdef"><b>Definition:</b> <a href="tuple__iterator_8hpp_source.html#l00032">tuple_iterator.hpp:32</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1algorithm_html_ae0c6e74281c42f23d11e9fc509f8d04e"><div class="ttname"><a href="namespacearg__router_1_1algorithm.html#ae0c6e74281c42f23d11e9fc509f8d04e">arg_router::algorithm::zip_t</a></div><div class="ttdeci">typename zip&lt; First, Second &gt;::type zip_t</div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00254">algorithm.hpp:254</a></div></div>
-<div class="ttc" id="anamespacearg__router_1_1policy_html_a748ad71e24ec795116cb721146e22701"><div class="ttname"><a href="namespacearg__router_1_1policy.html#a748ad71e24ec795116cb721146e22701">arg_router::policy::alias</a></div><div class="ttdeci">constexpr alias_t&lt; AliasedPolicies... &gt; alias(AliasedPolicies... policies)</div><div class="ttdef"><b>Definition:</b> <a href="alias_8hpp_source.html#l00271">alias.hpp:271</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1parsing_1_1token__list_html"><div class="ttname"><a href="classarg__router_1_1parsing_1_1token__list.html">arg_router::parsing::token_list</a></div><div class="ttdef"><b>Definition:</b> <a href="token__type_8hpp_source.html#l00070">token_type.hpp:70</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1policy_html_a748ad71e24ec795116cb721146e22701"><div class="ttname"><a href="namespacearg__router_1_1policy.html#a748ad71e24ec795116cb721146e22701">arg_router::policy::alias</a></div><div class="ttdeci">constexpr alias_t&lt; AliasedPolicies... &gt; alias(AliasedPolicies... policies)</div><div class="ttdef"><b>Definition:</b> <a href="alias_8hpp_source.html#l00270">alias.hpp:270</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1parsing_1_1token__list_html"><div class="ttname"><a href="classarg__router_1_1parsing_1_1token__list.html">arg_router::parsing::token_list</a></div><div class="ttdef"><b>Definition:</b> <a href="token__type_8hpp_source.html#l00079">token_type.hpp:79</a></div></div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00010">algorithm.hpp:10</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1parsing_1_1token__list_html_af09a16f019f5241059dc4f03dbfe08f1"><div class="ttname"><a href="classarg__router_1_1parsing_1_1token__list.html#af09a16f019f5241059dc4f03dbfe08f1">arg_router::parsing::token_list::reserve</a></div><div class="ttdeci">void reserve(size_type new_cap)</div></div>
-<div class="ttc" id="aclassarg__router_1_1parsing_1_1token__list_html_a9e704901b476d8b9b0b0b99e952f3d3e"><div class="ttname"><a href="classarg__router_1_1parsing_1_1token__list.html#a9e704901b476d8b9b0b0b99e952f3d3e">arg_router::parsing::token_list::begin</a></div><div class="ttdeci">const_iterator begin() const noexcept</div><div class="ttdef"><b>Definition:</b> <a href="token__type_8hpp_source.html#l00118">token_type.hpp:118</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1policy_1_1alias__t_html_a6a5293fa310cc281e6d7e2fcc361f867"><div class="ttname"><a href="classarg__router_1_1policy_1_1alias__t.html#a6a5293fa310cc281e6d7e2fcc361f867">arg_router::policy::alias_t::pre_parse_phase</a></div><div class="ttdeci">void pre_parse_phase(parsing::token_list &amp;tokens, utility::span&lt; const parsing::token_type &gt; &amp;view, const Parents &amp;... parents) const</div><div class="ttdef"><b>Definition:</b> <a href="alias_8hpp_source.html#l00181">alias.hpp:181</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1parsing_1_1token__list_html_af09a16f019f5241059dc4f03dbfe08f1"><div class="ttname"><a href="classarg__router_1_1parsing_1_1token__list.html#af09a16f019f5241059dc4f03dbfe08f1">arg_router::parsing::token_list::reserve</a></div><div class="ttdeci">void reserve(size_type new_cap)</div><div class="ttdef"><b>Definition:</b> <a href="token__type_8hpp_source.html#l00186">token_type.hpp:186</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1policy_1_1alias__t_html_a6a5293fa310cc281e6d7e2fcc361f867"><div class="ttname"><a href="classarg__router_1_1policy_1_1alias__t.html#a6a5293fa310cc281e6d7e2fcc361f867">arg_router::policy::alias_t::pre_parse_phase</a></div><div class="ttdeci">void pre_parse_phase(parsing::token_list &amp;tokens, utility::span&lt; const parsing::token_type &gt; &amp;view, const Parents &amp;... parents) const</div><div class="ttdef"><b>Definition:</b> <a href="alias_8hpp_source.html#l00061">alias.hpp:61</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1utility_html_ad352319d55d0f012d4c77a6bd851d6f5"><div class="ttname"><a href="namespacearg__router_1_1utility.html#ad352319d55d0f012d4c77a6bd851d6f5">arg_router::utility::span</a></div><div class="ttdeci">nonstd::span_lite::span&lt; T, Extent &gt; span</div><div class="ttdef"><b>Definition:</b> <a href="span_8hpp_source.html#l00022">span.hpp:22</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1parsing_1_1token__list_html_a8de86f95831114c617adb72b73baa120"><div class="ttname"><a href="classarg__router_1_1parsing_1_1token__list.html#a8de86f95831114c617adb72b73baa120">arg_router::parsing::token_list::data</a></div><div class="ttdeci">const_pointer data() const noexcept</div><div class="ttdef"><b>Definition:</b> <a href="token__type_8hpp_source.html#l00145">token_type.hpp:145</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

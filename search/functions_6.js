@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['get_339',['get',['../classarg__router_1_1utility_1_1compile__time__string.html#a81634a9aa138a490f185c84244de6a5d',1,'arg_router::utility::compile_time_string']]],
-  ['get_5fdefault_5fvalue_340',['get_default_value',['../classarg__router_1_1policy_1_1default__value.html#afe9391695233ef94759fc883930cb96c',1,'arg_router::policy::default_value']]],
-  ['get_5ftoken_5ftype_341',['get_token_type',['../namespacearg__router_1_1parsing.html#a71a7566d5831eeeb4c5cd1cdaad216be',1,'arg_router::parsing']]]
+  ['insert_5fpending_340',['insert_pending',['../classarg__router_1_1parsing_1_1token__list.html#a4eb5ef1caa055f3e7ae563a0f01175a9',1,'arg_router::parsing::token_list']]],
+  ['is_5falnum_341',['is_alnum',['../namespacearg__router_1_1algorithm.html#a637eeac0609176c7e2409b16fc40543f',1,'arg_router::algorithm']]],
+  ['is_5fwhitespace_342',['is_whitespace',['../namespacearg__router_1_1algorithm.html#a18059ecb7d0a465aac629148d21e4056',1,'arg_router::algorithm']]]
 ];
