@@ -996,7 +996,7 @@ BOOST_AUTO_TEST_CASE(two_positional_arg_parse_test)
                   positional_arg<std::vector<std::string_view>>(
                       policy::display_name<S_("pos_args1")>,
                       policy::description<S_("Third description")>,
-                      policy::count<2>),
+                      policy::fixed_count<2>),
                   positional_arg<std::vector<double>>(
                       policy::display_name<S_("pos_args2")>,
                       policy::description<S_("Fourth description")>),

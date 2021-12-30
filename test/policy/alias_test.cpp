@@ -100,21 +100,21 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
         policy::long_name<S_("test_root")>,
         stub_node{policy::long_name<S_("test1")>,
                   stub_node{policy::long_name<S_("flag1")>,
-                            policy::count<0>,
+                            policy::fixed_count<0>,
                             policy::alias(policy::long_name<S_("flag2")>)},
                   stub_node{policy::long_name<S_("flag2")>},
                   stub_node{policy::long_name<S_("flag3")>},
                   policy::router{[](bool, bool, bool) {}}},
         stub_node{policy::long_name<S_("test2")>,
                   stub_node{policy::long_name<S_("arg1")>,
-                            policy::count<1>,
+                            policy::fixed_count<1>,
                             policy::alias(policy::long_name<S_("arg3")>)},
                   stub_node{policy::long_name<S_("arg2")>},
                   stub_node{policy::long_name<S_("arg3")>},
                   policy::router{[](bool, bool, bool) {}}},
         stub_node{policy::long_name<S_("test3")>,
                   stub_node{policy::long_name<S_("flag1")>,
-                            policy::count<0>,
+                            policy::fixed_count<0>,
                             policy::alias(policy::long_name<S_("flag2")>,
                                           policy::long_name<S_("flag3")>)},
                   stub_node{policy::long_name<S_("flag2")>},
@@ -122,7 +122,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                   policy::router{[](bool, bool, bool) {}}},
         stub_node{policy::long_name<S_("test4")>,
                   stub_node{policy::long_name<S_("arg1")>,
-                            policy::count<3>,
+                            policy::fixed_count<3>,
                             policy::alias(policy::long_name<S_("arg2")>,
                                           policy::long_name<S_("arg3")>)},
                   stub_node{policy::long_name<S_("arg2")>},
@@ -132,7 +132,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
             policy::long_name<S_("test5")>,
             stub_node{policy::long_name<S_("one_of")>,
                       stub_node{policy::long_name<S_("flag1")>,
-                                policy::count<0>,
+                                policy::fixed_count<0>,
                                 policy::alias(policy::long_name<S_("flag2")>)},
                       stub_node{policy::long_name<S_("flag2")>}},
             stub_node{policy::long_name<S_("flag3")>},
@@ -141,7 +141,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
             policy::long_name<S_("test6")>,
             stub_node{policy::long_name<S_("one_of")>,
                       stub_node{policy::long_name<S_("flag1")>,
-                                policy::count<0>,
+                                policy::fixed_count<0>,
                                 policy::alias(policy::long_name<S_("flag3")>)},
                       stub_node{policy::long_name<S_("flag2")>}},
             stub_node{policy::long_name<S_("flag3")>},
@@ -225,7 +225,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_too_small_view_test)
     const auto root =
         stub_node{policy::long_name<S_("root")>,
                   stub_node{policy::long_name<S_("arg1")>,
-                            policy::count<2>,
+                            policy::fixed_count<2>,
                             policy::alias(policy::long_name<S_("arg2")>)},
                   stub_node{policy::long_name<S_("arg2")>},
                   stub_node{policy::long_name<S_("arg3")>},
@@ -303,7 +303,6 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_needs_counts_test)
     test::death_test_compile(
         R"(
 #include "arg_router/policy/alias.hpp"
-#include "arg_router/policy/count.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/tree_node.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
@@ -346,8 +345,8 @@ int main() {
     return 0;
 }
     )",
-        "Node requires a count(), or minimum_count() and maximum_count() "
-        "methods to use an alias");
+        "Node requires a minimum_count() and maximum_count() methods to use an "
+        "alias");
 }
 
 BOOST_AUTO_TEST_CASE(pre_parse_phase_needs_fixed_count_test)
@@ -355,8 +354,8 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_needs_fixed_count_test)
     test::death_test_compile(
         R"(
 #include "arg_router/policy/alias.hpp"
-#include "arg_router/policy/count.hpp"
 #include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/tree_node.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
@@ -378,7 +377,7 @@ public:
                          const Parents&... parents) const
     {
         using this_policy =
-            std::tuple_element_t<3, typename stub_node::policies_type>;
+            std::tuple_element_t<2, typename stub_node::policies_type>;
         this->this_policy::pre_parse_phase(tokens, view, parents...);
     }
 };
@@ -387,8 +386,7 @@ public:
 int main() {
     auto node = stub_node{policy::long_name<S_("node")>,
                   stub_node{policy::long_name<S_("flag1")>,
-                            policy::min_count<2>,
-                            policy::max_count<3>,
+                            policy::min_max_count<2, 3>,
                             policy::alias(policy::long_name<S_("flag2")>)},
                   stub_node{policy::long_name<S_("flag2")>},
                   stub_node{policy::long_name<S_("flag3")>}};
@@ -512,8 +510,8 @@ BOOST_AUTO_TEST_CASE(cyclic_dependency_test)
     test::death_test_compile(
         R"(
 #include "arg_router/policy/alias.hpp"
-#include "arg_router/policy/count.hpp"
 #include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/policy/router.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
@@ -549,13 +547,13 @@ int main() {
         stub_node{policy::long_name<S_("mode")>,
                   stub_node{policy::long_name<S_("flag1")>,
                             policy::alias(policy::long_name<S_("flag2")>),
-                            policy::count<1>},
+                            policy::fixed_count<1>},
                   stub_node{policy::long_name<S_("flag2")>,
                             policy::alias(policy::long_name<S_("flag3")>),
-                            policy::count<1>},
+                            policy::fixed_count<1>},
                   stub_node{policy::long_name<S_("flag3")>,
                             policy::alias(policy::long_name<S_("flag1")>),
-                            policy::count<1>},
+                            policy::fixed_count<1>},
                   policy::router{[](bool, bool, bool) {}}};
 
     auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "flag2"},
@@ -575,8 +573,8 @@ BOOST_AUTO_TEST_CASE(missing_target_test)
     test::death_test_compile(
         R"(
 #include "arg_router/policy/alias.hpp"
-#include "arg_router/policy/count.hpp"
 #include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/policy/router.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
@@ -612,7 +610,7 @@ int main() {
         stub_node{policy::long_name<S_("mode")>,
                   stub_node{policy::long_name<S_("flag1")>,
                             policy::alias(policy::long_name<S_("flag4")>),
-                            policy::count<1>},
+                            policy::fixed_count<1>},
                   stub_node{policy::long_name<S_("flag2")>},
                   stub_node{policy::long_name<S_("flag3")>},
                   policy::router{[](bool, bool, bool) {}}};
@@ -634,8 +632,8 @@ BOOST_AUTO_TEST_CASE(duplicate_targets_test)
     test::death_test_compile(
         R"(
 #include "arg_router/policy/alias.hpp"
-#include "arg_router/policy/count.hpp"
 #include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/policy/router.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
@@ -672,7 +670,7 @@ int main() {
                   stub_node{policy::long_name<S_("flag1")>,
                             policy::alias(policy::long_name<S_("flag2")>,
                                           policy::long_name<S_("flag2")>),
-                            policy::count<1>},
+                            policy::fixed_count<1>},
                   stub_node{policy::long_name<S_("flag2")>},
                   stub_node{policy::long_name<S_("flag3")>},
                   policy::router{[](bool, bool, bool) {}}};
@@ -694,8 +692,8 @@ BOOST_AUTO_TEST_CASE(duplicate_target_different_name_types_test)
     test::death_test_compile(
         R"(
 #include "arg_router/policy/alias.hpp"
-#include "arg_router/policy/count.hpp"
 #include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/policy/router.hpp"
 #include "arg_router/policy/short_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
@@ -733,7 +731,7 @@ int main() {
                   stub_node{policy::long_name<S_("flag1")>,
                             policy::alias(policy::long_name<S_("flag2")>,
                                           policy::short_name<'a'>),
-                            policy::count<1>},
+                            policy::fixed_count<1>},
                   stub_node{policy::long_name<S_("flag2")>,
                             policy::short_name<'a'>},
                   stub_node{policy::long_name<S_("flag3")>},

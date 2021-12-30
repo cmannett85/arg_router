@@ -29,16 +29,6 @@ class positional_arg_t : public tree_node<Policies...>
         return false;
     }();
 
-    constexpr static bool valid_counts = []() {
-        if constexpr (traits::has_minimum_count_method_v<parent_type> &&
-                      traits::has_maximum_count_method_v<parent_type>) {
-            return parent_type::minimum_count() <= parent_type::maximum_count();
-        }
-        return true;
-    }();
-    static_assert(valid_counts,
-                  "Minimum count must be less than or equal to maximum count");
-
     static_assert(!has_fixed_count<0>, "Cannot have a fixed count of zero");
     static_assert(has_fixed_count<1> || traits::has_push_back_method_v<T>,
                   "value_type must have a push_back() method");

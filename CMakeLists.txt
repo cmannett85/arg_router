@@ -41,7 +41,6 @@ set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/mode.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/parsing.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/alias.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/count.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/custom_parser.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/default_value.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/dependent.hpp
@@ -49,8 +48,7 @@ set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/display_name.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/long_name.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/none_name.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/max_count.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/min_count.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/min_max_count.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/multi_stage_value.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/no_result_value.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/policy.hpp
