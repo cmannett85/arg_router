@@ -1,4 +1,4 @@
-![Documentation Generator](https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg) ![Unit test coverage](https://img.shields.io/badge/Unit_Test_Coverage-99.2%25-brightgreen)
+![Documentation Generator](https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg) ![Unit test coverage](https://img.shields.io/badge/Unit_Test_Coverage-98.7%25-brightgreen)
 
 # arg_router
 `arg_router` is a C++17 command line parser and router.  It uses policy-based objects hierarchically, so the parsing code is self-describing.  Rather than just providing a parsing service that returns a map of `variant`s/`any`s, it allows you to bind `Callable` instances to points in the parse structure, so complex command line arguments can directly call functions with the expected arguments - rather than you having to do this yourself.
@@ -88,7 +88,7 @@ ar::mode(
         arp::description<S_("Maximum line length")>,
         arp::default_value{std::optional<std::size_t>{}}),
     ard::one_of(
-        ard::dependent<arp::long_name<S_("max-line-length")>>,
+        arp::dependent<arp::long_name<S_("max-line-length")>>,
         arp::default_value{"..."},
         ar::flag(
             arp::long_name<S_("skip-line")>,

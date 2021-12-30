@@ -91,19 +91,20 @@ public:
         // Find the initial child, if there are no tokens then create an empty
         // one - an anonymous mode will still be found
         const auto first_token =
-            tokens.empty() ?
+            tokens.pending_view().empty() ?
                 parsing::token_type{parsing::prefix_type::NONE, ""} :
-                tokens.front();
+                tokens.pending_view().front();
         const auto found_child =
             parent_type::find(first_token,
                               [&](auto /*i*/, const auto& child) {  //
                                   child.parse(tokens, *this);
                               });
         if (!found_child) {
-            if (tokens.empty()) {
+            if (tokens.pending_view().empty()) {
                 throw parse_exception{"No arguments passed"};
             } else {
-                throw parse_exception{"Unknown argument", tokens.front()};
+                throw parse_exception{"Unknown argument",
+                                      tokens.pending_view().front()};
             }
         }
     }

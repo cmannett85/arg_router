@@ -29,8 +29,9 @@ public:
     {
         auto hit = false;
         utility::tuple_type_iterator<typename stub_node::policies_type>(  //
-            [&](auto /*i*/, auto ptr) {
-                using this_policy = std::remove_pointer_t<decltype(ptr)>;
+            [&](auto i) {
+                using this_policy =
+                    std::tuple_element_t<i, typename stub_node::policies_type>;
                 if constexpr (policy::has_pre_parse_phase_method_v<
                                   this_policy,
                                   Parents...> &&
@@ -94,7 +95,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                  const auto& test,
                  auto expected_result,
                  auto expected_tokens) {
-        auto view = utility::span<const parsing::token_type>{input_tokens};
+        auto view = input_tokens.pending_view();
         const auto result =
             owner.pre_parse_phase(input_tokens, view, owner, test, root);
         BOOST_CHECK_EQUAL(result, expected_result);
@@ -160,7 +161,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_too_small_view_test)
                   stub_node{policy::long_name<S_("arg3")>}};
 
     auto tokens = parsing::token_list{{parsing::prefix_type::NONE, "42"}};
-    auto view = utility::span<const parsing::token_type>{tokens};
+    auto view = tokens.pending_view();
     const auto& owner = std::get<0>(root.children());
 
     BOOST_CHECK_EXCEPTION(  //
@@ -172,6 +173,59 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_too_small_view_test)
 }
 
 BOOST_AUTO_TEST_SUITE(death_suite)
+
+BOOST_AUTO_TEST_CASE(zero_aliases_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/alias.hpp"
+
+using namespace arg_router;
+
+int main() {
+    auto a = policy::alias();
+    return 0;
+}
+    )",
+        "At least one name needed for alias");
+}
+
+BOOST_AUTO_TEST_CASE(all_params_must_be_policies_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/flag.hpp"
+#include "arg_router/policy/alias.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    auto a = policy::alias(flag(policy::long_name<S_("flag1")>));
+    return 0;
+}
+    )",
+        "All parameters must be policies");
+}
+
+BOOST_AUTO_TEST_CASE(all_params_must_be_names_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/alias.hpp"
+#include "arg_router/policy/display_name.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    auto a = policy::alias(policy::display_name<S_("hello")>);
+    return 0;
+}
+    )",
+        "All parameters must provide a long and/or short form name");
+}
 
 BOOST_AUTO_TEST_CASE(pre_parse_phase_0_parent_test)
 {
@@ -215,7 +269,7 @@ int main() {
                   stub_node{policy::long_name<S_("flag2")>},
                   stub_node{policy::long_name<S_("flag3")>}};
     auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "flag1"}};
-    auto view = utility::span<const parsing::token_type>{tokens};
+    auto view = tokens.pending_view();
     const auto& owner = std::get<0>(node.children());
     
     owner.pre_parse_phase(tokens, view);
@@ -266,7 +320,7 @@ int main() {
                   stub_node{policy::long_name<S_("flag2")>},
                   stub_node{policy::long_name<S_("flag3")>}};
     auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "flag1"}};
-    auto view = utility::span<const parsing::token_type>{tokens};
+    auto view = tokens.pending_view();
     const auto& owner = std::get<0>(node.children());
     
     owner.pre_parse_phase(tokens, view, owner, node);
@@ -320,7 +374,7 @@ int main() {
                   stub_node{policy::long_name<S_("flag2")>},
                   stub_node{policy::long_name<S_("flag3")>}};
     auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "flag1"}};
-    auto view = utility::span<const parsing::token_type>{tokens};
+    auto view = tokens.pending_view();
     const auto& owner = std::get<0>(node.children());
     
     owner.pre_parse_phase(tokens, view, owner, node);
@@ -371,7 +425,7 @@ int main() {
                             policy::count<1>,
                             policy::alias(policy::long_name<S_("flag1")>)}};
     auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "flag1"}};
-    auto view = utility::span<const parsing::token_type>{tokens};
+    auto view = tokens.pending_view();
     const auto& owner = std::get<0>(node.children());
     
     owner.pre_parse_phase(tokens, view, owner, node);
@@ -422,7 +476,7 @@ int main() {
                             policy::alias(policy::long_name<S_("flag2")>,
                                           policy::long_name<S_("flag1")>)}};
     auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "flag1"}};
-    auto view = utility::span<const parsing::token_type>{tokens};
+    auto view = tokens.pending_view();
     const auto& owner = std::get<0>(node.children());
     
     owner.pre_parse_phase(tokens, view, owner, node);
@@ -474,7 +528,7 @@ int main() {
                   stub_node{policy::long_name<S_("flag2")>},
                   stub_node{policy::long_name<S_("flag3")>}};
     auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "flag1"}};
-    auto view = utility::span<const parsing::token_type>{tokens};
+    auto view = tokens.pending_view();
     const auto& owner = std::get<0>(node.children());
     
     owner.pre_parse_phase(tokens, view, owner, node);
@@ -529,7 +583,7 @@ int main() {
                   stub_node{policy::long_name<S_("flag3")>,
                             policy::short_name<'f'>}};
     auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "flag1"}};
-    auto view = utility::span<const parsing::token_type>{tokens};
+    auto view = tokens.pending_view();
     const auto& owner = std::get<0>(node.children());
     
     owner.pre_parse_phase(tokens, view, owner, node);
@@ -583,7 +637,7 @@ int main() {
                             policy::count<0>,
                             policy::alias(policy::long_name<S_("flag1")>)}};
     auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "flag1"}};
-    auto view = utility::span<const parsing::token_type>{tokens};
+    auto view = tokens.pending_view();
     const auto& owner = std::get<0>(node.children());
     
     owner.pre_parse_phase(tokens, view, node);

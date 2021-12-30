@@ -6,6 +6,29 @@ using namespace arg_router;
 using namespace utility::string_view_ops;
 using namespace std::string_literals;
 
+namespace
+{
+template <typename ViewType>
+bool token_list_view_equality(ViewType lhs, ViewType rhs)
+{
+    // For some insane reason, span doesn't have equality operators
+    return std::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+}
+
+template <typename ViewType>
+std::string token_list_view_to_string(ViewType view)
+{
+    auto str = ""s;
+    for (auto i = 0u; i < view.size(); ++i) {
+        str += to_string(view[i]);
+        if (i != (view.size() - 1)) {
+            str += ", ";
+        }
+    }
+    return str;
+}
+}  // namespace
+
 std::string_view parsing::to_string(prefix_type prefix)
 {
     switch (prefix) {
@@ -20,31 +43,6 @@ std::string parsing::to_string(const token_type& token)
     return std::string{to_string(token.prefix)} + token.name;
 }
 
-bool parsing::token_list::operator==(const token_list& other) const noexcept
-{
-    if (size() == other.size()) {
-        const auto [this_result, that_result] =
-            std::mismatch(begin(), end(), other.begin(), other.end());
-        return this_result == end();
-    }
-    return false;
-}
-
-void parsing::token_list::reserve(size_type new_cap)
-{
-    data_.reserve(new_cap);
-}
-
-void parsing::token_list::push_back(const value_type& value)
-{
-    data_.push_back(value);
-}
-
-void parsing::token_list::pop_front(size_type count)
-{
-    head_offset_ += std::min(count, size());
-}
-
 void parsing::token_list::swap(token_list& other) noexcept
 {
     using std::swap;
@@ -53,16 +51,26 @@ void parsing::token_list::swap(token_list& other) noexcept
     swap(head_offset_, other.head_offset_);
 }
 
-std::string parsing::to_string(const token_list& tokens)
+bool parsing::operator==(token_list::pending_view_type lhs,
+                         token_list::pending_view_type rhs)
 {
-    auto str = ""s;
-    for (auto i = 0u; i < tokens.size(); ++i) {
-        str += to_string(tokens[i]);
-        if (i != (tokens.size() - 1)) {
-            str += ", ";
-        }
-    }
-    return str;
+    return token_list_view_equality(lhs, rhs);
+}
+
+bool parsing::operator==(token_list::processed_view_type lhs,
+                         token_list::processed_view_type rhs)
+{
+    return token_list_view_equality(lhs, rhs);
+}
+
+std::string parsing::to_string(const token_list::pending_view_type& view)
+{
+    return token_list_view_to_string(view);
+}
+
+std::string parsing::to_string(const token_list::processed_view_type& view)
+{
+    return token_list_view_to_string(view);
 }
 
 parsing::token_type parsing::get_token_type(std::string_view token)

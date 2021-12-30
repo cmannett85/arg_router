@@ -40,7 +40,7 @@ protected:
     template <typename... Args>
     void routing_phase(const parsing::token_list& tokens, Args&&... args) const
     {
-        if (!tokens.empty()) {
+        if (!tokens.pending_view().empty()) {
             throw parse_exception{"Unhandled arguments", tokens};
         }
         f_(std::forward<Args>(args)...);

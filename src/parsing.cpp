@@ -13,11 +13,11 @@ parsing::token_list parsing::expand_arguments(int argc, const char* argv[])
 
         if (prefix == parsing::prefix_type::SHORT) {
             for (auto j = 0u; j < stripped.size(); ++j) {
-                result.emplace_back(prefix,
-                                    std::string_view{&(stripped[j]), 1});
+                result.emplace_pending(prefix,
+                                       std::string_view{&(stripped[j]), 1});
             }
         } else {
-            result.emplace_back(prefix, stripped);
+            result.emplace_pending(prefix, stripped);
         }
     }
 

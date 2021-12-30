@@ -84,7 +84,7 @@ BOOST_AUTO_TEST_CASE(parse_test)
             BOOST_CHECK_EQUAL(e.what(), fail_message);
         }
 
-        BOOST_CHECK_EQUAL(tokens, expected_tokens);
+        BOOST_CHECK_EQUAL(tokens.pending_view(), expected_tokens);
         BOOST_CHECK_EQUAL(router_hit, expected_router_hit);
     };
 

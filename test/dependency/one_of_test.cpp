@@ -182,6 +182,29 @@ int main() {
         "one_of must not have a short name policy");
 }
 
+BOOST_AUTO_TEST_CASE(cannot_have_none_name_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/arg.hpp"
+#include "arg_router/dependency/one_of.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/none_name.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+namespace ard = arg_router::dependency;
+
+int main() {
+    auto f = ard::one_of(arg<int>(policy::long_name<S_("arg1")>),
+                         arg<double>(policy::long_name<S_("arg2")>),
+                         policy::none_name<S_("none")>);
+    return 0;
+}
+    )",
+        "one_of must not have a none name policy");
+}
+
 BOOST_AUTO_TEST_CASE(all_children_must_be_named_test)
 {
     test::death_test_compile(

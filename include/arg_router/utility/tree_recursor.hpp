@@ -18,7 +18,10 @@ struct always_false {
     }
 };
 
-template <typename Fn, typename SkipFn, typename Current, typename... Parents>
+template <typename Visitor,
+          typename SkipFn,
+          typename Current,
+          typename... Parents>
 constexpr void tree_recursor_impl()
 {
     if constexpr (!SkipFn::template fn<Current, Parents...>()) {
@@ -28,20 +31,57 @@ constexpr void tree_recursor_impl()
                 typename Current::policies_type>;
 
             // Recurse into the types
-            tuple_type_iterator<children_and_policies>(
-                [](auto /*i*/, auto ptr) {
-                    using type = std::remove_pointer_t<decltype(ptr)>;
-                    tree_recursor_impl<Fn, SkipFn, type, Current, Parents...>();
-                });
+            tuple_type_iterator<children_and_policies>([](auto i) {
+                using type = std::tuple_element_t<i, children_and_policies>;
+                tree_recursor_impl<Visitor,
+                                   SkipFn,
+                                   type,
+                                   Current,
+                                   Parents...>();
+            });
         }
 
-        Fn::template fn<Current, Parents...>();
+        Visitor::template fn<Current, Parents...>();
     }
 }
+
+template <template <typename...> typename Visitor,
+          typename Current,
+          typename... Parents>
+struct tree_type_recursor_impl {
+    template <typename ChildOrPolicy>
+    using recurse = typename tree_type_recursor_impl<Visitor,
+                                                     ChildOrPolicy,
+                                                     Current,
+                                                     Parents...>::type;
+
+    template <typename T>
+    using get_children_type = typename T::children_type;
+    template <typename T>
+    using get_policies_type = typename T::policies_type;
+
+    using children_type = boost::mp11::mp_eval_if_c<!is_tree_node_v<Current>,
+                                                    std::tuple<>,
+                                                    get_children_type,
+                                                    Current>;
+    using policies_type = boost::mp11::mp_eval_if_c<!is_tree_node_v<Current>,
+                                                    std::tuple<>,
+                                                    get_policies_type,
+                                                    Current>;
+
+    using type = boost::mp11::mp_eval_if_c<
+        !is_tree_node_v<Current>,
+        std::tuple<typename Visitor<Current, Parents...>::type>,
+        boost::mp11::mp_push_back,
+        boost::mp11::mp_flatten<boost::mp11::mp_transform<
+            recurse,
+            boost::mp11::mp_append<children_type, policies_type>>>,
+        typename Visitor<Current, Parents...>::type>;
+};
 }  // namespace detail
 
-/** Depth-first recurse through the parse tree, calling @a Fn on every tree_node
- * and policy.
+/** Depth-first recurse through the parse tree, calling @a Visitor on every
+ * tree_node and policy.
  *
  * @a Fn must be object with the same method signatue as below:
  * @code
@@ -57,14 +97,14 @@ constexpr void tree_recursor_impl()
  * to policy level, and <TT>Parents</TT> is a pack of ancestors in increasing
  * generation from <TT>Current</TT>.  The last in the pack is always the root
  * unless <TT>Current</TT> is itself the root.
- * @tparam Fn Functional object type
+ * @tparam Visitor Visitor object type
  * @tparam Root Start object type in the parse tree
  * @return void
  */
-template <typename Fn, typename Root>
+template <typename Visitor, typename Root>
 constexpr void tree_recursor()
 {
-    detail::tree_recursor_impl<Fn, detail::always_false, Root>();
+    detail::tree_recursor_impl<Visitor, detail::always_false, Root>();
 }
 
 /** Specialisation of tree_recursor() where a skip function can be used to
@@ -84,15 +124,44 @@ constexpr void tree_recursor()
  * If the return value is true, then the <TT>Current</TT> node and any subtree
  * below it are skipped i.e. @a Fn is not called.
  * 
- * @tparam Fn Functional object type
+ * @tparam Visitor Visitor object type
  * @tparam SkipFn Functional object type to skip recursion on current node
  * @tparam Root Start object type in the parse tree
  * @return void
  */
-template <typename Fn, typename SkipFn, typename Root>
+template <typename Visitor, typename SkipFn, typename Root>
 constexpr void tree_recursor()
 {
-    detail::tree_recursor_impl<Fn, SkipFn, Root>();
+    detail::tree_recursor_impl<Visitor, SkipFn, Root>();
 }
+
+/** Similar in principle to tree_recursor(), but allows for a type to built up
+ * from the visitor as it recurses.
+ *
+ * @a Fn must be a template template type like below:
+ * @code
+ * template <typename Current, typename... Parents>
+ * struct my_fn_t {
+ *     using type = // Some result type of the visitation
+ * };
+ * @endcode
+ * <TT>my_fn_t<...>::type</TT> of all the nodes and policies is concatenated
+ * into a <TT>std::tuple</TT> available in the type member.
+ * @tparam Visitor Visitor object type
+ * @tparam Root Start object type in the parse tree
+ */
+template <template <typename...> typename Visitor, typename Root>
+struct tree_type_recursor {
+    /** Tuple of all the @a Visitor result types. */
+    using type = typename detail::tree_type_recursor_impl<Visitor, Root>::type;
+};
+
+/** Helper alias for tree_type_recursor.
+ *
+ * @tparam Visitor Visitor object type
+ * @tparam Root Start object type in the parse tree
+ */
+template <template <typename...> typename Visitor, typename Root>
+using tree_type_recursor_t = typename tree_type_recursor<Visitor, Root>::type;
 }  // namespace utility
 }  // namespace arg_router

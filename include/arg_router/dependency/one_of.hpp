@@ -128,6 +128,8 @@ class one_of_t :
                   "one_of must not have a long name policy");
     static_assert(!traits::has_short_name_method_v<one_of_t>,
                   "one_of must not have a short name policy");
+    static_assert(!traits::has_none_name_method_v<one_of_t>,
+                  "one_of must not have a none name policy");
 
     using basic_value_type = boost::mp11::mp_rename<
         boost::mp11::mp_transform<

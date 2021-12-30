@@ -44,6 +44,7 @@ set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/count.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/custom_parser.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/default_value.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/dependent.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/description.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/display_name.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/long_name.hpp

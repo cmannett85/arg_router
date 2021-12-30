@@ -101,18 +101,29 @@ BOOST_AUTO_TEST_CASE(parent_types_test)
                           policy::router<std::less<>>>>>();
 }
 
-BOOST_AUTO_TEST_CASE(must_have_policy_test)
+BOOST_AUTO_TEST_CASE(must_have_policies_test)
 {
-    policy::validation::must_have_policy<policy::long_name_t>::check<
+    policy::validation::must_have_policies<policy::long_name_t>::check<
         flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
                policy::long_name_t<S_("test")>>>();
+
+    policy::validation::must_have_policies<policy::long_name_t,
+                                           policy::description_t>::
+        check<flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+                     policy::description_t<S_("desc")>,
+                     policy::long_name_t<S_("test")>>>();
 }
 
-BOOST_AUTO_TEST_CASE(must_not_have_policy_test)
+BOOST_AUTO_TEST_CASE(must_not_have_policies_test)
 {
-    policy::validation::must_not_have_policy<policy::required_t>::check<
+    policy::validation::must_not_have_policies<policy::required_t>::check<
         flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
                policy::long_name_t<S_("test")>>>();
+
+    policy::validation::must_not_have_policies<policy::required_t,
+                                               policy::description_t>::
+        check<flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+                     policy::long_name_t<S_("test")>>>();
 }
 
 BOOST_AUTO_TEST_CASE(child_must_have_policy_test)
@@ -373,7 +384,7 @@ int main() {
         "Parent must be one of a set of types");
 }
 
-BOOST_AUTO_TEST_CASE(must_have_policy_test)
+BOOST_AUTO_TEST_CASE(must_have_policies_test)
 {
     test::death_test_compile(
         R"(
@@ -383,16 +394,16 @@ BOOST_AUTO_TEST_CASE(must_have_policy_test)
 using namespace arg_router;
 
 int main() {
-    policy::validation::must_have_policy<policy::required_t>::check<
+    policy::validation::must_have_policies<policy::required_t>::check<
         flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
                policy::long_name_t<S_("test")>>>();
     return 0;
 }
     )",
-        "T must have this policy");
+        "T must have all these policies");
 }
 
-BOOST_AUTO_TEST_CASE(must_not_have_policy_test)
+BOOST_AUTO_TEST_CASE(must_have_policies_multiple_test)
 {
     test::death_test_compile(
         R"(
@@ -402,14 +413,55 @@ BOOST_AUTO_TEST_CASE(must_not_have_policy_test)
 using namespace arg_router;
 
 int main() {
-    policy::validation::must_not_have_policy<policy::required_t>::check<
+    policy::validation::must_have_policies<
+        policy::required_t, policy::short_name_t>::check<
+            flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+                   policy::long_name_t<S_("test")>>>();
+    return 0;
+}
+    )",
+        "T must have all these policies");
+}
+
+BOOST_AUTO_TEST_CASE(must_not_have_policies_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/validator.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    policy::validation::must_not_have_policies<policy::required_t>::check<
         flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
                policy::long_name_t<S_("test")>,
                policy::required_t<>>>();
     return 0;
 }
     )",
-        "T must not have this policy");
+        "T must have none of these policies");
+}
+
+BOOST_AUTO_TEST_CASE(must_not_have_policies_multiple_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/validator.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    policy::validation::must_not_have_policies<
+        policy::required_t, policy::long_name_t>::check<
+            flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+                   policy::long_name_t<S_("test")>,
+                   policy::required_t<>>>();
+    return 0;
+}
+    )",
+        "T must have none of these policies");
 }
 
 BOOST_AUTO_TEST_CASE(child_must_have_policy_test)

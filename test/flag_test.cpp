@@ -76,7 +76,7 @@ BOOST_AUTO_TEST_CASE(parse_test)
         router_hit = false;
         const auto result = node.parse(tokens, parents...);
         BOOST_CHECK_EQUAL(result, expected_result);
-        BOOST_CHECK_EQUAL(tokens, expected_tokens);
+        BOOST_CHECK_EQUAL(tokens.pending_view(), expected_tokens);
         BOOST_CHECK_EQUAL(router_hit, expected_router_hit);
     };
 
