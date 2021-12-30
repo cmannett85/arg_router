@@ -22,8 +22,9 @@ public:
     {
         auto hit = false;
         utility::tuple_type_iterator<typename stub_node::policies_type>(  //
-            [&](auto /*i*/, auto ptr) {
-                using this_policy = std::remove_pointer_t<decltype(ptr)>;
+            [&](auto i) {
+                using this_policy =
+                    std::tuple_element_t<i, typename stub_node::policies_type>;
                 if constexpr (policy::has_routing_phase_method_v<this_policy,
                                                                  Args...> &&
                               traits::is_specialisation_of_v<this_policy,

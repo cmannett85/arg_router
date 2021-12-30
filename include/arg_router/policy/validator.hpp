@@ -5,7 +5,10 @@
 #include "arg_router/flag.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/alias.hpp"
+#include "arg_router/policy/custom_parser.hpp"
 #include "arg_router/policy/default_value.hpp"
+#include "arg_router/policy/dependent.hpp"
+#include "arg_router/policy/description.hpp"
 #include "arg_router/policy/display_name.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/none_name.hpp"
@@ -122,8 +125,8 @@ private:
             // Remove the rule key so we just have a list of conditions
             using conditions = boost::mp11::
                 mp_drop_c<std::tuple_element_t<rule_index, rules_type>, 1>;
-            utility::tuple_type_iterator<conditions>([](auto /*i*/, auto ptr) {
-                using condition = std::remove_pointer_t<decltype(ptr)>;
+            utility::tuple_type_iterator<conditions>([](auto i) {
+                using condition = std::tuple_element_t<i, conditions>;
                 condition::template check<Current, Parents...>();
             });
         }
@@ -319,38 +322,43 @@ struct parent_types {
     }
 };
 
-template <template <typename...> typename Policy>
-struct basic_must_have_policy {
-    template <typename T>
-    constexpr static auto value =
-        algorithm::has_specialisation_v<Policy, typename T::policies_type>;
-};
-
-/** A rule condition that checks that @a T's policies do contain @a Policy.
+/** A rule condition that checks that @a T's policies contain all of
+ * @a Policies.
  *
- * @tparam Policy Despecialised policy to check for
+ * @tparam Policies Despecialised policies to check for
  */
-template <template <typename...> typename Policy>
-struct must_have_policy {
+template <template <typename...> typename... Policies>
+struct must_have_policies {
+    template <typename T>
+    using checker = boost::mp11::mp_all_of<
+        std::tuple<algorithm::has_specialisation<Policies,
+                                                 typename T::policies_type>...>,
+        boost::mp11::mp_to_bool>;
+
     template <typename T, typename...>
     constexpr static void check()
     {
-        static_assert(basic_must_have_policy<Policy>::template value<T>,
-                      "T must have this policy");
+        static_assert(checker<T>::value, "T must have all these policies");
     }
 };
 
-/** A rule condition that checks that @a T's policies do not contain @a Policy.
+/** A rule condition that checks that @a T's policies contain none of
+ * @a Policies.
  *
- * @tparam Policy Despecialised policy to check for
+ * @tparam Policies Despecialised policies to check for
  */
-template <template <typename...> typename Policy>
-struct must_not_have_policy {
+template <template <typename...> typename... Policies>
+struct must_not_have_policies {
+    template <typename T>
+    using checker = boost::mp11::mp_none_of<
+        std::tuple<algorithm::has_specialisation<Policies,
+                                                 typename T::policies_type>...>,
+        boost::mp11::mp_to_bool>;
+
     template <typename T, typename...>
     constexpr static void check()
     {
-        static_assert(!basic_must_have_policy<Policy>::template value<T>,
-                      "T must not have this policy");
+        static_assert(checker<T>::value, "T must have none of these policies");
     }
 };
 
@@ -606,32 +614,72 @@ inline constexpr auto default_validator = validator<
     // Tree nodes
     // Flag
     rule_q<common_rules::despecialised_any_of_rule<flag_t>,
-           must_not_have_policy<policy::required_t>,
-           must_not_have_policy<policy::validation::validator>>,
+           must_not_have_policies<policy::custom_parser,
+                                  policy::multi_stage_value,
+                                  policy::no_result_value,
+                                  policy::required_t,
+                                  policy::validation::validator>>,
     // Arg
     rule_q<common_rules::despecialised_any_of_rule<arg_t>,
-           must_not_have_policy<policy::validation::validator>>,
+           must_not_have_policies<policy::multi_stage_value,
+                                  policy::no_result_value,
+                                  policy::validation::validator>>,
     // Positional arg
     rule_q<common_rules::despecialised_any_of_rule<positional_arg_t>,
-           must_not_have_policy<policy::validation::validator>,
-           must_not_have_policy<policy::required_t>,
-           must_not_have_policy<policy::alias_t>>,
+           must_not_have_policies<policy::alias_t,
+                                  policy::multi_stage_value,
+                                  policy::no_result_value,
+                                  policy::required_t,
+                                  policy::validation::validator>>,
     // one_of
     rule_q<common_rules::despecialised_any_of_rule<dependency::one_of_t>,
-           must_not_have_policy<policy::validation::validator>,
-           must_not_have_policy<policy::alias_t>,
+           must_not_have_policies<policy::alias_t,
+                                  policy::count_t,
+                                  policy::custom_parser,
+                                  policy::dependent_t,
+                                  policy::max_count_t,
+                                  policy::min_count_t,
+                                  policy::no_result_value,
+                                  policy::router,
+                                  policy::validation::validator>,
+           child_must_not_have_policy<policy::required_t>,
+           child_must_not_have_policy<policy::default_value>,
            parent_types<parent_index_pair_type<0, mode_t>>>,
     // Mode
     rule_q<
         common_rules::despecialised_any_of_rule<mode_t>,
-        must_not_have_policy<policy::default_value>,
+        must_not_have_policies<policy::alias_t,
+                               policy::count_t,
+                               policy::custom_parser,
+                               policy::default_value,
+                               policy::dependent_t,
+                               policy::max_count_t,
+                               policy::min_count_t,
+                               policy::multi_stage_value,
+                               policy::required_t>,
         positional_args_must_be_at_end<positional_arg_t>,
         positional_args_must_have_fixed_count_if_not_at_end<positional_arg_t>,
         parent_types<parent_index_pair_type<0, root_t>,
                      parent_index_pair_type<0, mode_t>>>,
     // Root
     rule_q<common_rules::despecialised_any_of_rule<root_t>,
-           must_have_policy<policy::validation::validator>,
+           must_have_policies<policy::validation::validator>,
+           must_not_have_policies<policy::alias_t,
+                                  policy::count_t,
+                                  policy::custom_parser,
+                                  policy::default_value,
+                                  policy::dependent_t,
+                                  policy::description_t,
+                                  policy::display_name_t,
+                                  policy::long_name_t,
+                                  policy::max_count_t,
+                                  policy::min_count_t,
+                                  policy::multi_stage_value,
+                                  policy::no_result_value,
+                                  policy::none_name_t,
+                                  policy::required_t,
+                                  policy::router,
+                                  policy::short_name_t>,
            child_must_not_have_policy<policy::required_t>,
            child_must_not_have_policy<policy::alias_t>,
            single_anonymous_mode<arg_router::mode_t>>>{};

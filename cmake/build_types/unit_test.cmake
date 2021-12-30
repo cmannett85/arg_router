@@ -22,6 +22,7 @@ set(TEST_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/policy/alias_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/policy/count_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/policy/default_value_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/policy/dependent_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/policy/description_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/policy/display_name_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/policy/long_name_test.cpp

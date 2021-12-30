@@ -20,6 +20,12 @@ inline std::ostream& operator<<(std::ostream& stream, const token_list& list)
 {
     return stream << to_string(list);
 }
+
+inline std::ostream& operator<<(std::ostream& stream,
+                                const token_list::pending_view_type& view)
+{
+    return stream << to_string(view);
+}
 }  // namespace parsing
 }  // namespace arg_router
 

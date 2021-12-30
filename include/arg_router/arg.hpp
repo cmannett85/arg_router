@@ -80,20 +80,21 @@ public:
                      const Parents&... parents) const
     {
         // Check we have enough tokens to even do a value parse
-        if (tokens.size() <= parent_type::count()) {
+        auto view = tokens.pending_view();
+        if (tokens.pending_view().size() <= parent_type::count()) {
             // The match operation guarantees that the node name token is
             // present
-            throw parse_exception{"Missing argument", tokens.front()};
+            throw parse_exception{"Missing argument", view.front()};
         }
 
-        // Remove this node's name
-        tokens.pop_front();
-
-        auto view = utility::span<const parsing::token_type>{tokens};
+        // Remove this node's name.  The view needs regenerating after the
+        // change
+        tokens.mark_as_processed();
+        view = tokens.pending_view();
 
         // Pre-parse
-        utility::tuple_type_iterator<policies_type>([&](auto /*i*/, auto ptr) {
-            using policy_type = std::remove_pointer_t<decltype(ptr)>;
+        utility::tuple_type_iterator<policies_type>([&](auto i) {
+            using policy_type = std::tuple_element_t<i, policies_type>;
             if constexpr (policy::has_pre_parse_phase_method_v<policy_type,
                                                                arg_t,
                                                                Parents...>) {
@@ -111,11 +112,11 @@ public:
                                                               parents...);
 
         // Pop the token, we don't need it anymore
-        tokens.pop_front();
+        tokens.mark_as_processed();
 
         // Validation
-        utility::tuple_type_iterator<policies_type>([&](auto /*i*/, auto ptr) {
-            using policy_type = std::remove_pointer_t<decltype(ptr)>;
+        utility::tuple_type_iterator<policies_type>([&](auto i) {
+            using policy_type = std::tuple_element_t<i, policies_type>;
             if constexpr (policy::has_validation_phase_method_v<policy_type,
                                                                 value_type,
                                                                 arg_t,
@@ -140,7 +141,7 @@ public:
  *
  * This is necessary due to CTAD being required for all template parameters or
  * none, and unfortunately in our case we need @a T to be explicitly set by the
- * user whilst @a Policies need to be deduced.
+ * user whilst @a Policies should be deduced.
  * @tparam T Argument value type
  * @tparam Policies Pack of policies that define its behaviour
  * @param policies Pack of policy instances

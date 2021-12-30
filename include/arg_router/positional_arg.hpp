@@ -49,6 +49,8 @@ class positional_arg_t : public tree_node<Policies...>
                   "Positional arg must not have a long name policy");
     static_assert(!traits::has_short_name_method_v<positional_arg_t>,
                   "Positional arg must not have a short name policy");
+    static_assert(!traits::has_none_name_method_v<positional_arg_t>,
+                  "Positional arg must not have a none name policy");
 
 public:
     using typename parent_type::policies_type;
@@ -112,11 +114,11 @@ public:
     value_type parse(parsing::token_list& tokens,
                      const Parents&... parents) const
     {
-        auto view = utility::span<const parsing::token_type>{tokens};
+        auto view = tokens.pending_view();
 
         // Pre-parse
-        utility::tuple_type_iterator<policies_type>([&](auto /*i*/, auto ptr) {
-            using policy_type = std::remove_pointer_t<decltype(ptr)>;
+        utility::tuple_type_iterator<policies_type>([&](auto i) {
+            using policy_type = std::tuple_element_t<i, policies_type>;
             if constexpr (policy::has_pre_parse_phase_method_v<policy_type,
                                                                positional_arg_t,
                                                                Parents...>) {
@@ -142,11 +144,11 @@ public:
         }
 
         // Pop the tokens, we don't need them anymore
-        tokens.pop_front(view.size());
+        tokens.mark_as_processed(view.size());
 
         // Validation
-        utility::tuple_type_iterator<policies_type>([&](auto /*i*/, auto ptr) {
-            using policy_type = std::remove_pointer_t<decltype(ptr)>;
+        utility::tuple_type_iterator<policies_type>([&](auto i) {
+            using policy_type = std::tuple_element_t<i, policies_type>;
             if constexpr (policy::has_validation_phase_method_v<
                               policy_type,
                               value_type,
@@ -172,7 +174,7 @@ public:
  *
  * This is necessary due to CTAD being required for all template parameters or
  * none, and unfortunately in our case we need @a T to be explicitly set by the
- * user whilst @a Policies need to be deduced.
+ * user whilst @a Policies should be deduced.
  * @tparam T Argument value type, must have a <TT>push_back(..)</TT> method
  * @tparam Policies Pack of policies that define its behaviour
  * @param policies Pack of policy instances

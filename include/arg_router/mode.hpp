@@ -138,16 +138,16 @@ public:
         // error messages
         auto mode_token = std::optional<parsing::token_type>{};
         if constexpr (!is_anonymous) {
-            mode_token = tokens.front();
-            tokens.pop_front();
+            mode_token = tokens.pending_view().front();
+            tokens.mark_as_processed();
         }
 
         // Find any matching mode type and delegate parsing into it
         if constexpr (!is_anonymous) {
-            if (!tokens.empty()) {
+            if (!tokens.pending_view().empty()) {
                 auto found_child_mode = false;
                 parent_type::find(
-                    tokens.front(),
+                    tokens.pending_view().front(),
                     [&](auto /*i*/, const auto& child) {
                         using child_type = std::decay_t<decltype(child)>;
                         if constexpr (traits::is_specialisation_of_v<child_type,
@@ -171,10 +171,10 @@ public:
         auto results = results_type{};
 
         // Iterate over the tokens until consumed
-        while (!tokens.empty()) {
+        while (!tokens.pending_view().empty()) {
             // Find the matching child
             const auto found = parent_type::find(
-                tokens.front(),
+                tokens.pending_view().front(),
                 [&](auto i, const auto& child) {
                     process_result<i.value>(tokens,
                                             results,
@@ -184,7 +184,8 @@ public:
                 },
                 results);
             if (!found) {
-                throw parse_exception{"Unknown argument", tokens.front()};
+                throw parse_exception{"Unknown argument",
+                                      tokens.pending_view().front()};
             }
         }
 
@@ -263,7 +264,7 @@ private:
         if constexpr (!is_skip_tag_v<optional_result_type>) {
             // Make a copy of the token in case we need it for the error message
             // later (parsing consumes the tokens)
-            const auto first_token = tokens.front();
+            const auto first_token = tokens.pending_view().front();
 
             auto parse_result = child.parse(tokens, parents...);
             auto& result = std::get<I>(results);
@@ -292,8 +293,9 @@ private:
                                const Parents&... parents) const
     {
         utility::tuple_type_iterator<typename ChildType::policies_type>(
-            [&](auto /*i*/, auto policy) {
-                using policy_type = std::remove_pointer_t<decltype(policy)>;
+            [&](auto i) {
+                using policy_type =
+                    std::tuple_element_t<i, typename ChildType::policies_type>;
                 if constexpr (policy::has_missing_phase_method_v<policy_type,
                                                                  ValueType,
                                                                  Parents...>) {
@@ -312,8 +314,9 @@ private:
 
         // Irritatingly, we have to run the validation phase on the new value
         utility::tuple_type_iterator<
-            typename ChildType::policies_type>([&](auto /*i*/, auto policy) {
-            using policy_type = std::remove_pointer_t<decltype(policy)>;
+            typename ChildType::policies_type>([&](auto i) {
+            using policy_type =
+                std::tuple_element_t<i, typename ChildType::policies_type>;
             if constexpr (policy::has_validation_phase_method_v<policy_type,
                                                                 ValueType,
                                                                 Parents...>) {

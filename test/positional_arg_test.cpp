@@ -90,7 +90,7 @@ BOOST_AUTO_TEST_CASE(parse_test)
             const auto result = test_node.parse(tokens);
             BOOST_CHECK(fail_message.empty());
             BOOST_CHECK_EQUAL(result, expected_result);
-            BOOST_CHECK_EQUAL(tokens, expected_tokens);
+            BOOST_CHECK_EQUAL(tokens.pending_view(), expected_tokens);
         } catch (parse_exception& e) {
             BOOST_CHECK_EQUAL(e.what(), fail_message);
         }
@@ -240,6 +240,24 @@ int main() {
 }
     )",
         "Positional arg must not have a short name policy");
+}
+
+BOOST_AUTO_TEST_CASE(must_not_have_a_none_name_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/none_name.hpp"
+#include "arg_router/positional_arg.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    auto p = positional_arg<int>(policy::none_name<S_("hello")>);
+    return 0;
+}
+    )",
+        "Positional arg must not have a none name policy");
 }
 
 BOOST_AUTO_TEST_CASE(min_count_greater_than_max_count_test)

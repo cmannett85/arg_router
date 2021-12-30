@@ -104,13 +104,13 @@ public:
         }
 
         // Remove this node's name
-        tokens.pop_front();
+        tokens.mark_as_processed();
 
-        auto view = utility::span<const parsing::token_type>{tokens};
+        auto view = tokens.pending_view();
 
         // Pre-parse
-        utility::tuple_type_iterator<policies_type>([&](auto /*i*/, auto ptr) {
-            using policy_type = std::remove_pointer_t<decltype(ptr)>;
+        utility::tuple_type_iterator<policies_type>([&](auto i) {
+            using policy_type = std::tuple_element_t<i, policies_type>;
             if constexpr (policy::has_pre_parse_phase_method_v<policy_type,
                                                                flag_t,
                                                                Parents...>) {

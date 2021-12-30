@@ -26,8 +26,9 @@ public:
     {
         auto hit = false;
         utility::tuple_type_iterator<typename stub_node::policies_type>(  //
-            [&](auto /*i*/, auto ptr) {
-                using this_policy = std::remove_pointer_t<decltype(ptr)>;
+            [&](auto i) {
+                using this_policy =
+                    std::tuple_element_t<i, typename stub_node::policies_type>;
                 if constexpr (policy::has_pre_parse_phase_method_v<
                                   this_policy,
                                   Parents...> &&
@@ -49,8 +50,9 @@ public:
     {
         auto hit = false;
         utility::tuple_type_iterator<typename stub_node::policies_type>(  //
-            [&](auto /*i*/, auto ptr) {
-                using this_policy = std::remove_pointer_t<decltype(ptr)>;
+            [&](auto i) {
+                using this_policy =
+                    std::tuple_element_t<i, typename stub_node::policies_type>;
                 if constexpr (policy::has_validation_phase_method_v<
                                   this_policy,
                                   ValueType,
@@ -100,14 +102,14 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                  auto expected_result,
                  auto expected_view) {
         auto tokens_backup = input_tokens;
-        auto view = utility::span<const parsing::token_type>{input_tokens};
+        auto view = input_tokens.pending_view();
         const auto result =
             owner.pre_parse_phase(input_tokens, view, owner, root);
         BOOST_CHECK_EQUAL(result, expected_result);
 
-        BOOST_REQUIRE_EQUAL(view.size(), expected_view.size());
-        for (auto i = 0u; i < expected_view.size(); ++i) {
-            BOOST_CHECK_EQUAL(view[i], expected_view[i]);
+        BOOST_REQUIRE_EQUAL(view.size(), expected_view.pending_view().size());
+        for (auto i = 0u; i < expected_view.pending_view().size(); ++i) {
+            BOOST_CHECK_EQUAL(view[i], expected_view.pending_view()[i]);
         }
 
         // Make sure input tokens is unchanged

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "utility/span.hpp"
+
 #include <string>
 #include <string_view>
 #include <vector>
@@ -64,24 +66,41 @@ std::string to_string(const token_type& token);
 
 /** List of tokens.
  *  
- * This is basically a boost::container::devector but without the dependency
- * and... dumber.
+ * This is similar in implementation to a boost::container::devector.  It
+ * consists of the two views of the command line token array: pending and
+ * processed.  Initially all tokens are pending and then as they processed by
+ * the nodes, they mark the tokens as processed, which moves them to the back of
+ * the processed view.
+ * 
+ * Of course we don't really keep two separate lists, there's only one, and
+ * marking them as processed simply moves the pointer that separates the two
+ * views of the container.
  */
 class token_list
 {
     using base_type = std::vector<token_type>;
 
 public:
+    /** token_type alias. */
     using value_type = base_type::value_type;
+    /** Container allocator type. */
     using allocator_type = base_type::allocator_type;
+    /** std::size_t alias. */
     using size_type = base_type::size_type;
-    using difference_type = base_type::difference_type;
-    using reference = base_type::reference;
+    /** const token_type& alias. */
     using const_reference = base_type::const_reference;
-    using pointer = base_type::pointer;
-    using const_pointer = base_type::const_pointer;
-    using iterator = base_type::iterator;
-    using const_iterator = base_type::const_iterator;
+    /** View type for the pending tokens. */
+    using pending_view_type = utility::span<const value_type>;
+
+    /** View type for the processed tokens.
+     *  
+     * We have identical functioning but different types of views so people
+     * can't pass a processed view iterator to the insert method.
+     */
+    class processed_view_type : public pending_view_type
+    {
+        using span::span;
+    };
 
     /** Constructor.
      *  
@@ -111,46 +130,22 @@ public:
     token_list& operator=(token_list&&) noexcept = default;
     token_list& operator=(const token_list&) noexcept = default;
 
-    /** Iterator to start of the container.
+    /** View of the tokens still to be processed.
      *
-     * @return Container start iterator
+     * @return Pending view
      */
-    inline const_iterator begin() const noexcept
+    [[nodiscard]] pending_view_type inline pending_view() const
     {
-        return data_.cbegin() + head_offset_;
+        return {data_.data() + head_offset_, data_.size() - head_offset_};
     }
 
-    /** Iterator to start of the container.
+    /** View of the tokens that have been processed.
      *
-     * @return Container start iterator
+     * @return Pending view
      */
-    inline const_iterator cbegin() const noexcept { return begin(); }
-
-    /** Iterator to one-past-the-end of the container.
-     *
-     * @return Container end iterator
-     */
-    inline const_iterator end() const noexcept { return data_.end(); }
-
-    /** Iterator to one-past-the-end of the container.
-     *
-     * @return Container end iterator
-     */
-    inline const_iterator cend() const noexcept { return end(); }
-
-    /** Pointer to the start of the array.
-     *
-     * @return Array pointer
-     */
-    inline const_pointer data() const noexcept { return &(*begin()); }
-
-    /** Container size.
-     * 
-     * @return Number of elements in container
-     */
-    [[nodiscard]] inline size_type size() const noexcept
+    [[nodiscard]] processed_view_type inline processed_view() const
     {
-        return data_.size() - head_offset_;
+        return {data_.data(), head_offset_};
     }
 
     /** Maximum size of container.
@@ -162,31 +157,20 @@ public:
         return data_.max_size() - head_offset_;
     }
 
-    /** Returns true if empty.
-     *
-     * @return True if empty
-     */
-    [[nodiscard]] inline bool empty() const noexcept
-    {
-        return begin() == end();
-    }
-
-    /** Returns a reference to the first element.
-     *
-     * It is undefined behaviour if the container is empty.
-     * @return Reference to the first element
-     */
-    [[nodiscard]] inline const_reference front() const { return *begin(); }
-
     /** Equality operator.
      *
-     * @param other Instance to compre against
+     * @note Both the pending and processed tokens are compared
+     * @param other Instance to compare against
      * @return True if equal
      */
-    [[nodiscard]] bool operator==(const token_list& other) const noexcept;
+    [[nodiscard]] inline bool operator==(const token_list& other) const noexcept
+    {
+        return (head_offset_ == other.head_offset_) && (data_ == other.data_);
+    }
 
     /** Inequality operator.
      *
+     * @note Both the pending and processed tokens are compared
      * @param other Instance to compare against
      * @return True if not equal
      */
@@ -195,47 +179,40 @@ public:
         return !(*this == other);
     }
 
-    /** Index operator.
-     * 
-     * @param index Index into container
-     * @return Reference to element
-     */
-    [[nodiscard]] inline const_reference operator[](size_type index) const
-    {
-        return begin()[index];
-    }
-
     /** Increase container capacity.
      *
      * @param new_cap New capacity
      */
-    void reserve(size_type new_cap);
+    inline void reserve(size_type new_cap) { data_.reserve(new_cap); }
 
-    /** Add new element to the end of the container.
+    /** Add new element to the end of the pending view.
      *
      * @param value Element to add
      */
-    void push_back(const value_type& value);
+    inline void add_pending(const value_type& value) { data_.push_back(value); }
 
-    /** Create ne element in-place and add to the end of the container.
+    /** Create one element in-place and add to the end of the container.
      *
      * @tparam Args Constructor argument types
      * @param args Element constructor arguments
      * @return Reference to newly constructed element
      */
     template <class... Args>
-    const_reference emplace_back(Args&&... args)
+    const_reference emplace_pending(Args&&... args)
     {
         return data_.emplace_back(std::forward<Args>(args)...);
     }
 
-    /** Remove the first @a count elements from the start of the container.
+    /** Marks the first @a count elements in the pending view as processed.
      *
-     * @note The elements are @em not destroyed, the begin() iterator is moved
-     * instead
-     * @param count Number of elements to remove
+     * The elements are then moved to the back of the processed view.
+     * @param count Number of elements to remove, the value is clamped by the
+     * pending view size
      */
-    void pop_front(size_type count = 1);
+    inline void mark_as_processed(size_type count = 1)
+    {
+        head_offset_ += std::min(count, pending_view().size());
+    }
 
     /** Insert elements into the container.
      *
@@ -245,17 +222,26 @@ public:
      * @return Iterator to one-past-the-end of the inserted sequence
      */
     template <typename InputIt>
-    const_iterator insert(const_iterator pos, InputIt first, InputIt last)
+    pending_view_type::const_iterator  //
+    insert_pending(pending_view_type::const_iterator pos,
+                   InputIt first,
+                   InputIt last)
     {
         // If there's enough space, try to reclaim the leading memory first
-        const auto diff = std::distance(data_.cbegin(), begin());
-        const auto input_count = std::distance(first, last);
+        const auto input_count =
+            static_cast<std::size_t>(std::distance(first, last));
 
-        if ((pos == begin()) && (input_count <= diff)) {
+        if ((pos == pending_view().begin()) && (input_count <= head_offset_)) {
+            const auto result = pending_view().begin();
             head_offset_ -= input_count;
-            return std::move(first, last, data_.begin() + head_offset_);
+            std::move(first, last, data_.begin() + head_offset_);
+            return result;
         } else {
-            return data_.insert(pos, first, last);
+            // We have to do this nonsense because the vector may reallocate
+            // due to the insertion which would invalidate pos+input_count
+            const auto offset = std::distance(pending_view().begin(), pos);
+            data_.insert(data_.begin() + head_offset_ + offset, first, last);
+            return pending_view().begin() + offset + input_count;
         }
     }
 
@@ -280,12 +266,147 @@ inline void swap(token_list& lhs, token_list& rhs) noexcept
     lhs.swap(rhs);
 }
 
-/** Creates a string representation of @a tokens.
+/** Equality operator.
+ *
+ * @param lhs Pending view
+ * @param rhs Pending view
+ * @return True if lexicographically equal
+ */
+bool operator==(token_list::pending_view_type lhs,
+                token_list::pending_view_type rhs);
+
+/** Equality operator.
+ *
+ * Compares against the pending view of @a rhs.
+ * @param lhs Pending view
+ * @param rhs Token list
+ * @return True if lexicographically equal
+ */
+inline bool operator==(token_list::pending_view_type lhs, const token_list& rhs)
+{
+    return lhs == rhs.pending_view();
+}
+
+/** Inequality operator.
+ *
+ * Compares against the pending view of @a rhs.
+ * @param lhs Pending view
+ * @param rhs Token list
+ * @return True if lexicographically equal
+ */
+inline bool operator!=(token_list::pending_view_type lhs, const token_list& rhs)
+{
+    return !(lhs == rhs);
+}
+
+/** Equality operator.
+ *
+ * Compares against the pending view of @a lhs.
+ * @param lhs Token list
+ * @param rhs Pending view
+ * @return True if lexicographically equal
+ */
+inline bool operator==(const token_list& lhs, token_list::pending_view_type rhs)
+{
+    return rhs == lhs;
+}
+
+/** Inequality operator.
+ *
+ * Compares against the pending view of @a lhs.
+ * @param lhs Token list
+ * @param rhs Pending view
+ * @return True if lexicographically equal
+ */
+inline bool operator!=(const token_list& lhs, token_list::pending_view_type rhs)
+{
+    return !(lhs == rhs);
+}
+
+/** Equality operator.
+ *
+ * @param lhs Pending view
+ * @param rhs Pending view
+ * @return True if lexicographically equal
+ */
+bool operator==(token_list::processed_view_type lhs,
+                token_list::processed_view_type rhs);
+
+/** Equality operator.
+ *
+ * Compares against the processed view of @a rhs.
+ * @param lhs Pending view
+ * @param rhs Token list
+ * @return True if lexicographically equal
+ */
+inline bool operator==(token_list::processed_view_type lhs,
+                       const token_list& rhs)
+{
+    return lhs == rhs.processed_view();
+}
+
+/** Inequality operator.
+ *
+ * Compares against the processed view of @a rhs.
+ * @param lhs Pending view
+ * @param rhs Token list
+ * @return True if lexicographically equal
+ */
+inline bool operator!=(token_list::processed_view_type lhs,
+                       const token_list& rhs)
+{
+    return !(lhs == rhs);
+}
+
+/** Equality operator.
+ *
+ * Compares against the processed view of @a lhs.
+ * @param lhs Token list
+ * @param rhs Pending view
+ * @return True if lexicographically equal
+ */
+inline bool operator==(const token_list& lhs,
+                       token_list::processed_view_type rhs)
+{
+    return rhs == lhs;
+}
+
+/** Inequality operator.
+ *
+ * Compares against the processed view of @a lhs.
+ * @param lhs Token list
+ * @param rhs Pending view
+ * @return True if lexicographically equal
+ */
+inline bool operator!=(const token_list& lhs,
+                       token_list::processed_view_type rhs)
+{
+    return !(lhs == rhs);
+}
+
+/** Creates a string representation of @a view.
+ * 
+ * @param view Pending tokens to convert
+ * @return String representation of @a view
+ */
+std::string to_string(const token_list::pending_view_type& view);
+
+/** Creates a string representation of @a view.
+ * 
+ * @param view Processed tokens to convert
+ * @return String representation of @a view
+ */
+std::string to_string(const token_list::processed_view_type& view);
+
+/** Creates a string representation of the pending view of @a tokens.
  * 
  * @param tokens Tokens to convert
  * @return String representation of @a tokens
  */
-std::string to_string(const token_list& tokens);
+inline std::string to_string(const token_list& tokens)
+{
+    return to_string(tokens.pending_view());
+}
 
 /** Analyse @a token and return a pair consisting of the prefix type and
  * @a token stripped of the token.

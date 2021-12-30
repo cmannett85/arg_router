@@ -78,13 +78,13 @@ BOOST_AUTO_TEST_CASE(anonymous_single_flag_parse_test)
     auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "hello"}};
     m.parse(tokens);
     BOOST_CHECK(result);
-    BOOST_CHECK(tokens.empty());
+    BOOST_CHECK(tokens.pending_view().empty());
 
     result = false;
     tokens = parsing::token_list{{parsing::prefix_type::SHORT, "l"}};
     m.parse(tokens);
     BOOST_CHECK(result);
-    BOOST_CHECK(tokens.empty());
+    BOOST_CHECK(tokens.pending_view().empty());
 
     result = false;
     tokens = parsing::token_list{{parsing::prefix_type::SHORT, "r"}};
@@ -93,7 +93,7 @@ BOOST_AUTO_TEST_CASE(anonymous_single_flag_parse_test)
         parse_exception,
         [](const auto& e) { return e.what() == "Unknown argument: -r"s; });
     BOOST_CHECK(!result);
-    BOOST_CHECK_EQUAL(tokens.size(), 1);
+    BOOST_CHECK_EQUAL(tokens.pending_view().size(), 1);
 }
 
 BOOST_AUTO_TEST_CASE(anonymous_triple_flag_match_test)
@@ -542,7 +542,7 @@ BOOST_AUTO_TEST_CASE(no_missing_phase_test)
         auto tokens = parsing::token_list{};
         m.parse(tokens);
         BOOST_CHECK_EQUAL(result, 0);
-        BOOST_CHECK(tokens.empty());
+        BOOST_CHECK(tokens.pending_view().empty());
     }
 
     {
@@ -554,7 +554,7 @@ BOOST_AUTO_TEST_CASE(no_missing_phase_test)
         auto tokens = parsing::token_list{};
         m.parse(tokens);
         BOOST_CHECK_EQUAL(result, 0.0);
-        BOOST_CHECK(tokens.empty());
+        BOOST_CHECK(tokens.pending_view().empty());
     }
 
     {
@@ -566,7 +566,7 @@ BOOST_AUTO_TEST_CASE(no_missing_phase_test)
         auto tokens = parsing::token_list{};
         m.parse(tokens);
         BOOST_CHECK_EQUAL(result, std::vector<int>{});
-        BOOST_CHECK(tokens.empty());
+        BOOST_CHECK(tokens.pending_view().empty());
     }
 }
 
