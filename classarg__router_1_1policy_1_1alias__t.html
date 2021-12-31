@@ -218,7 +218,7 @@ template&lt;typename... Parents&gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Duplicates any value tokens as aliases of other nodes.</p>
-<p>The owning type must have minimum_count() and maximum_count() methods that return the same value, or a <a class="el" href="namespacearg__router_1_1policy.html#a88a1f88c79e069066abf89b205002cc5">count()</a> method(), to use an alias.</p><ul>
+<p>The owning type must have minimum_count() and maximum_count() methods that return the same value, or a count() method(), to use an alias.</p><ul>
 <li>If the count is zero then it is flag-like so the aliased names are just inserted into <em>tokens</em> after the current token</li>
 <li>If the count is greater than zero then it is argument-like and the aliased names are inserted, each followed by <em>count</em> tokens (i.e. the value), after the current <em>count</em> tokens</li>
 </ul>

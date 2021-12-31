@@ -8,11 +8,9 @@ var searchData=
   ['compile_5ftime_5fstring_30',['compile_time_string',['../classarg__router_1_1utility_1_1compile__time__string.html',1,'arg_router::utility']]],
   ['const_5freference_31',['const_reference',['../classarg__router_1_1parsing_1_1token__list.html#a7c09e4ad39d96a5e9ae22166f8fb93ab',1,'arg_router::parsing::token_list']]],
   ['contains_5fwhitespace_32',['contains_whitespace',['../namespacearg__router_1_1algorithm.html#aab2a691509b83c3126b09d33ab2c5a3a',1,'arg_router::algorithm']]],
-  ['count_33',['count',['../classarg__router_1_1policy_1_1count__t.html#a7a6e554958325877c8cc933043810de1',1,'arg_router::policy::count_t::count()'],['../namespacearg__router_1_1policy.html#a88a1f88c79e069066abf89b205002cc5',1,'arg_router::policy::count()']]],
-  ['count_5fdespecialised_34',['count_despecialised',['../classarg__router_1_1algorithm_1_1count__despecialised.html',1,'arg_router::algorithm']]],
-  ['count_5fdespecialised_5fv_35',['count_despecialised_v',['../namespacearg__router_1_1algorithm.html#a3d10a30c1904ec37a18ac240745029f1',1,'arg_router::algorithm']]],
-  ['count_5fspecialisation_36',['count_specialisation',['../classarg__router_1_1algorithm_1_1count__specialisation.html',1,'arg_router::algorithm']]],
-  ['count_5fspecialisation_5fv_37',['count_specialisation_v',['../namespacearg__router_1_1algorithm.html#a5008fcd4729387b3be21347ffd8189e2',1,'arg_router::algorithm']]],
-  ['count_5ft_38',['count_t',['../classarg__router_1_1policy_1_1count__t.html',1,'arg_router::policy']]],
-  ['custom_5fparser_39',['custom_parser',['../classarg__router_1_1policy_1_1custom__parser.html',1,'arg_router::policy::custom_parser&lt; T &gt;'],['../classarg__router_1_1policy_1_1custom__parser.html#a7b6cab30c5c99f76ef3b49eb331d3d44',1,'arg_router::policy::custom_parser::custom_parser()']]]
+  ['count_5fdespecialised_33',['count_despecialised',['../classarg__router_1_1algorithm_1_1count__despecialised.html',1,'arg_router::algorithm']]],
+  ['count_5fdespecialised_5fv_34',['count_despecialised_v',['../namespacearg__router_1_1algorithm.html#a3d10a30c1904ec37a18ac240745029f1',1,'arg_router::algorithm']]],
+  ['count_5fspecialisation_35',['count_specialisation',['../classarg__router_1_1algorithm_1_1count__specialisation.html',1,'arg_router::algorithm']]],
+  ['count_5fspecialisation_5fv_36',['count_specialisation_v',['../namespacearg__router_1_1algorithm.html#a5008fcd4729387b3be21347ffd8189e2',1,'arg_router::algorithm']]],
+  ['custom_5fparser_37',['custom_parser',['../classarg__router_1_1policy_1_1custom__parser.html',1,'arg_router::policy::custom_parser&lt; T &gt;'],['../classarg__router_1_1policy_1_1custom__parser.html#a7b6cab30c5c99f76ef3b49eb331d3d44',1,'arg_router::policy::custom_parser::custom_parser()']]]
 ];
