@@ -236,10 +236,11 @@ BOOST_AUTO_TEST_CASE(positional_args_must_have_fixed_count_if_not_at_end_test)
         check<arg_router::mode_t<
             flag_t<policy::long_name_t<S_("test1")>>,
             arg_t<int, policy::long_name_t<S_("test2")>>,
-            positional_arg_t<
-                int,
-                policy::display_name_t<S_("test3")>,
-                policy::count_t<traits::integral_constant<std::size_t{1}>>>,
+            positional_arg_t<int,
+                             policy::display_name_t<S_("test3")>,
+                             policy::min_max_count_t<
+                                 traits::integral_constant<std::size_t{1}>,
+                                 traits::integral_constant<std::size_t{1}>>>,
             positional_arg_t<std::vector<int>,
                              policy::display_name_t<S_("test4")>>>>();
 
@@ -248,29 +249,18 @@ BOOST_AUTO_TEST_CASE(positional_args_must_have_fixed_count_if_not_at_end_test)
         check<arg_router::mode_t<
             flag_t<policy::long_name_t<S_("test1")>>,
             arg_t<int, policy::long_name_t<S_("test2")>>,
-            positional_arg_t<
-                int,
-                policy::display_name_t<S_("test3")>,
-                policy::count_t<traits::integral_constant<std::size_t{1}>>>,
-            positional_arg_t<
-                std::vector<int>,
-                policy::display_name_t<S_("test4")>,
-                policy::count_t<traits::integral_constant<std::size_t{3}>>>,
+            positional_arg_t<int,
+                             policy::display_name_t<S_("test3")>,
+                             policy::min_max_count_t<
+                                 traits::integral_constant<std::size_t{1}>,
+                                 traits::integral_constant<std::size_t{1}>>>,
+            positional_arg_t<std::vector<int>,
+                             policy::display_name_t<S_("test4")>,
+                             policy::min_max_count_t<
+                                 traits::integral_constant<std::size_t{3}>,
+                                 traits::integral_constant<std::size_t{3}>>>,
             positional_arg_t<std::vector<int>,
                              policy::display_name_t<S_("test5")>>>>();
-
-    policy::validation::positional_args_must_have_fixed_count_if_not_at_end<
-        arg_router::positional_arg_t>::
-        check<arg_router::mode_t<
-            flag_t<policy::long_name_t<S_("test1")>>,
-            arg_t<int, policy::long_name_t<S_("test2")>>,
-            positional_arg_t<
-                int,
-                policy::display_name_t<S_("test3")>,
-                policy::min_count_t<traits::integral_constant<std::size_t{1}>>,
-                policy::max_count_t<traits::integral_constant<std::size_t{1}>>>,
-            positional_arg_t<std::vector<int>,
-                             policy::display_name_t<S_("test4")>>>>();
 }
 
 BOOST_AUTO_TEST_SUITE_END()
@@ -682,7 +672,8 @@ int main() {
                 positional_arg_t<
                     int,
                     policy::display_name_t<S_("test3")>,
-                    policy::count_t<traits::integral_constant<std::size_t{1}>>>>>();
+                    policy::min_max_count_t<traits::integral_constant<std::size_t{1}>,
+                                            traits::integral_constant<std::size_t{1}>>>>>();
     return 0;
 }
     )",
@@ -708,8 +699,7 @@ int main() {
                 positional_arg_t<
                     std::vector<int>,
                     policy::display_name_t<S_("test3")>,
-                    policy::min_count_t<
-                        traits::integral_constant<std::size_t{1}>>>,
+                    std::decay_t<decltype(policy::min_count<1>)>>,
                 positional_arg_t<std::vector<int>,
                                  policy::display_name_t<S_("test4")>>>>();
     return 0;
@@ -737,7 +727,7 @@ int main() {
                 positional_arg_t<
                     std::vector<int>,
                     policy::display_name_t<S_("test3")>,
-                    policy::max_count_t<traits::integral_constant<std::size_t{1}>>>,
+                    std::decay_t<decltype(policy::max_count<1>)>>,
                 positional_arg_t<std::vector<int>,
                                  policy::display_name_t<S_("test4")>>>>();
     return 0;
@@ -765,8 +755,8 @@ int main() {
                 positional_arg_t<
                     std::vector<int>,
                     policy::display_name_t<S_("test3")>,
-                    policy::min_count_t<traits::integral_constant<std::size_t{1}>>,
-                    policy::max_count_t<traits::integral_constant<std::size_t{3}>>>,
+                    policy::min_max_count_t<traits::integral_constant<std::size_t{1}>,
+                                            traits::integral_constant<std::size_t{3}>>>,
                 positional_arg_t<std::vector<int>,
                                  policy::display_name_t<S_("test4")>>>>();
     return 0;

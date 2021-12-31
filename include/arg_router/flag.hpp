@@ -1,8 +1,8 @@
 #pragma once
 
 #include "arg_router/parsing.hpp"
-#include "arg_router/policy/count.hpp"
 #include "arg_router/policy/default_value.hpp"
+#include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/tree_node.hpp"
 
 namespace arg_router
@@ -26,7 +26,7 @@ namespace arg_router
 template <typename... Policies>
 class flag_t :
     public tree_node<policy::default_value<bool>,
-                     policy::count_t<std::integral_constant<std::size_t, 0>>,
+                     std::decay_t<decltype(policy::fixed_count<0>)>,
                      Policies...>
 {
     static_assert(policy::is_all_policies_v<std::tuple<Policies...>>,
@@ -34,7 +34,7 @@ class flag_t :
 
     using parent_type =
         tree_node<policy::default_value<bool>,
-                  policy::count_t<std::integral_constant<std::size_t, 0>>,
+                  std::decay_t<decltype(policy::fixed_count<0>)>,
                   Policies...>;
 
     static_assert(traits::has_long_name_method_v<flag_t> ||
@@ -53,7 +53,7 @@ public:
      */
     constexpr explicit flag_t(Policies... policies) :
         parent_type{policy::default_value<bool>{false},
-                    policy::count<0>,
+                    policy::fixed_count<0>,
                     std::move(policies)...}
     {
     }

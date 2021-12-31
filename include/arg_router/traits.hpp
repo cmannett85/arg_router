@@ -67,10 +67,8 @@ using get_value_type = typename T::value_type;
  */
 template <typename T>
 struct has_value_type {
-    template <typename U>
-    using type = decltype(U::value_type);
-
-    constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
+    constexpr static bool value =
+        boost::mp11::mp_valid<get_value_type, T>::value;
 };
 
 /** Helper variable for has_value_type.

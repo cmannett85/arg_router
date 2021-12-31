@@ -69,8 +69,8 @@ protected:
         using node_type = boost::mp11::mp_first<std::tuple<Parents...>>;
         static_assert(traits::has_minimum_count_method_v<node_type> &&
                           traits::has_maximum_count_method_v<node_type>,
-                      "Node requires a count(), or minimum_count() and "
-                      "maximum_count() methods to use an alias");
+                      "Node requires a minimum_count() and maximum_count() "
+                      "methods to use an alias");
         static_assert(node_type::minimum_count() == node_type::maximum_count(),
                       "Node requires minimum_count() and maximum_count() "
                       "to return the same value to use an alias");

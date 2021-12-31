@@ -1,7 +1,7 @@
 #pragma once
 
 #include "arg_router/parsing.hpp"
-#include "arg_router/policy/count.hpp"
+#include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/tree_node.hpp"
 
 namespace arg_router
@@ -14,15 +14,14 @@ namespace arg_router
  */
 template <typename T, typename... Policies>
 class arg_t :
-    public tree_node<policy::count_t<std::integral_constant<std::size_t, 1>>,
+    public tree_node<std::decay_t<decltype(policy::fixed_count<1>)>,
                      Policies...>
 {
     static_assert(policy::is_all_policies_v<std::tuple<Policies...>>,
                   "Args must only contain policies (not other nodes)");
 
     using parent_type =
-        tree_node<policy::count_t<std::integral_constant<std::size_t, 1>>,
-                  Policies...>;
+        tree_node<std::decay_t<decltype(policy::fixed_count<1>)>, Policies...>;
 
     static_assert(traits::has_long_name_method_v<arg_t> ||
                       traits::has_short_name_method_v<arg_t>,
@@ -39,7 +38,7 @@ public:
      * @param policies Policy instances
      */
     constexpr explicit arg_t(Policies... policies) :
-        parent_type{policy::count<1>, std::move(policies)...}
+        parent_type{policy::fixed_count<1>, std::move(policies)...}
     {
     }
 
@@ -81,7 +80,7 @@ public:
     {
         // Check we have enough tokens to even do a value parse
         auto view = tokens.pending_view();
-        if (tokens.pending_view().size() <= parent_type::count()) {
+        if (tokens.pending_view().size() <= parent_type::minimum_count()) {
             // The match operation guarantees that the node name token is
             // present
             throw parse_exception{"Missing argument", view.front()};

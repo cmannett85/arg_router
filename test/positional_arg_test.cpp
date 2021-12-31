@@ -1,6 +1,6 @@
 #include "arg_router/positional_arg.hpp"
-#include "arg_router/policy/count.hpp"
 #include "arg_router/policy/display_name.hpp"
+#include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 #include "test_helpers.hpp"
@@ -60,7 +60,7 @@ BOOST_AUTO_TEST_CASE(match_test)
                        std::optional{std::vector{42}},
                        true},
             std::tuple{positional_arg<int>(policy::display_name<S_("goodbye")>,
-                                           policy::count<1>),
+                                           policy::fixed_count<1>),
                        parsing::token_type{parsing::prefix_type::NONE, "1"},
                        std::optional<int>{},
                        true},
@@ -100,7 +100,7 @@ BOOST_AUTO_TEST_CASE(parse_test)
         f,
         std::tuple{
             std::tuple{positional_arg<int>(policy::display_name<S_("node")>,
-                                           policy::count<1>),
+                                           policy::fixed_count<1>),
                        parsing::token_list{{parsing::prefix_type::NONE, "13"}},
                        parsing::token_list{},
                        13,
@@ -264,37 +264,36 @@ BOOST_AUTO_TEST_CASE(min_count_greater_than_max_count_test)
 {
     test::death_test_compile(
         R"(
-#include "arg_router/policy/count.hpp"
-#include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/display_name.hpp"
+#include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/positional_arg.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
 
 int main() {
-    auto p = positional_arg<int>(policy::long_name<S_("hello")>,
-                                 policy::min_count<3>,
-                                 policy::max_count<1>);
+    auto p = positional_arg<std::vector<int>>(policy::display_name<S_("hello")>,
+                                              policy::min_max_count<3, 1>);
     return 0;
 }
     )",
-        "Minimum count must be less than or equal to maximum count");
+        "MinType must be less than or equal to MaxType");
 }
 
 BOOST_AUTO_TEST_CASE(cannot_have_fixed_count_of_zero_test)
 {
     test::death_test_compile(
         R"(
-#include "arg_router/policy/count.hpp"
-#include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/display_name.hpp"
+#include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/positional_arg.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
 
 int main() {
-    auto p = positional_arg<int>(policy::long_name<S_("hello")>,
-                                 policy::count<0>);
+    auto p = positional_arg<std::vector<int>>(policy::display_name<S_("hello")>,
+                                              policy::fixed_count<0>);
     return 0;
 }
     )",

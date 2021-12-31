@@ -371,8 +371,7 @@ ar::root(
             arp::required,
             arp::display_name<S_("SRC")>,
             arp::description<S_("Source file path")>,
-            arp::min_count<1>,
-            arp::max_count<1>),
+            arp::min_max_count<1>),
         arp::router{[](bool force,
                        std::filesystem::path dest,
                        std::filesystem::path src) { ... }}))
