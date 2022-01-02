@@ -12,9 +12,10 @@ namespace arg_router
 {
 namespace policy
 {
-/** For arguments that can repeat e.g. counter_flag and positional_arg, this
- * sets the inclusive minimum and maximum number of those repeats.
+/** Exposes the number of tokens the owning node will consume.
  *
+ * It also checks that there are enough pending tokens available to reach the
+ * minimum in the pre-parse phase.
  * @tparam MinType Compile-time integral constant value representing the minimum
  * @tparam MaxType Compile-time integral constant value representing the maximum
  */
@@ -45,22 +46,19 @@ public:
     /** @return Maximum count value. */
     constexpr static std::size_t maximum_count() { return MaxType::value; }
 
-    /** Check the number elements in @a value is not less than minimum_count().
+protected:
+    /** Checks that there are enough pending tokens in the list to reach the
+     * minimum count.
      * 
-     * @note This phase does not exist if @a ValueType does not have a
-     * <TT>size()</TT> method
-     * @tparam ValueType Parsed value type
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
-     * @param value Parsed value
+     * @param tokens Token list as received from the owning node, this is not
+     * modified
      * @param parents Parents instances pack
-     * @return void
-     * @exception parse_exception Thrown if @a value has a size() less than
-     * minimum_count()
+     * @exception parse_exception Thrown if minimum count not reached
      */
-    template <typename ValueType, typename... Parents>
-    std::enable_if_t<traits::supports_std_size_v<ValueType>> validation_phase(
-        const ValueType& value,
-        const Parents&... parents) const
+    template <typename... Parents>
+    void pre_parse_phase(parsing::token_list& tokens,
+                         const Parents&... parents) const
     {
         static_assert(sizeof...(Parents) >= 1,
                       "Alias requires at least 1 parent");
@@ -68,29 +66,9 @@ public:
         using node_type = boost::mp11::mp_first<std::tuple<Parents...>>;
 
         boost::ignore_unused(parents...);
-        if (std::size(value) < minimum_count()) {
+        if (tokens.pending_view().size() < minimum_count()) {
             throw parse_exception{"Minimum count not reached",
                                   parsing::node_token_type<node_type>()};
-        }
-    }
-
-protected:
-    /** Limit the number entries in @a view to the first maximum_count().
-     * 
-     * @tparam Parents Pack of parent tree nodes in ascending ancestry order
-     * @param tokens Token list as received from the owning node, this is not
-     * modified
-     * @param view The tokens to be used in the remaining parse phases
-     * @param parents Parents instances pack
-     */
-    template <typename... Parents>
-    void pre_parse_phase(parsing::token_list& tokens,
-                         utility::span<const parsing::token_type>& view,
-                         const Parents&... parents) const
-    {
-        boost::ignore_unused(tokens, parents...);
-        if (view.size() > maximum_count()) {
-            view = view.subspan(0, maximum_count());
         }
     }
 };

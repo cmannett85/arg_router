@@ -26,6 +26,10 @@ class arg_t :
     static_assert(traits::has_long_name_method_v<arg_t> ||
                       traits::has_short_name_method_v<arg_t>,
                   "Arg must have a long and/or short name policy");
+    static_assert(!traits::has_display_name_method_v<arg_t>,
+                  "Arg must not have a display name policy");
+    static_assert(!traits::has_none_name_method_v<arg_t>,
+                  "Arg must not have a none name policy");
 
 public:
     using typename parent_type::policies_type;
@@ -79,17 +83,15 @@ public:
                      const Parents&... parents) const
     {
         // Check we have enough tokens to even do a value parse
-        auto view = tokens.pending_view();
         if (tokens.pending_view().size() <= parent_type::minimum_count()) {
             // The match operation guarantees that the node name token is
             // present
-            throw parse_exception{"Missing argument", view.front()};
+            throw parse_exception{"Missing argument",
+                                  tokens.pending_view().front()};
         }
 
-        // Remove this node's name.  The view needs regenerating after the
-        // change
+        // Remove this node's name
         tokens.mark_as_processed();
-        view = tokens.pending_view();
 
         // Pre-parse
         utility::tuple_type_iterator<policies_type>([&](auto i) {
@@ -97,18 +99,15 @@ public:
             if constexpr (policy::has_pre_parse_phase_method_v<policy_type,
                                                                arg_t,
                                                                Parents...>) {
-                this->policy_type::pre_parse_phase(tokens,
-                                                   view,
-                                                   *this,
-                                                   parents...);
+                this->policy_type::pre_parse_phase(tokens, *this, parents...);
             }
         });
 
-        // Parse the value token, we don't need to loop on view here as we know
-        // there is only one token
-        auto result = parent_type::template parse<value_type>(view.front().name,
-                                                              *this,
-                                                              parents...);
+        // Parse the value token
+        auto result = parent_type::template parse<value_type>(
+            tokens.pending_view().front().name,
+            *this,
+            parents...);
 
         // Pop the token, we don't need it anymore
         tokens.mark_as_processed();

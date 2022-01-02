@@ -240,6 +240,28 @@ public:
     }
 };
 
+/** Determine if the static_cast conversion @a From to @a To is valid.
+ *
+ * @tparam From Type to convert from
+ * @tparam To Type to convert to
+ */
+template <typename From, typename To>
+struct supports_static_cast_conversion {
+    template <typename F, typename T>
+    using type = decltype(static_cast<T>(std::declval<F>()));
+
+    constexpr static bool value = boost::mp11::mp_valid<type, From, To>::value;
+};
+
+/** Helper variable for supports_static_cast_conversion.
+ *
+ * @tparam From Type to convert from
+ * @tparam To Type to convert to
+ */
+template <typename From, typename To>
+constexpr bool supports_static_cast_conversion_v =
+    supports_static_cast_conversion<From, To>::value;
+
 /** Determine if a type has a <TT>long_name()</TT> static method.
  *
  * @tparam T Type to query

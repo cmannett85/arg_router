@@ -11,6 +11,13 @@ namespace arg_router
 {
 namespace policy
 {
+/** Causes the owning node to be 'dependent' on others, i.e. that other node
+ * must also appear on the command line.
+ *
+ * The depends targets must have long or short names.
+ * @tparam DependsPolicies Pack of name policies, referring to nodes under the
+ * same mode, to depend on
+ */
 template <typename... DependsPolicies>
 class dependent_t
 {
@@ -28,11 +35,20 @@ public:
     }
 
 protected:
+    /** Checks both the pending and processed tokens for all known names of the
+     * targets.
+     *
+     * @tparam Parents Pack of parent tree nodes in ascending ancestry order
+     * @param tokens Token list as received from the owning node
+     * @param parents Parents instances pack
+     * @exception parse_exception Thrown if any dependent argument is missing
+     */
     template <typename... Parents>
     void pre_parse_phase(parsing::token_list& tokens,
-                         utility::span<const parsing::token_type>& view,
                          const Parents&... parents) const
     {
+        boost::ignore_unused(parents...);
+
         // Find the owning mode
         using mode_type = typename nearest_mode<Parents...>::type;
         static_assert(!std::is_void_v<mode_type>, "Cannot find parent mode");
@@ -42,8 +58,6 @@ protected:
             typename depends_targets<depends_policies_type, mode_type>::type;
         static_assert(cyclic_dependency_checker<targets, mode_type>::value,
                       "Cyclic dependency detected");
-
-        boost::ignore_unused(view, parents...);
 
         // Find the target tokens, tokens that have already been processed are
         // valid too

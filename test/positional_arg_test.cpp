@@ -300,6 +300,26 @@ int main() {
         "Cannot have a fixed count of zero");
 }
 
+BOOST_AUTO_TEST_CASE(no_router_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/display_name.hpp"
+#include "arg_router/policy/router.hpp"
+#include "arg_router/positional_arg.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    auto f = positional_arg<std::vector<int>>(policy::display_name<S_("hello")>,
+                                              policy::router{[](int) {}});
+    return 0;
+}
+    )",
+        "Positional arg cannot be routed");
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
