@@ -1,7 +1,6 @@
 #pragma once
 
 #include "arg_router/token_type.hpp"
-#include "arg_router/utility/span.hpp"
 
 #include <boost/mp11/algorithm.hpp>
 
@@ -64,7 +63,6 @@ struct has_pre_parse_phase_method : T {
         std::declval<const has_pre_parse_phase_method&>()
             .template pre_parse_phase<Parents...>(
                 std::declval<parsing::token_list&>(),
-                std::declval<utility::span<const parsing::token_type>&>(),
                 std::declval<const Parents&>()...));
 
     constexpr static bool value = boost::mp11::mp_valid<type, T>::value;

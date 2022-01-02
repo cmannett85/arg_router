@@ -181,6 +181,42 @@ int main() {
         "Flag must have a long and/or short name policy");
 }
 
+BOOST_AUTO_TEST_CASE(must_not_have_display_name_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/flag.hpp"
+#include "arg_router/policy/display_name.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    auto f = flag(policy::display_name<S_("hello")>);
+    return 0;
+}
+    )",
+        "Flag must not have a display name policy");
+}
+
+BOOST_AUTO_TEST_CASE(must_not_have_none_name_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/flag.hpp"
+#include "arg_router/policy/none_name.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    auto f = flag(policy::none_name<S_("hello")>);
+    return 0;
+}
+    )",
+        "Flag must not have a none name policy");
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

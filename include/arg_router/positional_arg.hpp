@@ -42,6 +42,12 @@ class positional_arg_t : public tree_node<Policies...>
     static_assert(!traits::has_none_name_method_v<positional_arg_t>,
                   "Positional arg must not have a none name policy");
 
+    // No routing phase, a positional_arg cannot be used as a top-level node
+    using routing_policy = typename parent_type::
+        template phase_finder<policy::has_routing_phase_method, T>::type;
+    static_assert(std::is_void_v<routing_policy>,
+                  "Positional arg cannot be routed");
+
 public:
     using typename parent_type::policies_type;
 
@@ -104,23 +110,25 @@ public:
     value_type parse(parsing::token_list& tokens,
                      const Parents&... parents) const
     {
-        auto view = tokens.pending_view();
-
         // Pre-parse
         utility::tuple_type_iterator<policies_type>([&](auto i) {
             using policy_type = std::tuple_element_t<i, policies_type>;
             if constexpr (policy::has_pre_parse_phase_method_v<policy_type,
                                                                positional_arg_t,
                                                                Parents...>) {
-                this->policy_type::pre_parse_phase(tokens,
-                                                   view,
-                                                   *this,
-                                                   parents...);
+                this->policy_type::pre_parse_phase(tokens, *this, parents...);
             }
         });
 
+        auto view = tokens.pending_view();
+
         auto result = value_type{};
         if constexpr (traits::has_push_back_method_v<value_type>) {
+            if constexpr (traits::has_maximum_count_method_v<
+                              positional_arg_t>) {
+                view = view.subspan(0, positional_arg_t::maximum_count());
+            }
+
             for (auto token : view) {
                 result.push_back(
                     parent_type::template parse<value_type>(token.name,
@@ -148,13 +156,7 @@ public:
             }
         });
 
-        // Routing
-        using routing_policy = typename parent_type::template phase_finder<
-            policy::has_routing_phase_method,
-            value_type>::type;
-        if constexpr (!std::is_void_v<routing_policy>) {
-            this->routing_policy::routing_phase(tokens, std::move(result));
-        }
+        // No routing phase, a positional_arg cannot be used as a top-level node
 
         return result;
     }

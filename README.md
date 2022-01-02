@@ -1,4 +1,4 @@
-![Documentation Generator](https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg) ![Unit test coverage](https://img.shields.io/badge/Unit_Test_Coverage-98.7%25-brightgreen)
+![Documentation Generator](https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg) ![Unit test coverage](https://img.shields.io/badge/Unit_Test_Coverage-98.8%25-brightgreen)
 
 # arg_router
 `arg_router` is a C++17 command line parser and router.  It uses policy-based objects hierarchically, so the parsing code is self-describing.  Rather than just providing a parsing service that returns a map of `variant`s/`any`s, it allows you to bind `Callable` instances to points in the parse structure, so complex command line arguments can directly call functions with the expected arguments - rather than you having to do this yourself.
@@ -46,7 +46,7 @@ ar::root(
             arp::description<S_("Maximum lines to output")>,
             arp::default_value{-1}),
         ar::positional_arg<std::vector<std::string_view>>(
-            arp::min_count<1>,
+            arp::required,
             arp::display_name<S_("FILES")>,
             arp::description<S_("Files to read")>),
         arp::router{[](bool show_ends,
@@ -178,7 +178,7 @@ ar::mode(
     ...
     ar::counting_flag<verbosity_level_t>(
         arp::short_name<'v'>,
-        arp::max_count<3>,
+        arp::max_value<verbosity_level_t::DEBUG>,
         arp::description<S_("Verbosity level, number of 'v's sets level")>,
         arp::default_value{verbosity_level_t::ERROR}),
     ...
@@ -198,9 +198,9 @@ Note that even though we are using a custom enum, we haven't specified a `custom
 
 Short name collapsing still works as expected, so passing `-Evnv` will result in `show_ends` and `show_non_printing` being true, and `verbosity_level` will be `verbosity_level_t::INFO` in the `router` call.
 
-We can constrain the amount of flags the user can provide by using the `max_count` policy, so passing `-vvvv` will result in a runtime error.
+We can constrain the amount of flags the user can provide by using the `max_value` policy, so passing `-vvvv` will result in a runtime error.
 
-The `long_name` policy is not allowed, but we can use the knowledge gained so far to provide the best of both:
+The `long_name` policy is allowed but usually leads to ugly invocations, however we can use the knowledge gained so far to provide a better option:
 ```cpp
 ar::mode(
     ...
@@ -208,7 +208,7 @@ ar::mode(
         arp::default_value{verbosity_level_t::INFO},
         ar::counting_flag<verbosity_level_t>(
             arp::short_name<'v'>,
-            arp::max_count<3>,
+            arp::max_value<verbosity_level_t::DEBUG>,
             arp::description<S_("Verbosity level, number of 'v's sets level")>,
             arp::alias(arp::long_name<S_("verbose")>)),
         ar::arg<verbosity_level_t>(
@@ -252,21 +252,24 @@ ar::root(
         ar::positional_arg<std::filesystem::path>(
             arp::display_name<S_("DST")>,
             arp::description<S_("Destination directory")>,
-            arp::count<1>),
+            apr::required,
+            arp::fixed_count<1>),
         ar::positional_arg<std::vector<std::filesystem::path>>(
             arp::display_name<S_("SRC")>,
             arp::description<S_("Source file paths")>,
-            arp::min_count<1>),
+            apr::required),
         arp::router{[](bool force,
                        std::filesystem::path dest,
                        std::vector<std::filesystem::path> srcs) { ... }}))
 
 ```
-It was noted in the [Basics](#basics) section that ordering does matter for positional arguments, so we can see here that the destination path is specified first and therefore comes first on the command line.  There can only be one destination path so we specify the `count` to one, this implicitly marks the argument as required.  Because the `count` is 1 the return type doesn't need to be a container.
+It was noted in the [Basics](#basics) section that ordering does matter for positional arguments, so we can see here that the destination path is specified first and therefore comes first on the command line.  There can only be one destination path so we specify the `count` to one.  Because the `count` is 1 the return type doesn't need to be a container.
 
-Following the destination path are the source paths, as there is only a `min_count` policy our range is unbounded and therefore the `value_type` needs to be a container.  `positional_arg` uses a `push_back` call on the container, so `std::vector` is the typical type to use.
+Following the destination path are the source paths, we need at least one so we mark it as required, as our range is unbounded the `value_type` needs to be a container.  `positional_arg` uses a `push_back` call on the container, so `std::vector` is the typical type to use.
 
-Only the last `positional_arg` may be of variable length.  A runtime error will only occur if there are no variable length `postional_arg`s and there are more arguments than the maximum or less than the minimum.
+Only the last `positional_arg` may be of variable length.  A runtime error will only occur if there are no unbounded variable length `postional_arg`s and there are more arguments than the maximum or less than the minimum.
+
+It should be noted that setting a non-zero minimum count (`min_count`, `fixed_count`, or `min_max_count`) does _not_ imply a requirement, the minimum count check only applies when there is at least one argument for the node to process.  So as with an `arg`, you should use a `required` policy to explicitly state that at least one argument needs to be present, or a `default_value` policy - otherwise a default initialised value will be used instead.
 
 ## Modes
 As noted in [Basics](#basics), `mode`s allow you to group command line components under an initial token on the command line.  A common example of this developers will be aware of is `git`, for example in our parlance `git clean -ffxd`; `clean` would be the mode and `ffxd` would be be the flags that are available under that mode.
@@ -295,12 +298,11 @@ ar::root(
             arp::required,
             arp::display_name<S_("DST")>,
             arp::description<S_("Destination directory")>,
-            arp::count<1>),
+            arp::fixed_count<1>),
         ar::positional_arg<std::vector<std::filesystem::path>>(
             arp::required,
             arp::display_name<S_("SRC")>,
-            arp::description<S_("Source file paths")>,
-            arp::min_count<1>),
+            arp::description<S_("Source file paths")>),
         arp::router{[](bool force,
                        std::filesystem::path dest,
                        std::vector<std::filesystem::path> srcs) { ... }}),
@@ -315,13 +317,13 @@ ar::root(
             arp::required,
             arp::display_name<S_("DST")>,
             arp::description<S_("Destination directory")>,
-            arp::count<1>),
+            arp::fixed_count<1>),
         // Can only have one
         ar::positional_arg<std::filesystem::path>(
             arp::required,
             arp::display_name<S_("SRC")>,
             arp::description<S_("Source file path")>,
-            arp::count<1>),
+            arp::fixed_count<1>),
         arp::router{[](bool force,
                        std::filesystem::path dest,
                        std::filesystem::path src) { ... }}))
@@ -342,7 +344,7 @@ constexpr auto common_args = ar::list{
         arp::required,
         arp::display_name<S_("DST")>,
         arp::description<S_("Destination directory")>,
-        arp::count<1>)};
+        arp::fixed_count<1>)};
 
 ar::root(
     arp::validation::default_validator,
@@ -358,8 +360,7 @@ ar::root(
         ar::positional_arg<std::vector<std::filesystem::path>>(
             arp::required,
             arp::display_name<S_("SRC")>,
-            arp::description<S_("Source file paths")>,
-            arp::min_count<1>),
+            arp::description<S_("Source file paths")>),
         arp::router{[](bool force,
                        std::filesystem::path dest,
                        std::vector<std::filesystem::path> srcs) { ... }}),
@@ -371,7 +372,7 @@ ar::root(
             arp::required,
             arp::display_name<S_("SRC")>,
             arp::description<S_("Source file path")>,
-            arp::min_max_count<1>),
+            arp::fixed_count<1>),
         arp::router{[](bool force,
                        std::filesystem::path dest,
                        std::filesystem::path src) { ... }}))

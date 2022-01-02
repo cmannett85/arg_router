@@ -42,38 +42,32 @@ public:
 protected:
     /** Duplicates any value tokens as aliases of other nodes.
      * 
-     * The owning type must have minimum_count() and maximum_count() methods
-     * that return the same value, or a count() method(),  to use an alias.
-     * - If the count is zero then it is flag-like so the aliased names are
-     *   just inserted into @a tokens after the current token
-     * - If the count is greater than zero then it is argument-like and the
-     *   aliased names are inserted, each followed by @em count tokens
-     *   (i.e. the value), after the current @em count tokens
+     * The token duplication mechanism has two approaches, depending on the
+     * owning node's properties:
+     * - If the node has a fixed count:
+     *   - If the count is zero then it is flag-like so the aliased names are
+     *     just inserted into @a tokens after the current token
+     *   - If the count is greater than zero then it is argument-like and the
+     *     aliased names are inserted, each followed by @em count tokens
+     *     (i.e. the values), after the current @em count tokens
+     * - Otherwise the node is assumed to have no value tokens (i.e. flag-like).
+     *   If this is dangerous for your node type (e.g. is has a variable length
+     *   of value tokens), then aliasing should be banned for it at
+     *   validator-level
      *
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
      * @param tokens Token list as received from the owning node
-     * @param view The tokens to be used in the remaining parse phases, may be
-     * empty
      * @param parents Parents instances pack
      * @exception parse_exception Thrown if @a view does not have enough tokens
      * in for the required value count
      */
     template <typename... Parents>
     void pre_parse_phase(parsing::token_list& tokens,
-                         utility::span<const parsing::token_type>& view,
                          const Parents&... parents) const
     {
         boost::ignore_unused(parents...);
 
-        // Check the owning node
         using node_type = boost::mp11::mp_first<std::tuple<Parents...>>;
-        static_assert(traits::has_minimum_count_method_v<node_type> &&
-                          traits::has_maximum_count_method_v<node_type>,
-                      "Node requires a minimum_count() and maximum_count() "
-                      "methods to use an alias");
-        static_assert(node_type::minimum_count() == node_type::maximum_count(),
-                      "Node requires minimum_count() and maximum_count() "
-                      "to return the same value to use an alias");
 
         // Find the owning mode
         using mode_type = typename nearest_mode<Parents...>::type;
@@ -85,42 +79,41 @@ protected:
         static_assert(cyclic_dependency_checker<targets, mode_type>::value,
                       "Cyclic dependency detected");
 
-        auto new_tokens = parsing::token_list{};
-        if constexpr (node_type::minimum_count() == 0) {
-            new_tokens.reserve(std::tuple_size_v<targets>);
-
-            utility::tuple_type_iterator<targets>([&](auto i) {
-                using target_type = std::tuple_element_t<i, targets>;
-                new_tokens.add_pending(parsing::node_token_type<target_type>());
-            });
-        } else {
-            // The first token is the argument name, so skip that
-            if (node_type::minimum_count() > view.size()) {
-                throw parse_exception{
-                    "Too few values for alias, needs " +
-                        std::to_string(node_type::minimum_count()),
-                    parsing::node_token_type<node_type>()};
+        constexpr auto count = []() -> std::size_t {
+            // Does it have a fixed count?
+            if constexpr (traits::has_minimum_count_method_v<node_type> &&
+                          traits::has_maximum_count_method_v<node_type>) {
+                if constexpr (node_type::minimum_count() ==
+                              node_type::maximum_count()) {
+                    return node_type::minimum_count();
+                }
             }
 
-            new_tokens.reserve(std::tuple_size_v<targets> *
-                               node_type::minimum_count());
-            utility::tuple_type_iterator<targets>([&](auto i) {
-                using target_type = std::tuple_element_t<i, targets>;
-                new_tokens.add_pending(parsing::node_token_type<target_type>());
+            // Otherwise assume flag-like
+            return 0;
+        }();
 
-                for (auto i = 0u; i < node_type::minimum_count(); ++i) {
-                    new_tokens.add_pending(view[i]);
-                }
-            });
+        const auto view = tokens.pending_view();
+        if (count > view.size()) {
+            throw parse_exception{
+                "Too few values for alias, needs " + std::to_string(count),
+                parsing::node_token_type<node_type>()};
         }
 
-        tokens.insert_pending(
-            tokens.pending_view().begin() + node_type::minimum_count(),
-            new_tokens.pending_view().begin(),
-            new_tokens.pending_view().end());
+        auto new_tokens = parsing::token_list{};
+        new_tokens.reserve(std::tuple_size_v<targets> * (count + 1));
+        utility::tuple_type_iterator<targets>([&](auto i) {
+            using target_type = std::tuple_element_t<i, targets>;
+            new_tokens.add_pending(parsing::node_token_type<target_type>());
 
-        // Update the view in case the extra tokens have caused a reallocation
-        view = tokens.pending_view().subspan(0, view.size());
+            for (auto j = 0u; j < count; ++j) {
+                new_tokens.add_pending(view[j]);
+            }
+        });
+
+        tokens.insert_pending(view.begin() + count,
+                              new_tokens.pending_view().begin(),
+                              new_tokens.pending_view().end());
     }
 
 private:

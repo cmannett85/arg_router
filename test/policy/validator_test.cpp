@@ -141,9 +141,9 @@ BOOST_AUTO_TEST_CASE(child_must_have_policy_test)
 BOOST_AUTO_TEST_CASE(policy_parent_must_not_have_policy_test)
 {
     policy::validation::
-        policy_parent_must_not_have_policy<policy::long_name_t>::check<
+        policy_parent_must_not_have_policy<policy::display_name_t>::check<
             policy::display_name_t<S_("hello")>,
-            flag_t<policy::display_name_t<S_("hello")>,
+            flag_t<policy::long_name_t<S_("hello")>,
                    policy::short_name_t<traits::integral_constant<'a'>>>>();
 }
 

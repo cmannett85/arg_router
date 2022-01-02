@@ -1,6 +1,7 @@
 #pragma once
 
 #include "arg_router/arg.hpp"
+#include "arg_router/counting_flag.hpp"
 #include "arg_router/dependency/one_of.hpp"
 #include "arg_router/flag.hpp"
 #include "arg_router/mode.hpp"
@@ -602,6 +603,14 @@ inline constexpr auto default_validator = validator<
            policy_parent_must_not_have_policy<policy::long_name_t>,
            policy_parent_must_not_have_policy<policy::short_name_t>,
            policy_parent_must_not_have_policy<policy::none_name_t>>,
+    // Required
+    rule_q<common_rules::despecialised_any_of_rule<policy::required_t>,
+           despecialised_unique_in_owner,
+           policy_parent_must_not_have_policy<policy::default_value>>,
+    // Default value
+    rule_q<common_rules::despecialised_any_of_rule<policy::default_value>,
+           despecialised_unique_in_owner,
+           policy_parent_must_not_have_policy<policy::required_t>>,
     // Router
     rule_q<common_rules::despecialised_any_of_rule<policy::router>,
            despecialised_unique_in_owner,
@@ -614,9 +623,9 @@ inline constexpr auto default_validator = validator<
     // Tree nodes
     // Flag
     rule_q<common_rules::despecialised_any_of_rule<flag_t>,
-           must_not_have_policies<policy::custom_parser,
-                                  policy::multi_stage_value,
+           must_not_have_policies<policy::multi_stage_value,
                                   policy::no_result_value,
+                                  policy::min_max_count_t,
                                   policy::required_t,
                                   policy::validation::validator>>,
     // Arg
@@ -624,21 +633,24 @@ inline constexpr auto default_validator = validator<
            must_not_have_policies<policy::multi_stage_value,
                                   policy::no_result_value,
                                   policy::validation::validator>>,
+    // Counting flag
+    rule_q<common_rules::despecialised_any_of_rule<counting_flag_t>,
+           must_not_have_policies<policy::no_result_value,
+                                  policy::min_max_count_t,
+                                  policy::required_t,
+                                  policy::validation::validator>>,
     // Positional arg
     rule_q<common_rules::despecialised_any_of_rule<positional_arg_t>,
            must_not_have_policies<policy::alias_t,
                                   policy::multi_stage_value,
                                   policy::no_result_value,
-                                  policy::required_t,
                                   policy::validation::validator>>,
     // one_of
     rule_q<common_rules::despecialised_any_of_rule<dependency::one_of_t>,
            must_not_have_policies<policy::alias_t,
-                                  policy::custom_parser,
                                   policy::dependent_t,
                                   policy::min_max_count_t,
                                   policy::no_result_value,
-                                  policy::router,
                                   policy::validation::validator>,
            child_must_not_have_policy<policy::required_t>,
            child_must_not_have_policy<policy::default_value>,

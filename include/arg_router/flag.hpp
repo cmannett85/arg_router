@@ -24,22 +24,20 @@ namespace arg_router
  * @tparam Policies Pack of policies that define its behaviour
  */
 template <typename... Policies>
-class flag_t :
-    public tree_node<policy::default_value<bool>,
-                     std::decay_t<decltype(policy::fixed_count<0>)>,
-                     Policies...>
+class flag_t : public tree_node<policy::default_value<bool>, Policies...>
 {
     static_assert(policy::is_all_policies_v<std::tuple<Policies...>>,
                   "Flags must only contain policies (not other nodes)");
 
-    using parent_type =
-        tree_node<policy::default_value<bool>,
-                  std::decay_t<decltype(policy::fixed_count<0>)>,
-                  Policies...>;
+    using parent_type = tree_node<policy::default_value<bool>, Policies...>;
 
     static_assert(traits::has_long_name_method_v<flag_t> ||
                       traits::has_short_name_method_v<flag_t>,
                   "Flag must have a long and/or short name policy");
+    static_assert(!traits::has_display_name_method_v<flag_t>,
+                  "Flag must not have a display name policy");
+    static_assert(!traits::has_none_name_method_v<flag_t>,
+                  "Flag must not have a none name policy");
 
 public:
     using typename parent_type::policies_type;
@@ -52,9 +50,7 @@ public:
      * @param policies Policy instances
      */
     constexpr explicit flag_t(Policies... policies) :
-        parent_type{policy::default_value<bool>{false},
-                    policy::fixed_count<0>,
-                    std::move(policies)...}
+        parent_type{policy::default_value<bool>{false}, std::move(policies)...}
     {
     }
 
@@ -106,23 +102,18 @@ public:
         // Remove this node's name
         tokens.mark_as_processed();
 
-        auto view = tokens.pending_view();
-
         // Pre-parse
         utility::tuple_type_iterator<policies_type>([&](auto i) {
             using policy_type = std::tuple_element_t<i, policies_type>;
             if constexpr (policy::has_pre_parse_phase_method_v<policy_type,
                                                                flag_t,
                                                                Parents...>) {
-                this->policy_type::pre_parse_phase(tokens,
-                                                   view,
-                                                   *this,
-                                                   parents...);
+                this->policy_type::pre_parse_phase(tokens, *this, parents...);
             }
         });
 
-        // No real parse, post-parse, or validation phase as presence of the
-        // flag yields a constant true
+        // No real parse or validation phase as presence of the flag yields a
+        // constant true
         const auto result = true;
 
         // Routing phase

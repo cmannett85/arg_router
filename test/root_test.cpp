@@ -923,6 +923,7 @@ BOOST_AUTO_TEST_CASE(single_positional_arg_parse_test)
                   positional_arg<std::vector<std::string_view>>(
                       policy::display_name<S_("pos_args")>,
                       policy::description<S_("Third description")>,
+                      policy::required,
                       policy::min_count<2>),
                   policy::router{[&](bool flag1,
                                      int arg1,
@@ -973,12 +974,15 @@ BOOST_AUTO_TEST_CASE(single_positional_arg_parse_test)
                            14,
                            std::vector<std::string_view>{"one", "two"}},
                 ""},
-            std::tuple{std::vector{"foo", "--flag1"},
+            std::tuple{std::vector{"foo", "--flag1", "hello"},
                        std::tuple{true, 42, std::vector<std::string_view>{}},
                        "Minimum count not reached: pos_args"},
-            std::tuple{std::vector{"foo", "--flag1", "--arg1", "9"},
+            std::tuple{std::vector{"foo", "--flag1", "--arg1", "9", "hello"},
                        std::tuple{true, 9, std::vector<std::string_view>{}},
                        "Minimum count not reached: pos_args"},
+            std::tuple{std::vector{"foo", "--flag1"},
+                       std::tuple{true, 42, std::vector<std::string_view>{}},
+                       "Missing required argument: pos_args"},
         });
 }
 
@@ -1333,6 +1337,94 @@ BOOST_AUTO_TEST_CASE(one_of_default_value_test)
                        "hello"sv,
                        ""},
             std::tuple{std::vector{"foo"}, 42, "goodbye"sv, ""},
+        });
+}
+
+BOOST_AUTO_TEST_CASE(counting_flag_test)
+{
+    auto result = std::optional<  //
+        std::variant<std::tuple<double, bool, bool, std::size_t>,
+                     std::tuple<std::size_t>,
+                     std::tuple<bool, std::size_t>>>{};
+    auto r = root(
+        mode(policy::none_name<S_("mode1")>,
+             arg<double>(policy::long_name<S_("arg1")>,
+                         policy::default_value{3.14}),
+             flag(policy::short_name<'a'>),
+             flag(policy::short_name<'b'>),
+             counting_flag<std::size_t>(policy::short_name<'c'>),
+             policy::router{[&](double arg1, bool a, bool b, std::size_t c) {
+                 result = std::tuple{arg1, a, b, c};
+             }}),
+        mode(policy::none_name<S_("mode2")>,
+             counting_flag<std::size_t>(policy::short_name<'a'>,
+                                        policy::alias(policy::short_name<'b'>)),
+             counting_flag<std::size_t>(policy::short_name<'b'>),
+             policy::router{[&](std::size_t b) { result = std::tuple{b}; }}),
+        mode(policy::none_name<S_("mode3")>,
+             flag(policy::short_name<'a'>),
+             counting_flag<std::size_t>(
+                 policy::short_name<'b'>,
+                 policy::dependent(policy::short_name<'a'>)),
+             policy::router{[&](bool a, std::size_t b) {
+                 result = std::tuple{a, b};
+             }}),
+        policy::validation::default_validator);
+
+    auto f = [&](auto args, auto expected_result, std::string fail_message) {
+        result.reset();
+
+        try {
+            r.parse(args.size(), const_cast<char**>(args.data()));
+            BOOST_CHECK(fail_message.empty());
+
+            BOOST_REQUIRE(!!result);
+            BOOST_CHECK(std::get<std::decay_t<decltype(expected_result)>>(
+                            *result) == expected_result);
+        } catch (parse_exception& e) {
+            BOOST_CHECK_EQUAL(fail_message, e.what());
+            BOOST_CHECK(!result);
+        }
+    };
+
+    test::data_set(
+        f,
+        std::tuple{
+            std::tuple{std::vector{"foo", "mode1"},
+                       std::tuple{3.14, false, false, std::size_t{0}},
+                       ""},
+            std::tuple{std::vector{"foo", "mode1", "-c"},
+                       std::tuple{3.14, false, false, std::size_t{1}},
+                       ""},
+            std::tuple{
+                std::vector{"foo", "mode1", "-c", "-a", "-c", "-b", "-c", "-c"},
+                std::tuple{3.14, true, true, std::size_t{4}},
+                ""},
+            std::tuple{std::vector{"foo", "mode1", "-ccc"},
+                       std::tuple{3.14, false, false, std::size_t{3}},
+                       ""},
+            std::tuple{std::vector{"foo", "mode1", "-cacbcc"},
+                       std::tuple{3.14, true, true, std::size_t{4}},
+                       ""},
+            std::tuple{
+                std::vector{"foo", "mode1", "-c", "--arg1", "9.2", "-bcc"},
+                std::tuple{9.2, false, true, std::size_t{3}},
+                ""},
+            std::tuple{std::vector{"foo", "mode2", "-abababab"},
+                       std::tuple{std::size_t{8}},
+                       ""},
+            std::tuple{std::vector{"foo", "mode3", "-bbab"},
+                       std::tuple{true, std::size_t{3}},
+                       ""},
+            std::tuple{std::vector{"foo", "mode3", "-abbb"},
+                       std::tuple{true, std::size_t{3}},
+                       ""},
+            std::tuple{std::vector{"foo", "mode3", "-bbba"},
+                       std::tuple{true, std::size_t{3}},
+                       ""},
+            std::tuple{std::vector{"foo", "mode3", "-bbb"},
+                       std::tuple{false, std::size_t{0}},
+                       "Dependent argument missing: -a"},
         });
 }
 

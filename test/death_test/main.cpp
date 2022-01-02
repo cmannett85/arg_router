@@ -1,29 +1,20 @@
 
-#include "arg_router/policy/router.hpp"
-#include "arg_router/tree_node.hpp"
+#include "arg_router/arg.hpp"
+#include "arg_router/dependency/one_of.hpp"
+#include "arg_router/policy/custom_parser.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
-
-template <typename... Params>
-class stub_node : public tree_node<Params...>
-{
-public:
-    using tree_node<Params...>::parse;
-
-    constexpr explicit stub_node(Params... params) :
-        tree_node<Params...>{std::move(params)...}
-    {
-    }
-
-    using tree_node<Params...>::routing_phase;
-};
+namespace ard = arg_router::dependency;
 
 int main() {
-    auto f = stub_node{
-        policy::router{[](auto...) {}},
-        policy::router{[](auto...) {}}
-    };
-    f.routing_phase(parsing::token_list{});
+    const auto of = ard::one_of(
+        arg<int>(policy::long_name<S_("arg1")>),
+        arg<double>(policy::long_name<S_("arg2")>),
+        policy::required,
+        policy::custom_parser<std::variant<int, double>>{[](std::string_view) {
+            return std::variant<int, double>{}; }});
     return 0;
 }
     
