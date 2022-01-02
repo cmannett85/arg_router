@@ -12,5 +12,7 @@ var searchData=
   ['count_5fdespecialised_5fv_34',['count_despecialised_v',['../namespacearg__router_1_1algorithm.html#a3d10a30c1904ec37a18ac240745029f1',1,'arg_router::algorithm']]],
   ['count_5fspecialisation_35',['count_specialisation',['../classarg__router_1_1algorithm_1_1count__specialisation.html',1,'arg_router::algorithm']]],
   ['count_5fspecialisation_5fv_36',['count_specialisation_v',['../namespacearg__router_1_1algorithm.html#a5008fcd4729387b3be21347ffd8189e2',1,'arg_router::algorithm']]],
-  ['custom_5fparser_37',['custom_parser',['../classarg__router_1_1policy_1_1custom__parser.html',1,'arg_router::policy::custom_parser&lt; T &gt;'],['../classarg__router_1_1policy_1_1custom__parser.html#a7b6cab30c5c99f76ef3b49eb331d3d44',1,'arg_router::policy::custom_parser::custom_parser()']]]
+  ['counting_5fflag_37',['counting_flag',['../namespacearg__router.html#a4d05a935c99195bb648030c9e6e9de8e',1,'arg_router']]],
+  ['counting_5fflag_5ft_38',['counting_flag_t',['../classarg__router_1_1counting__flag__t.html',1,'arg_router::counting_flag_t&lt; T, Policies &gt;'],['../classarg__router_1_1counting__flag__t.html#aca60f476ba856a88d0436a57dfde1a36',1,'arg_router::counting_flag_t::counting_flag_t()']]],
+  ['custom_5fparser_39',['custom_parser',['../classarg__router_1_1policy_1_1custom__parser.html',1,'arg_router::policy::custom_parser&lt; T &gt;'],['../classarg__router_1_1policy_1_1custom__parser.html#a7b6cab30c5c99f76ef3b49eb331d3d44',1,'arg_router::policy::custom_parser::custom_parser()']]]
 ];

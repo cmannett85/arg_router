@@ -84,198 +84,207 @@ $(function() {
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;{</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">namespace </span>policy</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;{</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>... DependsPolicies&gt;</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">class </span>dependent_t</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;{</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keyword">using</span> depends_policies_type = std::tuple&lt;DependsPolicies...&gt;;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    constexpr <span class="keyword">explicit</span> dependent_t(DependsPolicies&amp;&amp;... policies)</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    {</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        boost::ignore_unused(policies...);</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    }</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Parents&gt;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keywordtype">void</span> pre_parse_phase(parsing::token_list&amp; tokens,</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;                         utility::span&lt;const parsing::token_type&gt;&amp; view,</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                         <span class="keyword">const</span> Parents&amp;... parents)<span class="keyword"> const</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">    </span>{</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="comment">// Find the owning mode</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <span class="keyword">using</span> mode_type = <span class="keyword">typename</span> nearest_mode&lt;Parents...&gt;::type;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        static_assert(!std::is_void_v&lt;mode_type&gt;, <span class="stringliteral">&quot;Cannot find parent mode&quot;</span>);</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="comment">// Find all the depends targets</span></div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="keyword">using</span> targets =</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;            <span class="keyword">typename</span> depends_targets&lt;depends_policies_type, mode_type&gt;::type;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        static_assert(cyclic_dependency_checker&lt;targets, mode_type&gt;::value,</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;                      <span class="stringliteral">&quot;Cyclic dependency detected&quot;</span>);</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        boost::ignore_unused(view, parents...);</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="comment">// Find the target tokens, tokens that have already been processed are</span></div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <span class="comment">// valid too</span></div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        utility::tuple_type_iterator&lt;targets&gt;([&amp;](<span class="keyword">auto</span> i) {</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;            <span class="keyword">using</span> target = std::tuple_element_t&lt;i, targets&gt;;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;            <span class="keyword">const</span> <span class="keyword">auto</span> finder = [&amp;](parsing::token_type token) {</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;                <span class="keyword">auto</span> found = std::find(tokens.pending_view().begin(),</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                                       tokens.pending_view().end(),</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                                       token) != tokens.pending_view().end();</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                <span class="keywordflow">if</span> (!found) {</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                    found = std::find(tokens.processed_view().begin(),</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                                      tokens.processed_view().end(),</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                                      token) != tokens.processed_view().end();</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                }</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                <span class="keywordflow">return</span> found;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;            };</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;            <span class="keyword">auto</span> found = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;            <span class="keywordflow">if</span> constexpr (traits::has_long_name_method_v&lt;target&gt;) {</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                found = finder({parsing::prefix_type::LONG,  <span class="comment">//</span></div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;                                target::long_name()});</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;            }</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;            <span class="keywordflow">if</span> constexpr (traits::has_short_name_method_v&lt;target&gt;) {</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                found = !found &amp;&amp; finder({parsing::prefix_type::SHORT,</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;                                          target::short_name()});</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;            }</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;            <span class="keywordflow">if</span> (!found) {</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;                <span class="keywordflow">throw</span> parse_exception{<span class="stringliteral">&quot;Dependent argument missing&quot;</span>,</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;                                      parsing::node_token_type&lt;target&gt;()};</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;            }</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        });</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    }</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="keyword">struct </span>policy_checker {</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        constexpr <span class="keyword">static</span> <span class="keyword">auto</span> value = traits::has_long_name_method_v&lt;T&gt; ||</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                                      traits::has_short_name_method_v&lt;T&gt;;</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    };</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>... DependsPolicies&gt;</div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1dependent__t.html">   22</a></span>&#160;<span class="keyword">class </span><a class="code" href="classarg__router_1_1policy_1_1dependent__t.html">dependent_t</a></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;{</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1dependent__t.html#a1410494c4e8ff1ccb5fb0bff09e41b3f">   26</a></span>&#160;    <span class="keyword">using</span> <a class="code" href="classarg__router_1_1policy_1_1dependent__t.html#a1410494c4e8ff1ccb5fb0bff09e41b3f">depends_policies_type</a> = std::tuple&lt;DependsPolicies...&gt;;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
+<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1dependent__t.html#a459b8b8cfce5c2664af244377ce8dc06">   32</a></span>&#160;    constexpr <span class="keyword">explicit</span> <a class="code" href="classarg__router_1_1policy_1_1dependent__t.html#a459b8b8cfce5c2664af244377ce8dc06">dependent_t</a>(DependsPolicies&amp;&amp;... policies)</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    {</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        boost::ignore_unused(policies...);</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    }</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Parents&gt;</div>
+<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1dependent__t.html#ab9fefe1f3d4a01d2f9cf4085a382238f">   47</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classarg__router_1_1policy_1_1dependent__t.html#ab9fefe1f3d4a01d2f9cf4085a382238f">pre_parse_phase</a>(<a class="code" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a>&amp; tokens,</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                         <span class="keyword">const</span> Parents&amp;... parents)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="keyword">    </span>{</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        boost::ignore_unused(parents...);</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <span class="comment">// Find the owning mode</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="keyword">using</span> mode_type = <span class="keyword">typename</span> nearest_mode&lt;Parents...&gt;::type;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        static_assert(!std::is_void_v&lt;mode_type&gt;, <span class="stringliteral">&quot;Cannot find parent mode&quot;</span>);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="comment">// Find all the depends targets</span></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        <span class="keyword">using</span> targets =</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;            <span class="keyword">typename</span> depends_targets&lt;depends_policies_type, mode_type&gt;::type;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        static_assert(cyclic_dependency_checker&lt;targets, mode_type&gt;::value,</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                      <span class="stringliteral">&quot;Cyclic dependency detected&quot;</span>);</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        <span class="comment">// Find the target tokens, tokens that have already been processed are</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        <span class="comment">// valid too</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        utility::tuple_type_iterator&lt;targets&gt;([&amp;](<span class="keyword">auto</span> i) {</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;            <span class="keyword">using</span> target = std::tuple_element_t&lt;i, targets&gt;;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;            <span class="keyword">const</span> <span class="keyword">auto</span> finder = [&amp;](<a class="code" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a> token) {</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                <span class="keyword">auto</span> found = std::find(tokens.<a class="code" href="classarg__router_1_1parsing_1_1token__list.html#ab09398fc6bd23625c4ba2d7017341b6a">pending_view</a>().begin(),</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;                                       tokens.<a class="code" href="classarg__router_1_1parsing_1_1token__list.html#ab09398fc6bd23625c4ba2d7017341b6a">pending_view</a>().end(),</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                                       token) != tokens.<a class="code" href="classarg__router_1_1parsing_1_1token__list.html#ab09398fc6bd23625c4ba2d7017341b6a">pending_view</a>().end();</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                <span class="keywordflow">if</span> (!found) {</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                    found = std::find(tokens.<a class="code" href="classarg__router_1_1parsing_1_1token__list.html#a39cdaa2050d3f04723e101489fe26b48">processed_view</a>().begin(),</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;                                      tokens.<a class="code" href="classarg__router_1_1parsing_1_1token__list.html#a39cdaa2050d3f04723e101489fe26b48">processed_view</a>().end(),</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;                                      token) != tokens.<a class="code" href="classarg__router_1_1parsing_1_1token__list.html#a39cdaa2050d3f04723e101489fe26b48">processed_view</a>().end();</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;                }</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;                <span class="keywordflow">return</span> found;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;            };</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;            <span class="keyword">auto</span> found = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;            <span class="keywordflow">if</span> constexpr (traits::has_long_name_method_v&lt;target&gt;) {</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;                found = finder({parsing::prefix_type::LONG,  <span class="comment">//</span></div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;                                target::long_name()});</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;            }</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;            <span class="keywordflow">if</span> constexpr (traits::has_short_name_method_v&lt;target&gt;) {</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                found = !found &amp;&amp; finder({parsing::prefix_type::SHORT,</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                                          target::short_name()});</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;            }</div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    static_assert((<span class="keyword">sizeof</span>...(DependsPolicies) &gt; 0),</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;                  <span class="stringliteral">&quot;At least one name needed for dependent&quot;</span>);</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    static_assert(policy::is_all_policies_v&lt;depends_policies_type&gt;,</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;                  <span class="stringliteral">&quot;All parameters must be policies&quot;</span>);</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    static_assert(</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        boost::mp11::mp_all_of&lt;depends_policies_type, policy_checker&gt;::value,</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        <span class="stringliteral">&quot;All parameters must provide a long and/or short form name&quot;</span>);</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160; </div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <span class="comment">// Find the nearest parent with a routing policy</span></div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Parents&gt;</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <span class="keyword">struct </span>nearest_mode {</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        <span class="comment">// By definition the dependent cannot be the owner, so filter that out</span></div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        <span class="keyword">using</span> parent_tuple = boost::mp11::mp_pop_front&lt;std::tuple&lt;Parents...&gt;&gt;;</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;            <span class="keywordflow">if</span> (!found) {</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;                <span class="keywordflow">throw</span> <a class="code" href="classarg__router_1_1parse__exception.html">parse_exception</a>{<span class="stringliteral">&quot;Dependent argument missing&quot;</span>,</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;                                      parsing::node_token_type&lt;target&gt;()};</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;            }</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        });</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    }</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    <span class="keyword">struct </span>policy_checker {</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        constexpr <span class="keyword">static</span> <span class="keyword">auto</span> value = traits::has_long_name_method_v&lt;T&gt; ||</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;                                      traits::has_short_name_method_v&lt;T&gt;;</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    };</div>
 <div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Parent&gt;</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;        <span class="keyword">struct </span>policy_finder {</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;            constexpr <span class="keyword">static</span> <span class="keywordtype">bool</span> value =</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;                boost::mp11::mp_find_if_q&lt;</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;                    <span class="keyword">typename</span> Parent::policies_type,</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;                    boost::mp11::mp_bind&lt;policy::has_routing_phase_method,</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;                                         boost::mp11::_1&gt;&gt;::value !=</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;                std::tuple_size_v&lt;typename Parent::policies_type&gt;;</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        };</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;        <span class="keyword">using</span> parent_index =</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;            boost::mp11::mp_find_if&lt;parent_tuple, policy_finder&gt;;</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160; </div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        <span class="keyword">using</span> type =</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;            boost::mp11::mp_eval_if_c&lt;parent_index::value ==</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;                                          std::tuple_size_v&lt;parent_tuple&gt;,</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;                                      void,</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;                                      boost::mp11::mp_at,</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;                                      parent_tuple,</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;                                      parent_index&gt;;</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    };</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160; </div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    <span class="comment">// Starting from ModeType, recurse down through the tree and find all the</span></div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    <span class="comment">// nodes referred to in DependsPolicies</span></div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> DependsPoliciesTuple, <span class="keyword">typename</span> ModeType&gt;</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    <span class="keyword">struct </span>depends_targets {</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Current, <span class="keyword">typename</span>... Parents&gt;</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;        <span class="keyword">struct </span>visitor {</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;            <span class="comment">// If current is one of the DependsPolicies and Parents is not</span></div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;            <span class="comment">// empty, then use the first element of Parents (i.e. the owning</span></div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;            <span class="comment">// node of the name policy).  If not, then set to void</span></div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;            <span class="keyword">using</span> type = boost::mp11::mp_eval_if_c&lt;</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;                !(boost::mp11::mp_contains&lt;DependsPoliciesTuple,</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;                                           Current&gt;::value &amp;&amp;</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;                  (<span class="keyword">sizeof</span>...(Parents) &gt; 0)),</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;                <span class="keywordtype">void</span>,</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;                boost::mp11::mp_at,</div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;                std::tuple&lt;Parents...&gt;,</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;                <a class="code" href="namespacearg__router_1_1traits.html#ab335cfad0ef1eeed3ad34d06694b0244">traits::integral_constant</a>&lt;std::size_t{0}&gt;&gt;;</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;        };</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160; </div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;        <span class="keyword">using</span> type = boost::mp11::mp_remove_if&lt;</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;            utility::tree_type_recursor_t&lt;visitor, ModeType&gt;,</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;            std::is_void&gt;;</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160; </div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;        static_assert(std::tuple_size_v&lt;type&gt; ==</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;                          std::tuple_size_v&lt;DependsPoliciesTuple&gt;,</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;                      <span class="stringliteral">&quot;Number of found modes must match depends policy count&quot;</span>);</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;        static_assert(</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;            std::tuple_size_v&lt;boost::mp11::mp_unique&lt;type&gt;&gt; ==</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;                std::tuple_size_v&lt;type&gt;,</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;            <span class="stringliteral">&quot;Node dependency list must be unique, do you have short and long &quot;</span></div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;            <span class="stringliteral">&quot;names from the same node?&quot;</span>);</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;    };</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    static_assert((<span class="keyword">sizeof</span>...(DependsPolicies) &gt; 0),</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;                  <span class="stringliteral">&quot;At least one name needed for dependent&quot;</span>);</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    static_assert(policy::is_all_policies_v&lt;depends_policies_type&gt;,</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;                  <span class="stringliteral">&quot;All parameters must be policies&quot;</span>);</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    static_assert(</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        boost::mp11::mp_all_of&lt;depends_policies_type, policy_checker&gt;::value,</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;        <span class="stringliteral">&quot;All parameters must provide a long and/or short form name&quot;</span>);</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160; </div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    <span class="comment">// Find the nearest parent with a routing policy</span></div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Parents&gt;</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    <span class="keyword">struct </span>nearest_mode {</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        <span class="comment">// By definition the dependent cannot be the owner, so filter that out</span></div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        <span class="keyword">using</span> parent_tuple = boost::mp11::mp_pop_front&lt;std::tuple&lt;Parents...&gt;&gt;;</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160; </div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Parent&gt;</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;        <span class="keyword">struct </span>policy_finder {</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;            constexpr <span class="keyword">static</span> <span class="keywordtype">bool</span> value =</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;                boost::mp11::mp_find_if_q&lt;</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;                    <span class="keyword">typename</span> Parent::policies_type,</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;                    boost::mp11::mp_bind&lt;<a class="code" href="structarg__router_1_1policy_1_1has__routing__phase__method.html">policy::has_routing_phase_method</a>,</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;                                         boost::mp11::_1&gt;&gt;::value !=</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;                std::tuple_size_v&lt;typename Parent::policies_type&gt;;</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;        };</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160; </div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;        <span class="keyword">using</span> parent_index =</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;            boost::mp11::mp_find_if&lt;parent_tuple, policy_finder&gt;;</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160; </div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;        <span class="keyword">using</span> type =</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;            boost::mp11::mp_eval_if_c&lt;parent_index::value ==</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;                                          std::tuple_size_v&lt;parent_tuple&gt;,</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;                                      void,</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;                                      boost::mp11::mp_at,</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;                                      parent_tuple,</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;                                      parent_index&gt;;</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;    };</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160; </div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    <span class="comment">// Starting from ModeType, recurse down through the tree and find all the</span></div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    <span class="comment">// nodes referred to in DependsPolicies</span></div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> DependsPoliciesTuple, <span class="keyword">typename</span> ModeType&gt;</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    <span class="keyword">struct </span>depends_targets {</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Current, <span class="keyword">typename</span>... Parents&gt;</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;        <span class="keyword">struct </span>visitor {</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;            <span class="comment">// If current is one of the DependsPolicies and Parents is not</span></div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;            <span class="comment">// empty, then use the first element of Parents (i.e. the owning</span></div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;            <span class="comment">// node of the name policy).  If not, then set to void</span></div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;            <span class="keyword">using</span> type = boost::mp11::mp_eval_if_c&lt;</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;                !(boost::mp11::mp_contains&lt;DependsPoliciesTuple,</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;                                           Current&gt;::value &amp;&amp;</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;                  (<span class="keyword">sizeof</span>...(Parents) &gt; 0)),</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;                <span class="keywordtype">void</span>,</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;                boost::mp11::mp_at,</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;                std::tuple&lt;Parents...&gt;,</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;                <a class="code" href="namespacearg__router_1_1traits.html#ab335cfad0ef1eeed3ad34d06694b0244">traits::integral_constant</a>&lt;std::size_t{0}&gt;&gt;;</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;        };</div>
 <div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160; </div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> DependsNodesTuple, <span class="keyword">typename</span> ModeType&gt;</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;    <span class="keyword">struct </span>cyclic_dependency_checker {</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;        <span class="comment">// For each depends, find all of its depends, stop when there are no</span></div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;        <span class="comment">// more or if you hit this policy - static_assert</span></div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;        <span class="keyword">template</span> &lt;std::<span class="keywordtype">size_t</span> I, <span class="keyword">typename</span> Nodes&gt;</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;        constexpr <span class="keyword">static</span> <span class="keywordtype">bool</span> check()</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;        {</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;            <span class="keywordflow">if</span> constexpr (I &gt;= std::tuple_size_v&lt;Nodes&gt;) {</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;            } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;                <span class="keyword">using</span> depends_type = std::tuple_element_t&lt;I, Nodes&gt;;</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;                <span class="keywordflow">if</span> constexpr (<a class="code" href="namespacearg__router_1_1algorithm.html#a8008c0e24fa3cd6f4764c29f2331ba5e">algorithm::has_specialisation_v</a>&lt;</div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;                                  dependent_t,</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;                                  <span class="keyword">typename</span> depends_type::policies_type&gt;) {</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;                    <span class="keywordflow">if</span> constexpr (boost::mp11::mp_contains&lt;</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;                                      <span class="keyword">typename</span> depends_type::policies_type,</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;                                      dependent_t&gt;::value) {</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;                        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;                    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;                        <span class="keyword">using</span> targets = <span class="keyword">typename</span> depends_targets&lt;</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;                            <span class="keyword">typename</span> depends_type::depends_policies_type,</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;                            ModeType&gt;::type;</div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160; </div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;                        <span class="keywordflow">return</span> check&lt;I + 1,</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;                                     boost::mp11::mp_append&lt;Nodes, targets&gt;&gt;();</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;                    }</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;                }</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160; </div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;                <span class="keywordflow">return</span> check&lt;I + 1, Nodes&gt;();</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;            }</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;        }</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160; </div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;        constexpr <span class="keyword">static</span> <span class="keywordtype">bool</span> value = check&lt;0, DependsNodesTuple&gt;();</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;    };</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;};</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160; </div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>... DependsPolicies&gt;</div>
-<div class="line"><a name="l00203"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1policy.html#a5f46c2a3bf35eae6f75aa1c4ba280aa9">  203</a></span>&#160;constexpr dependent_t&lt;DependsPolicies...&gt; <a class="code" href="namespacearg__router_1_1policy.html#a5f46c2a3bf35eae6f75aa1c4ba280aa9">dependent</a>(DependsPolicies... policies)</div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;{</div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;    <span class="keywordflow">return</span> dependent_t{std::move(policies)...};</div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;}</div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160; </div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>... DependsPolicies&gt;</div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;<span class="keyword">struct </span>is_policy&lt;dependent_t&lt;DependsPolicies...&gt;&gt; : std::true_type {</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;};</div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;}  <span class="comment">// namespace policy</span></div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;        <span class="keyword">using</span> type = boost::mp11::mp_remove_if&lt;</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;            utility::tree_type_recursor_t&lt;visitor, ModeType&gt;,</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;            std::is_void&gt;;</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160; </div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;        static_assert(std::tuple_size_v&lt;type&gt; ==</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;                          std::tuple_size_v&lt;DependsPoliciesTuple&gt;,</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;                      <span class="stringliteral">&quot;Number of found modes must match depends policy count&quot;</span>);</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;        static_assert(</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;            std::tuple_size_v&lt;boost::mp11::mp_unique&lt;type&gt;&gt; ==</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;                std::tuple_size_v&lt;type&gt;,</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;            <span class="stringliteral">&quot;Node dependency list must be unique, do you have short and long &quot;</span></div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;            <span class="stringliteral">&quot;names from the same node?&quot;</span>);</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;    };</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160; </div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> DependsNodesTuple, <span class="keyword">typename</span> ModeType&gt;</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;    <span class="keyword">struct </span>cyclic_dependency_checker {</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;        <span class="comment">// For each depends, find all of its depends, stop when there are no</span></div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;        <span class="comment">// more or if you hit this policy - static_assert</span></div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;        <span class="keyword">template</span> &lt;std::<span class="keywordtype">size_t</span> I, <span class="keyword">typename</span> Nodes&gt;</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;        constexpr <span class="keyword">static</span> <span class="keywordtype">bool</span> check()</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;        {</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;            <span class="keywordflow">if</span> constexpr (I &gt;= std::tuple_size_v&lt;Nodes&gt;) {</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;            } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;                <span class="keyword">using</span> depends_type = std::tuple_element_t&lt;I, Nodes&gt;;</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;                <span class="keywordflow">if</span> constexpr (<a class="code" href="namespacearg__router_1_1algorithm.html#a8008c0e24fa3cd6f4764c29f2331ba5e">algorithm::has_specialisation_v</a>&lt;</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;                                  <a class="code" href="classarg__router_1_1policy_1_1dependent__t.html#a459b8b8cfce5c2664af244377ce8dc06">dependent_t</a>,</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;                                  <span class="keyword">typename</span> depends_type::policies_type&gt;) {</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;                    <span class="keywordflow">if</span> constexpr (boost::mp11::mp_contains&lt;</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;                                      <span class="keyword">typename</span> depends_type::policies_type,</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;                                      <a class="code" href="classarg__router_1_1policy_1_1dependent__t.html#a459b8b8cfce5c2664af244377ce8dc06">dependent_t</a>&gt;::value) {</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;                        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;                    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;                        <span class="keyword">using</span> targets = <span class="keyword">typename</span> depends_targets&lt;</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;                            <span class="keyword">typename</span> depends_type::depends_policies_type,</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;                            ModeType&gt;::type;</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160; </div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;                        <span class="keywordflow">return</span> check&lt;I + 1,</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;                                     boost::mp11::mp_append&lt;Nodes, targets&gt;&gt;();</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;                    }</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;                }</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160; </div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;                <span class="keywordflow">return</span> check&lt;I + 1, Nodes&gt;();</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;            }</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;        }</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160; </div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;        constexpr <span class="keyword">static</span> <span class="keywordtype">bool</span> value = check&lt;0, DependsNodesTuple&gt;();</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;    };</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;};</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160; </div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>... DependsPolicies&gt;</div>
+<div class="line"><a name="l00217"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1policy.html#a5f46c2a3bf35eae6f75aa1c4ba280aa9">  217</a></span>&#160;constexpr <a class="code" href="classarg__router_1_1policy_1_1dependent__t.html">dependent_t</a>&lt;DependsPolicies...&gt; <a class="code" href="namespacearg__router_1_1policy.html#a5f46c2a3bf35eae6f75aa1c4ba280aa9">dependent</a>(DependsPolicies... policies)</div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;{</div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classarg__router_1_1policy_1_1dependent__t.html">dependent_t</a>{std::move(policies)...};</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;}</div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160; </div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>... DependsPolicies&gt;</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;<span class="keyword">struct </span>is_policy&lt;dependent_t&lt;DependsPolicies...&gt;&gt; : std::true_type {</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;};</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;}  <span class="comment">// namespace policy</span></div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="anamespacearg__router_1_1policy_html_a5f46c2a3bf35eae6f75aa1c4ba280aa9"><div class="ttname"><a href="namespacearg__router_1_1policy.html#a5f46c2a3bf35eae6f75aa1c4ba280aa9">arg_router::policy::dependent</a></div><div class="ttdeci">constexpr dependent_t&lt; DependsPolicies... &gt; dependent(DependsPolicies... policies)</div><div class="ttdef"><b>Definition:</b> <a href="dependent_8hpp_source.html#l00203">dependent.hpp:203</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1policy_html_a5f46c2a3bf35eae6f75aa1c4ba280aa9"><div class="ttname"><a href="namespacearg__router_1_1policy.html#a5f46c2a3bf35eae6f75aa1c4ba280aa9">arg_router::policy::dependent</a></div><div class="ttdeci">constexpr dependent_t&lt; DependsPolicies... &gt; dependent(DependsPolicies... policies)</div><div class="ttdef"><b>Definition:</b> <a href="dependent_8hpp_source.html#l00217">dependent.hpp:217</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1algorithm_html_a8008c0e24fa3cd6f4764c29f2331ba5e"><div class="ttname"><a href="namespacearg__router_1_1algorithm.html#a8008c0e24fa3cd6f4764c29f2331ba5e">arg_router::algorithm::has_specialisation_v</a></div><div class="ttdeci">constexpr auto has_specialisation_v</div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00219">algorithm.hpp:219</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1parsing_1_1token__list_html_a39cdaa2050d3f04723e101489fe26b48"><div class="ttname"><a href="classarg__router_1_1parsing_1_1token__list.html#a39cdaa2050d3f04723e101489fe26b48">arg_router::parsing::token_list::processed_view</a></div><div class="ttdeci">processed_view_type processed_view() const</div><div class="ttdef"><b>Definition:</b> <a href="token__type_8hpp_source.html#l00146">token_type.hpp:146</a></div></div>
+<div class="ttc" id="astructarg__router_1_1parsing_1_1token__type_html"><div class="ttname"><a href="structarg__router_1_1parsing_1_1token__type.html">arg_router::parsing::token_type</a></div><div class="ttdef"><b>Definition:</b> <a href="token__type_8hpp_source.html#l00028">token_type.hpp:28</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1parsing_1_1token__list_html_ab09398fc6bd23625c4ba2d7017341b6a"><div class="ttname"><a href="classarg__router_1_1parsing_1_1token__list.html#ab09398fc6bd23625c4ba2d7017341b6a">arg_router::parsing::token_list::pending_view</a></div><div class="ttdeci">pending_view_type pending_view() const</div><div class="ttdef"><b>Definition:</b> <a href="token__type_8hpp_source.html#l00137">token_type.hpp:137</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1parse__exception_html"><div class="ttname"><a href="classarg__router_1_1parse__exception.html">arg_router::parse_exception</a></div><div class="ttdef"><b>Definition:</b> <a href="exception_8hpp_source.html#l00011">exception.hpp:11</a></div></div>
+<div class="ttc" id="astructarg__router_1_1policy_1_1has__routing__phase__method_html"><div class="ttname"><a href="structarg__router_1_1policy_1_1has__routing__phase__method.html">arg_router::policy::has_routing_phase_method</a></div><div class="ttdef"><b>Definition:</b> <a href="policy_8hpp_source.html#l00146">policy.hpp:146</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1traits_html_ab335cfad0ef1eeed3ad34d06694b0244"><div class="ttname"><a href="namespacearg__router_1_1traits.html#ab335cfad0ef1eeed3ad34d06694b0244">arg_router::traits::integral_constant</a></div><div class="ttdeci">std::integral_constant&lt; decltype(Value), Value &gt; integral_constant</div><div class="ttdef"><b>Definition:</b> <a href="traits_8hpp_source.html#l00185">traits.hpp:185</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1parsing_1_1token__list_html"><div class="ttname"><a href="classarg__router_1_1parsing_1_1token__list.html">arg_router::parsing::token_list</a></div><div class="ttdef"><b>Definition:</b> <a href="token__type_8hpp_source.html#l00079">token_type.hpp:79</a></div></div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00010">algorithm.hpp:10</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1policy_1_1dependent__t_html_a1410494c4e8ff1ccb5fb0bff09e41b3f"><div class="ttname"><a href="classarg__router_1_1policy_1_1dependent__t.html#a1410494c4e8ff1ccb5fb0bff09e41b3f">arg_router::policy::dependent_t::depends_policies_type</a></div><div class="ttdeci">std::tuple&lt; DependsPolicies... &gt; depends_policies_type</div><div class="ttdef"><b>Definition:</b> <a href="dependent_8hpp_source.html#l00026">dependent.hpp:26</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1policy_1_1dependent__t_html"><div class="ttname"><a href="classarg__router_1_1policy_1_1dependent__t.html">arg_router::policy::dependent_t</a></div><div class="ttdef"><b>Definition:</b> <a href="dependent_8hpp_source.html#l00022">dependent.hpp:22</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1policy_1_1dependent__t_html_a459b8b8cfce5c2664af244377ce8dc06"><div class="ttname"><a href="classarg__router_1_1policy_1_1dependent__t.html#a459b8b8cfce5c2664af244377ce8dc06">arg_router::policy::dependent_t::dependent_t</a></div><div class="ttdeci">constexpr dependent_t(DependsPolicies &amp;&amp;... policies)</div><div class="ttdef"><b>Definition:</b> <a href="dependent_8hpp_source.html#l00032">dependent.hpp:32</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1policy_1_1dependent__t_html_ab9fefe1f3d4a01d2f9cf4085a382238f"><div class="ttname"><a href="classarg__router_1_1policy_1_1dependent__t.html#ab9fefe1f3d4a01d2f9cf4085a382238f">arg_router::policy::dependent_t::pre_parse_phase</a></div><div class="ttdeci">void pre_parse_phase(parsing::token_list &amp;tokens, const Parents &amp;... parents) const</div><div class="ttdef"><b>Definition:</b> <a href="dependent_8hpp_source.html#l00047">dependent.hpp:47</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

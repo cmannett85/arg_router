@@ -102,6 +102,9 @@ $(function() {
 <li>const_reference
 : <a class="el" href="classarg__router_1_1parsing_1_1token__list.html#a7c09e4ad39d96a5e9ae22166f8fb93ab">arg_router::parsing::token_list</a>
 </li>
+<li>counting_flag_t()
+: <a class="el" href="classarg__router_1_1counting__flag__t.html#aca60f476ba856a88d0436a57dfde1a36">arg_router::counting_flag_t&lt; T, Policies &gt;</a>
+</li>
 <li>custom_parser()
 : <a class="el" href="classarg__router_1_1policy_1_1custom__parser.html#a7b6cab30c5c99f76ef3b49eb331d3d44">arg_router::policy::custom_parser&lt; T &gt;</a>
 </li>
@@ -111,6 +114,12 @@ $(function() {
 <h3><a id="index_d"></a>- d -</h3><ul>
 <li>default_value()
 : <a class="el" href="classarg__router_1_1policy_1_1default__value.html#a1544d1c2a40d59d21ffcac07c2734f72">arg_router::policy::default_value&lt; T &gt;</a>
+</li>
+<li>dependent_t()
+: <a class="el" href="classarg__router_1_1policy_1_1dependent__t.html#a459b8b8cfce5c2664af244377ce8dc06">arg_router::policy::dependent_t&lt; DependsPolicies &gt;</a>
+</li>
+<li>depends_policies_type
+: <a class="el" href="classarg__router_1_1policy_1_1dependent__t.html#a1410494c4e8ff1ccb5fb0bff09e41b3f">arg_router::policy::dependent_t&lt; DependsPolicies &gt;</a>
 </li>
 <li>description()
 : <a class="el" href="classarg__router_1_1policy_1_1description__t.html#a1165e855d02c733c5d7a8c3faa33054b">arg_router::policy::description_t&lt; S &gt;</a>
@@ -183,6 +192,7 @@ $(function() {
 </li>
 <li>match()
 : <a class="el" href="classarg__router_1_1arg__t.html#a0143104c50ee3059abc42fbc94607658">arg_router::arg_t&lt; T, Policies &gt;</a>
+, <a class="el" href="classarg__router_1_1counting__flag__t.html#a1fced453b6205c30df3334accda8b140">arg_router::counting_flag_t&lt; T, Policies &gt;</a>
 , <a class="el" href="classarg__router_1_1dependency_1_1one__of__t.html#ace1c89767d7db9e4e984660e3be21630">arg_router::dependency::one_of_t&lt; Params &gt;</a>
 , <a class="el" href="classarg__router_1_1flag__t.html#a382cb0d5fa8ba8b490ca4a88e830dd33">arg_router::flag_t&lt; Policies &gt;</a>
 , <a class="el" href="classarg__router_1_1mode__t.html#a7871cd8ab38b6d32a443ce01730962ff">arg_router::mode_t&lt; Params &gt;</a>
@@ -247,6 +257,7 @@ $(function() {
 </li>
 <li>parse()
 : <a class="el" href="classarg__router_1_1arg__t.html#acc5485f495000a409092e107fa7eb053">arg_router::arg_t&lt; T, Policies &gt;</a>
+, <a class="el" href="classarg__router_1_1counting__flag__t.html#a8f6e3fcbfec1c5e8db0b4f4a0c735a9a">arg_router::counting_flag_t&lt; T, Policies &gt;</a>
 , <a class="el" href="classarg__router_1_1flag__t.html#a73593cfe270e7748d16305f846a41355">arg_router::flag_t&lt; Policies &gt;</a>
 , <a class="el" href="classarg__router_1_1mode__t.html#ac62f759765340a462e44b1dc2622a27a">arg_router::mode_t&lt; Params &gt;</a>
 , <a class="el" href="classarg__router_1_1positional__arg__t.html#ae0fe88d0de7b90772d2a82142bd05e6f">arg_router::positional_arg_t&lt; T, Policies &gt;</a>
@@ -275,8 +286,9 @@ $(function() {
 : <a class="el" href="classarg__router_1_1positional__arg__t.html#aff6926088dd2dfbd63212435d1c000f6">arg_router::positional_arg_t&lt; T, Policies &gt;</a>
 </li>
 <li>pre_parse_phase()
-: <a class="el" href="classarg__router_1_1policy_1_1alias__t.html#a6a5293fa310cc281e6d7e2fcc361f867">arg_router::policy::alias_t&lt; AliasedPolicies &gt;</a>
-, <a class="el" href="classarg__router_1_1policy_1_1min__max__count__t.html#a2e1e000490b386104f8b76620f30fc23">arg_router::policy::min_max_count_t&lt; MinType, MaxType &gt;</a>
+: <a class="el" href="classarg__router_1_1policy_1_1alias__t.html#ad9d63ff540109a5b8cd7af94af47fdcb">arg_router::policy::alias_t&lt; AliasedPolicies &gt;</a>
+, <a class="el" href="classarg__router_1_1policy_1_1dependent__t.html#ab9fefe1f3d4a01d2f9cf4085a382238f">arg_router::policy::dependent_t&lt; DependsPolicies &gt;</a>
+, <a class="el" href="classarg__router_1_1policy_1_1min__max__count__t.html#ac46b248f88409e7cb92612446b8bd4fb">arg_router::policy::min_max_count_t&lt; MinType, MaxType &gt;</a>
 </li>
 <li>prefix
 : <a class="el" href="structarg__router_1_1parsing_1_1token__type.html#a69550c5abd5215a2df313d7e41203652">arg_router::parsing::token_type</a>
@@ -350,9 +362,6 @@ $(function() {
 <li>validate()
 : <a class="el" href="classarg__router_1_1policy_1_1validation_1_1validator.html#a9686205838d77b07192ea3491a4b96f0">arg_router::policy::validation::validator&lt; Rules &gt;</a>
 </li>
-<li>validation_phase()
-: <a class="el" href="classarg__router_1_1policy_1_1min__max__count__t.html#a411b93cd2ff154f28a43eaccc7844313">arg_router::policy::min_max_count_t&lt; MinType, MaxType &gt;</a>
-</li>
 <li>validator_type
 : <a class="el" href="classarg__router_1_1root__t.html#adada7e905b970cdfaaf66668d0b7027f">arg_router::root_t&lt; Params &gt;</a>
 </li>
@@ -362,6 +371,7 @@ $(function() {
 </li>
 <li>value_type
 : <a class="el" href="classarg__router_1_1arg__t.html#a76aed7b7c7feda5d7416f67fe0984a3c">arg_router::arg_t&lt; T, Policies &gt;</a>
+, <a class="el" href="classarg__router_1_1counting__flag__t.html#a56d9c0ffdcedc64bf0ae095386378e8e">arg_router::counting_flag_t&lt; T, Policies &gt;</a>
 , <a class="el" href="classarg__router_1_1dependency_1_1one__of__t.html#a0ef37d14403da42d665ab5b53324e45a">arg_router::dependency::one_of_t&lt; Params &gt;</a>
 , <a class="el" href="classarg__router_1_1flag__t.html#a52c1bf244b1e6f35d947e1ad6fbb053e">arg_router::flag_t&lt; Policies &gt;</a>
 , <a class="el" href="classarg__router_1_1mode__t.html#a92e854b8abe0ef59ded9d8f783bcd875">arg_router::mode_t&lt; Params &gt;</a>

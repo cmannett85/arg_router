@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['merge_5ffn_447',['merge_fn',['../classarg__router_1_1policy_1_1multi__stage__value.html#a5a463b5dc6c149a3f5e5340886db012e',1,'arg_router::policy::multi_stage_value']]]
+  ['integral_5fconstant_459',['integral_constant',['../namespacearg__router_1_1traits.html#ab335cfad0ef1eeed3ad34d06694b0244',1,'arg_router::traits']]],
+  ['is_5frequired_460',['is_required',['../namespacearg__router_1_1policy.html#a408a1ac19cbc1f4ad69630f965f976d8',1,'arg_router::policy']]]
 ];

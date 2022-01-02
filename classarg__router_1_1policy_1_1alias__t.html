@@ -97,9 +97,9 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a6a5293fa310cc281e6d7e2fcc361f867"><td class="memTemplParams" colspan="2">template&lt;typename... Parents&gt; </td></tr>
-<tr class="memitem:a6a5293fa310cc281e6d7e2fcc361f867"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1alias__t.html#a6a5293fa310cc281e6d7e2fcc361f867">pre_parse_phase</a> (<a class="el" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a> &amp;tokens, <a class="el" href="namespacearg__router_1_1utility.html#ad352319d55d0f012d4c77a6bd851d6f5">utility::span</a>&lt; const <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a> &gt; &amp;view, const Parents &amp;... parents) const</td></tr>
-<tr class="separator:a6a5293fa310cc281e6d7e2fcc361f867"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad9d63ff540109a5b8cd7af94af47fdcb"><td class="memTemplParams" colspan="2">template&lt;typename... Parents&gt; </td></tr>
+<tr class="memitem:ad9d63ff540109a5b8cd7af94af47fdcb"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1alias__t.html#ad9d63ff540109a5b8cd7af94af47fdcb">pre_parse_phase</a> (<a class="el" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a> &amp;tokens, const Parents &amp;... parents) const</td></tr>
+<tr class="separator:ad9d63ff540109a5b8cd7af94af47fdcb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename... AliasedPolicies&gt;<br />
@@ -174,8 +174,8 @@ template&lt;typename... AliasedPolicies&gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a6a5293fa310cc281e6d7e2fcc361f867"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6a5293fa310cc281e6d7e2fcc361f867">&#9670;&nbsp;</a></span>pre_parse_phase()</h2>
+<a id="ad9d63ff540109a5b8cd7af94af47fdcb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad9d63ff540109a5b8cd7af94af47fdcb">&#9670;&nbsp;</a></span>pre_parse_phase()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -196,12 +196,6 @@ template&lt;typename... Parents&gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacearg__router_1_1utility.html#ad352319d55d0f012d4c77a6bd851d6f5">utility::span</a>&lt; const <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>view</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype">const Parents &amp;...&#160;</td>
           <td class="paramname"><em>parents</em>&#160;</td>
         </tr>
@@ -218,9 +212,13 @@ template&lt;typename... Parents&gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Duplicates any value tokens as aliases of other nodes.</p>
-<p>The owning type must have minimum_count() and maximum_count() methods that return the same value, or a count() method(), to use an alias.</p><ul>
+<p>The token duplication mechanism has two approaches, depending on the owning node's properties:</p><ul>
+<li>If the node has a fixed count:<ul>
 <li>If the count is zero then it is flag-like so the aliased names are just inserted into <em>tokens</em> after the current token</li>
-<li>If the count is greater than zero then it is argument-like and the aliased names are inserted, each followed by <em>count</em> tokens (i.e. the value), after the current <em>count</em> tokens</li>
+<li>If the count is greater than zero then it is argument-like and the aliased names are inserted, each followed by <em>count</em> tokens (i.e. the values), after the current <em>count</em> tokens</li>
+</ul>
+</li>
+<li>Otherwise the node is assumed to have no value tokens (i.e. flag-like). If this is dangerous for your node type (e.g. is has a variable length of value tokens), then aliasing should be banned for it at validator-level</li>
 </ul>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
@@ -231,7 +229,6 @@ template&lt;typename... Parents&gt; </div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">tokens</td><td>Token list as received from the owning node </td></tr>
-    <tr><td class="paramname">view</td><td>The tokens to be used in the remaining parse phases, may be empty </td></tr>
     <tr><td class="paramname">parents</td><td>Parents instances pack </td></tr>
   </table>
   </dd>
@@ -243,7 +240,7 @@ template&lt;typename... Parents&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="alias_8hpp_source.html#l00062">62</a> of file <a class="el" href="alias_8hpp_source.html">alias.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="alias_8hpp_source.html#l00065">65</a> of file <a class="el" href="alias_8hpp_source.html">alias.hpp</a>.</p>
 
 </div>
 </div>

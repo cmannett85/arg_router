@@ -68,7 +68,6 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="classarg__router_1_1policy_1_1min__max__count__t-members.html">List of all members</a>  </div>
@@ -79,12 +78,6 @@ $(function() {
 
 <p><code>#include &lt;<a class="el" href="min__max__count_8hpp_source.html">arg_router/policy/min_max_count.hpp</a>&gt;</code></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
-Public Member Functions</h2></td></tr>
-<tr class="memitem:a411b93cd2ff154f28a43eaccc7844313"><td class="memTemplParams" colspan="2">template&lt;typename ValueType , typename... Parents&gt; </td></tr>
-<tr class="memitem:a411b93cd2ff154f28a43eaccc7844313"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; <a class="el" href="namespacearg__router_1_1traits.html#a4368b240b0073156a030f4db45173904">traits::supports_std_size_v</a>&lt; ValueType &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1min__max__count__t.html#a411b93cd2ff154f28a43eaccc7844313">validation_phase</a> (const ValueType &amp;value, const Parents &amp;... parents) const</td></tr>
-<tr class="separator:a411b93cd2ff154f28a43eaccc7844313"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:aa4a1340c870cfe4400851d5c5abb1de7"><td class="memItemLeft" align="right" valign="top">constexpr static std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1min__max__count__t.html#aa4a1340c870cfe4400851d5c5abb1de7">minimum_count</a> ()</td></tr>
@@ -94,16 +87,16 @@ Static Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a2e1e000490b386104f8b76620f30fc23"><td class="memTemplParams" colspan="2">template&lt;typename... Parents&gt; </td></tr>
-<tr class="memitem:a2e1e000490b386104f8b76620f30fc23"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1min__max__count__t.html#a2e1e000490b386104f8b76620f30fc23">pre_parse_phase</a> (<a class="el" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a> &amp;tokens, <a class="el" href="namespacearg__router_1_1utility.html#ad352319d55d0f012d4c77a6bd851d6f5">utility::span</a>&lt; const <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a> &gt; &amp;view, const Parents &amp;... parents) const</td></tr>
-<tr class="separator:a2e1e000490b386104f8b76620f30fc23"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac46b248f88409e7cb92612446b8bd4fb"><td class="memTemplParams" colspan="2">template&lt;typename... Parents&gt; </td></tr>
+<tr class="memitem:ac46b248f88409e7cb92612446b8bd4fb"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1min__max__count__t.html#ac46b248f88409e7cb92612446b8bd4fb">pre_parse_phase</a> (<a class="el" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a> &amp;tokens, const Parents &amp;... parents) const</td></tr>
+<tr class="separator:ac46b248f88409e7cb92612446b8bd4fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename MinType, typename MaxType&gt;<br />
 class arg_router::policy::min_max_count_t&lt; MinType, MaxType &gt;</h3>
 
-<p>For arguments that can repeat e.g. counter_flag and positional_arg, this sets the inclusive minimum and maximum number of those repeats.</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
+<p>Exposes the number of tokens the owning node will consume.</p>
+<p>It also checks that there are enough pending tokens available to reach the minimum in the pre-parse phase. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">MinType</td><td>Compile-time integral constant value representing the minimum </td></tr>
     <tr><td class="paramname">MaxType</td><td>Compile-time integral constant value representing the maximum </td></tr>
@@ -111,7 +104,7 @@ class arg_router::policy::min_max_count_t&lt; MinType, MaxType &gt;</h3>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00022">22</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00023">23</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a4f09cecbd9101fff44e4ea70b01c7d71"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4f09cecbd9101fff44e4ea70b01c7d71">&#9670;&nbsp;</a></span>maximum_count()</h2>
@@ -139,7 +132,7 @@ template&lt;typename MinType , typename MaxType &gt; </div>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>Maximum count value. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00046">46</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00047">47</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
 
 </div>
 </div>
@@ -169,12 +162,12 @@ template&lt;typename MinType , typename MaxType &gt; </div>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>Minimum count value. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00043">43</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00044">44</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a2e1e000490b386104f8b76620f30fc23"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2e1e000490b386104f8b76620f30fc23">&#9670;&nbsp;</a></span>pre_parse_phase()</h2>
+<a id="ac46b248f88409e7cb92612446b8bd4fb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac46b248f88409e7cb92612446b8bd4fb">&#9670;&nbsp;</a></span>pre_parse_phase()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -195,12 +188,6 @@ template&lt;typename... Parents&gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacearg__router_1_1utility.html#ad352319d55d0f012d4c77a6bd851d6f5">utility::span</a>&lt; const <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>view</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype">const Parents &amp;...&#160;</td>
           <td class="paramname"><em>parents</em>&#160;</td>
         </tr>
@@ -216,7 +203,7 @@ template&lt;typename... Parents&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Limit the number entries in <em>view</em> to the first <a class="el" href="classarg__router_1_1policy_1_1min__max__count__t.html#a4f09cecbd9101fff44e4ea70b01c7d71">maximum_count()</a>.</p>
+<p>Checks that there are enough pending tokens in the list to reach the minimum count.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Parents</td><td>Pack of parent tree nodes in ascending ancestry order </td></tr>
@@ -226,78 +213,18 @@ template&lt;typename... Parents&gt; </div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">tokens</td><td>Token list as received from the owning node, this is not modified </td></tr>
-    <tr><td class="paramname">view</td><td>The tokens to be used in the remaining parse phases </td></tr>
     <tr><td class="paramname">parents</td><td>Parents instances pack </td></tr>
   </table>
   </dd>
 </dl>
-
-<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00087">87</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a411b93cd2ff154f28a43eaccc7844313"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a411b93cd2ff154f28a43eaccc7844313">&#9670;&nbsp;</a></span>validation_phase()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename MinType , typename MaxType &gt; </div>
-<div class="memtemplate">
-template&lt;typename ValueType , typename... Parents&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::enable_if_t&lt;<a class="el" href="namespacearg__router_1_1traits.html#a4368b240b0073156a030f4db45173904">traits::supports_std_size_v</a>&lt;ValueType&gt; &gt; <a class="el" href="classarg__router_1_1policy_1_1min__max__count__t.html">arg_router::policy::min_max_count_t</a>&lt; MinType, MaxType &gt;::validation_phase </td>
-          <td>(</td>
-          <td class="paramtype">const ValueType &amp;&#160;</td>
-          <td class="paramname"><em>value</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const Parents &amp;...&#160;</td>
-          <td class="paramname"><em>parents</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Check the number elements in <em>value</em> is not less than <a class="el" href="classarg__router_1_1policy_1_1min__max__count__t.html#aa4a1340c870cfe4400851d5c5abb1de7">minimum_count()</a>.</p>
-<dl class="section note"><dt>Note</dt><dd>This phase does not exist if <em>ValueType</em> does not have a <code>size()</code> method </dd></dl>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">ValueType</td><td>Parsed value type </td></tr>
-    <tr><td class="paramname">Parents</td><td>Pack of parent tree nodes in ascending ancestry order </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">value</td><td>Parsed value </td></tr>
-    <tr><td class="paramname">parents</td><td>Parents instances pack </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>void </dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="classarg__router_1_1parse__exception.html">parse_exception</a></td><td>Thrown if <em>value</em> has a size() less than <a class="el" href="classarg__router_1_1policy_1_1min__max__count__t.html#aa4a1340c870cfe4400851d5c5abb1de7">minimum_count()</a> </td></tr>
+    <tr><td class="paramname"><a class="el" href="classarg__router_1_1parse__exception.html">parse_exception</a></td><td>Thrown if minimum count not reached </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00061">61</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00060">60</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
 
 </div>
 </div>

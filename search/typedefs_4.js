@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['has_5fno_5fresult_5fvalue_444',['has_no_result_value',['../namespacearg__router_1_1policy.html#a985a31d1991b66211625593d1b07dff9',1,'arg_router::policy']]]
+  ['get_5ftype_456',['get_type',['../namespacearg__router_1_1traits.html#a583085d5317dee19e8b9b31591b8a22a',1,'arg_router::traits']]],
+  ['get_5fvalue_5ftype_457',['get_value_type',['../namespacearg__router_1_1traits.html#ac436bd1d964e7c584c5d40af98b95283',1,'arg_router::traits']]]
 ];
