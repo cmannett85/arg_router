@@ -1,5 +1,6 @@
 #include "arg_router/policy/custom_parser.hpp"
 #include "arg_router/policy/description.hpp"
+#include "arg_router/policy/min_max_value.hpp"
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
@@ -1359,7 +1360,8 @@ BOOST_AUTO_TEST_CASE(counting_flag_test)
         mode(policy::none_name<S_("mode2")>,
              counting_flag<std::size_t>(policy::short_name<'a'>,
                                         policy::alias(policy::short_name<'b'>)),
-             counting_flag<std::size_t>(policy::short_name<'b'>),
+             counting_flag<std::size_t>(policy::short_name<'b'>,
+                                        policy::min_max_value{2, 5}),
              policy::router{[&](std::size_t b) { result = std::tuple{b}; }}),
         mode(policy::none_name<S_("mode3")>,
              flag(policy::short_name<'a'>),
@@ -1410,9 +1412,15 @@ BOOST_AUTO_TEST_CASE(counting_flag_test)
                 std::vector{"foo", "mode1", "-c", "--arg1", "9.2", "-bcc"},
                 std::tuple{9.2, false, true, std::size_t{3}},
                 ""},
+            std::tuple{std::vector{"foo", "mode2", "-aba"},
+                       std::tuple{std::size_t{3}},
+                       ""},
+            std::tuple{std::vector{"foo", "mode2", "-b"},
+                       std::tuple{std::size_t{1}},
+                       "Minimum value not reached: -b"},
             std::tuple{std::vector{"foo", "mode2", "-abababab"},
                        std::tuple{std::size_t{8}},
-                       ""},
+                       "Maximum value exceeded: -b"},
             std::tuple{std::vector{"foo", "mode3", "-bbab"},
                        std::tuple{true, std::size_t{3}},
                        ""},
