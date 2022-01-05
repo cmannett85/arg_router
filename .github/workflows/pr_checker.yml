@@ -57,12 +57,7 @@ jobs:
         buildDirectory: ${{ env.BUILD_DIR }}
         buildWithCMakeArgs: --target arg_router_test_coverage
 
-    - name: Run
-      run: |
-        cd ${{ env.BUILD_DIR }}/test
-        ./arg_router_test_coverage -l test_suite
-
-    - name: Valgrind run
+    - name: Run unit tests under Valgrind/Memcheck
       run: |
         cd ${{ env.BUILD_DIR }}/test
         valgrind --error-exitcode=1 ./arg_router_test_coverage -l test_suite

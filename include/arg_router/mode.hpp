@@ -201,6 +201,13 @@ public:
             },
             results);
 
+        // Handle multi-stage value validation.  Multi-stage value nodes cannot
+        // be validated during processing, as they will likely fail validation
+        // when partially processed.  So the multi-stage nodes do not validation
+        // themselves, but have their owner (i.e. modes) do it at the end of
+        // processing - including after any default values have been generated
+        multi_stage_validation(results, *this, parents...);
+
         // Routing
         using routing_policy = typename phase_finder_bind<results_type>::type;
         if constexpr (!std::is_void_v<routing_policy>) {
@@ -320,12 +327,49 @@ private:
             if constexpr (policy::has_validation_phase_method_v<policy_type,
                                                                 ValueType,
                                                                 Parents...>) {
-                child.policy_type::template validation_phase<ValueType>(
-                    *result,
-                    child,
-                    parents...);
+                child.policy_type::template validation_phase(*result,
+                                                             child,
+                                                             parents...);
             }
         });
+    }
+
+    template <typename ResultsType, typename... Parents>
+    void multi_stage_validation(const ResultsType& results,
+                                const Parents&... parents) const
+    {
+        // For all the children that use multi-stage values, invoke any policy
+        // that supports a validation phase
+        utility::tuple_iterator(
+            [&](auto i, const auto& child) {
+                using child_type = std::decay_t<decltype(child)>;
+                using child_policies_type = typename child_type::policies_type;
+                using optional_result_type =
+                    std::tuple_element_t<i, ResultsType>;
+
+                if constexpr (!is_skip_tag_v<optional_result_type> &&
+                              policy::has_multi_stage_value_v<child_type>) {
+                    using result_type =
+                        typename optional_result_type::value_type;
+                    const auto& result = *std::get<i>(results);
+
+                    utility::tuple_type_iterator<child_policies_type>(
+                        [&](auto j) {
+                            using policy_type =
+                                std::tuple_element_t<j, child_policies_type>;
+                            if constexpr (policy::has_validation_phase_method_v<
+                                              policy_type,
+                                              result_type,
+                                              Parents...>) {
+                                child.policy_type::template validation_phase(
+                                    result,
+                                    child,
+                                    parents...);
+                            }
+                        });
+                }
+            },
+            this->children());
     }
 };
 

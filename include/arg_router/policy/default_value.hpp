@@ -26,7 +26,10 @@ public:
      *
      * @param value Default value
      */
-    constexpr explicit default_value(T value) : value_{std::move(value)} {}
+    constexpr explicit default_value(value_type value) :
+        value_{std::move(value)}
+    {
+    }
 
     /** Returns the default value.
      *
@@ -34,7 +37,9 @@ public:
      * cache line
      */
     constexpr auto get_default_value() const
-        -> std::conditional_t<config::l1_cache_size() >= sizeof(T), T, const T&>
+        -> std::conditional_t<config::l1_cache_size() >= sizeof(value_type),
+                              value_type,
+                              const value_type&>
     {
         return value_;
     }
@@ -56,7 +61,7 @@ public:
     }
 
 private:
-    T value_;
+    value_type value_;
 };
 
 template <typename T>

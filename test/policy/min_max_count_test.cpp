@@ -56,7 +56,7 @@ BOOST_AUTO_TEST_CASE(is_policy_test)
                   "Policy test has failed");
 }
 
-BOOST_AUTO_TEST_CASE(min_count_test)
+BOOST_AUTO_TEST_CASE(count_test)
 {
     static_assert(policy::fixed_count<42u>.minimum_count() == 42, "Fail");
     static_assert(policy::fixed_count<42u>.maximum_count() == 42, "Fail");
