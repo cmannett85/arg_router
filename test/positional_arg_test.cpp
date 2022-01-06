@@ -300,7 +300,7 @@ int main() {
         "Cannot have a fixed count of zero");
 }
 
-BOOST_AUTO_TEST_CASE(no_router_test)
+BOOST_AUTO_TEST_CASE(routing_phase_test)
 {
     test::death_test_compile(
         R"(
@@ -313,11 +313,12 @@ using namespace arg_router;
 
 int main() {
     auto f = positional_arg<std::vector<int>>(policy::display_name<S_("hello")>,
-                                              policy::router{[](int) {}});
+                                policy::router{[](int) {}});
     return 0;
 }
     )",
-        "Positional arg cannot be routed");
+        "Positional arg does not support policies with routing phases "
+        "(e.g. router)");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

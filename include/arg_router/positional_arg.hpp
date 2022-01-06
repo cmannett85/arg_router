@@ -42,12 +42,6 @@ class positional_arg_t : public tree_node<Policies...>
     static_assert(!traits::has_none_name_method_v<positional_arg_t>,
                   "Positional arg must not have a none name policy");
 
-    // No routing phase, a positional_arg cannot be used as a top-level node
-    using routing_policy = typename parent_type::
-        template phase_finder<policy::has_routing_phase_method, T>::type;
-    static_assert(std::is_void_v<routing_policy>,
-                  "Positional arg cannot be routed");
-
 public:
     using typename parent_type::policies_type;
 
@@ -113,9 +107,7 @@ public:
         // Pre-parse
         utility::tuple_type_iterator<policies_type>([&](auto i) {
             using policy_type = std::tuple_element_t<i, policies_type>;
-            if constexpr (policy::has_pre_parse_phase_method_v<policy_type,
-                                                               positional_arg_t,
-                                                               Parents...>) {
+            if constexpr (policy::has_pre_parse_phase_method_v<policy_type>) {
                 this->policy_type::pre_parse_phase(tokens, *this, parents...);
             }
         });
@@ -147,11 +139,8 @@ public:
         // Validation
         utility::tuple_type_iterator<policies_type>([&](auto i) {
             using policy_type = std::tuple_element_t<i, policies_type>;
-            if constexpr (policy::has_validation_phase_method_v<
-                              policy_type,
-                              value_type,
-                              positional_arg_t,
-                              Parents...>) {
+            if constexpr (policy::has_validation_phase_method_v<policy_type,
+                                                                value_type>) {
                 this->policy_type::validation_phase(result, *this, parents...);
             }
         });
@@ -160,6 +149,13 @@ public:
 
         return result;
     }
+
+private:
+    static_assert(
+        !parent_type::template any_phases_v<value_type,
+                                            policy::has_routing_phase_method>,
+        "Positional arg does not support policies with routing phases "
+        "(e.g. router)");
 };
 
 /** Constructs an positional_arg_t with the given policies and value type.

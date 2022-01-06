@@ -35,8 +35,7 @@ public:
                 using this_policy =
                     std::tuple_element_t<i, typename stub_node::policies_type>;
                 if constexpr (policy::has_pre_parse_phase_method_v<
-                                  this_policy,
-                                  Parents...> &&
+                                  this_policy> &&
                               traits::is_specialisation_of_v<this_policy,
                                                              policy::alias_t>) {
                     this->this_policy::pre_parse_phase(tokens, parents...);
@@ -627,6 +626,160 @@ int main() {
     )",
         "Node alias list must be unique, do you have short and long names from "
         "the same node?");
+}
+
+BOOST_AUTO_TEST_CASE(parse_phase_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/alias.hpp"
+#include "arg_router/policy/custom_parser.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+namespace
+{
+template <typename... Policies>
+class stub_node : public tree_node<Policies...>
+{
+public:
+    using value_type = bool;
+
+    constexpr explicit stub_node(Policies... policies) :
+        tree_node<Policies...>{std::move(policies)...}
+    {
+    }
+
+    template <typename... Parents>
+    void pre_parse_phase(parsing::token_list& tokens,
+                         const Parents&... parents) const
+    {
+        using this_policy =
+            std::tuple_element_t<1, typename stub_node::policies_type>;
+        this->this_policy::pre_parse_phase(tokens, *this, parents...);
+    }
+};
+}  // namespace
+
+int main() {
+    const auto root = stub_node{policy::long_name<S_("flag1")>,
+                                policy::alias(policy::long_name<S_("flag2")>),
+                                policy::custom_parser<bool>{
+                                    [](std::string_view) { return false; }}};
+
+    auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "flag2"},
+                                      {parsing::prefix_type::LONG, "flag3"}};
+
+    root.pre_parse_phase(tokens, root);
+    return 0;
+}
+    )",
+        "Alias owning node cannot have policies that support parse, "
+        "validation, or routing phases");
+}
+
+BOOST_AUTO_TEST_CASE(validation_phase_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/alias.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/min_max_value.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+namespace
+{
+template <typename... Policies>
+class stub_node : public tree_node<Policies...>
+{
+public:
+    using value_type = bool;
+
+    constexpr explicit stub_node(Policies... policies) :
+        tree_node<Policies...>{std::move(policies)...}
+    {
+    }
+
+    template <typename... Parents>
+    void pre_parse_phase(parsing::token_list& tokens,
+                         const Parents&... parents) const
+    {
+        using this_policy =
+            std::tuple_element_t<1, typename stub_node::policies_type>;
+        this->this_policy::pre_parse_phase(tokens, *this, parents...);
+    }
+};
+}  // namespace
+
+int main() {
+    const auto root = stub_node{policy::long_name<S_("flag1")>,
+                                policy::alias(policy::long_name<S_("flag2")>),
+                                policy::min_max_value{3, 6}};
+
+    auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "flag2"},
+                                      {parsing::prefix_type::LONG, "flag3"}};
+
+    root.pre_parse_phase(tokens, root);
+    return 0;
+}
+    )",
+        "Alias owning node cannot have policies that support parse, "
+        "validation, or routing phases");
+}
+
+BOOST_AUTO_TEST_CASE(routing_phase_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/alias.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/router.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+namespace
+{
+template <typename... Policies>
+class stub_node : public tree_node<Policies...>
+{
+public:
+    using value_type = bool;
+
+    constexpr explicit stub_node(Policies... policies) :
+        tree_node<Policies...>{std::move(policies)...}
+    {
+    }
+
+    template <typename... Parents>
+    void pre_parse_phase(parsing::token_list& tokens,
+                         const Parents&... parents) const
+    {
+        using this_policy =
+            std::tuple_element_t<1, typename stub_node::policies_type>;
+        this->this_policy::pre_parse_phase(tokens, *this, parents...);
+    }
+};
+}  // namespace
+
+int main() {
+    const auto root = stub_node{policy::long_name<S_("flag1")>,
+                                policy::alias(policy::long_name<S_("flag2")>),
+                                policy::router{[](bool) {}}};
+
+    auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "flag2"},
+                                      {parsing::prefix_type::LONG, "flag3"}};
+
+    root.pre_parse_phase(tokens, root);
+    return 0;
+}
+    )",
+        "Alias owning node cannot have policies that support parse, "
+        "validation, or routing phases");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

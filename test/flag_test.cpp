@@ -140,31 +140,6 @@ int main() {
         "Flags must only contain policies (not other nodes)");
 }
 
-BOOST_AUTO_TEST_CASE(no_custom_parser_test)
-{
-    test::death_test_compile(
-        R"(
-#include "arg_router/flag.hpp"
-#include "arg_router/policy/custom_parser.hpp"
-#include "arg_router/policy/long_name.hpp"
-#include "arg_router/utility/compile_time_string.hpp"
-
-using namespace arg_router;
-
-int main() {
-    auto f = flag(
-        policy::long_name<S_("hello")>,
-        policy::custom_parser<bool>{[](std::string_view) { return false; }}
-    );
-
-    auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "hello"}};
-    f.parse(tokens);
-    return 0;
-}
-    )",
-        "Flag cannot have a custom parser");
-}
-
 BOOST_AUTO_TEST_CASE(must_be_named_test)
 {
     test::death_test_compile(
@@ -215,6 +190,48 @@ int main() {
 }
     )",
         "Flag must not have a none name policy");
+}
+
+BOOST_AUTO_TEST_CASE(parse_policy_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/flag.hpp"
+#include "arg_router/policy/custom_parser.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    auto f = flag(policy::long_name<S_("hello")>,
+                  policy::custom_parser<bool>{[](std::string_view) { return true; }});
+    return 0;
+}
+    )",
+        "Flag does not support policies with parse or validation phases "
+        "(e.g. custom_parser or min_max_value)");
+}
+
+BOOST_AUTO_TEST_CASE(validation_policy_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/flag.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/min_max_value.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    auto f = flag(policy::long_name<S_("hello")>,
+                  policy::min_max_value{true, true});
+    return 0;
+}
+    )",
+        "Flag does not support policies with parse or validation phases "
+        "(e.g. custom_parser or min_max_value)");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

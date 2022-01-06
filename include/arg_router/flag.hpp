@@ -90,41 +90,38 @@ public:
     value_type parse(parsing::token_list& tokens,
                      const Parents&... parents) const
     {
-        {
-            using parse_policy = typename parent_type::template phase_finder<
-                policy::has_parse_phase_method,
-                value_type,
-                Parents...>::type;
-            static_assert(std::is_void_v<parse_policy>,
-                          "Flag cannot have a custom parser");
-        }
-
         // Remove this node's name
         tokens.mark_as_processed();
 
         // Pre-parse
         utility::tuple_type_iterator<policies_type>([&](auto i) {
             using policy_type = std::tuple_element_t<i, policies_type>;
-            if constexpr (policy::has_pre_parse_phase_method_v<policy_type,
-                                                               flag_t,
-                                                               Parents...>) {
+            if constexpr (policy::has_pre_parse_phase_method_v<policy_type>) {
                 this->policy_type::pre_parse_phase(tokens, *this, parents...);
             }
         });
 
-        // No real parse or validation phase as presence of the flag yields a
-        // constant true
+        // Presence of the flag yields a constant true
         const auto result = true;
 
         // Routing phase
-        using routing_policy = typename parent_type::
-            template phase_finder<policy::has_routing_phase_method, bool>::type;
+        using routing_policy = typename parent_type::template phase_finder_t<
+            policy::has_routing_phase_method>;
         if constexpr (!std::is_void_v<routing_policy>) {
             this->routing_policy::routing_phase(tokens, result);
         }
 
         return result;
     }
+
+private:
+    static_assert(
+        !parent_type::template any_phases_v<
+            value_type,
+            policy::has_parse_phase_method,
+            policy::has_validation_phase_method>,
+        "Flag does not support policies with parse or validation phases "
+        "(e.g. custom_parser or min_max_value)");
 };
 
 /** Constructs a flag_t with the given policies.

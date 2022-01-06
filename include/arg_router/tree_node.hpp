@@ -55,6 +55,70 @@ public:
             boost::mp11::mp_find_if_q<policies_type, finder>>;
     };
 
+    /** Helper alias for phase_finder.
+     *
+     * @tparam PolicyChecker Policy predicate, use one of
+     * <TT>policy::has_*_phase_method</TT>
+     * @tparam Args Auxiliary arguments to pass to @a PolicyChecker
+     */
+    template <template <typename...> typename PolicyChecker, typename... Args>
+    using phase_finder_t = typename phase_finder<PolicyChecker, Args...>::type;
+
+    /** Evaluates to true if any of the @a PolicyCheckers predicates pass.
+     *
+     * This is effectively a wrapper over phase_finder that loops over multiple
+     * policy checkers.
+     * 
+     * Most nodes don't support certain phases, this predicate allows for
+     * static_assert testing for their presence.
+     * @tparam ValueType Some policy checkers require a value type template
+     * parameter, if a particular policy doesn't need it then it is not used
+     * @tparam PolicyCheckers Parameter pack type of policy predicates, use
+     * <TT>policy::has_*_phase_method</TT>
+     */
+    template <typename ValueType,
+              template <typename...>
+              typename... PolicyCheckers>
+    class any_phases
+    {
+        template <template <typename...> typename PolicyChecker>
+        struct checker {
+            static constexpr bool value = []() {
+                // This is shonky but I can't think of an easy arity test for a
+                // class template
+                if constexpr (std::tuple_size_v<policies_type> == 0) {
+                    return false;
+                } else if constexpr (boost::mp11::mp_valid<
+                                         PolicyChecker,
+                                         boost::mp11::mp_first<policies_type>,
+                                         ValueType>::value) {
+                    return !std::is_void_v<
+                        phase_finder_t<PolicyChecker, ValueType>>;
+                } else {
+                    return !std::is_void_v<phase_finder_t<PolicyChecker>>;
+                }
+            }();
+        };
+
+    public:
+        static constexpr bool value =
+            boost::mp11::mp_any_of<std::tuple<checker<PolicyCheckers>...>,
+                                   boost::mp11::mp_to_bool>::value;
+    };
+
+    /** Helper alias for has_phases.
+     *
+     * @tparam ValueType Some policy checkers require a value type template
+     * parameter, if a particular policy doesn't need it then it is not used
+     * @tparam PolicyCheckers Parameter pack type of policy predicates, use
+     * <TT>policy::has_*_phase_method</TT>
+     */
+    template <typename ValueType,
+              template <typename...>
+              typename... PolicyCheckers>
+    static constexpr bool any_phases_v =
+        any_phases<ValueType, PolicyCheckers...>::value;
+
     /** Returns a reference to the children.
      *
      * @return Children
@@ -135,7 +199,7 @@ protected:
     auto parse(std::string_view token, const Parents&... parents) const
     {
         using finder_type =
-            phase_finder<policy::has_parse_phase_method, ValueType, Parents...>;
+            phase_finder<policy::has_parse_phase_method, ValueType>;
         using policy_type = typename finder_type::type;
 
         static_assert(

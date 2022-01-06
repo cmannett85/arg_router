@@ -201,27 +201,14 @@ public:
     }
 
 private:
-    // No routing phase, a positional_arg cannot be used as a top-level node
-    template <typename T>
-    struct routing_policy {
-        using type = typename parent_type::
-            template phase_finder<policy::has_routing_phase_method, T>::type;
-    };
-
-    template <typename... Args>
-    struct routing_policy<std::tuple<Args...>> {
-        using type = typename parent_type::template phase_finder<
-            policy::has_routing_phase_method,
-            Args...>::type;
-    };
-
-    static_assert(std::is_void_v<typename routing_policy<value_type>::type>,
-                  "one_of cannot be routed");
-
-    using parse_policy = typename parent_type::
-        template phase_finder<policy::has_parse_phase_method, value_type>::type;
-    static_assert(std::is_void_v<parse_policy>,
-                  "one_of cannot have a custom parser");
+    static_assert(
+        !parent_type::template any_phases_v<value_type,
+                                            policy::has_pre_parse_phase_method,
+                                            policy::has_parse_phase_method,
+                                            policy::has_validation_phase_method,
+                                            policy::has_routing_phase_method>,
+        "one_of does not support policies with pre-parse, parse, validation, "
+        "or routing phases; as it delegates those to its children");
 };
 
 /** Constructs a one_of_t with the given policies and children.

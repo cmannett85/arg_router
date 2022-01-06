@@ -671,30 +671,6 @@ int main() {
         "Mode must not have a display name policy");
 }
 
-BOOST_AUTO_TEST_CASE(must_not_have_a_custom_parser_test)
-{
-    test::death_test_compile(
-        R"(
-#include "arg_router/flag.hpp"
-#include "arg_router/mode.hpp"
-#include "arg_router/policy/custom_parser.hpp"
-#include "arg_router/policy/long_name.hpp"
-#include "arg_router/utility/compile_time_string.hpp"
-
-using namespace arg_router;
-
-int main() {
-    const auto m = mode(policy::custom_parser<int>{[](auto) { return false; }},
-                        flag(policy::long_name<S_("hello")>));
-
-    auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "hello"}};
-    m.parse(tokens);
-    return 0;
-}
-    )",
-        "Mode cannot have a custom parser");
-}
-
 BOOST_AUTO_TEST_CASE(anonymous_child_mode_test)
 {
     test::death_test_compile(
@@ -829,6 +805,94 @@ int main() {
 }
     )",
         "Non-mode children cannot have routing");
+}
+
+BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/flag.hpp"
+#include "arg_router/mode.hpp"
+#include "arg_router/policy/alias.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    const auto m = mode(policy::alias(policy::long_name<S_("other-mode")>),
+                        flag(policy::long_name<S_("hello")>));
+    return 0;
+}
+    )",
+        "Mode does not support policies with pre-parse, parse, validation, "
+        "or missing phases; as it delegates those to its children");
+}
+
+BOOST_AUTO_TEST_CASE(parse_phase_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/flag.hpp"
+#include "arg_router/mode.hpp"
+#include "arg_router/policy/custom_parser.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    const auto m = mode(policy::custom_parser<int>{[](auto) { return false; }},
+                        flag(policy::long_name<S_("hello")>));
+    return 0;
+}
+    )",
+        "Mode does not support policies with pre-parse, parse, validation, "
+        "or missing phases; as it delegates those to its children");
+}
+
+BOOST_AUTO_TEST_CASE(validation_phase_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/flag.hpp"
+#include "arg_router/mode.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/min_max_value.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    const auto m = mode(policy::min_max_value{1, 3},
+                        flag(policy::long_name<S_("hello")>));
+    return 0;
+}
+    )",
+        "Mode does not support policies with pre-parse, parse, validation, "
+        "or missing phases; as it delegates those to its children");
+}
+
+BOOST_AUTO_TEST_CASE(missing_phase_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/flag.hpp"
+#include "arg_router/mode.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/required.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    const auto m = mode(policy::required,
+                        flag(policy::long_name<S_("hello")>));
+    return 0;
+}
+    )",
+        "Mode does not support policies with pre-parse, parse, validation, "
+        "or missing phases; as it delegates those to its children");
 }
 
 BOOST_AUTO_TEST_SUITE_END()
