@@ -96,6 +96,8 @@ Public Types</h2></td></tr>
 <tr class="separator:aec3a4f4e8c0b7d0b7a5d911b18fb9bc3 inherit pub_types_classarg__router_1_1tree__node"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ada9714c3089bb29077dd1475d902db0a inherit pub_types_classarg__router_1_1tree__node"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#ada9714c3089bb29077dd1475d902db0a">children_type</a> = boost::mp11::mp_filter&lt; <a class="el" href="structarg__router_1_1is__tree__node.html">is_tree_node</a>, std::decay_t&lt; decltype(list_expander(std::declval&lt; Params &gt;()...))&gt; &gt;</td></tr>
 <tr class="separator:ada9714c3089bb29077dd1475d902db0a inherit pub_types_classarg__router_1_1tree__node"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a86e94be4e7ea24708d9b6e7240393ea1 inherit pub_types_classarg__router_1_1tree__node"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#a86e94be4e7ea24708d9b6e7240393ea1">phase_finder_t</a> = typename phase_finder&lt; PolicyChecker, Args... &gt;::type</td></tr>
+<tr class="separator:a86e94be4e7ea24708d9b6e7240393ea1 inherit pub_types_classarg__router_1_1tree__node"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -117,6 +119,9 @@ Public Member Functions</h2></td></tr>
 Static Public Attributes</h2></td></tr>
 <tr class="memitem:a6a9818649d4986bd3c108623cbd4b964"><td class="memItemLeft" align="right" valign="top">constexpr static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1mode__t.html#a6a9818649d4986bd3c108623cbd4b964">is_anonymous</a></td></tr>
 <tr class="separator:a6a9818649d4986bd3c108623cbd4b964"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_static_attribs_classarg__router_1_1tree__node"><td colspan="2" onclick="javascript:toggleInherit('pub_static_attribs_classarg__router_1_1tree__node')"><img src="closed.png" alt="-"/>&#160;Static Public Attributes inherited from <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node&lt; policy::no_result_value&lt;&gt;, Params... &gt;</a></td></tr>
+<tr class="memitem:a948b1f746bff7e32bf48949bc7a823df inherit pub_static_attribs_classarg__router_1_1tree__node"><td class="memItemLeft" align="right" valign="top">static constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#a948b1f746bff7e32bf48949bc7a823df">any_phases_v</a></td></tr>
+<tr class="separator:a948b1f746bff7e32bf48949bc7a823df inherit pub_static_attribs_classarg__router_1_1tree__node"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
@@ -156,7 +161,7 @@ template&lt;typename... Params&gt; </div>
 </div><div class="memdoc">
 <p>Tuple of valid children value types. </p>
 
-<p class="definition">Definition at line <a class="el" href="mode_8hpp_source.html#l00072">72</a> of file <a class="el" href="mode_8hpp_source.html">mode.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mode_8hpp_source.html#l00062">62</a> of file <a class="el" href="mode_8hpp_source.html">mode.hpp</a>.</p>
 
 </div>
 </div>
@@ -194,7 +199,7 @@ template&lt;typename... Params&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="mode_8hpp_source.html#l00082">82</a> of file <a class="el" href="mode_8hpp_source.html">mode.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mode_8hpp_source.html#l00072">72</a> of file <a class="el" href="mode_8hpp_source.html">mode.hpp</a>.</p>
 
 </div>
 </div>
@@ -253,7 +258,7 @@ template&lt;typename Fn &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Match result </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mode_8hpp_source.html#l00101">101</a> of file <a class="el" href="mode_8hpp_source.html">mode.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mode_8hpp_source.html#l00091">91</a> of file <a class="el" href="mode_8hpp_source.html">mode.hpp</a>.</p>
 
 </div>
 </div>
@@ -316,7 +321,7 @@ template&lt;typename... Parents&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="mode_8hpp_source.html#l00123">123</a> of file <a class="el" href="mode_8hpp_source.html">mode.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mode_8hpp_source.html#l00113">113</a> of file <a class="el" href="mode_8hpp_source.html">mode.hpp</a>.</p>
 
 </div>
 </div>
@@ -346,7 +351,7 @@ template&lt;typename... Params&gt; </div>
 <div class="line">        !traits::has_none_name_method_v&lt;mode_t&gt;</div>
 </div><!-- fragment --><p>True if this mode is anonymous. </p>
 
-<p class="definition">Definition at line <a class="el" href="mode_8hpp_source.html#l00075">75</a> of file <a class="el" href="mode_8hpp_source.html">mode.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mode_8hpp_source.html#l00065">65</a> of file <a class="el" href="mode_8hpp_source.html">mode.hpp</a>.</p>
 
 </div>
 </div>

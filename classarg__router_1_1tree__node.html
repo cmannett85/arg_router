@@ -71,6 +71,7 @@ $(function() {
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="classarg__router_1_1tree__node-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -88,6 +89,8 @@ Inheritance diagram for arg_router::tree_node&lt; Params &gt;:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node_1_1any__phases.html">any_phases</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structarg__router_1_1tree__node_1_1phase__finder.html">phase_finder</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -99,6 +102,9 @@ Public Types</h2></td></tr>
 <tr class="separator:aec3a4f4e8c0b7d0b7a5d911b18fb9bc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ada9714c3089bb29077dd1475d902db0a"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#ada9714c3089bb29077dd1475d902db0a">children_type</a> = boost::mp11::mp_filter&lt; <a class="el" href="structarg__router_1_1is__tree__node.html">is_tree_node</a>, std::decay_t&lt; decltype(<a class="el" href="namespacearg__router.html#ac82f3cd910cc0b13f74865681898b078">list_expander</a>(std::declval&lt; Params &gt;()...))&gt; &gt;</td></tr>
 <tr class="separator:ada9714c3089bb29077dd1475d902db0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a86e94be4e7ea24708d9b6e7240393ea1"><td class="memTemplParams" colspan="2">template&lt;template&lt; typename... &gt; typename PolicyChecker, typename... Args&gt; </td></tr>
+<tr class="memitem:a86e94be4e7ea24708d9b6e7240393ea1"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#a86e94be4e7ea24708d9b6e7240393ea1">phase_finder_t</a> = typename <a class="el" href="structarg__router_1_1tree__node_1_1phase__finder.html">phase_finder</a>&lt; PolicyChecker, Args... &gt;::type</td></tr>
+<tr class="separator:a86e94be4e7ea24708d9b6e7240393ea1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -107,6 +113,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a290401753b1e67a8ed37af7c66515dc9"><td class="memTemplParams" colspan="2">template&lt;typename Fn , typename ResultsTuple  = std::tuple&lt;&gt;&gt; </td></tr>
 <tr class="memitem:a290401753b1e67a8ed37af7c66515dc9"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#a290401753b1e67a8ed37af7c66515dc9">find</a> (const <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a> &amp;token, const Fn &amp;visitor, const ResultsTuple &amp;results_tuple={}) const</td></tr>
 <tr class="separator:a290401753b1e67a8ed37af7c66515dc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
+Static Public Attributes</h2></td></tr>
+<tr class="memitem:a948b1f746bff7e32bf48949bc7a823df"><td class="memTemplParams" colspan="2">template&lt;typename ValueType , template&lt; typename... &gt; typename... PolicyCheckers&gt; </td></tr>
+<tr class="memitem:a948b1f746bff7e32bf48949bc7a823df"><td class="memTemplItemLeft" align="right" valign="top">static constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#a948b1f746bff7e32bf48949bc7a823df">any_phases_v</a></td></tr>
+<tr class="separator:a948b1f746bff7e32bf48949bc7a823df"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -168,6 +180,34 @@ template&lt;typename... Params&gt; </div>
 
 </div>
 </div>
+<a id="a86e94be4e7ea24708d9b6e7240393ea1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a86e94be4e7ea24708d9b6e7240393ea1">&#9670;&nbsp;</a></span>phase_finder_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename... Params&gt; </div>
+<div class="memtemplate">
+template&lt;template&lt; typename... &gt; typename PolicyChecker, typename... Args&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node</a>&lt; Params &gt;::<a class="el" href="classarg__router_1_1tree__node.html#a86e94be4e7ea24708d9b6e7240393ea1">phase_finder_t</a> =  typename <a class="el" href="structarg__router_1_1tree__node_1_1phase__finder.html">phase_finder</a>&lt;PolicyChecker, Args...&gt;::type</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Helper alias for <a class="el" href="structarg__router_1_1tree__node_1_1phase__finder.html">phase_finder</a>.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">PolicyChecker</td><td>Policy predicate, use one of <code>policy::has_*_phase_method</code> </td></tr>
+    <tr><td class="paramname">Args</td><td>Auxiliary arguments to pass to <em>PolicyChecker</em> </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00065">65</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+
+</div>
+</div>
 <a id="aec3a4f4e8c0b7d0b7a5d911b18fb9bc3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aec3a4f4e8c0b7d0b7a5d911b18fb9bc3">&#9670;&nbsp;</a></span>policies_type</h2>
 
@@ -221,7 +261,7 @@ template&lt;typename... Params&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00161">161</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00225">225</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>
@@ -253,7 +293,7 @@ template&lt;typename... Params&gt; </div>
 <p>Returns a reference to the children.</p>
 <dl class="section return"><dt>Returns</dt><dd>Children </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00062">62</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00126">126</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>
@@ -319,7 +359,7 @@ template&lt;typename Fn , typename ResultsTuple  = std::tuple&lt;&gt;&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if a child was found </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00084">84</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00148">148</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>
@@ -383,7 +423,46 @@ template&lt;typename ValueType , typename... Parents&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00135">135</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00199">199</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="a948b1f746bff7e32bf48949bc7a823df"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a948b1f746bff7e32bf48949bc7a823df">&#9670;&nbsp;</a></span>any_phases_v</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename... Params&gt; </div>
+<div class="memtemplate">
+template&lt;typename ValueType , template&lt; typename... &gt; typename... PolicyCheckers&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr bool <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node</a>&lt; Params &gt;::any_phases_v</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">=</div>
+<div class="line">        any_phases&lt;ValueType, PolicyCheckers...&gt;::value</div>
+</div><!-- fragment --><p>Helper alias for has_phases.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">ValueType</td><td>Some policy checkers require a value type template parameter, if a particular policy doesn't need it then it is not used </td></tr>
+    <tr><td class="paramname">PolicyCheckers</td><td>Parameter pack type of policy predicates, use <code>policy::has_*_phase_method</code> </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00119">119</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>
