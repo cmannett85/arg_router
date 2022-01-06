@@ -68,6 +68,14 @@ protected:
         boost::ignore_unused(parents...);
 
         using node_type = boost::mp11::mp_first<std::tuple<Parents...>>;
+        static_assert(
+            !node_type::template any_phases_v<
+                typename node_type::value_type,
+                policy::has_parse_phase_method,
+                policy::has_validation_phase_method,
+                policy::has_routing_phase_method>,
+            "Alias owning node cannot have policies that support parse, "
+            "validation, or routing phases");
 
         // Find the owning mode
         using mode_type = typename nearest_mode<Parents...>::type;

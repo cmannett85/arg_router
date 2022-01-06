@@ -96,9 +96,7 @@ public:
         // Pre-parse
         utility::tuple_type_iterator<policies_type>([&](auto i) {
             using policy_type = std::tuple_element_t<i, policies_type>;
-            if constexpr (policy::has_pre_parse_phase_method_v<policy_type,
-                                                               arg_t,
-                                                               Parents...>) {
+            if constexpr (policy::has_pre_parse_phase_method_v<policy_type>) {
                 this->policy_type::pre_parse_phase(tokens, *this, parents...);
             }
         });
@@ -116,17 +114,14 @@ public:
         utility::tuple_type_iterator<policies_type>([&](auto i) {
             using policy_type = std::tuple_element_t<i, policies_type>;
             if constexpr (policy::has_validation_phase_method_v<policy_type,
-                                                                value_type,
-                                                                arg_t,
-                                                                Parents...>) {
+                                                                value_type>) {
                 this->policy_type::validation_phase(result, *this, parents...);
             }
         });
 
         // Routing
-        using routing_policy = typename parent_type::template phase_finder<
-            policy::has_routing_phase_method,
-            value_type>::type;
+        using routing_policy = typename parent_type::template phase_finder_t<
+            policy::has_routing_phase_method>;
         if constexpr (!std::is_void_v<routing_policy>) {
             this->routing_policy::routing_phase(tokens, std::move(result));
         }

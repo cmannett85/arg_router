@@ -46,9 +46,8 @@ private:
     template <typename Child>
     struct router_checker {
         constexpr static bool has_router =
-            !std::is_void_v<typename Child::template phase_finder<
-                policy::has_routing_phase_method,
-                typename Child::value_type>::type>;
+            !std::is_void_v<typename Child::template phase_finder_t<
+                policy::has_routing_phase_method>>;
 
         constexpr static bool value =
             policy::has_no_result_value_v<Child> || has_router;
@@ -108,6 +107,16 @@ public:
             }
         }
     }
+
+private:
+    static_assert(!parent_type::template any_phases_v<
+                      bool,  // Type doesn't matter, as long as it isn't void
+                      policy::has_pre_parse_phase_method,
+                      policy::has_parse_phase_method,
+                      policy::has_validation_phase_method,
+                      policy::has_routing_phase_method,
+                      policy::has_missing_phase_method>,
+                  "Root does not support policies with any parsing phases");
 };
 
 /** Constructs a root_t with the given policies and children.

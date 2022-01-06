@@ -30,8 +30,7 @@ public:
                     std::tuple_element_t<i, typename stub_node::policies_type>;
                 if constexpr (policy::has_validation_phase_method_v<
                                   this_policy,
-                                  InputValueType,
-                                  Parents...> &&
+                                  InputValueType> &&
                               traits::is_specialisation_of_v<
                                   this_policy,
                                   policy::min_max_value>) {

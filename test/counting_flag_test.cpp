@@ -168,31 +168,6 @@ int main() {
         "Counting flags must only contain policies (not other nodes)");
 }
 
-BOOST_AUTO_TEST_CASE(no_custom_parser_test)
-{
-    test::death_test_compile(
-        R"(
-#include "arg_router/counting_flag.hpp"
-#include "arg_router/policy/custom_parser.hpp"
-#include "arg_router/policy/long_name.hpp"
-#include "arg_router/utility/compile_time_string.hpp"
-
-using namespace arg_router;
-
-int main() {
-    auto f = counting_flag<int>(
-        policy::long_name<S_("hello")>,
-        policy::custom_parser<bool>{[](std::string_view) { return false; }}
-    );
-
-    auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "hello"}};
-    f.parse(tokens);
-    return 0;
-}
-    )",
-        "Counting flag cannot have a custom parser");
-}
-
 BOOST_AUTO_TEST_CASE(must_be_named_test)
 {
     test::death_test_compile(
@@ -265,7 +240,30 @@ int main() {
         "Counting flag cannot have a fixed count");
 }
 
-BOOST_AUTO_TEST_CASE(no_router_test)
+BOOST_AUTO_TEST_CASE(parse_policy_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/counting_flag.hpp"
+#include "arg_router/policy/custom_parser.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    auto f = counting_flag<int>(
+                policy::long_name<S_("hello")>,
+                policy::custom_parser<bool>{
+                    [](std::string_view) { return true; }});
+    return 0;
+}
+    )",
+        "Counting flag does not support policies with parse or routing phases "
+        "(e.g. custom_parser)");
+}
+
+BOOST_AUTO_TEST_CASE(routing_phase_test)
 {
     test::death_test_compile(
         R"(
@@ -282,7 +280,8 @@ int main() {
     return 0;
 }
     )",
-        "Counting flag cannot be routed");
+        "Counting flag does not support policies with parse or routing phases "
+        "(e.g. custom_parser)");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

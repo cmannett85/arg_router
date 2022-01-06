@@ -25,8 +25,7 @@ public:
             [&](auto i) {
                 using this_policy =
                     std::tuple_element_t<i, typename stub_node::policies_type>;
-                if constexpr (policy::has_routing_phase_method_v<this_policy,
-                                                                 Args...> &&
+                if constexpr (policy::has_routing_phase_method_v<this_policy> &&
                               traits::is_specialisation_of_v<this_policy,
                                                              policy::router>) {
                     this->this_policy::routing_phase(

@@ -56,12 +56,6 @@ class counting_flag_t :
     using parent_type =
         tree_node<policy::multi_stage_value<T, bool>, Policies...>;
 
-    // No routing phase, a counting_flag cannot be used as a top-level node
-    using routing_policy = typename parent_type::
-        template phase_finder<policy::has_routing_phase_method, T>::type;
-    static_assert(std::is_void_v<routing_policy>,
-                  "Counting flag cannot be routed");
-
 public:
     using typename parent_type::policies_type;
 
@@ -113,36 +107,32 @@ public:
     template <typename... Parents>
     bool parse(parsing::token_list& tokens, const Parents&... parents) const
     {
-        {
-            using parse_policy = typename parent_type::template phase_finder<
-                policy::has_parse_phase_method,
-                value_type,
-                Parents...>::type;
-            static_assert(std::is_void_v<parse_policy>,
-                          "Counting flag cannot have a custom parser");
-        }
-
         // Remove this node's name
         tokens.mark_as_processed();
 
         // Pre-parse
         utility::tuple_type_iterator<policies_type>([&](auto i) {
             using policy_type = std::tuple_element_t<i, policies_type>;
-            if constexpr (policy::has_pre_parse_phase_method_v<policy_type,
-                                                               counting_flag_t,
-                                                               Parents...>) {
+            if constexpr (policy::has_pre_parse_phase_method_v<policy_type>) {
                 this->policy_type::pre_parse_phase(tokens, *this, parents...);
             }
         });
 
-        // No real parse validation phase as presence of the flag yields a
-        // constant true
+        // Presence of the flag yields a constant true.  Validation is done by
+        // the parent mode as it carries the final result
         const auto result = true;
 
         return result;
     }
 
 private:
+    static_assert(
+        !parent_type::template any_phases_v<value_type,
+                                            policy::has_parse_phase_method,
+                                            policy::has_routing_phase_method>,
+        "Counting flag does not support policies with parse or routing phases "
+        "(e.g. custom_parser)");
+
     // Value will always be true
     static void merge_impl(std::optional<value_type>& result, bool /*value*/)
     {

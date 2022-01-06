@@ -28,8 +28,7 @@ public:
                 using this_policy =
                     std::tuple_element_t<i, typename stub_node::policies_type>;
                 if constexpr (policy::has_parse_phase_method_v<this_policy,
-                                                               ValueType,
-                                                               Parents...> &&
+                                                               ValueType> &&
                               traits::is_specialisation_of_v<
                                   this_policy,
                                   policy::custom_parser>) {

@@ -49,16 +49,6 @@ class mode_t : public tree_node<policy::no_result_value<>, Params...>
                                  boost::mp11::_1>>::template fn,
         T>;
 
-    template <typename Tuple>
-    struct phase_finder_bind;
-
-    template <template <typename...> typename Tuple, typename... Args>
-    struct phase_finder_bind<Tuple<Args...>> {
-        using type = typename parent_type::template phase_finder<
-            policy::has_routing_phase_method,
-            Args...>::type;
-    };
-
     template <typename Child>
     using is_child_mode = traits::is_specialisation_of<Child, mode_t>;
 
@@ -122,17 +112,8 @@ public:
     template <typename... Parents>
     void parse(parsing::token_list& tokens, const Parents&... parents) const
     {
-        {
-            using parse_policy = typename parent_type::template phase_finder<
-                policy::has_parse_phase_method,
-                value_type,
-                Parents...>::type;
-            static_assert(std::is_void_v<parse_policy>,
-                          "Mode cannot have a custom parser");
-
-            static_assert(!is_anonymous || (sizeof...(Parents) <= 1),
-                          "Anonymous modes can only exist under the root");
-        }
+        static_assert(!is_anonymous || (sizeof...(Parents) <= 1),
+                      "Anonymous modes can only exist under the root");
 
         // Remove our token (if not anonymous) from the list, keep it for any
         // error messages
@@ -209,7 +190,8 @@ public:
         multi_stage_validation(results, *this, parents...);
 
         // Routing
-        using routing_policy = typename phase_finder_bind<results_type>::type;
+        using routing_policy = typename parent_type::template phase_finder_t<
+            policy::has_routing_phase_method>;
         if constexpr (!std::is_void_v<routing_policy>) {
             // Strip out the skipped results
             auto stripped_results = algorithm::tuple_filter_and_construct<
@@ -244,11 +226,19 @@ private:
             boost::mp11::mp_none_of<children_type, is_child_mode>::value,
         "Anonymous mode cannot have a child mode");
 
+    static_assert(
+        !parent_type::template any_phases_v<value_type,
+                                            policy::has_pre_parse_phase_method,
+                                            policy::has_parse_phase_method,
+                                            policy::has_validation_phase_method,
+                                            policy::has_missing_phase_method>,
+        "Mode does not support policies with pre-parse, parse, validation, "
+        "or missing phases; as it delegates those to its children");
+
     template <typename Child>
     struct child_has_routing_phase {
-        using type = typename Child::template phase_finder<
-            policy::has_routing_phase_method,
-            typename Child::value_type>::type;
+        using type = typename Child::template phase_finder_t<
+            policy::has_routing_phase_method>;
 
         constexpr static bool value = !std::is_void_v<type>;
     };
@@ -304,8 +294,7 @@ private:
                 using policy_type =
                     std::tuple_element_t<i, typename ChildType::policies_type>;
                 if constexpr (policy::has_missing_phase_method_v<policy_type,
-                                                                 ValueType,
-                                                                 Parents...>) {
+                                                                 ValueType>) {
                     result =
                         child.policy_type::template missing_phase<ValueType>(
                             child,
@@ -325,8 +314,7 @@ private:
             using policy_type =
                 std::tuple_element_t<i, typename ChildType::policies_type>;
             if constexpr (policy::has_validation_phase_method_v<policy_type,
-                                                                ValueType,
-                                                                Parents...>) {
+                                                                ValueType>) {
                 child.policy_type::template validation_phase(*result,
                                                              child,
                                                              parents...);
@@ -359,8 +347,7 @@ private:
                                 std::tuple_element_t<j, child_policies_type>;
                             if constexpr (policy::has_validation_phase_method_v<
                                               policy_type,
-                                              result_type,
-                                              Parents...>) {
+                                              result_type>) {
                                 child.policy_type::template validation_phase(
                                     result,
                                     child,

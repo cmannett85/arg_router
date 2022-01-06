@@ -290,14 +290,14 @@ int main() {
         "policy::default_value are commonly used");
 }
 
-BOOST_AUTO_TEST_CASE(no_router_test)
+BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
 {
     test::death_test_compile(
         R"(
 #include "arg_router/arg.hpp"
 #include "arg_router/dependency/one_of.hpp"
+#include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/long_name.hpp"
-#include "arg_router/policy/router.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
@@ -308,14 +308,15 @@ int main() {
         arg<int>(policy::long_name<S_("arg1")>),
         arg<double>(policy::long_name<S_("arg2")>),
         policy::required,
-        policy::router{[](std::variant<int, double>) {}});
+        policy::alias(policy::long_name<S_("arg3")>));
     return 0;
 }
     )",
-        "one_of cannot be routed");
+        "one_of does not support policies with pre-parse, parse, validation, "
+        "or routing phases; as it delegates those to its children");
 }
 
-BOOST_AUTO_TEST_CASE(no_custom_parser_test)
+BOOST_AUTO_TEST_CASE(parse_phase_test)
 {
     test::death_test_compile(
         R"(
@@ -338,7 +339,60 @@ int main() {
     return 0;
 }
     )",
-        "one_of cannot have a custom parser");
+        "one_of does not support policies with pre-parse, parse, validation, "
+        "or routing phases; as it delegates those to its children");
+}
+
+BOOST_AUTO_TEST_CASE(validation_phase_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/arg.hpp"
+#include "arg_router/dependency/one_of.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/min_max_value.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+namespace ard = arg_router::dependency;
+
+int main() {
+    const auto of = ard::one_of(
+        arg<int>(policy::long_name<S_("arg1")>),
+        arg<double>(policy::long_name<S_("arg2")>),
+        policy::required,
+        policy::min_max_value{42, 84});
+    return 0;
+}
+    )",
+        "one_of does not support policies with pre-parse, parse, validation, "
+        "or routing phases; as it delegates those to its children");
+}
+
+BOOST_AUTO_TEST_CASE(router_phase_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/arg.hpp"
+#include "arg_router/dependency/one_of.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/router.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+namespace ard = arg_router::dependency;
+
+int main() {
+    const auto of = ard::one_of(
+        arg<int>(policy::long_name<S_("arg1")>),
+        arg<double>(policy::long_name<S_("arg2")>),
+        policy::required,
+        policy::router{[](std::variant<int, double>) {}});
+    return 0;
+}
+    )",
+        "one_of does not support policies with pre-parse, parse, validation, "
+        "or routing phases; as it delegates those to its children");
 }
 
 BOOST_AUTO_TEST_SUITE_END()
