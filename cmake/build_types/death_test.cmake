@@ -1,8 +1,17 @@
-set(DEATH_TEST_SRCS
-    ${CMAKE_CURRENT_SOURCE_DIR}/death_test/main.cpp
+set(DEATH_TEST_DIR
+    ${CMAKE_CURRENT_SOURCE_DIR}/death_test
 )
 
-add_executable(arg_router_death_test EXCLUDE_FROM_ALL ${DEATH_TEST_SRCS})
+set(DEATH_TEST_SRC
+    ${DEATH_TEST_DIR}/main.cpp
+)
+
+# Make the death_test main stub to appease CMake, it'll get destroyed on first
+# use.
+file(MAKE_DIRECTORY ${DEATH_TEST_DIR})
+file(TOUCH ${DEATH_TEST_SRC})
+
+add_executable(arg_router_death_test EXCLUDE_FROM_ALL ${DEATH_TEST_SRC})
 add_dependencies(arg_router_death_test arg_router)
 
 target_compile_features(arg_router_death_test PUBLIC cxx_std_17)
