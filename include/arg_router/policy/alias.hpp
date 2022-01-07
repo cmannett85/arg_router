@@ -87,19 +87,10 @@ protected:
         static_assert(cyclic_dependency_checker<targets, mode_type>::value,
                       "Cyclic dependency detected");
 
-        constexpr auto count = []() -> std::size_t {
-            // Does it have a fixed count?
-            if constexpr (traits::has_minimum_count_method_v<node_type> &&
-                          traits::has_maximum_count_method_v<node_type>) {
-                if constexpr (node_type::minimum_count() ==
-                              node_type::maximum_count()) {
-                    return node_type::minimum_count();
-                }
-            }
+        constexpr auto count = node_fixed_count<node_type>();
 
-            // Otherwise assume flag-like
-            return 0;
-        }();
+        // Verify that all the targets have the same count
+        check_target_counts<count, targets>();
 
         const auto view = tokens.pending_view();
         if (count > view.size()) {
@@ -138,6 +129,22 @@ private:
     static_assert(
         boost::mp11::mp_all_of<aliased_policies_type, policy_checker>::value,
         "All parameters must provide a long and/or short form name");
+
+    template <typename NodeType>
+    static constexpr std::size_t node_fixed_count()
+    {
+        // Does it have a fixed count?
+        if constexpr (traits::has_minimum_count_method_v<NodeType> &&
+                      traits::has_maximum_count_method_v<NodeType>) {
+            if constexpr (NodeType::minimum_count() ==
+                          NodeType::maximum_count()) {
+                return NodeType::minimum_count();
+            }
+        }
+
+        // Otherwise assume flag-like
+        return 0;
+    }
 
     // Find the nearest parent with a routing policy
     template <typename... Parents>
@@ -234,6 +241,18 @@ private:
 
         constexpr static bool value = check<0, AliasNodesTuple>();
     };
+
+    template <std::size_t Count, typename TargetsTuple>
+    static constexpr void check_target_counts()
+    {
+        utility::tuple_type_iterator<TargetsTuple>([](auto i) {
+            using target_type = std::tuple_element_t<i, TargetsTuple>;
+
+            static_assert(
+                node_fixed_count<target_type>() == Count,
+                "All alias targets must have a count that matches the owner");
+        });
+    }
 };
 
 /** Constructs a alias_t with the given policies.
