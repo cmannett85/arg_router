@@ -101,13 +101,14 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                   stub_node{policy::long_name<S_("flag2")>},
                   stub_node{policy::long_name<S_("flag3")>},
                   policy::router{[](bool, bool, bool) {}}},
-        stub_node{policy::long_name<S_("test2")>,
-                  stub_node{policy::long_name<S_("arg1")>,
-                            policy::fixed_count<1>,
-                            policy::alias(policy::long_name<S_("arg3")>)},
-                  stub_node{policy::long_name<S_("arg2")>},
-                  stub_node{policy::long_name<S_("arg3")>},
-                  policy::router{[](bool, bool, bool) {}}},
+        stub_node{
+            policy::long_name<S_("test2")>,
+            stub_node{policy::long_name<S_("arg1")>,
+                      policy::fixed_count<1>,
+                      policy::alias(policy::long_name<S_("arg3")>)},
+            stub_node{policy::long_name<S_("arg2")>},
+            stub_node{policy::long_name<S_("arg3")>, policy::fixed_count<1>},
+            policy::router{[](bool, bool, bool) {}}},
         stub_node{policy::long_name<S_("test3")>,
                   stub_node{policy::long_name<S_("flag1")>,
                             policy::fixed_count<0>,
@@ -116,14 +117,15 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                   stub_node{policy::long_name<S_("flag2")>},
                   stub_node{policy::long_name<S_("flag3")>},
                   policy::router{[](bool, bool, bool) {}}},
-        stub_node{policy::long_name<S_("test4")>,
-                  stub_node{policy::long_name<S_("arg1")>,
-                            policy::fixed_count<3>,
-                            policy::alias(policy::long_name<S_("arg2")>,
-                                          policy::long_name<S_("arg3")>)},
-                  stub_node{policy::long_name<S_("arg2")>},
-                  stub_node{policy::long_name<S_("arg3")>},
-                  policy::router{[](bool, bool, bool) {}}},
+        stub_node{
+            policy::long_name<S_("test4")>,
+            stub_node{policy::long_name<S_("arg1")>,
+                      policy::fixed_count<3>,
+                      policy::alias(policy::long_name<S_("arg2")>,
+                                    policy::long_name<S_("arg3")>)},
+            stub_node{policy::long_name<S_("arg2")>, policy::fixed_count<3>},
+            stub_node{policy::long_name<S_("arg3")>, policy::fixed_count<3>},
+            policy::router{[](bool, bool, bool) {}}},
         stub_node{
             policy::long_name<S_("test5")>,
             stub_node{policy::long_name<S_("one_of")>,
@@ -217,14 +219,14 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
 
 BOOST_AUTO_TEST_CASE(pre_parse_phase_too_small_view_test)
 {
-    const auto root =
-        stub_node{policy::long_name<S_("root")>,
-                  stub_node{policy::long_name<S_("arg1")>,
-                            policy::fixed_count<2>,
-                            policy::alias(policy::long_name<S_("arg2")>)},
-                  stub_node{policy::long_name<S_("arg2")>},
-                  stub_node{policy::long_name<S_("arg3")>},
-                  policy::router{[](bool, bool, bool) {}}};
+    const auto root = stub_node{
+        policy::long_name<S_("root")>,
+        stub_node{policy::long_name<S_("arg1")>,
+                  policy::fixed_count<2>,
+                  policy::alias(policy::long_name<S_("arg2")>)},
+        stub_node{policy::long_name<S_("arg2")>, policy::fixed_count<2>},
+        stub_node{policy::long_name<S_("arg3")>},
+        policy::router{[](bool, bool, bool) {}}};
 
     auto tokens = parsing::token_list{{parsing::prefix_type::NONE, "42"}};
     const auto& owner = std::get<0>(root.children());
@@ -780,6 +782,64 @@ int main() {
     )",
         "Alias owning node cannot have policies that support parse, "
         "validation, or routing phases");
+}
+
+BOOST_AUTO_TEST_CASE(target_counts_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/alias.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/min_max_count.hpp"
+#include "arg_router/policy/router.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+namespace
+{
+template <typename... Policies>
+class stub_node : public tree_node<Policies...>
+{
+public:
+    using value_type = bool;
+
+    constexpr explicit stub_node(Policies... policies) :
+        tree_node<Policies...>{std::move(policies)...}
+    {
+    }
+
+    template <typename... Parents>
+    void pre_parse_phase(parsing::token_list& tokens,
+                         const Parents&... parents) const
+    {
+        using this_policy =
+            std::tuple_element_t<1, typename stub_node::policies_type>;
+        this->this_policy::pre_parse_phase(tokens, *this, parents...);
+    }
+};
+}  // namespace
+
+int main() {
+    const auto root =
+        stub_node{policy::long_name<S_("mode")>,
+                  stub_node{policy::long_name<S_("flag1")>,
+                            policy::alias(policy::long_name<S_("flag2")>),
+                            policy::fixed_count<1>},
+                  stub_node{policy::long_name<S_("flag2")>},
+                  stub_node{policy::long_name<S_("flag3")>},
+                  policy::router{[](bool, bool, bool) {}}};
+
+    auto tokens = parsing::token_list{{parsing::prefix_type::LONG, "flag2"},
+                                      {parsing::prefix_type::LONG, "flag3"}};
+
+    const auto& owner = std::get<0>(root.children());
+
+    owner.pre_parse_phase(tokens, root);
+    return 0;
+}
+    )",
+        "All alias targets must have a count that matches the owner");
 }
 
 BOOST_AUTO_TEST_SUITE_END()
