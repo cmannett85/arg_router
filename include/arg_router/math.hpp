@@ -14,7 +14,7 @@ namespace math
  * @return Absolute value
  */
 template <typename T>
-constexpr T abs(T value)
+[[nodiscard]] constexpr T abs(T value) noexcept
 {
     static_assert(std::is_integral_v<T>, "T must be an integral");
     return value < T{0} ? -value : value;
@@ -27,7 +27,7 @@ constexpr T abs(T value)
  * @return Number of digits.
  */
 template <typename T>
-constexpr T num_digits(T value)
+[[nodiscard]] constexpr T num_digits(T value) noexcept
 {
     static_assert(std::is_integral_v<T>, "T must be an integral");
 
@@ -48,7 +48,7 @@ constexpr T num_digits(T value)
  * @return @a Base raised to the power @a exp
  */
 template <auto Base, typename T>
-constexpr T pow(T exp)
+[[nodiscard]] constexpr T pow(T exp) noexcept
 {
     static_assert(std::is_integral_v<T>, "T must be an integral");
     static_assert(Base > 0, "Base must be greater than zero");

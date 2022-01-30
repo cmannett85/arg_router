@@ -39,10 +39,16 @@ class min_max_count_t
 
 public:
     /** @return Minimum count value. */
-    constexpr static std::size_t minimum_count() { return MinType::value; }
+    [[nodiscard]] constexpr static std::size_t minimum_count() noexcept
+    {
+        return MinType::value;
+    }
 
     /** @return Maximum count value. */
-    constexpr static std::size_t maximum_count() { return MaxType::value; }
+    [[nodiscard]] constexpr static std::size_t maximum_count() noexcept
+    {
+        return MaxType::value;
+    }
 
 protected:
     /** Checks that there are enough pending tokens in the list to reach the

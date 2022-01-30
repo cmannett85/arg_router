@@ -1,9 +1,9 @@
 #pragma once
 
+#include "arg_router/config.hpp"
 #include "utility/span.hpp"
 
 #include <string>
-#include <string_view>
 #include <vector>
 
 namespace arg_router
@@ -20,7 +20,14 @@ enum class prefix_type : std::uint8_t { LONG, SHORT, NONE };
  * @param prefix Prefix type to convert
  * @return String version of @a prefix
  */
-std::string_view to_string(prefix_type prefix);
+[[nodiscard]] constexpr std::string_view to_string(prefix_type prefix) noexcept
+{
+    switch (prefix) {
+    case prefix_type::LONG: return config::long_prefix;
+    case prefix_type::SHORT: return config::short_prefix;
+    default: return "";
+    }
+}
 
 /** Pair-like structure carrying the token's prefix type and the token itself
  * (stripped of prefix).
@@ -31,7 +38,8 @@ struct token_type {
      * @param p Prefix type
      * @param n Token name, stripped of prefix (if any)
      */
-    constexpr token_type(prefix_type p, std::string_view n) : prefix{p}, name{n}
+    constexpr token_type(prefix_type p, std::string_view n) noexcept :
+        prefix{p}, name{n}
     {
     }
 
@@ -40,7 +48,8 @@ struct token_type {
      * @param other Instance to compare against
      * @return True if equal
      */
-    bool operator==(const token_type& other) const
+    [[nodiscard]] constexpr bool operator==(
+        const token_type& other) const noexcept
     {
         return prefix == other.prefix && name == other.name;
     }
@@ -50,7 +59,11 @@ struct token_type {
      * @param other Instance to compare against
      * @return True if not equal
      */
-    bool operator!=(const token_type& other) const { return !(*this == other); }
+    [[nodiscard]] constexpr bool operator!=(
+        const token_type& other) const noexcept
+    {
+        return !(*this == other);
+    }
 
     prefix_type prefix;     ///< Prefix type
     std::string_view name;  ///< Token name, stripped of prefix (if any)
@@ -62,7 +75,7 @@ struct token_type {
  * @param token Token to convert
  * @return String representation of @a token
  */
-std::string to_string(const token_type& token);
+[[nodiscard]] std::string to_string(const token_type& token);
 
 /** List of tokens.
  *  
@@ -272,8 +285,8 @@ inline void swap(token_list& lhs, token_list& rhs) noexcept
  * @param rhs Pending view
  * @return True if lexicographically equal
  */
-bool operator==(token_list::pending_view_type lhs,
-                token_list::pending_view_type rhs);
+[[nodiscard]] bool operator==(token_list::pending_view_type lhs,
+                              token_list::pending_view_type rhs) noexcept;
 
 /** Equality operator.
  *
@@ -282,7 +295,8 @@ bool operator==(token_list::pending_view_type lhs,
  * @param rhs Token list
  * @return True if lexicographically equal
  */
-inline bool operator==(token_list::pending_view_type lhs, const token_list& rhs)
+[[nodiscard]] inline bool operator==(token_list::pending_view_type lhs,
+                                     const token_list& rhs) noexcept
 {
     return lhs == rhs.pending_view();
 }
@@ -294,7 +308,8 @@ inline bool operator==(token_list::pending_view_type lhs, const token_list& rhs)
  * @param rhs Token list
  * @return True if lexicographically equal
  */
-inline bool operator!=(token_list::pending_view_type lhs, const token_list& rhs)
+[[nodiscard]] inline bool operator!=(token_list::pending_view_type lhs,
+                                     const token_list& rhs) noexcept
 {
     return !(lhs == rhs);
 }
@@ -306,7 +321,8 @@ inline bool operator!=(token_list::pending_view_type lhs, const token_list& rhs)
  * @param rhs Pending view
  * @return True if lexicographically equal
  */
-inline bool operator==(const token_list& lhs, token_list::pending_view_type rhs)
+[[nodiscard]] inline bool operator==(const token_list& lhs,
+                                     token_list::pending_view_type rhs) noexcept
 {
     return rhs == lhs;
 }
@@ -318,7 +334,8 @@ inline bool operator==(const token_list& lhs, token_list::pending_view_type rhs)
  * @param rhs Pending view
  * @return True if lexicographically equal
  */
-inline bool operator!=(const token_list& lhs, token_list::pending_view_type rhs)
+[[nodiscard]] inline bool operator!=(const token_list& lhs,
+                                     token_list::pending_view_type rhs) noexcept
 {
     return !(lhs == rhs);
 }
@@ -329,8 +346,8 @@ inline bool operator!=(const token_list& lhs, token_list::pending_view_type rhs)
  * @param rhs Pending view
  * @return True if lexicographically equal
  */
-bool operator==(token_list::processed_view_type lhs,
-                token_list::processed_view_type rhs);
+[[nodiscard]] bool operator==(token_list::processed_view_type lhs,
+                              token_list::processed_view_type rhs) noexcept;
 
 /** Equality operator.
  *
@@ -339,8 +356,8 @@ bool operator==(token_list::processed_view_type lhs,
  * @param rhs Token list
  * @return True if lexicographically equal
  */
-inline bool operator==(token_list::processed_view_type lhs,
-                       const token_list& rhs)
+[[nodiscard]] inline bool operator==(token_list::processed_view_type lhs,
+                                     const token_list& rhs) noexcept
 {
     return lhs == rhs.processed_view();
 }
@@ -352,8 +369,8 @@ inline bool operator==(token_list::processed_view_type lhs,
  * @param rhs Token list
  * @return True if lexicographically equal
  */
-inline bool operator!=(token_list::processed_view_type lhs,
-                       const token_list& rhs)
+[[nodiscard]] inline bool operator!=(token_list::processed_view_type lhs,
+                                     const token_list& rhs) noexcept
 {
     return !(lhs == rhs);
 }
@@ -365,8 +382,9 @@ inline bool operator!=(token_list::processed_view_type lhs,
  * @param rhs Pending view
  * @return True if lexicographically equal
  */
-inline bool operator==(const token_list& lhs,
-                       token_list::processed_view_type rhs)
+[[nodiscard]] inline bool operator==(
+    const token_list& lhs,
+    token_list::processed_view_type rhs) noexcept
 {
     return rhs == lhs;
 }
@@ -378,8 +396,9 @@ inline bool operator==(const token_list& lhs,
  * @param rhs Pending view
  * @return True if lexicographically equal
  */
-inline bool operator!=(const token_list& lhs,
-                       token_list::processed_view_type rhs)
+[[nodiscard]] inline bool operator!=(
+    const token_list& lhs,
+    token_list::processed_view_type rhs) noexcept
 {
     return !(lhs == rhs);
 }
@@ -389,21 +408,22 @@ inline bool operator!=(const token_list& lhs,
  * @param view Pending tokens to convert
  * @return String representation of @a view
  */
-std::string to_string(const token_list::pending_view_type& view);
+[[nodiscard]] std::string to_string(const token_list::pending_view_type& view);
 
 /** Creates a string representation of @a view.
  * 
  * @param view Processed tokens to convert
  * @return String representation of @a view
  */
-std::string to_string(const token_list::processed_view_type& view);
+[[nodiscard]] std::string to_string(
+    const token_list::processed_view_type& view);
 
 /** Creates a string representation of the pending view of @a tokens.
  * 
  * @param tokens Tokens to convert
  * @return String representation of @a tokens
  */
-inline std::string to_string(const token_list& tokens)
+[[nodiscard]] inline std::string to_string(const token_list& tokens)
 {
     return to_string(tokens.pending_view());
 }
@@ -414,6 +434,6 @@ inline std::string to_string(const token_list& tokens)
  * @param token Token to analyse
  * @return Token type
  */
-token_type get_token_type(std::string_view token);
+[[nodiscard]] token_type get_token_type(std::string_view token);
 }  // namespace parsing
 }  // namespace arg_router

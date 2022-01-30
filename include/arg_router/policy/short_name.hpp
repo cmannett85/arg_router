@@ -21,7 +21,7 @@ class short_name_t
     static_assert(algorithm::is_alnum(S::value),
                   "Short name character must be alphanumeric");
 
-    static constexpr auto value = S::value;
+    constexpr static auto value = S::value;
 
 public:
     /** String type. */
@@ -31,7 +31,7 @@ public:
      *
      * @return Short name
      */
-    constexpr static std::string_view short_name()
+    [[nodiscard]] constexpr static std::string_view short_name() noexcept
     {
         return std::string_view{&value, 1};
     }

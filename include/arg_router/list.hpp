@@ -28,19 +28,25 @@ public:
      *
      * @param children Child instances
      */
-    explicit list(Children... children) : children_{std::move(children)...} {}
+    constexpr explicit list(Children... children) noexcept :
+        children_{std::move(children)...}
+    {
+    }
 
     /** Returns a reference to the children.
      *
      * @return Children
      */
-    children_type& children() { return children_; }
+    [[nodiscard]] children_type& children() noexcept { return children_; }
 
     /** Const overload.
      *
      * @return Children
      */
-    const children_type& children() const { return children_; }
+    [[nodiscard]] const children_type& children() const noexcept
+    {
+        return children_;
+    }
 
 private:
     children_type children_;
@@ -50,12 +56,13 @@ namespace detail
 {
 // Forward declared
 template <typename Result, typename Next, typename... Others>
-constexpr auto list_expander_impl(Result, Next, Others...);
+constexpr auto list_expander_impl(Result, Next, Others...) noexcept;
 
 template <typename Result, typename ListChildren, std::size_t... I>
-constexpr auto list_expander_unpacker(Result result,
-                                      ListChildren list_children,
-                                      std::integer_sequence<std::size_t, I...>)
+[[nodiscard]] constexpr auto list_expander_unpacker(
+    Result result,
+    ListChildren list_children,
+    std::integer_sequence<std::size_t, I...>) noexcept
 {
     return list_expander_impl(std::move(result),
                               std::move(std::get<I>(list_children))...);
@@ -63,13 +70,15 @@ constexpr auto list_expander_unpacker(Result result,
 
 // Recursion end condition
 template <typename Result>
-constexpr auto list_expander_impl(Result result)
+[[nodiscard]] constexpr auto list_expander_impl(Result result) noexcept
 {
     return result;
 }
 
 template <typename Result, typename Next, typename... Others>
-constexpr auto list_expander_impl(Result result, Next next, Others... others)
+[[nodiscard]] constexpr auto list_expander_impl(Result result,
+                                                Next next,
+                                                Others... others) noexcept
 {
     if constexpr (traits::is_specialisation_of_v<std::decay_t<Next>, list>) {
         return list_expander_impl(
@@ -94,7 +103,7 @@ constexpr auto list_expander_impl(Result result, Next next, Others... others)
  * @return Flattened tuple of nodes
  */
 template <typename... Params>
-constexpr auto list_expander(Params... params)
+[[nodiscard]] constexpr auto list_expander(Params... params) noexcept
 {
     return detail::list_expander_impl(std::tuple{}, std::move(params)...);
 }
@@ -106,7 +115,8 @@ constexpr auto list_expander(Params... params)
  * @return Flattened tuple of nodes
  */
 template <typename... Params>
-constexpr auto list_expander(std::tuple<Params...> params)
+[[nodiscard]] constexpr auto list_expander(
+    std::tuple<Params...> params) noexcept
 {
     return std::apply(
         [](auto&... args) {

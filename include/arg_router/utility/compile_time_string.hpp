@@ -32,19 +32,25 @@ public:
      *
      * @return String size
      */
-    constexpr static std::size_t size() { return sizeof...(Cs); }
+    [[nodiscard]] constexpr static std::size_t size() noexcept
+    {
+        return sizeof...(Cs);
+    }
 
     /** True if string is empty.
      *
      * @return True if number of characters is zero
      */
-    constexpr static bool empty() { return size() == 0; }
+    [[nodiscard]] constexpr static bool empty() noexcept { return size() == 0; }
 
     /** Returns the string data as a view.
      *
      * @return View of the string data
      */
-    constexpr static std::string_view get() { return {sv_.data(), sv_.size()}; }
+    [[nodiscard]] constexpr static std::string_view get() noexcept
+    {
+        return {sv_.data(), sv_.size()};
+    }
 
     /** Appends @a T to this string type.
      *
@@ -72,8 +78,9 @@ public:
      * @return New instance
      */
     template <char... OtherCs>
-    constexpr auto operator+(
-        [[maybe_unused]] const compile_time_string<OtherCs...>& other) const
+    [[nodiscard]] constexpr auto operator+(
+        [[maybe_unused]] const compile_time_string<OtherCs...>& other)
+        const noexcept
     {
         return append_t<compile_time_string<OtherCs...>>{};
     }
@@ -146,7 +153,7 @@ private:
                   "Value must be an integral");
 
     template <typename Str, auto NewValue>
-    constexpr static auto build()
+    [[nodiscard]] constexpr static auto build() noexcept
     {
         constexpr auto num_digits = math::num_digits(NewValue);
         constexpr auto power10 = math::pow<10>(num_digits - 1);
@@ -183,12 +190,12 @@ using convert_integral_to_cts_t = typename convert_integral_to_cts<Value>::type;
 namespace cts_detail
 {
 template <int N>
-constexpr char get(const char (&str)[N], std::size_t i)
+[[nodiscard]] constexpr char get(const char (&str)[N], std::size_t i) noexcept
 {
     return i < N ? str[i] : '\0';
 }
 
-constexpr char get(std::string_view str, std::size_t i)
+[[nodiscard]] constexpr char get(std::string_view str, std::size_t i) noexcept
 {
     return i < str.size() ? str[i] : '\0';
 }
@@ -208,7 +215,8 @@ struct builder {
                                     is_null_char>;
 
     template <char... StrippedCs>
-    static auto list_to_string(boost::mp11::mp_list_c<char, StrippedCs...>)
+    [[nodiscard]] constexpr static auto list_to_string(
+        boost::mp11::mp_list_c<char, StrippedCs...>) noexcept
     {
         return compile_time_string<StrippedCs...>{};
     }

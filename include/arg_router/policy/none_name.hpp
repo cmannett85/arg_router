@@ -25,7 +25,10 @@ public:
      *
      * @return None name
      */
-    constexpr static std::string_view none_name() { return S::get(); }
+    [[nodiscard]] constexpr static std::string_view none_name() noexcept
+    {
+        return S::get();
+    }
 
 private:
     static_assert(none_name().size() > 1,

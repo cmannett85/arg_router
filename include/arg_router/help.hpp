@@ -116,7 +116,7 @@ public:
      *
      * @param policies Policy instances
      */
-    constexpr explicit help_t(Policies... policies) :
+    constexpr explicit help_t(Policies... policies) noexcept :
         parent_type{policy::no_result_value<>{}, std::move(policies)...}
     {
     }
@@ -135,7 +135,8 @@ public:
      * @return Match result
      */
     template <typename Fn>
-    bool match(const parsing::token_type& token, const Fn& visitor) const
+    constexpr bool match(const parsing::token_type& token,
+                         const Fn& visitor) const
     {
         if (parsing::default_match<help_t>(token)) {
             visitor(*this);
@@ -207,9 +208,9 @@ private:
                   "Help only supports policies with a routing phase");
 
     template <typename Node, typename TargetFn>
-    constexpr static void find_help_target(parsing::token_list& tokens,
-                                           const Node& node,
-                                           const TargetFn& fn)
+    static void find_help_target(parsing::token_list& tokens,
+                                 const Node& node,
+                                 const TargetFn& fn)
     {
         if (tokens.pending_view().empty()) {
             fn(node);
@@ -228,14 +229,14 @@ private:
     }
 
     template <std::size_t Depth>
-    constexpr static std::size_t indent_size()
+    [[nodiscard]] constexpr static std::size_t indent_size() noexcept
     {
         return Depth * indent_spaces;
     }
 
     template <std::size_t Depth, typename HelpData>
-    constexpr static std::size_t description_column_start(
-        std::size_t current_max)
+    [[nodiscard]] constexpr static std::size_t description_column_start(
+        std::size_t current_max) noexcept
     {
         constexpr auto this_row_start =
             (Depth * indent_spaces) + HelpData::label::size() + indent_spaces;
@@ -287,7 +288,7 @@ private:
  * @return Help instance
  */
 template <typename... Policies>
-constexpr help_t<Policies...> help(Policies... policies)
+[[nodiscard]] constexpr help_t<Policies...> help(Policies... policies) noexcept
 {
     return help_t{std::move(policies)...};
 }

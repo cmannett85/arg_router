@@ -52,7 +52,7 @@ public:
     template <bool Flatten>
     class help_data_type
     {
-        constexpr static auto label_generator()
+        [[nodiscard]] constexpr static auto label_generator() noexcept
         {
             constexpr auto name_index =
                 boost::mp11::mp_find_if<policies_type,
@@ -77,7 +77,7 @@ public:
      *
      * @param policies Policy instances
      */
-    constexpr explicit positional_arg_t(Policies... policies) :
+    constexpr explicit positional_arg_t(Policies... policies) noexcept :
         parent_type{std::move(policies)...}
     {
     }
@@ -98,9 +98,9 @@ public:
      * @return Match result, always true
      */
     template <typename Fn>
-    bool match([[maybe_unused]] const parsing::token_type& token,
-               const Fn& visitor,
-               const std::optional<T>& result) const
+    constexpr bool match([[maybe_unused]] const parsing::token_type& token,
+                         const Fn& visitor,
+                         const std::optional<T>& result) const
     {
         if constexpr (traits::has_push_back_method_v<T> &&
                       traits::has_maximum_count_method_v<parent_type>) {
@@ -193,7 +193,8 @@ private:
  * @return Argument instance
  */
 template <typename T, typename... Policies>
-constexpr positional_arg_t<T, Policies...> positional_arg(Policies... policies)
+[[nodiscard]] constexpr positional_arg_t<T, Policies...> positional_arg(
+    Policies... policies) noexcept
 {
     return positional_arg_t<T, std::decay_t<Policies>...>{
         std::move(policies)...};

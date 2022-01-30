@@ -24,7 +24,10 @@ public:
      *
      * @return Long name
      */
-    constexpr static std::string_view long_name() { return S::get(); }
+    [[nodiscard]] constexpr static std::string_view long_name() noexcept
+    {
+        return S::get();
+    }
 
 private:
     static_assert(long_name().size() > 1,

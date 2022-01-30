@@ -24,7 +24,7 @@ public:
      *
      * @param value Default value
      */
-    constexpr explicit default_value(value_type value) :
+    constexpr explicit default_value(value_type value) noexcept :
         value_{std::move(value)}
     {
     }
@@ -34,7 +34,7 @@ public:
      * @return Default value, a reference to it if the object is larger than a
      * cache line
      */
-    constexpr auto get_default_value() const
+    [[nodiscard]] constexpr auto get_default_value() const noexcept
         -> std::conditional_t<config::l1_cache_size() >= sizeof(value_type),
                               value_type,
                               const value_type&>
@@ -52,8 +52,8 @@ public:
      * @return Default value
      */
     template <typename ValueType, typename... Parents>
-    constexpr ValueType missing_phase(
-        [[maybe_unused]] const Parents&... parents) const
+    [[nodiscard]] constexpr ValueType missing_phase(
+        [[maybe_unused]] const Parents&... parents) const noexcept
     {
         return value_;
     }

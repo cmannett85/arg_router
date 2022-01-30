@@ -70,7 +70,7 @@ struct has_pre_parse_phase_method : T {
  * @tparam T Policy type to query
  */
 template <typename T>
-static constexpr bool has_pre_parse_phase_method_v =
+constexpr static bool has_pre_parse_phase_method_v =
     has_pre_parse_phase_method<T>::value;
 
 /** Determine if a policy has a <TT>parse_phase</TT> method.
@@ -96,7 +96,7 @@ struct has_parse_phase_method : T {
  * @tparam ValueType Parsed type
  */
 template <typename T, typename ValueType>
-static constexpr bool has_parse_phase_method_v =
+constexpr static bool has_parse_phase_method_v =
     has_parse_phase_method<T, ValueType>::value;
 
 /** Determine if a policy has a <TT>validation_phase</TT> method.
@@ -123,7 +123,7 @@ struct has_validation_phase_method : T {
  * @tparam ValueType Parsed type
  */
 template <typename T, typename ValueType>
-static constexpr bool has_validation_phase_method_v =
+constexpr static bool has_validation_phase_method_v =
     has_validation_phase_method<T, ValueType>::value;
 
 /** Determine if a policy has a <TT>routing_phase</TT> method.
@@ -148,7 +148,7 @@ struct has_routing_phase_method : T {
  * @tparam T Policy type to query
  */
 template <typename T>
-static constexpr bool has_routing_phase_method_v =
+constexpr static bool has_routing_phase_method_v =
     has_routing_phase_method<T>::value;
 
 /** Determine if a policy has a <TT>missing_phase</TT> method.
@@ -174,7 +174,7 @@ struct has_missing_phase_method : T {
  * @tparam ValueType Parsed type
  */
 template <typename T, typename ValueType>
-static constexpr bool has_missing_phase_method_v =
+constexpr static bool has_missing_phase_method_v =
     has_missing_phase_method<T, ValueType>::value;
 }  // namespace policy
 }  // namespace arg_router

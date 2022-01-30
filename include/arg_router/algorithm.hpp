@@ -18,7 +18,7 @@ namespace algorithm
  * @param value Character to test
  * @return True if alphanumeric
  */
-inline constexpr bool is_alnum(char value)
+[[nodiscard]] inline constexpr bool is_alnum(char value) noexcept
 {
     constexpr auto num_range = std::pair{'0', '9'};
     constexpr auto uc_range = std::pair{'A', 'Z'};
@@ -35,7 +35,7 @@ inline constexpr bool is_alnum(char value)
  * @param value Character to test
  * @return True if whitespace
  */
-inline constexpr bool is_whitespace(char value)
+[[nodiscard]] inline constexpr bool is_whitespace(char value) noexcept
 {
     constexpr auto whitespace = std::string_view{" \f\n\r\t\v"};
     return whitespace.find(value) != std::string_view::npos;
@@ -46,7 +46,8 @@ inline constexpr bool is_whitespace(char value)
  * @param str String to test
  * @return True if contains whitespace
  */
-inline constexpr bool contains_whitespace(std::string_view str)
+[[nodiscard]] inline constexpr bool contains_whitespace(
+    std::string_view str) noexcept
 {
     for (auto c : str) {
         if (is_whitespace(c)) {
@@ -235,7 +236,8 @@ class zip
         "First and Second tuples must contain the same number of elements");
 
     template <std::size_t... N>
-    constexpr static auto zip_impl_t(std::integer_sequence<std::size_t, N...>)
+    [[nodiscard]] constexpr static auto zip_impl_t(
+        std::integer_sequence<std::size_t, N...>) noexcept
         -> std::tuple<std::pair<std::tuple_element_t<N, First>,
                                 std::tuple_element_t<N, Second>>...>;
 
@@ -270,7 +272,9 @@ struct unzip {
 namespace detail
 {
 template <typename U, typename... I>
-constexpr auto tuple_filter_and_construct_impl(U&& input, std::tuple<I...>)
+[[nodiscard]] constexpr auto tuple_filter_and_construct_impl(
+    U&& input,
+    std::tuple<I...>) noexcept
 {
     return std::tuple{std::get<I::value>(input)...};
 }
@@ -289,7 +293,7 @@ constexpr auto tuple_filter_and_construct_impl(U&& input, std::tuple<I...>)
  * @return Result tuple
  */
 template <template <typename...> typename Fn, typename U>
-constexpr auto tuple_filter_and_construct(U&& input)
+[[nodiscard]] constexpr auto tuple_filter_and_construct(U&& input) noexcept
 {
     // Zip together an index-sequence of U and the elements of it
     using zipped =
@@ -316,18 +320,20 @@ template <template <typename...> typename Tuple,
           typename Insert,
           typename... Args,
           std::size_t... I>
-constexpr auto tuple_push_back_impl(Tuple<Args...> tuple,
-                                    Insert insert,
-                                    std::integer_sequence<std::size_t, I...>)
+[[nodiscard]] constexpr auto tuple_push_back_impl(
+    Tuple<Args...> tuple,
+    Insert insert,
+    std::integer_sequence<std::size_t, I...>) noexcept
 {
     return Tuple{std::move(std::get<I>(tuple))..., std::move(insert)};
 }
 
 // Empty tuple specialisation
 template <template <typename...> typename Tuple, typename Insert>
-constexpr auto tuple_push_back_impl(Tuple<>,
-                                    Insert insert,
-                                    std::integer_sequence<std::size_t>)
+[[nodiscard]] constexpr auto tuple_push_back_impl(
+    Tuple<>,
+    Insert insert,
+    std::integer_sequence<std::size_t>) noexcept
 {
     return Tuple{std::move(insert)};
 }
@@ -342,7 +348,8 @@ constexpr auto tuple_push_back_impl(Tuple<>,
  * @return A Tuple with @a insert appended
  */
 template <typename Tuple, typename Insert, std::size_t... I>
-constexpr auto tuple_push_back(Tuple tuple, Insert insert)
+[[nodiscard]] constexpr auto tuple_push_back(Tuple tuple,
+                                             Insert insert) noexcept
 {
     return detail::tuple_push_back_impl(
         std::move(tuple),

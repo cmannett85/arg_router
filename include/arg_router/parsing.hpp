@@ -15,7 +15,7 @@ namespace parsing
  * @param argv Argument string array
  * @return Token list
  */
-token_list expand_arguments(int argc, const char* argv[]);
+[[nodiscard]] token_list expand_arguments(int argc, const char* argv[]);
 
 /** The standard implementation of the match method.
  *
@@ -24,7 +24,7 @@ token_list expand_arguments(int argc, const char* argv[]);
  * @return True if token matches the long or short form name
  */
 template <typename T>
-bool default_match(const token_type& token)
+[[nodiscard]] constexpr bool default_match(const token_type& token) noexcept
 {
     if constexpr (traits::has_long_name_method_v<T>) {
         if ((token.prefix == prefix_type::LONG) &&
@@ -57,7 +57,7 @@ bool default_match(const token_type& token)
  * @return token_type
  */
 template <typename Node>
-constexpr token_type node_token_type()
+[[nodiscard]] constexpr token_type node_token_type() noexcept
 {
     if constexpr (traits::has_display_name_method_v<Node>) {
         return {prefix_type::NONE, Node::display_name()};

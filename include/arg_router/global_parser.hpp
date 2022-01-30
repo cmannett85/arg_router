@@ -22,7 +22,7 @@ namespace arg_router
 template <typename T, typename Enable = void>
 struct parser {
     [[noreturn]] constexpr static T parse(
-        [[maybe_unused]] std::string_view token)
+        [[maybe_unused]] std::string_view token) noexcept
     {
         static_assert(
             traits::always_false_v<T>,
@@ -33,7 +33,7 @@ struct parser {
 
 template <typename T>
 struct parser<T, typename std::enable_if_t<std::is_arithmetic_v<T>>> {
-    static T parse(std::string_view token)
+    [[nodiscard]] static T parse(std::string_view token)
     {
         using namespace utility::string_view_ops;
         using namespace std::string_literals;
@@ -59,7 +59,8 @@ struct parser<T, typename std::enable_if_t<std::is_arithmetic_v<T>>> {
 
 template <>
 struct parser<std::string_view> {
-    constexpr static inline std::string_view parse(std::string_view token)
+    [[nodiscard]] constexpr static inline std::string_view parse(
+        std::string_view token) noexcept
     {
         return token;
     }
@@ -67,7 +68,7 @@ struct parser<std::string_view> {
 
 template <>
 struct parser<bool> {
-    static bool parse(std::string_view token);
+    [[nodiscard]] static bool parse(std::string_view token);
 };
 
 // The default vector-like container parser just forwards onto the value_type
@@ -76,7 +77,7 @@ struct parser<bool> {
 // positional arg parsing
 template <typename T>
 struct parser<T, typename std::enable_if_t<traits::has_push_back_method_v<T>>> {
-    static typename T::value_type parse(std::string_view token)
+    [[nodiscard]] static typename T::value_type parse(std::string_view token)
     {
         return parser<typename T::value_type>::parse(token);
     }

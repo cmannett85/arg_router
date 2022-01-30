@@ -23,7 +23,10 @@ public:
      *
      * @return Program version
      */
-    constexpr static std::string_view program_version() { return S::get(); }
+    [[nodiscard]] constexpr static std::string_view program_version() noexcept
+    {
+        return S::get();
+    }
 
 private:
     static_assert(program_version().size() > 0,
