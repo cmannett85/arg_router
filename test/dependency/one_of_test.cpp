@@ -3,6 +3,7 @@
 #include "arg_router/flag.hpp"
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/default_value.hpp"
+#include "arg_router/policy/description.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/short_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
@@ -112,6 +113,73 @@ BOOST_AUTO_TEST_CASE(match_test)
                                    policy::required),
                        parsing::token_type{parsing::prefix_type::LONG, "arg3"},
                        traits::integral_constant<std::size_t{42}>{}},
+        });
+}
+
+BOOST_AUTO_TEST_CASE(help_test)
+{
+    auto f = [](const auto& node, auto expected_child_strings) {
+        using node_type = std::decay_t<decltype(node)>;
+
+        using help_data = typename node_type::template help_data_type<false>;
+        using flattened_help_data =
+            typename node_type::template help_data_type<true>;
+
+        static_assert(std::is_same_v<typename help_data::label, S_("One of:")>);
+        static_assert(std::is_same_v<typename help_data::label,
+                                     typename flattened_help_data::label>);
+
+        static_assert(std::is_same_v<typename help_data::description, S_("")>);
+        static_assert(
+            std::is_same_v<typename help_data::description,
+                           typename flattened_help_data::description>);
+
+        BOOST_REQUIRE_EQUAL(expected_child_strings.size(),
+                            std::tuple_size_v<typename help_data::children>);
+
+        utility::tuple_type_iterator<typename help_data::children>([&](auto i) {
+            using child_type =
+                std::tuple_element_t<i, typename help_data::children>;
+
+            BOOST_CHECK_EQUAL(child_type::label::get(),
+                              expected_child_strings[i].first);
+            BOOST_CHECK_EQUAL(child_type::description::get(),
+                              expected_child_strings[i].second);
+        });
+    };
+
+    test::data_set(
+        f,
+        std::tuple{
+            std::tuple{ard::one_of(arg<int>(policy::long_name<S_("arg1")>),
+                                   arg<double>(policy::long_name<S_("arg2")>),
+                                   policy::required),
+                       std::vector{
+                           std::pair{"┌ --arg1", ""},
+                           std::pair{"└ --arg2", ""},
+                       }},
+            std::tuple{
+                ard::one_of(arg<int>(policy::long_name<S_("arg1")>),
+                            arg<double>(policy::short_name<'b'>,
+                                        policy::description<S_("A desc")>),
+                            policy::required),
+                std::vector{
+                    std::pair{"┌ --arg1", ""},
+                    std::pair{"└ -b", "A desc"},
+                }},
+            std::tuple{
+                ard::one_of(arg<int>(policy::long_name<S_("arg1")>),
+                            flag(policy::long_name<S_("flag")>,
+                                 policy::short_name<'f'>,
+                                 policy::description<S_("Hello")>),
+                            arg<double>(policy::short_name<'b'>,
+                                        policy::description<S_("A desc")>),
+                            policy::required),
+                std::vector{
+                    std::pair{"┌ --arg1", ""},
+                    std::pair{"├ --flag,-f", "Hello"},
+                    std::pair{"└ -b", "A desc"},
+                }},
         });
 }
 

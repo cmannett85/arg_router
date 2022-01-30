@@ -338,6 +338,25 @@ struct has_none_name_method {
 template <typename T>
 constexpr bool has_none_name_method_v = has_none_name_method<T>::value;
 
+/** Determine if a type has a <TT>description()</TT> static method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+struct has_description_method {
+    template <typename U>
+    using type = decltype(U::description());
+
+    constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
+};
+
+/** Helper variable for has_description_method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+constexpr bool has_description_method_v = has_description_method<T>::value;
+
 /** Determine if a type has a <TT>maximum_count()</TT> static method.
  *
  * @tparam T Type to query
@@ -396,24 +415,45 @@ struct has_push_back_method {
 template <typename T>
 constexpr bool has_push_back_method_v = has_push_back_method<T>::value;
 
-/** Determine if a type can be used with <TT>std::size(..)</TT>.
+/** Determine if a type has a <TT>help_data_type</TT> nested type.
  *
  * @tparam T Type to query
  */
 template <typename T>
-struct supports_std_size {
+struct has_help_data_type {
     template <typename U>
-    using type = decltype(std::size(std::declval<const U&>()));
+    using type = typename U::template help_data_type<false>;
 
     constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
 };
 
-/** Helper variable for supports_std_size.
+/** Helper variable for has_help_data_type.
  *
  * @tparam T Type to query
  */
 template <typename T>
-constexpr bool supports_std_size_v = supports_std_size<T>::value;
+constexpr bool has_help_data_type_v = has_help_data_type<T>::value;
+
+/** Determine if a type has a static <TT>generate_help<Node, Flatten>()</TT>
+ * method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+struct has_generate_help_method {
+    template <typename U>
+    using type = decltype(U::template generate_help<U, false>(
+        std::declval<std::ostream&>()));
+
+    constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
+};
+
+/** Helper variable for has_generate_help_method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+constexpr bool has_generate_help_method_v = has_generate_help_method<T>::value;
 
 /** Evaluates to the number of arguments the Callable @a T has.
  *

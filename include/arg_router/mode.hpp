@@ -65,6 +65,30 @@ public:
     constexpr static bool is_anonymous =
         !traits::has_none_name_method_v<mode_t>;
 
+    /** Help data type. */
+    template <bool Flatten>
+    class help_data_type
+    {
+    public:
+        using label = std::conditional_t<
+            is_anonymous,
+            S_(""),
+            typename parent_type::template default_leaf_help_data_type<
+                Flatten>::label>;
+
+        using description = std::conditional_t<
+            is_anonymous,
+            S_(""),
+            typename parent_type::template default_leaf_help_data_type<
+                Flatten>::description>;
+
+        using children = std::conditional_t<
+            is_anonymous || Flatten,
+            typename parent_type::template default_leaf_help_data_type<
+                Flatten>::all_children_help,
+            std::tuple<>>;
+    };
+
     /** Constructor.
      *
      * @param params Policy and child instances

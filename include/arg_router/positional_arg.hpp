@@ -48,6 +48,31 @@ public:
     /** Argument value type. */
     using value_type = T;
 
+    /** Help data type. */
+    template <bool Flatten>
+    class help_data_type
+    {
+        constexpr static auto label_generator()
+        {
+            constexpr auto name_index =
+                boost::mp11::mp_find_if<policies_type,
+                                        traits::has_display_name_method>::value;
+            constexpr auto name =
+                std::tuple_element_t<name_index, policies_type>::display_name();
+
+            return S_("<"){} + S_(name){} + S_("> "){} +
+                   parent_type::template default_leaf_help_data_type<
+                       Flatten>::count_suffix();
+        }
+
+    public:
+        using label = std::decay_t<decltype(label_generator())>;
+        using description =
+            typename parent_type::template default_leaf_help_data_type<
+                Flatten>::description;
+        using children = std::tuple<>;
+    };
+
     /** Constructor.
      *
      * @param policies Policy instances

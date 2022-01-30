@@ -1,7 +1,9 @@
 #include "arg_router/counting_flag.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/alias.hpp"
+#include "arg_router/policy/description.hpp"
 #include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/policy/router.hpp"
 #include "arg_router/policy/short_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
@@ -141,6 +143,74 @@ BOOST_AUTO_TEST_CASE(merge_test)
         BOOST_REQUIRE(!!result);
         BOOST_CHECK(*result == enum_t::D);
     }
+}
+
+BOOST_AUTO_TEST_CASE(help_test)
+{
+    auto f = [](const auto& node,
+                auto expected_label,
+                auto expected_description) {
+        using node_type = std::decay_t<decltype(node)>;
+
+        using help_data = typename node_type::template help_data_type<false>;
+        using flattened_help_data =
+            typename node_type::template help_data_type<true>;
+
+        static_assert(std::is_same_v<typename help_data::label,
+                                     typename flattened_help_data::label>);
+        static_assert(
+            std::is_same_v<typename help_data::description,
+                           typename flattened_help_data::description>);
+        static_assert(std::tuple_size_v<typename help_data::children> == 0);
+        static_assert(
+            std::tuple_size_v<typename flattened_help_data::children> == 0);
+
+        BOOST_CHECK_EQUAL(help_data::label::get(), expected_label);
+        BOOST_CHECK_EQUAL(help_data::description::get(), expected_description);
+    };
+
+    test::data_set(
+        f,
+        std::tuple{
+            std::tuple{
+                counting_flag<int>(policy::short_name<'h'>,
+                                   policy::long_name<S_("hello")>,
+                                   policy::description<S_("A counting flag!")>),
+                "--hello,-h [0,N]",
+                "A counting flag!"},
+            std::tuple{
+                counting_flag<int>(policy::long_name<S_("hello")>,
+                                   policy::description<S_("A counting flag!")>),
+                "--hello [0,N]",
+                "A counting flag!"},
+            std::tuple{
+                counting_flag<int>(policy::short_name<'h'>,
+                                   policy::description<S_("A counting flag!")>),
+                "-h [0,N]",
+                "A counting flag!"},
+            std::tuple{counting_flag<int>(policy::short_name<'h'>),
+                       "-h [0,N]",
+                       ""},
+            std::tuple{counting_flag<int>(policy::short_name<'h'>,
+                                          policy::min_max_count<1, 3>),
+                       "-h [1,3]",
+                       ""},
+            std::tuple{counting_flag<int>(policy::short_name<'h'>,
+                                          policy::min_count<3>),
+                       "-h [3,N]",
+                       ""},
+            std::tuple{counting_flag<int>(policy::short_name<'h'>,
+                                          policy::max_count<3>),
+                       "-h [0,3]",
+                       ""},
+            std::tuple{counting_flag<int>(
+                           policy::short_name<'h'>,
+                           policy::min_max_count<
+                               0,
+                               std::numeric_limits<std::size_t>::max()>),
+                       "-h [0,N]",
+                       ""},
+        });
 }
 
 BOOST_AUTO_TEST_SUITE(death_suite)

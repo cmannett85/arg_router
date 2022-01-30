@@ -52,32 +52,21 @@ struct one_of_generate_string_of_child_names {
                     static_assert(short_index < num_policies,
                                   "All one_of children must be named");
 
-                    return prepend_prefix<
-                        S_(config::short_prefix),
-                        std::tuple<typename std::tuple_element_t<
-                            short_index,
-                            policies>::string_type>>{};
+                    return S_(config::short_prefix){} +
+                           S_((std::tuple_element_t<short_index,
+                                                    policies>::short_name())){};
                 } else {
-                    return prepend_prefix<
-                        S_(config::long_prefix),
-                        typename std::tuple_element_t<long_index, policies>::
-                            string_type::array_type>{};
+                    return S_(config::long_prefix){} +
+                           S_((std::tuple_element_t<long_index,
+                                                    policies>::long_name())){};
                 }
             } else {
-                return typename std::tuple_element_t<display_index, policies>::
-                    string_type::array_type{};
+                return S_((std::tuple_element_t<display_index,
+                                                policies>::display_name())){};
             }
         }
 
-        using type = std::decay_t<decltype(build())>;
-    };
-
-    template <typename T>
-    struct convert_to_cts;
-
-    template <template <typename...> typename Array, typename... Cs>
-    struct convert_to_cts<Array<Cs...>> {
-        using type = utility::compile_time_string<Cs::value...>;
+        using type = typename std::decay_t<decltype(build())>::array_type;
     };
 
     using children_type =
@@ -96,7 +85,7 @@ struct one_of_generate_string_of_child_names {
                 children_type>,
             traits::integral_constant<','>>>;
 
-    using type = typename convert_to_cts<string_array>::type;
+    using type = utility::convert_to_cts_t<string_array>;
 };
 }  // namespace detail
 
@@ -161,6 +150,41 @@ public:
                                  value_type>>::value,
         "one_of must have a missing phase method, a policy::required or "
         "policy::default_value are commonly used");
+
+    /** Help data type. */
+    template <bool Flatten>
+    class help_data_type
+    {
+    public:
+        template <typename Child, typename Prefix>
+        struct prefixer {
+            using label = typename Prefix::template append_t<
+                typename Child::template help_data_type<Flatten>::label>;
+            using description =
+                typename Child::template help_data_type<Flatten>::description;
+            using children = std::tuple<>;
+        };
+
+    private:
+        template <typename Child>
+        using first_prefixer = prefixer<Child, S_("┌ ")>;
+
+        template <typename Child>
+        using middle_prefixer = prefixer<Child, S_("├ ")>;
+
+        template <typename Child>
+        using last_prefixer = prefixer<Child, S_("└ ")>;
+
+    public:
+        using label = S_("One of:");
+        using description = S_("");
+        using children = boost::mp11::mp_replace_at_c<
+            boost::mp11::mp_replace_first<
+                boost::mp11::mp_transform<middle_prefixer, children_type>,
+                first_prefixer<boost::mp11::mp_first<children_type>>>,
+            std::tuple_size_v<children_type> - 1,
+            last_prefixer<boost::mp11::mp_back<children_type>>>;
+    };
 
     /** Constructor.
      *

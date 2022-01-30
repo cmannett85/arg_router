@@ -1,10 +1,14 @@
 #pragma once
 
 #include "arg_router/algorithm.hpp"
+#include "arg_router/config.hpp"
 #include "arg_router/global_parser.hpp"
 #include "arg_router/list.hpp"
 #include "arg_router/policy/policy.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
 #include "arg_router/utility/tuple_iterator.hpp"
+
+#include <limits>
 
 namespace arg_router
 {
@@ -185,6 +189,170 @@ public:
     }
 
 protected:
+    /** Provides a default implementation for leaf nodes (e.g. flag and arg),
+     * and some useful functions/types for other types.
+     *
+     * @tparam Flatten True if the help output is to be flattened, unused for
+     * this
+     */
+    template <bool Flatten>
+    class default_leaf_help_data_type
+    {
+        template <typename Child>
+        using child_help_getter =
+            typename Child::template help_data_type<Flatten>;
+
+        template <typename Child>
+        using child_help =
+            boost::mp11::mp_eval_if_c<!traits::has_help_data_type_v<Child>,
+                                      void,
+                                      child_help_getter,
+                                      Child>;
+
+        constexpr static auto num_policies = std::tuple_size_v<policies_type>;
+
+    public:
+        constexpr static auto label_generator()
+        {
+            constexpr auto long_name_index =
+                boost::mp11::mp_find_if<policies_type,
+                                        traits::has_long_name_method>::value;
+            constexpr auto short_name_index =
+                boost::mp11::mp_find_if<policies_type,
+                                        traits::has_short_name_method>::value;
+            constexpr auto none_name_index =
+                boost::mp11::mp_find_if<policies_type,
+                                        traits::has_none_name_method>::value;
+
+            if constexpr ((long_name_index != num_policies) &&
+                          (short_name_index != num_policies)) {
+                constexpr auto long_name =
+                    std::tuple_element_t<long_name_index,
+                                         policies_type>::long_name();
+                constexpr auto short_name =
+                    std::tuple_element_t<short_name_index,
+                                         policies_type>::short_name();
+
+                return S_(config::long_prefix){} + S_(long_name){} +
+                       S_(","){} +  //
+                       S_(config::short_prefix){} + S_(short_name){};
+            } else if constexpr (long_name_index != num_policies) {
+                constexpr auto long_name =
+                    std::tuple_element_t<long_name_index,
+                                         policies_type>::long_name();
+
+                return S_(config::long_prefix){} + S_(long_name){};
+            } else if constexpr (short_name_index != num_policies) {
+                constexpr auto short_name =
+                    std::tuple_element_t<short_name_index,
+                                         policies_type>::short_name();
+
+                return S_(config::short_prefix){} + S_(short_name){};
+            } else if constexpr (none_name_index != num_policies) {
+                constexpr auto none_name =
+                    std::tuple_element_t<none_name_index,
+                                         policies_type>::none_name();
+
+                return S_(none_name){};
+            } else {
+                return S_(""){};
+            }
+        }
+
+        constexpr static auto description_generator()
+        {
+            constexpr auto description_index =
+                boost::mp11::mp_find_if<policies_type,
+                                        traits::has_description_method>::value;
+
+            if constexpr (description_index != num_policies) {
+                return S_(
+                    (std::tuple_element_t<description_index,
+                                          policies_type>::description())){};
+            } else {
+                return S_(""){};
+            }
+        }
+
+        constexpr static auto count_suffix()
+        {
+            constexpr bool fixed_count = []() {
+                if constexpr (traits::has_minimum_count_method_v<tree_node> &&
+                              traits::has_maximum_count_method_v<tree_node>) {
+                    return tree_node::minimum_count() ==
+                           tree_node::maximum_count();
+                }
+
+                return false;
+            }();
+
+            constexpr auto prefix = S_("["){};
+
+            if constexpr (fixed_count) {
+                return prefix +
+                       utility::convert_integral_to_cts_t<
+                           tree_node::minimum_count()>{} +
+                       S_("]"){};
+            } else {
+                constexpr auto min_count = []() {
+                    if constexpr (traits::has_minimum_count_method_v<
+                                      tree_node>) {
+                        return utility::convert_integral_to_cts_t<
+                            tree_node::minimum_count()>{};
+                    } else {
+                        return S_("0"){};
+                    }
+                }();
+
+                constexpr auto max_count = []() {
+                    if constexpr (traits::has_maximum_count_method_v<
+                                      tree_node>) {
+                        constexpr auto max_value = std::numeric_limits<
+                            decltype(tree_node::maximum_count())>::max();
+                        if constexpr (tree_node::maximum_count() == max_value) {
+                            return S_("N"){};
+                        } else {
+                            return utility::convert_integral_to_cts_t<
+                                tree_node::maximum_count()>{};
+                        }
+                    } else {
+                        return S_("N"){};
+                    }
+                }();
+
+                return prefix + min_count + S_(","){} + max_count + S_("]"){};
+            }
+        }
+
+        /** Collects the help data from all the children that have a
+         * help_data_type.
+         */
+        using all_children_help = boost::mp11::mp_remove_if<
+            boost::mp11::mp_transform<child_help, children_type>,
+            std::is_void>;
+
+        /** Label compile time string.
+         *
+         * Evaluates to a string of the form "<short name>,<long_name>", or
+         * only of them if only one available, or an empty string if none are
+         * available.
+         */
+        using label = std::decay_t<decltype(label_generator())>;
+
+        /** Description compile time string.
+         *
+         * Evaluates to a the description time, or an empty string if none is
+         * available.
+         */
+        using description = std::decay_t<decltype(description_generator())>;
+
+        /** Children help data tuple.
+         *
+         * Empty as this is the default for leaf types.
+         */
+        using children = std::tuple<>;
+    };
+
     /** Generic parse call, uses a policy that supports the parse phase if
      * present, or the global parser.
      *
