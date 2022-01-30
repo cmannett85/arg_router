@@ -92,14 +92,14 @@ Public Types</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ac8026b56fcd31b8ae780c47fca87c45b"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1alias__t.html#ac8026b56fcd31b8ae780c47fca87c45b">alias_t</a> (AliasedPolicies &amp;&amp;... policies)</td></tr>
-<tr class="separator:ac8026b56fcd31b8ae780c47fca87c45b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e9b342cf6ec27cbcb2593a7fb830178"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1alias__t.html#a7e9b342cf6ec27cbcb2593a7fb830178">alias_t</a> ([[maybe_unused]] AliasedPolicies &amp;&amp;... policies)</td></tr>
+<tr class="separator:a7e9b342cf6ec27cbcb2593a7fb830178"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:ad9d63ff540109a5b8cd7af94af47fdcb"><td class="memTemplParams" colspan="2">template&lt;typename... Parents&gt; </td></tr>
-<tr class="memitem:ad9d63ff540109a5b8cd7af94af47fdcb"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1alias__t.html#ad9d63ff540109a5b8cd7af94af47fdcb">pre_parse_phase</a> (<a class="el" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a> &amp;tokens, const Parents &amp;... parents) const</td></tr>
-<tr class="separator:ad9d63ff540109a5b8cd7af94af47fdcb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:affd1e51032afbe7b51237830c7c40a53"><td class="memTemplParams" colspan="2">template&lt;typename... Parents&gt; </td></tr>
+<tr class="memitem:affd1e51032afbe7b51237830c7c40a53"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1alias__t.html#affd1e51032afbe7b51237830c7c40a53">pre_parse_phase</a> (<a class="el" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a> &amp;tokens, [[maybe_unused]] const Parents &amp;... parents) const</td></tr>
+<tr class="separator:affd1e51032afbe7b51237830c7c40a53"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename... AliasedPolicies&gt;<br />
@@ -114,7 +114,7 @@ class arg_router::policy::alias_t&lt; AliasedPolicies &gt;</h3>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="alias_8hpp_source.html#l00027">27</a> of file <a class="el" href="alias_8hpp_source.html">alias.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="alias_8hpp_source.html#l00026">26</a> of file <a class="el" href="alias_8hpp_source.html">alias.hpp</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="abd3cbec28db15f7bedea6bcaf50ea3bb"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abd3cbec28db15f7bedea6bcaf50ea3bb">&#9670;&nbsp;</a></span>aliased_policies_type</h2>
@@ -131,13 +131,13 @@ template&lt;typename... AliasedPolicies&gt; </div>
 </div><div class="memdoc">
 <p>Tuple of policy types. </p>
 
-<p class="definition">Definition at line <a class="el" href="alias_8hpp_source.html#l00031">31</a> of file <a class="el" href="alias_8hpp_source.html">alias.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="alias_8hpp_source.html#l00030">30</a> of file <a class="el" href="alias_8hpp_source.html">alias.hpp</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="ac8026b56fcd31b8ae780c47fca87c45b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac8026b56fcd31b8ae780c47fca87c45b">&#9670;&nbsp;</a></span>alias_t()</h2>
+<a id="a7e9b342cf6ec27cbcb2593a7fb830178"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7e9b342cf6ec27cbcb2593a7fb830178">&#9670;&nbsp;</a></span>alias_t()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -150,7 +150,7 @@ template&lt;typename... AliasedPolicies&gt; </div>
         <tr>
           <td class="memname">constexpr <a class="el" href="classarg__router_1_1policy_1_1alias__t.html">arg_router::policy::alias_t</a>&lt; AliasedPolicies &gt;::<a class="el" href="classarg__router_1_1policy_1_1alias__t.html">alias_t</a> </td>
           <td>(</td>
-          <td class="paramtype">AliasedPolicies &amp;&amp;...&#160;</td>
+          <td class="paramtype">[[maybe_unused] ] AliasedPolicies &amp;&amp;...&#160;</td>
           <td class="paramname"><em>policies</em></td><td>)</td>
           <td></td>
         </tr>
@@ -169,13 +169,13 @@ template&lt;typename... AliasedPolicies&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="alias_8hpp_source.html#l00037">37</a> of file <a class="el" href="alias_8hpp_source.html">alias.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="alias_8hpp_source.html#l00036">36</a> of file <a class="el" href="alias_8hpp_source.html">alias.hpp</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ad9d63ff540109a5b8cd7af94af47fdcb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad9d63ff540109a5b8cd7af94af47fdcb">&#9670;&nbsp;</a></span>pre_parse_phase()</h2>
+<a id="affd1e51032afbe7b51237830c7c40a53"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#affd1e51032afbe7b51237830c7c40a53">&#9670;&nbsp;</a></span>pre_parse_phase()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -196,7 +196,7 @@ template&lt;typename... Parents&gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const Parents &amp;...&#160;</td>
+          <td class="paramtype">[[maybe_unused] ] const Parents &amp;...&#160;</td>
           <td class="paramname"><em>parents</em>&#160;</td>
         </tr>
         <tr>
@@ -240,7 +240,7 @@ template&lt;typename... Parents&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="alias_8hpp_source.html#l00065">65</a> of file <a class="el" href="alias_8hpp_source.html">alias.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="alias_8hpp_source.html#l00063">63</a> of file <a class="el" href="alias_8hpp_source.html">alias.hpp</a>.</p>
 
 </div>
 </div>

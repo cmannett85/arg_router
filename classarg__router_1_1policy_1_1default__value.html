@@ -89,9 +89,9 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:adaf268db8b96d0abc10e9b7956ee08dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a257e5152c1e730276f76f19f91985de1"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1default__value.html#a257e5152c1e730276f76f19f91985de1">get_default_value</a> () const -&gt; std::conditional_t&lt; <a class="el" href="namespacearg__router_1_1config.html#a78e160dd9f602656e0ebb5a4833402a4">config::l1_cache_size</a>() &gt;=sizeof(<a class="el" href="classarg__router_1_1policy_1_1default__value.html#a608c8c207395438c1e56aa52d5d6225d">value_type</a>), <a class="el" href="classarg__router_1_1policy_1_1default__value.html#a608c8c207395438c1e56aa52d5d6225d">value_type</a>, const <a class="el" href="classarg__router_1_1policy_1_1default__value.html#a608c8c207395438c1e56aa52d5d6225d">value_type</a> &amp; &gt;</td></tr>
 <tr class="separator:a257e5152c1e730276f76f19f91985de1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3f7235f5f4ac6235a07b848a4d81cc5f"><td class="memTemplParams" colspan="2">template&lt;typename ValueType , typename... Parents&gt; </td></tr>
-<tr class="memitem:a3f7235f5f4ac6235a07b848a4d81cc5f"><td class="memTemplItemLeft" align="right" valign="top">constexpr ValueType&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1default__value.html#a3f7235f5f4ac6235a07b848a4d81cc5f">missing_phase</a> (const Parents &amp;... parents) const</td></tr>
-<tr class="separator:a3f7235f5f4ac6235a07b848a4d81cc5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a19d34ac936155c503bac76ea47fcc834"><td class="memTemplParams" colspan="2">template&lt;typename ValueType , typename... Parents&gt; </td></tr>
+<tr class="memitem:a19d34ac936155c503bac76ea47fcc834"><td class="memTemplItemLeft" align="right" valign="top">constexpr ValueType&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1default__value.html#a19d34ac936155c503bac76ea47fcc834">missing_phase</a> ([[maybe_unused]] const Parents &amp;... parents) const</td></tr>
+<tr class="separator:a19d34ac936155c503bac76ea47fcc834"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename T&gt;<br />
@@ -105,7 +105,7 @@ class arg_router::policy::default_value&lt; T &gt;</h3>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="default__value_8hpp_source.html#l00019">19</a> of file <a class="el" href="default__value_8hpp_source.html">default_value.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="default__value_8hpp_source.html#l00017">17</a> of file <a class="el" href="default__value_8hpp_source.html">default_value.hpp</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="a608c8c207395438c1e56aa52d5d6225d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a608c8c207395438c1e56aa52d5d6225d">&#9670;&nbsp;</a></span>value_type</h2>
@@ -122,7 +122,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Alias of <em>T</em>. </p>
 
-<p class="definition">Definition at line <a class="el" href="default__value_8hpp_source.html#l00023">23</a> of file <a class="el" href="default__value_8hpp_source.html">default_value.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="default__value_8hpp_source.html#l00021">21</a> of file <a class="el" href="default__value_8hpp_source.html">default_value.hpp</a>.</p>
 
 </div>
 </div>
@@ -160,7 +160,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="default__value_8hpp_source.html#l00029">29</a> of file <a class="el" href="default__value_8hpp_source.html">default_value.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="default__value_8hpp_source.html#l00027">27</a> of file <a class="el" href="default__value_8hpp_source.html">default_value.hpp</a>.</p>
 
 </div>
 </div>
@@ -195,12 +195,12 @@ template&lt;typename T &gt; </div>
 <p>Returns the default value.</p>
 <dl class="section return"><dt>Returns</dt><dd>Default value, a reference to it if the object is larger than a cache line </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="default__value_8hpp_source.html#l00039">39</a> of file <a class="el" href="default__value_8hpp_source.html">default_value.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="default__value_8hpp_source.html#l00037">37</a> of file <a class="el" href="default__value_8hpp_source.html">default_value.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a3f7235f5f4ac6235a07b848a4d81cc5f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3f7235f5f4ac6235a07b848a4d81cc5f">&#9670;&nbsp;</a></span>missing_phase()</h2>
+<a id="a19d34ac936155c503bac76ea47fcc834"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a19d34ac936155c503bac76ea47fcc834">&#9670;&nbsp;</a></span>missing_phase()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -215,7 +215,7 @@ template&lt;typename ValueType , typename... Parents&gt; </div>
         <tr>
           <td class="memname">constexpr ValueType <a class="el" href="classarg__router_1_1policy_1_1default__value.html">arg_router::policy::default_value</a>&lt; T &gt;::missing_phase </td>
           <td>(</td>
-          <td class="paramtype">const Parents &amp;...&#160;</td>
+          <td class="paramtype">[[maybe_unused] ] const Parents &amp;...&#160;</td>
           <td class="paramname"><em>parents</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -242,7 +242,7 @@ template&lt;typename ValueType , typename... Parents&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Default value </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="default__value_8hpp_source.html#l00057">57</a> of file <a class="el" href="default__value_8hpp_source.html">default_value.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="default__value_8hpp_source.html#l00055">55</a> of file <a class="el" href="default__value_8hpp_source.html">default_value.hpp</a>.</p>
 
 </div>
 </div>

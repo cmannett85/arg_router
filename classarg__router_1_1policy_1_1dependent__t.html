@@ -86,14 +86,14 @@ Public Types</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a459b8b8cfce5c2664af244377ce8dc06"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1dependent__t.html#a459b8b8cfce5c2664af244377ce8dc06">dependent_t</a> (DependsPolicies &amp;&amp;... policies)</td></tr>
-<tr class="separator:a459b8b8cfce5c2664af244377ce8dc06"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7528f5812e35fe0c8cc11f182b0123a4"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1dependent__t.html#a7528f5812e35fe0c8cc11f182b0123a4">dependent_t</a> ([[maybe_unused]] DependsPolicies &amp;&amp;... policies)</td></tr>
+<tr class="separator:a7528f5812e35fe0c8cc11f182b0123a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:ab9fefe1f3d4a01d2f9cf4085a382238f"><td class="memTemplParams" colspan="2">template&lt;typename... Parents&gt; </td></tr>
-<tr class="memitem:ab9fefe1f3d4a01d2f9cf4085a382238f"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1dependent__t.html#ab9fefe1f3d4a01d2f9cf4085a382238f">pre_parse_phase</a> (<a class="el" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a> &amp;tokens, const Parents &amp;... parents) const</td></tr>
-<tr class="separator:ab9fefe1f3d4a01d2f9cf4085a382238f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3714e2ad842cb54533243ff3cae1ae01"><td class="memTemplParams" colspan="2">template&lt;typename... Parents&gt; </td></tr>
+<tr class="memitem:a3714e2ad842cb54533243ff3cae1ae01"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1dependent__t.html#a3714e2ad842cb54533243ff3cae1ae01">pre_parse_phase</a> (<a class="el" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a> &amp;tokens, [[maybe_unused]] const Parents &amp;... parents) const</td></tr>
+<tr class="separator:a3714e2ad842cb54533243ff3cae1ae01"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename... DependsPolicies&gt;<br />
@@ -107,7 +107,7 @@ class arg_router::policy::dependent_t&lt; DependsPolicies &gt;</h3>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dependent_8hpp_source.html#l00022">22</a> of file <a class="el" href="dependent_8hpp_source.html">dependent.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dependent_8hpp_source.html#l00020">20</a> of file <a class="el" href="dependent_8hpp_source.html">dependent.hpp</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="a1410494c4e8ff1ccb5fb0bff09e41b3f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1410494c4e8ff1ccb5fb0bff09e41b3f">&#9670;&nbsp;</a></span>depends_policies_type</h2>
@@ -124,13 +124,13 @@ template&lt;typename... DependsPolicies&gt; </div>
 </div><div class="memdoc">
 <p>Tuple of policy types. </p>
 
-<p class="definition">Definition at line <a class="el" href="dependent_8hpp_source.html#l00026">26</a> of file <a class="el" href="dependent_8hpp_source.html">dependent.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dependent_8hpp_source.html#l00024">24</a> of file <a class="el" href="dependent_8hpp_source.html">dependent.hpp</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a459b8b8cfce5c2664af244377ce8dc06"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a459b8b8cfce5c2664af244377ce8dc06">&#9670;&nbsp;</a></span>dependent_t()</h2>
+<a id="a7528f5812e35fe0c8cc11f182b0123a4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7528f5812e35fe0c8cc11f182b0123a4">&#9670;&nbsp;</a></span>dependent_t()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -143,7 +143,7 @@ template&lt;typename... DependsPolicies&gt; </div>
         <tr>
           <td class="memname">constexpr <a class="el" href="classarg__router_1_1policy_1_1dependent__t.html">arg_router::policy::dependent_t</a>&lt; DependsPolicies &gt;::<a class="el" href="classarg__router_1_1policy_1_1dependent__t.html">dependent_t</a> </td>
           <td>(</td>
-          <td class="paramtype">DependsPolicies &amp;&amp;...&#160;</td>
+          <td class="paramtype">[[maybe_unused] ] DependsPolicies &amp;&amp;...&#160;</td>
           <td class="paramname"><em>policies</em></td><td>)</td>
           <td></td>
         </tr>
@@ -162,13 +162,13 @@ template&lt;typename... DependsPolicies&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dependent_8hpp_source.html#l00032">32</a> of file <a class="el" href="dependent_8hpp_source.html">dependent.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dependent_8hpp_source.html#l00030">30</a> of file <a class="el" href="dependent_8hpp_source.html">dependent.hpp</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ab9fefe1f3d4a01d2f9cf4085a382238f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab9fefe1f3d4a01d2f9cf4085a382238f">&#9670;&nbsp;</a></span>pre_parse_phase()</h2>
+<a id="a3714e2ad842cb54533243ff3cae1ae01"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3714e2ad842cb54533243ff3cae1ae01">&#9670;&nbsp;</a></span>pre_parse_phase()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -189,7 +189,7 @@ template&lt;typename... Parents&gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const Parents &amp;...&#160;</td>
+          <td class="paramtype">[[maybe_unused] ] const Parents &amp;...&#160;</td>
           <td class="paramname"><em>parents</em>&#160;</td>
         </tr>
         <tr>
@@ -225,7 +225,7 @@ template&lt;typename... Parents&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dependent_8hpp_source.html#l00047">47</a> of file <a class="el" href="dependent_8hpp_source.html">dependent.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dependent_8hpp_source.html#l00045">45</a> of file <a class="el" href="dependent_8hpp_source.html">dependent.hpp</a>.</p>
 
 </div>
 </div>
