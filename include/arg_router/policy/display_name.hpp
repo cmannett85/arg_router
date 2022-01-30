@@ -28,7 +28,10 @@ public:
      *
      * @return Display name
      */
-    constexpr static std::string_view display_name() { return S::get(); }
+    [[nodiscard]] constexpr static std::string_view display_name() noexcept
+    {
+        return S::get();
+    }
 
 private:
     static_assert(!display_name().empty(), "Display name must not be empty");

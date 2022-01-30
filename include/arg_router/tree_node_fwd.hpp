@@ -15,9 +15,9 @@ template <typename T>
 struct is_tree_node {
 private:
     template <typename... Ts>
-    static constexpr std::true_type test(const tree_node<Ts...>*);
+    constexpr static std::true_type test(const tree_node<Ts...>*);
 
-    static constexpr std::false_type test(...);
+    constexpr static std::false_type test(...);
 
 public:
     constexpr static bool value = decltype(test(std::declval<T*>()))::value;

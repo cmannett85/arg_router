@@ -50,7 +50,7 @@ public:
      * @return Value, a reference to it if the object is larger than a
      * cache line
      */
-    constexpr auto minimum_value() const
+    [[nodiscard]] constexpr auto minimum_value() const noexcept
         -> std::conditional_t<config::l1_cache_size() >= sizeof(value_type),
                               value_type,
                               const value_type&>
@@ -63,7 +63,7 @@ public:
      * @return Value, a reference to it if the object is larger than a
      * cache line
      */
-    constexpr auto maximum_value() const
+    [[nodiscard]] constexpr auto maximum_value() const noexcept
         -> std::conditional_t<config::l1_cache_size() >= sizeof(value_type),
                               value_type,
                               const value_type&>
@@ -75,7 +75,10 @@ public:
      *
      * @return Compare function object
      */
-    constexpr const less_than_compare& comp() const { return comp_; }
+    [[nodiscard]] constexpr const less_than_compare& comp() const noexcept
+    {
+        return comp_;
+    }
 
     /** Checks that @a value is between the minimum and maximum values.
      *

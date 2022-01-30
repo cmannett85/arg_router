@@ -219,7 +219,7 @@ class unpack_and_derive<T<Params...>> : public Params...
     template <std::size_t... I>
     constexpr explicit unpack_and_derive(
         T<Params...> params,
-        std::integer_sequence<std::size_t, I...>) :
+        std::integer_sequence<std::size_t, I...>) noexcept :
         Params{std::get<I>(std::move(params))}...
     {
     }
@@ -227,13 +227,14 @@ class unpack_and_derive<T<Params...>> : public Params...
     // This empty tuple overload is just to prevent an
     // -Werror=unused-but-set-parameter on the params parameter
     template <std::size_t... I>
-    constexpr explicit unpack_and_derive(T<Params...>,
-                                         std::integer_sequence<std::size_t>)
+    constexpr explicit unpack_and_derive(
+        T<Params...>,
+        std::integer_sequence<std::size_t>) noexcept
     {
     }
 
 public:
-    constexpr explicit unpack_and_derive(T<Params...> params) :
+    constexpr explicit unpack_and_derive(T<Params...> params) noexcept :
         unpack_and_derive{std::move(params),
                           std::make_index_sequence<sizeof...(Params)>{}}
     {

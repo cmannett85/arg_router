@@ -210,7 +210,8 @@ public:
      * @return Match result
      */
     template <typename Fn>
-    bool match(const parsing::token_type& token, const Fn& visitor) const
+    constexpr bool match(const parsing::token_type& token,
+                         const Fn& visitor) const
     {
         auto found = false;
         utility::tuple_iterator(
@@ -243,7 +244,7 @@ private:
  * @return Mode instance
  */
 template <typename... Params>
-constexpr one_of_t<Params...> one_of(Params... params)
+[[nodiscard]] constexpr one_of_t<Params...> one_of(Params... params)
 {
     return one_of_t{std::move(params)...};
 }

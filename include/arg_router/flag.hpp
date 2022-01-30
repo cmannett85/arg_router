@@ -54,7 +54,7 @@ public:
      *
      * @param policies Policy instances
      */
-    constexpr explicit flag_t(Policies... policies) :
+    constexpr explicit flag_t(Policies... policies) noexcept :
         parent_type{policy::default_value<bool>{false}, std::move(policies)...}
     {
     }
@@ -73,7 +73,8 @@ public:
      * @return Match result
      */
     template <typename Fn>
-    bool match(const parsing::token_type& token, const Fn& visitor) const
+    constexpr bool match(const parsing::token_type& token,
+                         const Fn& visitor) const
     {
         if (parsing::default_match<flag_t>(token)) {
             visitor(*this);
@@ -137,7 +138,7 @@ private:
  * @return Flag instance
  */
 template <typename... Policies>
-constexpr flag_t<Policies...> flag(Policies... policies)
+[[nodiscard]] constexpr flag_t<Policies...> flag(Policies... policies) noexcept
 {
     return flag_t{std::move(policies)...};
 }

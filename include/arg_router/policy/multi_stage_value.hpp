@@ -35,7 +35,10 @@ public:
      *
      * @param fn Merge function object
      */
-    constexpr explicit multi_stage_value(merge_fn fn) : fn_{std::move(fn)} {}
+    constexpr explicit multi_stage_value(merge_fn fn) noexcept :
+        fn_{std::move(fn)}
+    {
+    }
 
     /** Public API to merge the parsed value into the parent's result value.
      *
@@ -65,9 +68,9 @@ template <typename T>
 struct has_multi_stage_value {
 private:
     template <typename... Ts>
-    static constexpr std::true_type test(const multi_stage_value<Ts...>*);
+    constexpr static std::true_type test(const multi_stage_value<Ts...>*);
 
-    static constexpr std::false_type test(...);
+    constexpr static std::false_type test(...);
 
 public:
     constexpr static bool value = decltype(test(std::declval<T*>()))::value;

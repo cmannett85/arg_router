@@ -24,7 +24,7 @@ public:
      *
      * @param f Callable that is executed on a successful parse
      */
-    explicit router(Fn f) : f_{std::move(f)} {}
+    constexpr explicit router(Fn f) noexcept : f_{std::move(f)} {}
 
 protected:
     /** Executes the result of the parsed command line arguments.

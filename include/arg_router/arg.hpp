@@ -46,7 +46,7 @@ public:
      *
      * @param policies Policy instances
      */
-    constexpr explicit arg_t(Policies... policies) :
+    constexpr explicit arg_t(Policies... policies) noexcept :
         parent_type{policy::fixed_count<1>, std::move(policies)...}
     {
     }
@@ -65,7 +65,8 @@ public:
      * @return Match result
      */
     template <typename Fn>
-    bool match(const parsing::token_type& token, const Fn& visitor) const
+    constexpr bool match(const parsing::token_type& token,
+                         const Fn& visitor) const
     {
         if (parsing::default_match<arg_t>(token)) {
             visitor(*this);
@@ -146,7 +147,7 @@ public:
  * @return Argument instance
  */
 template <typename T, typename... Policies>
-constexpr arg_t<T, Policies...> arg(Policies... policies)
+[[nodiscard]] constexpr arg_t<T, Policies...> arg(Policies... policies) noexcept
 {
     return arg_t<T, std::decay_t<Policies>...>{std::move(policies)...};
 }

@@ -115,7 +115,7 @@ private:
 
     struct validate_fn {
         template <typename Current, typename... Parents>
-        constexpr static void fn()
+        constexpr static void fn() noexcept
         {
             // Find the matching rule
             constexpr auto rule_index = boost::mp11::mp_find_if_q<  //
@@ -143,7 +143,7 @@ public:
      * @return void
      */
     template <typename Root>
-    constexpr static void validate()
+    constexpr static void validate() noexcept
     {
         utility::tree_recursor<validate_fn, Root>();
     }
@@ -176,7 +176,7 @@ struct despecialised_any_of_rule {
  */
 struct despecialised_unique_in_owner {
     template <typename T, typename... Parents>
-    constexpr static void check()
+    constexpr static void check() noexcept
     {
         if constexpr (sizeof...(Parents) > 0) {
             using Owner = boost::mp11::mp_first<std::tuple<Parents...>>;
@@ -202,7 +202,7 @@ struct policy_unique_from_owner_parent_to_mode_or_root {
     template <typename Policy, typename PathToThis>
     struct checker {
         template <typename Current, typename... Parents>
-        constexpr static void fn()
+        constexpr static void fn() noexcept
         {
             using path_type = std::tuple<Parents...>;
 
@@ -223,14 +223,14 @@ struct policy_unique_from_owner_parent_to_mode_or_root {
     // Don't recurse into child modes, they effectively have their own namespace
     struct skipper {
         template <typename Current, typename...>
-        constexpr static bool fn()
+        [[nodiscard]] constexpr static bool fn() noexcept
         {
             return is_mode<Current>::value;
         }
     };
 
     template <typename T, typename... Parents>
-    constexpr static void check()
+    constexpr static void check() noexcept
     {
         using ParentTuple = std::tuple<Parents...>;
         constexpr auto NumParents = sizeof...(Parents);
@@ -306,7 +306,7 @@ struct parent_types {
     };
 
     template <typename T, typename... Parents>
-    constexpr static void check()
+    constexpr static void check() noexcept
     {
         // Remove any entries whose index is beyond the Parents list size
         using clamped_indices =
@@ -338,7 +338,7 @@ struct must_have_policies {
         boost::mp11::mp_to_bool>;
 
     template <typename T, typename...>
-    constexpr static void check()
+    constexpr static void check() noexcept
     {
         static_assert(checker<T>::value, "T must have all these policies");
     }
@@ -358,7 +358,7 @@ struct must_not_have_policies {
         boost::mp11::mp_to_bool>;
 
     template <typename T, typename...>
-    constexpr static void check()
+    constexpr static void check() noexcept
     {
         static_assert(checker<T>::value, "T must have none of these policies");
     }
@@ -383,7 +383,7 @@ struct basic_child_must_have_policy {
 template <template <typename...> typename Policy>
 struct child_must_have_policy {
     template <typename T, typename...>
-    constexpr static void check()
+    constexpr static void check() noexcept
     {
         static_assert(basic_child_must_have_policy<Policy>::template value<T>,
                       "All children of T must have this policy");
@@ -398,7 +398,7 @@ struct child_must_have_policy {
 template <template <typename...> typename Policy>
 struct child_must_not_have_policy {
     template <typename T, typename...>
-    constexpr static void check()
+    constexpr static void check() noexcept
     {
         if constexpr ((std::tuple_size_v<typename T::children_type>) > 0) {
             static_assert(
@@ -414,7 +414,7 @@ struct child_must_not_have_policy {
 template <template <typename...> typename Policy>
 struct policy_parent_must_not_have_policy {
     template <typename T, typename... Parents>
-    constexpr static void check()
+    constexpr static void check() noexcept
     {
         static_assert(policy::is_policy_v<T>, "T must be a policy");
         static_assert(sizeof...(Parents) >= 1, "Must be at least one parent");
@@ -452,7 +452,7 @@ struct single_anonymous_mode {
     };
 
     template <typename T, typename...>
-    constexpr static void check()
+    constexpr static void check() noexcept
     {
         constexpr auto num_anonymous = boost::mp11::mp_count_if<  //
             typename T::children_type,
@@ -473,7 +473,7 @@ struct at_least_one_of_policies {
                   "Condition requires at least two policies");
 
     template <typename T, typename...>
-    constexpr static void check()
+    constexpr static void check() noexcept
     {
         static_assert(
             (algorithm::count_specialisation_v<Policies,
@@ -503,7 +503,7 @@ struct positional_args_must_be_at_end {
         boost::mp11::mp_to_bool>;
 
     template <typename T, typename...>
-    constexpr static void check()
+    constexpr static void check() noexcept
     {
         // Find the first index of a positional arg, then for each element type
         // after, check that it is also a positional arg
@@ -549,7 +549,7 @@ struct positional_args_must_have_fixed_count_if_not_at_end {
 
     template <typename T>
     struct fixed_count_checker {
-        constexpr static bool f()
+        [[nodiscard]] constexpr static bool f() noexcept
         {
             if constexpr (traits::has_minimum_count_method_v<T> &&
                           traits::has_maximum_count_method_v<T>) {
@@ -563,7 +563,7 @@ struct positional_args_must_have_fixed_count_if_not_at_end {
     };
 
     template <typename T, typename...>
-    constexpr static void check()
+    constexpr static void check() noexcept
     {
         using children_type = typename T::children_type;
         using pos_args =

@@ -93,7 +93,7 @@ public:
      *
      * @param params Policy and child instances
      */
-    constexpr explicit mode_t(Params... params) :
+    constexpr explicit mode_t(Params... params) noexcept :
         parent_type{policy::no_result_value<>{}, std::move(params)...}
     {
     }
@@ -112,7 +112,8 @@ public:
      * @return Match result
      */
     template <typename Fn>
-    bool match(const parsing::token_type& token, const Fn& visitor) const
+    constexpr bool match(const parsing::token_type& token,
+                         const Fn& visitor) const
     {
         if (is_anonymous || parsing::default_match<mode_t>(token)) {
             visitor(*this);

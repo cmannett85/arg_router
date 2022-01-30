@@ -45,8 +45,9 @@ protected:
      * @exception parse_exception Thrown if parsing failed
      */
     template <typename ValueType, typename... Parents>
-    ValueType parse_phase(std::string_view token,
-                          [[maybe_unused]] const Parents&... parents) const
+    [[nodiscard]] constexpr ValueType parse_phase(
+        std::string_view token,
+        [[maybe_unused]] const Parents&... parents) const
     {
         return parser_(token);
     }

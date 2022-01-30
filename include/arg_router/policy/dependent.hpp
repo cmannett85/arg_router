@@ -28,7 +28,7 @@ public:
      * @param policies Policy instances
      */
     constexpr explicit dependent_t(
-        [[maybe_unused]] DependsPolicies&&... policies)
+        [[maybe_unused]] DependsPolicies&&... policies) noexcept
     {
     }
 
@@ -171,7 +171,7 @@ private:
         // For each depends, find all of its depends, stop when there are no
         // more or if you hit this policy - static_assert
         template <std::size_t I, typename Nodes>
-        constexpr static bool check()
+        [[nodiscard]] constexpr static bool check() noexcept
         {
             if constexpr (I >= std::tuple_size_v<Nodes>) {
                 return true;

@@ -127,7 +127,7 @@ private:
         "All parameters must provide a long and/or short form name");
 
     template <typename NodeType>
-    static constexpr std::size_t node_fixed_count()
+    [[nodiscard]] constexpr static std::size_t node_fixed_count() noexcept
     {
         // Does it have a fixed count?
         if constexpr (traits::has_minimum_count_method_v<NodeType> &&
@@ -208,7 +208,7 @@ private:
         // For each alias, find all of its alias, stop when there are no
         // more or if you hit this policy - static_assert
         template <std::size_t I, typename Nodes>
-        constexpr static bool check()
+        [[nodiscard]] constexpr static bool check() noexcept
         {
             if constexpr (I >= std::tuple_size_v<Nodes>) {
                 return true;
@@ -239,7 +239,7 @@ private:
     };
 
     template <std::size_t Count, typename TargetsTuple>
-    static constexpr void check_target_counts()
+    constexpr static void check_target_counts() noexcept
     {
         utility::tuple_type_iterator<TargetsTuple>([](auto i) {
             using target_type = std::tuple_element_t<i, TargetsTuple>;
@@ -259,7 +259,8 @@ private:
  * @return Alias instance
  */
 template <typename... AliasedPolicies>
-constexpr alias_t<AliasedPolicies...> alias(AliasedPolicies... policies)
+[[nodiscard]] constexpr alias_t<AliasedPolicies...> alias(
+    AliasedPolicies... policies)
 {
     return alias_t{std::move(policies)...};
 }

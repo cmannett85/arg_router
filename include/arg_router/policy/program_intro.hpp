@@ -24,7 +24,10 @@ public:
      *
      * @return Program name
      */
-    constexpr static std::string_view program_intro() { return S::get(); }
+    [[nodiscard]] constexpr static std::string_view program_intro() noexcept
+    {
+        return S::get();
+    }
 
 private:
     static_assert(program_intro().size() > 1,

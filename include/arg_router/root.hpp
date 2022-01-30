@@ -100,7 +100,7 @@ public:
      *
      * @param params Policy and child instances
      */
-    constexpr explicit root_t(Params... params) :
+    constexpr explicit root_t(Params... params) noexcept :
         parent_type{std::move(params)...}
     {
         validator_type::template validate<std::decay_t<decltype(*this)>>();
@@ -157,7 +157,7 @@ public:
      *
      * @return String holding the help output
      */
-    std::string help() const
+    [[nodiscard]] std::string help() const
     {
         auto stream = std::stringstream{};
         help(stream);
@@ -174,7 +174,7 @@ public:
  * @return Root instance
  */
 template <typename... Params>
-constexpr root_t<Params...> root(Params... params)
+[[nodiscard]] constexpr root_t<Params...> root(Params... params) noexcept
 {
     return root_t{std::move(params)...};
 }

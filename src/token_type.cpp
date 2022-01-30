@@ -1,5 +1,4 @@
 #include "arg_router/token_type.hpp"
-#include "arg_router/config.hpp"
 #include "arg_router/utility/string_view_ops.hpp"
 
 using namespace arg_router;
@@ -9,14 +8,15 @@ using namespace std::string_literals;
 namespace
 {
 template <typename ViewType>
-bool token_list_view_equality(ViewType lhs, ViewType rhs)
+[[nodiscard]] constexpr bool token_list_view_equality(ViewType lhs,
+                                                      ViewType rhs) noexcept
 {
     // For some insane reason, span doesn't have equality operators
     return std::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
 }
 
 template <typename ViewType>
-std::string token_list_view_to_string(ViewType view)
+[[nodiscard]] std::string token_list_view_to_string(ViewType view)
 {
     auto str = ""s;
     for (auto i = 0u; i < view.size(); ++i) {
@@ -28,15 +28,6 @@ std::string token_list_view_to_string(ViewType view)
     return str;
 }
 }  // namespace
-
-std::string_view parsing::to_string(prefix_type prefix)
-{
-    switch (prefix) {
-    case prefix_type::LONG: return config::long_prefix;
-    case prefix_type::SHORT: return config::short_prefix;
-    default: return "";
-    }
-}
 
 std::string parsing::to_string(const token_type& token)
 {
@@ -52,13 +43,13 @@ void parsing::token_list::swap(token_list& other) noexcept
 }
 
 bool parsing::operator==(token_list::pending_view_type lhs,
-                         token_list::pending_view_type rhs)
+                         token_list::pending_view_type rhs) noexcept
 {
     return token_list_view_equality(lhs, rhs);
 }
 
 bool parsing::operator==(token_list::processed_view_type lhs,
-                         token_list::processed_view_type rhs)
+                         token_list::processed_view_type rhs) noexcept
 {
     return token_list_view_equality(lhs, rhs);
 }

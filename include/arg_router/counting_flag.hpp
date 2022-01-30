@@ -66,7 +66,7 @@ public:
     template <bool Flatten>
     class help_data_type
     {
-        constexpr static auto label_generator()
+        [[nodiscard]] constexpr static auto label_generator() noexcept
         {
             return typename parent_type::template default_leaf_help_data_type<
                        Flatten>::label{} +
@@ -87,7 +87,7 @@ public:
      *
      * @param policies Policy instances
      */
-    constexpr explicit counting_flag_t(Policies... policies) :
+    constexpr explicit counting_flag_t(Policies... policies) noexcept :
         parent_type{policy::multi_stage_value<T, bool>{merge_impl},
                     std::move(policies)...}
     {
@@ -107,7 +107,8 @@ public:
      * @return Match result
      */
     template <typename Fn>
-    bool match(const parsing::token_type& token, const Fn& visitor) const
+    constexpr bool match(const parsing::token_type& token,
+                         const Fn& visitor) const
     {
         if (parsing::default_match<counting_flag_t>(token)) {
             visitor(*this);
@@ -155,7 +156,8 @@ private:
         "(e.g. custom_parser)");
 
     // Value will always be true
-    static void merge_impl(std::optional<value_type>& result, bool /*value*/)
+    constexpr static void merge_impl(std::optional<value_type>& result,
+                                     bool /*value*/) noexcept
     {
         if (!result) {
             result = static_cast<value_type>(1);
@@ -175,7 +177,8 @@ private:
  * @return Flag instance
  */
 template <typename T, typename... Policies>
-constexpr counting_flag_t<T, Policies...> counting_flag(Policies... policies)
+[[nodiscard]] constexpr counting_flag_t<T, Policies...> counting_flag(
+    Policies... policies) noexcept
 {
     return counting_flag_t<T, std::decay_t<Policies>...>{
         std::move(policies)...};

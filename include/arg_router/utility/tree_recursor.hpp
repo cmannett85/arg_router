@@ -12,7 +12,7 @@ namespace detail
 {
 struct always_false {
     template <typename...>
-    constexpr static bool fn()
+    [[nodiscard]] constexpr static bool fn() noexcept
     {
         return false;
     }

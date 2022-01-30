@@ -87,7 +87,7 @@ public:
     {
         template <template <typename...> typename PolicyChecker>
         struct checker {
-            static constexpr bool value = []() {
+            constexpr static bool value = []() {
                 // This is shonky but I can't think of an easy arity test for a
                 // class template
                 if constexpr (std::tuple_size_v<policies_type> == 0) {
@@ -105,7 +105,7 @@ public:
         };
 
     public:
-        static constexpr bool value =
+        constexpr static bool value =
             boost::mp11::mp_any_of<std::tuple<checker<PolicyCheckers>...>,
                                    boost::mp11::mp_to_bool>::value;
     };
@@ -120,14 +120,17 @@ public:
     template <typename ValueType,
               template <typename...>
               typename... PolicyCheckers>
-    static constexpr bool any_phases_v =
+    constexpr static bool any_phases_v =
         any_phases<ValueType, PolicyCheckers...>::value;
 
     /** Returns a reference to the children.
      *
      * @return Children
      */
-    const children_type& children() const { return children_; }
+    [[nodiscard]] const children_type& children() const noexcept
+    {
+        return children_;
+    }
 
     /** Finds the child matching token (if present) and calls @a visitor with a
      * reference to it.
@@ -149,9 +152,9 @@ public:
      * @return True if a child was found
      */
     template <typename Fn, typename ResultsTuple = std::tuple<>>
-    bool find(const parsing::token_type& token,
-              const Fn& visitor,
-              const ResultsTuple& results_tuple = {}) const
+    constexpr bool find(const parsing::token_type& token,
+                        const Fn& visitor,
+                        const ResultsTuple& results_tuple = {}) const
     {
         auto result = false;
         utility::tuple_iterator(
@@ -212,7 +215,7 @@ protected:
         constexpr static auto num_policies = std::tuple_size_v<policies_type>;
 
     public:
-        constexpr static auto label_generator()
+        [[nodiscard]] constexpr static auto label_generator() noexcept
         {
             constexpr auto long_name_index =
                 boost::mp11::mp_find_if<policies_type,
@@ -259,7 +262,7 @@ protected:
             }
         }
 
-        constexpr static auto description_generator()
+        [[nodiscard]] constexpr static auto description_generator() noexcept
         {
             constexpr auto description_index =
                 boost::mp11::mp_find_if<policies_type,
@@ -274,7 +277,7 @@ protected:
             }
         }
 
-        constexpr static auto count_suffix()
+        [[nodiscard]] constexpr static auto count_suffix() noexcept
         {
             constexpr bool fixed_count = []() {
                 if constexpr (traits::has_minimum_count_method_v<tree_node> &&
@@ -364,7 +367,8 @@ protected:
      * @exception parse_exception Thrown if parsing failed
      */
     template <typename ValueType, typename... Parents>
-    auto parse(std::string_view token, const Parents&... parents) const
+    [[nodiscard]] auto parse(std::string_view token,
+                             const Parents&... parents) const
     {
         using finder_type =
             phase_finder<policy::has_parse_phase_method, ValueType>;
@@ -390,7 +394,7 @@ protected:
      *
      * @param params Policy and child instances
      */
-    explicit tree_node(Params... params) :
+    constexpr explicit tree_node(Params... params) noexcept :
         traits::unpack_and_derive<policies_type>{
             common_filter<policy::is_policy>(params...)},
         children_(common_filter_tuple<is_tree_node>(
@@ -407,7 +411,8 @@ private:
         "Only zero or one policies supporting a routing phase is supported");
 
     template <template <typename...> typename Fn, typename... ExpandedParams>
-    static auto common_filter(ExpandedParams&... expanded_params)
+    [[nodiscard]] constexpr static auto common_filter(
+        ExpandedParams&... expanded_params) noexcept
     {
         // Send references to the filter method so we don't copy anything
         // unnecessarily
@@ -434,7 +439,8 @@ private:
     }
 
     template <template <typename...> typename Fn, typename Tuple>
-    static auto common_filter_tuple(Tuple&& tuple_params)
+    [[nodiscard]] constexpr static auto common_filter_tuple(
+        Tuple&& tuple_params) noexcept
     {
         // std::apply does not like templates, so we have to wrap in a lambda
         return std::apply(
