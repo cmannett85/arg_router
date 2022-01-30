@@ -4,8 +4,6 @@
 #include "arg_router/parsing.hpp"
 #include "arg_router/policy/policy.hpp"
 
-#include <boost/core/ignore_unused.hpp>
-
 #include <limits>
 
 namespace arg_router
@@ -58,14 +56,13 @@ protected:
      */
     template <typename... Parents>
     void pre_parse_phase(parsing::token_list& tokens,
-                         const Parents&... parents) const
+                         [[maybe_unused]] const Parents&... parents) const
     {
         static_assert(sizeof...(Parents) >= 1,
                       "Alias requires at least 1 parent");
 
         using node_type = boost::mp11::mp_first<std::tuple<Parents...>>;
 
-        boost::ignore_unused(parents...);
         if (tokens.pending_view().size() < minimum_count()) {
             throw parse_exception{"Minimum count not reached",
                                   parsing::node_token_type<node_type>()};

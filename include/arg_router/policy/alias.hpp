@@ -9,7 +9,6 @@
 #include "arg_router/utility/tree_recursor.hpp"
 #include "arg_router/utility/tuple_iterator.hpp"
 
-#include <boost/core/ignore_unused.hpp>
 #include <boost/mp11/bind.hpp>
 
 namespace arg_router
@@ -34,9 +33,8 @@ public:
      *
      * @param policies Policy instances
      */
-    constexpr explicit alias_t(AliasedPolicies&&... policies)
+    constexpr explicit alias_t([[maybe_unused]] AliasedPolicies&&... policies)
     {
-        boost::ignore_unused(policies...);
     }
 
 protected:
@@ -63,10 +61,8 @@ protected:
      */
     template <typename... Parents>
     void pre_parse_phase(parsing::token_list& tokens,
-                         const Parents&... parents) const
+                         [[maybe_unused]] const Parents&... parents) const
     {
-        boost::ignore_unused(parents...);
-
         using node_type = boost::mp11::mp_first<std::tuple<Parents...>>;
         static_assert(
             !node_type::template any_phases_v<

@@ -4,8 +4,6 @@
 #include "arg_router/traits.hpp"
 #include "arg_router/utility/string_view_ops.hpp"
 
-#include <boost/core/ignore_unused.hpp>
-
 #include <charconv>
 
 namespace arg_router
@@ -23,9 +21,9 @@ namespace arg_router
  */
 template <typename T, typename Enable = void>
 struct parser {
-    [[noreturn]] constexpr static T parse(std::string_view token)
+    [[noreturn]] constexpr static T parse(
+        [[maybe_unused]] std::string_view token)
     {
-        boost::ignore_unused(token);
         static_assert(
             traits::always_false_v<T>,
             "No parse function for this type, use a custom_parser policy "
