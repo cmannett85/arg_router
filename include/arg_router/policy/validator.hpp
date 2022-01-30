@@ -4,6 +4,7 @@
 #include "arg_router/counting_flag.hpp"
 #include "arg_router/dependency/one_of.hpp"
 #include "arg_router/flag.hpp"
+#include "arg_router/help.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/custom_parser.hpp"
@@ -660,16 +661,17 @@ inline constexpr auto default_validator = validator<
         positional_args_must_have_fixed_count_if_not_at_end<positional_arg_t>,
         parent_types<parent_index_pair_type<0, root_t>,
                      parent_index_pair_type<0, mode_t>>>,
+    // Help
+    rule_q<common_rules::despecialised_any_of_rule<help_t>,
+           must_not_have_policies<policy::multi_stage_value,
+                                  policy::required_t,
+                                  policy::validation::validator>,
+           parent_types<parent_index_pair_type<0, root_t>>>,
     // Root
     rule_q<common_rules::despecialised_any_of_rule<root_t>,
            must_have_policies<policy::validation::validator>,
-           must_not_have_policies<policy::description_t,
-                                  policy::display_name_t,
-                                  policy::long_name_t,
-                                  policy::multi_stage_value,
-                                  policy::no_result_value,
-                                  policy::none_name_t,
-                                  policy::short_name_t>,
+           must_not_have_policies<policy::multi_stage_value,
+                                  policy::no_result_value>,
            child_must_not_have_policy<policy::required_t>,
            child_must_not_have_policy<policy::alias_t>,
            single_anonymous_mode<arg_router::mode_t>>>{};

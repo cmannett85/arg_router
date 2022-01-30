@@ -36,8 +36,7 @@ private:
 
 /** Constant variable helper.
  *
- * @tparam S Callable that returns a string type implicitly convertible to
- * std::string_view
+ * @tparam S compile_time_string
  */
 template <typename S>
 constexpr auto display_name = display_name_t<S>{};

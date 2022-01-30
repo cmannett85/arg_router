@@ -1,5 +1,6 @@
 #pragma once
 
+#include "arg_router/math.hpp"
 #include "arg_router/traits.hpp"
 
 #include <boost/mp11/algorithm.hpp>
@@ -13,6 +14,9 @@ namespace arg_router
 {
 namespace utility
 {
+template <char... Cs>
+class compile_time_string;
+
 /** Compile time string.
  *
  * @tparam Cs Pack of chars
@@ -24,15 +28,157 @@ public:
     /** Array of characters as a type. */
     using array_type = std::tuple<traits::integral_constant<Cs>...>;
 
+    /** Number of characters in string.
+     *
+     * @return String size
+     */
+    constexpr static std::size_t size() { return sizeof...(Cs); }
+
+    /** True if string is empty.
+     *
+     * @return True if number of characters is zero
+     */
+    constexpr static bool empty() { return size() == 0; }
+
     /** Returns the string data as a view.
      *
      * @return View of the string data
      */
     constexpr static std::string_view get() { return {sv_.data(), sv_.size()}; }
 
+    /** Appends @a T to this string type.
+     *
+     * @tparam T String to append
+     */
+    template <typename T>
+    struct append;
+
+    template <char... OtherCs>
+    struct append<compile_time_string<OtherCs...>> {
+        using type = compile_time_string<Cs..., OtherCs...>;
+    };
+
+    /** Helper alias for append.
+     *
+     * @tparam T String to append
+     */
+    template <typename T>
+    using append_t = typename append<T>::type;
+
+    /** Concatentation operator.
+     *
+     * @tparam OtherCs Character pack from other instance
+     * @param other Instance to concatenate (only used for CTAD)
+     * @return New instance
+     */
+    template <char... OtherCs>
+    constexpr auto operator+(
+        [[maybe_unused]] const compile_time_string<OtherCs...>& other) const
+    {
+        return append_t<compile_time_string<OtherCs...>>{};
+    }
+
 private:
     constexpr static auto sv_ = std::array<char, sizeof...(Cs)>{Cs...};
 };
+
+/** Provides a compile time string that is a repeating sequence of @a C @a N
+ * characters long.
+ *
+ * @tparam N Number of times to repeat @a C
+ * @tparam C Character to repeat
+ */
+template <std::size_t N, char C>
+class create_sequence_cts
+{
+    using seq =
+        boost::mp11::mp_repeat_c<std::tuple<traits::integral_constant<C>>, N>;
+
+    template <typename T>
+    struct converter {
+    };
+
+    template <typename... Cs>
+    struct converter<std::tuple<Cs...>> {
+        using type = compile_time_string<Cs::value...>;
+    };
+
+public:
+    using type = typename converter<seq>::type;
+};
+
+/** Helper alias for create_sequence_cts.
+ *
+ * @tparam N Number of times to repeat @a C
+ * @tparam C Character to repeat
+ */
+template <std::size_t N, char C>
+using create_sequence_cts_t = typename create_sequence_cts<N, C>::type;
+
+/** Converts the char integral constant array-like type @a T to a compile time
+ * string.
+ *
+ * @tparam T Char integral constant array-like type
+ */
+template <typename T>
+struct convert_to_cts;
+
+template <template <typename...> typename Array, typename... Cs>
+struct convert_to_cts<Array<Cs...>> {
+    using type = utility::compile_time_string<Cs::value...>;
+};
+
+/** Helper alias
+ *  
+ * @tparam T Char integral constant array-like type
+ */
+template <typename T>
+using convert_to_cts_t = typename convert_to_cts<T>::type;
+
+/** Converts the integral @a Value to a compile time string.
+ *
+ * @tparam Value Integral to convert
+ */
+template <auto Value>
+struct convert_integral_to_cts {
+private:
+    static_assert(std::is_integral_v<decltype(Value)>,
+                  "Value must be an integral");
+
+    template <typename Str, auto NewValue>
+    constexpr static auto build()
+    {
+        constexpr auto num_digits = math::num_digits(NewValue);
+        constexpr auto power10 = math::pow<10>(num_digits - 1);
+        constexpr auto digit = NewValue / power10;
+        constexpr auto next_value = NewValue % power10;
+
+        using digit_str =
+            typename Str::template append_t<compile_time_string<'0' + digit>>;
+
+        if constexpr (num_digits != 1) {
+            return build<digit_str, next_value>();
+        } else {
+            return digit_str{};
+        }
+    }
+
+    using digit_str =
+        decltype(build<compile_time_string<>, math::abs(Value)>());
+
+public:
+    using type = std::conditional_t<
+        (Value < 0),
+        compile_time_string<'-'>::template append_t<digit_str>,
+        digit_str>;
+};
+
+/** Helper alias for convert_integral_to_cts.
+ * 
+ * @tparam Value Integral to convert
+ */
+template <auto Value>
+using convert_integral_to_cts_t = typename convert_integral_to_cts<Value>::type;
 
 namespace cts_detail
 {

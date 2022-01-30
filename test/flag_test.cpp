@@ -1,6 +1,7 @@
 ﻿#include "arg_router/flag.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/alias.hpp"
+#include "arg_router/policy/description.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/router.hpp"
 #include "arg_router/policy/short_name.hpp"
@@ -113,6 +114,49 @@ BOOST_AUTO_TEST_CASE(parse_test)
                        parsing::token_list{},
                        true,
                        true}});
+}
+
+BOOST_AUTO_TEST_CASE(help_test)
+{
+    auto f = [](const auto& node,
+                auto expected_label,
+                auto expected_description) {
+        using node_type = std::decay_t<decltype(node)>;
+
+        using help_data = typename node_type::template help_data_type<false>;
+        using flattened_help_data =
+            typename node_type::template help_data_type<true>;
+
+        static_assert(std::is_same_v<typename help_data::label,
+                                     typename flattened_help_data::label>);
+        static_assert(
+            std::is_same_v<typename help_data::description,
+                           typename flattened_help_data::description>);
+        static_assert(std::tuple_size_v<typename help_data::children> == 0);
+        static_assert(
+            std::tuple_size_v<typename flattened_help_data::children> == 0);
+
+        BOOST_CHECK_EQUAL(help_data::label::get(), expected_label);
+        BOOST_CHECK_EQUAL(help_data::description::get(), expected_description);
+    };
+
+    test::data_set(f,
+                   std::tuple{
+                       std::tuple{flag(policy::short_name<'h'>,
+                                       policy::long_name<S_("hello")>,
+                                       policy::description<S_("A flag!")>),
+                                  "--hello,-h",
+                                  "A flag!"},
+                       std::tuple{flag(policy::long_name<S_("hello")>,
+                                       policy::description<S_("A flag!")>),
+                                  "--hello",
+                                  "A flag!"},
+                       std::tuple{flag(policy::short_name<'h'>,
+                                       policy::description<S_("A flag!")>),
+                                  "-h",
+                                  "A flag!"},
+                       std::tuple{flag(policy::short_name<'h'>), "-h", ""},
+                   });
 }
 
 BOOST_AUTO_TEST_SUITE(death_suite)

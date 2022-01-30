@@ -37,6 +37,11 @@ public:
     /** Argument value type. */
     using value_type = T;
 
+    /** Help data type. */
+    template <bool Flatten>
+    using help_data_type =
+        typename parent_type::template default_leaf_help_data_type<Flatten>;
+
     /** Constructor.
      *
      * @param policies Policy instances

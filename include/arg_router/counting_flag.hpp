@@ -62,6 +62,27 @@ public:
     /** Flag value type. */
     using value_type = T;
 
+    /** Help data type. */
+    template <bool Flatten>
+    class help_data_type
+    {
+        constexpr static auto label_generator()
+        {
+            return typename parent_type::template default_leaf_help_data_type<
+                       Flatten>::label{} +
+                   S_(" "){} +
+                   parent_type::template default_leaf_help_data_type<
+                       Flatten>::count_suffix();
+        }
+
+    public:
+        using label = std::decay_t<decltype(label_generator())>;
+        using description =
+            typename parent_type::template default_leaf_help_data_type<
+                Flatten>::description;
+        using children = std::tuple<>;
+    };
+
     /** Constructor.
      *
      * @param policies Policy instances

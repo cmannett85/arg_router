@@ -1,3 +1,4 @@
+#include "arg_router/help.hpp"
 #include "arg_router/policy/custom_parser.hpp"
 #include "arg_router/policy/description.hpp"
 #include "arg_router/policy/min_max_value.hpp"
@@ -1434,6 +1435,79 @@ BOOST_AUTO_TEST_CASE(counting_flag_test)
                        std::tuple{false, std::size_t{0}},
                        "Dependent argument missing: -a"},
         });
+}
+
+BOOST_AUTO_TEST_CASE(help_test)
+{
+    auto f = [](const auto& root, const auto& expected_result) {
+        const auto result = root.help();
+        BOOST_CHECK_EQUAL(result, expected_result);
+    };
+
+    test::data_set(
+        f,
+        std::tuple{
+            std::tuple{root(flag(policy::long_name<S_("flag1")>,
+                                 policy::short_name<'a'>,
+                                 policy::description<S_("Flag1 description")>,
+                                 policy::router{[](bool) {}}),
+                            flag(policy::long_name<S_("flag2")>,
+                                 policy::router{[](bool) {}}),
+                            flag(policy::short_name<'b'>,
+                                 policy::description<S_("b description")>,
+                                 policy::router{[](bool) {}}),
+                            policy::validation::default_validator),
+                       ""s},
+            std::tuple{
+                root(flag(policy::long_name<S_("flag1")>,
+                          policy::short_name<'a'>,
+                          policy::description<S_("Flag1 description")>,
+                          policy::router{[](bool) {}}),
+                     flag(policy::long_name<S_("flag2")>,
+                          policy::router{[](bool) {}}),
+                     flag(policy::short_name<'b'>,
+                          policy::description<S_("b description")>,
+                          policy::router{[](bool) {}}),
+                     help(policy::long_name<S_("help")>,
+                          policy::short_name<'h'>,
+                          policy::description<S_("Help output")>,
+                          policy::program_name<S_("foo")>,
+                          policy::program_version<S_("v3.14")>,
+                          policy::program_intro<S_("My foo is good for you")>),
+                     policy::validation::default_validator),
+                R"(foo v3.14
+
+My foo is good for you
+
+    --flag1,-a    Flag1 description
+    --flag2
+    -b            b description
+    --help,-h     Help output
+)"s},
+            std::tuple{
+                root(help(policy::long_name<S_("help")>,
+                          policy::short_name<'h'>,
+                          policy::description<S_("Help output")>,
+                          policy::program_name<S_("foo")>,
+                          policy::program_version<S_("v3.14")>,
+                          policy::program_intro<S_("My foo is good for you")>),
+                     mode(flag(policy::long_name<S_("flag1")>,
+                               policy::short_name<'a'>,
+                               policy::description<S_("Flag1 description")>),
+                          flag(policy::long_name<S_("flag2")>),
+                          flag(policy::short_name<'b'>,
+                               policy::description<S_("b description")>),
+                          policy::router{[](bool, bool, bool) {}}),
+                     policy::validation::default_validator),
+                R"(foo v3.14
+
+My foo is good for you
+
+    --help,-h         Help output
+        --flag1,-a    Flag1 description
+        --flag2
+        -b            b description
+)"s}});
 }
 
 BOOST_AUTO_TEST_SUITE(death_suite)

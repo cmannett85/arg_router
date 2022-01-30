@@ -17,6 +17,32 @@
 using namespace arg_router;
 using namespace std::string_literals;
 
+namespace
+{
+template <typename ChildA, typename ChildB>
+constexpr void check_tree()
+{
+    static_assert(
+        std::is_same_v<typename ChildA::label, typename ChildB::label>);
+    static_assert(std::is_same_v<typename ChildA::description,
+                                 typename ChildB::description>);
+    static_assert(std::tuple_size_v<typename ChildA::children> ==
+                  std::tuple_size_v<typename ChildB::children>);
+
+    utility::tuple_type_iterator<typename ChildA::children>([](auto i) {
+        check_tree<std::tuple_element_t<i, typename ChildA::children>,
+                   std::tuple_element_t<i, typename ChildB::children>>();
+    });
+}
+
+template <typename Label, typename Description, typename Children>
+struct test_help_data {
+    using label = Label;
+    using description = Description;
+    using children = Children;
+};
+}  // namespace
+
 BOOST_AUTO_TEST_SUITE(mode_suite)
 
 BOOST_AUTO_TEST_CASE(is_tree_node_test)
@@ -568,6 +594,142 @@ BOOST_AUTO_TEST_CASE(no_missing_phase_test)
         BOOST_CHECK_EQUAL(result, std::vector<int>{});
         BOOST_CHECK(tokens.pending_view().empty());
     }
+}
+
+BOOST_AUTO_TEST_CASE(help_test)
+{
+    auto f = [](const auto& node, auto flatten, auto expected) {
+        using node_type = std::decay_t<decltype(node)>;
+        using expected_type = std::decay_t<decltype(expected)>;
+
+        using help_data = typename node_type::template help_data_type<flatten>;
+
+        check_tree<help_data, expected_type>();
+    };
+
+    test::data_set(
+        f,
+        std::tuple{
+            std::tuple{
+                mode(flag(policy::long_name<S_("hello")>,
+                          policy::short_name<'h'>,
+                          policy::description<S_("Hello desc")>),
+                     policy::router([](bool) {})),
+                std::true_type{},
+                test_help_data<S_(""),
+                               S_(""),
+                               std::tuple<test_help_data<S_("--hello,-h"),
+                                                         S_("Hello desc"),
+                                                         std::tuple<>>>>{}},
+            std::tuple{
+                mode(flag(policy::long_name<S_("hello")>,
+                          policy::short_name<'h'>,
+                          policy::description<S_("Hello desc")>),
+                     policy::router([](bool) {})),
+                std::false_type{},
+                test_help_data<S_(""),
+                               S_(""),
+                               std::tuple<test_help_data<S_("--hello,-h"),
+                                                         S_("Hello desc"),
+                                                         std::tuple<>>>>{}},
+            std::tuple{
+                mode(flag(policy::long_name<S_("hello")>,
+                          policy::short_name<'h'>,
+                          policy::description<S_("Hello desc")>),
+                     flag(policy::long_name<S_("flag1")>,
+                          policy::short_name<'a'>,
+                          policy::description<S_("Flag1 desc")>),
+                     policy::router([](bool, bool) {})),
+                std::true_type{},
+                test_help_data<S_(""),
+                               S_(""),
+                               std::tuple<test_help_data<S_("--hello,-h"),
+                                                         S_("Hello desc"),
+                                                         std::tuple<>>,
+                                          test_help_data<S_("--flag1,-a"),
+                                                         S_("Flag1 desc"),
+                                                         std::tuple<>>>>{}},
+            std::tuple{
+                mode(policy::none_name<S_("mode1")>,
+                     policy::description<S_("Mode desc")>,
+                     flag(policy::long_name<S_("hello")>,
+                          policy::short_name<'h'>,
+                          policy::description<S_("Hello desc")>),
+                     flag(policy::long_name<S_("flag1")>,
+                          policy::short_name<'a'>,
+                          policy::description<S_("Flag1 desc")>),
+                     policy::router([](bool, bool) {})),
+                std::false_type{},
+                test_help_data<S_("mode1"), S_("Mode desc"), std::tuple<>>{}},
+            std::tuple{
+                mode(policy::none_name<S_("mode1")>,
+                     policy::description<S_("Mode desc")>,
+                     flag(policy::long_name<S_("hello")>,
+                          policy::short_name<'h'>,
+                          policy::description<S_("Hello desc")>),
+                     flag(policy::long_name<S_("flag1")>,
+                          policy::short_name<'a'>,
+                          policy::description<S_("Flag1 desc")>),
+                     policy::router([](bool, bool) {})),
+                std::true_type{},
+                test_help_data<S_("mode1"),
+                               S_("Mode desc"),
+                               std::tuple<test_help_data<S_("--hello,-h"),
+                                                         S_("Hello desc"),
+                                                         std::tuple<>>,
+                                          test_help_data<S_("--flag1,-a"),
+                                                         S_("Flag1 desc"),
+                                                         std::tuple<>>>>{}},
+            std::tuple{
+                mode(policy::none_name<S_("mode1")>,
+                     policy::description<S_("Mode1 desc")>,
+                     flag(policy::long_name<S_("hello")>,
+                          policy::short_name<'h'>,
+                          policy::description<S_("Hello desc")>),
+                     mode(policy::none_name<S_("mode2")>,
+                          policy::description<S_("Mode2 desc")>,
+                          flag(policy::long_name<S_("goodbye")>,
+                               policy::short_name<'g'>,
+                               policy::description<S_("Goodbye desc")>),
+                          flag(policy::long_name<S_("flag2")>,
+                               policy::short_name<'b'>,
+                               policy::description<S_("Flag2 desc")>)),
+                     policy::router([](bool) {})),
+                std::true_type{},
+                test_help_data<
+                    S_("mode1"),
+                    S_("Mode1 desc"),
+                    std::tuple<
+                        test_help_data<S_("--hello,-h"),
+                                       S_("Hello desc"),
+                                       std::tuple<>>,
+                        test_help_data<
+                            S_("mode2"),
+                            S_("Mode2 desc"),
+                            std::tuple<test_help_data<S_("--goodbye,-g"),
+                                                      S_("Goodbye desc"),
+                                                      std::tuple<>>,
+                                       test_help_data<S_("--flag2,-b"),
+                                                      S_("Flag2 desc"),
+                                                      std::tuple<>>>>>>{}},
+            std::tuple{
+                mode(policy::none_name<S_("mode1")>,
+                     policy::description<S_("Mode1 desc")>,
+                     flag(policy::long_name<S_("hello")>,
+                          policy::short_name<'h'>,
+                          policy::description<S_("Hello desc")>),
+                     mode(policy::none_name<S_("mode2")>,
+                          policy::description<S_("Mode2 desc")>,
+                          flag(policy::long_name<S_("goodbye")>,
+                               policy::short_name<'g'>,
+                               policy::description<S_("Goodbye desc")>),
+                          flag(policy::long_name<S_("flag2")>,
+                               policy::short_name<'b'>,
+                               policy::description<S_("Flag2 desc")>)),
+                     policy::router([](bool) {})),
+                std::false_type{},
+                test_help_data<S_("mode1"), S_("Mode1 desc"), std::tuple<>>{}},
+        });
 }
 
 BOOST_AUTO_TEST_SUITE(death_suite)

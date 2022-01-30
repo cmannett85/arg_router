@@ -11,13 +11,20 @@ namespace arg_router
 namespace config
 {
 /** Long form argument prefix. */
-constexpr static auto long_prefix = std::string_view{"--"};
+constexpr auto long_prefix = std::string_view{"--"};
 
 /** Short form argument prefix. */
-constexpr static auto short_prefix = std::string_view{"-"};
+constexpr auto short_prefix = std::string_view{"-"};
 
 static_assert(long_prefix.size() > short_prefix.size(),
               "Long prefix must be longer than short prefix");
+
+/** Newline character sequence (platform dependent). */
+#ifdef _WIN32
+constexpr auto lf = std::string_view{"\r\n"};
+#else
+constexpr auto lf = std::string_view{"\n"};
+#endif
 
 /** Returns the L1 cache size.
  *

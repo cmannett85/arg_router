@@ -4,6 +4,7 @@
 #include "arg_router/policy/no_result_value.hpp"
 #include "arg_router/tree_node.hpp"
 
+#include <sstream>
 #include <utility>
 #include <variant>
 
@@ -32,6 +33,22 @@ public:
     using typename parent_type::children_type;
 
 private:
+    static_assert(!parent_type::template any_phases_v<
+                      bool,  // Type doesn't matter, as long as it isn't void
+                      policy::has_pre_parse_phase_method,
+                      policy::has_parse_phase_method,
+                      policy::has_validation_phase_method,
+                      policy::has_routing_phase_method,
+                      policy::has_missing_phase_method>,
+                  "Root does not support policies with any parsing phases");
+
+    static_assert(!traits::has_long_name_method_v<parent_type> &&
+                      !traits::has_short_name_method_v<parent_type> &&
+                      !traits::has_display_name_method_v<parent_type> &&
+                      !traits::has_none_name_method_v<parent_type> &&
+                      !traits::has_description_method_v<parent_type>,
+                  "Root cannot have name or description policies");
+
     constexpr static auto validator_index =
         algorithm::find_specialisation_v<policy::validation::validator,
                                          policies_type>;
@@ -56,12 +73,28 @@ private:
         boost::mp11::mp_all_of<children_type, router_checker>::value,
         "All root children must have routers, unless they have no value");
 
+    // Find the help node
+    constexpr static auto help_index =
+        boost::mp11::mp_find_if<children_type,
+                                traits::has_generate_help_method>::value;
+
 public:
     /** Validator type. */
     // Initially I wanted the default_validator to be used if one isn't user
     // specified, but you get into a circular dependency as the validator needs
     // the root first
     using validator_type = std::tuple_element_t<validator_index, policies_type>;
+
+    /** Help data type. */
+    template <bool Flatten>
+    class help_data_type
+    {
+    public:
+        using label = S_("");
+        using description = S_("");
+        using children = typename tree_node<Params...>::template  //
+            default_leaf_help_data_type<Flatten>::all_children_help;
+    };
 
     /** Constructor.
      *
@@ -108,15 +141,29 @@ public:
         }
     }
 
-private:
-    static_assert(!parent_type::template any_phases_v<
-                      bool,  // Type doesn't matter, as long as it isn't void
-                      policy::has_pre_parse_phase_method,
-                      policy::has_parse_phase_method,
-                      policy::has_validation_phase_method,
-                      policy::has_routing_phase_method,
-                      policy::has_missing_phase_method>,
-                  "Root does not support policies with any parsing phases");
+    /** Generates a root-level help string and writes it into @a stream.
+     *
+     * @param stream Output stream to write into
+     */
+    void help(std::ostream& stream) const
+    {
+        if constexpr (help_index < std::tuple_size_v<children_type>) {
+            std::get<help_index>(this->children())
+                .template generate_help<root_t>(stream);
+        }
+    }
+
+    /** Overload that writes into std::string and returns it.
+     *
+     * @return String holding the help output
+     */
+    std::string help() const
+    {
+        auto stream = std::stringstream{};
+        help(stream);
+
+        return stream.str();
+    }
 };
 
 /** Constructs a root_t with the given policies and children.

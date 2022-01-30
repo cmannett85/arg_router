@@ -38,7 +38,9 @@ set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/exception.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/flag.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/global_parser.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/help.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/list.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/math.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/mode.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/parsing.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/alias.hpp
@@ -47,6 +49,7 @@ set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/dependent.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/description.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/display_name.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/flatten_help.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/long_name.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/none_name.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/min_max_count.hpp
@@ -54,6 +57,9 @@ set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/multi_stage_value.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/no_result_value.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/policy.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/program_intro.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/program_name.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/program_version.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/required.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/router.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/short_name.hpp

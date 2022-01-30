@@ -9,7 +9,7 @@
 - Define logical connections between arguments
 - Detects invalid or ambiguous parse trees at compile-time
 - Generates its help output, which you can modify at runtime using a `Callable`
-- Easy custom parsers by  using `Callable`s inline for specific arguments, or you can implement a specialisation to cover all instances of that type
+- Easy custom parsers by using `Callable`s inline for specific arguments, or you can implement a specialisation to cover all instances of that type
 
 ## Basics
 Let's start simple, with this `cat`-like program:
@@ -21,12 +21,13 @@ ar::root(
     ar::help(
         arp::long_name<S_("help")>,
         arp::short_name<'h'>,
-        arp::description<S_("Display this help and exit")>,
-        arp::router{[](std::string_view arg_docs) { ... }}),
+        arp::program_name<S_("my-cat")>,
+        arp::program_version<S_("v3.14")>,
+        arp::description<S_("Display this help and exit")>
     ar::flag(
         arp::long_name<S_("version")>,
         arp::description<S_("Output version information and exit")>,
-        arp::router{[]() { ... }}),
+        arp::router{[](bool v) { ... }}),
     ar::mode(
         ar::flag(
             arp::long_name<S_("show-all")>,
@@ -59,7 +60,7 @@ Let's start from the top, as the name suggests `root` is the root of the parse t
 
 The `arp::validation::default_validator` instance provides the default validator that the root uses to validate the parse tree at compile-time.  It is a required policy of the `root`.  Unless you have implemented your own policy or tree node you will never need to specify anything else.
 
-The `help` node is used by the `root` to generate the argument documentation for the help output, rather than print directly to the console, a `router` is attached that accepts a string so the user can add other documentation to it (e.g. version info, examples, etc.).
+The `help` node is used by the `root` to generate the argument documentation for the help output, by default it just prints directly to the console and then exits, but a `router` can be attached that accepts the formatted output and choose to do something else with it.  The optional `program_name` and `program_version` policies add a header to the help output.
 
 Now let's introduce some 'policies'.  Policies define common behaviours across node types, a basic one is `long_name` which provides long form argument definition.  The standard unix double hyphen prefix for long names is added automatically when not used in a `mode`.  Having the name defined at compile-time means we detect duplicate names and fail the build - one less unit test you have to worry about.  `short_name` is the single character short form name, a single hyphen is prefixed automatically.  `arg_router` supports short name collapsing for flags, so if you have defined flags like `-a -b -c` then `-abc` will be accepted or `-bca`, etc.
 
@@ -242,8 +243,7 @@ ar::root(
     ar::help(
         arp::long_name<S_("help")>,
         arp::short_name<'h'>,
-        arp::description<S_("Display this help and exit")>,
-        arp::router{[](std::string_view arg_docs) { ... }),
+        arp::description<S_("Display this help and exit")>),
     ar::mode(
         ar::flag(
             arp::long_name<S_("force")>,
@@ -252,12 +252,13 @@ ar::root(
         ar::positional_arg<std::filesystem::path>(
             arp::display_name<S_("DST")>,
             arp::description<S_("Destination directory")>,
-            apr::required,
+            arp::required,
             arp::fixed_count<1>),
         ar::positional_arg<std::vector<std::filesystem::path>>(
             arp::display_name<S_("SRC")>,
             arp::description<S_("Source file paths")>,
-            apr::required),
+            arp::required,
+            arp::min_count<1>),
         arp::router{[](bool force,
                        std::filesystem::path dest,
                        std::vector<std::filesystem::path> srcs) { ... }}))
@@ -269,7 +270,7 @@ Following the destination path are the source paths, we need at least one so we 
 
 Only the last `positional_arg` may be of variable length.  A runtime error will only occur if there are no unbounded variable length `postional_arg`s and there are more arguments than the maximum or less than the minimum.
 
-It should be noted that setting a non-zero minimum count (`min_count`, `fixed_count`, or `min_max_count`) does _not_ imply a requirement, the minimum count check only applies when there is at least one argument for the node to process.  So as with an `arg`, you should use a `required` policy to explicitly state that at least one argument needs to be present, or a `default_value` policy - otherwise a default initialised value will be used instead.
+It should be noted that setting a non-zero minimum count (`min_count`, `fixed_count`, or `min_max_count`) does _not_ imply a requirement, the minimum count check only applies when there is at least one argument for the node to process.  So as with an `arg`, you should use a `required` policy to explicitly state that at least one argument needs to be present, or a `default_value` policy - otherwise a default initialised value will be used instead.  In the `SRC` argument above just marking it as `required` is sufficient for count behaviour as we only require a minimum count of one, however explicitly stating that improves the help output.
 
 ## Modes
 As noted in [Basics](#basics), `mode`s allow you to group command line components under an initial token on the command line.  A common example of this developers will be aware of is `git`, for example in our parlance `git clean -ffxd`; `clean` would be the mode and `ffxd` would be be the flags that are available under that mode.
@@ -285,8 +286,7 @@ ar::root(
     ar::help(
         arp::long_name<S_("help")>,
         arp::short_name<'h'>,
-        arp::description<S_("Display this help and exit")>,
-        arp::router{[](std::string_view arg_docs) { ... }}),
+        arp::description<S_("Display this help and exit")>),
     ar::mode(
         arp::none_name<S_("copy")>,
         arp::description<S_("Copy source files to destination")>,
@@ -302,7 +302,8 @@ ar::root(
         ar::positional_arg<std::vector<std::filesystem::path>>(
             arp::required,
             arp::display_name<S_("SRC")>,
-            arp::description<S_("Source file paths")>),
+            arp::description<S_("Source file paths")>,
+            arp::min_count<1>),
         arp::router{[](bool force,
                        std::filesystem::path dest,
                        std::vector<std::filesystem::path> srcs) { ... }}),
@@ -348,11 +349,6 @@ constexpr auto common_args = ar::list{
 
 ar::root(
     arp::validation::default_validator,
-    ar::help(
-        arp::long_name<S_("help")>,
-        arp::short_name<'h'>,
-        arp::description<S_("Display this help and exit")>,
-        arp::router{[](std::string_view arg_docs) { ... }}),
     ar::mode(
         arp::none_name<S_("copy")>,
         arp::description<S_("Copy source files to destination")>,
@@ -360,7 +356,8 @@ ar::root(
         ar::positional_arg<std::vector<std::filesystem::path>>(
             arp::required,
             arp::display_name<S_("SRC")>,
-            arp::description<S_("Source file paths")>),
+            arp::description<S_("Source file paths")>,
+            arp::min_count<1>),
         arp::router{[](bool force,
                        std::filesystem::path dest,
                        std::vector<std::filesystem::path> srcs) { ... }}),
@@ -378,6 +375,114 @@ ar::root(
                        std::filesystem::path src) { ... }}))
 ```
 `ar::list` is a simple `arg` and `flag` container that `mode` and `root` instances detect and add the contents to their child/policy lists - it's nicer than having an instance per type.  Also don't be afraid of the copies, the majority of `arg_router` types hold no data (the advantage of compile-time!) and those that do (e.g. `default_value`) generally have small types like primitives or `std::string_view`.
+
+## Help Output
+A shown in prior sections, a `help` node can be a child of the `root` (and only the `root`!), which acts like an `arg`, and generates the help output when requested by the user.  This node is optional, without it there is no help command line argument.  As the node is `arg`-like, it requires a long and/or short name.
+
+The output can be tweaked using policies:
+- `program_name`, this is printed first.  Without it neither this nor the version are printed
+- `program_version`, this followes the name
+- `program_intro`, used to give some more information on the program.  This is printed two new lines away from the name and version
+- `flatten_help`, by default only top-level arguments and/or those in an anonymous mode are displayed.  They are shown by requesting the mode's 'path' on the command line (e.g. `app --help mode sub-mode`).  The presence of this policy will make the entire requested subtree's (or root's, if no mode path was requested) help output be displayed
+
+Unlike string data everywhere else in the library, the formatted help output is created at runtime using `std::string` so we don't need to keep duplicate read-only text data.
+
+For example the slightly embellished tree from above:
+```cpp
+constexpr auto common_args = ar::list{
+    ar::flag(
+        arp::long_name<S_("force")>,
+        arp::short_name<'f'>,
+        arp::description<S_("Force overwrite existing files")>),
+    ar::positional_arg<std::filesystem::path>(
+        arp::required,
+        arp::display_name<S_("DST")>,
+        arp::description<S_("Destination directory")>,
+        arp::fixed_count<1>)};
+
+ar::root(
+    arp::validation::default_validator,
+    ar::help(
+        arp::long_name<S_("help")>,
+        arp::short_name<'h'>,
+        arp::description<S_("Display this help and exit")>,
+        arp::program_name<S_("simple")>,
+        arp::program_version<S_("v0.1")>,
+        arp::program_intro<S_("A simple file copier and mover.")>,
+        arp::flatten_help),
+    ar::mode(
+        arp::none_name<S_("copy")>,
+        arp::description<S_("Copy source files to destination")>,
+        common_args,
+        ar::positional_arg<std::vector<std::filesystem::path>>(
+            arp::required,
+            arp::display_name<S_("SRC")>,
+            arp::description<S_("Source file paths")>,
+            arp::min_count<1>),
+        arp::router{[](bool force,
+                       std::filesystem::path dest,
+                       std::vector<std::filesystem::path> srcs) { ... }}),
+    ar::mode(
+        arp::none_name<S_("move")>,
+        arp::description<S_("Move source file to destination")>,
+        common_args,
+        ar::positional_arg<std::filesystem::path>(
+            arp::required,
+            arp::display_name<S_("SRC")>,
+            arp::description<S_("Source file path")>,
+            arp::fixed_count<1>),
+        arp::router{[](bool force,
+                       std::filesystem::path dest,
+                       std::filesystem::path src) { ... }}))
+```
+Would output this to the terminal:
+```
+$ simple --help
+simple v0.1
+
+A simple file copier and mover.
+
+    --help,-h         Display this help and exit
+    copy              Copy source files to destination
+        --force,-f    Force overwrite existing files
+        <DST>[1]      Destination directory
+        <SRC>[1,N]    Source file paths
+    move              Move source file to destination
+        --force,-f    Force overwrite existing files
+        <DST>[1]      Destination directory
+        <SRC>[1]      Source file path
+```
+As you can see positional arguments are wrapped in angle brackets, and counts are displayed using interval notation.
+
+Removing the `flatten_help` policy would change it to this:
+```
+$ simple --help
+simple v0.1
+
+A simple file copier and mover.
+
+    --help,-h    Display this help and exit
+    copy         Copy source files to destination
+    move         Move source file to destination
+```
+In either case specifying the mode as an argument to the help argument displays just the sub-arguments of that mode:
+```
+$ simple --help copy
+simple v0.1
+
+A simple file copier and mover.
+
+copy              Copy source files to destination
+    --force,-f    Force overwrite existing files
+    <DST>[1]      Destination directory
+    <SRC>[1,N]    Source file paths
+```
+Currently the formatting is quite basic, more advanced formatting options are coming in future releases.
+
+### Programmatic Access
+By default when parsed `help` will output its contents to `std::cout` and then exit the application with `EXIT_SUCCESS`.  Obviously this won't always be desired, so a `router` policy can be attached that will pass a `std::ostringstream` to the user-provided `Callable`.  The stream will have already been populated with the help data shown above, but it can now be appended to or converted to string for use somewhere else.
+
+Often programmatic access is desired for the help output outside of the user requesting it, for example if a parse exception is thrown, gernally the exception error is printed to the terminal followed by the help output.  This is exposed by the `help()` or `help(std::ostringstream&)` methods of the root object.
 
 ## Error Handling
 Currently `arg_router` only supports exceptions as error handling.  If a parsing fails for some reason a `arg_router::parse_exception` is thrown carrying information on the failure.
