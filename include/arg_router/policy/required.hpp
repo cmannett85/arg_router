@@ -4,8 +4,6 @@
 #include "arg_router/parsing.hpp"
 #include "arg_router/policy/policy.hpp"
 
-#include <boost/core/ignore_unused.hpp>
-
 #include <optional>
 
 namespace arg_router
@@ -28,14 +26,14 @@ public:
      * @exception parse_exception Thrown if this method is called
      */
     template <typename ValueType, typename... Parents>
-    [[noreturn]] ValueType missing_phase(const Parents&... parents) const
+    [[noreturn]] ValueType missing_phase(
+        [[maybe_unused]] const Parents&... parents) const
     {
         static_assert(sizeof...(Parents) >= 1,
                       "Alias requires at least 1 parent");
 
         using node_type = boost::mp11::mp_first<std::tuple<Parents...>>;
 
-        boost::ignore_unused(parents...);
         throw parse_exception{"Missing required argument",
                               parsing::node_token_type<node_type>()};
     }

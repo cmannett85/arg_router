@@ -98,11 +98,10 @@ public:
      * @return Match result, always true
      */
     template <typename Fn>
-    bool match(const parsing::token_type& token,
+    bool match([[maybe_unused]] const parsing::token_type& token,
                const Fn& visitor,
                const std::optional<T>& result) const
     {
-        boost::ignore_unused(token);
         if constexpr (traits::has_push_back_method_v<T> &&
                       traits::has_maximum_count_method_v<parent_type>) {
             if (result &&

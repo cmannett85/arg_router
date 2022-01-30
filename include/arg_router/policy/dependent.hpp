@@ -5,8 +5,6 @@
 #include "arg_router/traits.hpp"
 #include "arg_router/utility/tree_recursor.hpp"
 
-#include <boost/core/ignore_unused.hpp>
-
 namespace arg_router
 {
 namespace policy
@@ -29,9 +27,9 @@ public:
      *
      * @param policies Policy instances
      */
-    constexpr explicit dependent_t(DependsPolicies&&... policies)
+    constexpr explicit dependent_t(
+        [[maybe_unused]] DependsPolicies&&... policies)
     {
-        boost::ignore_unused(policies...);
     }
 
 protected:
@@ -45,10 +43,8 @@ protected:
      */
     template <typename... Parents>
     void pre_parse_phase(parsing::token_list& tokens,
-                         const Parents&... parents) const
+                         [[maybe_unused]] const Parents&... parents) const
     {
-        boost::ignore_unused(parents...);
-
         // Find the owning mode
         using mode_type = typename nearest_mode<Parents...>::type;
         static_assert(!std::is_void_v<mode_type>, "Cannot find parent mode");

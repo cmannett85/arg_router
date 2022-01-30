@@ -3,8 +3,6 @@
 #include "arg_router/policy/policy.hpp"
 #include "arg_router/token_type.hpp"
 
-#include <boost/core/ignore_unused.hpp>
-
 #include <functional>
 #include <string_view>
 
@@ -48,9 +46,8 @@ protected:
      */
     template <typename ValueType, typename... Parents>
     ValueType parse_phase(std::string_view token,
-                          const Parents&... parents) const
+                          [[maybe_unused]] const Parents&... parents) const
     {
-        boost::ignore_unused(parents...);
         return parser_(token);
     }
 

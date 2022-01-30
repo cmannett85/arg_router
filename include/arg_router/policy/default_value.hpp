@@ -3,8 +3,6 @@
 #include "arg_router/config.hpp"
 #include "arg_router/policy/policy.hpp"
 
-#include <boost/core/ignore_unused.hpp>
-
 #include <optional>
 
 namespace arg_router
@@ -54,9 +52,9 @@ public:
      * @return Default value
      */
     template <typename ValueType, typename... Parents>
-    constexpr ValueType missing_phase(const Parents&... parents) const
+    constexpr ValueType missing_phase(
+        [[maybe_unused]] const Parents&... parents) const
     {
-        boost::ignore_unused(parents...);
         return value_;
     }
 

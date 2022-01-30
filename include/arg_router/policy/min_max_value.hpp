@@ -5,8 +5,6 @@
 #include "arg_router/parsing.hpp"
 #include "arg_router/policy/policy.hpp"
 
-#include <boost/core/ignore_unused.hpp>
-
 #include <limits>
 
 namespace arg_router
@@ -89,14 +87,13 @@ public:
      */
     template <typename InputValueType, typename... Parents>
     void validation_phase(const InputValueType& value,
-                          const Parents&... parents) const
+                          [[maybe_unused]] const Parents&... parents) const
     {
         static_assert(sizeof...(Parents) >= 1,
                       "Min/max value requires at least 1 parent");
 
         using node_type = boost::mp11::mp_first<std::tuple<Parents...>>;
 
-        boost::ignore_unused(parents...);
         if (comp_(value, min_)) {
             throw parse_exception{"Minimum value not reached",
                                   parsing::node_token_type<node_type>()};
