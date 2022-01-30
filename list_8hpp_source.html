@@ -89,85 +89,95 @@ $(function() {
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    static_assert(boost::mp11::mp_all_of&lt;children_type, is_tree_node&gt;::value,</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                  <span class="stringliteral">&quot;All list children must be tree_nodes (i.e. not policies)&quot;</span>);</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
-<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="classarg__router_1_1list.html#a62334ae3870dc121724839de14c0e76a">   31</a></span>&#160;    <span class="keyword">explicit</span> <a class="code" href="classarg__router_1_1list.html#a62334ae3870dc121724839de14c0e76a">list</a>(Children... <a class="code" href="classarg__router_1_1list.html#a9dfee0f05ed4e823da0fda00c755efc8">children</a>) : children_{std::move(<a class="code" href="classarg__router_1_1list.html#a9dfee0f05ed4e823da0fda00c755efc8">children</a>)...} {}</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
-<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="classarg__router_1_1list.html#a9dfee0f05ed4e823da0fda00c755efc8">   37</a></span>&#160;    <a class="code" href="classarg__router_1_1list.html#a8c48af5598e074c0470d9ce8d09a7559">children_type</a>&amp; <a class="code" href="classarg__router_1_1list.html#a9dfee0f05ed4e823da0fda00c755efc8">children</a>() { <span class="keywordflow">return</span> children_; }</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="classarg__router_1_1list.html#a981cec9c1a4b91d9be100ff097b534d7">   43</a></span>&#160;    <span class="keyword">const</span> <a class="code" href="classarg__router_1_1list.html#a8c48af5598e074c0470d9ce8d09a7559">children_type</a>&amp; <a class="code" href="classarg__router_1_1list.html#a981cec9c1a4b91d9be100ff097b534d7">children</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> children_; }</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <a class="code" href="classarg__router_1_1list.html#a8c48af5598e074c0470d9ce8d09a7559">children_type</a> children_;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;};</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="keyword">namespace </span>detail</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;{</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="comment">// Forward declared</span></div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Result, <span class="keyword">typename</span> Next, <span class="keyword">typename</span>... Others&gt;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;constexpr <span class="keyword">auto</span> list_expander_impl(Result, Next, Others...);</div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="classarg__router_1_1list.html#a49a29c27803e4699b2fa1da1fef87eff">   31</a></span>&#160;    constexpr <span class="keyword">explicit</span> <a class="code" href="classarg__router_1_1list.html#a49a29c27803e4699b2fa1da1fef87eff">list</a>(Children... <a class="code" href="classarg__router_1_1list.html#ad033067c4496dd4c8908685e53e75767">children</a>) noexcept :</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        children_{std::move(<a class="code" href="classarg__router_1_1list.html#ad033067c4496dd4c8908685e53e75767">children</a>)...}</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    {</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    }</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="classarg__router_1_1list.html#ad033067c4496dd4c8908685e53e75767">   40</a></span>&#160;    [[nodiscard]] <a class="code" href="classarg__router_1_1list.html#a8c48af5598e074c0470d9ce8d09a7559">children_type</a>&amp; <a class="code" href="classarg__router_1_1list.html#ad033067c4496dd4c8908685e53e75767">children</a>() noexcept { <span class="keywordflow">return</span> children_; }</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="classarg__router_1_1list.html#ab729aaae40238d5d0721697390ad6254">   46</a></span>&#160;    [[nodiscard]] <span class="keyword">const</span> <a class="code" href="classarg__router_1_1list.html#a8c48af5598e074c0470d9ce8d09a7559">children_type</a>&amp; <a class="code" href="classarg__router_1_1list.html#ab729aaae40238d5d0721697390ad6254">children</a>() const noexcept</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    {</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keywordflow">return</span> children_;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    }</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <a class="code" href="classarg__router_1_1list.html#a8c48af5598e074c0470d9ce8d09a7559">children_type</a> children_;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;};</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Result, <span class="keyword">typename</span> ListChildren, std::size_t... I&gt;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;constexpr <span class="keyword">auto</span> list_expander_unpacker(Result result,</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                                      ListChildren list_children,</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                                      std::integer_sequence&lt;std::size_t, I...&gt;)</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;{</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="keywordflow">return</span> list_expander_impl(std::move(result),</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                              std::move(std::get&lt;I&gt;(list_children))...);</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;}</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="comment">// Recursion end condition</span></div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Result&gt;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;constexpr <span class="keyword">auto</span> list_expander_impl(Result result)</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;{</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keywordflow">return</span> result;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="keyword">namespace </span>detail</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;{</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="comment">// Forward declared</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Result, <span class="keyword">typename</span> Next, <span class="keyword">typename</span>... Others&gt;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;constexpr <span class="keyword">auto</span> list_expander_impl(Result, Next, Others...) noexcept;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;template &lt;typename Result, typename ListChildren, std::<span class="keywordtype">size_t</span>... I&gt;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;[[nodiscard]] constexpr auto list_expander_unpacker(</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    Result result,</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    ListChildren list_children,</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    std::integer_sequence&lt;std::<span class="keywordtype">size_t</span>, I...&gt;) noexcept</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;{</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keywordflow">return</span> list_expander_impl(std::move(result),</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                              std::move(std::get&lt;I&gt;(list_children))...);</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;}</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Result, <span class="keyword">typename</span> Next, <span class="keyword">typename</span>... Others&gt;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;constexpr <span class="keyword">auto</span> list_expander_impl(Result result, Next next, Others... others)</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;{</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <span class="keywordflow">if</span> constexpr (<a class="code" href="namespacearg__router_1_1traits.html#a0c88d306f10e622c055813569ae5e502">traits::is_specialisation_of_v</a>&lt;std::decay_t&lt;Next&gt;, list&gt;) {</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        <span class="keywordflow">return</span> list_expander_impl(</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;            list_expander_unpacker(</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;                std::move(result),</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;                next.children(),</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;                std::make_index_sequence&lt;</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                    std::tuple_size_v&lt;typename Next::children_type&gt;&gt;{}),</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;            std::move(others)...);</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        <span class="keywordflow">return</span> list_expander_impl(</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;            <a class="code" href="namespacearg__router_1_1algorithm.html#aa89b9c3c6e181a3bd2202cabb9b7bcdd">algorithm::tuple_push_back</a>(std::move(result), std::move(next)),</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;            std::move(others)...);</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    }</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;}</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;}  <span class="comment">// namespace detail</span></div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Params&gt;</div>
-<div class="line"><a name="l00097"></a><span class="lineno"><a class="line" href="namespacearg__router.html#ac82f3cd910cc0b13f74865681898b078">   97</a></span>&#160;constexpr <span class="keyword">auto</span> <a class="code" href="namespacearg__router.html#ac82f3cd910cc0b13f74865681898b078">list_expander</a>(Params... params)</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;{</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    <span class="keywordflow">return</span> detail::list_expander_impl(std::tuple{}, std::move(params)...);</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;}</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160; </div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Params&gt;</div>
-<div class="line"><a name="l00109"></a><span class="lineno"><a class="line" href="namespacearg__router.html#a0ed251acaeb78e0f923df791302fb2f2">  109</a></span>&#160;constexpr <span class="keyword">auto</span> <a class="code" href="namespacearg__router.html#ac82f3cd910cc0b13f74865681898b078">list_expander</a>(std::tuple&lt;Params...&gt; params)</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;{</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <span class="keywordflow">return</span> std::apply(</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        [](<span class="keyword">auto</span>&amp;... args) {</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;            <span class="keywordflow">return</span> detail::list_expander_impl(</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;                std::tuple{},</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;                std::forward&lt;decltype(args)&gt;(args)...);</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        },</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        params);</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;}</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="comment">// Recursion end condition</span></div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Result&gt;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;[[nodiscard]] constexpr <span class="keyword">auto</span> list_expander_impl(Result result) noexcept</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;{</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="keywordflow">return</span> result;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;}</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Result, <span class="keyword">typename</span> Next, <span class="keyword">typename</span>... Others&gt;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;[[nodiscard]] constexpr <span class="keyword">auto</span> list_expander_impl(Result result,</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                                                Next next,</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;                                                Others... others) noexcept</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;{</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    <span class="keywordflow">if</span> constexpr (<a class="code" href="namespacearg__router_1_1traits.html#a0c88d306f10e622c055813569ae5e502">traits::is_specialisation_of_v</a>&lt;std::decay_t&lt;Next&gt;, list&gt;) {</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        <span class="keywordflow">return</span> list_expander_impl(</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;            list_expander_unpacker(</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                std::move(result),</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                next.children(),</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                std::make_index_sequence&lt;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;                    std::tuple_size_v&lt;typename Next::children_type&gt;&gt;{}),</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;            std::move(others)...);</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        <span class="keywordflow">return</span> list_expander_impl(</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;            <a class="code" href="namespacearg__router_1_1algorithm.html#aa47f909be78a36c86d82c4c1a691191c">algorithm::tuple_push_back</a>(std::move(result), std::move(next)),</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;            std::move(others)...);</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    }</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;}</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;}  <span class="comment">// namespace detail</span></div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Params&gt;</div>
+<div class="line"><a name="l00106"></a><span class="lineno"><a class="line" href="namespacearg__router.html#ae81e77bc890bd12a9a4913497d94ca10">  106</a></span>&#160;[[nodiscard]] constexpr <span class="keyword">auto</span> <a class="code" href="namespacearg__router.html#ae81e77bc890bd12a9a4913497d94ca10">list_expander</a>(Params... params) noexcept</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;{</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    <span class="keywordflow">return</span> detail::list_expander_impl(std::tuple{}, std::move(params)...);</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;}</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160; </div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Params&gt;</div>
+<div class="line"><a name="l00118"></a><span class="lineno"><a class="line" href="namespacearg__router.html#a586bc7b54b0c222b36e3a1773a1cb5e3">  118</a></span>&#160;[[nodiscard]] constexpr <span class="keyword">auto</span> <a class="code" href="namespacearg__router.html#ae81e77bc890bd12a9a4913497d94ca10">list_expander</a>(</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    std::tuple&lt;Params...&gt; params) noexcept</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;{</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <span class="keywordflow">return</span> std::apply(</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;        [](<span class="keyword">auto</span>&amp;... args) {</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;            <span class="keywordflow">return</span> detail::list_expander_impl(</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;                std::tuple{},</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;                std::forward&lt;decltype(args)&gt;(args)...);</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;        },</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;        params);</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;}</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="anamespacearg__router_1_1traits_html_a0c88d306f10e622c055813569ae5e502"><div class="ttname"><a href="namespacearg__router_1_1traits.html#a0c88d306f10e622c055813569ae5e502">arg_router::traits::is_specialisation_of_v</a></div><div class="ttdeci">constexpr bool is_specialisation_of_v</div><div class="ttdef"><b>Definition:</b> <a href="traits_8hpp_source.html#l00149">traits.hpp:149</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1list_html_a9dfee0f05ed4e823da0fda00c755efc8"><div class="ttname"><a href="classarg__router_1_1list.html#a9dfee0f05ed4e823da0fda00c755efc8">arg_router::list::children</a></div><div class="ttdeci">children_type &amp; children()</div><div class="ttdef"><b>Definition:</b> <a href="list_8hpp_source.html#l00037">list.hpp:37</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1list_html_a62334ae3870dc121724839de14c0e76a"><div class="ttname"><a href="classarg__router_1_1list.html#a62334ae3870dc121724839de14c0e76a">arg_router::list::list</a></div><div class="ttdeci">list(Children... children)</div><div class="ttdef"><b>Definition:</b> <a href="list_8hpp_source.html#l00031">list.hpp:31</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1list_html_a981cec9c1a4b91d9be100ff097b534d7"><div class="ttname"><a href="classarg__router_1_1list.html#a981cec9c1a4b91d9be100ff097b534d7">arg_router::list::children</a></div><div class="ttdeci">const children_type &amp; children() const</div><div class="ttdef"><b>Definition:</b> <a href="list_8hpp_source.html#l00043">list.hpp:43</a></div></div>
-<div class="ttc" id="anamespacearg__router_html_ac82f3cd910cc0b13f74865681898b078"><div class="ttname"><a href="namespacearg__router.html#ac82f3cd910cc0b13f74865681898b078">arg_router::list_expander</a></div><div class="ttdeci">constexpr auto list_expander(Params... params)</div><div class="ttdef"><b>Definition:</b> <a href="list_8hpp_source.html#l00097">list.hpp:97</a></div></div>
-<div class="ttc" id="anamespacearg__router_1_1algorithm_html_aa89b9c3c6e181a3bd2202cabb9b7bcdd"><div class="ttname"><a href="namespacearg__router_1_1algorithm.html#aa89b9c3c6e181a3bd2202cabb9b7bcdd">arg_router::algorithm::tuple_push_back</a></div><div class="ttdeci">constexpr auto tuple_push_back(Tuple tuple, Insert insert)</div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00345">algorithm.hpp:345</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1list_html_a49a29c27803e4699b2fa1da1fef87eff"><div class="ttname"><a href="classarg__router_1_1list.html#a49a29c27803e4699b2fa1da1fef87eff">arg_router::list::list</a></div><div class="ttdeci">constexpr list(Children... children) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="list_8hpp_source.html#l00031">list.hpp:31</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1list_html_ad033067c4496dd4c8908685e53e75767"><div class="ttname"><a href="classarg__router_1_1list.html#ad033067c4496dd4c8908685e53e75767">arg_router::list::children</a></div><div class="ttdeci">children_type &amp; children() noexcept</div><div class="ttdef"><b>Definition:</b> <a href="list_8hpp_source.html#l00040">list.hpp:40</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1list_html_ab729aaae40238d5d0721697390ad6254"><div class="ttname"><a href="classarg__router_1_1list.html#ab729aaae40238d5d0721697390ad6254">arg_router::list::children</a></div><div class="ttdeci">const children_type &amp; children() const noexcept</div><div class="ttdef"><b>Definition:</b> <a href="list_8hpp_source.html#l00046">list.hpp:46</a></div></div>
+<div class="ttc" id="anamespacearg__router_html_ae81e77bc890bd12a9a4913497d94ca10"><div class="ttname"><a href="namespacearg__router.html#ae81e77bc890bd12a9a4913497d94ca10">arg_router::list_expander</a></div><div class="ttdeci">constexpr auto list_expander(Params... params) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="list_8hpp_source.html#l00106">list.hpp:106</a></div></div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00010">algorithm.hpp:10</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1list_html"><div class="ttname"><a href="classarg__router_1_1list.html">arg_router::list</a></div><div class="ttdef"><b>Definition:</b> <a href="list_8hpp_source.html#l00018">list.hpp:18</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1list_html_a8c48af5598e074c0470d9ce8d09a7559"><div class="ttname"><a href="classarg__router_1_1list.html#a8c48af5598e074c0470d9ce8d09a7559">arg_router::list::children_type</a></div><div class="ttdeci">std::tuple&lt; Children... &gt; children_type</div><div class="ttdef"><b>Definition:</b> <a href="list_8hpp_source.html#l00022">list.hpp:22</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1algorithm_html_aa47f909be78a36c86d82c4c1a691191c"><div class="ttname"><a href="namespacearg__router_1_1algorithm.html#aa47f909be78a36c86d82c4c1a691191c">arg_router::algorithm::tuple_push_back</a></div><div class="ttdeci">constexpr auto tuple_push_back(Tuple tuple, Insert insert) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00351">algorithm.hpp:351</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

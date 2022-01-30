@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['abs_0',['abs',['../namespacearg__router_1_1math.html#a44e588311ed862899b73bae2278d69f9',1,'arg_router::math']]],
+  ['abs_0',['abs',['../namespacearg__router_1_1math.html#aed9a63d0b46e824c24e3cdf7e40af70f',1,'arg_router::math']]],
   ['add_5foptional_1',['add_optional',['../structarg__router_1_1traits_1_1add__optional.html',1,'arg_router::traits']]],
   ['add_5foptional_5ft_2',['add_optional_t',['../namespacearg__router_1_1traits.html#a869c1774020d00627db3ab5e90a7b53a',1,'arg_router::traits']]],
   ['add_5fpending_3',['add_pending',['../classarg__router_1_1parsing_1_1token__list.html#abacadce865aec132703bd698754ac862',1,'arg_router::parsing::token_list']]],
@@ -13,12 +13,12 @@ var searchData=
   ['always_5ffalse_10',['always_false',['../structarg__router_1_1traits_1_1always__false.html',1,'arg_router::traits']]],
   ['always_5ffalse_5fv_11',['always_false_v',['../namespacearg__router_1_1traits.html#aa534c7727cc999a1bfb9da5cbed2d8c5',1,'arg_router::traits']]],
   ['any_5fphases_12',['any_phases',['../classarg__router_1_1tree__node_1_1any__phases.html',1,'arg_router::tree_node']]],
-  ['any_5fphases_5fv_13',['any_phases_v',['../classarg__router_1_1tree__node.html#a948b1f746bff7e32bf48949bc7a823df',1,'arg_router::tree_node']]],
+  ['any_5fphases_5fv_13',['any_phases_v',['../classarg__router_1_1tree__node.html#a52b234a753c4866025c339a29ca0197c',1,'arg_router::tree_node']]],
   ['append_14',['append',['../structarg__router_1_1utility_1_1compile__time__string_1_1append.html',1,'arg_router::utility::compile_time_string']]],
   ['append_5ft_15',['append_t',['../classarg__router_1_1utility_1_1compile__time__string.html#a8926d469bcbbcd6b3183afbee37d1f19',1,'arg_router::utility::compile_time_string']]],
-  ['arg_16',['arg',['../namespacearg__router.html#ad22d99fefb929f58fe471fb7bf78d5f4',1,'arg_router']]],
+  ['arg_16',['arg',['../namespacearg__router.html#a7e65c270dddd0acb08ebf68f179d58d6',1,'arg_router']]],
   ['arg_5frouter_17',['arg_router',['../namespacearg__router.html',1,'']]],
-  ['arg_5ft_18',['arg_t',['../classarg__router_1_1arg__t.html',1,'arg_router::arg_t&lt; T, Policies &gt;'],['../classarg__router_1_1arg__t.html#a81a20e29bac0e26596bae3867b789dfc',1,'arg_router::arg_t::arg_t()']]],
+  ['arg_5ft_18',['arg_t',['../classarg__router_1_1arg__t.html',1,'arg_router::arg_t&lt; T, Policies &gt;'],['../classarg__router_1_1arg__t.html#aebaa2b40574b8b3a7bf19b90b459b181',1,'arg_router::arg_t::arg_t()']]],
   ['arity_19',['arity',['../structarg__router_1_1traits_1_1arity.html',1,'arg_router::traits']]],
   ['arity_5fv_20',['arity_v',['../namespacearg__router_1_1traits.html#a4e8216793fb97ac975b88ed7bf1e981a',1,'arg_router::traits']]],
   ['array_5ftype_21',['array_type',['../classarg__router_1_1utility_1_1compile__time__string.html#a1e1bf14403a841ebb9363ed7cf317e1a',1,'arg_router::utility::compile_time_string']]],

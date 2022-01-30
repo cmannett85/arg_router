@@ -80,10 +80,10 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:aa4a1340c870cfe4400851d5c5abb1de7"><td class="memItemLeft" align="right" valign="top">constexpr static std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1min__max__count__t.html#aa4a1340c870cfe4400851d5c5abb1de7">minimum_count</a> ()</td></tr>
-<tr class="separator:aa4a1340c870cfe4400851d5c5abb1de7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4f09cecbd9101fff44e4ea70b01c7d71"><td class="memItemLeft" align="right" valign="top">constexpr static std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1min__max__count__t.html#a4f09cecbd9101fff44e4ea70b01c7d71">maximum_count</a> ()</td></tr>
-<tr class="separator:a4f09cecbd9101fff44e4ea70b01c7d71"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8512f9d2cb4155fecfb7b8d582839fb1"><td class="memItemLeft" align="right" valign="top">constexpr static std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1min__max__count__t.html#a8512f9d2cb4155fecfb7b8d582839fb1">minimum_count</a> () noexcept</td></tr>
+<tr class="separator:a8512f9d2cb4155fecfb7b8d582839fb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5c9b2f8b0bdb46a5ba8ad52e48e0940a"><td class="memItemLeft" align="right" valign="top">constexpr static std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1min__max__count__t.html#a5c9b2f8b0bdb46a5ba8ad52e48e0940a">maximum_count</a> () noexcept</td></tr>
+<tr class="separator:a5c9b2f8b0bdb46a5ba8ad52e48e0940a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -106,8 +106,8 @@ class arg_router::policy::min_max_count_t&lt; MinType, MaxType &gt;</h3>
 
 <p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00021">21</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a4f09cecbd9101fff44e4ea70b01c7d71"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4f09cecbd9101fff44e4ea70b01c7d71">&#9670;&nbsp;</a></span>maximum_count()</h2>
+<a id="a5c9b2f8b0bdb46a5ba8ad52e48e0940a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5c9b2f8b0bdb46a5ba8ad52e48e0940a">&#9670;&nbsp;</a></span>maximum_count()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -126,18 +126,18 @@ template&lt;typename MinType , typename MaxType &gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">constexpr</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>Maximum count value. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00045">45</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00048">48</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
 
 </div>
 </div>
-<a id="aa4a1340c870cfe4400851d5c5abb1de7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa4a1340c870cfe4400851d5c5abb1de7">&#9670;&nbsp;</a></span>minimum_count()</h2>
+<a id="a8512f9d2cb4155fecfb7b8d582839fb1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8512f9d2cb4155fecfb7b8d582839fb1">&#9670;&nbsp;</a></span>minimum_count()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -156,7 +156,7 @@ template&lt;typename MinType , typename MaxType &gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">constexpr</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -224,7 +224,7 @@ template&lt;typename... Parents&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00058">58</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00064">64</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
 
 </div>
 </div>

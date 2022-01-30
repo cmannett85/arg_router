@@ -67,7 +67,7 @@ $(function() {
 <div class="title">arg_router Documentation</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><object type="image/svg+xml" data="https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg" style="pointer-events: none;">Documentation Generator</object> <img src="https://img.shields.io/badge/Unit_Test_Coverage-98.6%25-brightgreen" alt="Unit test coverage" class="inline"/></p>
+<div class="textblock"><p><object type="image/svg+xml" data="https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg" style="pointer-events: none;">Documentation Generator</object> <img src="https://img.shields.io/badge/Unit_Test_Coverage-98.7%25-brightgreen" alt="Unit test coverage" class="inline"/></p>
 <h1><a class="el" href="namespacearg__router.html">arg_router</a></h1>
 <p><code><a class="el" href="namespacearg__router.html">arg_router</a></code> is a C++17 command line parser and router. It uses policy-based objects hierarchically, so the parsing code is self-describing. Rather than just providing a parsing service that returns a map of <code>variant</code>s/<code>any</code>s, it allows you to bind <code>Callable</code> instances to points in the parse structure, so complex command line arguments can directly call functions with the expected arguments - rather than you having to do this yourself.</p>
 <h2>Features</h2>
@@ -179,7 +179,7 @@ $(function() {
 <div class="line">        arp::short_name&lt;&#39;t&#39;&gt;,</div>
 <div class="line">        arp::description&lt;S_(<span class="stringliteral">&quot;Set the output colour theme&quot;</span>)&gt;,</div>
 <div class="line">        arp::default_value{theme_t::NONE},</div>
-<div class="line">        arp::custom_parser&lt;theme_t&gt;{[](std::string_view <a class="code" href="namespacearg__router.html#ad22d99fefb929f58fe471fb7bf78d5f4">arg</a>) {</div>
+<div class="line">        arp::custom_parser&lt;theme_t&gt;{[](std::string_view <a class="code" href="namespacearg__router.html#a7e65c270dddd0acb08ebf68f179d58d6">arg</a>) {</div>
 <div class="line">            <span class="keywordflow">return</span> theme_from_string(arg); }})</div>
 <div class="line">    ...</div>
 <div class="line">    arp::router{[](<span class="keywordtype">bool</span> show_all,</div>
@@ -201,7 +201,7 @@ $(function() {
 <div class="line">        <span class="keywordflow">return</span> theme_t::SOLARIZED;</div>
 <div class="line">    }</div>
 <div class="line"> </div>
-<div class="line">    <span class="keywordflow">throw</span> parse_exception{<span class="stringliteral">&quot;Unknown theme argument: &quot;</span>s + <a class="code" href="namespacearg__router.html#ad22d99fefb929f58fe471fb7bf78d5f4">arg</a>};</div>
+<div class="line">    <span class="keywordflow">throw</span> parse_exception{<span class="stringliteral">&quot;Unknown theme argument: &quot;</span>s + <a class="code" href="namespacearg__router.html#a7e65c270dddd0acb08ebf68f179d58d6">arg</a>};</div>
 <div class="line">}</div>
 </div><!-- fragment --><p>With this declared in a place visible to the parse tree declaration, <code>theme_t</code> can be converted from a string without the need for a <code>custom_parser</code>. It should be noted that <code>custom_parser</code> can still be used, and will be preferred over the <code>parse()</code> specialisation.</p>
 <h2>Counting Flags</h2>
@@ -246,7 +246,7 @@ $(function() {
 <div class="line">            arp::long_name&lt;S_(<span class="stringliteral">&quot;verbose&quot;</span>)&gt;,</div>
 <div class="line">            arp::description&lt;S_(<span class="stringliteral">&quot;Verbosity level&quot;</span>)&gt;</div>
 <div class="line">            arp::custom_parser&lt;verbosity_level_t&gt;{</div>
-<div class="line">                [](std::string_view <a class="code" href="namespacearg__router.html#ad22d99fefb929f58fe471fb7bf78d5f4">arg</a>) {</div>
+<div class="line">                [](std::string_view <a class="code" href="namespacearg__router.html#a7e65c270dddd0acb08ebf68f179d58d6">arg</a>) {</div>
 <div class="line">                    <span class="keywordflow">return</span> verbosity_level_from_string(arg); }}))),</div>
 <div class="line">    ...</div>
 <div class="line">    arp::router{[](<span class="keywordtype">bool</span> show_all,</div>
@@ -475,7 +475,7 @@ $(function() {
 <p>Currently <code><a class="el" href="namespacearg__router.html">arg_router</a></code> only supports exceptions as error handling. If a parsing fails for some reason a <code><a class="el" href="classarg__router_1_1parse__exception.html">arg_router::parse_exception</a></code> is thrown carrying information on the failure. </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
-<div class="ttc" id="anamespacearg__router_html_ad22d99fefb929f58fe471fb7bf78d5f4"><div class="ttname"><a href="namespacearg__router.html#ad22d99fefb929f58fe471fb7bf78d5f4">arg_router::arg</a></div><div class="ttdeci">constexpr arg_t&lt; T, Policies... &gt; arg(Policies... policies)</div><div class="ttdef"><b>Definition:</b> <a href="arg_8hpp_source.html#l00149">arg.hpp:149</a></div></div>
+<div class="ttc" id="anamespacearg__router_html_a7e65c270dddd0acb08ebf68f179d58d6"><div class="ttname"><a href="namespacearg__router.html#a7e65c270dddd0acb08ebf68f179d58d6">arg_router::arg</a></div><div class="ttdeci">constexpr arg_t&lt; T, Policies... &gt; arg(Policies... policies) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="arg_8hpp_source.html#l00150">arg.hpp:150</a></div></div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00010">algorithm.hpp:10</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
