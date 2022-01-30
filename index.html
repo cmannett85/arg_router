@@ -67,7 +67,7 @@ $(function() {
 <div class="title">arg_router Documentation</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><object type="image/svg+xml" data="https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg" style="pointer-events: none;">Documentation Generator</object> <img src="https://img.shields.io/badge/Unit_Test_Coverage-98.5%25-brightgreen" alt="Unit test coverage" class="inline"/></p>
+<div class="textblock"><p><object type="image/svg+xml" data="https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg" style="pointer-events: none;">Documentation Generator</object> <img src="https://img.shields.io/badge/Unit_Test_Coverage-98.6%25-brightgreen" alt="Unit test coverage" class="inline"/></p>
 <h1><a class="el" href="namespacearg__router.html">arg_router</a></h1>
 <p><code><a class="el" href="namespacearg__router.html">arg_router</a></code> is a C++17 command line parser and router. It uses policy-based objects hierarchically, so the parsing code is self-describing. Rather than just providing a parsing service that returns a map of <code>variant</code>s/<code>any</code>s, it allows you to bind <code>Callable</code> instances to points in the parse structure, so complex command line arguments can directly call functions with the expected arguments - rather than you having to do this yourself.</p>
 <h2>Features</h2>
@@ -87,12 +87,13 @@ $(function() {
 <div class="line">    ar::help(</div>
 <div class="line">        arp::long_name&lt;S_(<span class="stringliteral">&quot;help&quot;</span>)&gt;,</div>
 <div class="line">        arp::short_name&lt;&#39;h&#39;&gt;,</div>
-<div class="line">        arp::description&lt;S_(<span class="stringliteral">&quot;Display this help and exit&quot;</span>)&gt;,</div>
-<div class="line">        arp::router{[](std::string_view arg_docs) { ... }}),</div>
+<div class="line">        arp::program_name&lt;S_(<span class="stringliteral">&quot;my-cat&quot;</span>)&gt;,</div>
+<div class="line">        arp::program_version&lt;S_(<span class="stringliteral">&quot;v3.14&quot;</span>)&gt;,</div>
+<div class="line">        arp::description&lt;S_(<span class="stringliteral">&quot;Display this help and exit&quot;</span>)&gt;</div>
 <div class="line">    ar::flag(</div>
 <div class="line">        arp::long_name&lt;S_(<span class="stringliteral">&quot;version&quot;</span>)&gt;,</div>
 <div class="line">        arp::description&lt;S_(<span class="stringliteral">&quot;Output version information and exit&quot;</span>)&gt;,</div>
-<div class="line">        arp::router{[]() { ... }}),</div>
+<div class="line">        arp::router{[](<span class="keywordtype">bool</span> v) { ... }}),</div>
 <div class="line">    ar::mode(</div>
 <div class="line">        ar::flag(</div>
 <div class="line">            arp::long_name&lt;S_(<span class="stringliteral">&quot;show-all&quot;</span>)&gt;,</div>
@@ -122,7 +123,7 @@ $(function() {
 <div class="line">    parse(argc, argv);</div>
 </div><!-- fragment --><p>Let's start from the top, as the name suggests <code>root</code> is the root of the parse tree and provides the <code>parse(argc, argv)</code> method. Only children of the root can (and must) have a <code>router</code> policy (except for nested <code>mode</code>s, more <a href="#modes">on that later</a>) and therefore act as access points into the program. The root's children are implicitly mutually exclusive, so trying to pass <code>--version --help</code> in the command line is a runtime error.</p>
 <p>The <code>arp::validation::default_validator</code> instance provides the default validator that the root uses to validate the parse tree at compile-time. It is a required policy of the <code>root</code>. Unless you have implemented your own policy or tree node you will never need to specify anything else.</p>
-<p>The <code>help</code> node is used by the <code>root</code> to generate the argument documentation for the help output, rather than print directly to the console, a <code>router</code> is attached that accepts a string so the user can add other documentation to it (e.g. version info, examples, etc.).</p>
+<p>The <code>help</code> node is used by the <code>root</code> to generate the argument documentation for the help output, by default it just prints directly to the console and then exits, but a <code>router</code> can be attached that accepts the formatted output and choose to do something else with it. The optional <code>program_name</code> and <code>program_version</code> policies add a header to the help output.</p>
 <p>Now let's introduce some 'policies'. Policies define common behaviours across node types, a basic one is <code>long_name</code> which provides long form argument definition. The standard unix double hyphen prefix for long names is added automatically when not used in a <code>mode</code>. Having the name defined at compile-time means we detect duplicate names and fail the build - one less unit test you have to worry about. <code>short_name</code> is the single character short form name, a single hyphen is prefixed automatically. <code><a class="el" href="namespacearg__router.html">arg_router</a></code> supports short name collapsing for flags, so if you have defined flags like <code>-a -b -c</code> then <code>-abc</code> will be accepted or <code>-bca</code>, etc.</p>
 <p>In order to group arguments under a specific operating mode, you put them under a <code>mode</code> instance. In this case our simple cat program only has one mode, so it is anonymous i.e. there's no long name or description associated with it - it is a build error to have more than one anonymous mode under the root of a parse tree.</p>
 <p><code>arg&lt;T&gt;</code> does exactly what you would expect, it defines an argument that expects a value to follow it on the command line. If an argument is not <code>required</code> then it may have a <code>default_value</code> (if neither are set, then a default initialised value is used instead), this is passed to the <code>router</code>'s <code>Callable</code> on parsing if it isn't specified by the user on the command line.</p>
@@ -265,8 +266,7 @@ $(function() {
 <div class="line">    ar::help(</div>
 <div class="line">        arp::long_name&lt;S_(<span class="stringliteral">&quot;help&quot;</span>)&gt;,</div>
 <div class="line">        arp::short_name&lt;&#39;h&#39;&gt;,</div>
-<div class="line">        arp::description&lt;S_(<span class="stringliteral">&quot;Display this help and exit&quot;</span>)&gt;,</div>
-<div class="line">        arp::router{[](std::string_view arg_docs) { ... }),</div>
+<div class="line">        arp::description&lt;S_(<span class="stringliteral">&quot;Display this help and exit&quot;</span>)&gt;),</div>
 <div class="line">    ar::mode(</div>
 <div class="line">        ar::flag(</div>
 <div class="line">            arp::long_name&lt;S_(<span class="stringliteral">&quot;force&quot;</span>)&gt;,</div>
@@ -275,19 +275,20 @@ $(function() {
 <div class="line">        ar::positional_arg&lt;std::filesystem::path&gt;(</div>
 <div class="line">            arp::display_name&lt;S_(<span class="stringliteral">&quot;DST&quot;</span>)&gt;,</div>
 <div class="line">            arp::description&lt;S_(<span class="stringliteral">&quot;Destination directory&quot;</span>)&gt;,</div>
-<div class="line">            apr::required,</div>
+<div class="line">            arp::required,</div>
 <div class="line">            arp::fixed_count&lt;1&gt;),</div>
 <div class="line">        ar::positional_arg&lt;std::vector&lt;std::filesystem::path&gt;&gt;(</div>
 <div class="line">            arp::display_name&lt;S_(<span class="stringliteral">&quot;SRC&quot;</span>)&gt;,</div>
 <div class="line">            arp::description&lt;S_(<span class="stringliteral">&quot;Source file paths&quot;</span>)&gt;,</div>
-<div class="line">            apr::required),</div>
+<div class="line">            arp::required,</div>
+<div class="line">            arp::min_count&lt;1&gt;),</div>
 <div class="line">        arp::router{[](<span class="keywordtype">bool</span> force,</div>
 <div class="line">                       std::filesystem::path dest,</div>
 <div class="line">                       std::vector&lt;std::filesystem::path&gt; srcs) { ... }}))</div>
 </div><!-- fragment --><p>It was noted in the <a href="#basics">Basics</a> section that ordering does matter for positional arguments, so we can see here that the destination path is specified first and therefore comes first on the command line. There can only be one destination path so we specify the <code>count</code> to one. Because the <code>count</code> is 1 the return type doesn't need to be a container.</p>
 <p>Following the destination path are the source paths, we need at least one so we mark it as required, as our range is unbounded the <code>value_type</code> needs to be a container. <code>positional_arg</code> uses a <code>push_back</code> call on the container, so <code>std::vector</code> is the typical type to use.</p>
 <p>Only the last <code>positional_arg</code> may be of variable length. A runtime error will only occur if there are no unbounded variable length <code>postional_arg</code>s and there are more arguments than the maximum or less than the minimum.</p>
-<p>It should be noted that setting a non-zero minimum count (<code>min_count</code>, <code>fixed_count</code>, or <code>min_max_count</code>) does <em>not</em> imply a requirement, the minimum count check only applies when there is at least one argument for the node to process. So as with an <code>arg</code>, you should use a <code>required</code> policy to explicitly state that at least one argument needs to be present, or a <code>default_value</code> policy - otherwise a default initialised value will be used instead.</p>
+<p>It should be noted that setting a non-zero minimum count (<code>min_count</code>, <code>fixed_count</code>, or <code>min_max_count</code>) does <em>not</em> imply a requirement, the minimum count check only applies when there is at least one argument for the node to process. So as with an <code>arg</code>, you should use a <code>required</code> policy to explicitly state that at least one argument needs to be present, or a <code>default_value</code> policy - otherwise a default initialised value will be used instead. In the <code>SRC</code> argument above just marking it as <code>required</code> is sufficient for count behaviour as we only require a minimum count of one, however explicitly stating that improves the help output.</p>
 <h2>Modes</h2>
 <p>As noted in <a href="#basics">Basics</a>, <code>mode</code>s allow you to group command line components under an initial token on the command line. A common example of this developers will be aware of is <code>git</code>, for example in our parlance <code>git clean -ffxd</code>; <code>clean</code> would be the mode and <code>ffxd</code> would be be the flags that are available under that mode.</p>
 <p>As an example, let's take the <code>simple-copy</code> above and split it into two modes: </p><div class="fragment"><div class="line">$ simple copy -f dest-dir source-path-1 source-path-2</div>
@@ -297,8 +298,7 @@ $(function() {
 <div class="line">    ar::help(</div>
 <div class="line">        arp::long_name&lt;S_(<span class="stringliteral">&quot;help&quot;</span>)&gt;,</div>
 <div class="line">        arp::short_name&lt;&#39;h&#39;&gt;,</div>
-<div class="line">        arp::description&lt;S_(<span class="stringliteral">&quot;Display this help and exit&quot;</span>)&gt;,</div>
-<div class="line">        arp::router{[](std::string_view arg_docs) { ... }}),</div>
+<div class="line">        arp::description&lt;S_(<span class="stringliteral">&quot;Display this help and exit&quot;</span>)&gt;),</div>
 <div class="line">    ar::mode(</div>
 <div class="line">        arp::none_name&lt;S_(<span class="stringliteral">&quot;copy&quot;</span>)&gt;,</div>
 <div class="line">        arp::description&lt;S_(<span class="stringliteral">&quot;Copy source files to destination&quot;</span>)&gt;,</div>
@@ -314,7 +314,8 @@ $(function() {
 <div class="line">        ar::positional_arg&lt;std::vector&lt;std::filesystem::path&gt;&gt;(</div>
 <div class="line">            arp::required,</div>
 <div class="line">            arp::display_name&lt;S_(<span class="stringliteral">&quot;SRC&quot;</span>)&gt;,</div>
-<div class="line">            arp::description&lt;S_(<span class="stringliteral">&quot;Source file paths&quot;</span>)&gt;),</div>
+<div class="line">            arp::description&lt;S_(<span class="stringliteral">&quot;Source file paths&quot;</span>)&gt;,</div>
+<div class="line">            arp::min_count&lt;1&gt;),</div>
 <div class="line">        arp::router{[](<span class="keywordtype">bool</span> force,</div>
 <div class="line">                       std::filesystem::path dest,</div>
 <div class="line">                       std::vector&lt;std::filesystem::path&gt; srcs) { ... }}),</div>
@@ -355,11 +356,6 @@ $(function() {
 <div class="line"> </div>
 <div class="line">ar::root(</div>
 <div class="line">    arp::validation::default_validator,</div>
-<div class="line">    ar::help(</div>
-<div class="line">        arp::long_name&lt;S_(<span class="stringliteral">&quot;help&quot;</span>)&gt;,</div>
-<div class="line">        arp::short_name&lt;&#39;h&#39;&gt;,</div>
-<div class="line">        arp::description&lt;S_(<span class="stringliteral">&quot;Display this help and exit&quot;</span>)&gt;,</div>
-<div class="line">        arp::router{[](std::string_view arg_docs) { ... }}),</div>
 <div class="line">    ar::mode(</div>
 <div class="line">        arp::none_name&lt;S_(<span class="stringliteral">&quot;copy&quot;</span>)&gt;,</div>
 <div class="line">        arp::description&lt;S_(<span class="stringliteral">&quot;Copy source files to destination&quot;</span>)&gt;,</div>
@@ -367,7 +363,8 @@ $(function() {
 <div class="line">        ar::positional_arg&lt;std::vector&lt;std::filesystem::path&gt;&gt;(</div>
 <div class="line">            arp::required,</div>
 <div class="line">            arp::display_name&lt;S_(<span class="stringliteral">&quot;SRC&quot;</span>)&gt;,</div>
-<div class="line">            arp::description&lt;S_(<span class="stringliteral">&quot;Source file paths&quot;</span>)&gt;),</div>
+<div class="line">            arp::description&lt;S_(<span class="stringliteral">&quot;Source file paths&quot;</span>)&gt;,</div>
+<div class="line">            arp::min_count&lt;1&gt;),</div>
 <div class="line">        arp::router{[](<span class="keywordtype">bool</span> force,</div>
 <div class="line">                       std::filesystem::path dest,</div>
 <div class="line">                       std::vector&lt;std::filesystem::path&gt; srcs) { ... }}),</div>
@@ -384,11 +381,101 @@ $(function() {
 <div class="line">                       std::filesystem::path dest,</div>
 <div class="line">                       std::filesystem::path src) { ... }}))</div>
 </div><!-- fragment --><p><code>ar::list</code> is a simple <code>arg</code> and <code>flag</code> container that <code>mode</code> and <code>root</code> instances detect and add the contents to their child/policy lists - it's nicer than having an instance per type. Also don't be afraid of the copies, the majority of <code><a class="el" href="namespacearg__router.html">arg_router</a></code> types hold no data (the advantage of compile-time!) and those that do (e.g. <code>default_value</code>) generally have small types like primitives or <code>std::string_view</code>.</p>
+<h2>Help Output</h2>
+<p>A shown in prior sections, a <code>help</code> node can be a child of the <code>root</code> (and only the <code>root</code>!), which acts like an <code>arg</code>, and generates the help output when requested by the user. This node is optional, without it there is no help command line argument. As the node is <code>arg</code>-like, it requires a long and/or short name.</p>
+<p>The output can be tweaked using policies:</p><ul>
+<li><code>program_name</code>, this is printed first. Without it neither this nor the version are printed</li>
+<li><code>program_version</code>, this followes the name</li>
+<li><code>program_intro</code>, used to give some more information on the program. This is printed two new lines away from the name and version</li>
+<li><code>flatten_help</code>, by default only top-level arguments and/or those in an anonymous mode are displayed. They are shown by requesting the mode's 'path' on the command line (e.g. <code>app --help mode sub-mode</code>). The presence of this policy will make the entire requested subtree's (or root's, if no mode path was requested) help output be displayed</li>
+</ul>
+<p>Unlike string data everywhere else in the library, the formatted help output is created at runtime using <code>std::string</code> so we don't need to keep duplicate read-only text data.</p>
+<p>For example the slightly embellished tree from above: </p><div class="fragment"><div class="line">constexpr <span class="keyword">auto</span> common_args = ar::list{</div>
+<div class="line">    ar::flag(</div>
+<div class="line">        arp::long_name&lt;S_(<span class="stringliteral">&quot;force&quot;</span>)&gt;,</div>
+<div class="line">        arp::short_name&lt;&#39;f&#39;&gt;,</div>
+<div class="line">        arp::description&lt;S_(<span class="stringliteral">&quot;Force overwrite existing files&quot;</span>)&gt;),</div>
+<div class="line">    ar::positional_arg&lt;std::filesystem::path&gt;(</div>
+<div class="line">        arp::required,</div>
+<div class="line">        arp::display_name&lt;S_(<span class="stringliteral">&quot;DST&quot;</span>)&gt;,</div>
+<div class="line">        arp::description&lt;S_(<span class="stringliteral">&quot;Destination directory&quot;</span>)&gt;,</div>
+<div class="line">        arp::fixed_count&lt;1&gt;)};</div>
+<div class="line"> </div>
+<div class="line">ar::root(</div>
+<div class="line">    arp::validation::default_validator,</div>
+<div class="line">    ar::help(</div>
+<div class="line">        arp::long_name&lt;S_(<span class="stringliteral">&quot;help&quot;</span>)&gt;,</div>
+<div class="line">        arp::short_name&lt;&#39;h&#39;&gt;,</div>
+<div class="line">        arp::description&lt;S_(<span class="stringliteral">&quot;Display this help and exit&quot;</span>)&gt;,</div>
+<div class="line">        arp::program_name&lt;S_(<span class="stringliteral">&quot;simple&quot;</span>)&gt;,</div>
+<div class="line">        arp::program_version&lt;S_(<span class="stringliteral">&quot;v0.1&quot;</span>)&gt;,</div>
+<div class="line">        arp::program_intro&lt;S_(<span class="stringliteral">&quot;A simple file copier and mover.&quot;</span>)&gt;,</div>
+<div class="line">        arp::flatten_help),</div>
+<div class="line">    ar::mode(</div>
+<div class="line">        arp::none_name&lt;S_(<span class="stringliteral">&quot;copy&quot;</span>)&gt;,</div>
+<div class="line">        arp::description&lt;S_(<span class="stringliteral">&quot;Copy source files to destination&quot;</span>)&gt;,</div>
+<div class="line">        common_args,</div>
+<div class="line">        ar::positional_arg&lt;std::vector&lt;std::filesystem::path&gt;&gt;(</div>
+<div class="line">            arp::required,</div>
+<div class="line">            arp::display_name&lt;S_(<span class="stringliteral">&quot;SRC&quot;</span>)&gt;,</div>
+<div class="line">            arp::description&lt;S_(<span class="stringliteral">&quot;Source file paths&quot;</span>)&gt;,</div>
+<div class="line">            arp::min_count&lt;1&gt;),</div>
+<div class="line">        arp::router{[](<span class="keywordtype">bool</span> force,</div>
+<div class="line">                       std::filesystem::path dest,</div>
+<div class="line">                       std::vector&lt;std::filesystem::path&gt; srcs) { ... }}),</div>
+<div class="line">    ar::mode(</div>
+<div class="line">        arp::none_name&lt;S_(<span class="stringliteral">&quot;move&quot;</span>)&gt;,</div>
+<div class="line">        arp::description&lt;S_(<span class="stringliteral">&quot;Move source file to destination&quot;</span>)&gt;,</div>
+<div class="line">        common_args,</div>
+<div class="line">        ar::positional_arg&lt;std::filesystem::path&gt;(</div>
+<div class="line">            arp::required,</div>
+<div class="line">            arp::display_name&lt;S_(<span class="stringliteral">&quot;SRC&quot;</span>)&gt;,</div>
+<div class="line">            arp::description&lt;S_(<span class="stringliteral">&quot;Source file path&quot;</span>)&gt;,</div>
+<div class="line">            arp::fixed_count&lt;1&gt;),</div>
+<div class="line">        arp::router{[](<span class="keywordtype">bool</span> force,</div>
+<div class="line">                       std::filesystem::path dest,</div>
+<div class="line">                       std::filesystem::path src) { ... }}))</div>
+</div><!-- fragment --><p>Would output this to the terminal: </p><div class="fragment"><div class="line">$ simple --help</div>
+<div class="line">simple v0.1</div>
+<div class="line"> </div>
+<div class="line">A simple file copier and mover.</div>
+<div class="line"> </div>
+<div class="line">    --help,-h         Display this help and exit</div>
+<div class="line">    copy              Copy source files to destination</div>
+<div class="line">        --force,-f    Force overwrite existing files</div>
+<div class="line">        &lt;DST&gt;[1]      Destination directory</div>
+<div class="line">        &lt;SRC&gt;[1,N]    Source file paths</div>
+<div class="line">    move              Move source file to destination</div>
+<div class="line">        --force,-f    Force overwrite existing files</div>
+<div class="line">        &lt;DST&gt;[1]      Destination directory</div>
+<div class="line">        &lt;SRC&gt;[1]      Source file path</div>
+</div><!-- fragment --><p>As you can see positional arguments are wrapped in angle brackets, and counts are displayed using interval notation.</p>
+<p>Removing the <code>flatten_help</code> policy would change it to this: </p><div class="fragment"><div class="line">$ simple --help</div>
+<div class="line">simple v0.1</div>
+<div class="line"> </div>
+<div class="line">A simple file copier and mover.</div>
+<div class="line"> </div>
+<div class="line">    --help,-h    Display this help and exit</div>
+<div class="line">    copy         Copy source files to destination</div>
+<div class="line">    move         Move source file to destination</div>
+</div><!-- fragment --><p>In either case specifying the mode as an argument to the help argument displays just the sub-arguments of that mode: </p><div class="fragment"><div class="line">$ simple --help copy</div>
+<div class="line">simple v0.1</div>
+<div class="line"> </div>
+<div class="line">A simple file copier and mover.</div>
+<div class="line"> </div>
+<div class="line">copy              Copy source files to destination</div>
+<div class="line">    --force,-f    Force overwrite existing files</div>
+<div class="line">    &lt;DST&gt;[1]      Destination directory</div>
+<div class="line">    &lt;SRC&gt;[1,N]    Source file paths</div>
+</div><!-- fragment --><p>Currently the formatting is quite basic, more advanced formatting options are coming in future releases.</p>
+<h3>Programmatic Access</h3>
+<p>By default when parsed <code>help</code> will output its contents to <code>std::cout</code> and then exit the application with <code>EXIT_SUCCESS</code>. Obviously this won't always be desired, so a <code>router</code> policy can be attached that will pass a <code>std::ostringstream</code> to the user-provided <code>Callable</code>. The stream will have already been populated with the help data shown above, but it can now be appended to or converted to string for use somewhere else.</p>
+<p>Often programmatic access is desired for the help output outside of the user requesting it, for example if a parse exception is thrown, gernally the exception error is printed to the terminal followed by the help output. This is exposed by the <code>help()</code> or <code>help(std::ostringstream&amp;)</code> methods of the root object.</p>
 <h2>Error Handling</h2>
 <p>Currently <code><a class="el" href="namespacearg__router.html">arg_router</a></code> only supports exceptions as error handling. If a parsing fails for some reason a <code><a class="el" href="classarg__router_1_1parse__exception.html">arg_router::parse_exception</a></code> is thrown carrying information on the failure. </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
-<div class="ttc" id="anamespacearg__router_html_ad22d99fefb929f58fe471fb7bf78d5f4"><div class="ttname"><a href="namespacearg__router.html#ad22d99fefb929f58fe471fb7bf78d5f4">arg_router::arg</a></div><div class="ttdeci">constexpr arg_t&lt; T, Policies... &gt; arg(Policies... policies)</div><div class="ttdef"><b>Definition:</b> <a href="arg_8hpp_source.html#l00144">arg.hpp:144</a></div></div>
+<div class="ttc" id="anamespacearg__router_html_ad22d99fefb929f58fe471fb7bf78d5f4"><div class="ttname"><a href="namespacearg__router.html#ad22d99fefb929f58fe471fb7bf78d5f4">arg_router::arg</a></div><div class="ttdeci">constexpr arg_t&lt; T, Policies... &gt; arg(Policies... policies)</div><div class="ttdef"><b>Definition:</b> <a href="arg_8hpp_source.html#l00149">arg.hpp:149</a></div></div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00010">algorithm.hpp:10</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
