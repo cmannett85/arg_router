@@ -23,7 +23,14 @@ jobs:
     - uses: actions/checkout@v2
       with:
         submodules: true
+        fetch-depth: 2
         ref: ${{ github.head_ref }}
+
+    - name: Copyright check
+      run: |
+        cd ${{ github.workspace }}
+        git show --name-only --oneline --pretty="format:" HEAD^..HEAD |
+          xargs ./scripts/copyright_checker.py date
 
     - name: Update packages
       run: |
@@ -64,13 +71,13 @@ jobs:
 
     - name: Calculate unit test coverage
       run: |
-        cd ${{ github.workspace }}/test
+        cd ${{ github.workspace }}/scripts/ci
         ./calculate_test_coverage.sh ${{ env.BUILD_DIR }}
 
     - name: Update README unit test coverage badge
       run: |
         cd ${{ github.workspace }}
-        BADGE_URL=$(./test/create_badge_url.sh -e)
+        BADGE_URL=$(./scripts/ci/create_badge_url.sh -e)
         sed -i -e "s/https:\/\/img\.shields\.io\/badge\/Unit_Test_Coverage-[0-9\.]\+%25-[a-z]\+/${BADGE_URL}/" ./README.md
 
     - name: Push updated README and old_coverage

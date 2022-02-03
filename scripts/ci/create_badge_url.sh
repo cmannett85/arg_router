@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+### Copyright (C) 2022 by Camden Mannett.  All rights reserved. 
+
 ESCAPE=0
 if [ "$1" == "-e" ]; then
     ESCAPE=1

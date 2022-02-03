@@ -1,3 +1,5 @@
+### Copyright (C) 2022 by Camden Mannett.  All rights reserved. 
+
 find_package(Boost ${BOOST_VERSION} REQUIRED COMPONENTS
     unit_test_framework
     filesystem
@@ -46,14 +48,16 @@ set(TEST_SRCS
 )
 
 # Format just the unit test files
-add_custom_target(clangformat_test
-    COMMAND clang-format --style=file --Werror -i ${TEST_HEADERS} ${TEST_SRCS}
-    SOURCES ${CLANG_FORMAT_FILE} ${TEST_HEADERS} ${TEST_SRCS}
+create_clangformat_target(
+    NAME clangformat_test
+    FORMAT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/../.clang-format
+    DEPENDENCIES arg_router
+    SOURCES ${TEST_HEADERS} ${TEST_SRCS}
 )
 
 add_executable(arg_router_test EXCLUDE_FROM_ALL
     ${TEST_HEADERS} ${TEST_SRCS})
-add_dependencies(arg_router_test clangformat_test arg_router)
+add_dependencies(arg_router_test clangformat_test)
 
 target_compile_features(arg_router_test PUBLIC cxx_std_17)
 set_target_properties(arg_router_test PROPERTIES CXX_EXTENSIONS OFF)

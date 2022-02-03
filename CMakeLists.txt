@@ -1,3 +1,5 @@
+### Copyright (C) 2022 by Camden Mannett.  All rights reserved. 
+
 cmake_minimum_required(VERSION 3.15)
 
 # Options
@@ -85,11 +87,15 @@ set(SRCS
 )
 
 set(FOR_IDE
+    ${CMAKE_CURRENT_SOURCE_DIR}/.clang-format
     ${CMAKE_CURRENT_SOURCE_DIR}/.github/workflows/docs_pusher.yml
     ${CMAKE_CURRENT_SOURCE_DIR}/.github/workflows/pr_checker.yml
+    ${CMAKE_CURRENT_SOURCE_DIR}/.gitignore
     ${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile
     ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE
     ${CMAKE_CURRENT_SOURCE_DIR}/README.md
+    ${CMAKE_CURRENT_SOURCE_DIR}/scripts/ci/create_badge_url.sh
+    ${CMAKE_CURRENT_SOURCE_DIR}/scripts/copyright_checker.py
     ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg.json
 )
 
@@ -100,7 +106,22 @@ if(NOT DOCS_ONLY)
     set(MAX_CTS_SIZE 128 CACHE STRING "Maximum compile_time_string size")
     add_compile_definitions(AR_MAX_CTS_SIZE=${MAX_CTS_SIZE})
 
+    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/copyright_checker.cmake)
+    create_copyright_checker_target(
+        NAME copyright_checker
+        SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/scripts/copyright_checker.py
+        DEPENDENCIES gen_version
+        SOURCES ${HEADERS} ${SRCS} ${FOR_IDE}
+    )
+
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/clang-format.cmake)
+    create_clangformat_target(
+        NAME clangformat
+        FORMAT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/.clang-format
+        DEPENDENCIES copyright_checker
+        SOURCES ${HEADERS} ${SRCS}
+    )
+
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/library.cmake)
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/library_coverage.cmake)
 

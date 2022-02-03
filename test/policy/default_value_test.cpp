@@ -1,3 +1,5 @@
+/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
+
 #include "arg_router/policy/default_value.hpp"
 #include "arg_router/tree_node.hpp"
 

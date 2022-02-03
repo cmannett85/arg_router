@@ -1,3 +1,5 @@
+### Copyright (C) 2022 by Camden Mannett.  All rights reserved. 
+
 option(BUILD_SHARED_LIBS "Build shared arg_router library")
 
 add_library(arg_router ${HEADERS} ${SRCS} ${FOR_IDE} ${VERSION_FILE})
