@@ -1,4 +1,6 @@
-﻿#include "arg_router/policy/validator.hpp"
+/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
+
+#include "arg_router/policy/validator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 #include "test_helpers.hpp"

@@ -1,3 +1,5 @@
+/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
+
 #include "arg_router/dependency/one_of.hpp"
 #include "arg_router/arg.hpp"
 #include "arg_router/flag.hpp"

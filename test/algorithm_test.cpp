@@ -1,3 +1,5 @@
+/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
+
 #include "arg_router/algorithm.hpp"
 
 #include "test_helpers.hpp"

@@ -1,3 +1,5 @@
+### Copyright (C) 2022 by Camden Mannett.  All rights reserved. 
+
 # Can't use find_package as it tries to create a target which is not allowed in
 # script mode
 find_program(

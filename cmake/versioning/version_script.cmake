@@ -1,3 +1,5 @@
+### Copyright (C) 2022 by Camden Mannett.  All rights reserved. 
+
 # Taken from https://stackoverflow.com/a/50104093/498437
 #
 

@@ -1,3 +1,5 @@
+### Copyright (C) 2022 by Camden Mannett.  All rights reserved. 
+
 set(VERSION_FILE
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/version.hpp
 )

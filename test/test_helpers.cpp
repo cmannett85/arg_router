@@ -1,3 +1,5 @@
+/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
+
 #include "test_helpers.hpp"
 
 #include <boost/algorithm/string/predicate.hpp>
@@ -16,7 +18,7 @@ namespace bp = boost::process;
 
 namespace
 {
-// This must match the DEATH_TEST_SRCS variable in death_test.cmake
+// This must match the DEATH_TEST_SRC variable in death_test.cmake
 const auto main_file_suffix = fs::path{"test/death_test/main.cpp"};
 const auto relative_build_dir = ".."s;
 const auto target_name = "arg_router_death_test"s;

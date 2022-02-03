@@ -1,3 +1,5 @@
+### Copyright (C) 2022 by Camden Mannett.  All rights reserved. 
+
 set(DEATH_TEST_DIR
     ${CMAKE_CURRENT_SOURCE_DIR}/death_test
 )

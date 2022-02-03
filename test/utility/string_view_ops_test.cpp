@@ -1,3 +1,5 @@
+/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
+
 #include "arg_router/utility/string_view_ops.hpp"
 
 #include "test_helpers.hpp"

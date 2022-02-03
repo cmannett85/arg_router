@@ -1,3 +1,5 @@
+/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
+
 #include "arg_router/utility/tree_recursor.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/description.hpp"

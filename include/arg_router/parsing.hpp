@@ -1,3 +1,5 @@
+/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
+
 #pragma once
 
 #include "arg_router/traits.hpp"

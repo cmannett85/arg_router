@@ -1,5 +1,7 @@
+### Copyright (C) 2022 by Camden Mannett.  All rights reserved. 
+
 set(TEST_COVERAGE_FOR_IDE
-    ${CMAKE_CURRENT_SOURCE_DIR}/calculate_test_coverage.sh
+    ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/ci/calculate_test_coverage.sh
     ${CMAKE_CURRENT_SOURCE_DIR}/old_coverage
 )
 

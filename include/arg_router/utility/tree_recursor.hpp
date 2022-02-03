@@ -1,4 +1,6 @@
-﻿#pragma once
+/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
+
+#pragma once
 
 #include "arg_router/policy/policy.hpp"
 #include "arg_router/tree_node.hpp"

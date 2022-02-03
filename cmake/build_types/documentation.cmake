@@ -1,3 +1,5 @@
+### Copyright (C) 2022 by Camden Mannett.  All rights reserved. 
+
 if(DOCS_ONLY)
     message(STATUS "Documentation-only build")
 endif()

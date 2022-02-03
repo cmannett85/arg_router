@@ -1,3 +1,5 @@
+### Copyright (C) 2022 by Camden Mannett.  All rights reserved. 
+
 add_library(arg_router_coverage ${HEADERS} ${SRCS} ${FOR_IDE} ${VERSION_FILE})
 add_dependencies(arg_router_coverage clangformat)
 

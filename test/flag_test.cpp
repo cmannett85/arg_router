@@ -1,4 +1,6 @@
-﻿#include "arg_router/flag.hpp"
+/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
+
+#include "arg_router/flag.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/description.hpp"
