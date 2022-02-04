@@ -34,7 +34,6 @@ endif()
 set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/algorithm.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/arg.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/config.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/counting_flag.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/dependency/one_of.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/exception.hpp
@@ -100,6 +99,7 @@ set(FOR_IDE
 )
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/versioning/version.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config/config.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/documentation.cmake)
 
 if(NOT DOCS_ONLY)
@@ -110,7 +110,7 @@ if(NOT DOCS_ONLY)
     create_copyright_checker_target(
         NAME copyright_checker
         SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/scripts/copyright_checker.py
-        DEPENDENCIES gen_version
+        DEPENDENCIES gen_config
         SOURCES ${HEADERS} ${SRCS} ${FOR_IDE}
     )
 

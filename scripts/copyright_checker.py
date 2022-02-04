@@ -8,7 +8,9 @@ SKIP_PATHS = ['vcpkg/',
               'test/death_test/main.cpp',
               'docs/',
               'build/',
-              '.github/']
+              '.github/',
+              '.clang-format',
+              '.gitignore']
 THIS_YEAR = datetime.datetime.now().year
 
 def skip_file(file):
