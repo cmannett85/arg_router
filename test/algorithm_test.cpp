@@ -69,23 +69,6 @@ BOOST_AUTO_TEST_CASE(contains_whitespace_test)  //
 #undef MACRO
 }
 
-BOOST_AUTO_TEST_CASE(is_unique_set_test)
-{
-    BOOST_CHECK((algorithm::is_unique_set_v<
-                 std::tuple<int, float, double, std::string_view>>));
-    BOOST_CHECK(
-        !(algorithm::is_unique_set_v<
-            std::tuple<int, std::vector<double>, double, std::vector<int>>>));
-    BOOST_CHECK(
-        !(algorithm::is_unique_set_v<
-            std::
-                tuple<int, std::vector<double>, double, std::vector<double>>>));
-    BOOST_CHECK(!(algorithm::is_unique_set_v<
-                  std::tuple<double, float, double, std::string_view>>));
-    BOOST_CHECK((algorithm::is_unique_set_v<std::tuple<int>>));
-    BOOST_CHECK((algorithm::is_unique_set_v<std::tuple<>>));
-}
-
 BOOST_AUTO_TEST_CASE(find_specialisation_test)
 {
     BOOST_CHECK_EQUAL(

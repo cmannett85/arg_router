@@ -2,7 +2,7 @@
 
 ### Copyright (C) 2022 by Camden Mannett.  All rights reserved. 
 
-# Run from inside the test folder.
+# Run from inside the scripts/ci folder.
 # - First argument is the top-level build directory and is required
 # - Second argument is optional, and defined the gcov tool (defaults to gcov-11)
 if [ -z "$1" ]; then
@@ -18,8 +18,7 @@ SRC_PATH=${PWD}
 OLD_COVERAGE="$(cat ./old_coverage)"
 
 cd ${BUILD_DIR}
-lcov -d ./CMakeFiles/arg_router_coverage.dir/src           \
-     -d ./test/CMakeFiles/arg_router_test_coverage.dir    \
+lcov -d ./test/CMakeFiles/arg_router_test_coverage.dir    \
      -c -o temp.info --rc geninfo_gcov_tool=${GCOV}
 lcov --remove temp.info "/usr/include/*" \
      --remove temp.info "${BUILD_DIR}/vcpkg_installed/*" \
@@ -30,7 +29,7 @@ NEW_COVERAGE="$(lcov --summary arg_router.info | awk 'NR==3 {print $2+0}')"
 DIFF=$(echo "$NEW_COVERAGE - $OLD_COVERAGE" | bc);
 echo "New coverage: ${NEW_COVERAGE}%, previous coverage: ${OLD_COVERAGE}%, diff: ${DIFF}"
 if (( $(echo "${DIFF} < -1.0" | bc -l) )); then
-    echo "\tCoverage drop too great (>1%)"
+    echo "Coverage drop too great (>1%)"
     exit 1
 fi
 
