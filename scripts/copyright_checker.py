@@ -92,6 +92,10 @@ def presence_checker(args):
 
 def date_checker(args):
     for file in args.files:
+        if not os.path.exists(file):
+            print('Skipping non-existent file: ' + file)
+            continue
+
         if skip_file(file):
             continue
 

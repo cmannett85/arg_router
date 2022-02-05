@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "arg_router/basic_types.hpp"
 #include "arg_router/token_type.hpp"
 
 #include <stdexcept>
@@ -17,23 +18,32 @@ public:
      *
      * @param message Error message
      */
-    explicit parse_exception(const std::string& message);
+    explicit parse_exception(const string& message) :
+        std::invalid_argument{message}
+    {
+    }
 
     /** Token constructor.
      *
      * @param message Error message
      * @param token Token that caused the error
      */
-    explicit parse_exception(const std::string& message,
-                             const parsing::token_type& token);
+    explicit parse_exception(const string& message,
+                             const parsing::token_type& token) :
+        std::invalid_argument{message + ": " + parsing::to_string(token)}
+    {
+    }
 
     /** Token list constructor.
      *
      * @param message Error message
      * @param tokens Tokens that caused the error
      */
-    explicit parse_exception(const std::string& message,
-                             const parsing::token_list& tokens);
+    explicit parse_exception(const string& message,
+                             const parsing::token_list& tokens) :
+        std::invalid_argument{message + ": " + parsing::to_string(tokens)}
+    {
+    }
 
     virtual ~parse_exception() override = default;
 };

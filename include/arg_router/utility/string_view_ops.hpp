@@ -2,8 +2,7 @@
 
 #pragma once
 
-#include <string>
-#include <string_view>
+#include "arg_router/basic_types.hpp"
 
 namespace arg_router
 {
@@ -53,8 +52,8 @@ template <typename CharT,
 
 /** Returns a std::string using two std::string_views.
  * 
- * The returned std::string uses the default allocator
- * (<TT>std::allocator</TT>).
+ * The returned std::string uses the library allocator
+ * (<TT>config::allocator</TT>).
  * @tparam CharT Character type
  * @tparam Traits Character traits
  * @param lhs std::string_view instance
@@ -62,11 +61,13 @@ template <typename CharT,
  * @return std::string of @a lhs and @a rhs concatenated together
  */
 template <typename CharT, typename Traits = std::char_traits<CharT>>
-[[nodiscard]] constexpr std::basic_string<CharT, Traits, std::allocator<CharT>>
-operator+(std::basic_string_view<CharT, Traits> lhs,
-          std::basic_string_view<CharT, Traits> rhs)
+[[nodiscard]] constexpr std::
+    basic_string<CharT, Traits, config::allocator<CharT>>
+    operator+(std::basic_string_view<CharT, Traits> lhs,
+              std::basic_string_view<CharT, Traits> rhs)
 {
-    return std::basic_string<CharT, Traits, std::allocator<CharT>>(lhs) + rhs;
+    return std::basic_string<CharT, Traits, config::allocator<CharT>>(lhs) +
+           rhs;
 }
 }  // namespace string_view_ops
 }  // namespace utility

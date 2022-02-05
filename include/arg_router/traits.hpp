@@ -3,7 +3,6 @@
 #pragma once
 
 #include "arg_router/token_type.hpp"
-#include "arg_router/utility/span.hpp"
 
 #include <boost/mp11/algorithm.hpp>
 #include <boost/mp11/bind.hpp>

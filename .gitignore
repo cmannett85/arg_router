@@ -1,6 +1,5 @@
 # Generated project files
 include/arg_router/version.hpp
-include/arg_router/config.hpp
 
 # Death test main (modified by tests)
 test/death_test/main.cpp
