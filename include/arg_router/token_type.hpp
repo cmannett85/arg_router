@@ -2,11 +2,7 @@
 
 #pragma once
 
-#include "arg_router/config.hpp"
-#include "utility/span.hpp"
-
-#include <string>
-#include <vector>
+#include "arg_router/utility/string_view_ops.hpp"
 
 namespace arg_router
 {
@@ -77,7 +73,11 @@ struct token_type {
  * @param token Token to convert
  * @return String representation of @a token
  */
-[[nodiscard]] std::string to_string(const token_type& token);
+[[nodiscard]] inline string to_string(const token_type& token)
+{
+    using namespace utility::string_view_ops;
+    return to_string(token.prefix) + token.name;
+}
 
 /** List of tokens.
  *  
@@ -93,7 +93,7 @@ struct token_type {
  */
 class token_list
 {
-    using base_type = std::vector<token_type>;
+    using base_type = std::vector<token_type, config::allocator<token_type>>;
 
 public:
     /** token_type alias. */
@@ -105,7 +105,7 @@ public:
     /** const token_type& alias. */
     using const_reference = base_type::const_reference;
     /** View type for the pending tokens. */
-    using pending_view_type = utility::span<const value_type>;
+    using pending_view_type = span<const value_type>;
 
     /** View type for the processed tokens.
      *  
@@ -264,7 +264,13 @@ public:
      *
      * @param other Instance to swap with
      */
-    void swap(token_list& other) noexcept;
+    inline void swap(token_list& other) noexcept
+    {
+        using std::swap;
+
+        swap(data_, other.data_);
+        swap(head_offset_, other.head_offset_);
+    }
 
 private:
     base_type data_;
@@ -281,14 +287,41 @@ inline void swap(token_list& lhs, token_list& rhs) noexcept
     lhs.swap(rhs);
 }
 
+namespace detail
+{
+template <typename ViewType>
+[[nodiscard]] constexpr bool token_list_view_equality(ViewType lhs,
+                                                      ViewType rhs) noexcept
+{
+    // For some insane reason, span doesn't have equality operators
+    return std::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+}
+
+template <typename ViewType>
+[[nodiscard]] string token_list_view_to_string(ViewType view)
+{
+    auto str = string{""};
+    for (auto i = 0u; i < view.size(); ++i) {
+        str += to_string(view[i]);
+        if (i != (view.size() - 1)) {
+            str += ", ";
+        }
+    }
+    return str;
+}
+}  // namespace detail
+
 /** Equality operator.
  *
  * @param lhs Pending view
  * @param rhs Pending view
  * @return True if lexicographically equal
  */
-[[nodiscard]] bool operator==(token_list::pending_view_type lhs,
-                              token_list::pending_view_type rhs) noexcept;
+[[nodiscard]] inline bool operator==(token_list::pending_view_type lhs,
+                                     token_list::pending_view_type rhs) noexcept
+{
+    return detail::token_list_view_equality(lhs, rhs);
+}
 
 /** Equality operator.
  *
@@ -348,8 +381,12 @@ inline void swap(token_list& lhs, token_list& rhs) noexcept
  * @param rhs Pending view
  * @return True if lexicographically equal
  */
-[[nodiscard]] bool operator==(token_list::processed_view_type lhs,
-                              token_list::processed_view_type rhs) noexcept;
+[[nodiscard]] inline bool operator==(
+    token_list::processed_view_type lhs,
+    token_list::processed_view_type rhs) noexcept
+{
+    return detail::token_list_view_equality(lhs, rhs);
+}
 
 /** Equality operator.
  *
@@ -410,22 +447,28 @@ inline void swap(token_list& lhs, token_list& rhs) noexcept
  * @param view Pending tokens to convert
  * @return String representation of @a view
  */
-[[nodiscard]] std::string to_string(const token_list::pending_view_type& view);
+[[nodiscard]] inline string to_string(const token_list::pending_view_type& view)
+{
+    return detail::token_list_view_to_string(view);
+}
 
 /** Creates a string representation of @a view.
  * 
  * @param view Processed tokens to convert
  * @return String representation of @a view
  */
-[[nodiscard]] std::string to_string(
-    const token_list::processed_view_type& view);
+[[nodiscard]] inline string to_string(
+    const token_list::processed_view_type& view)
+{
+    return detail::token_list_view_to_string(view);
+}
 
 /** Creates a string representation of the pending view of @a tokens.
  * 
  * @param tokens Tokens to convert
  * @return String representation of @a tokens
  */
-[[nodiscard]] inline std::string to_string(const token_list& tokens)
+[[nodiscard]] inline string to_string(const token_list& tokens)
 {
     return to_string(tokens.pending_view());
 }
@@ -436,6 +479,19 @@ inline void swap(token_list& lhs, token_list& rhs) noexcept
  * @param token Token to analyse
  * @return Token type
  */
-[[nodiscard]] token_type get_token_type(std::string_view token);
+[[nodiscard]] inline token_type get_token_type(std::string_view token)
+{
+    using namespace config;
+
+    if (token.substr(0, long_prefix.size()) == long_prefix) {
+        token.remove_prefix(long_prefix.size());
+        return {prefix_type::LONG, token};
+    } else if (token.substr(0, short_prefix.size()) == short_prefix) {
+        token.remove_prefix(short_prefix.size());
+        return {prefix_type::SHORT, token};
+    } else {
+        return {prefix_type::NONE, token};
+    }
+}
 }  // namespace parsing
 }  // namespace arg_router

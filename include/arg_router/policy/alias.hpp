@@ -7,7 +7,6 @@
 #include "arg_router/parsing.hpp"
 #include "arg_router/policy/no_result_value.hpp"
 #include "arg_router/policy/policy.hpp"
-#include "arg_router/utility/span.hpp"
 #include "arg_router/utility/tree_recursor.hpp"
 #include "arg_router/utility/tuple_iterator.hpp"
 

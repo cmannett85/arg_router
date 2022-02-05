@@ -6,7 +6,6 @@
 #include "arg_router/policy/no_result_value.hpp"
 #include "arg_router/tree_node.hpp"
 
-#include <sstream>
 #include <utility>
 #include <variant>
 
@@ -155,13 +154,13 @@ public:
         }
     }
 
-    /** Overload that writes into std::string and returns it.
+    /** Overload that writes into a string and returns it.
      *
      * @return String holding the help output
      */
-    [[nodiscard]] std::string help() const
+    [[nodiscard]] string help() const
     {
-        auto stream = std::stringstream{};
+        auto stream = stringstream{};
         help(stream);
 
         return stream.str();

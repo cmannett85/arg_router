@@ -34,6 +34,8 @@ endif()
 set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/algorithm.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/arg.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/basic_types.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/config.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/counting_flag.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/dependency/one_of.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/exception.hpp
@@ -72,17 +74,9 @@ set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/tree_node.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/tree_node_fwd.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/compile_time_string.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/span.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/string_view_ops.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/tree_recursor.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/tuple_iterator.hpp
-)
-
-set(SRCS
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/exception.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/global_parser.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/parsing.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/token_type.cpp
 )
 
 set(FOR_IDE
@@ -99,19 +93,16 @@ set(FOR_IDE
 )
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/versioning/version.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config/config.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/documentation.cmake)
 
 if(NOT DOCS_ONLY)
-    set(MAX_CTS_SIZE 128 CACHE STRING "Maximum compile_time_string size")
-    add_compile_definitions(AR_MAX_CTS_SIZE=${MAX_CTS_SIZE})
-
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/copyright_checker.cmake)
     create_copyright_checker_target(
         NAME copyright_checker
         SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/scripts/copyright_checker.py
-        DEPENDENCIES gen_config
-        SOURCES ${HEADERS} ${SRCS} ${FOR_IDE}
+        DEPENDENCIES gen_version
+        SOURCES ${HEADERS} ${FOR_IDE}
     )
 
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/clang-format.cmake)
@@ -119,7 +110,7 @@ if(NOT DOCS_ONLY)
         NAME clangformat
         FORMAT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/.clang-format
         DEPENDENCIES copyright_checker
-        SOURCES ${HEADERS} ${SRCS}
+        SOURCES ${HEADERS}
     )
 
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/library.cmake)
