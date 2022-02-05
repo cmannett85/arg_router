@@ -106,9 +106,6 @@ Typedefs</h2></td></tr>
 <tr class="memitem:a432ca5a24df3c55882c383f01f597c24"><td class="memTemplParams" colspan="2">template&lt;auto Value&gt; </td></tr>
 <tr class="memitem:a432ca5a24df3c55882c383f01f597c24"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1utility.html#a432ca5a24df3c55882c383f01f597c24">convert_integral_to_cts_t</a> = typename <a class="el" href="structarg__router_1_1utility_1_1convert__integral__to__cts.html">convert_integral_to_cts</a>&lt; Value &gt;::type</td></tr>
 <tr class="separator:a432ca5a24df3c55882c383f01f597c24"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad352319d55d0f012d4c77a6bd851d6f5"><td class="memTemplParams" colspan="2">template&lt;typename T , auto Extent = nonstd::span_lite::dynamic_extent&gt; </td></tr>
-<tr class="memitem:ad352319d55d0f012d4c77a6bd851d6f5"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1utility.html#ad352319d55d0f012d4c77a6bd851d6f5">span</a> = nonstd::span_lite::span&lt; T, Extent &gt;</td></tr>
-<tr class="separator:ad352319d55d0f012d4c77a6bd851d6f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a577bf999e7250f595ec2e43571b0714f"><td class="memTemplParams" colspan="2">template&lt;template&lt; typename... &gt; typename Visitor, typename Root &gt; </td></tr>
 <tr class="memitem:a577bf999e7250f595ec2e43571b0714f"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1utility.html#a577bf999e7250f595ec2e43571b0714f">tree_type_recursor_t</a> = typename <a class="el" href="structarg__router_1_1utility_1_1tree__type__recursor.html">tree_type_recursor</a>&lt; Visitor, Root &gt;::type</td></tr>
 <tr class="separator:a577bf999e7250f595ec2e43571b0714f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -207,25 +204,6 @@ template&lt;std::size_t N, char C&gt; </div>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="compile__time__string_8hpp_source.html#l00125">125</a> of file <a class="el" href="compile__time__string_8hpp_source.html">compile_time_string.hpp</a>.</p>
-
-</div>
-</div>
-<a id="ad352319d55d0f012d4c77a6bd851d6f5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad352319d55d0f012d4c77a6bd851d6f5">&#9670;&nbsp;</a></span>span</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T , auto Extent = nonstd::span_lite::dynamic_extent&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">using <a class="el" href="namespacearg__router_1_1utility.html#ad352319d55d0f012d4c77a6bd851d6f5">arg_router::utility::span</a> = typedef nonstd::span_lite::span&lt;T, Extent&gt;</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>An alias for std::span if compiling with &gt;= C++20 support, otherwise nonstd::span_lite::span. </p>
-
-<p class="definition">Definition at line <a class="el" href="span_8hpp_source.html#l00024">24</a> of file <a class="el" href="span_8hpp_source.html">span.hpp</a>.</p>
 
 </div>
 </div>
