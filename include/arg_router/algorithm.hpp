@@ -60,46 +60,6 @@ namespace algorithm
     return false;
 }
 
-/** True if every despecialised type in @a Tuple is unique.
- *
- * @code
- * is_unique_set<std::tuple<std::vector<double>, float, std::deque<double>>>::value  // True
- * is_unique_set<std::tuple<std::vector<double>, float, std::vector<double>>>::value // False
- * is_unique_set<std::tuple<std::vector<double>, float, std::vector<int>>>::value    // False
- * is_unique_set<std::tuple<std::vector<double>, float, float>>::value               // False
- * @endcode
- *
- * @tparam Tuple Types to check (may be empty)
- */
-template <typename Tuple>
-class is_unique_set
-{
-    // Split the non-specialised types from the specialised
-    using non_specialised_list =
-        boost::mp11::mp_remove_if<Tuple, traits::is_specialisation>;
-
-    using specialised_list =
-        boost::mp11::mp_filter<traits::is_specialisation, Tuple>;
-
-public:
-    constexpr static bool value =
-        (std::tuple_size_v<
-             boost::mp11::mp_unique_if<specialised_list,
-                                       traits::is_same_when_despecialised>> ==
-         std::tuple_size_v<
-             specialised_list>)&&(std::
-                                      tuple_size_v<boost::mp11::mp_unique<
-                                          non_specialised_list>> ==
-                                  std::tuple_size_v<non_specialised_list>);
-};
-
-/** Helper variable for is_unique_set.
- *
- * @tparam Tuple Types to check (may be empty)
- */
-template <typename Tuple>
-constexpr bool is_unique_set_v = is_unique_set<Tuple>::value;
-
 /** Evaluates to the index of the specialisation of @a T in @a Tuple.
  *
  * If @a Tuple does not contain a specialisation of @a T then the value is of
