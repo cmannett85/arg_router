@@ -4,23 +4,32 @@
 
 import sys, glob, os, re, datetime, argparse
 
+LANGUAGE_COMMENT_ENDS = [('*.sh', '###', '\n'),
+                         ('*.cpp', '/*', '*/\n'),
+                         ('*.hpp', '/*', '*/\n'),
+                         ('*.py', '###', '\n'),
+                         ('*.cmake', '###', '\n'),
+                         ('CMakeLists.txt', '###', '\n')]
 SKIP_PATHS = ['vcpkg/',
               'test/death_test/main.cpp',
               'docs/',
-              'build/',
-              '.github/',
-              '.clang-format',
-              '.gitignore']
+              'build/']
 THIS_YEAR = datetime.datetime.now().year
 
 def skip_file(file):
-    skip = False
     for skip_path in SKIP_PATHS:
         if skip_path in file:
-            skip = True
-            break
+            return True
 
-    return skip
+    for lang in LANGUAGE_COMMENT_ENDS:
+        suffix = lang[0]
+        if suffix.startswith('*'):
+            suffix = suffix[1:]
+
+        if file.endswith(suffix):
+            return False
+
+    return True
 
 
 def find_re_in_lines(lines, prog):
@@ -48,13 +57,6 @@ def build_copyright():
 
 
 def presence_checker(args):
-    LANGUAGE_COMMENT_ENDS = [('*.sh', '###', '\n'),
-                             ('*.cpp', '/*', '*/\n'),
-                             ('*.hpp', '/*', '*/\n'),
-                             ('*.py', '###', '\n'),
-                             ('*.cmake', '###', '\n'),
-                             ('CMakeLists.txt', '###', '\n')]
-
     root_dir = args.dir
     generate = args.generate
 

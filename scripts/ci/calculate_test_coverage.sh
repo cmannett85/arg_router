@@ -21,8 +21,8 @@ cd ${BUILD_DIR}
 lcov -d ./test/CMakeFiles/arg_router_test_coverage.dir    \
      -c -o temp.info --rc geninfo_gcov_tool=${GCOV}
 lcov --remove temp.info "/usr/include/*" \
-     --remove temp.info "${BUILD_DIR}/vcpkg_installed/*" \
-     --remove temp.info "${SRC_PATH}/*" \
+     --remove temp.info "*/vcpkg_installed/*" \
+     --remove temp.info "*/arg_router/test/*" \
      --output-file arg_router.info
 
 NEW_COVERAGE="$(lcov --summary arg_router.info | awk 'NR==3 {print $2+0}')"
