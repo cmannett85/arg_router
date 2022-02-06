@@ -2,7 +2,7 @@
 
 set(TEST_COVERAGE_FOR_IDE
     ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/ci/calculate_test_coverage.sh
-    ${CMAKE_CURRENT_SOURCE_DIR}/old_coverage
+    ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/ci/old_coverage
 )
 
 add_executable(arg_router_test_coverage EXCLUDE_FROM_ALL

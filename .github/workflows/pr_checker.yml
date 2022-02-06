@@ -84,7 +84,7 @@ jobs:
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
         commit_message: Updating README.md unit test coverage badge
-        file_pattern: README.md test/old_coverage
+        file_pattern: README.md scripts/ci/old_coverage
 
   # Makes sure there is no errors when generating the documentation
   documentation:

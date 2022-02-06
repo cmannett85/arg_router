@@ -411,6 +411,31 @@ BOOST_AUTO_TEST_CASE(anonymous_mode_no_tokens_parse_test)
     BOOST_CHECK_EQUAL(std::get<2>(result), 84);
 }
 
+BOOST_AUTO_TEST_CASE(no_tokens_parse_test)
+{
+    auto router_hit = false;
+    const auto r =
+        root(flag(policy::long_name<S_("hello")>,
+                  policy::description<S_("Hello description")>,
+                  policy::router{[&](auto) { router_hit = true; }}),
+             arg<int>(policy::long_name<S_("arg1")>,
+                      policy::default_value{42},
+                      policy::description<S_("Arg1 description")>,
+                      policy::router{[&](auto) { router_hit = true; }}),
+             arg<int>(policy::long_name<S_("arg2")>,
+                      policy::default_value{84},
+                      policy::description<S_("Arg2 description")>,
+                      policy::router{[&](auto) { router_hit = true; }}),
+             policy::validation::default_validator);
+
+    auto args = std::vector{"foo"};
+    BOOST_CHECK_EXCEPTION(  //
+        r.parse(args.size(), const_cast<char**>(args.data())),
+        parse_exception,
+        [](const auto& e) { return e.what() == "No arguments passed"s; });
+    BOOST_CHECK(!router_hit);
+}
+
 BOOST_AUTO_TEST_CASE(multiple_required_arg_parse_test)
 {
     const auto r =

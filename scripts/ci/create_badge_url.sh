@@ -8,7 +8,7 @@ if [ "$1" == "-e" ]; then
 fi
 
 # Creates a shields.io badge URL for the unit test coverage
-COVERAGE="$(cat ./test/old_coverage)"
+COVERAGE="$(cat ./scripts/ci/old_coverage)"
 COLOUR="brightgreen"
 if (( $(echo "$COVERAGE < 50" | bc -l) )); then
     COLOUR="red"
