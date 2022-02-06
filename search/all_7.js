@@ -22,7 +22,5 @@ var searchData=
   ['is_5ftree_5fnode_5fv_142',['is_tree_node_v',['../namespacearg__router.html#a4c3ee7dfa23bf543d5384c0a9150634e',1,'arg_router']]],
   ['is_5ftuple_5flike_143',['is_tuple_like',['../structarg__router_1_1traits_1_1is__tuple__like.html',1,'arg_router::traits']]],
   ['is_5ftuple_5flike_5fv_144',['is_tuple_like_v',['../namespacearg__router_1_1traits.html#a3fb5f200575fec97170262ab4e077699',1,'arg_router::traits']]],
-  ['is_5funique_5fset_145',['is_unique_set',['../classarg__router_1_1algorithm_1_1is__unique__set.html',1,'arg_router::algorithm']]],
-  ['is_5funique_5fset_5fv_146',['is_unique_set_v',['../namespacearg__router_1_1algorithm.html#a4ad547d0d6b1ef4fbe0f6006650b1b8e',1,'arg_router::algorithm']]],
-  ['is_5fwhitespace_147',['is_whitespace',['../namespacearg__router_1_1algorithm.html#a008daa275a6ca8a9f8735b393200ea5b',1,'arg_router::algorithm']]]
+  ['is_5fwhitespace_145',['is_whitespace',['../namespacearg__router_1_1algorithm.html#a008daa275a6ca8a9f8735b393200ea5b',1,'arg_router::algorithm']]]
 ];
