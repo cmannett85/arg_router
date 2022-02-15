@@ -4,6 +4,7 @@
 
 #include "arg_router/policy/policy.hpp"
 
+#include <functional>
 #include <optional>
 
 namespace arg_router

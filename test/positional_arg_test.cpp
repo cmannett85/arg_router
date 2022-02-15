@@ -274,7 +274,7 @@ BOOST_AUTO_TEST_CASE(must_have_a_display_name_test)
 using namespace arg_router;
 
 int main() {
-    auto p = positional_arg<int>();
+    auto p = positional_arg<std::vector<int>>();
     return 0;
 }
     )",
@@ -285,6 +285,7 @@ BOOST_AUTO_TEST_CASE(must_not_have_a_long_name_test)
 {
     test::death_test_compile(
         R"(
+#include "arg_router/policy/display_name.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/positional_arg.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
@@ -292,7 +293,8 @@ BOOST_AUTO_TEST_CASE(must_not_have_a_long_name_test)
 using namespace arg_router;
 
 int main() {
-    auto p = positional_arg<int>(policy::long_name<S_("hello")>);
+    auto p = positional_arg<std::vector<int>>(policy::display_name<S_("hello")>,
+                                              policy::long_name<S_("hello2")>);
     return 0;
 }
     )",
@@ -303,13 +305,16 @@ BOOST_AUTO_TEST_CASE(must_not_have_a_short_name_test)
 {
     test::death_test_compile(
         R"(
+#include "arg_router/policy/display_name.hpp"
 #include "arg_router/policy/short_name.hpp"
 #include "arg_router/positional_arg.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
 
 int main() {
-    auto p = positional_arg<int>(policy::short_name<'l'>);
+    auto p = positional_arg<std::vector<int>>(policy::display_name<S_("hello")>,
+                                              policy::short_name<'l'>);
     return 0;
 }
     )",
@@ -320,6 +325,7 @@ BOOST_AUTO_TEST_CASE(must_not_have_a_none_name_test)
 {
     test::death_test_compile(
         R"(
+#include "arg_router/policy/display_name.hpp"
 #include "arg_router/policy/none_name.hpp"
 #include "arg_router/positional_arg.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
@@ -327,7 +333,8 @@ BOOST_AUTO_TEST_CASE(must_not_have_a_none_name_test)
 using namespace arg_router;
 
 int main() {
-    auto p = positional_arg<int>(policy::none_name<S_("hello")>);
+    auto p = positional_arg<std::vector<int>>(policy::display_name<S_("hello")>,
+                                              policy::none_name<S_("hello2")>);
     return 0;
 }
     )",

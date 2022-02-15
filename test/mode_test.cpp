@@ -841,8 +841,8 @@ BOOST_AUTO_TEST_CASE(anonymous_child_mode_test)
         R"(
 #include "arg_router/flag.hpp"
 #include "arg_router/mode.hpp"
-#include "arg_router/policy/display_name.hpp"
 #include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/none_name.hpp"
 #include "arg_router/policy/router.hpp"
 #include "arg_router/tree_node.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
@@ -868,7 +868,7 @@ public:
 
 int main() {
     const auto m = stub_node(
-                        mode(policy::display_name<S_("mode")>,
+                        mode(policy::none_name<S_("mode")>,
                              mode(flag(policy::long_name<S_("hello")>),
                                   policy::router([&](bool) {}))));
 
@@ -886,15 +886,15 @@ BOOST_AUTO_TEST_CASE(anonymous_mode_cannot_have_a_child_mode_test)
         R"(
 #include "arg_router/flag.hpp"
 #include "arg_router/mode.hpp"
-#include "arg_router/policy/display_name.hpp"
 #include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/none_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
 
 int main() {
     const auto m = mode(
-                    mode(policy::display_name<S_("mode")>,
+                    mode(policy::none_name<S_("mode")>,
                          flag(policy::long_name<S_("hello")>)));
     return 0;
 }

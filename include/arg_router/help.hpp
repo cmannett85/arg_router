@@ -71,15 +71,18 @@ public:
 
         using help_data_type = typename Node::template help_data_type<Flatten>;
 
-        constexpr auto name_index = algorithm::find_specialisation_v<
-            policy::program_name_t,
-            typename parent_type::policies_type>;
-        constexpr auto version_index = algorithm::find_specialisation_v<
-            policy::program_version_t,
-            typename parent_type::policies_type>;
-        constexpr auto intro_index = algorithm::find_specialisation_v<
-            policy::program_intro_t,
-            typename parent_type::policies_type>;
+        [[maybe_unused]] constexpr auto name_index =
+            algorithm::find_specialisation_v<
+                policy::program_name_t,
+                typename parent_type::policies_type>;
+        [[maybe_unused]] constexpr auto version_index =
+            algorithm::find_specialisation_v<
+                policy::program_version_t,
+                typename parent_type::policies_type>;
+        [[maybe_unused]] constexpr auto intro_index =
+            algorithm::find_specialisation_v<
+                policy::program_intro_t,
+                typename parent_type::policies_type>;
 
         // Generate the preamble
         if constexpr (name_index !=
@@ -96,14 +99,16 @@ public:
                               typename parent_type::policies_type>::
                               program_version();
             }
-            stream << config::lf << config::lf;
+            stream << "\n"
+                   << "\n";
         }
         if constexpr (intro_index !=
                       std::tuple_size_v<typename parent_type::policies_type>) {
             stream << std::tuple_element_t<
                           intro_index,
                           typename parent_type::policies_type>::program_intro()
-                   << config::lf << config::lf;
+                   << "\n"
+                   << "\n";
         }
 
         // Calculate description offset
@@ -270,7 +275,7 @@ private:
                        << HelpData::description::get();
             }
 
-            stream << config::lf;
+            stream << "\n";
         }
 
         utility::tuple_type_iterator<typename HelpData::children>([&](auto i) {

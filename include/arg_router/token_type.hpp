@@ -141,9 +141,9 @@ public:
     }
 
     token_list(token_list&&) noexcept = default;
-    token_list(const token_list&) noexcept = default;
+    token_list(const token_list&) = default;
     token_list& operator=(token_list&&) noexcept = default;
-    token_list& operator=(const token_list&) noexcept = default;
+    token_list& operator=(const token_list&) = default;
 
     /** View of the tokens still to be processed.
      *

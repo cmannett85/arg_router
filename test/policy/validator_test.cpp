@@ -466,13 +466,13 @@ BOOST_AUTO_TEST_CASE(child_must_have_policy_test)
 using namespace arg_router;
 
 int main() {
-    policy::validation::child_must_have_policy<policy::router>::check<
+    policy::validation::child_must_have_policy<policy::long_name_t>::check<
         root_t<flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
-                    policy::long_name_t<S_("test1")>,
-                    policy::router<std::less<>>>,
-             flag_t<policy::short_name_t<traits::integral_constant<'b'>>,
-                    policy::long_name_t<S_("test2")>>,
-             std::decay_t<decltype(policy::validation::default_validator)>>>();
+                      policy::long_name_t<S_("test1")>,
+                      policy::router<std::less<>>>,
+               flag_t<policy::short_name_t<traits::integral_constant<'b'>>,
+                      policy::router<std::less<>>>,
+               std::decay_t<decltype(policy::validation::default_validator)>>>();
     return 0;
 }
     )",
@@ -529,8 +529,8 @@ using namespace arg_router;
 int main() {
     policy::validation::
         policy_parent_must_not_have_policy<policy::long_name_t>::check<
-            policy::display_name_t<S_("hello")>,
-            flag_t<policy::display_name_t<S_("hello")>,
+            policy::description_t<S_("hello")>,
+            flag_t<policy::description_t<S_("hello")>,
                    policy::long_name_t<S_("flag")>>>();
 }
     )",
@@ -572,8 +572,9 @@ using namespace arg_router;
 
 int main() {
     policy::validation::at_least_one_of_policies<
-        policy::long_name_t,
+        policy::display_name_t,
         policy::short_name_t>::check<arg_t<int,
+                                           policy::long_name_t<S_("test1")>,
                                            policy::description_t<S_("desc")>>>();
     return 0;
 }

@@ -2,6 +2,7 @@
   "name": "arg-router",
   "version-string": "0.0.1",
   "dependencies": [
+    "boost-lexical-cast",
     "boost-mp11",
     "boost-process",
     "boost-test",

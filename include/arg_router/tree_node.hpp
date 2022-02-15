@@ -162,18 +162,20 @@ public:
         utility::tuple_iterator(
             [&](auto i, const auto& node) {
                 using node_type = std::decay_t<decltype(node)>;
-                constexpr auto match_arity =
-                    traits::arity_v<decltype(&node_type::template match<Fn>)>;
-
-                if (result) {
-                    return;
-                }
 
                 // Wrap the caller's visitor with one that forwards the child
                 // index
                 const auto wrapped_visitor = [&](const auto& child) {
                     visitor(i, child);
                 };
+
+                constexpr auto match_arity = traits::arity_v<
+                    decltype(&node_type::template match<
+                             std::decay_t<decltype(wrapped_visitor)>>)>;
+
+                if (result) {
+                    return;
+                }
 
                 if constexpr ((i <= std::tuple_size_v<ResultsTuple>)&&  //
                               (match_arity == 3)) {
@@ -219,13 +221,13 @@ protected:
     public:
         [[nodiscard]] constexpr static auto label_generator() noexcept
         {
-            constexpr auto long_name_index =
+            [[maybe_unused]] constexpr auto long_name_index =
                 boost::mp11::mp_find_if<policies_type,
                                         traits::has_long_name_method>::value;
-            constexpr auto short_name_index =
+            [[maybe_unused]] constexpr auto short_name_index =
                 boost::mp11::mp_find_if<policies_type,
                                         traits::has_short_name_method>::value;
-            constexpr auto none_name_index =
+            [[maybe_unused]] constexpr auto none_name_index =
                 boost::mp11::mp_find_if<policies_type,
                                         traits::has_none_name_method>::value;
 

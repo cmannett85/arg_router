@@ -86,7 +86,8 @@ BOOST_AUTO_TEST_CASE(match_test)
 
             if constexpr (valid_child_index) {
                 using expected_child_type =
-                    std::tuple_element_t<expected_child_index, children_type>;
+                    std::tuple_element_t<expected_child_index.value,
+                                         children_type>;
                 BOOST_CHECK((std::is_same_v<child_type, expected_child_type>));
             } else {
                 BOOST_CHECK_MESSAGE(false,

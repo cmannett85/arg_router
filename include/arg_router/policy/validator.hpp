@@ -373,7 +373,7 @@ struct basic_child_must_have_policy {
         algorithm::has_specialisation<Policy, typename Child::policies_type>;
 
     template <typename T>
-    constexpr static auto value =
+    constexpr static bool value =
         boost::mp11::mp_all_of<typename T::children_type, child_checker>::value;
 };
 

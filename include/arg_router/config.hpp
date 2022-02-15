@@ -21,13 +21,6 @@ constexpr auto short_prefix = std::string_view{AR_SHORT_PREFIX};
 static_assert(long_prefix.size() > short_prefix.size(),
               "Long prefix must be longer than short prefix");
 
-/** Newline character sequence (platform dependent). */
-#ifdef _WIN32
-constexpr auto lf = std::string_view{"\r\n"};
-#else
-constexpr auto lf = std::string_view{"\n"};
-#endif
-
 /** Allocator for all STL types.
  *
  * @tparam T Type to allocate for

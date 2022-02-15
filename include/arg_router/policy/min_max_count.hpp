@@ -52,7 +52,6 @@ public:
         return MaxType::value;
     }
 
-protected:
     /** Checks that there are enough pending tokens in the list to reach the
      * minimum count.
      * 

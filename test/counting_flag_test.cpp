@@ -262,12 +262,14 @@ BOOST_AUTO_TEST_CASE(must_not_have_display_name_test)
         R"(
 #include "arg_router/counting_flag.hpp"
 #include "arg_router/policy/display_name.hpp"
+#include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
 
 int main() {
-    auto f = counting_flag<int>(policy::display_name<S_("hello")>);
+    auto f = counting_flag<int>(policy::long_name<S_("hello")>,
+                                policy::display_name<S_("hello2")>);
     return 0;
 }
     )",
@@ -279,13 +281,15 @@ BOOST_AUTO_TEST_CASE(must_not_have_none_name_test)
     test::death_test_compile(
         R"(
 #include "arg_router/counting_flag.hpp"
+#include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/none_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
 
 int main() {
-    auto f = counting_flag<int>(policy::none_name<S_("hello")>);
+    auto f = counting_flag<int>(policy::long_name<S_("hello")>,
+                                policy::none_name<S_("hello2")>);
     return 0;
 }
     )",

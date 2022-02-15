@@ -38,7 +38,6 @@ public:
     {
     }
 
-protected:
     /** Duplicates any value tokens as aliases of other nodes.
      * 
      * The token duplication mechanism has two approaches, depending on the
