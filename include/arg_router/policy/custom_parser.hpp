@@ -35,7 +35,6 @@ public:
     {
     }
 
-protected:
     /** Parse @a str to produce an equivalent instance of value_type.
      *
      * @tparam ValueType Parsed value type, must be implicity convertible from

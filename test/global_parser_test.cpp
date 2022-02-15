@@ -37,7 +37,7 @@ BOOST_AUTO_TEST_CASE(numeric_parse_test)
                        std::tuple{"hello", 42, "Failed to parse: hello"},
                        std::tuple{"23742949",
                                   std::uint8_t{0},
-                                  "Value out of range for argument: 23742949"},
+                                  "Failed to parse: 23742949"},
                    });
 }
 
@@ -117,7 +117,7 @@ BOOST_AUTO_TEST_CASE(container_parse_test)
                        std::tuple{"hello", false, "Failed to parse: hello"},
                        std::tuple{"23742949",
                                   std::uint8_t{0},
-                                  "Value out of range for argument: 23742949"},
+                                  "Failed to parse: 23742949"},
                    });
 }
 

@@ -34,7 +34,6 @@ public:
     {
     }
 
-protected:
     /** Checks both the pending and processed tokens for all known names of the
      * targets.
      *

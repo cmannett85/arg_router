@@ -6,7 +6,7 @@
 #include "arg_router/traits.hpp"
 #include "arg_router/utility/string_view_ops.hpp"
 
-#include <charconv>
+#include <boost/lexical_cast/try_lexical_convert.hpp>
 
 namespace arg_router
 {
@@ -40,22 +40,12 @@ struct parser<T, typename std::enable_if_t<std::is_arithmetic_v<T>>> {
         using namespace utility::string_view_ops;
         using namespace std::string_literals;
 
-        if (token.front() == '+') {
-            token.remove_prefix(1);
+        auto result = T{};
+        if (!boost::conversion::try_lexical_convert(token, result)) {
+            throw parse_exception{"Failed to parse: "s + token};
         }
 
-        auto value = T{};
-        const auto result = std::from_chars(token.begin(), token.end(), value);
-
-        if (result.ec == std::errc{}) {
-            return value;
-        }
-
-        if (result.ec == std::errc::result_out_of_range) {
-            throw parse_exception{"Value out of range for argument: "s + token};
-        }
-
-        throw parse_exception{"Failed to parse: "s + token};
+        return result;
     }
 };
 

@@ -144,7 +144,7 @@ public:
 
         // Remove our token (if not anonymous) from the list, keep it for any
         // error messages
-        auto mode_token = std::optional<parsing::token_type>{};
+        [[maybe_unused]] auto mode_token = std::optional<parsing::token_type>{};
         if constexpr (!is_anonymous) {
             mode_token = tokens.pending_view().front();
             tokens.mark_as_processed();
@@ -199,7 +199,7 @@ public:
 
         // Handle missing tokens
         utility::tuple_iterator(
-            [&](auto i, auto& result) {
+            [&]([[maybe_unused]] auto i, auto& result) {
                 if constexpr (!is_skip_tag_v<std::decay_t<decltype(result)>>) {
                     if (!result) {
                         const auto& child = std::get<i>(this->children());
@@ -288,7 +288,8 @@ private:
         if constexpr (!is_skip_tag_v<optional_result_type>) {
             // Make a copy of the token in case we need it for the error message
             // later (parsing consumes the tokens)
-            const auto first_token = tokens.pending_view().front();
+            [[maybe_unused]] const auto first_token =
+                tokens.pending_view().front();
 
             auto parse_result = child.parse(tokens, parents...);
             auto& result = std::get<I>(results);

@@ -13,3 +13,4 @@ build/
 *.txt.user
 .vscode/
 .vs/
+CMakeSettings.json

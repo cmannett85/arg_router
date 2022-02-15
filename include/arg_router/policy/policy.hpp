@@ -56,13 +56,13 @@ constexpr auto is_all_policies_v = is_all_policies<Tuple>::value;
  * @tparam T Policy type to query
  */
 template <typename T>
-struct has_pre_parse_phase_method : T {
+struct has_pre_parse_phase_method {
     static_assert(policy::is_policy_v<T>, "T must be a policy");
 
     template <typename U>
     using type = decltype(  //
-        std::declval<const has_pre_parse_phase_method&>()
-            .template pre_parse_phase<>(std::declval<parsing::token_list&>()));
+        std::declval<const U&>().template pre_parse_phase<>(
+            std::declval<parsing::token_list&>()));
 
     constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
 };
@@ -81,13 +81,13 @@ constexpr static bool has_pre_parse_phase_method_v =
  * @tparam ValueType Parsed type
  */
 template <typename T, typename ValueType>
-struct has_parse_phase_method : T {
+struct has_parse_phase_method {
     static_assert(policy::is_policy_v<T>, "T must be a policy");
 
     template <typename U>
     using type = decltype(  //
-        std::declval<const has_parse_phase_method&>()
-            .template parse_phase<ValueType>(std::declval<std::string_view>()));
+        std::declval<const U&>().template parse_phase<ValueType>(
+            std::declval<std::string_view>()));
 
     constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
 };
@@ -107,14 +107,13 @@ constexpr static bool has_parse_phase_method_v =
  * @tparam ValueType Parsed type
  */
 template <typename T, typename ValueType>
-struct has_validation_phase_method : T {
+struct has_validation_phase_method {
     static_assert(policy::is_policy_v<T>, "T must be a policy");
 
     template <typename U>
     using type = decltype(  //
-        std::declval<const has_validation_phase_method&>()
-            .template validation_phase<ValueType>(
-                std::declval<const ValueType&>()));
+        std::declval<const U&>().template validation_phase<ValueType>(
+            std::declval<const ValueType&>()));
 
     constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
 };
@@ -133,14 +132,13 @@ constexpr static bool has_validation_phase_method_v =
  * @tparam T Policy type to query
  */
 template <typename T>
-struct has_routing_phase_method : T {
+struct has_routing_phase_method {
     static_assert(policy::is_policy_v<T>, "T must be a policy");
 
     template <typename U>
     using type = decltype(  //
-        std::declval<const has_routing_phase_method&>()
-            .template routing_phase<>(
-                std::declval<const parsing::token_list&>()));
+        std::declval<const U&>().template routing_phase<>(
+            std::declval<const parsing::token_list&>()));
 
     constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
 };
@@ -159,13 +157,12 @@ constexpr static bool has_routing_phase_method_v =
  * @tparam ValueType Parsed type
  */
 template <typename T, typename ValueType>
-struct has_missing_phase_method : T {
+struct has_missing_phase_method {
     static_assert(policy::is_policy_v<T>, "T must be a policy");
 
     template <typename U>
     using type = decltype(  //
-        std::declval<const has_missing_phase_method&>()
-            .template missing_phase<ValueType>());
+        std::declval<const U&>().template missing_phase<ValueType>());
 
     constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
 };

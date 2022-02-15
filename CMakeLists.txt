@@ -88,6 +88,15 @@ set(FOR_IDE
     ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE
     ${CMAKE_CURRENT_SOURCE_DIR}/README.md
     ${CMAKE_CURRENT_SOURCE_DIR}/scripts/ci/create_badge_url.sh
+    ${CMAKE_CURRENT_SOURCE_DIR}/scripts/ci/calculate_test_coverage.sh
+    ${CMAKE_CURRENT_SOURCE_DIR}/scripts/ci/docker/base.sh
+    ${CMAKE_CURRENT_SOURCE_DIR}/scripts/ci/docker/clang-9.sh
+    ${CMAKE_CURRENT_SOURCE_DIR}/scripts/ci/docker/clang++-9.sh
+    ${CMAKE_CURRENT_SOURCE_DIR}/scripts/ci/docker/cmake.sh
+    ${CMAKE_CURRENT_SOURCE_DIR}/scripts/ci/docker/Dockerfile
+    ${CMAKE_CURRENT_SOURCE_DIR}/scripts/ci/docker/g++-9.sh
+    ${CMAKE_CURRENT_SOURCE_DIR}/scripts/ci/docker/gcc-9.sh
+    ${CMAKE_CURRENT_SOURCE_DIR}/scripts/ci/docker/README.md
     ${CMAKE_CURRENT_SOURCE_DIR}/scripts/copyright_checker.py
     ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg.json
 )
@@ -101,7 +110,6 @@ if(NOT DOCS_ONLY)
     create_copyright_checker_target(
         NAME copyright_checker
         SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/scripts/copyright_checker.py
-        DEPENDENCIES gen_version
         SOURCES ${HEADERS} ${FOR_IDE}
     )
 
@@ -109,12 +117,11 @@ if(NOT DOCS_ONLY)
     create_clangformat_target(
         NAME clangformat
         FORMAT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/.clang-format
-        DEPENDENCIES copyright_checker
+        DEPENDS copyright_checker
         SOURCES ${HEADERS}
     )
 
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/library.cmake)
-    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/library_coverage.cmake)
 
     enable_testing()
     add_subdirectory(test)

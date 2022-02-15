@@ -160,7 +160,7 @@ private:
         constexpr auto num_digits = math::num_digits(NewValue);
         constexpr auto power10 = math::pow<10>(num_digits - 1);
         constexpr auto digit = NewValue / power10;
-        constexpr auto next_value = NewValue % power10;
+        [[maybe_unused]] constexpr auto next_value = NewValue % power10;
 
         using digit_str =
             typename Str::template append_t<compile_time_string<'0' + digit>>;

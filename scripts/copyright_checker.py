@@ -10,10 +10,11 @@ LANGUAGE_COMMENT_ENDS = [('*.sh', '###', '\n'),
                          ('*.py', '###', '\n'),
                          ('*.cmake', '###', '\n'),
                          ('CMakeLists.txt', '###', '\n')]
-SKIP_PATHS = ['vcpkg/',
-              'test/death_test/main.cpp',
-              'docs/',
-              'build/']
+SKIP_PATHS = ['vcpkg' + os.sep,
+              os.path.join('test', 'death_test', 'main.cpp'),
+              'docs' + os.sep,
+              'build' + os.sep, # VSCode
+              'out' + os.sep]   # Visual Studio
 THIS_YEAR = datetime.datetime.now().year
 
 def skip_file(file):

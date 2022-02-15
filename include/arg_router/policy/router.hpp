@@ -28,7 +28,6 @@ public:
      */
     constexpr explicit router(Fn f) noexcept : f_{std::move(f)} {}
 
-protected:
     /** Executes the result of the parsed command line arguments.
      * 
      * @tparam Args Argument types, must be implicitly convertible to the types

@@ -17,7 +17,7 @@ BOOST_AUTO_TEST_SUITE(algorithm_suite)
 BOOST_AUTO_TEST_CASE(is_alnum_test)
 {
     utility::tuple_iterator(
-        [](auto i, auto) {
+        [](auto, auto i) {
             constexpr auto valid = std::string_view{"abcdefghijklmnopqrstuvwxyz"
                                                     "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                                                     "0123456789"};
@@ -26,13 +26,16 @@ BOOST_AUTO_TEST_CASE(is_alnum_test)
             constexpr auto result = algorithm::is_alnum(i);
             static_assert(expected == result, "is_alnum_test failed");
         },
-        std::make_index_sequence<std::numeric_limits<char>::max()>());
+        boost::mp11::mp_rename<  //
+            boost::mp11::mp_iota<
+                traits::integral_constant<std::numeric_limits<char>::max()>>,
+            std::tuple>{});
 }
 
 BOOST_AUTO_TEST_CASE(is_whitespace_test)
 {
     utility::tuple_iterator(
-        [](auto i, auto) {
+        [](auto, auto i) {
             constexpr auto expected = (i == ' ') || (i == '\f') ||
                                       (i == '\n') || (i == '\r') ||
                                       (i == '\t') || (i == '\v');
@@ -40,10 +43,13 @@ BOOST_AUTO_TEST_CASE(is_whitespace_test)
             constexpr auto result = algorithm::is_whitespace(i);
             static_assert(expected == result, "is_whitespace failed");
         },
-        std::make_index_sequence<std::numeric_limits<char>::max()>());
+        boost::mp11::mp_rename<  //
+            boost::mp11::mp_iota<
+                traits::integral_constant<std::numeric_limits<char>::max()>>,
+            std::tuple>{});
 }
 
-BOOST_AUTO_TEST_CASE(contains_whitespace_test)  //
+BOOST_AUTO_TEST_CASE(contains_whitespace_test)
 {
     // Although std::string_view is constexpr, it's type is the same between
     // our strings, which means we can't use it as above because you can't

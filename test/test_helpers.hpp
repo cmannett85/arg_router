@@ -38,7 +38,7 @@ void data_set(F&& f, std::vector<std::tuple<Args...>>&& args)
     auto count = 0u;
     for (auto&& a : args) {
         BOOST_TEST_MESSAGE("Performing test " << ++count);
-        std::apply(f, a);
+        std::apply(f, std::move(a));
     }
 }
 
@@ -50,9 +50,9 @@ void data_set(F&& f, std::vector<std::tuple<Args...>>&& args)
  * @param args A list of tuples carrying @a Args
  */
 template <typename F, typename... Args>
-void data_set(F&& f, std::initializer_list<std::tuple<Args...>>&& args)
+void data_set(F&& f, std::initializer_list<std::tuple<Args...>> args)
 {
-    data_set(std::forward<F>(f), std::vector<std::tuple<Args...>>{args});
+    data_set(std::forward<F>(f), std::vector<std::tuple<Args...>>(args));
 }
 
 /** Overload for for passing a tuple of tuples.
@@ -101,7 +101,7 @@ constexpr void data_set(F&& f, std::tuple<Args...>&& tuple)
     utility::tuple_iterator(
         [&](auto i, auto&& t) {
             BOOST_TEST_MESSAGE("Performing test " << (i + 1));
-            std::apply(f, t);
+            std::apply(f, std::forward<std::decay_t<decltype(t)>>(t));
         },
         std::forward<std::decay_t<decltype(tuple)>>(tuple));
 }
