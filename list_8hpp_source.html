@@ -63,7 +63,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_48805ccb342e40be4d45daee5753b842.html">arg_router</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_529fe8366846da263013841a2c49df49.html">arg_router</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -86,7 +86,7 @@ $(function() {
 <div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="classarg__router_1_1list.html">   20</a></span>&#160;<span class="keyword">class </span><a class="code" href="classarg__router_1_1list.html">list</a></div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;{</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="classarg__router_1_1list.html#a8c48af5598e074c0470d9ce8d09a7559">   24</a></span>&#160;    <span class="keyword">using</span> <a class="code" href="classarg__router_1_1list.html#a8c48af5598e074c0470d9ce8d09a7559">children_type</a> = std::tuple&lt;Children...&gt;;</div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="classarg__router_1_1list.html#a0a4459b2b6febc4609e374c672cb3bf3">   24</a></span>&#160;    <span class="keyword">using</span> <a class="code" href="classarg__router_1_1list.html#a0a4459b2b6febc4609e374c672cb3bf3">children_type</a> = std::tuple&lt;std::decay_t&lt;Children&gt;...&gt;;</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    static_assert(boost::mp11::mp_all_of&lt;children_type, is_tree_node&gt;::value,</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;                  <span class="stringliteral">&quot;All list children must be tree_nodes (i.e. not policies)&quot;</span>);</div>
@@ -96,15 +96,15 @@ $(function() {
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    {</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    }</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="classarg__router_1_1list.html#ad033067c4496dd4c8908685e53e75767">   42</a></span>&#160;    [[nodiscard]] <a class="code" href="classarg__router_1_1list.html#a8c48af5598e074c0470d9ce8d09a7559">children_type</a>&amp; <a class="code" href="classarg__router_1_1list.html#ad033067c4496dd4c8908685e53e75767">children</a>() noexcept { <span class="keywordflow">return</span> children_; }</div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="classarg__router_1_1list.html#ad033067c4496dd4c8908685e53e75767">   42</a></span>&#160;    [[nodiscard]] <a class="code" href="classarg__router_1_1list.html#a0a4459b2b6febc4609e374c672cb3bf3">children_type</a>&amp; <a class="code" href="classarg__router_1_1list.html#ad033067c4496dd4c8908685e53e75767">children</a>() noexcept { <span class="keywordflow">return</span> children_; }</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
-<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="classarg__router_1_1list.html#ab729aaae40238d5d0721697390ad6254">   48</a></span>&#160;    [[nodiscard]] <span class="keyword">const</span> <a class="code" href="classarg__router_1_1list.html#a8c48af5598e074c0470d9ce8d09a7559">children_type</a>&amp; <a class="code" href="classarg__router_1_1list.html#ab729aaae40238d5d0721697390ad6254">children</a>() const noexcept</div>
+<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="classarg__router_1_1list.html#ab729aaae40238d5d0721697390ad6254">   48</a></span>&#160;    [[nodiscard]] <span class="keyword">const</span> <a class="code" href="classarg__router_1_1list.html#a0a4459b2b6febc4609e374c672cb3bf3">children_type</a>&amp; <a class="code" href="classarg__router_1_1list.html#ab729aaae40238d5d0721697390ad6254">children</a>() const noexcept</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    {</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="keywordflow">return</span> children_;</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    }</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <a class="code" href="classarg__router_1_1list.html#a8c48af5598e074c0470d9ce8d09a7559">children_type</a> children_;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <a class="code" href="classarg__router_1_1list.html#a0a4459b2b6febc4609e374c672cb3bf3">children_type</a> children_;</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;};</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="keyword">namespace </span>detail</div>
@@ -176,9 +176,9 @@ $(function() {
 <div class="ttc" id="aclassarg__router_1_1list_html_ad033067c4496dd4c8908685e53e75767"><div class="ttname"><a href="classarg__router_1_1list.html#ad033067c4496dd4c8908685e53e75767">arg_router::list::children</a></div><div class="ttdeci">children_type &amp; children() noexcept</div><div class="ttdef"><b>Definition:</b> <a href="list_8hpp_source.html#l00042">list.hpp:42</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1list_html_ab729aaae40238d5d0721697390ad6254"><div class="ttname"><a href="classarg__router_1_1list.html#ab729aaae40238d5d0721697390ad6254">arg_router::list::children</a></div><div class="ttdeci">const children_type &amp; children() const noexcept</div><div class="ttdef"><b>Definition:</b> <a href="list_8hpp_source.html#l00048">list.hpp:48</a></div></div>
 <div class="ttc" id="anamespacearg__router_html_ae81e77bc890bd12a9a4913497d94ca10"><div class="ttname"><a href="namespacearg__router.html#ae81e77bc890bd12a9a4913497d94ca10">arg_router::list_expander</a></div><div class="ttdeci">constexpr auto list_expander(Params... params) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="list_8hpp_source.html#l00108">list.hpp:108</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1list_html_a0a4459b2b6febc4609e374c672cb3bf3"><div class="ttname"><a href="classarg__router_1_1list.html#a0a4459b2b6febc4609e374c672cb3bf3">arg_router::list::children_type</a></div><div class="ttdeci">std::tuple&lt; std::decay_t&lt; Children &gt;... &gt; children_type</div><div class="ttdef"><b>Definition:</b> <a href="list_8hpp_source.html#l00024">list.hpp:24</a></div></div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00012">algorithm.hpp:12</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1list_html"><div class="ttname"><a href="classarg__router_1_1list.html">arg_router::list</a></div><div class="ttdef"><b>Definition:</b> <a href="list_8hpp_source.html#l00020">list.hpp:20</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1list_html_a8c48af5598e074c0470d9ce8d09a7559"><div class="ttname"><a href="classarg__router_1_1list.html#a8c48af5598e074c0470d9ce8d09a7559">arg_router::list::children_type</a></div><div class="ttdeci">std::tuple&lt; Children... &gt; children_type</div><div class="ttdef"><b>Definition:</b> <a href="list_8hpp_source.html#l00024">list.hpp:24</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1algorithm_html_aa47f909be78a36c86d82c4c1a691191c"><div class="ttname"><a href="namespacearg__router_1_1algorithm.html#aa47f909be78a36c86d82c4c1a691191c">arg_router::algorithm::tuple_push_back</a></div><div class="ttdeci">constexpr auto tuple_push_back(Tuple tuple, Insert insert) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00313">algorithm.hpp:313</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

@@ -82,7 +82,7 @@ $(function() {
 <div class="dynheader">
 Inheritance diagram for arg_router::mode_t&lt; Params &gt;:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="classarg__router_1_1mode__t__inherit__graph.svg" width="624" height="96"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="classarg__router_1_1mode__t__inherit__graph.svg" width="100%" height="383"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -93,15 +93,15 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a92e854b8abe0ef59ded9d8f783bcd875"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1mode__t.html#a92e854b8abe0ef59ded9d8f783bcd875">value_type</a> = boost::mp11::mp_transform&lt; <a class="el" href="namespacearg__router_1_1traits.html#ac436bd1d964e7c584c5d40af98b95283">traits::get_value_type</a>, boost::mp11::mp_remove_if&lt; <a class="el" href="classarg__router_1_1tree__node.html#ada9714c3089bb29077dd1475d902db0a">children_type</a>, <a class="el" href="namespacearg__router_1_1policy.html#a985a31d1991b66211625593d1b07dff9">policy::has_no_result_value</a> &gt; &gt;</td></tr>
+<tr class="memitem:a92e854b8abe0ef59ded9d8f783bcd875"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1mode__t.html#a92e854b8abe0ef59ded9d8f783bcd875">value_type</a> = boost::mp11::mp_transform&lt; <a class="el" href="namespacearg__router_1_1traits.html#ac436bd1d964e7c584c5d40af98b95283">traits::get_value_type</a>, boost::mp11::mp_remove_if&lt; <a class="el" href="classarg__router_1_1tree__node.html#a8d8381481e4cdf03739233815c70cd76">children_type</a>, <a class="el" href="namespacearg__router_1_1policy.html#a985a31d1991b66211625593d1b07dff9">policy::has_no_result_value</a> &gt; &gt;</td></tr>
 <tr class="separator:a92e854b8abe0ef59ded9d8f783bcd875"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_types_classarg__router_1_1tree__node"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classarg__router_1_1tree__node')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node&lt; policy::no_result_value&lt;&gt;, Params... &gt;</a></td></tr>
-<tr class="memitem:a7b0eea2e055bd9b353d6ddbf154568a7 inherit pub_types_classarg__router_1_1tree__node"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#a7b0eea2e055bd9b353d6ddbf154568a7">parameters_type</a> = std::tuple&lt; Params... &gt;</td></tr>
-<tr class="separator:a7b0eea2e055bd9b353d6ddbf154568a7 inherit pub_types_classarg__router_1_1tree__node"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aec3a4f4e8c0b7d0b7a5d911b18fb9bc3 inherit pub_types_classarg__router_1_1tree__node"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#aec3a4f4e8c0b7d0b7a5d911b18fb9bc3">policies_type</a> = boost::mp11::mp_filter&lt; <a class="el" href="structarg__router_1_1policy_1_1is__policy.html">policy::is_policy</a>, <a class="el" href="classarg__router_1_1tree__node.html#a7b0eea2e055bd9b353d6ddbf154568a7">parameters_type</a> &gt;</td></tr>
+<tr class="inherit_header pub_types_classarg__router_1_1tree__node"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classarg__router_1_1tree__node')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node&lt; policy::no_result_value&lt;&gt;, std::decay_t&lt; Params &gt;... &gt;</a></td></tr>
+<tr class="memitem:a5a12205635e06b3b4ace0d8101419bcd inherit pub_types_classarg__router_1_1tree__node"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#a5a12205635e06b3b4ace0d8101419bcd">parameters_type</a> = std::tuple&lt; std::decay_t&lt; Params &gt;... &gt;</td></tr>
+<tr class="separator:a5a12205635e06b3b4ace0d8101419bcd inherit pub_types_classarg__router_1_1tree__node"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec3a4f4e8c0b7d0b7a5d911b18fb9bc3 inherit pub_types_classarg__router_1_1tree__node"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#aec3a4f4e8c0b7d0b7a5d911b18fb9bc3">policies_type</a> = boost::mp11::mp_filter&lt; <a class="el" href="structarg__router_1_1policy_1_1is__policy.html">policy::is_policy</a>, <a class="el" href="classarg__router_1_1tree__node.html#a5a12205635e06b3b4ace0d8101419bcd">parameters_type</a> &gt;</td></tr>
 <tr class="separator:aec3a4f4e8c0b7d0b7a5d911b18fb9bc3 inherit pub_types_classarg__router_1_1tree__node"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ada9714c3089bb29077dd1475d902db0a inherit pub_types_classarg__router_1_1tree__node"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#ada9714c3089bb29077dd1475d902db0a">children_type</a> = boost::mp11::mp_filter&lt; <a class="el" href="structarg__router_1_1is__tree__node.html">is_tree_node</a>, std::decay_t&lt; decltype(list_expander(std::declval&lt; Params &gt;()...))&gt; &gt;</td></tr>
-<tr class="separator:ada9714c3089bb29077dd1475d902db0a inherit pub_types_classarg__router_1_1tree__node"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d8381481e4cdf03739233815c70cd76 inherit pub_types_classarg__router_1_1tree__node"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#a8d8381481e4cdf03739233815c70cd76">children_type</a> = boost::mp11::mp_filter&lt; <a class="el" href="structarg__router_1_1is__tree__node.html">is_tree_node</a>, std::decay_t&lt; decltype(list_expander(std::declval&lt; std::decay_t&lt; Params &gt; &gt;()...))&gt; &gt;</td></tr>
+<tr class="separator:a8d8381481e4cdf03739233815c70cd76 inherit pub_types_classarg__router_1_1tree__node"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a86e94be4e7ea24708d9b6e7240393ea1 inherit pub_types_classarg__router_1_1tree__node"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#a86e94be4e7ea24708d9b6e7240393ea1">phase_finder_t</a> = typename phase_finder&lt; PolicyChecker, Args... &gt;::type</td></tr>
 <tr class="separator:a86e94be4e7ea24708d9b6e7240393ea1 inherit pub_types_classarg__router_1_1tree__node"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -115,8 +115,8 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ac62f759765340a462e44b1dc2622a27a"><td class="memTemplParams" colspan="2">template&lt;typename... Parents&gt; </td></tr>
 <tr class="memitem:ac62f759765340a462e44b1dc2622a27a"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1mode__t.html#ac62f759765340a462e44b1dc2622a27a">parse</a> (<a class="el" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a> &amp;tokens, const Parents &amp;... parents) const</td></tr>
 <tr class="separator:ac62f759765340a462e44b1dc2622a27a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_methods_classarg__router_1_1tree__node"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classarg__router_1_1tree__node')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node&lt; policy::no_result_value&lt;&gt;, Params... &gt;</a></td></tr>
-<tr class="memitem:a35a2e8d65f2fd881626c4ce185f7496e inherit pub_methods_classarg__router_1_1tree__node"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classarg__router_1_1tree__node.html#ada9714c3089bb29077dd1475d902db0a">children_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#a35a2e8d65f2fd881626c4ce185f7496e">children</a> () const noexcept</td></tr>
+<tr class="inherit_header pub_methods_classarg__router_1_1tree__node"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classarg__router_1_1tree__node')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node&lt; policy::no_result_value&lt;&gt;, std::decay_t&lt; Params &gt;... &gt;</a></td></tr>
+<tr class="memitem:a35a2e8d65f2fd881626c4ce185f7496e inherit pub_methods_classarg__router_1_1tree__node"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classarg__router_1_1tree__node.html#a8d8381481e4cdf03739233815c70cd76">children_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#a35a2e8d65f2fd881626c4ce185f7496e">children</a> () const noexcept</td></tr>
 <tr class="separator:a35a2e8d65f2fd881626c4ce185f7496e inherit pub_methods_classarg__router_1_1tree__node"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae824991209ab98b10e66ed02b03f1998 inherit pub_methods_classarg__router_1_1tree__node"><td class="memItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#ae824991209ab98b10e66ed02b03f1998">find</a> (const <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a> &amp;token, const Fn &amp;visitor, const ResultsTuple &amp;results_tuple={}) const</td></tr>
 <tr class="separator:ae824991209ab98b10e66ed02b03f1998 inherit pub_methods_classarg__router_1_1tree__node"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -125,13 +125,13 @@ Public Member Functions</h2></td></tr>
 Static Public Attributes</h2></td></tr>
 <tr class="memitem:a6a9818649d4986bd3c108623cbd4b964"><td class="memItemLeft" align="right" valign="top">constexpr static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1mode__t.html#a6a9818649d4986bd3c108623cbd4b964">is_anonymous</a></td></tr>
 <tr class="separator:a6a9818649d4986bd3c108623cbd4b964"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_static_attribs_classarg__router_1_1tree__node"><td colspan="2" onclick="javascript:toggleInherit('pub_static_attribs_classarg__router_1_1tree__node')"><img src="closed.png" alt="-"/>&#160;Static Public Attributes inherited from <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node&lt; policy::no_result_value&lt;&gt;, Params... &gt;</a></td></tr>
+<tr class="inherit_header pub_static_attribs_classarg__router_1_1tree__node"><td colspan="2" onclick="javascript:toggleInherit('pub_static_attribs_classarg__router_1_1tree__node')"><img src="closed.png" alt="-"/>&#160;Static Public Attributes inherited from <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node&lt; policy::no_result_value&lt;&gt;, std::decay_t&lt; Params &gt;... &gt;</a></td></tr>
 <tr class="memitem:a52b234a753c4866025c339a29ca0197c inherit pub_static_attribs_classarg__router_1_1tree__node"><td class="memItemLeft" align="right" valign="top">constexpr static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#a52b234a753c4866025c339a29ca0197c">any_phases_v</a></td></tr>
 <tr class="separator:a52b234a753c4866025c339a29ca0197c inherit pub_static_attribs_classarg__router_1_1tree__node"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
-<tr class="inherit_header pro_methods_classarg__router_1_1tree__node"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classarg__router_1_1tree__node')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node&lt; policy::no_result_value&lt;&gt;, Params... &gt;</a></td></tr>
+<tr class="inherit_header pro_methods_classarg__router_1_1tree__node"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classarg__router_1_1tree__node')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node&lt; policy::no_result_value&lt;&gt;, std::decay_t&lt; Params &gt;... &gt;</a></td></tr>
 <tr class="memitem:a2a8f5775af1259c3c3363160456dd94e inherit pro_methods_classarg__router_1_1tree__node"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#a2a8f5775af1259c3c3363160456dd94e">parse</a> (std::string_view token, const Parents &amp;... parents) const</td></tr>
 <tr class="separator:a2a8f5775af1259c3c3363160456dd94e inherit pro_methods_classarg__router_1_1tree__node"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9a32b8c521d12ba9f8880805f905ef33 inherit pro_methods_classarg__router_1_1tree__node"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#a9a32b8c521d12ba9f8880805f905ef33">tree_node</a> (Params... params) noexcept</td></tr>
@@ -161,13 +161,13 @@ class arg_router::mode_t&lt; Params &gt;</h3>
 template&lt;typename... Params&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="classarg__router_1_1mode__t.html">arg_router::mode_t</a>&lt; Params &gt;::<a class="el" href="classarg__router_1_1mode__t.html#a92e854b8abe0ef59ded9d8f783bcd875">value_type</a> =  boost::mp11::mp_transform&lt; <a class="el" href="namespacearg__router_1_1traits.html#ac436bd1d964e7c584c5d40af98b95283">traits::get_value_type</a>, boost::mp11::mp_remove_if&lt;<a class="el" href="classarg__router_1_1tree__node.html#ada9714c3089bb29077dd1475d902db0a">children_type</a>, <a class="el" href="namespacearg__router_1_1policy.html#a985a31d1991b66211625593d1b07dff9">policy::has_no_result_value</a>&gt; &gt;</td>
+          <td class="memname">using <a class="el" href="classarg__router_1_1mode__t.html">arg_router::mode_t</a>&lt; Params &gt;::<a class="el" href="classarg__router_1_1mode__t.html#a92e854b8abe0ef59ded9d8f783bcd875">value_type</a> =  boost::mp11::mp_transform&lt; <a class="el" href="namespacearg__router_1_1traits.html#ac436bd1d964e7c584c5d40af98b95283">traits::get_value_type</a>, boost::mp11::mp_remove_if&lt;<a class="el" href="classarg__router_1_1tree__node.html#a8d8381481e4cdf03739233815c70cd76">children_type</a>, <a class="el" href="namespacearg__router_1_1policy.html#a985a31d1991b66211625593d1b07dff9">policy::has_no_result_value</a>&gt; &gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p>Tuple of valid children value types. </p>
 
-<p class="definition">Definition at line <a class="el" href="mode_8hpp_source.html#l00064">64</a> of file <a class="el" href="mode_8hpp_source.html">mode.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mode_8hpp_source.html#l00066">66</a> of file <a class="el" href="mode_8hpp_source.html">mode.hpp</a>.</p>
 
 </div>
 </div>
@@ -205,7 +205,7 @@ template&lt;typename... Params&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="mode_8hpp_source.html#l00098">98</a> of file <a class="el" href="mode_8hpp_source.html">mode.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mode_8hpp_source.html#l00100">100</a> of file <a class="el" href="mode_8hpp_source.html">mode.hpp</a>.</p>
 
 </div>
 </div>
@@ -264,7 +264,7 @@ template&lt;typename Fn &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Match result </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mode_8hpp_source.html#l00117">117</a> of file <a class="el" href="mode_8hpp_source.html">mode.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mode_8hpp_source.html#l00119">119</a> of file <a class="el" href="mode_8hpp_source.html">mode.hpp</a>.</p>
 
 </div>
 </div>
@@ -327,7 +327,7 @@ template&lt;typename... Parents&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="mode_8hpp_source.html#l00140">140</a> of file <a class="el" href="mode_8hpp_source.html">mode.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mode_8hpp_source.html#l00142">142</a> of file <a class="el" href="mode_8hpp_source.html">mode.hpp</a>.</p>
 
 </div>
 </div>
@@ -357,7 +357,7 @@ template&lt;typename... Params&gt; </div>
 <div class="line">        !traits::has_none_name_method_v&lt;mode_t&gt;</div>
 </div><!-- fragment --><p>True if this mode is anonymous. </p>
 
-<p class="definition">Definition at line <a class="el" href="mode_8hpp_source.html#l00067">67</a> of file <a class="el" href="mode_8hpp_source.html">mode.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mode_8hpp_source.html#l00069">69</a> of file <a class="el" href="mode_8hpp_source.html">mode.hpp</a>.</p>
 
 </div>
 </div>

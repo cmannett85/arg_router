@@ -63,7 +63,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_48805ccb342e40be4d45daee5753b842.html">arg_router</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_529fe8366846da263013841a2c49df49.html">arg_router</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -201,7 +201,7 @@ $(function() {
 <div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;    U&amp;&amp; input,</div>
 <div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;    std::tuple&lt;I...&gt;) noexcept</div>
 <div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;{</div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;    <span class="keywordflow">return</span> std::tuple{std::get&lt;I::value&gt;(input)...};</div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;    <span class="keywordflow">return</span> std::tuple{std::get&lt;I::value&gt;(std::forward&lt;U&gt;(input))...};</div>
 <div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;}</div>
 <div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;}  <span class="comment">// namespace detail</span></div>
 <div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160; </div>

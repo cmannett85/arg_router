@@ -63,7 +63,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_48805ccb342e40be4d45daee5753b842.html">arg_router</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_529fe8366846da263013841a2c49df49.html">arg_router</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -83,145 +83,118 @@ $(function() {
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;{</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span>... Policies&gt;</div>
 <div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="classarg__router_1_1counting__flag__t.html">   31</a></span>&#160;<span class="keyword">class </span><a class="code" href="classarg__router_1_1counting__flag__t.html">counting_flag_t</a> :</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keyword">public</span> <a class="code" href="classarg__router_1_1tree__node.html">tree_node</a>&lt;policy::multi_stage_value&lt;T, bool&gt;, Policies...&gt;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;{</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    static_assert(</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <a class="code" href="namespacearg__router_1_1policy.html#ab0b6b4c0174a2ba257d4431bda7241eb">policy::is_all_policies_v</a>&lt;std::tuple&lt;Policies...&gt;&gt;,</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="stringliteral">&quot;Counting flags must only contain policies (not other nodes)&quot;</span>);</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    static_assert(traits::has_long_name_method_v&lt;counting_flag_t&gt; ||</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;                      traits::has_short_name_method_v&lt;counting_flag_t&gt;,</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                  <span class="stringliteral">&quot;Counting flag must have a long and/or short name policy&quot;</span>);</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    static_assert(!traits::has_display_name_method_v&lt;counting_flag_t&gt;,</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;                  <span class="stringliteral">&quot;Counting flag must not have a display name policy&quot;</span>);</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    static_assert(!traits::has_none_name_method_v&lt;counting_flag_t&gt;,</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;                  <span class="stringliteral">&quot;Counting flag must not have a none name policy&quot;</span>);</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    static_assert(traits::supports_static_cast_conversion_v&lt;T, std::size_t&gt;,</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;                  <span class="stringliteral">&quot;T must be explicitly convertible to std::size_t&quot;</span>);</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    constexpr <span class="keyword">static</span> <span class="keywordtype">bool</span> fixed_count = []() {</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keywordflow">if</span> constexpr (traits::has_minimum_count_method_v&lt;counting_flag_t&gt; &amp;&amp;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                      traits::has_maximum_count_method_v&lt;counting_flag_t&gt;) {</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;            <span class="keywordflow">return</span> counting_flag_t::minimum_count() ==</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;                   counting_flag_t::maximum_count();</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        }</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keyword">public</span> <a class="code" href="classarg__router_1_1tree__node.html">tree_node</a>&lt;policy::multi_stage_value&lt;T, bool&gt;,</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;                     std::decay_t&lt;Policies&gt;...&gt;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;{</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    static_assert(</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <a class="code" href="namespacearg__router_1_1policy.html#ab0b6b4c0174a2ba257d4431bda7241eb">policy::is_all_policies_v</a>&lt;std::tuple&lt;std::decay_t&lt;Policies&gt;...&gt;&gt;,</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <span class="stringliteral">&quot;Counting flags must only contain policies (not other nodes)&quot;</span>);</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    static_assert(traits::has_long_name_method_v&lt;counting_flag_t&gt; ||</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                      traits::has_short_name_method_v&lt;counting_flag_t&gt;,</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                  <span class="stringliteral">&quot;Counting flag must have a long and/or short name policy&quot;</span>);</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    static_assert(!traits::has_display_name_method_v&lt;counting_flag_t&gt;,</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                  <span class="stringliteral">&quot;Counting flag must not have a display name policy&quot;</span>);</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    static_assert(!traits::has_none_name_method_v&lt;counting_flag_t&gt;,</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;                  <span class="stringliteral">&quot;Counting flag must not have a none name policy&quot;</span>);</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    static_assert(traits::supports_static_cast_conversion_v&lt;T, std::size_t&gt;,</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;                  <span class="stringliteral">&quot;T must be explicitly convertible to std::size_t&quot;</span>);</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keyword">using</span> <a class="code" href="classarg__router_1_1tree__node.html">parent_type</a> = <a class="code" href="classarg__router_1_1tree__node.html">tree_node&lt;policy::multi_stage_value&lt;T, bool&gt;</a>,</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                                  std::decay_t&lt;Policies&gt;...&gt;;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keyword">using</span> <span class="keyword">typename</span> <a class="code" href="classarg__router_1_1tree__node.html#aec3a4f4e8c0b7d0b7a5d911b18fb9bc3">parent_type::policies_type</a>;</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    }();</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    static_assert(!fixed_count, <span class="stringliteral">&quot;Counting flag cannot have a fixed count&quot;</span>);</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keyword">using</span> <a class="code" href="classarg__router_1_1tree__node.html">parent_type</a> =</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <a class="code" href="classarg__router_1_1tree__node.html">tree_node&lt;policy::multi_stage_value&lt;T, bool&gt;</a>, Policies...&gt;;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <span class="keyword">using</span> <span class="keyword">typename</span> <a class="code" href="classarg__router_1_1tree__node.html#aec3a4f4e8c0b7d0b7a5d911b18fb9bc3">parent_type::policies_type</a>;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="classarg__router_1_1counting__flag__t.html#a56d9c0ffdcedc64bf0ae095386378e8e">   65</a></span>&#160;    <span class="keyword">using</span> <a class="code" href="classarg__router_1_1counting__flag__t.html#a56d9c0ffdcedc64bf0ae095386378e8e">value_type</a> = T;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keyword">template</span> &lt;<span class="keywordtype">bool</span> Flatten&gt;</div>
-<div class="line"><a name="l00069"></a><span class="lineno"><a class="line" href="classarg__router_1_1counting__flag__t_1_1help__data__type.html">   69</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classarg__router_1_1counting__flag__t_1_1help__data__type.html">help_data_type</a></div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    {</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        [[nodiscard]] constexpr <span class="keyword">static</span> <span class="keyword">auto</span> label_generator() noexcept</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        {</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">typename</span> parent_type::template default_leaf_help_data_type&lt;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;                       Flatten&gt;::label{} +</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;                   S_(<span class="stringliteral">&quot; &quot;</span>){} +</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;                   parent_type::template default_leaf_help_data_type&lt;</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;                       Flatten&gt;::count_suffix();</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        }</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        <span class="keyword">using</span> label = std::decay_t&lt;decltype(label_generator())&gt;;</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        <span class="keyword">using</span> description =</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;            <span class="keyword">typename</span> parent_type::template default_leaf_help_data_type&lt;</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;                Flatten&gt;::description;</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        <span class="keyword">using</span> children = std::tuple&lt;&gt;;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    };</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
-<div class="line"><a name="l00092"></a><span class="lineno"><a class="line" href="classarg__router_1_1counting__flag__t.html#abcadf963a8cf9ec9596a1966799ba2c9">   92</a></span>&#160;    constexpr <span class="keyword">explicit</span> <a class="code" href="classarg__router_1_1counting__flag__t.html#abcadf963a8cf9ec9596a1966799ba2c9">counting_flag_t</a>(Policies... policies) noexcept :</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        <a class="code" href="classarg__router_1_1tree__node.html">parent_type</a>{<a class="code" href="classarg__router_1_1policy_1_1multi__stage__value.html">policy::multi_stage_value&lt;T, bool&gt;</a>{merge_impl},</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;                    std::move(policies)...}</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    {</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    }</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160; </div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Fn&gt;</div>
-<div class="line"><a name="l00112"></a><span class="lineno"><a class="line" href="classarg__router_1_1counting__flag__t.html#a43e0cd9cbeebf9205aebc52c78f107f8">  112</a></span>&#160;    constexpr <span class="keywordtype">bool</span> <a class="code" href="classarg__router_1_1counting__flag__t.html#a43e0cd9cbeebf9205aebc52c78f107f8">match</a>(<span class="keyword">const</span> <a class="code" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a>&amp; token,</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;                         <span class="keyword">const</span> Fn&amp; visitor)<span class="keyword"> const</span></div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;<span class="keyword">    </span>{</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        <span class="keywordflow">if</span> (parsing::default_match&lt;counting_flag_t&gt;(token)) {</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;            visitor(*<span class="keyword">this</span>);</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        }</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160; </div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    }</div>
+<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="classarg__router_1_1counting__flag__t.html#a56d9c0ffdcedc64bf0ae095386378e8e">   55</a></span>&#160;    <span class="keyword">using</span> <a class="code" href="classarg__router_1_1counting__flag__t.html#a56d9c0ffdcedc64bf0ae095386378e8e">value_type</a> = T;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keyword">template</span> &lt;<span class="keywordtype">bool</span> Flatten&gt;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <span class="keyword">using</span> <a class="code" href="classarg__router_1_1counting__flag__t.html#aa7ad1aed846500aaf85c6e4864b1f851">help_data_type</a> =</div>
+<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="classarg__router_1_1counting__flag__t.html#aa7ad1aed846500aaf85c6e4864b1f851">   60</a></span>&#160;        <span class="keyword">typename</span> parent_type::template default_leaf_help_data_type&lt;Flatten&gt;;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
+<div class="line"><a name="l00066"></a><span class="lineno"><a class="line" href="classarg__router_1_1counting__flag__t.html#abcadf963a8cf9ec9596a1966799ba2c9">   66</a></span>&#160;    constexpr <span class="keyword">explicit</span> <a class="code" href="classarg__router_1_1counting__flag__t.html#abcadf963a8cf9ec9596a1966799ba2c9">counting_flag_t</a>(Policies... policies) noexcept :</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        <a class="code" href="classarg__router_1_1tree__node.html">parent_type</a>{<a class="code" href="classarg__router_1_1policy_1_1multi__stage__value.html">policy::multi_stage_value&lt;T, bool&gt;</a>{merge_impl},</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                    std::move(policies)...}</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    {</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    }</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Fn&gt;</div>
+<div class="line"><a name="l00086"></a><span class="lineno"><a class="line" href="classarg__router_1_1counting__flag__t.html#a43e0cd9cbeebf9205aebc52c78f107f8">   86</a></span>&#160;    constexpr <span class="keywordtype">bool</span> <a class="code" href="classarg__router_1_1counting__flag__t.html#a43e0cd9cbeebf9205aebc52c78f107f8">match</a>(<span class="keyword">const</span> <a class="code" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a>&amp; token,</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                         <span class="keyword">const</span> Fn&amp; visitor)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="keyword">    </span>{</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        <span class="keywordflow">if</span> (parsing::default_match&lt;counting_flag_t&gt;(token)) {</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;            visitor(*<span class="keyword">this</span>);</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        }</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    }</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Parents&gt;</div>
+<div class="line"><a name="l00106"></a><span class="lineno"><a class="line" href="classarg__router_1_1counting__flag__t.html#a8f6e3fcbfec1c5e8db0b4f4a0c735a9a">  106</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classarg__router_1_1counting__flag__t.html#a8f6e3fcbfec1c5e8db0b4f4a0c735a9a">parse</a>(<a class="code" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a>&amp; tokens, <span class="keyword">const</span> Parents&amp;... parents)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;<span class="keyword">    </span>{</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;        <span class="comment">// Remove this node&#39;s name</span></div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        tokens.<a class="code" href="classarg__router_1_1parsing_1_1token__list.html#a6d6f59a3d781a45611921aea9e2c91a5">mark_as_processed</a>();</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160; </div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;        <span class="comment">// Pre-parse</span></div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        utility::tuple_type_iterator&lt;policies_type&gt;([&amp;](<span class="keyword">auto</span> i) {</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;            <span class="keyword">using</span> policy_type = std::tuple_element_t&lt;i, policies_type&gt;;</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;            <span class="keywordflow">if</span> constexpr (policy::has_pre_parse_phase_method_v&lt;policy_type&gt;) {</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;                this-&gt;policy_type::pre_parse_phase(tokens, *<span class="keyword">this</span>, parents...);</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;            }</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        });</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160; </div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;        <span class="comment">// Presence of the flag yields a constant true.  Validation is done by</span></div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;        <span class="comment">// the parent mode as it carries the final result</span></div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;        <span class="keyword">const</span> <span class="keyword">auto</span> result = <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160; </div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Parents&gt;</div>
-<div class="line"><a name="l00132"></a><span class="lineno"><a class="line" href="classarg__router_1_1counting__flag__t.html#a8f6e3fcbfec1c5e8db0b4f4a0c735a9a">  132</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classarg__router_1_1counting__flag__t.html#a8f6e3fcbfec1c5e8db0b4f4a0c735a9a">parse</a>(<a class="code" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a>&amp; tokens, <span class="keyword">const</span> Parents&amp;... parents)<span class="keyword"> const</span></div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;<span class="keyword">    </span>{</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;        <span class="comment">// Remove this node&#39;s name</span></div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;        tokens.<a class="code" href="classarg__router_1_1parsing_1_1token__list.html#a6d6f59a3d781a45611921aea9e2c91a5">mark_as_processed</a>();</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160; </div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;        <span class="comment">// Pre-parse</span></div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;        utility::tuple_type_iterator&lt;policies_type&gt;([&amp;](<span class="keyword">auto</span> i) {</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;            <span class="keyword">using</span> policy_type = std::tuple_element_t&lt;i, policies_type&gt;;</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;            <span class="keywordflow">if</span> constexpr (policy::has_pre_parse_phase_method_v&lt;policy_type&gt;) {</div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;                this-&gt;policy_type::pre_parse_phase(tokens, *<span class="keyword">this</span>, parents...);</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;            }</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;        });</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160; </div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;        <span class="comment">// Presence of the flag yields a constant true.  Validation is done by</span></div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;        <span class="comment">// the parent mode as it carries the final result</span></div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;        <span class="keyword">const</span> <span class="keyword">auto</span> result = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160; </div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;        <span class="keywordflow">return</span> result;</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;    }</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160; </div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;    static_assert(</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;        !parent_type::template <a class="code" href="classarg__router_1_1tree__node.html#a52b234a753c4866025c339a29ca0197c">any_phases_v</a>&lt;<a class="code" href="classarg__router_1_1counting__flag__t.html#a56d9c0ffdcedc64bf0ae095386378e8e">value_type</a>,</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;                                            <a class="code" href="structarg__router_1_1policy_1_1has__parse__phase__method.html">policy::has_parse_phase_method</a>,</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;                                            <a class="code" href="structarg__router_1_1policy_1_1has__routing__phase__method.html">policy::has_routing_phase_method</a>&gt;,</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;        <span class="stringliteral">&quot;Counting flag does not support policies with parse or routing phases &quot;</span></div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;        <span class="stringliteral">&quot;(e.g. custom_parser)&quot;</span>);</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160; </div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;    <span class="comment">// Value will always be true</span></div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    constexpr <span class="keyword">static</span> <span class="keywordtype">void</span> merge_impl(std::optional&lt;value_type&gt;&amp; result,</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;                                     <span class="keywordtype">bool</span> <span class="comment">/*value*/</span>) noexcept</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;    {</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;        <span class="keywordflow">if</span> (!result) {</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;            result = <span class="keyword">static_cast&lt;</span><a class="code" href="classarg__router_1_1counting__flag__t.html#a56d9c0ffdcedc64bf0ae095386378e8e">value_type</a><span class="keyword">&gt;</span>(1);</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;            <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;        }</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160; </div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;        *result =</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;            <span class="keyword">static_cast&lt;</span><a class="code" href="classarg__router_1_1counting__flag__t.html#a56d9c0ffdcedc64bf0ae095386378e8e">value_type</a><span class="keyword">&gt;</span>(<span class="keyword">static_cast&lt;</span>std::size_t<span class="keyword">&gt;</span>(*result) + 1);</div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;    }</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;};</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160; </div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span>... Policies&gt;</div>
-<div class="line"><a name="l00182"></a><span class="lineno"><a class="line" href="namespacearg__router.html#ad602d015448dd2bef5347812bf729ced">  182</a></span>&#160;[[nodiscard]] constexpr <a class="code" href="classarg__router_1_1counting__flag__t.html">counting_flag_t</a>&lt;T, Policies...&gt; <a class="code" href="namespacearg__router.html#ad602d015448dd2bef5347812bf729ced">counting_flag</a>(</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;    Policies... policies) noexcept</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;{</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classarg__router_1_1counting__flag__t.html">counting_flag_t&lt;T, std::decay_t&lt;Policies&gt;</a>...&gt;{</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;        std::move(policies)...};</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;}</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;        <span class="keywordflow">return</span> result;</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    }</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160; </div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    static_assert(</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;        !parent_type::template <a class="code" href="classarg__router_1_1tree__node.html#a52b234a753c4866025c339a29ca0197c">any_phases_v</a>&lt;<a class="code" href="classarg__router_1_1counting__flag__t.html#a56d9c0ffdcedc64bf0ae095386378e8e">value_type</a>,</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;                                            <a class="code" href="structarg__router_1_1policy_1_1has__parse__phase__method.html">policy::has_parse_phase_method</a>,</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;                                            <a class="code" href="structarg__router_1_1policy_1_1has__routing__phase__method.html">policy::has_routing_phase_method</a>&gt;,</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;        <span class="stringliteral">&quot;Counting flag does not support policies with parse or routing phases &quot;</span></div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        <span class="stringliteral">&quot;(e.g. custom_parser)&quot;</span>);</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160; </div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;    <span class="comment">// Value will always be true</span></div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    constexpr <span class="keyword">static</span> <span class="keywordtype">void</span> merge_impl(std::optional&lt;value_type&gt;&amp; result,</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;                                     <span class="keywordtype">bool</span> <span class="comment">/*value*/</span>) noexcept</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    {</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;        <span class="keywordflow">if</span> (!result) {</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;            result = <span class="keyword">static_cast&lt;</span><a class="code" href="classarg__router_1_1counting__flag__t.html#a56d9c0ffdcedc64bf0ae095386378e8e">value_type</a><span class="keyword">&gt;</span>(1);</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;        }</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160; </div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;        *result =</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;            <span class="keyword">static_cast&lt;</span><a class="code" href="classarg__router_1_1counting__flag__t.html#a56d9c0ffdcedc64bf0ae095386378e8e">value_type</a><span class="keyword">&gt;</span>(<span class="keyword">static_cast&lt;</span>std::size_t<span class="keyword">&gt;</span>(*result) + 1);</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    }</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;};</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160; </div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span>... Policies&gt;</div>
+<div class="line"><a name="l00156"></a><span class="lineno"><a class="line" href="namespacearg__router.html#a5ba1f140a379568490be42bdceb487c2">  156</a></span>&#160;[[nodiscard]] constexpr <span class="keyword">auto</span> <a class="code" href="namespacearg__router.html#a5ba1f140a379568490be42bdceb487c2">counting_flag</a>(Policies... policies) noexcept</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;{</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classarg__router_1_1counting__flag__t.html">counting_flag_t&lt;T, std::decay_t&lt;Policies&gt;</a>...&gt;{</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;        std::move(policies)...};</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;}</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclassarg__router_1_1counting__flag__t_1_1help__data__type_html"><div class="ttname"><a href="classarg__router_1_1counting__flag__t_1_1help__data__type.html">arg_router::counting_flag_t::help_data_type</a></div><div class="ttdef"><b>Definition:</b> <a href="counting__flag_8hpp_source.html#l00069">counting_flag.hpp:69</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1counting__flag__t_html_a8f6e3fcbfec1c5e8db0b4f4a0c735a9a"><div class="ttname"><a href="classarg__router_1_1counting__flag__t.html#a8f6e3fcbfec1c5e8db0b4f4a0c735a9a">arg_router::counting_flag_t::parse</a></div><div class="ttdeci">bool parse(parsing::token_list &amp;tokens, const Parents &amp;... parents) const</div><div class="ttdef"><b>Definition:</b> <a href="counting__flag_8hpp_source.html#l00132">counting_flag.hpp:132</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1counting__flag__t_html_a8f6e3fcbfec1c5e8db0b4f4a0c735a9a"><div class="ttname"><a href="classarg__router_1_1counting__flag__t.html#a8f6e3fcbfec1c5e8db0b4f4a0c735a9a">arg_router::counting_flag_t::parse</a></div><div class="ttdeci">bool parse(parsing::token_list &amp;tokens, const Parents &amp;... parents) const</div><div class="ttdef"><b>Definition:</b> <a href="counting__flag_8hpp_source.html#l00106">counting_flag.hpp:106</a></div></div>
+<div class="ttc" id="anamespacearg__router_html_a5ba1f140a379568490be42bdceb487c2"><div class="ttname"><a href="namespacearg__router.html#a5ba1f140a379568490be42bdceb487c2">arg_router::counting_flag</a></div><div class="ttdeci">constexpr auto counting_flag(Policies... policies) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="counting__flag_8hpp_source.html#l00156">counting_flag.hpp:156</a></div></div>
 <div class="ttc" id="astructarg__router_1_1parsing_1_1token__type_html"><div class="ttname"><a href="structarg__router_1_1parsing_1_1token__type.html">arg_router::parsing::token_type</a></div><div class="ttdef"><b>Definition:</b> <a href="token__type_8hpp_source.html#l00033">token_type.hpp:33</a></div></div>
-<div class="ttc" id="astructarg__router_1_1policy_1_1has__routing__phase__method_html"><div class="ttname"><a href="structarg__router_1_1policy_1_1has__routing__phase__method.html">arg_router::policy::has_routing_phase_method</a></div><div class="ttdef"><b>Definition:</b> <a href="policy_8hpp_source.html#l00135">policy.hpp:135</a></div></div>
+<div class="ttc" id="astructarg__router_1_1policy_1_1has__routing__phase__method_html"><div class="ttname"><a href="structarg__router_1_1policy_1_1has__routing__phase__method.html">arg_router::policy::has_routing_phase_method</a></div><div class="ttdef"><b>Definition:</b> <a href="policy_8hpp_source.html#l00141">policy.hpp:141</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1tree__node_html"><div class="ttname"><a href="classarg__router_1_1tree__node.html">arg_router::tree_node</a></div><div class="ttdef"><b>Definition:</b> <a href="tree__node_8hpp_source.html#l00022">tree_node.hpp:22</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1counting__flag__t_html_a43e0cd9cbeebf9205aebc52c78f107f8"><div class="ttname"><a href="classarg__router_1_1counting__flag__t.html#a43e0cd9cbeebf9205aebc52c78f107f8">arg_router::counting_flag_t::match</a></div><div class="ttdeci">constexpr bool match(const parsing::token_type &amp;token, const Fn &amp;visitor) const</div><div class="ttdef"><b>Definition:</b> <a href="counting__flag_8hpp_source.html#l00112">counting_flag.hpp:112</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1tree__node_html_a52b234a753c4866025c339a29ca0197c"><div class="ttname"><a href="classarg__router_1_1tree__node.html#a52b234a753c4866025c339a29ca0197c">arg_router::tree_node&lt; policy::multi_stage_value&lt; T, bool &gt;, Policies... &gt;::any_phases_v</a></div><div class="ttdeci">constexpr static bool any_phases_v</div><div class="ttdef"><b>Definition:</b> <a href="tree__node_8hpp_source.html#l00125">tree_node.hpp:125</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1counting__flag__t_html_a43e0cd9cbeebf9205aebc52c78f107f8"><div class="ttname"><a href="classarg__router_1_1counting__flag__t.html#a43e0cd9cbeebf9205aebc52c78f107f8">arg_router::counting_flag_t::match</a></div><div class="ttdeci">constexpr bool match(const parsing::token_type &amp;token, const Fn &amp;visitor) const</div><div class="ttdef"><b>Definition:</b> <a href="counting__flag_8hpp_source.html#l00086">counting_flag.hpp:86</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1tree__node_html_a52b234a753c4866025c339a29ca0197c"><div class="ttname"><a href="classarg__router_1_1tree__node.html#a52b234a753c4866025c339a29ca0197c">arg_router::tree_node&lt; policy::multi_stage_value&lt; T, bool &gt;, std::decay_t&lt; Policies &gt;... &gt;::any_phases_v</a></div><div class="ttdeci">constexpr static bool any_phases_v</div><div class="ttdef"><b>Definition:</b> <a href="tree__node_8hpp_source.html#l00133">tree_node.hpp:133</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1policy_html_ab0b6b4c0174a2ba257d4431bda7241eb"><div class="ttname"><a href="namespacearg__router_1_1policy.html#ab0b6b4c0174a2ba257d4431bda7241eb">arg_router::policy::is_all_policies_v</a></div><div class="ttdeci">constexpr auto is_all_policies_v</div><div class="ttdef"><b>Definition:</b> <a href="policy_8hpp_source.html#l00052">policy.hpp:52</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1tree__node_html_aec3a4f4e8c0b7d0b7a5d911b18fb9bc3"><div class="ttname"><a href="classarg__router_1_1tree__node.html#aec3a4f4e8c0b7d0b7a5d911b18fb9bc3">arg_router::tree_node&lt; policy::multi_stage_value&lt; T, bool &gt;, Policies... &gt;::policies_type</a></div><div class="ttdeci">boost::mp11::mp_filter&lt; policy::is_policy, parameters_type &gt; policies_type</div><div class="ttdef"><b>Definition:</b> <a href="tree__node_8hpp_source.html#l00032">tree_node.hpp:32</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1counting__flag__t_html_a56d9c0ffdcedc64bf0ae095386378e8e"><div class="ttname"><a href="classarg__router_1_1counting__flag__t.html#a56d9c0ffdcedc64bf0ae095386378e8e">arg_router::counting_flag_t::value_type</a></div><div class="ttdeci">T value_type</div><div class="ttdef"><b>Definition:</b> <a href="counting__flag_8hpp_source.html#l00065">counting_flag.hpp:65</a></div></div>
-<div class="ttc" id="anamespacearg__router_html_ad602d015448dd2bef5347812bf729ced"><div class="ttname"><a href="namespacearg__router.html#ad602d015448dd2bef5347812bf729ced">arg_router::counting_flag</a></div><div class="ttdeci">constexpr counting_flag_t&lt; T, Policies... &gt; counting_flag(Policies... policies) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="counting__flag_8hpp_source.html#l00182">counting_flag.hpp:182</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1tree__node_html_aec3a4f4e8c0b7d0b7a5d911b18fb9bc3"><div class="ttname"><a href="classarg__router_1_1tree__node.html#aec3a4f4e8c0b7d0b7a5d911b18fb9bc3">arg_router::tree_node&lt; policy::multi_stage_value&lt; T, bool &gt;, std::decay_t&lt; Policies &gt;... &gt;::policies_type</a></div><div class="ttdeci">boost::mp11::mp_filter&lt; policy::is_policy, parameters_type &gt; policies_type</div><div class="ttdef"><b>Definition:</b> <a href="tree__node_8hpp_source.html#l00033">tree_node.hpp:33</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1counting__flag__t_html_a56d9c0ffdcedc64bf0ae095386378e8e"><div class="ttname"><a href="classarg__router_1_1counting__flag__t.html#a56d9c0ffdcedc64bf0ae095386378e8e">arg_router::counting_flag_t::value_type</a></div><div class="ttdeci">T value_type</div><div class="ttdef"><b>Definition:</b> <a href="counting__flag_8hpp_source.html#l00055">counting_flag.hpp:55</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1parsing_1_1token__list_html"><div class="ttname"><a href="classarg__router_1_1parsing_1_1token__list.html">arg_router::parsing::token_list</a></div><div class="ttdef"><b>Definition:</b> <a href="token__type_8hpp_source.html#l00094">token_type.hpp:94</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1counting__flag__t_html_abcadf963a8cf9ec9596a1966799ba2c9"><div class="ttname"><a href="classarg__router_1_1counting__flag__t.html#abcadf963a8cf9ec9596a1966799ba2c9">arg_router::counting_flag_t::counting_flag_t</a></div><div class="ttdeci">constexpr counting_flag_t(Policies... policies) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="counting__flag_8hpp_source.html#l00092">counting_flag.hpp:92</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1counting__flag__t_html_abcadf963a8cf9ec9596a1966799ba2c9"><div class="ttname"><a href="classarg__router_1_1counting__flag__t.html#abcadf963a8cf9ec9596a1966799ba2c9">arg_router::counting_flag_t::counting_flag_t</a></div><div class="ttdeci">constexpr counting_flag_t(Policies... policies) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="counting__flag_8hpp_source.html#l00066">counting_flag.hpp:66</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1parsing_1_1token__list_html_a6d6f59a3d781a45611921aea9e2c91a5"><div class="ttname"><a href="classarg__router_1_1parsing_1_1token__list.html#a6d6f59a3d781a45611921aea9e2c91a5">arg_router::parsing::token_list::mark_as_processed</a></div><div class="ttdeci">void mark_as_processed(size_type count=1)</div><div class="ttdef"><b>Definition:</b> <a href="token__type_8hpp_source.html#l00227">token_type.hpp:227</a></div></div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00012">algorithm.hpp:12</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1counting__flag__t_html_aa7ad1aed846500aaf85c6e4864b1f851"><div class="ttname"><a href="classarg__router_1_1counting__flag__t.html#aa7ad1aed846500aaf85c6e4864b1f851">arg_router::counting_flag_t::help_data_type</a></div><div class="ttdeci">typename parent_type::template default_leaf_help_data_type&lt; Flatten &gt; help_data_type</div><div class="ttdef"><b>Definition:</b> <a href="counting__flag_8hpp_source.html#l00060">counting_flag.hpp:60</a></div></div>
 <div class="ttc" id="astructarg__router_1_1policy_1_1has__parse__phase__method_html"><div class="ttname"><a href="structarg__router_1_1policy_1_1has__parse__phase__method.html">arg_router::policy::has_parse_phase_method</a></div><div class="ttdef"><b>Definition:</b> <a href="policy_8hpp_source.html#l00084">policy.hpp:84</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1policy_1_1multi__stage__value_html"><div class="ttname"><a href="classarg__router_1_1policy_1_1multi__stage__value.html">arg_router::policy::multi_stage_value</a></div><div class="ttdef"><b>Definition:</b> <a href="multi__stage__value_8hpp_source.html#l00030">multi_stage_value.hpp:30</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1counting__flag__t_html"><div class="ttname"><a href="classarg__router_1_1counting__flag__t.html">arg_router::counting_flag_t</a></div><div class="ttdef"><b>Definition:</b> <a href="counting__flag_8hpp_source.html#l00031">counting_flag.hpp:31</a></div></div>

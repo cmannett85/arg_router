@@ -86,13 +86,13 @@ Inheritance diagram for arg_router::policy::alias_t&lt; AliasedPolicies &gt;:</d
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:abd3cbec28db15f7bedea6bcaf50ea3bb"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1alias__t.html#abd3cbec28db15f7bedea6bcaf50ea3bb">aliased_policies_type</a> = std::tuple&lt; AliasedPolicies... &gt;</td></tr>
-<tr class="separator:abd3cbec28db15f7bedea6bcaf50ea3bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac282e6e859ba9d8884766a607d48891f"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1alias__t.html#ac282e6e859ba9d8884766a607d48891f">aliased_policies_type</a> = std::tuple&lt; std::decay_t&lt; AliasedPolicies &gt;... &gt;</td></tr>
+<tr class="separator:ac282e6e859ba9d8884766a607d48891f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a7e9b342cf6ec27cbcb2593a7fb830178"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1alias__t.html#a7e9b342cf6ec27cbcb2593a7fb830178">alias_t</a> ([[maybe_unused]] AliasedPolicies &amp;&amp;... policies)</td></tr>
-<tr class="separator:a7e9b342cf6ec27cbcb2593a7fb830178"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae90c0bc80faf795e00fd4747b79a9c97"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1alias__t.html#ae90c0bc80faf795e00fd4747b79a9c97">alias_t</a> ([[maybe_unused]] const AliasedPolicies &amp;... policies)</td></tr>
+<tr class="separator:ae90c0bc80faf795e00fd4747b79a9c97"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:affd1e51032afbe7b51237830c7c40a53"><td class="memTemplParams" colspan="2">template&lt;typename... Parents&gt; </td></tr>
 <tr class="memitem:affd1e51032afbe7b51237830c7c40a53"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1alias__t.html#affd1e51032afbe7b51237830c7c40a53">pre_parse_phase</a> (<a class="el" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a> &amp;tokens, [[maybe_unused]] const Parents &amp;... parents) const</td></tr>
 <tr class="separator:affd1e51032afbe7b51237830c7c40a53"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -112,8 +112,8 @@ class arg_router::policy::alias_t&lt; AliasedPolicies &gt;</h3>
 
 <p class="definition">Definition at line <a class="el" href="alias_8hpp_source.html#l00027">27</a> of file <a class="el" href="alias_8hpp_source.html">alias.hpp</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
-<a id="abd3cbec28db15f7bedea6bcaf50ea3bb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abd3cbec28db15f7bedea6bcaf50ea3bb">&#9670;&nbsp;</a></span>aliased_policies_type</h2>
+<a id="ac282e6e859ba9d8884766a607d48891f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac282e6e859ba9d8884766a607d48891f">&#9670;&nbsp;</a></span>aliased_policies_type</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -121,7 +121,7 @@ class arg_router::policy::alias_t&lt; AliasedPolicies &gt;</h3>
 template&lt;typename... AliasedPolicies&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="classarg__router_1_1policy_1_1alias__t.html">arg_router::policy::alias_t</a>&lt; AliasedPolicies &gt;::<a class="el" href="classarg__router_1_1policy_1_1alias__t.html#abd3cbec28db15f7bedea6bcaf50ea3bb">aliased_policies_type</a> =  std::tuple&lt;AliasedPolicies...&gt;</td>
+          <td class="memname">using <a class="el" href="classarg__router_1_1policy_1_1alias__t.html">arg_router::policy::alias_t</a>&lt; AliasedPolicies &gt;::<a class="el" href="classarg__router_1_1policy_1_1alias__t.html#ac282e6e859ba9d8884766a607d48891f">aliased_policies_type</a> =  std::tuple&lt;std::decay_t&lt;AliasedPolicies&gt;...&gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -132,8 +132,8 @@ template&lt;typename... AliasedPolicies&gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a7e9b342cf6ec27cbcb2593a7fb830178"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7e9b342cf6ec27cbcb2593a7fb830178">&#9670;&nbsp;</a></span>alias_t()</h2>
+<a id="ae90c0bc80faf795e00fd4747b79a9c97"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae90c0bc80faf795e00fd4747b79a9c97">&#9670;&nbsp;</a></span>alias_t()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -146,7 +146,7 @@ template&lt;typename... AliasedPolicies&gt; </div>
         <tr>
           <td class="memname">constexpr <a class="el" href="classarg__router_1_1policy_1_1alias__t.html">arg_router::policy::alias_t</a>&lt; AliasedPolicies &gt;::<a class="el" href="classarg__router_1_1policy_1_1alias__t.html">alias_t</a> </td>
           <td>(</td>
-          <td class="paramtype">[[maybe_unused] ] AliasedPolicies &amp;&amp;...&#160;</td>
+          <td class="paramtype">[[maybe_unused] ] const AliasedPolicies &amp;...&#160;</td>
           <td class="paramname"><em>policies</em></td><td>)</td>
           <td></td>
         </tr>
@@ -236,7 +236,7 @@ template&lt;typename... Parents&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="alias_8hpp_source.html#l00063">63</a> of file <a class="el" href="alias_8hpp_source.html">alias.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="alias_8hpp_source.html#l00064">64</a> of file <a class="el" href="alias_8hpp_source.html">alias.hpp</a>.</p>
 
 </div>
 </div>

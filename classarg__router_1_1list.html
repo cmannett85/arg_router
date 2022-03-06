@@ -80,16 +80,16 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a8c48af5598e074c0470d9ce8d09a7559"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1list.html#a8c48af5598e074c0470d9ce8d09a7559">children_type</a> = std::tuple&lt; Children... &gt;</td></tr>
-<tr class="separator:a8c48af5598e074c0470d9ce8d09a7559"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a4459b2b6febc4609e374c672cb3bf3"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1list.html#a0a4459b2b6febc4609e374c672cb3bf3">children_type</a> = std::tuple&lt; std::decay_t&lt; Children &gt;... &gt;</td></tr>
+<tr class="separator:a0a4459b2b6febc4609e374c672cb3bf3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a49a29c27803e4699b2fa1da1fef87eff"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1list.html#a49a29c27803e4699b2fa1da1fef87eff">list</a> (Children... <a class="el" href="classarg__router_1_1list.html#ad033067c4496dd4c8908685e53e75767">children</a>) noexcept</td></tr>
 <tr class="separator:a49a29c27803e4699b2fa1da1fef87eff"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad033067c4496dd4c8908685e53e75767"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classarg__router_1_1list.html#a8c48af5598e074c0470d9ce8d09a7559">children_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1list.html#ad033067c4496dd4c8908685e53e75767">children</a> () noexcept</td></tr>
+<tr class="memitem:ad033067c4496dd4c8908685e53e75767"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classarg__router_1_1list.html#a0a4459b2b6febc4609e374c672cb3bf3">children_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1list.html#ad033067c4496dd4c8908685e53e75767">children</a> () noexcept</td></tr>
 <tr class="separator:ad033067c4496dd4c8908685e53e75767"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab729aaae40238d5d0721697390ad6254"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classarg__router_1_1list.html#a8c48af5598e074c0470d9ce8d09a7559">children_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1list.html#ab729aaae40238d5d0721697390ad6254">children</a> () const noexcept</td></tr>
+<tr class="memitem:ab729aaae40238d5d0721697390ad6254"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classarg__router_1_1list.html#a0a4459b2b6febc4609e374c672cb3bf3">children_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1list.html#ab729aaae40238d5d0721697390ad6254">children</a> () const noexcept</td></tr>
 <tr class="separator:ab729aaae40238d5d0721697390ad6254"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -106,8 +106,8 @@ class arg_router::list&lt; Children &gt;</h3>
 
 <p class="definition">Definition at line <a class="el" href="list_8hpp_source.html#l00020">20</a> of file <a class="el" href="list_8hpp_source.html">list.hpp</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
-<a id="a8c48af5598e074c0470d9ce8d09a7559"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8c48af5598e074c0470d9ce8d09a7559">&#9670;&nbsp;</a></span>children_type</h2>
+<a id="a0a4459b2b6febc4609e374c672cb3bf3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0a4459b2b6febc4609e374c672cb3bf3">&#9670;&nbsp;</a></span>children_type</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -115,7 +115,7 @@ class arg_router::list&lt; Children &gt;</h3>
 template&lt;typename... Children&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="classarg__router_1_1list.html">arg_router::list</a>&lt; Children &gt;::<a class="el" href="classarg__router_1_1list.html#a8c48af5598e074c0470d9ce8d09a7559">children_type</a> =  std::tuple&lt;Children...&gt;</td>
+          <td class="memname">using <a class="el" href="classarg__router_1_1list.html">arg_router::list</a>&lt; Children &gt;::<a class="el" href="classarg__router_1_1list.html#a0a4459b2b6febc4609e374c672cb3bf3">children_type</a> =  std::tuple&lt;std::decay_t&lt;Children&gt;...&gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -176,7 +176,7 @@ template&lt;typename... Children&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const <a class="el" href="classarg__router_1_1list.html#a8c48af5598e074c0470d9ce8d09a7559">children_type</a>&amp; <a class="el" href="classarg__router_1_1list.html">arg_router::list</a>&lt; Children &gt;::children </td>
+          <td class="memname">const <a class="el" href="classarg__router_1_1list.html#a0a4459b2b6febc4609e374c672cb3bf3">children_type</a>&amp; <a class="el" href="classarg__router_1_1list.html">arg_router::list</a>&lt; Children &gt;::children </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -207,7 +207,7 @@ template&lt;typename... Children&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classarg__router_1_1list.html#a8c48af5598e074c0470d9ce8d09a7559">children_type</a>&amp; <a class="el" href="classarg__router_1_1list.html">arg_router::list</a>&lt; Children &gt;::children </td>
+          <td class="memname"><a class="el" href="classarg__router_1_1list.html#a0a4459b2b6febc4609e374c672cb3bf3">children_type</a>&amp; <a class="el" href="classarg__router_1_1list.html">arg_router::list</a>&lt; Children &gt;::children </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>

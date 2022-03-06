@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>arg_router: Main Page</title>
+<title>arg_router: arg_router</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -64,13 +64,11 @@ $(function() {
 
 <div class="PageDoc"><div class="header">
   <div class="headertitle">
-<div class="title">arg_router Documentation</div>  </div>
+<div class="title"><a class="el" href="namespacearg__router.html">arg_router</a> </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><object type="image/svg+xml" data="https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg" style="pointer-events: none;">Documentation Generator</object> <img src="https://img.shields.io/badge/Unit_Test_Coverage-99.4%25-brightgreen" alt="Unit test coverage" class="inline"/></p>
-<h1><a class="el" href="namespacearg__router.html">arg_router</a></h1>
-<p><code><a class="el" href="namespacearg__router.html">arg_router</a></code> is a C++17 command line parser and router. It uses policy-based objects hierarchically, so the parsing code is self-describing. Rather than just providing a parsing service that returns a map of <code>variant</code>s/<code>any</code>s, it allows you to bind <code>Callable</code> instances to points in the parse structure, so complex command line arguments can directly call functions with the expected arguments - rather than you having to do this yourself.</p>
-<h2>Features</h2>
+<div class="textblock"><p><code><a class="el" href="namespacearg__router.html">arg_router</a></code> is a C++17 command line parser and router. It uses policy-based objects hierarchically, so the parsing code is self-describing. Rather than just providing a parsing service that returns a map of <code>variant</code>s/<code>any</code>s, it allows you to bind <code>Callable</code> instances to points in the parse structure, so complex command line arguments can directly call functions with the expected arguments - rather than you having to do this yourself.</p>
+<h1>Features</h1>
 <ul>
 <li>Use policies to define the properties and constraints of arguments at compile-time</li>
 <li>Group arguments together to define mutually exclusive operating modes, for complex applications</li>
@@ -79,48 +77,48 @@ $(function() {
 <li>Generates its help output, which you can modify at runtime using a <code>Callable</code></li>
 <li>Easy custom parsers by using <code>Callable</code>s inline for specific arguments, or you can implement a specialisation to cover all instances of that type</li>
 </ul>
-<h2>Basics</h2>
-<p>Let's start simple, with this <code>cat</code>-like program: </p><div class="fragment"><div class="line"><span class="keyword">namespace </span>ar = <a class="code" href="namespacearg__router.html">arg_router</a>;</div>
+<h1>Basics</h1>
+<p>Let's start simple, with this <code>cat</code>-like program: </p><div class="fragment"><div class="line"><span class="keyword">namespace </span>ar = <a class="code" href="namespacearg__router.html">arg_router</a></div>
 <div class="line"><span class="keyword">namespace </span>arp = ar::policy</div>
 <div class="line">ar::root(</div>
 <div class="line">    arp::validation::default_validator,</div>
 <div class="line">    ar::help(</div>
-<div class="line">        arp::long_name&lt;S_(<span class="stringliteral">&quot;help&quot;</span>)&gt;,</div>
+<div class="line">        arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;help&quot;</span>)&gt;,</div>
 <div class="line">        arp::short_name&lt;&#39;h&#39;&gt;,</div>
-<div class="line">        arp::program_name&lt;S_(<span class="stringliteral">&quot;my-cat&quot;</span>)&gt;,</div>
-<div class="line">        arp::program_version&lt;S_(<span class="stringliteral">&quot;v3.14&quot;</span>)&gt;,</div>
-<div class="line">        arp::description&lt;S_(<span class="stringliteral">&quot;Display this help and exit&quot;</span>)&gt;</div>
+<div class="line">        arp::program_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;my-cat&quot;</span>)&gt;,</div>
+<div class="line">        arp::program_version&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;v3.14&quot;</span>)&gt;,</div>
+<div class="line">        arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Display this help and exit&quot;</span>)&gt;),</div>
 <div class="line">    ar::flag(</div>
-<div class="line">        arp::long_name&lt;S_(<span class="stringliteral">&quot;version&quot;</span>)&gt;,</div>
-<div class="line">        arp::description&lt;S_(<span class="stringliteral">&quot;Output version information and exit&quot;</span>)&gt;,</div>
+<div class="line">        arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;version&quot;</span>)&gt;,</div>
+<div class="line">        arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Output version information and exit&quot;</span>)&gt;,</div>
 <div class="line">        arp::router{[](<span class="keywordtype">bool</span> v) { ... }}),</div>
 <div class="line">    ar::mode(</div>
 <div class="line">        ar::flag(</div>
-<div class="line">            arp::long_name&lt;S_(<span class="stringliteral">&quot;show-all&quot;</span>)&gt;,</div>
-<div class="line">            arp::description&lt;S_(<span class="stringliteral">&quot;Equivalent to -nE&quot;</span>)&gt;,</div>
+<div class="line">            arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;show-all&quot;</span>)&gt;,</div>
+<div class="line">            arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Equivalent to -nE&quot;</span>)&gt;,</div>
 <div class="line">            arp::short_name&lt;&#39;A&#39;&gt;,</div>
-<div class="line">            arp::alias(ar::short_name&lt;&#39;E&#39;&gt;, ar::short_name&lt;&#39;n&#39;&gt;)),</div>
+<div class="line">            arp::alias(arp::short_name&lt;&#39;E&#39;&gt;, arp::short_name&lt;&#39;n&#39;&gt;)),</div>
 <div class="line">        ar::flag(</div>
-<div class="line">            arp::long_name&lt;S_(<span class="stringliteral">&quot;show-ends&quot;</span>)&gt;,</div>
-<div class="line">            arp::description&lt;S_(<span class="stringliteral">&quot;Display $ at end of each line&quot;</span>)&gt;,</div>
+<div class="line">            arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;show-ends&quot;</span>)&gt;,</div>
+<div class="line">            arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Display $ at end of each line&quot;</span>)&gt;,</div>
 <div class="line">            arp::short_name&lt;&#39;E&#39;&gt;),</div>
 <div class="line">        ar::flag(</div>
-<div class="line">            arp::long_name&lt;S_(<span class="stringliteral">&quot;show-nonprinting&quot;</span>)&gt;,</div>
-<div class="line">            arp::description&lt;S_(<span class="stringliteral">&quot;Use ^ and M- notation, except for LFD and TAB&quot;</span>)&gt;,</div>
+<div class="line">            arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;show-nonprinting&quot;</span>)&gt;,</div>
+<div class="line">            arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Use ^ and M- notation, except for LFD and TAB&quot;</span>)&gt;,</div>
 <div class="line">            arp::short_name&lt;&#39;n&#39;&gt;),</div>
 <div class="line">        ar::arg&lt;int&gt;(</div>
-<div class="line">            arp::long_name&lt;S_(<span class="stringliteral">&quot;max-lines&quot;</span>)&gt;,</div>
-<div class="line">            arp::description&lt;S_(<span class="stringliteral">&quot;Maximum lines to output&quot;</span>)&gt;,</div>
+<div class="line">            arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;max-lines&quot;</span>)&gt;,</div>
+<div class="line">            arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Maximum lines to output&quot;</span>)&gt;,</div>
 <div class="line">            arp::default_value{-1}),</div>
 <div class="line">        ar::positional_arg&lt;std::vector&lt;std::string_view&gt;&gt;(</div>
 <div class="line">            arp::required,</div>
-<div class="line">            arp::display_name&lt;S_(<span class="stringliteral">&quot;FILES&quot;</span>)&gt;,</div>
-<div class="line">            arp::description&lt;S_(<span class="stringliteral">&quot;Files to read&quot;</span>)&gt;),</div>
+<div class="line">            arp::display_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;FILES&quot;</span>)&gt;,</div>
+<div class="line">            arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Files to read&quot;</span>)&gt;),</div>
 <div class="line">        arp::router{[](<span class="keywordtype">bool</span> show_ends,</div>
 <div class="line">                       <span class="keywordtype">bool</span> show_non_printing,</div>
 <div class="line">                       <span class="keywordtype">int</span> max_lines,</div>
-<div class="line">                       std::vector&lt;std::string_view&gt;&gt; files) { ... }})).</div>
-<div class="line">    parse(argc, argv);</div>
+<div class="line">                       std::vector&lt;std::string_view&gt; files) { ... }})).</div>
+<div class="line">    parse(argc, argv)</div>
 </div><!-- fragment --><p>Let's start from the top, as the name suggests <code>root</code> is the root of the parse tree and provides the <code>parse(argc, argv)</code> method. Only children of the root can (and must) have a <code>router</code> policy (except for nested <code>mode</code>s, more <a href="#modes">on that later</a>) and therefore act as access points into the program. The root's children are implicitly mutually exclusive, so trying to pass <code>--version --help</code> in the command line is a runtime error.</p>
 <p>The <code>arp::validation::default_validator</code> instance provides the default validator that the root uses to validate the parse tree at compile-time. It is a required policy of the <code>root</code>. Unless you have implemented your own policy or tree node you will never need to specify anything else.</p>
 <p>The <code>help</code> node is used by the <code>root</code> to generate the argument documentation for the help output, by default it just prints directly to the console and then exits, but a <code>router</code> can be attached that accepts the formatted output and choose to do something else with it. The optional <code>program_name</code> and <code>program_version</code> policies add a header to the help output.</p>
@@ -129,29 +127,30 @@ $(function() {
 <p><code>arg&lt;T&gt;</code> does exactly what you would expect, it defines an argument that expects a value to follow it on the command line. If an argument is not <code>required</code> then it may have a <code>default_value</code> (if neither are set, then a default initialised value is used instead), this is passed to the <code>router</code>'s <code>Callable</code> on parsing if it isn't specified by the user on the command line.</p>
 <p>A <code>flag</code> is essentially an <code>arg&lt;bool&gt;{default_value{false}}</code>, except that it doesn't expect an argument value to follow on the command line as it <em>is</em> the value. Flags cannot have default arguments or be marked as required.</p>
 <p>An <code>alias</code> policy allows you to define an argument that acts as a link to other arguments, so in our example above passing <code>-A</code> on the command line would actually set the <code>-E</code> and <code>-n</code> flags to true. You can use either the long or short name of the aliased flag, but the <code>value_type</code>s (<code>bool</code> for a flag) must be the same.</p>
-<p><code>positional_arg&lt;T&gt;</code> does not use a 'marker' token on the command line for which its value follows, the values position in the command line arguments determines what it is for. The order that arguments are specified on the command line normally don't matter, but for positional arguments they do; for example in our cat program the files must be specified after the arguments so passing <code>myfile.hpp -n</code> would trigger the parser to land on the <code>positional_arg</code> for <code>myfile.hpp</code> which would then greedily consume the <code>-n</code> causing the application to try to open the file <code>-n</code>... We'll cover constrained <code>positional_arg</code>s in later examples. The <code>display_name</code> policy is used when generating help or error output - it is not used when parsing.</p>
+<p><code>positional_arg&lt;T&gt;</code> does not use a 'marker' token on the command line for which its value follows, the values position in the command line arguments determines what it is for. The order that arguments are specified on the command line normally don't matter, but for positional arguments they do for example in our cat program the files must be specified after the arguments so passing <code>myfile.hpp -n</code> would trigger the parser to land on the <code>positional_arg</code> for <code>myfile.hpp</code> which would then greedily consume the <code>-n</code> causing the application to try to open the file <code>-n</code>... We'll cover constrained <code>positional_arg</code>s in later examples. The <code>display_name</code> policy is used when generating help or error output - it is not used when parsing.</p>
 <p>Assuming parsing was successful, the final <code>router</code> is called with the parsed argument e.g. if the user passed <code>-E file1 file2</code> then the <code>router</code> is passed <code>(true, false, -1, {"file1", "file2"})</code>.</p>
 <p>You may have noticed that the nodes are constructed with parentheses whilst the policies use braces, this is necessary due to CTAD rules that affect nodes which return a user-defined value type. This can be circumvented using a function to return the required instance, for example the actual type of a flag is <code>flag_t</code>, <code>flag(...)</code> is a function that creates one for you.</p>
-<h2>Conditional Arguments</h2>
-<p>Let's add another feature to our cat program where we can handle lines over a certain length differently. </p><div class="fragment"><div class="line"><span class="keyword">using namespace </span>ard = ar::dependency;</div>
+<h1>Conditional Arguments</h1>
+<p>Let's add another feature to our cat program where we can handle lines over a certain length differently. </p><div class="fragment"><div class="line"><span class="keyword">namespace </span>ard = ar::dependency</div>
 <div class="line">ar::mode(</div>
 <div class="line">    ...</div>
 <div class="line">    ar::arg&lt;std::optional&lt;std::size_t&gt;&gt;(</div>
-<div class="line">        arp::long_name&lt;S_(<span class="stringliteral">&quot;max-line-length&quot;</span>)&gt;,</div>
-<div class="line">        arp::description&lt;S_(<span class="stringliteral">&quot;Maximum line length&quot;</span>)&gt;,</div>
+<div class="line">        arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;max-line-length&quot;</span>)&gt;,</div>
+<div class="line">        arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Maximum line length&quot;</span>)&gt;,</div>
 <div class="line">        arp::default_value{std::optional&lt;std::size_t&gt;{}}),</div>
 <div class="line">    ard::one_of(</div>
-<div class="line">        arp::dependent&lt;arp::long_name&lt;S_(<span class="stringliteral">&quot;max-line-length&quot;</span>)&gt;&gt;,</div>
 <div class="line">        arp::default_value{<span class="stringliteral">&quot;...&quot;</span>},</div>
 <div class="line">        ar::flag(</div>
-<div class="line">            arp::long_name&lt;S_(<span class="stringliteral">&quot;skip-line&quot;</span>)&gt;,</div>
+<div class="line">            arp::dependent(arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;max-line-length&quot;</span>)&gt;),</div>
+<div class="line">            arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;skip-line&quot;</span>)&gt;,</div>
 <div class="line">            arp::short_name&lt;&#39;s&#39;&gt;,</div>
-<div class="line">            arp::description&lt;S_(<span class="stringliteral">&quot;Skips line output if max line length &quot;</span></div>
+<div class="line">            arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Skips line output if max line length &quot;</span></div>
 <div class="line">                                <span class="stringliteral">&quot;reached&quot;</span>)&gt;),</div>
 <div class="line">        ar::arg&lt;std::string_view&gt;(</div>
-<div class="line">            arp::long_name&lt;S_(<span class="stringliteral">&quot;line-suffix&quot;</span>)&gt;,</div>
-<div class="line">            arp::description&lt;S_(<span class="stringliteral">&quot;Shortens line length to maximum with the &quot;</span></div>
-<div class="line">                                <span class="stringliteral">&quot;given suffix if max line length reached&quot;</span>)&gt;)),</div>
+<div class="line">            arp::dependent(arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;max-line-length&quot;</span>)&gt;),</div>
+<div class="line">            arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;line-suffix&quot;</span>)&gt;,</div>
+<div class="line">            arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Shortens line length to maximum with the &quot;</span></div>
+<div class="line">                                <span class="stringliteral">&quot;given suffix if max line length reached&quot;</span>)&gt;),</div>
 <div class="line">    ...</div>
 <div class="line">    arp::router{[](<span class="keywordtype">bool</span> show_all,</div>
 <div class="line">                   <span class="keywordtype">bool</span> show_ends,</div>
@@ -159,28 +158,28 @@ $(function() {
 <div class="line">                   <span class="keywordtype">int</span> max_lines,</div>
 <div class="line">                   std::optional&lt;std::size_t&gt; max_line_length,</div>
 <div class="line">                   std::variant&lt;bool, std::string_view&gt; max_line_handling,</div>
-<div class="line">                   std::vector&lt;std::string_view&gt;&gt; files) { ... }})</div>
+<div class="line">                   std::vector&lt;std::string_view&gt;&gt; files) { ... }}))</div>
 </div><!-- fragment --><p>We've defined a new argument <code>--max-line-length</code> but rather than using <code>-1</code> as the "no limit" indicator like we did for <code>--max-lines</code>, we specify the argument type to be <code>std::optional&lt;std::size_t&gt;</code> and have the default value by an empty optional - this allows the code to define our intent better.</p>
 <p>What do we do with lines that reach the limit if it has been set? In our example we can either skip the line output, or truncate it with a suffix. It doesn't make any sense to allow both of these options, so we declare them under a <code>one_of</code> node. Under this node, only one is valid when parsing at runtime, if the user specifies both then it is an error. A <code>one_of</code> must be marked as required or have a default value in case the user passes none of the arguments it handles.</p>
 <p>To express the 'one of' concept better in code, the <code>one_of</code> node has a single representation in the <code>router</code>'s arguments - a variant that encompasses all the value types of each entry in it. In our example's case, a bool for the <code>--skip-line</code> flag and a <code>string_view</code> for the <code>--line-suffix</code> case.</p>
-<p>What happens if a user passes <code>--skip-line</code> without <code>--max-line-length</code>? Normally the developer will have to check that <code>max-line-length</code> is not empty and either ignore or throw if it is. But by specifying the <code>one_of</code> as <code>dependent</code> on <code>max-line-length</code>, <code><a class="el" href="namespacearg__router.html">arg_router</a></code> will throw on your behalf in this scenario. To be clear, the <code>dependent</code> policy just means that the owner cannot appear on the command line without the <code>arg</code> or <code>flag</code> named in its parameters also appearing on the command line.</p>
+<p>What happens if a user passes <code>--skip-line</code> or <code>--line-suffix</code> without <code>--max-line-length</code>? Normally the developer will have to check that <code>max-line-length</code> is not empty and either ignore or throw if it is. But by specifying the <code>one_of</code> as <code>dependent</code> on <code>max-line-length</code>, <code><a class="el" href="namespacearg__router.html">arg_router</a></code> will throw on your behalf in this scenario. To be clear, the <code>dependent</code> policy just means that the owner cannot appear on the command line without the <code>arg</code> or <code>flag</code> named in its parameters also appearing on the command line.</p>
 <p>The smart developer may have noticed an edge case here. If both the children in the above example had the same <code>value_type</code>, then the variant will be created with multiples of the same type. <code>std::variant</code> supports this but it means that the common type-based visitation pattern will become ambiguous on those identical types i.e. you won't know which flag was used. This may or may not be important to you, but if it is, you will have to <code>switch</code> on <code>std::variant::index()</code> instead.</p>
-<h2>Custom Parsing</h2>
+<h1>Custom Parsing</h1>
 <p>Custom parsing for <code>arg</code> types can be done in one of two ways, the first is using a <code>custom_parser</code> policy. Let's add theme coloring to our console output. </p><div class="fragment"><div class="line"><span class="keyword">enum class</span> theme_t {</div>
 <div class="line">    NONE,</div>
 <div class="line">    CLASSIC,</div>
 <div class="line">    SOLARIZED</div>
-<div class="line">};</div>
+<div class="line">}</div>
 <div class="line"> </div>
 <div class="line">ar::mode(</div>
 <div class="line">    ...</div>
 <div class="line">    ar::arg&lt;theme_t&gt;(</div>
-<div class="line">        arp::long_name&lt;S_(<span class="stringliteral">&quot;theme&quot;</span>)&gt;,</div>
+<div class="line">        arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;theme&quot;</span>)&gt;,</div>
 <div class="line">        arp::short_name&lt;&#39;t&#39;&gt;,</div>
-<div class="line">        arp::description&lt;S_(<span class="stringliteral">&quot;Set the output colour theme&quot;</span>)&gt;,</div>
+<div class="line">        arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Set the output colour theme&quot;</span>)&gt;,</div>
 <div class="line">        arp::default_value{theme_t::NONE},</div>
-<div class="line">        arp::custom_parser&lt;theme_t&gt;{[](std::string_view <a class="code" href="namespacearg__router.html#a7e65c270dddd0acb08ebf68f179d58d6">arg</a>) {</div>
-<div class="line">            <span class="keywordflow">return</span> theme_from_string(arg); }})</div>
+<div class="line">        arp::custom_parser&lt;theme_t&gt;{[](std::string_view <a class="code" href="namespacearg__router.html#a29537daeb3ba7d1b8749d3e1e9d83f1b">arg</a>) {</div>
+<div class="line">            <span class="keywordflow">return</span> theme_from_string(arg) }})</div>
 <div class="line">    ...</div>
 <div class="line">    arp::router{[](<span class="keywordtype">bool</span> show_all,</div>
 <div class="line">        <span class="keywordtype">bool</span> show_ends,</div>
@@ -189,35 +188,38 @@ $(function() {
 <div class="line">        std::optional&lt;std::size_t&gt; max_line_length,</div>
 <div class="line">        std::variant&lt;bool, std::string_view&gt; max_line_handling,</div>
 <div class="line">        theme_t theme,</div>
-<div class="line">        std::vector&lt;std::string_view&gt;&gt; files) { ... }})</div>
+<div class="line">        std::vector&lt;std::string_view&gt;&gt; files) { ... }}))</div>
 </div><!-- fragment --><p>This is a convenient solution to one-off type parsing in-tree, I think it's pretty self-explanatory. However this is not convenient if you have lots of arguments that should return the same custom type, as you would have to copy and paste the lambda or bind calls to the conversion function for each one. In that case we can specialise on the <code>arg_router::parse</code> function. </p><div class="fragment"><div class="line"><span class="keyword">template</span> &lt;&gt;</div>
-<div class="line"><span class="keyword">auto</span> arg_router::parse&lt;theme_t&gt;(std::string_view arg)</div>
-<div class="line">{</div>
-<div class="line">    <span class="keywordflow">if</span> (arg == <span class="stringliteral">&quot;NONE&quot;</span>) {</div>
-<div class="line">        <span class="keywordflow">return</span> theme_t::NONE;</div>
-<div class="line">    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (arg == <span class="stringliteral">&quot;CLASSIC&quot;</span>) {</div>
-<div class="line">        <span class="keywordflow">return</span> theme_t::CLASSIC;</div>
-<div class="line">    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (arg == <span class="stringliteral">&quot;SOLARIZED&quot;</span>) {</div>
-<div class="line">        <span class="keywordflow">return</span> theme_t::SOLARIZED;</div>
+<div class="line"><span class="keyword">struct </span><a class="code" href="structarg__router_1_1parser.html">arg_router::parser</a>&lt;theme_t&gt; {</div>
+<div class="line">    [[nodiscard]] <span class="keyword">static</span> <span class="keyword">inline</span> theme_t parse(std::string_view <a class="code" href="namespacearg__router.html#a29537daeb3ba7d1b8749d3e1e9d83f1b">arg</a>)</div>
+<div class="line">    {</div>
+<div class="line">        <span class="keywordflow">if</span> (<a class="code" href="namespacearg__router.html#a29537daeb3ba7d1b8749d3e1e9d83f1b">arg</a> == <span class="stringliteral">&quot;NONE&quot;</span>) {</div>
+<div class="line">            <span class="keywordflow">return</span> theme_t::NONE</div>
+<div class="line">        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="namespacearg__router.html#a29537daeb3ba7d1b8749d3e1e9d83f1b">arg</a> == <span class="stringliteral">&quot;CLASSIC&quot;</span>) {</div>
+<div class="line">            <span class="keywordflow">return</span> theme_t::CLASSIC</div>
+<div class="line">        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="namespacearg__router.html#a29537daeb3ba7d1b8749d3e1e9d83f1b">arg</a> == <span class="stringliteral">&quot;SOLARIZED&quot;</span>) {</div>
+<div class="line">            <span class="keywordflow">return</span> theme_t::SOLARIZED</div>
+<div class="line">        }</div>
+<div class="line">    </div>
+<div class="line">        <span class="keywordflow">throw</span> parse_exception{<span class="stringliteral">&quot;Unknown theme argument: &quot;</span>s + <a class="code" href="namespacearg__router.html#a29537daeb3ba7d1b8749d3e1e9d83f1b">arg</a>}</div>
 <div class="line">    }</div>
-<div class="line"> </div>
-<div class="line">    <span class="keywordflow">throw</span> parse_exception{<span class="stringliteral">&quot;Unknown theme argument: &quot;</span>s + <a class="code" href="namespacearg__router.html#a7e65c270dddd0acb08ebf68f179d58d6">arg</a>};</div>
 <div class="line">}</div>
 </div><!-- fragment --><p>With this declared in a place visible to the parse tree declaration, <code>theme_t</code> can be converted from a string without the need for a <code>custom_parser</code>. It should be noted that <code>custom_parser</code> can still be used, and will be preferred over the <code>parse()</code> specialisation.</p>
-<h2>Counting Flags</h2>
+<h1>Counting Flags</h1>
 <p>Another Unix feature that is fairly common is flags that are repeatable i.e. you can declare it multiple times on the command line and it's value will increase with each repeat. A classic example of this is 'verbosity levels' for program output: </p><div class="fragment"><div class="line"><span class="keyword">enum class</span> verbosity_level_t {</div>
 <div class="line">    ERROR,</div>
 <div class="line">    WARNING,</div>
 <div class="line">    INFO,</div>
 <div class="line">    DEBUG</div>
-<div class="line">};</div>
+<div class="line">}</div>
 <div class="line"> </div>
 <div class="line">ar::mode(</div>
 <div class="line">    ...</div>
 <div class="line">    ar::counting_flag&lt;verbosity_level_t&gt;(</div>
 <div class="line">        arp::short_name&lt;&#39;v&#39;&gt;,</div>
-<div class="line">        arp::max_value&lt;verbosity_level_t::DEBUG&gt;,</div>
-<div class="line">        arp::description&lt;S_(<span class="stringliteral">&quot;Verbosity level, number of &#39;v&#39;s sets level&quot;</span>)&gt;,</div>
+<div class="line">        arp::min_max_value{verbosity_level_t::ERROR,</div>
+<div class="line">                           verbosity_level_t::DEBUG},</div>
+<div class="line">        arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Verbosity level, number of &#39;v&#39;s sets level&quot;</span>)&gt;,</div>
 <div class="line">        arp::default_value{verbosity_level_t::ERROR}),</div>
 <div class="line">    ...</div>
 <div class="line">    arp::router{[](<span class="keywordtype">bool</span> show_all,</div>
@@ -228,26 +230,23 @@ $(function() {
 <div class="line">        std::variant&lt;bool, std::string_view&gt; max_line_handling,</div>
 <div class="line">        theme_t theme,</div>
 <div class="line">        verbosity_level_t verbosity_level,</div>
-<div class="line">        std::vector&lt;std::string_view&gt;&gt; files) { ... }})</div>
+<div class="line">        std::vector&lt;std::string_view&gt;&gt; files) { ... }}))</div>
 </div><!-- fragment --><p>The number of times <code>-v</code> appears in the command line will increment the returned value, e.g. <code>-vv</code> will result in <code>verbosity_level_t::INFO</code>.</p>
-<p>Note that even though we are using a custom enum, we haven't specified a <code>custom_parser</code>. <code>counting_flag</code> will count up in <code>std::size_t</code> and then <code>static_cast</code> to the user-specified type, so as long as your requested type is explicitly convertible from <code>std::size_t</code> it will just work. If it isn't, then you'll have to modify your type or not use counting arguments, as attaching a <code>custom_parser</code> to any kind of flag will result in a build failure.</p>
+<p>Note that even though we are using a custom enum, we haven't specified a <code>custom_parser</code>. <code>counting_flag</code> will count up in <code>std::size_t</code> and then <code>static_cast</code> to the user-specified type, so as long as your requested type is explicitly convertible to/from <code>std::size_t</code> it will just work. If it isn't, then you'll have to modify your type or not use counting arguments, as attaching a <code>custom_parser</code> to any kind of flag will result in a build failure.</p>
 <p>Short name collapsing still works as expected, so passing <code>-Evnv</code> will result in <code>show_ends</code> and <code>show_non_printing</code> being true, and <code>verbosity_level</code> will be <code>verbosity_level_t::INFO</code> in the <code>router</code> call.</p>
-<p>We can constrain the amount of flags the user can provide by using the <code>max_value</code> policy, so passing <code>-vvvv</code> will result in a runtime error.</p>
-<p>The <code>long_name</code> policy is allowed but usually leads to ugly invocations, however we can use the knowledge gained so far to provide a better option: </p><div class="fragment"><div class="line">ar::mode(</div>
+<p>We can constrain the amount of flags the user can provide by using the <code>min_max_value</code> policy, so passing <code>-vvvv</code> will result in a runtime error.</p>
+<p>The <code>long_name</code> policy is allowed but usually leads to ugly invocations, however there is a better option: </p><div class="fragment"><div class="line">ar::mode(</div>
 <div class="line">    ...</div>
-<div class="line">    ard::one_of(</div>
+<div class="line">    ard::alias_group(</div>
 <div class="line">        arp::default_value{verbosity_level_t::INFO},</div>
+<div class="line">        arp::min_max_value{verbosity_level_t::ERROR,</div>
+<div class="line">                           verbosity_level_t::DEBUG},</div>
 <div class="line">        ar::counting_flag&lt;verbosity_level_t&gt;(</div>
 <div class="line">            arp::short_name&lt;&#39;v&#39;&gt;,</div>
-<div class="line">            arp::max_value&lt;verbosity_level_t::DEBUG&gt;,</div>
-<div class="line">            arp::description&lt;S_(<span class="stringliteral">&quot;Verbosity level, number of &#39;v&#39;s sets level&quot;</span>)&gt;,</div>
-<div class="line">            arp::alias(arp::long_name&lt;S_(<span class="stringliteral">&quot;verbose&quot;</span>)&gt;)),</div>
+<div class="line">            arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Verbosity level, number of &#39;v&#39;s sets level&quot;</span>)&gt;),</div>
 <div class="line">        ar::arg&lt;verbosity_level_t&gt;(</div>
-<div class="line">            arp::long_name&lt;S_(<span class="stringliteral">&quot;verbose&quot;</span>)&gt;,</div>
-<div class="line">            arp::description&lt;S_(<span class="stringliteral">&quot;Verbosity level&quot;</span>)&gt;</div>
-<div class="line">            arp::custom_parser&lt;verbosity_level_t&gt;{</div>
-<div class="line">                [](std::string_view <a class="code" href="namespacearg__router.html#a7e65c270dddd0acb08ebf68f179d58d6">arg</a>) {</div>
-<div class="line">                    <span class="keywordflow">return</span> verbosity_level_from_string(arg); }}))),</div>
+<div class="line">            arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;verbose&quot;</span>)&gt;,</div>
+<div class="line">            arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Verbosity level&quot;</span>)&gt;)),</div>
 <div class="line">    ...</div>
 <div class="line">    arp::router{[](<span class="keywordtype">bool</span> show_all,</div>
 <div class="line">        <span class="keywordtype">bool</span> show_ends,</div>
@@ -257,29 +256,43 @@ $(function() {
 <div class="line">        std::variant&lt;bool, std::string_view&gt; max_line_handling,</div>
 <div class="line">        theme_t theme,</div>
 <div class="line">        verbosity_level_t verbosity_level,</div>
-<div class="line">        std::vector&lt;std::string_view&gt;&gt; files) { ... }}}}</div>
-</div><!-- fragment --><p>We can declare a new <code>arg</code> that takes a string equivalent of the enum and then make the <code>-v</code> flag an alias of it, so now you can use <code>--verbose INFO</code> or <code>-vv</code>. Of course using both at the same time is confusing, so we can put both under a <code>one_of</code>. Now the clever part, because <code>-v</code> is an alias it doesn't provide its own output so the resulting <code>one_of</code> variant would be <code>std::variant&lt;verbosity_level_t&gt;</code>, <code><a class="el" href="namespacearg__router.html">arg_router</a></code> detects this and just collapses it to <code>verbosity_level_t</code>.</p>
-<h2>Constrained Positional Arguments</h2>
+<div class="line">        std::vector&lt;std::string_view&gt;&gt; files) { ... }}))</div>
+<div class="line">    ...</div>
+<div class="line">    </div>
+<div class="line"><span class="keyword">template</span> &lt;&gt;</div>
+<div class="line"><span class="keyword">struct </span><a class="code" href="structarg__router_1_1parser.html">arg_router::parser</a>&lt;verbosity_level_t&gt; {</div>
+<div class="line">    [[nodiscard]] <span class="keyword">static</span> <span class="keyword">inline</span> verbosity_level_t parse(std::string_view <a class="code" href="namespacearg__router.html#a29537daeb3ba7d1b8749d3e1e9d83f1b">arg</a>)</div>
+<div class="line">    {</div>
+<div class="line">        ...</div>
+<div class="line">    }</div>
+<div class="line">}</div>
+</div><!-- fragment --><p>We can declare a new <code>arg</code> that takes a string equivalent of the enum and put them both into an <code>alias_group</code>, so now you can use <code>--verbose INFO</code> or <code>-vv</code>. Short name collapsing still works as expected.</p>
+<p>What's this new <code>alias_group</code>? <code>policy::alias</code> is an <em>input</em> alias, it works by duplicating the value tokens to each of the aliased nodes it refers to i.e. it forms a one-to-many aliasing relationship. The limitations of that are:</p><ul>
+<li>All aliased nodes must have the same value token count (could be zero in the case of a flag)</li>
+<li>All aliased nodes must be able to parse the same token formats</li>
+</ul>
+<p><code>alias_group</code> is almost the opposite of <code>policy::alias</code>, it is an <em>output</em> alias. Each of its child nodes are aliases of the same output value i.e. it forms a many-to-one aliasing relationship. You can also think of <code>alias_group</code> as a variation on <code>one_of</code>, but instead of the output being a <code>std::variant</code> of all the child node output types <code>alias_group</code> requires that they all have the <em>same</em> output type.</p>
+<h1>Constrained Positional Arguments</h1>
 <p>The <code>positional_arg</code> shown in the first example is unconstrained, i.e. it will consume all command line tokens that follow. This isn't always desired, so we can use policies to constrain the amount of tokens consumed. Let's use a file copier as an example: </p><div class="fragment"><div class="line">$ simple-copy -f dest-dir source-path-1 source-path-2</div>
 </div><!-- fragment --><p>Our simple copier takes multiple source paths and copies the files to a single destination directory, a 'force' flag will overwrite existing files silently. </p><div class="fragment"><div class="line">ar::root(</div>
 <div class="line">    arp::validation::default_validator,</div>
 <div class="line">    ar::help(</div>
-<div class="line">        arp::long_name&lt;S_(<span class="stringliteral">&quot;help&quot;</span>)&gt;,</div>
+<div class="line">        arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;help&quot;</span>)&gt;,</div>
 <div class="line">        arp::short_name&lt;&#39;h&#39;&gt;,</div>
-<div class="line">        arp::description&lt;S_(<span class="stringliteral">&quot;Display this help and exit&quot;</span>)&gt;),</div>
+<div class="line">        arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Display this help and exit&quot;</span>)&gt;),</div>
 <div class="line">    ar::mode(</div>
 <div class="line">        ar::flag(</div>
-<div class="line">            arp::long_name&lt;S_(<span class="stringliteral">&quot;force&quot;</span>)&gt;,</div>
+<div class="line">            arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;force&quot;</span>)&gt;,</div>
 <div class="line">            arp::short_name&lt;&#39;f&#39;&gt;,</div>
-<div class="line">            arp::description&lt;S_(<span class="stringliteral">&quot;Force overwrite existing files&quot;</span>)&gt;),</div>
+<div class="line">            arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Force overwrite existing files&quot;</span>)&gt;),</div>
 <div class="line">        ar::positional_arg&lt;std::filesystem::path&gt;(</div>
-<div class="line">            arp::display_name&lt;S_(<span class="stringliteral">&quot;DST&quot;</span>)&gt;,</div>
-<div class="line">            arp::description&lt;S_(<span class="stringliteral">&quot;Destination directory&quot;</span>)&gt;,</div>
+<div class="line">            arp::display_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;DST&quot;</span>)&gt;,</div>
+<div class="line">            arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Destination directory&quot;</span>)&gt;,</div>
 <div class="line">            arp::required,</div>
 <div class="line">            arp::fixed_count&lt;1&gt;),</div>
 <div class="line">        ar::positional_arg&lt;std::vector&lt;std::filesystem::path&gt;&gt;(</div>
-<div class="line">            arp::display_name&lt;S_(<span class="stringliteral">&quot;SRC&quot;</span>)&gt;,</div>
-<div class="line">            arp::description&lt;S_(<span class="stringliteral">&quot;Source file paths&quot;</span>)&gt;,</div>
+<div class="line">            arp::display_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;SRC&quot;</span>)&gt;,</div>
+<div class="line">            arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Source file paths&quot;</span>)&gt;,</div>
 <div class="line">            arp::required,</div>
 <div class="line">            arp::min_count&lt;1&gt;),</div>
 <div class="line">        arp::router{[](<span class="keywordtype">bool</span> force,</div>
@@ -289,99 +302,99 @@ $(function() {
 <p>Following the destination path are the source paths, we need at least one so we mark it as required, as our range is unbounded the <code>value_type</code> needs to be a container. <code>positional_arg</code> uses a <code>push_back</code> call on the container, so <code>std::vector</code> is the typical type to use.</p>
 <p>Only the last <code>positional_arg</code> may be of variable length. A runtime error will only occur if there are no unbounded variable length <code>postional_arg</code>s and there are more arguments than the maximum or less than the minimum.</p>
 <p>It should be noted that setting a non-zero minimum count (<code>min_count</code>, <code>fixed_count</code>, or <code>min_max_count</code>) does <em>not</em> imply a requirement, the minimum count check only applies when there is at least one argument for the node to process. So as with an <code>arg</code>, you should use a <code>required</code> policy to explicitly state that at least one argument needs to be present, or a <code>default_value</code> policy - otherwise a default initialised value will be used instead. In the <code>SRC</code> argument above just marking it as <code>required</code> is sufficient for count behaviour as we only require a minimum count of one, however explicitly stating that improves the help output.</p>
-<h2>Modes</h2>
-<p>As noted in <a href="#basics">Basics</a>, <code>mode</code>s allow you to group command line components under an initial token on the command line. A common example of this developers will be aware of is <code>git</code>, for example in our parlance <code>git clean -ffxd</code>; <code>clean</code> would be the mode and <code>ffxd</code> would be be the flags that are available under that mode.</p>
+<h1>Modes</h1>
+<p>As noted in <a href="#basics">Basics</a>, <code>mode</code>s allow you to group command line components under an initial token on the command line. A common example of this developers will be aware of is <code>git</code>, for example in our parlance <code>git clean -ffxd</code> <code>clean</code> would be the mode and <code>ffxd</code> would be be the flags that are available under that mode.</p>
 <p>As an example, let's take the <code>simple-copy</code> above and split it into two modes: </p><div class="fragment"><div class="line">$ simple copy -f dest-dir source-path-1 source-path-2</div>
 <div class="line">$ simple move -f dest-dir source-path-1</div>
 </div><!-- fragment --><div class="fragment"><div class="line">ar::root(</div>
 <div class="line">    arp::validation::default_validator,</div>
 <div class="line">    ar::help(</div>
-<div class="line">        arp::long_name&lt;S_(<span class="stringliteral">&quot;help&quot;</span>)&gt;,</div>
+<div class="line">        arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;help&quot;</span>)&gt;,</div>
 <div class="line">        arp::short_name&lt;&#39;h&#39;&gt;,</div>
-<div class="line">        arp::description&lt;S_(<span class="stringliteral">&quot;Display this help and exit&quot;</span>)&gt;),</div>
+<div class="line">        arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Display this help and exit&quot;</span>)&gt;),</div>
 <div class="line">    ar::mode(</div>
-<div class="line">        arp::none_name&lt;S_(<span class="stringliteral">&quot;copy&quot;</span>)&gt;,</div>
-<div class="line">        arp::description&lt;S_(<span class="stringliteral">&quot;Copy source files to destination&quot;</span>)&gt;,</div>
+<div class="line">        arp::none_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;copy&quot;</span>)&gt;,</div>
+<div class="line">        arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Copy source files to destination&quot;</span>)&gt;,</div>
 <div class="line">        ar::flag(</div>
-<div class="line">            arp::long_name&lt;S_(<span class="stringliteral">&quot;force&quot;</span>)&gt;,</div>
+<div class="line">            arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;force&quot;</span>)&gt;,</div>
 <div class="line">            arp::short_name&lt;&#39;f&#39;&gt;,</div>
-<div class="line">            arp::description&lt;S_(<span class="stringliteral">&quot;Force overwrite existing files&quot;</span>)&gt;),</div>
+<div class="line">            arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Force overwrite existing files&quot;</span>)&gt;),</div>
 <div class="line">        ar::positional_arg&lt;std::filesystem::path&gt;(</div>
 <div class="line">            arp::required,</div>
-<div class="line">            arp::display_name&lt;S_(<span class="stringliteral">&quot;DST&quot;</span>)&gt;,</div>
-<div class="line">            arp::description&lt;S_(<span class="stringliteral">&quot;Destination directory&quot;</span>)&gt;,</div>
+<div class="line">            arp::display_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;DST&quot;</span>)&gt;,</div>
+<div class="line">            arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Destination directory&quot;</span>)&gt;,</div>
 <div class="line">            arp::fixed_count&lt;1&gt;),</div>
 <div class="line">        ar::positional_arg&lt;std::vector&lt;std::filesystem::path&gt;&gt;(</div>
 <div class="line">            arp::required,</div>
-<div class="line">            arp::display_name&lt;S_(<span class="stringliteral">&quot;SRC&quot;</span>)&gt;,</div>
-<div class="line">            arp::description&lt;S_(<span class="stringliteral">&quot;Source file paths&quot;</span>)&gt;,</div>
+<div class="line">            arp::display_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;SRC&quot;</span>)&gt;,</div>
+<div class="line">            arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Source file paths&quot;</span>)&gt;,</div>
 <div class="line">            arp::min_count&lt;1&gt;),</div>
 <div class="line">        arp::router{[](<span class="keywordtype">bool</span> force,</div>
 <div class="line">                       std::filesystem::path dest,</div>
 <div class="line">                       std::vector&lt;std::filesystem::path&gt; srcs) { ... }}),</div>
 <div class="line">    ar::mode(</div>
-<div class="line">        arp::none_name&lt;S_(<span class="stringliteral">&quot;move&quot;</span>)&gt;,</div>
-<div class="line">        arp::description&lt;S_(<span class="stringliteral">&quot;Move source file to destination&quot;</span>)&gt;,</div>
+<div class="line">        arp::none_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;move&quot;</span>)&gt;,</div>
+<div class="line">        arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Move source file to destination&quot;</span>)&gt;,</div>
 <div class="line">        ar::flag(</div>
-<div class="line">            arp::long_name&lt;S_(<span class="stringliteral">&quot;force&quot;</span>)&gt;,</div>
+<div class="line">            arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;force&quot;</span>)&gt;,</div>
 <div class="line">            arp::short_name&lt;&#39;f&#39;&gt;,</div>
-<div class="line">            arp::description&lt;S_(<span class="stringliteral">&quot;Force overwrite existing files&quot;</span>)&gt;),</div>
+<div class="line">            arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Force overwrite existing files&quot;</span>)&gt;),</div>
 <div class="line">        ar::positional_arg&lt;std::filesystem::path&gt;(</div>
 <div class="line">            arp::required,</div>
-<div class="line">            arp::display_name&lt;S_(<span class="stringliteral">&quot;DST&quot;</span>)&gt;,</div>
-<div class="line">            arp::description&lt;S_(<span class="stringliteral">&quot;Destination directory&quot;</span>)&gt;,</div>
+<div class="line">            arp::display_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;DST&quot;</span>)&gt;,</div>
+<div class="line">            arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Destination directory&quot;</span>)&gt;,</div>
 <div class="line">            arp::fixed_count&lt;1&gt;),</div>
 <div class="line">        <span class="comment">// Can only have one</span></div>
 <div class="line">        ar::positional_arg&lt;std::filesystem::path&gt;(</div>
 <div class="line">            arp::required,</div>
-<div class="line">            arp::display_name&lt;S_(<span class="stringliteral">&quot;SRC&quot;</span>)&gt;,</div>
-<div class="line">            arp::description&lt;S_(<span class="stringliteral">&quot;Source file path&quot;</span>)&gt;,</div>
+<div class="line">            arp::display_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;SRC&quot;</span>)&gt;,</div>
+<div class="line">            arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Source file path&quot;</span>)&gt;,</div>
 <div class="line">            arp::fixed_count&lt;1&gt;),</div>
 <div class="line">        arp::router{[](<span class="keywordtype">bool</span> force,</div>
 <div class="line">                       std::filesystem::path dest,</div>
 <div class="line">                       std::filesystem::path src) { ... }}))</div>
 </div><!-- fragment --><p>The name of a <code>mode</code> can only be the none version, as it doesn't use a prefix. We now have two named modes: <code>copy</code> and <code>move</code>.</p>
 <p>Named <code>mode</code>s can be nested too! Only one mode can be invoked, so attempting to use flags from parent modes is a runtime failure. Another stipulation is that every <code>mode</code> needs a <code>router</code> unless <em>all</em> of its children are <code>mode</code>s as well.</p>
-<h3>Flags Common Between Nodes</h3>
+<h2>Flags Common Between Nodes</h2>
 <p>An obvious ugliness to the above example is that we now have duplicated code. We can split that out, and then use copies in the root declaration. </p><div class="fragment"><div class="line">constexpr <span class="keyword">auto</span> common_args = ar::list{</div>
 <div class="line">    ar::flag(</div>
-<div class="line">        arp::long_name&lt;S_(<span class="stringliteral">&quot;force&quot;</span>)&gt;,</div>
+<div class="line">        arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;force&quot;</span>)&gt;,</div>
 <div class="line">        arp::short_name&lt;&#39;f&#39;&gt;,</div>
-<div class="line">        arp::description&lt;S_(<span class="stringliteral">&quot;Force overwrite existing files&quot;</span>)&gt;),</div>
+<div class="line">        arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Force overwrite existing files&quot;</span>)&gt;),</div>
 <div class="line">    ar::positional_arg&lt;std::filesystem::path&gt;(</div>
 <div class="line">        arp::required,</div>
-<div class="line">        arp::display_name&lt;S_(<span class="stringliteral">&quot;DST&quot;</span>)&gt;,</div>
-<div class="line">        arp::description&lt;S_(<span class="stringliteral">&quot;Destination directory&quot;</span>)&gt;,</div>
-<div class="line">        arp::fixed_count&lt;1&gt;)};</div>
+<div class="line">        arp::display_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;DST&quot;</span>)&gt;,</div>
+<div class="line">        arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Destination directory&quot;</span>)&gt;,</div>
+<div class="line">        arp::fixed_count&lt;1&gt;)}</div>
 <div class="line"> </div>
 <div class="line">ar::root(</div>
 <div class="line">    arp::validation::default_validator,</div>
 <div class="line">    ar::mode(</div>
-<div class="line">        arp::none_name&lt;S_(<span class="stringliteral">&quot;copy&quot;</span>)&gt;,</div>
-<div class="line">        arp::description&lt;S_(<span class="stringliteral">&quot;Copy source files to destination&quot;</span>)&gt;,</div>
+<div class="line">        arp::none_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;copy&quot;</span>)&gt;,</div>
+<div class="line">        arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Copy source files to destination&quot;</span>)&gt;,</div>
 <div class="line">        common_args,</div>
 <div class="line">        ar::positional_arg&lt;std::vector&lt;std::filesystem::path&gt;&gt;(</div>
 <div class="line">            arp::required,</div>
-<div class="line">            arp::display_name&lt;S_(<span class="stringliteral">&quot;SRC&quot;</span>)&gt;,</div>
-<div class="line">            arp::description&lt;S_(<span class="stringliteral">&quot;Source file paths&quot;</span>)&gt;,</div>
+<div class="line">            arp::display_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;SRC&quot;</span>)&gt;,</div>
+<div class="line">            arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Source file paths&quot;</span>)&gt;,</div>
 <div class="line">            arp::min_count&lt;1&gt;),</div>
 <div class="line">        arp::router{[](<span class="keywordtype">bool</span> force,</div>
 <div class="line">                       std::filesystem::path dest,</div>
 <div class="line">                       std::vector&lt;std::filesystem::path&gt; srcs) { ... }}),</div>
 <div class="line">    ar::mode(</div>
-<div class="line">        arp::none_name&lt;S_(<span class="stringliteral">&quot;move&quot;</span>)&gt;,</div>
-<div class="line">        arp::description&lt;S_(<span class="stringliteral">&quot;Move source file to destination&quot;</span>)&gt;,</div>
+<div class="line">        arp::none_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;move&quot;</span>)&gt;,</div>
+<div class="line">        arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Move source file to destination&quot;</span>)&gt;,</div>
 <div class="line">        common_args,</div>
 <div class="line">        ar::positional_arg&lt;std::filesystem::path&gt;(</div>
 <div class="line">            arp::required,</div>
-<div class="line">            arp::display_name&lt;S_(<span class="stringliteral">&quot;SRC&quot;</span>)&gt;,</div>
-<div class="line">            arp::description&lt;S_(<span class="stringliteral">&quot;Source file path&quot;</span>)&gt;,</div>
+<div class="line">            arp::display_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;SRC&quot;</span>)&gt;,</div>
+<div class="line">            arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Source file path&quot;</span>)&gt;,</div>
 <div class="line">            arp::fixed_count&lt;1&gt;),</div>
 <div class="line">        arp::router{[](<span class="keywordtype">bool</span> force,</div>
 <div class="line">                       std::filesystem::path dest,</div>
 <div class="line">                       std::filesystem::path src) { ... }}))</div>
 </div><!-- fragment --><p><code>ar::list</code> is a simple <code>arg</code> and <code>flag</code> container that <code>mode</code> and <code>root</code> instances detect and add the contents to their child/policy lists - it's nicer than having an instance per type. Also don't be afraid of the copies, the majority of <code><a class="el" href="namespacearg__router.html">arg_router</a></code> types hold no data (the advantage of compile-time!) and those that do (e.g. <code>default_value</code>) generally have small types like primitives or <code>std::string_view</code>.</p>
-<h2>Help Output</h2>
+<h1>Help Output</h1>
 <p>A shown in prior sections, a <code>help</code> node can be a child of the <code>root</code> (and only the <code>root</code>!), which acts like an <code>arg</code>, and generates the help output when requested by the user. This node is optional, without it there is no help command line argument. As the node is <code>arg</code>-like, it requires a long and/or short name.</p>
 <p>The output can be tweaked using policies:</p><ul>
 <li><code>program_name</code>, this is printed first. Without it neither this nor the version are printed</li>
@@ -390,47 +403,47 @@ $(function() {
 <li><code>flatten_help</code>, by default only top-level arguments and/or those in an anonymous mode are displayed. They are shown by requesting the mode's 'path' on the command line (e.g. <code>app --help mode sub-mode</code>). The presence of this policy will make the entire requested subtree's (or root's, if no mode path was requested) help output be displayed</li>
 </ul>
 <p>Unlike string data everywhere else in the library, the formatted help output is created at runtime using <code>std::string</code> so we don't need to keep duplicate read-only text data.</p>
-<p>For example the slightly embellished tree from above: </p><div class="fragment"><div class="line">constexpr <span class="keyword">auto</span> common_args = ar::list{</div>
+<p>For example the slightly embellished tree from above: </p><div class="fragment"><div class="line"><span class="keyword">const</span> <span class="keyword">auto</span> common_args = ar::list{</div>
 <div class="line">    ar::flag(</div>
-<div class="line">        arp::long_name&lt;S_(<span class="stringliteral">&quot;force&quot;</span>)&gt;,</div>
+<div class="line">        arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;force&quot;</span>)&gt;,</div>
 <div class="line">        arp::short_name&lt;&#39;f&#39;&gt;,</div>
-<div class="line">        arp::description&lt;S_(<span class="stringliteral">&quot;Force overwrite existing files&quot;</span>)&gt;),</div>
+<div class="line">        arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Force overwrite existing files&quot;</span>)&gt;),</div>
 <div class="line">    ar::positional_arg&lt;std::filesystem::path&gt;(</div>
 <div class="line">        arp::required,</div>
-<div class="line">        arp::display_name&lt;S_(<span class="stringliteral">&quot;DST&quot;</span>)&gt;,</div>
-<div class="line">        arp::description&lt;S_(<span class="stringliteral">&quot;Destination directory&quot;</span>)&gt;,</div>
-<div class="line">        arp::fixed_count&lt;1&gt;)};</div>
+<div class="line">        arp::display_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;DST&quot;</span>)&gt;,</div>
+<div class="line">        arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Destination directory&quot;</span>)&gt;,</div>
+<div class="line">        arp::fixed_count&lt;1&gt;)}</div>
 <div class="line"> </div>
 <div class="line">ar::root(</div>
 <div class="line">    arp::validation::default_validator,</div>
 <div class="line">    ar::help(</div>
-<div class="line">        arp::long_name&lt;S_(<span class="stringliteral">&quot;help&quot;</span>)&gt;,</div>
+<div class="line">        arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;help&quot;</span>)&gt;,</div>
 <div class="line">        arp::short_name&lt;&#39;h&#39;&gt;,</div>
-<div class="line">        arp::description&lt;S_(<span class="stringliteral">&quot;Display this help and exit&quot;</span>)&gt;,</div>
-<div class="line">        arp::program_name&lt;S_(<span class="stringliteral">&quot;simple&quot;</span>)&gt;,</div>
-<div class="line">        arp::program_version&lt;S_(<span class="stringliteral">&quot;v0.1&quot;</span>)&gt;,</div>
-<div class="line">        arp::program_intro&lt;S_(<span class="stringliteral">&quot;A simple file copier and mover.&quot;</span>)&gt;,</div>
+<div class="line">        arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Display this help and exit&quot;</span>)&gt;,</div>
+<div class="line">        arp::program_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;simple&quot;</span>)&gt;,</div>
+<div class="line">        arp::program_version&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;v0.1&quot;</span>)&gt;,</div>
+<div class="line">        arp::program_intro&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;A simple file copier and mover.&quot;</span>)&gt;,</div>
 <div class="line">        arp::flatten_help),</div>
 <div class="line">    ar::mode(</div>
-<div class="line">        arp::none_name&lt;S_(<span class="stringliteral">&quot;copy&quot;</span>)&gt;,</div>
-<div class="line">        arp::description&lt;S_(<span class="stringliteral">&quot;Copy source files to destination&quot;</span>)&gt;,</div>
+<div class="line">        arp::none_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;copy&quot;</span>)&gt;,</div>
+<div class="line">        arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Copy source files to destination&quot;</span>)&gt;,</div>
 <div class="line">        common_args,</div>
 <div class="line">        ar::positional_arg&lt;std::vector&lt;std::filesystem::path&gt;&gt;(</div>
 <div class="line">            arp::required,</div>
-<div class="line">            arp::display_name&lt;S_(<span class="stringliteral">&quot;SRC&quot;</span>)&gt;,</div>
-<div class="line">            arp::description&lt;S_(<span class="stringliteral">&quot;Source file paths&quot;</span>)&gt;,</div>
+<div class="line">            arp::display_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;SRC&quot;</span>)&gt;,</div>
+<div class="line">            arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Source file paths&quot;</span>)&gt;,</div>
 <div class="line">            arp::min_count&lt;1&gt;),</div>
 <div class="line">        arp::router{[](<span class="keywordtype">bool</span> force,</div>
 <div class="line">                       std::filesystem::path dest,</div>
 <div class="line">                       std::vector&lt;std::filesystem::path&gt; srcs) { ... }}),</div>
 <div class="line">    ar::mode(</div>
-<div class="line">        arp::none_name&lt;S_(<span class="stringliteral">&quot;move&quot;</span>)&gt;,</div>
-<div class="line">        arp::description&lt;S_(<span class="stringliteral">&quot;Move source file to destination&quot;</span>)&gt;,</div>
+<div class="line">        arp::none_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;move&quot;</span>)&gt;,</div>
+<div class="line">        arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Move source file to destination&quot;</span>)&gt;,</div>
 <div class="line">        common_args,</div>
 <div class="line">        ar::positional_arg&lt;std::filesystem::path&gt;(</div>
 <div class="line">            arp::required,</div>
-<div class="line">            arp::display_name&lt;S_(<span class="stringliteral">&quot;SRC&quot;</span>)&gt;,</div>
-<div class="line">            arp::description&lt;S_(<span class="stringliteral">&quot;Source file path&quot;</span>)&gt;,</div>
+<div class="line">            arp::display_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;SRC&quot;</span>)&gt;,</div>
+<div class="line">            arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Source file path&quot;</span>)&gt;,</div>
 <div class="line">            arp::fixed_count&lt;1&gt;),</div>
 <div class="line">        arp::router{[](<span class="keywordtype">bool</span> force,</div>
 <div class="line">                       std::filesystem::path dest,</div>
@@ -443,12 +456,12 @@ $(function() {
 <div class="line">    --help,-h         Display this help and exit</div>
 <div class="line">    copy              Copy source files to destination</div>
 <div class="line">        --force,-f    Force overwrite existing files</div>
-<div class="line">        &lt;DST&gt;[1]      Destination directory</div>
-<div class="line">        &lt;SRC&gt;[1,N]    Source file paths</div>
+<div class="line">        &lt;DST&gt; [1]     Destination directory</div>
+<div class="line">        &lt;SRC&gt; [1,N]   Source file paths</div>
 <div class="line">    move              Move source file to destination</div>
 <div class="line">        --force,-f    Force overwrite existing files</div>
-<div class="line">        &lt;DST&gt;[1]      Destination directory</div>
-<div class="line">        &lt;SRC&gt;[1]      Source file path</div>
+<div class="line">        &lt;DST&gt; [1]     Destination directory</div>
+<div class="line">        &lt;SRC&gt; [1]     Source file path</div>
 </div><!-- fragment --><p>As you can see positional arguments are wrapped in angle brackets, and counts are displayed using interval notation.</p>
 <p>Removing the <code>flatten_help</code> policy would change it to this: </p><div class="fragment"><div class="line">$ simple --help</div>
 <div class="line">simple v0.1</div>
@@ -465,18 +478,22 @@ $(function() {
 <div class="line"> </div>
 <div class="line">copy              Copy source files to destination</div>
 <div class="line">    --force,-f    Force overwrite existing files</div>
-<div class="line">    &lt;DST&gt;[1]      Destination directory</div>
-<div class="line">    &lt;SRC&gt;[1,N]    Source file paths</div>
+<div class="line">    &lt;DST&gt; [1]     Destination directory</div>
+<div class="line">    &lt;SRC&gt; [1,N]   Source file paths</div>
 </div><!-- fragment --><p>Currently the formatting is quite basic, more advanced formatting options are coming in future releases.</p>
-<h3>Programmatic Access</h3>
+<h2>Programmatic Access</h2>
 <p>By default when parsed <code>help</code> will output its contents to <code>std::cout</code> and then exit the application with <code>EXIT_SUCCESS</code>. Obviously this won't always be desired, so a <code>router</code> policy can be attached that will pass a <code>std::ostringstream</code> to the user-provided <code>Callable</code>. The stream will have already been populated with the help data shown above, but it can now be appended to or converted to string for use somewhere else.</p>
 <p>Often programmatic access is desired for the help output outside of the user requesting it, for example if a parse exception is thrown, gernally the exception error is printed to the terminal followed by the help output. This is exposed by the <code>help()</code> or <code>help(std::ostringstream&amp;)</code> methods of the root object.</p>
-<h2>Error Handling</h2>
-<p>Currently <code><a class="el" href="namespacearg__router.html">arg_router</a></code> only supports exceptions as error handling. If a parsing fails for some reason a <code><a class="el" href="classarg__router_1_1parse__exception.html">arg_router::parse_exception</a></code> is thrown carrying information on the failure. </p>
+<h1>Error Handling</h1>
+<p>Currently <code><a class="el" href="namespacearg__router.html">arg_router</a></code> only supports exceptions as error handling. If a parsing fails for some reason a <code><a class="el" href="classarg__router_1_1parse__exception.html">arg_router::parse_exception</a></code> is thrown carrying information on the failure.</p>
+<h1>API Documentation</h1>
+<p>Complete Doxygen-generated documentation is available <a href="https://cmannett85.github.io/arg_router/">here</a>. </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
-<div class="ttc" id="anamespacearg__router_html_a7e65c270dddd0acb08ebf68f179d58d6"><div class="ttname"><a href="namespacearg__router.html#a7e65c270dddd0acb08ebf68f179d58d6">arg_router::arg</a></div><div class="ttdeci">constexpr arg_t&lt; T, Policies... &gt; arg(Policies... policies) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="arg_8hpp_source.html#l00152">arg.hpp:152</a></div></div>
+<div class="ttc" id="astructarg__router_1_1parser_html"><div class="ttname"><a href="structarg__router_1_1parser.html">arg_router::parser</a></div><div class="ttdef"><b>Definition:</b> <a href="global__parser_8hpp_source.html#l00025">global_parser.hpp:25</a></div></div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00012">algorithm.hpp:12</a></div></div>
+<div class="ttc" id="acompile__time__string_8hpp_html_a741f251b243f90ef2b4d915e50d40bac"><div class="ttname"><a href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a></div><div class="ttdeci">#define S_(tok)</div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00251">compile_time_string.hpp:251</a></div></div>
+<div class="ttc" id="anamespacearg__router_html_a29537daeb3ba7d1b8749d3e1e9d83f1b"><div class="ttname"><a href="namespacearg__router.html#a29537daeb3ba7d1b8749d3e1e9d83f1b">arg_router::arg</a></div><div class="ttdeci">constexpr auto arg(Policies... policies) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="arg_8hpp_source.html#l00154">arg.hpp:154</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

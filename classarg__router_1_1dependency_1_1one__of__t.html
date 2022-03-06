@@ -90,15 +90,15 @@ Classes</h2></td></tr>
 Public Types</h2></td></tr>
 <tr class="memitem:a1fadcefcfd0836ed6b779ab777ce0ff3"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1dependency_1_1one__of__t.html#a1fadcefcfd0836ed6b779ab777ce0ff3">value_type</a> = std::conditional_t&lt;(std::variant_size_v&lt; variant_type &gt;==1), std::variant_alternative_t&lt; 0, variant_type &gt;, variant_type &gt;</td></tr>
 <tr class="separator:a1fadcefcfd0836ed6b779ab777ce0ff3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ada9714c3089bb29077dd1475d902db0a"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1dependency_1_1one__of__t.html#ada9714c3089bb29077dd1475d902db0a">children_type</a> = boost::mp11::mp_filter&lt; <a class="el" href="structarg__router_1_1is__tree__node.html">is_tree_node</a>, std::decay_t&lt; decltype(<a class="el" href="namespacearg__router.html#ae81e77bc890bd12a9a4913497d94ca10">list_expander</a>(std::declval&lt; Params &gt;()...))&gt; &gt;</td></tr>
-<tr class="separator:ada9714c3089bb29077dd1475d902db0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aec3a4f4e8c0b7d0b7a5d911b18fb9bc3"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1dependency_1_1one__of__t.html#aec3a4f4e8c0b7d0b7a5d911b18fb9bc3">policies_type</a> = boost::mp11::mp_filter&lt; <a class="el" href="structarg__router_1_1policy_1_1is__policy.html">policy::is_policy</a>, <a class="el" href="classarg__router_1_1tree__node.html#a7b0eea2e055bd9b353d6ddbf154568a7">parameters_type</a> &gt;</td></tr>
+<tr class="memitem:a8d8381481e4cdf03739233815c70cd76"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1dependency_1_1one__of__t.html#a8d8381481e4cdf03739233815c70cd76">children_type</a> = boost::mp11::mp_filter&lt; <a class="el" href="structarg__router_1_1is__tree__node.html">is_tree_node</a>, std::decay_t&lt; decltype(<a class="el" href="namespacearg__router.html#ae81e77bc890bd12a9a4913497d94ca10">list_expander</a>(std::declval&lt; std::decay_t&lt; Params &gt; &gt;()...))&gt; &gt;</td></tr>
+<tr class="separator:a8d8381481e4cdf03739233815c70cd76"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec3a4f4e8c0b7d0b7a5d911b18fb9bc3"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1dependency_1_1one__of__t.html#aec3a4f4e8c0b7d0b7a5d911b18fb9bc3">policies_type</a> = boost::mp11::mp_filter&lt; <a class="el" href="structarg__router_1_1policy_1_1is__policy.html">policy::is_policy</a>, <a class="el" href="classarg__router_1_1tree__node.html#a5a12205635e06b3b4ace0d8101419bcd">parameters_type</a> &gt;</td></tr>
 <tr class="separator:aec3a4f4e8c0b7d0b7a5d911b18fb9bc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a9dc154d0405c65df46d65bbddd8c982e"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1dependency_1_1one__of__t.html#a9dc154d0405c65df46d65bbddd8c982e">one_of_t</a> (Params... params)</td></tr>
-<tr class="separator:a9dc154d0405c65df46d65bbddd8c982e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afac07df1bd7b42212ebe5230adbccc08"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1dependency_1_1one__of__t.html#afac07df1bd7b42212ebe5230adbccc08">one_of_t</a> (Params... params) noexcept</td></tr>
+<tr class="separator:afac07df1bd7b42212ebe5230adbccc08"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab12dc581cd47606e5f765388fe10c18c"><td class="memTemplParams" colspan="2">template&lt;typename Fn &gt; </td></tr>
 <tr class="memitem:ab12dc581cd47606e5f765388fe10c18c"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1dependency_1_1one__of__t.html#ab12dc581cd47606e5f765388fe10c18c">match</a> (const <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a> &amp;token, const Fn &amp;visitor) const</td></tr>
 <tr class="separator:ab12dc581cd47606e5f765388fe10c18c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -117,8 +117,8 @@ class arg_router::dependency::one_of_t&lt; Params &gt;</h3>
 
 <p class="definition">Definition at line <a class="el" href="one__of_8hpp_source.html#l00024">24</a> of file <a class="el" href="one__of_8hpp_source.html">one_of.hpp</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
-<a id="ada9714c3089bb29077dd1475d902db0a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ada9714c3089bb29077dd1475d902db0a">&#9670;&nbsp;</a></span>children_type</h2>
+<a id="a8d8381481e4cdf03739233815c70cd76"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8d8381481e4cdf03739233815c70cd76">&#9670;&nbsp;</a></span>children_type</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -126,13 +126,13 @@ class arg_router::dependency::one_of_t&lt; Params &gt;</h3>
 template&lt;typename... Params&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node</a>&lt; Params &gt;::children_type =  boost::mp11::mp_filter&lt; <a class="el" href="structarg__router_1_1is__tree__node.html">is_tree_node</a>, std::decay_t&lt;decltype(<a class="el" href="namespacearg__router.html#ae81e77bc890bd12a9a4913497d94ca10">list_expander</a>(std::declval&lt;Params&gt;()...))&gt; &gt;</td>
+          <td class="memname">using <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node</a>&lt; Params &gt;::children_type =  boost::mp11::mp_filter&lt;<a class="el" href="structarg__router_1_1is__tree__node.html">is_tree_node</a>, std::decay_t&lt;decltype(<a class="el" href="namespacearg__router.html#ae81e77bc890bd12a9a4913497d94ca10">list_expander</a>( std::declval&lt;std::decay_t&lt;Params&gt; &gt;()...))&gt; &gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p>A tuple of all the child tree node types in parameters_type, with any lists expanded </p>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00039">39</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00041">41</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>
@@ -145,13 +145,13 @@ template&lt;typename... Params&gt; </div>
 template&lt;typename... Params&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node</a>&lt; Params &gt;::policies_type =  boost::mp11::mp_filter&lt;<a class="el" href="structarg__router_1_1policy_1_1is__policy.html">policy::is_policy</a>, <a class="el" href="classarg__router_1_1tree__node.html#a7b0eea2e055bd9b353d6ddbf154568a7">parameters_type</a>&gt;</td>
+          <td class="memname">using <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node</a>&lt; Params &gt;::policies_type =  boost::mp11::mp_filter&lt;<a class="el" href="structarg__router_1_1policy_1_1is__policy.html">policy::is_policy</a>, <a class="el" href="classarg__router_1_1tree__node.html#a5a12205635e06b3b4ace0d8101419bcd">parameters_type</a>&gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p>A tuple of all the policy types in parameters_type. </p>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00032">32</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00033">33</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>
@@ -170,13 +170,13 @@ template&lt;typename... Params&gt; </div>
 </div><div class="memdoc">
 <p>A variant of the child value_types, or just the value_type if there is only a single child. </p>
 
-<p class="definition">Definition at line <a class="el" href="one__of_8hpp_source.html#l00046">46</a> of file <a class="el" href="one__of_8hpp_source.html">one_of.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="one__of_8hpp_source.html#l00052">52</a> of file <a class="el" href="one__of_8hpp_source.html">one_of.hpp</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a9dc154d0405c65df46d65bbddd8c982e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9dc154d0405c65df46d65bbddd8c982e">&#9670;&nbsp;</a></span>one_of_t()</h2>
+<a id="afac07df1bd7b42212ebe5230adbccc08"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afac07df1bd7b42212ebe5230adbccc08">&#9670;&nbsp;</a></span>one_of_t()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -196,7 +196,7 @@ template&lt;typename... Params&gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">explicit</span><span class="mlabel">constexpr</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">explicit</span><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -208,7 +208,7 @@ template&lt;typename... Params&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="one__of_8hpp_source.html#l00063">63</a> of file <a class="el" href="one__of_8hpp_source.html">one_of.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="one__of_8hpp_source.html#l00069">69</a> of file <a class="el" href="one__of_8hpp_source.html">one_of.hpp</a>.</p>
 
 </div>
 </div>
@@ -267,7 +267,7 @@ template&lt;typename Fn &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Match result </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="one__of_8hpp_source.html#l00082">82</a> of file <a class="el" href="one__of_8hpp_source.html">one_of.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="one__of_8hpp_source.html#l00088">88</a> of file <a class="el" href="one__of_8hpp_source.html">one_of.hpp</a>.</p>
 
 </div>
 </div>

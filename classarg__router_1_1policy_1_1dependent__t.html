@@ -80,13 +80,13 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a1410494c4e8ff1ccb5fb0bff09e41b3f"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1dependent__t.html#a1410494c4e8ff1ccb5fb0bff09e41b3f">depends_policies_type</a> = std::tuple&lt; DependsPolicies... &gt;</td></tr>
-<tr class="separator:a1410494c4e8ff1ccb5fb0bff09e41b3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5c836e1d860338bf18f8bca6bfbfc044"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1dependent__t.html#a5c836e1d860338bf18f8bca6bfbfc044">depends_policies_type</a> = std::tuple&lt; std::decay_t&lt; DependsPolicies &gt;... &gt;</td></tr>
+<tr class="separator:a5c836e1d860338bf18f8bca6bfbfc044"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a8851be36714acfd23f9e7b0cb5a4062f"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1dependent__t.html#a8851be36714acfd23f9e7b0cb5a4062f">dependent_t</a> ([[maybe_unused]] DependsPolicies &amp;&amp;... policies) noexcept</td></tr>
-<tr class="separator:a8851be36714acfd23f9e7b0cb5a4062f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a316586bc2513b3036a26ec420ceb4a7a"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1dependent__t.html#a316586bc2513b3036a26ec420ceb4a7a">dependent_t</a> ([[maybe_unused]] const DependsPolicies &amp;... policies) noexcept</td></tr>
+<tr class="separator:a316586bc2513b3036a26ec420ceb4a7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3714e2ad842cb54533243ff3cae1ae01"><td class="memTemplParams" colspan="2">template&lt;typename... Parents&gt; </td></tr>
 <tr class="memitem:a3714e2ad842cb54533243ff3cae1ae01"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1dependent__t.html#a3714e2ad842cb54533243ff3cae1ae01">pre_parse_phase</a> (<a class="el" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a> &amp;tokens, [[maybe_unused]] const Parents &amp;... parents) const</td></tr>
 <tr class="separator:a3714e2ad842cb54533243ff3cae1ae01"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -105,8 +105,8 @@ class arg_router::policy::dependent_t&lt; DependsPolicies &gt;</h3>
 
 <p class="definition">Definition at line <a class="el" href="dependent_8hpp_source.html#l00022">22</a> of file <a class="el" href="dependent_8hpp_source.html">dependent.hpp</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
-<a id="a1410494c4e8ff1ccb5fb0bff09e41b3f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1410494c4e8ff1ccb5fb0bff09e41b3f">&#9670;&nbsp;</a></span>depends_policies_type</h2>
+<a id="a5c836e1d860338bf18f8bca6bfbfc044"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5c836e1d860338bf18f8bca6bfbfc044">&#9670;&nbsp;</a></span>depends_policies_type</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -114,7 +114,7 @@ class arg_router::policy::dependent_t&lt; DependsPolicies &gt;</h3>
 template&lt;typename... DependsPolicies&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="classarg__router_1_1policy_1_1dependent__t.html">arg_router::policy::dependent_t</a>&lt; DependsPolicies &gt;::<a class="el" href="classarg__router_1_1policy_1_1dependent__t.html#a1410494c4e8ff1ccb5fb0bff09e41b3f">depends_policies_type</a> =  std::tuple&lt;DependsPolicies...&gt;</td>
+          <td class="memname">using <a class="el" href="classarg__router_1_1policy_1_1dependent__t.html">arg_router::policy::dependent_t</a>&lt; DependsPolicies &gt;::<a class="el" href="classarg__router_1_1policy_1_1dependent__t.html#a5c836e1d860338bf18f8bca6bfbfc044">depends_policies_type</a> =  std::tuple&lt;std::decay_t&lt;DependsPolicies&gt;...&gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -125,8 +125,8 @@ template&lt;typename... DependsPolicies&gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a8851be36714acfd23f9e7b0cb5a4062f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8851be36714acfd23f9e7b0cb5a4062f">&#9670;&nbsp;</a></span>dependent_t()</h2>
+<a id="a316586bc2513b3036a26ec420ceb4a7a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a316586bc2513b3036a26ec420ceb4a7a">&#9670;&nbsp;</a></span>dependent_t()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -139,7 +139,7 @@ template&lt;typename... DependsPolicies&gt; </div>
         <tr>
           <td class="memname">constexpr <a class="el" href="classarg__router_1_1policy_1_1dependent__t.html">arg_router::policy::dependent_t</a>&lt; DependsPolicies &gt;::<a class="el" href="classarg__router_1_1policy_1_1dependent__t.html">dependent_t</a> </td>
           <td>(</td>
-          <td class="paramtype">[[maybe_unused] ] DependsPolicies &amp;&amp;...&#160;</td>
+          <td class="paramtype">[[maybe_unused] ] const DependsPolicies &amp;...&#160;</td>
           <td class="paramname"><em>policies</em></td><td>)</td>
           <td></td>
         </tr>
