@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/PR-SVG-20010719/DTD/svg10.dtd">
+<svg width="25cm" height="21cm" viewBox="19 19 483 414" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <g>
+    <rect style="fill: #ffffff" x="20" y="20" width="82.55" height="28"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="20" y="20" width="82.55" height="28"/>
+    <text font-size="16" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="61.275" y="38.8516">policy_1</text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="120" y="20" width="82.55" height="28"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="120" y="20" width="82.55" height="28"/>
+    <text font-size="16" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="161.275" y="38.8516">policy_2</text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="220" y="20" width="82.55" height="28"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="220" y="20" width="82.55" height="28"/>
+    <text font-size="16" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="261.275" y="38.8516">policy_3</text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="320" y="20" width="82.55" height="28"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="320" y="20" width="82.55" height="28"/>
+    <text font-size="16" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="361.275" y="38.8516">policy_4</text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="20" y="140" width="387.3" height="28"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="20" y="140" width="387.3" height="28"/>
+    <text font-size="16" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="213.65" y="158.852">tree_node</text>
+    <rect style="fill: #ffffff" x="20" y="168" width="387.3" height="20"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="20" y="168" width="387.3" height="20"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="23" y="181.881">+children_: std::tuple&lt;child_1, child_2, child_3&gt;</text>
+    <rect style="fill: #ffffff" x="361.3" y="78" width="138.9" height="68"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke-dasharray: 6; stroke: #000000" x="361.3" y="78" width="138.9" height="68"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="367.3" y="91.8812">Policy_1:typename</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="367.3" y="107.881">Policy_2:typename</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="367.3" y="123.881">Policy_3:typename</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="367.3" y="139.881">Policy_4:typename</text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="160" y="320" width="110.7" height="28"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="160" y="320" width="110.7" height="28"/>
+    <text font-size="16" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="215.35" y="338.852">some_node</text>
+    <rect style="fill: #ffffff" x="224.7" y="210" width="138.9" height="116"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke-dasharray: 6; stroke: #000000" x="224.7" y="210" width="138.9" height="116"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="230.7" y="223.881">policy_1:typename</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="230.7" y="239.881">policy_2:typename</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="230.7" y="255.881">child_1:typename</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="230.7" y="271.881">child_2:typename</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="230.7" y="287.881">policy_3:typename</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="230.7" y="303.881">child_3:typename</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="230.7" y="319.881">policy_4:typename</text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="20" y="400" width="72.5" height="28"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="20" y="400" width="72.5" height="28"/>
+    <text font-size="16" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="56.25" y="418.852">child_1</text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="180" y="400" width="72.5" height="28"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="180" y="400" width="72.5" height="28"/>
+    <text font-size="16" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="216.25" y="418.852">child_2</text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="340" y="400" width="72.5" height="28"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="340" y="400" width="72.5" height="28"/>
+    <text font-size="16" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="376.25" y="418.852">child_3</text>
+  </g>
+  <g>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="61.275,66.2361 61.275,100 80,100 80,140 "/>
+    <polygon style="fill: #ffffff" points="69.275,66.2361 61.275,50.2361 53.275,66.2361 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="69.275,66.2361 61.275,50.2361 53.275,66.2361 "/>
+  </g>
+  <g>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="161.275,66.2361 161.275,102 180,102 180,140 "/>
+    <polygon style="fill: #ffffff" points="169.275,66.2361 161.275,50.2361 153.275,66.2361 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="169.275,66.2361 161.275,50.2361 153.275,66.2361 "/>
+  </g>
+  <g>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="261.275,66.2361 261.275,102 240,102 240,140 "/>
+    <polygon style="fill: #ffffff" points="269.275,66.2361 261.275,50.2361 253.275,66.2361 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="269.275,66.2361 261.275,50.2361 253.275,66.2361 "/>
+  </g>
+  <g>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="361.275,66.2361 361.275,100 320,100 320,140 "/>
+    <polygon style="fill: #ffffff" points="369.275,66.2361 361.275,50.2361 353.275,66.2361 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="369.275,66.2361 361.275,50.2361 353.275,66.2361 "/>
+  </g>
+  <g>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="213.65,206.236 213.65,262 215.35,262 215.35,320 "/>
+    <polygon style="fill: #ffffff" points="221.65,206.236 213.65,190.236 205.65,206.236 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="221.65,206.236 213.65,190.236 205.65,206.236 "/>
+  </g>
+  <g>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="215.35,373.172 215.35,381 56.25,381 56.25,400 "/>
+    <polygon style="fill: #ffffff" points="215.35,348 220.15,362 215.35,376 210.55,362 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="215.35,348 220.15,362 215.35,376 210.55,362 "/>
+  </g>
+  <g>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="215.35,373.172 215.35,381 216.25,381 216.25,400 "/>
+    <polygon style="fill: #ffffff" points="215.35,348 220.15,362 215.35,376 210.55,362 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="215.35,348 220.15,362 215.35,376 210.55,362 "/>
+  </g>
+  <g>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="215.35,373.172 215.35,381 376.25,381 376.25,400 "/>
+    <polygon style="fill: #ffffff" points="215.35,348 220.15,362 215.35,376 210.55,362 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="215.35,348 220.15,362 215.35,376 210.55,362 "/>
+  </g>
+</svg>

@@ -21,10 +21,12 @@ namespace arg_router
  * @tparam Policies Pack of policies that define its behaviour
  */
 template <typename... Policies>
-class help_t : public tree_node<policy::no_result_value<>, Policies...>
+class help_t :
+    public tree_node<policy::no_result_value<>, std::decay_t<Policies>...>
 {
-    static_assert(policy::is_all_policies_v<std::tuple<Policies...>>,
-                  "Help must only contain policies (not other nodes)");
+    static_assert(
+        policy::is_all_policies_v<std::tuple<std::decay_t<Policies>...>>,
+        "Help must only contain policies (not other nodes)");
 
     static_assert(traits::has_long_name_method_v<help_t> ||
                       traits::has_short_name_method_v<help_t>,
@@ -34,7 +36,8 @@ class help_t : public tree_node<policy::no_result_value<>, Policies...>
     static_assert(!traits::has_none_name_method_v<help_t>,
                   "Help must not have a none name policy");
 
-    using parent_type = tree_node<policy::no_result_value<>, Policies...>;
+    using parent_type =
+        tree_node<policy::no_result_value<>, std::decay_t<Policies>...>;
 
     constexpr static auto indent_spaces = 4u;
 
@@ -295,7 +298,7 @@ private:
  * @return Help instance
  */
 template <typename... Policies>
-[[nodiscard]] constexpr help_t<Policies...> help(Policies... policies) noexcept
+[[nodiscard]] constexpr auto help(Policies... policies) noexcept
 {
     return help_t{std::move(policies)...};
 }

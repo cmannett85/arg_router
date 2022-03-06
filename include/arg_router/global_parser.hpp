@@ -98,6 +98,14 @@ struct parser<bool> {
     }
 };
 
+template <typename T>
+struct parser<std::optional<T>> {
+    [[nodiscard]] static std::optional<T> parse(std::string_view token)
+    {
+        return parser<T>::parse(token);
+    }
+};
+
 // The default vector-like container parser just forwards onto the value_type
 // parser, this is because an argument that can be parsed as a complete
 // container will need a custom parser.  In other words, this is only used for

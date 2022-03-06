@@ -9,6 +9,7 @@
 #include "arg_router/policy/description.hpp"
 #include "arg_router/policy/display_name.hpp"
 #include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/min_max_value.hpp"
 #include "arg_router/policy/none_name.hpp"
 #include "arg_router/policy/required.hpp"
 #include "arg_router/policy/router.hpp"
@@ -126,6 +127,33 @@ BOOST_AUTO_TEST_CASE(anonymous_single_flag_parse_test)
         [](const auto& e) { return e.what() == "Unknown argument: -r"s; });
     BOOST_CHECK(!result);
     BOOST_CHECK_EQUAL(tokens.pending_view().size(), 1);
+}
+
+BOOST_AUTO_TEST_CASE(anonymous_single_positional_single_count_arg_parse_test)
+{
+    auto result = 0;
+    const auto m =
+        mode(positional_arg<int>(policy::display_name<S_("hello")>,
+                                 policy::description<S_("Hello arg")>,
+                                 policy::fixed_count<1>),
+             policy::router([&](int f1) { result = f1; }));
+
+    auto tokens = parsing::token_list{{parsing::prefix_type::NONE, "42"}};
+    m.parse(tokens);
+    BOOST_CHECK_EQUAL(result, 42);
+    BOOST_CHECK(tokens.pending_view().empty());
+
+    result = 0;
+    tokens = parsing::token_list{{parsing::prefix_type::NONE, "42"},
+                                 {parsing::prefix_type::NONE, "84"}};
+    BOOST_CHECK_EXCEPTION(  //
+        m.parse(tokens),
+        parse_exception,
+        [](const auto& e) { return e.what() == "Unknown argument: 84"s; });
+    BOOST_CHECK_EQUAL(result, 0);
+    BOOST_CHECK_EQUAL(
+        tokens.pending_view(),
+        (parsing::token_list{{parsing::prefix_type::NONE, "84"}}));
 }
 
 BOOST_AUTO_TEST_CASE(anonymous_triple_flag_match_test)
@@ -738,7 +766,7 @@ BOOST_AUTO_TEST_CASE(help_test)
         });
 }
 
-BOOST_AUTO_TEST_CASE(multi_stage_test)
+BOOST_AUTO_TEST_CASE(multi_stage_alias_group_test)
 {
     auto result = 0;
     const auto m =
@@ -756,6 +784,88 @@ BOOST_AUTO_TEST_CASE(multi_stage_test)
 
     BOOST_CHECK_EQUAL(result, 6);
     BOOST_CHECK(tokens.pending_view().empty());
+}
+
+BOOST_AUTO_TEST_CASE(multi_stage_validated_alias_group_test)
+{
+    auto result = 0;
+    const auto m =
+        mode(ard::alias_group(arg<int>(policy::long_name<S_("arg")>),
+                              counting_flag<int>(policy::short_name<'a'>),
+                              policy::min_max_value{1, 3},
+                              policy::required),
+             policy::router([&](int value) { result = value; }));
+
+    auto f = [&](auto tokens, auto expected_result, auto fail_message) {
+        result = 0;
+        try {
+            m.parse(tokens);
+            BOOST_CHECK(fail_message.empty());
+            BOOST_CHECK_EQUAL(result, expected_result);
+            BOOST_CHECK(tokens.pending_view().empty());
+        } catch (parse_exception& e) {
+            BOOST_CHECK_EQUAL(e.what(), fail_message);
+        }
+    };
+
+    test::data_set(
+        f,
+        {
+            std::tuple{
+                parsing::token_list{
+                    parsing::token_type{parsing::prefix_type::LONG, "arg"},
+                    parsing::token_type{parsing::prefix_type::NONE, "1"}},
+                1,
+                ""s},
+            std::tuple{
+                parsing::token_list{
+                    parsing::token_type{parsing::prefix_type::LONG, "arg"},
+                    parsing::token_type{parsing::prefix_type::NONE, "3"}},
+                3,
+                ""s},
+            std::tuple{
+                parsing::token_list{
+                    parsing::token_type{parsing::prefix_type::LONG, "arg"},
+                    parsing::token_type{parsing::prefix_type::NONE, "0"}},
+                0,
+                "Minimum value not reached: Alias Group: --arg,-a"s},
+            std::tuple{
+                parsing::token_list{
+                    parsing::token_type{parsing::prefix_type::LONG, "arg"},
+                    parsing::token_type{parsing::prefix_type::NONE, "5"}},
+                0,
+                "Maximum value exceeded: Alias Group: --arg,-a"s},
+            std::tuple{
+                parsing::token_list{
+                    parsing::token_type{parsing::prefix_type::SHORT, "a"}},
+                1,
+                ""s},
+            std::tuple{
+                parsing::token_list{
+                    parsing::token_type{parsing::prefix_type::SHORT, "a"},
+                    parsing::token_type{parsing::prefix_type::SHORT, "a"}},
+                2,
+                ""s},
+            std::tuple{parsing::token_list{},
+                       0,
+                       "Missing required argument: Alias Group: --arg,-a"s},
+            std::tuple{
+                parsing::token_list{
+                    parsing::token_type{parsing::prefix_type::SHORT, "a"},
+                    parsing::token_type{parsing::prefix_type::SHORT, "a"},
+                    parsing::token_type{parsing::prefix_type::SHORT, "a"},
+                    parsing::token_type{parsing::prefix_type::SHORT, "a"}},
+                0,
+                "Maximum value exceeded: Alias Group: --arg,-a"s},
+            std::tuple{
+                parsing::token_list{
+                    parsing::token_type{parsing::prefix_type::LONG, "arg"},
+                    parsing::token_type{parsing::prefix_type::NONE, "2"},
+                    parsing::token_type{parsing::prefix_type::SHORT, "a"},
+                    parsing::token_type{parsing::prefix_type::SHORT, "a"}},
+                0,
+                "Maximum value exceeded: Alias Group: --arg,-a"s},
+        });
 }
 
 BOOST_AUTO_TEST_SUITE(death_suite)
@@ -917,7 +1027,8 @@ BOOST_AUTO_TEST_CASE(anonymous_mode_cannot_have_a_child_mode_test)
 using namespace arg_router;
 
 int main() {
-    const auto m = mode(
+    [[maybe_unused]] const auto m = mode(
+                    flag(policy::long_name<S_("flag")>),
                     mode(policy::none_name<S_("mode")>,
                          flag(policy::long_name<S_("hello")>)));
     return 0;

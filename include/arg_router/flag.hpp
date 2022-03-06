@@ -26,12 +26,15 @@ namespace arg_router
  * @tparam Policies Pack of policies that define its behaviour
  */
 template <typename... Policies>
-class flag_t : public tree_node<policy::default_value<bool>, Policies...>
+class flag_t :
+    public tree_node<policy::default_value<bool>, std::decay_t<Policies>...>
 {
-    static_assert(policy::is_all_policies_v<std::tuple<Policies...>>,
-                  "Flags must only contain policies (not other nodes)");
+    static_assert(
+        policy::is_all_policies_v<std::tuple<std::decay_t<Policies>...>>,
+        "Flags must only contain policies (not other nodes)");
 
-    using parent_type = tree_node<policy::default_value<bool>, Policies...>;
+    using parent_type =
+        tree_node<policy::default_value<bool>, std::decay_t<Policies>...>;
 
     static_assert(traits::has_long_name_method_v<flag_t> ||
                       traits::has_short_name_method_v<flag_t>,
@@ -140,7 +143,7 @@ private:
  * @return Flag instance
  */
 template <typename... Policies>
-[[nodiscard]] constexpr flag_t<Policies...> flag(Policies... policies) noexcept
+[[nodiscard]] constexpr auto flag(Policies... policies) noexcept
 {
     return flag_t{std::move(policies)...};
 }

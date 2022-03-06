@@ -4,6 +4,7 @@ cmake_minimum_required(VERSION 3.15)
 
 # Options
 option(DOCS_ONLY "Only build the documentation")
+option(BUILD_EXAMPLES "Build the examples")
 
 # Use the libraries brought in from vcpkg rather than the system ones
 if(NOT DOCS_ONLY)
@@ -34,6 +35,7 @@ endif()
 set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/algorithm.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/arg.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/arg_router.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/basic_types.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/config.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/counting_flag.hpp
@@ -86,7 +88,6 @@ set(FOR_IDE
     ${CMAKE_CURRENT_SOURCE_DIR}/.github/workflows/docs_pusher.yml
     ${CMAKE_CURRENT_SOURCE_DIR}/.github/workflows/pr_checker.yml
     ${CMAKE_CURRENT_SOURCE_DIR}/.gitignore
-    ${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile
     ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE
     ${CMAKE_CURRENT_SOURCE_DIR}/README.md
     ${CMAKE_CURRENT_SOURCE_DIR}/scripts/ci/create_badge_url.sh
@@ -103,18 +104,18 @@ set(FOR_IDE
     ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg.json
 )
 
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/copyright_checker.cmake)
+    create_copyright_checker_target(
+    NAME copyright_checker
+    SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/scripts/copyright_checker.py
+    SOURCES ${HEADERS} ${FOR_IDE}
+)
+
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/versioning/version.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/documentation.cmake)
 
 if(NOT DOCS_ONLY)
-    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/copyright_checker.cmake)
-    create_copyright_checker_target(
-        NAME copyright_checker
-        SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/scripts/copyright_checker.py
-        SOURCES ${HEADERS} ${FOR_IDE}
-    )
-
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/clang-format.cmake)
     create_clangformat_target(
         NAME clangformat
@@ -127,4 +128,8 @@ if(NOT DOCS_ONLY)
 
     enable_testing()
     add_subdirectory(test)
+
+    if(BUILD_EXAMPLES)
+        add_subdirectory(examples)
+    endif()
 endif()

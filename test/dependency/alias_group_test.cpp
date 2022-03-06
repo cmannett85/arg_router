@@ -433,33 +433,6 @@ int main() {
         "validation, or routing phases; as it delegates those to its children");
 }
 
-BOOST_AUTO_TEST_CASE(validation_phase_test)
-{
-    test::death_test_compile(
-        R"(
-#include "arg_router/arg.hpp"
-#include "arg_router/dependency/alias_group.hpp"
-#include "arg_router/policy/long_name.hpp"
-#include "arg_router/policy/min_max_value.hpp"
-#include "arg_router/policy/required.hpp"
-#include "arg_router/utility/compile_time_string.hpp"
-
-using namespace arg_router;
-namespace ard = arg_router::dependency;
-
-int main() {
-    const auto ag = ard::alias_group(
-        arg<double>(policy::long_name<S_("arg1")>),
-        arg<double>(policy::long_name<S_("arg2")>),
-        policy::required,
-        policy::min_max_value{42, 84});
-    return 0;
-}
-    )",
-        "basic_one_of_t does not support policies with pre-parse, parse, "
-        "validation, or routing phases; as it delegates those to its children");
-}
-
 BOOST_AUTO_TEST_CASE(router_phase_test)
 {
     test::death_test_compile(
@@ -509,6 +482,35 @@ int main() {
     )",
         "All children of alias_group must have the same value_type, or use "
         "policy::no_result_value");
+}
+
+BOOST_AUTO_TEST_CASE(multi_stage_validation_children_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/arg.hpp"
+#include "arg_router/counting_flag.hpp"
+#include "arg_router/dependency/alias_group.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/min_max_value.hpp"
+#include "arg_router/policy/required.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+namespace ard = arg_router::dependency;
+
+int main() {
+    auto f = ard::alias_group(arg<int>(policy::long_name<S_("arg1")>),
+                              counting_flag<int>(
+                                 policy::long_name<S_("arg2")>,
+                                 policy::min_max_value{2, 3}),                  
+                              policy::required);
+    return 0;
+}
+    )",
+        "Multi-stage value supporting alias_group children (e.g. "
+        "counting_flag) cannot have a validation phase as they won't be "
+        "executed, move the implementing policies into the alias_group");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

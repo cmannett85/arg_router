@@ -23,7 +23,7 @@ ar::root(
         arp::short_name<'h'>,
         arp::program_name<S_("my-cat")>,
         arp::program_version<S_("v3.14")>,
-        arp::description<S_("Display this help and exit")>
+        arp::description<S_("Display this help and exit")>),
     ar::flag(
         arp::long_name<S_("version")>,
         arp::description<S_("Output version information and exit")>,
@@ -33,7 +33,7 @@ ar::root(
             arp::long_name<S_("show-all")>,
             arp::description<S_("Equivalent to -nE")>,
             arp::short_name<'A'>,
-            arp::alias(ar::short_name<'E'>, ar::short_name<'n'>)),
+            arp::alias(arp::short_name<'E'>, arp::short_name<'n'>)),
         ar::flag(
             arp::long_name<S_("show-ends")>,
             arp::description<S_("Display $ at end of each line")>,
@@ -53,7 +53,7 @@ ar::root(
         arp::router{[](bool show_ends,
                        bool show_non_printing,
                        int max_lines,
-                       std::vector<std::string_view>> files) { ... }})).
+                       std::vector<std::string_view> files) { ... }})).
     parse(argc, argv);
 ```
 Let's start from the top, as the name suggests `root` is the root of the parse tree and provides the `parse(argc, argv)` method.  Only children of the root can (and must) have a `router` policy (except for nested `mode`s, more [on that later](#modes)) and therefore act as access points into the program. The root's children are implicitly mutually exclusive, so trying to pass `--version --help` in the command line is a runtime error.
@@ -81,7 +81,7 @@ You may have noticed that the nodes are constructed with parentheses whilst the 
 ## Conditional Arguments
 Let's add another feature to our cat program where we can handle lines over a certain length differently.
 ```cpp
-using namespace ard = ar::dependency;
+namespace ard = ar::dependency;
 ar::mode(
     ...
     ar::arg<std::optional<std::size_t>>(
@@ -89,17 +89,18 @@ ar::mode(
         arp::description<S_("Maximum line length")>,
         arp::default_value{std::optional<std::size_t>{}}),
     ard::one_of(
-        arp::dependent<arp::long_name<S_("max-line-length")>>,
         arp::default_value{"..."},
         ar::flag(
+            arp::dependent(arp::long_name<S_("max-line-length")>),
             arp::long_name<S_("skip-line")>,
             arp::short_name<'s'>,
             arp::description<S_("Skips line output if max line length "
                                 "reached")>),
         ar::arg<std::string_view>(
+            arp::dependent(arp::long_name<S_("max-line-length")>),
             arp::long_name<S_("line-suffix")>,
             arp::description<S_("Shortens line length to maximum with the "
-                                "given suffix if max line length reached")>)),
+                                "given suffix if max line length reached")>),
     ...
     arp::router{[](bool show_all,
                    bool show_ends,
@@ -107,7 +108,7 @@ ar::mode(
                    int max_lines,
                    std::optional<std::size_t> max_line_length,
                    std::variant<bool, std::string_view> max_line_handling,
-                   std::vector<std::string_view>> files) { ... }})
+                   std::vector<std::string_view>> files) { ... }}))
 ```
 We've defined a new argument `--max-line-length` but rather than using `-1` as the "no limit" indicator like we did for `--max-lines`, we specify the argument type to be `std::optional<std::size_t>` and have the default value by an empty optional - this allows the code to define our intent better.
 
@@ -115,7 +116,7 @@ What do we do with lines that reach the limit if it has been set?  In our exampl
 
 To express the 'one of' concept better in code, the `one_of` node has a single representation in the `router`'s arguments - a variant that encompasses all the value types of each entry in it.  In our example's case, a bool for the `--skip-line` flag and a `string_view` for the `--line-suffix` case.
 
-What happens if a user passes `--skip-line` without `--max-line-length`?  Normally the developer will have to check that `max-line-length` is not empty and either ignore or throw if it is.  But by specifying the `one_of` as `dependent` on `max-line-length`, `arg_router` will throw on your behalf in this scenario.  To be clear, the `dependent` policy just means that the owner cannot appear on the command line without the `arg` or `flag` named in its parameters also appearing on the command line.
+What happens if a user passes `--skip-line` or `--line-suffix` without `--max-line-length`?  Normally the developer will have to check that `max-line-length` is not empty and either ignore or throw if it is.  But by specifying the `one_of` as `dependent` on `max-line-length`, `arg_router` will throw on your behalf in this scenario.  To be clear, the `dependent` policy just means that the owner cannot appear on the command line without the `arg` or `flag` named in its parameters also appearing on the command line.
 
 The smart developer may have noticed an edge case here.  If both the children in the above example had the same `value_type`, then the variant will be created with multiples of the same type.  `std::variant` supports this but it means that the common type-based visitation pattern will become ambiguous on those identical types i.e. you won't know which flag was used.  This may or may not be important to you, but if it is, you will have to `switch` on `std::variant::index()` instead.
 
@@ -145,23 +146,25 @@ ar::mode(
         std::optional<std::size_t> max_line_length,
         std::variant<bool, std::string_view> max_line_handling,
         theme_t theme,
-        std::vector<std::string_view>> files) { ... }})
+        std::vector<std::string_view>> files) { ... }}))
 ```
 This is a convenient solution to one-off type parsing in-tree, I think it's pretty self-explanatory.  However this is not convenient if you have lots of arguments that should return the same custom type, as you would have to copy and paste the lambda or bind calls to the conversion function for each one.  In that case we can specialise on the `arg_router::parse` function.
 ```cpp
 template <>
-auto arg_router::parse<theme_t>(std::string_view arg)
-{
-    if (arg == "NONE") {
-        return theme_t::NONE;
-    } else if (arg == "CLASSIC") {
-        return theme_t::CLASSIC;
-    } else if (arg == "SOLARIZED") {
-        return theme_t::SOLARIZED;
+struct arg_router::parser<theme_t> {
+    [[nodiscard]] static inline theme_t parse(std::string_view arg)
+    {
+        if (arg == "NONE") {
+            return theme_t::NONE;
+        } else if (arg == "CLASSIC") {
+            return theme_t::CLASSIC;
+        } else if (arg == "SOLARIZED") {
+            return theme_t::SOLARIZED;
+        }
+    
+        throw parse_exception{"Unknown theme argument: "s + arg};
     }
-
-    throw parse_exception{"Unknown theme argument: "s + arg};
-}
+};
 ```
 With this declared in a place visible to the parse tree declaration, `theme_t` can be converted from a string without the need for a `custom_parser`.  It should be noted that `custom_parser` can still be used, and will be preferred over the `parse()` specialisation.
 
@@ -179,7 +182,8 @@ ar::mode(
     ...
     ar::counting_flag<verbosity_level_t>(
         arp::short_name<'v'>,
-        arp::max_value<verbosity_level_t::DEBUG>,
+        arp::min_max_value{verbosity_level_t::ERROR,
+                           verbosity_level_t::DEBUG},
         arp::description<S_("Verbosity level, number of 'v's sets level")>,
         arp::default_value{verbosity_level_t::ERROR}),
     ...
@@ -191,33 +195,30 @@ ar::mode(
         std::variant<bool, std::string_view> max_line_handling,
         theme_t theme,
         verbosity_level_t verbosity_level,
-        std::vector<std::string_view>> files) { ... }})
+        std::vector<std::string_view>> files) { ... }}))
 ```
 The number of times `-v` appears in the command line will increment the returned value, e.g. `-vv` will result in `verbosity_level_t::INFO`.
 
-Note that even though we are using a custom enum, we haven't specified a `custom_parser`.  `counting_flag` will count up in `std::size_t` and then `static_cast` to the user-specified type, so as long as your requested type is explicitly convertible from `std::size_t` it will just work.  If it isn't, then you'll have to modify your type or not use counting arguments, as attaching a `custom_parser` to any kind of flag will result in a build failure.
+Note that even though we are using a custom enum, we haven't specified a `custom_parser`.  `counting_flag` will count up in `std::size_t` and then `static_cast` to the user-specified type, so as long as your requested type is explicitly convertible to/from `std::size_t` it will just work.  If it isn't, then you'll have to modify your type or not use counting arguments, as attaching a `custom_parser` to any kind of flag will result in a build failure.
 
 Short name collapsing still works as expected, so passing `-Evnv` will result in `show_ends` and `show_non_printing` being true, and `verbosity_level` will be `verbosity_level_t::INFO` in the `router` call.
 
-We can constrain the amount of flags the user can provide by using the `max_value` policy, so passing `-vvvv` will result in a runtime error.
+We can constrain the amount of flags the user can provide by using the `min_max_value` policy, so passing `-vvvv` will result in a runtime error.
 
-The `long_name` policy is allowed but usually leads to ugly invocations, however we can use the knowledge gained so far to provide a better option:
+The `long_name` policy is allowed but usually leads to ugly invocations, however there is a better option:
 ```cpp
 ar::mode(
     ...
-    ard::one_of(
+    ard::alias_group(
         arp::default_value{verbosity_level_t::INFO},
+        arp::min_max_value{verbosity_level_t::ERROR,
+                           verbosity_level_t::DEBUG},
         ar::counting_flag<verbosity_level_t>(
             arp::short_name<'v'>,
-            arp::max_value<verbosity_level_t::DEBUG>,
-            arp::description<S_("Verbosity level, number of 'v's sets level")>,
-            arp::alias(arp::long_name<S_("verbose")>)),
+            arp::description<S_("Verbosity level, number of 'v's sets level")>),
         ar::arg<verbosity_level_t>(
             arp::long_name<S_("verbose")>,
-            arp::description<S_("Verbosity level")>
-            arp::custom_parser<verbosity_level_t>{
-                [](std::string_view arg) {
-                    return verbosity_level_from_string(arg); }}))),
+            arp::description<S_("Verbosity level")>)),
     ...
     arp::router{[](bool show_all,
         bool show_ends,
@@ -227,9 +228,24 @@ ar::mode(
         std::variant<bool, std::string_view> max_line_handling,
         theme_t theme,
         verbosity_level_t verbosity_level,
-        std::vector<std::string_view>> files) { ... }}}}
+        std::vector<std::string_view>> files) { ... }}))
+    ...
+    
+template <>
+struct arg_router::parser<verbosity_level_t> {
+    [[nodiscard]] static inline verbosity_level_t parse(std::string_view arg)
+    {
+        ...
+    }
+};
 ```
-We can declare a new `arg` that takes a string equivalent of the enum and then make the `-v` flag an alias of it, so now you can use `--verbose INFO` or `-vv`.  Of course using both at the same time is confusing, so we can put both under a `one_of`.  Now the clever part, because `-v` is an alias it doesn't provide its own output so the resulting `one_of` variant would be `std::variant<verbosity_level_t>`, `arg_router` detects this and just collapses it to `verbosity_level_t`.
+We can declare a new `arg` that takes a string equivalent of the enum and put them both into an `alias_group`, so now you can use `--verbose INFO` or `-vv`.  Short name collapsing still works as expected.
+
+What's this new `alias_group`?  `policy::alias` is an _input_ alias, it works by duplicating the value tokens to each of the aliased nodes it refers to i.e. it forms a one-to-many aliasing relationship.  The limitations of that are:
+- All aliased nodes must have the same value token count (could be zero in the case of a flag)
+- All aliased nodes must be able to parse the same token formats
+
+`alias_group` is almost the opposite of `policy::alias`, it is an _output_ alias.  Each of its child nodes are aliases of the same output value i.e. it forms a many-to-one aliasing relationship.  You can also think of `alias_group` as a variation on `one_of`, but instead of the output being a `std::variant` of all the child node output types `alias_group` requires that they all have the _same_ output type.
 
 ## Constrained Positional Arguments
 The `positional_arg` shown in the first example is unconstrained, i.e. it will consume all command line tokens that follow.  This isn't always desired, so we can use policies to constrain the amount of tokens consumed.  Let's use a file copier as an example:
@@ -389,7 +405,7 @@ Unlike string data everywhere else in the library, the formatted help output is 
 
 For example the slightly embellished tree from above:
 ```cpp
-constexpr auto common_args = ar::list{
+const auto common_args = ar::list{
     ar::flag(
         arp::long_name<S_("force")>,
         arp::short_name<'f'>,
@@ -445,12 +461,12 @@ A simple file copier and mover.
     --help,-h         Display this help and exit
     copy              Copy source files to destination
         --force,-f    Force overwrite existing files
-        <DST>[1]      Destination directory
-        <SRC>[1,N]    Source file paths
+        <DST> [1]     Destination directory
+        <SRC> [1,N]   Source file paths
     move              Move source file to destination
         --force,-f    Force overwrite existing files
-        <DST>[1]      Destination directory
-        <SRC>[1]      Source file path
+        <DST> [1]     Destination directory
+        <SRC> [1]     Source file path
 ```
 As you can see positional arguments are wrapped in angle brackets, and counts are displayed using interval notation.
 
@@ -474,8 +490,8 @@ A simple file copier and mover.
 
 copy              Copy source files to destination
     --force,-f    Force overwrite existing files
-    <DST>[1]      Destination directory
-    <SRC>[1,N]    Source file paths
+    <DST> [1]     Destination directory
+    <SRC> [1,N]   Source file paths
 ```
 Currently the formatting is quite basic, more advanced formatting options are coming in future releases.
 
@@ -486,3 +502,6 @@ Often programmatic access is desired for the help output outside of the user req
 
 ## Error Handling
 Currently `arg_router` only supports exceptions as error handling.  If a parsing fails for some reason a `arg_router::parse_exception` is thrown carrying information on the failure.
+
+## API Documentation
+Complete Doxygen-generated documentation is available [here](https://cmannett85.github.io/arg_router/).

@@ -19,9 +19,11 @@ namespace arg_router
  * @tparam Params Policies and child node types for the mode
  */
 template <typename... Params>
-class mode_t : public tree_node<policy::no_result_value<>, Params...>
+class mode_t :
+    public tree_node<policy::no_result_value<>, std::decay_t<Params>...>
 {
-    using parent_type = tree_node<policy::no_result_value<>, Params...>;
+    using parent_type =
+        tree_node<policy::no_result_value<>, std::decay_t<Params>...>;
 
     static_assert((std::tuple_size_v<typename mode_t::children_type> > 0),
                   "Mode must have at least one child node");
@@ -211,9 +213,10 @@ public:
 
         // Handle multi-stage value validation.  Multi-stage value nodes cannot
         // be validated during processing, as they will likely fail validation
-        // when partially processed.  So the multi-stage nodes do not validation
-        // themselves, but have their owner (i.e. modes) do it at the end of
-        // processing - including after any default values have been generated
+        // when partially processed.  So the multi-stage nodes do not perform
+        // validation themselves, but have their owner (i.e. modes) do it at the
+        // end of processing - including after any default values have been
+        // generated
         multi_stage_validation(results, *this, parents...);
 
         // Routing
@@ -396,7 +399,7 @@ private:
  * @return Mode instance
  */
 template <typename... Params>
-constexpr mode_t<Params...> mode(Params... params)
+constexpr auto mode(Params... params)
 {
     return mode_t{std::move(params)...};
 }

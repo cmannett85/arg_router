@@ -56,6 +56,13 @@ BOOST_AUTO_TEST_CASE(is_policy_test)
                   "Policy test has failed");
 }
 
+BOOST_AUTO_TEST_CASE(has_validation_phase_test)
+{
+    static_assert(
+        policy::has_validation_phase_method_v<policy::min_max_value<int>, int>,
+        "Phase method test has failed");
+}
+
 BOOST_AUTO_TEST_CASE(constructor_test)
 {
     auto f = [](auto min, auto max) {

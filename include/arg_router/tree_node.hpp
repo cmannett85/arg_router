@@ -21,11 +21,12 @@ namespace arg_router
 template <typename... Params>
 class tree_node :
     public traits::unpack_and_derive<  //
-        boost::mp11::mp_filter<policy::is_policy, std::tuple<Params...>>>
+        boost::mp11::mp_filter<policy::is_policy,
+                               std::tuple<std::decay_t<Params>...>>>
 {
 public:
     /** The policies and child node types. */
-    using parameters_type = std::tuple<Params...>;
+    using parameters_type = std::tuple<std::decay_t<Params>...>;
 
     /** A tuple of all the policy types in parameters_type. */
     using policies_type =
@@ -34,9 +35,16 @@ public:
     /** A tuple of all the child tree node types in parameters_type,
      * with any lists expanded
      */
-    using children_type = boost::mp11::mp_filter<
-        is_tree_node,
-        std::decay_t<decltype(list_expander(std::declval<Params>()...))>>;
+    using children_type =
+        boost::mp11::mp_filter<is_tree_node,
+                               std::decay_t<decltype(list_expander(
+                                   std::declval<std::decay_t<Params>>()...))>>;
+
+    static_assert(
+        (std::tuple_size_v<children_type> + std::tuple_size_v<policies_type>) ==
+            std::tuple_size_v<std::decay_t<decltype(list_expander(
+                std::declval<std::decay_t<Params>>()...))>>,
+        "tree_node constructor can only accept other tree_nodes and policies");
 
     /** Finds a policy that the @a PolicyChecker predicate passes.
      *
@@ -177,7 +185,7 @@ public:
                     return;
                 }
 
-                if constexpr ((i <= std::tuple_size_v<ResultsTuple>)&&  //
+                if constexpr ((i < std::tuple_size_v<ResultsTuple>)&&  //
                               (match_arity == 3)) {
                     if (node.match(token,
                                    wrapped_visitor,

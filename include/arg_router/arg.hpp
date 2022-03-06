@@ -17,13 +17,15 @@ namespace arg_router
 template <typename T, typename... Policies>
 class arg_t :
     public tree_node<std::decay_t<decltype(policy::fixed_count<1>)>,
-                     Policies...>
+                     std::decay_t<Policies>...>
 {
-    static_assert(policy::is_all_policies_v<std::tuple<Policies...>>,
-                  "Args must only contain policies (not other nodes)");
+    static_assert(
+        policy::is_all_policies_v<std::tuple<std::decay_t<Policies>...>>,
+        "Args must only contain policies (not other nodes)");
 
     using parent_type =
-        tree_node<std::decay_t<decltype(policy::fixed_count<1>)>, Policies...>;
+        tree_node<std::decay_t<decltype(policy::fixed_count<1>)>,
+                  std::decay_t<Policies>...>;
 
     static_assert(traits::has_long_name_method_v<arg_t> ||
                       traits::has_short_name_method_v<arg_t>,
@@ -149,7 +151,7 @@ public:
  * @return Argument instance
  */
 template <typename T, typename... Policies>
-[[nodiscard]] constexpr arg_t<T, Policies...> arg(Policies... policies) noexcept
+[[nodiscard]] constexpr auto arg(Policies... policies) noexcept
 {
     return arg_t<T, std::decay_t<Policies>...>{std::move(policies)...};
 }

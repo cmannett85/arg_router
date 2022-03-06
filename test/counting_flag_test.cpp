@@ -5,7 +5,7 @@
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/description.hpp"
 #include "arg_router/policy/long_name.hpp"
-#include "arg_router/policy/min_max_count.hpp"
+#include "arg_router/policy/min_max_value.hpp"
 #include "arg_router/policy/router.hpp"
 #include "arg_router/policy/short_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
@@ -178,40 +178,19 @@ BOOST_AUTO_TEST_CASE(help_test)
                 counting_flag<int>(policy::short_name<'h'>,
                                    policy::long_name<S_("hello")>,
                                    policy::description<S_("A counting flag!")>),
-                "--hello,-h [0,N]",
+                "--hello,-h",
                 "A counting flag!"},
             std::tuple{
                 counting_flag<int>(policy::long_name<S_("hello")>,
                                    policy::description<S_("A counting flag!")>),
-                "--hello [0,N]",
+                "--hello",
                 "A counting flag!"},
             std::tuple{
                 counting_flag<int>(policy::short_name<'h'>,
                                    policy::description<S_("A counting flag!")>),
-                "-h [0,N]",
+                "-h",
                 "A counting flag!"},
-            std::tuple{counting_flag<int>(policy::short_name<'h'>),
-                       "-h [0,N]",
-                       ""},
-            std::tuple{counting_flag<int>(policy::short_name<'h'>,
-                                          policy::min_max_count<1, 3>),
-                       "-h [1,3]",
-                       ""},
-            std::tuple{counting_flag<int>(policy::short_name<'h'>,
-                                          policy::min_count<3>),
-                       "-h [3,N]",
-                       ""},
-            std::tuple{counting_flag<int>(policy::short_name<'h'>,
-                                          policy::max_count<3>),
-                       "-h [0,3]",
-                       ""},
-            std::tuple{counting_flag<int>(
-                           policy::short_name<'h'>,
-                           policy::min_max_count<
-                               0,
-                               std::numeric_limits<std::size_t>::max()>),
-                       "-h [0,N]",
-                       ""},
+            std::tuple{counting_flag<int>(policy::short_name<'h'>), "-h", ""},
         });
 }
 
@@ -294,26 +273,6 @@ int main() {
 }
     )",
         "Counting flag must not have a none name policy");
-}
-
-BOOST_AUTO_TEST_CASE(no_fixed_count_test)
-{
-    test::death_test_compile(
-        R"(
-#include "arg_router/counting_flag.hpp"
-#include "arg_router/policy/long_name.hpp"
-#include "arg_router/policy/min_max_count.hpp"
-#include "arg_router/utility/compile_time_string.hpp"
-
-using namespace arg_router;
-
-int main() {
-    auto f = counting_flag<int>(policy::long_name<S_("hello")>,
-                                policy::fixed_count<3>);
-    return 0;
-}
-    )",
-        "Counting flag cannot have a fixed count");
 }
 
 BOOST_AUTO_TEST_CASE(parse_policy_test)

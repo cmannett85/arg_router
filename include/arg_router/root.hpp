@@ -25,9 +25,9 @@ class validator;
  * @tparam Params The top-level policies and child node types
  */
 template <typename... Params>
-class root_t : public tree_node<Params...>
+class root_t : public tree_node<std::decay_t<Params>...>
 {
-    using parent_type = tree_node<Params...>;
+    using parent_type = tree_node<std::decay_t<Params>...>;
 
 public:
     using typename parent_type::policies_type;
@@ -93,7 +93,8 @@ public:
     public:
         using label = S_("");
         using description = S_("");
-        using children = typename tree_node<Params...>::template  //
+        using children =
+            typename tree_node<std::decay_t<Params>...>::template  //
             default_leaf_help_data_type<Flatten>::all_children_help;
     };
 
@@ -175,7 +176,7 @@ public:
  * @return Root instance
  */
 template <typename... Params>
-[[nodiscard]] constexpr root_t<Params...> root(Params... params) noexcept
+[[nodiscard]] constexpr auto root(Params... params) noexcept
 {
     return root_t{std::move(params)...};
 }

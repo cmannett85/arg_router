@@ -125,7 +125,6 @@ protected:
         !parent_type::template any_phases_v<bool,
                                             policy::has_pre_parse_phase_method,
                                             policy::has_parse_phase_method,
-                                            policy::has_validation_phase_method,
                                             policy::has_routing_phase_method>,
         "basic_one_of_t does not support policies with pre-parse, parse, "
         "validation, or routing phases; as it delegates those to its children");

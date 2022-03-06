@@ -23,14 +23,14 @@ class dependent_t
 {
 public:
     /** Tuple of policy types. */
-    using depends_policies_type = std::tuple<DependsPolicies...>;
+    using depends_policies_type = std::tuple<std::decay_t<DependsPolicies>...>;
 
     /** Constructor.
      *
      * @param policies Policy instances
      */
     constexpr explicit dependent_t(
-        [[maybe_unused]] DependsPolicies&&... policies) noexcept
+        [[maybe_unused]] const DependsPolicies&... policies) noexcept
     {
     }
 
@@ -211,7 +211,7 @@ private:
  * @return Alias instance
  */
 template <typename... DependsPolicies>
-constexpr dependent_t<DependsPolicies...> dependent(DependsPolicies... policies)
+[[nodiscard]] constexpr auto dependent(DependsPolicies... policies) noexcept
 {
     return dependent_t{std::move(policies)...};
 }

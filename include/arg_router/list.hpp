@@ -21,7 +21,7 @@ class list
 {
 public:
     /** A tuple of all the child tree node types in parameters_type. */
-    using children_type = std::tuple<Children...>;
+    using children_type = std::tuple<std::decay_t<Children>...>;
 
     static_assert(boost::mp11::mp_all_of<children_type, is_tree_node>::value,
                   "All list children must be tree_nodes (i.e. not policies)");

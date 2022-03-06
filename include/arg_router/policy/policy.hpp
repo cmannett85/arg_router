@@ -111,11 +111,17 @@ struct has_validation_phase_method {
     static_assert(policy::is_policy_v<T>, "T must be a policy");
 
     template <typename U>
-    using type = decltype(  //
+    using type1 = decltype(  //
         std::declval<const U&>().template validation_phase<ValueType>(
             std::declval<const ValueType&>()));
 
-    constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
+    template <typename U>
+    using type2 = decltype(  //
+        std::declval<const U&>().validation_phase(
+            std::declval<const ValueType&>()));
+
+    constexpr static bool value = boost::mp11::mp_valid<type1, T>::value ||
+                                  boost::mp11::mp_valid<type2, T>::value;
 };
 
 /** Helper variable for has_validation_phase_method.

@@ -9,10 +9,10 @@ LANGUAGE_COMMENT_ENDS = [('*.sh', '###', '\n'),
                          ('*.hpp', '/*', '*/\n'),
                          ('*.py', '###', '\n'),
                          ('*.cmake', '###', '\n'),
-                         ('CMakeLists.txt', '###', '\n')]
+                         ('CMakeLists.txt', '###', '\n'),
+                         ('*.doxy', '/*', '*/\n')]
 SKIP_PATHS = ['vcpkg' + os.sep,
               os.path.join('test', 'death_test', 'main.cpp'),
-              'docs' + os.sep,
               'build' + os.sep, # VSCode
               'out' + os.sep]   # Visual Studio
 THIS_YEAR = datetime.datetime.now().year

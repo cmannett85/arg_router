@@ -3,6 +3,7 @@
 #pragma once
 
 #include "arg_router/dependency/detail.hpp"
+#include "arg_router/policy/multi_stage_value.hpp"
 
 namespace arg_router
 {
@@ -30,9 +31,13 @@ namespace dependency
  */
 template <typename... Params>
 class alias_group_t :
-    public detail::basic_one_of_t<S_("Alias Group: "), Params...>
+    public detail::basic_one_of_t<S_("Alias Group: "),
+                                  policy::multi_stage_value_tag,
+                                  Params...>
 {
-    using parent_type = detail::basic_one_of_t<S_("Alias Group: "), Params...>;
+    using parent_type = detail::basic_one_of_t<S_("Alias Group: "),
+                                               policy::multi_stage_value_tag,
+                                               Params...>;
 
 public:
     using typename parent_type::children_type;
@@ -48,6 +53,27 @@ public:
             1,
         "All children of alias_group must have the same value_type, or use "
         "policy::no_result_value");
+
+private:
+    template <typename Child>
+    struct multi_stage_with_result_and_validation {
+        static constexpr auto value =
+            policy::has_multi_stage_value_v<Child> &&
+            !policy::has_no_result_value_v<Child> &&
+            Child::template any_phases_v<value_type,
+                                         policy::has_validation_phase_method>;
+    };
+
+public:
+    // If any of the children are multi_stage_values, not no_result_value, and
+    // have a validation phase; then fail as the policy that implements needs to
+    // be moved into this node otherwise they won't be called
+    static_assert(
+        boost::mp11::mp_none_of<children_type,
+                                multi_stage_with_result_and_validation>::value,
+        "Multi-stage value supporting alias_group children (e.g. "
+        "counting_flag) cannot have a validation phase as they won't be "
+        "executed, move the implementing policies into the alias_group");
 
     /** Help data type. */
     template <bool Flatten>
@@ -65,7 +91,7 @@ public:
      * @param params Policy and child instances
      */
     constexpr explicit alias_group_t(Params... params) noexcept :
-        parent_type{std::move(params)...}
+        parent_type{policy::multi_stage_value_tag{}, std::move(params)...}
     {
     }
 

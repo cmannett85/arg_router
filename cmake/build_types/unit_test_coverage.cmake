@@ -12,7 +12,7 @@ add_dependencies(arg_router_test_coverage clangformat_test arg_router)
 target_compile_features(arg_router_test_coverage PUBLIC cxx_std_17)
 set_target_properties(arg_router_test_coverage PROPERTIES CXX_EXTENSIONS OFF)
 
-configure_unit_test_build(arg_router_test_coverage --coverage)
+configure_test_build(arg_router_test_coverage --coverage)
 
 target_include_directories(arg_router_test_coverage
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include
