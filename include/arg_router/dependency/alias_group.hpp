@@ -3,54 +3,58 @@
 #pragma once
 
 #include "arg_router/dependency/detail.hpp"
-#include "arg_router/policy/multi_stage_value.hpp"
 
 namespace arg_router
 {
-/** The dependency namespace carries nodes and policies that define dependency
- * relationships between other nodes.
- */
 namespace dependency
 {
-/** Groups child nodes such that any @em one can be used on the command line.
+/** Groups child nodes so they all become aliases of a single output.
  *
- * The value_type is a variant of all the policies' value_types that are not
- * derived from policy::no_result_value.  If that list is only a single type,
- * then it collapses into just that type (i.e. it won't be a variant containing
- * a single type).
+ * policy::alias_t defines @em input aliases, it works by duplicating the input
+ * tokens for the node for each of the aliased nodes.  An implication of this
+ * is that all the aliased nodes need to have the same count and be able to
+ * parse the same input tokens, and each aliased node has an entry (but not the
+ * node the alias policy is attached to!) in the router arguments.
+ * 
+ * alias_group_t is almost the opposite of this; it defines output aliases where
+ * each child of the group independently parses the tokens it matches to
+ * (in the same way one_of_t does).  However unlike policy::alias_t, there is 
+ * only a single entry in the router arguments for the whole group, as such
+ * there is a compile-time check that all <TT>value_type</TT> types are the
+ * same (or ignored if policy::no_result_value is used).  In other words, all
+ * the children of the group represent the same output.
+ * 
+ * You can think of policy::alias_t as defining a one-to-many alias, whilst 
+ * alias_group_t is a many-to-one.
  * @tparam Params Policies and child node types for the mode
  */
 template <typename... Params>
-class one_of_t : public detail::basic_one_of_t<S_("One of: "), Params...>
+class alias_group_t :
+    public detail::basic_one_of_t<S_("Alias Group: "), Params...>
 {
-    using parent_type = detail::basic_one_of_t<S_("One of: "), Params...>;
-
-    static_assert(boost::mp11::mp_none_of<typename parent_type::children_type,
-                                          policy::has_multi_stage_value>::value,
-                  "one_of children must not use a multi_stage_value policy");
-
-    using variant_type =
-        boost::mp11::mp_rename<typename parent_type::basic_value_type,
-                               std::variant>;
+    using parent_type = detail::basic_one_of_t<S_("Alias Group: "), Params...>;
 
 public:
     using typename parent_type::children_type;
     using typename parent_type::policies_type;
 
-    /** A variant of the child value_types, or just the value_type if there is
-     * only a single child.
-     */
+    /** The common output type of the all the children that support it. */
     using value_type =
-        std::conditional_t<(std::variant_size_v<variant_type> == 1),
-                           std::variant_alternative_t<0, variant_type>,
-                           variant_type>;
+        boost::mp11::mp_first<typename parent_type::basic_value_type>;
+
+    static_assert(
+        std::tuple_size_v<
+            boost::mp11::mp_unique<typename parent_type::basic_value_type>> ==
+            1,
+        "All children of alias_group must have the same value_type, or use "
+        "policy::no_result_value");
 
     /** Help data type. */
     template <bool Flatten>
     class help_data_type
     {
     public:
-        using label = S_("One of:");
+        using label = S_("Alias Group:");
         using description = S_("");
         using children = typename parent_type::template  //
             children_help_data_type<Flatten>::children;
@@ -60,7 +64,7 @@ public:
      *
      * @param params Policy and child instances
      */
-    constexpr explicit one_of_t(Params... params) :
+    constexpr explicit alias_group_t(Params... params) noexcept :
         parent_type{std::move(params)...}
     {
     }
@@ -95,7 +99,7 @@ public:
     }
 };
 
-/** Constructs a one_of_t with the given policies and children.
+/** Constructs a alias_group_t with the given policies and children.
  *
  * This is used for similarity with arg_t.
  * @tparam Params Policies and child node types for the mode
@@ -103,9 +107,9 @@ public:
  * @return Instance
  */
 template <typename... Params>
-[[nodiscard]] constexpr one_of_t<Params...> one_of(Params... params)
+[[nodiscard]] constexpr auto alias_group(Params... params) noexcept
 {
-    return one_of_t{std::move(params)...};
+    return alias_group_t{std::move(params)...};
 }
 }  // namespace dependency
 }  // namespace arg_router

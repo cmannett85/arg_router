@@ -15,6 +15,7 @@ set(TEST_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/algorithm_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/arg_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/counting_flag_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/dependency/alias_group_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/dependency/one_of_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/flag_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/global_parser_test.cpp

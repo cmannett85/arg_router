@@ -2,12 +2,15 @@
 
 #include "arg_router/mode.hpp"
 #include "arg_router/arg.hpp"
+#include "arg_router/counting_flag.hpp"
+#include "arg_router/dependency/alias_group.hpp"
 #include "arg_router/flag.hpp"
 #include "arg_router/list.hpp"
 #include "arg_router/policy/description.hpp"
 #include "arg_router/policy/display_name.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/none_name.hpp"
+#include "arg_router/policy/required.hpp"
 #include "arg_router/policy/router.hpp"
 #include "arg_router/policy/short_name.hpp"
 #include "arg_router/positional_arg.hpp"
@@ -17,6 +20,7 @@
 #include "test_printers.hpp"
 
 using namespace arg_router;
+namespace ard = arg_router::dependency;
 using namespace std::string_literals;
 
 namespace
@@ -732,6 +736,26 @@ BOOST_AUTO_TEST_CASE(help_test)
                 std::false_type{},
                 test_help_data<S_("mode1"), S_("Mode1 desc"), std::tuple<>>{}},
         });
+}
+
+BOOST_AUTO_TEST_CASE(multi_stage_test)
+{
+    auto result = 0;
+    const auto m =
+        mode(ard::alias_group(arg<int>(policy::long_name<S_("arg")>),
+                              counting_flag<int>(policy::short_name<'a'>),
+                              policy::required),
+             policy::router([&](int value) { result = value; }));
+
+    auto tokens = parsing::token_list{
+        parsing::token_type{parsing::prefix_type::LONG, "arg"},
+        parsing::token_type{parsing::prefix_type::NONE, "5"},
+        parsing::token_type{parsing::prefix_type::SHORT, "a"}};
+
+    m.parse(tokens);
+
+    BOOST_CHECK_EQUAL(result, 6);
+    BOOST_CHECK(tokens.pending_view().empty());
 }
 
 BOOST_AUTO_TEST_SUITE(death_suite)

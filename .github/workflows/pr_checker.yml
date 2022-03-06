@@ -32,6 +32,7 @@ jobs:
 
     - name: Update packages
       run: |
+        sudo apt update
         sudo apt install g++-11 lcov valgrind
         sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 20 \
           --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-11 \
