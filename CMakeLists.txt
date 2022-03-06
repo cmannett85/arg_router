@@ -37,6 +37,8 @@ set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/basic_types.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/config.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/counting_flag.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/dependency/alias_group.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/dependency/detail.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/dependency/one_of.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/exception.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/flag.hpp
