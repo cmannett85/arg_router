@@ -77,11 +77,16 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1dependency_1_1alias__group__t.html">alias_group_t</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1dependency_1_1one__of__t.html">one_of_t</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:ab35b17f6aaf02a9b7430081262022a11"><td class="memTemplParams" colspan="2">template&lt;typename... Params&gt; </td></tr>
+<tr class="memitem:ab35b17f6aaf02a9b7430081262022a11"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1dependency.html#ab35b17f6aaf02a9b7430081262022a11">alias_group</a> (Params... params) noexcept</td></tr>
+<tr class="separator:ab35b17f6aaf02a9b7430081262022a11"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a75f84dd067d248ff0cd8d3b40ec09d2b"><td class="memTemplParams" colspan="2">template&lt;typename... Params&gt; </td></tr>
 <tr class="memitem:a75f84dd067d248ff0cd8d3b40ec09d2b"><td class="memTemplItemLeft" align="right" valign="top">constexpr <a class="el" href="classarg__router_1_1dependency_1_1one__of__t.html">one_of_t</a>&lt; Params... &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1dependency.html#a75f84dd067d248ff0cd8d3b40ec09d2b">one_of</a> (Params... params)</td></tr>
 <tr class="separator:a75f84dd067d248ff0cd8d3b40ec09d2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -89,6 +94,50 @@ Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The dependency namespace carries nodes and policies that define dependency relationships between other nodes. </p>
 </div><h2 class="groupheader">Function Documentation</h2>
+<a id="ab35b17f6aaf02a9b7430081262022a11"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab35b17f6aaf02a9b7430081262022a11">&#9670;&nbsp;</a></span>alias_group()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename... Params&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr auto arg_router::dependency::alias_group </td>
+          <td>(</td>
+          <td class="paramtype">Params...&#160;</td>
+          <td class="paramname"><em>params</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Constructs a <a class="el" href="classarg__router_1_1dependency_1_1alias__group__t.html">alias_group_t</a> with the given policies and children.</p>
+<p>This is used for similarity with <a class="el" href="classarg__router_1_1arg__t.html">arg_t</a>. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Params</td><td>Policies and child node types for the mode </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">params</td><td>Pack of policy and child node instances </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Instance </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="alias__group_8hpp_source.html#l00110">110</a> of file <a class="el" href="alias__group_8hpp_source.html">alias_group.hpp</a>.</p>
+
+</div>
+</div>
 <a id="a75f84dd067d248ff0cd8d3b40ec09d2b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a75f84dd067d248ff0cd8d3b40ec09d2b">&#9670;&nbsp;</a></span>one_of()</h2>
 
@@ -127,9 +176,9 @@ template&lt;typename... Params&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Mode instance </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Instance </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="one__of_8hpp_source.html#l00249">249</a> of file <a class="el" href="one__of_8hpp_source.html">one_of.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="one__of_8hpp_source.html#l00106">106</a> of file <a class="el" href="one__of_8hpp_source.html">one_of.hpp</a>.</p>
 
 </div>
 </div>
