@@ -12,6 +12,9 @@
 
 #include <array>
 
+/** @file
+ */
+
 namespace arg_router
 {
 namespace utility

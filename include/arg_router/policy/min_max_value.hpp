@@ -31,16 +31,17 @@ public:
 
     /** Constructor.
      * 
-     * Unlike min_max_value_t. value_type is not guaranteed to be compile-time
+     * Unlike min_max_count_t. value_type is not guaranteed to be compile-time
      * constructible, and so to avoid runtime overhead, @em no compile-time or
      * runtime checking is done on the validity of @a min and @a max.
      * @param min Minimum value
      * @param max Maximum value
      * @param compare Comparator instance
      */
-    constexpr min_max_value(value_type min,
-                            value_type max,
-                            less_than_compare compare = less_than_compare{}) :
+    constexpr min_max_value(
+        value_type min,
+        value_type max,
+        less_than_compare compare = less_than_compare{}) noexcept :
         min_(std::move(min)),
         max_(std::move(max)),  //
         comp_{std::move(compare)}

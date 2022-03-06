@@ -33,6 +33,12 @@ class one_of_t : public detail::basic_one_of_t<S_("One of: "), Params...>
         boost::mp11::mp_rename<typename parent_type::basic_value_type,
                                std::variant>;
 
+    static_assert(!parent_type::template any_phases_v<
+                      variant_type,
+                      policy::has_validation_phase_method>,
+                  "one_of does not support policies with validation phases; as "
+                  "it delegates those to its children");
+
 public:
     using typename parent_type::children_type;
     using typename parent_type::policies_type;
@@ -60,7 +66,7 @@ public:
      *
      * @param params Policy and child instances
      */
-    constexpr explicit one_of_t(Params... params) :
+    constexpr explicit one_of_t(Params... params) noexcept :
         parent_type{std::move(params)...}
     {
     }
@@ -103,7 +109,7 @@ public:
  * @return Instance
  */
 template <typename... Params>
-[[nodiscard]] constexpr one_of_t<Params...> one_of(Params... params)
+[[nodiscard]] constexpr auto one_of(Params... params) noexcept
 {
     return one_of_t{std::move(params)...};
 }

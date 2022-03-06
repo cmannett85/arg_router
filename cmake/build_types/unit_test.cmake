@@ -63,7 +63,7 @@ add_dependencies(arg_router_test clangformat_test arg_router)
 target_compile_features(arg_router_test PUBLIC cxx_std_17)
 set_target_properties(arg_router_test PROPERTIES CXX_EXTENSIONS OFF)
 
-function(configure_unit_test_build TARGET)
+function(configure_test_build TARGET)
     # Clang can run in different command line argument modes to mimic gcc or cl.exe,
     # so we have to test for a 'frontent variant' too
     set(EXTRA_FLAGS -Werror -Wall -Wextra -ftemplate-backtrace-limit=0 ${ARGN})
@@ -80,7 +80,7 @@ function(configure_unit_test_build TARGET)
     target_compile_definitions(${TARGET} PRIVATE ${EXTRA_DEFINES})
 endfunction()
 
-configure_unit_test_build(arg_router_test)
+configure_test_build(arg_router_test)
 
 target_include_directories(arg_router_test
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include

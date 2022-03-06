@@ -4,6 +4,7 @@
 
 #include "arg_router/arg.hpp"
 #include "arg_router/counting_flag.hpp"
+#include "arg_router/dependency/alias_group.hpp"
 #include "arg_router/dependency/one_of.hpp"
 #include "arg_router/flag.hpp"
 #include "arg_router/help.hpp"
@@ -39,6 +40,8 @@ template <typename... Rules>
 struct is_policy<validation::validator<Rules...>> : std::true_type {
 };
 
+/** Namespace for types associated with parse tree validation.
+ */
 namespace validation
 {
 /** Defines a validator rule.
@@ -584,6 +587,28 @@ struct positional_args_must_have_fixed_count_if_not_at_end {
     }
 };
 
+namespace detail
+{
+template <typename RuleTuple>
+struct validator_from_tuple_impl {
+    static_assert(traits::always_false_v<RuleTuple>,
+                  "RuleTuple must be a tuple-like type");
+};
+
+template <template <typename...> typename Tuple, typename... Rules>
+struct validator_from_tuple_impl<Tuple<Rules...>> {
+    using type = validator<Rules...>;
+};
+}  // namespace detail
+
+/** Defines a validator type built from a tuple-like type of rules.
+ *
+ * @tparam RuleTuple Tuple of rules
+ */
+template <typename RuleTuple>
+using validator_from_tuple =
+    typename detail::validator_from_tuple_impl<RuleTuple>::type;
+
 /** The default validator instance. */
 inline constexpr auto default_validator = validator<
     // List the policies first as there are more of them and therefore more
@@ -651,6 +676,14 @@ inline constexpr auto default_validator = validator<
     rule_q<common_rules::despecialised_any_of_rule<dependency::one_of_t>,
            must_not_have_policies<policy::no_result_value,
                                   policy::multi_stage_value,
+                                  policy::validation::validator>,
+           child_must_not_have_policy<policy::required_t>,
+           child_must_not_have_policy<policy::default_value>,
+           parent_types<parent_index_pair_type<0, mode_t>>>,
+    // alias_group
+    rule_q<common_rules::despecialised_any_of_rule<dependency::one_of_t,
+                                                   dependency::alias_group_t>,
+           must_not_have_policies<policy::no_result_value,
                                   policy::validation::validator>,
            child_must_not_have_policy<policy::required_t>,
            child_must_not_have_policy<policy::default_value>,

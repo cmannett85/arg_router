@@ -28,13 +28,14 @@ class alias_t : public no_result_value<>
 {
 public:
     /** Tuple of policy types. */
-    using aliased_policies_type = std::tuple<AliasedPolicies...>;
+    using aliased_policies_type = std::tuple<std::decay_t<AliasedPolicies>...>;
 
     /** Constructor.
      *
      * @param policies Policy instances
      */
-    constexpr explicit alias_t([[maybe_unused]] AliasedPolicies&&... policies)
+    constexpr explicit alias_t(
+        [[maybe_unused]] const AliasedPolicies&... policies)
     {
     }
 
@@ -259,8 +260,7 @@ private:
  * @return Alias instance
  */
 template <typename... AliasedPolicies>
-[[nodiscard]] constexpr alias_t<AliasedPolicies...> alias(
-    AliasedPolicies... policies)
+[[nodiscard]] constexpr auto alias(AliasedPolicies... policies) noexcept
 {
     return alias_t{std::move(policies)...};
 }

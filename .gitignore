@@ -6,6 +6,7 @@ test/death_test/main.cpp
 
 # Generated docs
 docs/doxygen
+docs/README_API.md
 
 # IDE cruft
 build/

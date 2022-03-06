@@ -29,10 +29,11 @@ namespace arg_router
  */
 template <typename T, typename... Policies>
 class counting_flag_t :
-    public tree_node<policy::multi_stage_value<T, bool>, Policies...>
+    public tree_node<policy::multi_stage_value<T, bool>,
+                     std::decay_t<Policies>...>
 {
     static_assert(
-        policy::is_all_policies_v<std::tuple<Policies...>>,
+        policy::is_all_policies_v<std::tuple<std::decay_t<Policies>...>>,
         "Counting flags must only contain policies (not other nodes)");
     static_assert(traits::has_long_name_method_v<counting_flag_t> ||
                       traits::has_short_name_method_v<counting_flag_t>,
@@ -44,19 +45,8 @@ class counting_flag_t :
     static_assert(traits::supports_static_cast_conversion_v<T, std::size_t>,
                   "T must be explicitly convertible to std::size_t");
 
-    constexpr static bool fixed_count = []() {
-        if constexpr (traits::has_minimum_count_method_v<counting_flag_t> &&
-                      traits::has_maximum_count_method_v<counting_flag_t>) {
-            return counting_flag_t::minimum_count() ==
-                   counting_flag_t::maximum_count();
-        }
-
-        return false;
-    }();
-    static_assert(!fixed_count, "Counting flag cannot have a fixed count");
-
-    using parent_type =
-        tree_node<policy::multi_stage_value<T, bool>, Policies...>;
+    using parent_type = tree_node<policy::multi_stage_value<T, bool>,
+                                  std::decay_t<Policies>...>;
 
 public:
     using typename parent_type::policies_type;
@@ -66,24 +56,8 @@ public:
 
     /** Help data type. */
     template <bool Flatten>
-    class help_data_type
-    {
-        [[nodiscard]] constexpr static auto label_generator() noexcept
-        {
-            return typename parent_type::template default_leaf_help_data_type<
-                       Flatten>::label{} +
-                   S_(" "){} +
-                   parent_type::template default_leaf_help_data_type<
-                       Flatten>::count_suffix();
-        }
-
-    public:
-        using label = std::decay_t<decltype(label_generator())>;
-        using description =
-            typename parent_type::template default_leaf_help_data_type<
-                Flatten>::description;
-        using children = std::tuple<>;
-    };
+    using help_data_type =
+        typename parent_type::template default_leaf_help_data_type<Flatten>;
 
     /** Constructor.
      *
@@ -179,8 +153,7 @@ private:
  * @return Flag instance
  */
 template <typename T, typename... Policies>
-[[nodiscard]] constexpr counting_flag_t<T, Policies...> counting_flag(
-    Policies... policies) noexcept
+[[nodiscard]] constexpr auto counting_flag(Policies... policies) noexcept
 {
     return counting_flag_t<T, std::decay_t<Policies>...>{
         std::move(policies)...};

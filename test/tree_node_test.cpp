@@ -43,14 +43,12 @@ BOOST_AUTO_TEST_SUITE(tree_node_suite)
 BOOST_AUTO_TEST_CASE(mixed_tree_node_types_test)
 {
     using tn = tree_node<policy::long_name_t<S_("hello")>,
-                         std::vector<int>,
                          tree_node<policy::long_name_t<S_("child")>>,
                          policy::short_name_t<traits::integral_constant<'A'>>>;
     static_assert(
         std::is_same_v<
             typename tn::parameters_type,
             std::tuple<policy::long_name_t<S_("hello")>,
-                       std::vector<int>,
                        tree_node<policy::long_name_t<S_("child")>>,
                        policy::short_name_t<traits::integral_constant<'A'>>>>,
         "parameters_type does not match");
@@ -250,6 +248,35 @@ BOOST_AUTO_TEST_CASE(find_test)
 }
 
 BOOST_AUTO_TEST_SUITE(death_suite)
+
+BOOST_AUTO_TEST_CASE(only_policies_or_nodes_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/short_name.hpp"
+#include "arg_router/tree_node.hpp"
+
+using namespace arg_router;
+
+using tn = tree_node<policy::long_name_t<S_("hello")>,
+                     tree_node<policy::long_name_t<S_("child")>>,
+                     double,
+                     policy::short_name_t<traits::integral_constant<'A'>>>;
+
+int main() {
+    static_assert(
+        std::is_same_v<
+            typename tn::parameters_type,
+            std::tuple<policy::long_name_t<S_("hello")>,
+                       tree_node<policy::long_name_t<S_("child")>>,
+                       double,
+                       policy::short_name_t<traits::integral_constant<'A'>>>>);
+    return 0;
+}
+    )",
+        "tree_node constructor can only accept other tree_nodes and policies");
+}
 
 BOOST_AUTO_TEST_CASE(two_parse_phase_policies_test)
 {

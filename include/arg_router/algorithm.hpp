@@ -238,7 +238,7 @@ template <typename U, typename... I>
     U&& input,
     std::tuple<I...>) noexcept
 {
-    return std::tuple{std::get<I::value>(input)...};
+    return std::tuple{std::get<I::value>(std::forward<U>(input))...};
 }
 }  // namespace detail
 

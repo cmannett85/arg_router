@@ -13,13 +13,13 @@ namespace arg_router
  * @tparam Policies Pack of policies that define its behaviour
  */
 template <typename T, typename... Policies>
-class positional_arg_t : public tree_node<Policies...>
+class positional_arg_t : public tree_node<std::decay_t<Policies>...>
 {
     static_assert(
-        policy::is_all_policies_v<std::tuple<Policies...>>,
+        policy::is_all_policies_v<std::tuple<std::decay_t<Policies>...>>,
         "Positional args must only contain policies (not other nodes)");
 
-    using parent_type = tree_node<Policies...>;
+    using parent_type = tree_node<std::decay_t<Policies>...>;
 
     template <std::size_t N>
     constexpr static bool has_fixed_count = []() {
@@ -110,6 +110,11 @@ public:
                 (std::size(*result) >= parent_type::maximum_count())) {
                 return false;
             }
+        } else {
+            // If we're here then we must have a fixed size of 1
+            if (result) {
+                return false;
+            }
         }
 
         visitor(*this);
@@ -139,14 +144,12 @@ public:
         });
 
         auto view = tokens.pending_view();
+        if constexpr (traits::has_maximum_count_method_v<positional_arg_t>) {
+            view = view.subspan(0, positional_arg_t::maximum_count());
+        }
 
         auto result = value_type{};
         if constexpr (traits::has_push_back_method_v<value_type>) {
-            if constexpr (traits::has_maximum_count_method_v<
-                              positional_arg_t>) {
-                view = view.subspan(0, positional_arg_t::maximum_count());
-            }
-
             for (auto token : view) {
                 result.push_back(
                     parent_type::template parse<value_type>(token.name,
@@ -195,8 +198,7 @@ private:
  * @return Argument instance
  */
 template <typename T, typename... Policies>
-[[nodiscard]] constexpr positional_arg_t<T, Policies...> positional_arg(
-    Policies... policies) noexcept
+[[nodiscard]] constexpr auto positional_arg(Policies... policies) noexcept
 {
     return positional_arg_t<T, std::decay_t<Policies>...>{
         std::move(policies)...};

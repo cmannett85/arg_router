@@ -480,8 +480,8 @@ int main() {
     return 0;
 }
     )",
-        "basic_one_of_t does not support policies with pre-parse, parse, "
-        "validation, or routing phases; as it delegates those to its children");
+        "one_of does not support policies with validation phases; as it "
+        "delegates those to its children");
 }
 
 BOOST_AUTO_TEST_CASE(router_phase_test)

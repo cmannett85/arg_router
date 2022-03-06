@@ -1,0 +1,60 @@
+/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
+
+namespace arg_router
+{
+/** @page help Help
+ * @tableofcontents
+ *
+ * @section help_hdt help_data_type
+ * Help output is crucial for most application's command line interface, in 
+ * arg_router this is implemented by defining a public type called
+ * <TT>help_data_type</TT> that is struct with a boolean NTTP providing up to
+ * three utility::compile_time_string type aliases:
+ * -# <TT>label</TT> which provides the node name(s)
+ * -# <TT>description</TT> which provides the help blurb
+ * -# <TT>children</TT> which provides a tuple of other <TT>help_data_type</TT>
+ *    compatible structure types defining child help data
+ * 
+ * As you can see, at this stage of help output generation it is all generated
+ * at compile-time and the result held in program static read-only memory.  For
+ * parse tree leaf-level nodes (e.g. flag_t), the library provides a default
+ * alias that generates this data for you:
+ * tree_node::default_leaf_help_data_type.
+ * 
+ * @subsection help_hdt_flatten Flattening
+ * That boolean NTTP the <TT>help_data_type</TT> must have?  It is for
+ * 'flattening'.  'Flattened' help output is where all the child help data is
+ * displayed with the parent, rather than only the parent output being displayed
+ * and the children help data having to be explicitly requested through the
+ * command line - see the README.md for examples of this.
+ * 
+ * From the node developer's point of view, typically a non-flattened
+ * <TT>help_data_type</TT> would simply empty the children tuple (the parameter
+ * is ignored for the tree_node::default_leaf_help_data_type as it will never
+ * have children).
+ * 
+ * @section help_node Help Node
+ * Obviously the types don't do anything on their own, they are read by the
+ * help_t node which at @em runtime generates the complete output.  The help
+ * node is an argument-like node (e.g. arg_t), it accepts a chain of mode-like
+ * type names through the parse tree to show only the help for that node (see
+ * the README.md for examples of this).  To achieve this, in the node's
+ * parse method it iteratively searches through the tree's descendents (starting
+ * at the root), the last node requested has it's help data shown.
+ * 
+ * The help_t node checks for the presence of a policy::flatten_help_t policy -
+ * flattening is a compile-time switch.
+ * 
+ * @section help_node_children help_data_type::children
+ * The <TT>help_data_type::children</TT> type can be seen as the child nodes in
+ * a 'help tree'.  Typically it will carry nothing as not flattening is the 
+ * default and most nodes in the parse tree are leaves (flags, args, etc.), the
+ * most common scenario where this is @em not true is when defined by a 
+ * mode-like type in which case <TT>children</TT> will be a tuple of the child
+ * parse tree node's <TT>help_data_type</TT>s.
+ * 
+ * An outlier to the above is dependency::one_of_t, where the
+ * <TT>help_data_type::children</TT> tuple elements are the still the node's
+ * children, but it will ignore the flattening NTTP.
+ */
+}

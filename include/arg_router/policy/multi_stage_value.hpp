@@ -59,6 +59,24 @@ private:
     merge_fn fn_;
 };
 
+template <>
+class multi_stage_value<void, void>
+{
+};
+
+/** A tag type that marks a type as being a multi_stage_value, without
+ * implementing any of the features.
+ *
+ * This is for nodes that do not take part in the parsing process (usually
+ * because it has been delegated to child nodes e.g. alias_group), but still
+ * need a validation phase performing on the result value.
+ * 
+ * Having this tag type means that we can have the above without forcing a
+ * pointless merge function to be written and passed to the constructor in the
+ * owning node.
+ */
+using multi_stage_value_tag = multi_stage_value<void, void>;
+
 template <typename ResultType, typename ValueType>
 struct is_policy<multi_stage_value<ResultType, ValueType>> : std::true_type {
 };

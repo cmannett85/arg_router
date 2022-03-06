@@ -14,6 +14,25 @@ find_program(
     DOC "Doxygen documentation generation tool (http://www.doxygen.org)"
 )
 
+set(API_MD_PATH     ${ROOT}/README.md)
+set(NEW_API_MD_PATH ${ROOT}/docs/README_API.md)
+
+file(READ ${API_MD_PATH} MD_DATA)
+
+# Remove the badges
+string(
+    REGEX REPLACE
+    "^(!\\[[a-zA-Z0-9 ]+\\]\\([a-zA-Z0-9:\\/\\/\\.%-_]+\\) ?)+\n\n"
+    ""
+    UPDATED_MD_DATA
+    "${MD_DATA}"
+)
+
+if(NOT "${MD_DATA}" STREQUAL "${UPDATED_MD_DATA}")
+    message(STATUS "Updating Doxygen README.md")
+    file(WRITE ${NEW_API_MD_PATH} ${UPDATED_MD_DATA})
+endif()
+
 execute_process(
     COMMAND           "${DOXYGEN_EXECUTABLE}" ${ROOT}/docs/Doxyfile
     WORKING_DIRECTORY ${ROOT}/docs
