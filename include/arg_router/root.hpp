@@ -116,11 +116,7 @@ public:
      */
     void parse(int argc, char* argv[]) const
     {
-        // Trying to handle collapsed short form tokens without expanding them
-        // is very painful...  Shame about the heap allocation though, hopefully
-        // SSO will eliminate it for most cases
-        auto tokens =
-            parsing::expand_arguments(argc, const_cast<const char**>(argv));
+        auto tokens = parsing::expand_arguments<root_t>(*this, argc, argv);
 
         // Find the initial child, if there are no tokens then create an empty
         // one - an anonymous mode will still be found

@@ -58,7 +58,11 @@ namespace arg_router
  * 
  * @section node_relationships_parsing Parsing
  * Parsing starts at the root node, and follows these basic steps:
- * -# Pre-parse the input tokens to create a parsing::token_list
+ * -# Pre-parse the input tokens to create a parsing::token_list.  This is more
+ *    complicated than it sounds because the input arguments have to be ran
+ *    through the parse tree in order to determine how many 'value' tokens
+ *    belong to each node - this is required for correct categorisation of input
+ *    tokens.  This stage is also where collapsed short-form flags are expanded
  * -# Find the 'target' node.  This is a node that carries a policy::router
  *    which will be invoked with the parsed tokens.  It could be a top-level
  *    node (e.g a <TT>--version</TT> flag_t), but more likely a mode-like

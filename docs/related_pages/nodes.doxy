@@ -91,5 +91,19 @@ namespace arg_router
  * 
  * In this case the 'parsed result' is an implicit <TT>true</TT> boolean value
  * as the presence of a flag indicates a positive value.
+ *
+ * @section nodes_process_value_tokens process_value_tokens(..)
+ * This is an optional static method with the signature:
+ * @code
+ * static void process_value_tokens(span<const char*>& args, parsing::token_list& result)
+ * @endcode
+ * It is used by the input token processing phase if the owning node does *not*
+ * have a policy that implements <TT>maximum_count()</TT> and this method is
+ * present.  This phase needs to work out how many 'value' tokens belong to each
+ * node so it can categorise them correctly, typically this is provided by a
+ * <TT>maximum_count()</TT>-implementing policy or nothing (i.e. no value
+ * tokens), but some nodes (e.g. @ref positional_arg_t) _may_ not have this
+ * policy but still consume value tokens - this method provides this
+ * functionality.
  */
 }
