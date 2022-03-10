@@ -1,11 +1,11 @@
 var searchData=
 [
-  ['name_183',['name',['../structarg__router_1_1parsing_1_1token__type.html#a17d51d5c01cdd242814dbeda4d8cf2e5',1,'arg_router::parsing::token_type']]],
-  ['no_5fresult_5fvalue_184',['no_result_value',['../structarg__router_1_1policy_1_1no__result__value.html',1,'arg_router::policy']]],
-  ['no_5fresult_5fvalue_3c_3e_185',['no_result_value&lt;&gt;',['../structarg__router_1_1policy_1_1no__result__value.html',1,'arg_router::policy']]],
-  ['node_5ftoken_5ftype_186',['node_token_type',['../namespacearg__router_1_1parsing.html#a8389f839b76e96cfadf1b7527ef2e651',1,'arg_router::parsing']]],
-  ['nodes_187',['Nodes',['../nodes.html',1,'']]],
-  ['none_5fname_188',['none_name',['../classarg__router_1_1policy_1_1none__name__t.html#ad6bc3db576b83cf10d00ffe84ed4bd7a',1,'arg_router::policy::none_name_t::none_name()'],['../namespacearg__router_1_1policy.html#a893bbc78d0678d9969315184ed4181c5',1,'arg_router::policy::none_name()']]],
-  ['none_5fname_5ft_189',['none_name_t',['../classarg__router_1_1policy_1_1none__name__t.html',1,'arg_router::policy']]],
-  ['num_5fdigits_190',['num_digits',['../namespacearg__router_1_1math.html#a7685a22f45fc1767d3f0ab8db5a85bd6',1,'arg_router::math']]]
+  ['name_185',['name',['../structarg__router_1_1parsing_1_1token__type.html#a17d51d5c01cdd242814dbeda4d8cf2e5',1,'arg_router::parsing::token_type']]],
+  ['no_5fresult_5fvalue_186',['no_result_value',['../structarg__router_1_1policy_1_1no__result__value.html',1,'arg_router::policy']]],
+  ['no_5fresult_5fvalue_3c_3e_187',['no_result_value&lt;&gt;',['../structarg__router_1_1policy_1_1no__result__value.html',1,'arg_router::policy']]],
+  ['node_5ftoken_5ftype_188',['node_token_type',['../namespacearg__router_1_1parsing.html#a8389f839b76e96cfadf1b7527ef2e651',1,'arg_router::parsing']]],
+  ['nodes_189',['Nodes',['../nodes.html',1,'']]],
+  ['none_5fname_190',['none_name',['../classarg__router_1_1policy_1_1none__name__t.html#ad6bc3db576b83cf10d00ffe84ed4bd7a',1,'arg_router::policy::none_name_t::none_name()'],['../namespacearg__router_1_1policy.html#a893bbc78d0678d9969315184ed4181c5',1,'arg_router::policy::none_name()']]],
+  ['none_5fname_5ft_191',['none_name_t',['../classarg__router_1_1policy_1_1none__name__t.html',1,'arg_router::policy']]],
+  ['num_5fdigits_192',['num_digits',['../namespacearg__router_1_1math.html#a7685a22f45fc1767d3f0ab8db5a85bd6',1,'arg_router::math']]]
 ];

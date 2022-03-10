@@ -73,6 +73,7 @@ $(function() {
 </ul>
 </li>
 <li class="level1"><a href="#nodes_parse">Parse</a></li>
+<li class="level1"><a href="#nodes_process_value_tokens">process_value_tokens(..)</a></li>
 </ul>
 </div>
 <div class="textblock"><p>Types that derive from <a class="el" href="classarg__router_1_1tree__node.html">tree_node</a> form the nodes of the parse tree.</p>
@@ -87,12 +88,12 @@ Parameter Organising</h1>
 <h1><a class="anchor" id="nodes_find"></a>
 Find</h1>
 <p>One of the key pieces of functionality <a class="el" href="classarg__router_1_1tree__node.html">tree_node</a> provides is the ability for it to find a child node using a <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a>. This forms the core of how nodes are matched up against the user's command line tokens.</p>
-<p><a class="el" href="classarg__router_1_1tree__node.html#ae824991209ab98b10e66ed02b03f1998">tree_node::find</a> uses a generic visitor <code>Callable</code> so that a matching node's type can be accessed by the caller. An optional results tuple can be provided too, this is so mode-like types (e.g. <a class="el" href="classarg__router_1_1mode__t.html">mode_t</a>) can provide the current result of that child node during the search. This is useful for some nodes that need iteratively 'filling' during parsing e.g. <a class="el" href="classarg__router_1_1positional__arg__t.html">positional_arg_t</a> which will match against any token (positional arguments are 'greedy') until it's maximum count is reached (if any, normally provided by <a class="el" href="classarg__router_1_1policy_1_1min__max__count__t.html">policy::min_max_count_t</a>).</p>
-<p>The find method works by iterating over the child tuple and calling each node's match method, which takes the queried token and a visitor <code>Callable</code> that accepts a const reference to the child node (e.g <a class="el" href="classarg__router_1_1flag__t.html#ad8dc963d4c304e80d00e55e4fcf0ab82">flag_t::match</a>), and an optional result arg as described above (e.g. <a class="el" href="classarg__router_1_1positional__arg__t.html#a4d19b911865ccaf1ccdb794b26b4f132">positional_arg_t::match</a>).</p>
+<p><a class="el" href="classarg__router_1_1tree__node.html#a3d51367f87893bddee652f0895680e1e">tree_node::find</a> uses a generic visitor <code>Callable</code> so that a matching node's type can be accessed by the caller. An optional results tuple can be provided too, this is so mode-like types (e.g. <a class="el" href="classarg__router_1_1mode__t.html">mode_t</a>) can provide the current result of that child node during the search. This is useful for some nodes that need iteratively 'filling' during parsing e.g. <a class="el" href="classarg__router_1_1positional__arg__t.html">positional_arg_t</a> which will match against any token (positional arguments are 'greedy') until it's maximum count is reached (if any, normally provided by <a class="el" href="classarg__router_1_1policy_1_1min__max__count__t.html">policy::min_max_count_t</a>).</p>
+<p>The find method works by iterating over the child tuple and calling each node's match method, which takes the queried token and a visitor <code>Callable</code> that accepts a const reference to the child node (e.g <a class="el" href="classarg__router_1_1flag__t.html#ad8dc963d4c304e80d00e55e4fcf0ab82">flag_t::match</a>), and an optional result arg as described above (e.g. <a class="el" href="classarg__router_1_1positional__arg__t.html#a4ada798a13c07c13eb3fe2dbd9414bc4">positional_arg_t::match</a>).</p>
 <h2><a class="anchor" id="nodes_match"></a>
 Match</h2>
 <p>The match method is one of two methods every <a class="el" href="classarg__router_1_1tree__node.html">tree_node</a> derived type must implement in order for compilation to succeed. It just needs to check that the input token_type (and optional result) is correct for the node, call the visitor with itself if it is correct, and return whether or not a match occurred.</p>
-<p>You don't need to provide a defaulted result type when implementing, <a class="el" href="classarg__router_1_1tree__node.html#ae824991209ab98b10e66ed02b03f1998">tree_node::find</a> detects the arity of the target node's match method and the size of the requests result tuple (defaults to empty) and passes the result type accordingly. In other words only if the requestor provided a results tuple and your node's match method has a third argument, will you be passed a result value.</p>
+<p>You don't need to provide a defaulted result type when implementing, <a class="el" href="classarg__router_1_1tree__node.html#a3d51367f87893bddee652f0895680e1e">tree_node::find</a> detects the arity of the target node's match method and the size of the requests result tuple (defaults to empty) and passes the result type accordingly. In other words only if the requestor provided a results tuple and your node's match method has a third argument, will you be passed a result value.</p>
 <p>For most node types the implementation involves checking that the input token_type matches one of the node's names (typically implemented by <a class="el" href="classarg__router_1_1policy_1_1long__name__t.html">policy::long_name_t</a>, <a class="el" href="classarg__router_1_1policy_1_1short__name__t.html">policy::short_name_t</a>, or <a class="el" href="classarg__router_1_1policy_1_1none__name__t.html">policy::none_name_t</a>). As this is a common use case, there is a convenience function that does the checking for you: <a class="el" href="namespacearg__router_1_1parsing.html#ab74f8cc6ff57b803b7c39026e0cecc5a">parsing::default_match</a>.</p>
 <h1><a class="anchor" id="nodes_parse"></a>
 Parse</h1>
@@ -114,7 +115,11 @@ Parse</h1>
 <li>If there is a routing phase policy, that call it with the parsed result</li>
 <li>Return the parsed value to the caller</li>
 </ol>
-<p>In this case the 'parsed result' is an implicit <code>true</code> boolean value as the presence of a flag indicates a positive value. </p>
+<p>In this case the 'parsed result' is an implicit <code>true</code> boolean value as the presence of a flag indicates a positive value.</p>
+<h1><a class="anchor" id="nodes_process_value_tokens"></a>
+process_value_tokens(..)</h1>
+<p>This is an optional static method with the signature: </p><div class="fragment"><div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> process_value_tokens(span&lt;const char*&gt;&amp; args, parsing::token_list&amp; result)</div>
+</div><!-- fragment --><p> It is used by the input token processing phase if the owning node does <em>not</em> have a policy that implements <code>maximum_count()</code> and this method is present. This phase needs to work out how many 'value' tokens belong to each node so it can categorise them correctly, typically this is provided by a <code>maximum_count()</code>-implementing policy or nothing (i.e. no value tokens), but some nodes (e.g. <a class="el" href="classarg__router_1_1positional__arg__t.html">positional_arg_t</a>) <em>may</em> not have this policy but still consume value tokens - this method provides this functionality. </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
 <!-- start footer part -->

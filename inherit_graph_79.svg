@@ -16,7 +16,7 @@
 <polygon fill="white" stroke="black" points="0,-0.5 0,-41.5 104,-41.5 104,-0.5 0,-0.5"/>
 <text text-anchor="start" x="8" y="-29.5" font-family="Helvetica,sans-Serif" font-size="10.00">arg_router::traits</text>
 <text text-anchor="start" x="8" y="-18.5" font-family="Helvetica,sans-Serif" font-size="10.00">::is_specialisation</text>
-<text text-anchor="middle" x="52" y="-7.5" font-family="Helvetica,sans-Serif" font-size="10.00">_of&lt; U, T &gt;</text>
+<text text-anchor="middle" x="52" y="-7.5" font-family="Helvetica,sans-Serif" font-size="10.00">_of&lt; T, U &gt;</text>
 </a>
 </g>
 </g>

@@ -90,8 +90,9 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:aaaebcb5efd6de2e232c2a74699ac8d39"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classarg__router_1_1parsing_1_1token__list.html">token_list</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#aaaebcb5efd6de2e232c2a74699ac8d39">expand_arguments</a> (int argc, const char *argv[])</td></tr>
-<tr class="separator:aaaebcb5efd6de2e232c2a74699ac8d39"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a3c1dab796c38e9f3801e5806c31d01"><td class="memTemplParams" colspan="2">template&lt;typename Root &gt; </td></tr>
+<tr class="memitem:a7a3c1dab796c38e9f3801e5806c31d01"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classarg__router_1_1parsing_1_1token__list.html">token_list</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a7a3c1dab796c38e9f3801e5806c31d01">expand_arguments</a> (const Root &amp;<a class="el" href="namespacearg__router.html#a911ab5ded2b36269fdec3e768450d415">root</a>, int argc, char *argv[])</td></tr>
+<tr class="separator:a7a3c1dab796c38e9f3801e5806c31d01"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab74f8cc6ff57b803b7c39026e0cecc5a"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ab74f8cc6ff57b803b7c39026e0cecc5a"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#ab74f8cc6ff57b803b7c39026e0cecc5a">default_match</a> (const <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> &amp;token) noexcept</td></tr>
 <tr class="separator:ab74f8cc6ff57b803b7c39026e0cecc5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -202,29 +203,34 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if token matches the long or short form name </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00049">49</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00163">163</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
 
 </div>
 </div>
-<a id="aaaebcb5efd6de2e232c2a74699ac8d39"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaaebcb5efd6de2e232c2a74699ac8d39">&#9670;&nbsp;</a></span>expand_arguments()</h2>
+<a id="a7a3c1dab796c38e9f3801e5806c31d01"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7a3c1dab796c38e9f3801e5806c31d01">&#9670;&nbsp;</a></span>expand_arguments()</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
+<div class="memtemplate">
+template&lt;typename Root &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classarg__router_1_1parsing_1_1token__list.html">token_list</a> arg_router::parsing::expand_arguments </td>
           <td>(</td>
+          <td class="paramtype">const Root &amp;&#160;</td>
+          <td class="paramname"><em>root</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>argc</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const char *&#160;</td>
+          <td class="paramtype">char *&#160;</td>
           <td class="paramname"><em>argv</em>[]&#160;</td>
         </tr>
         <tr>
@@ -233,15 +239,17 @@ template&lt;typename T &gt; </div>
           <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 <p>Takes the main function arguments and creates a <a class="el" href="classarg__router_1_1parsing_1_1token__list.html">token_list</a> from it.</p>
-<p>This function will ignore the first argument (program name) and expand out any collapsed short form arguments. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Collapsed short names are expanded. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Root</td><td>Root node type </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">root</td><td>Root instance </td></tr>
     <tr><td class="paramname">argc</td><td>Argument count </td></tr>
     <tr><td class="paramname">argv</td><td>Argument string array </td></tr>
   </table>
@@ -249,7 +257,7 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Token list </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00020">20</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00141">141</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
 
 </div>
 </div>
@@ -323,7 +331,7 @@ template&lt;typename Node &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00082">82</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00196">196</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
 
 </div>
 </div>

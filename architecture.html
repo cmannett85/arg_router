@@ -102,7 +102,7 @@ Validation</h2>
 <h1><a class="anchor" id="node_relationships_parsing"></a>
 Parsing</h1>
 <p>Parsing starts at the root node, and follows these basic steps:</p><ol type="1">
-<li>Pre-parse the input tokens to create a <a class="el" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a></li>
+<li>Pre-parse the input tokens to create a <a class="el" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a>. This is more complicated than it sounds because the input arguments have to be ran through the parse tree in order to determine how many 'value' tokens belong to each node - this is required for correct categorisation of input tokens. This stage is also where collapsed short-form flags are expanded</li>
 <li>Find the 'target' node. This is a node that carries a <a class="el" href="classarg__router_1_1policy_1_1router.html">policy::router</a> which will be invoked with the parsed tokens. It could be a top-level node (e.g a <code>&ndash;version</code> <a class="el" href="classarg__router_1_1flag__t.html">flag_t</a>), but more likely a mode-like (e.g. <a class="el" href="classarg__router_1_1mode__t.html">mode_t</a>) node which could be nested in a mode subtree</li>
 <li>Then the remaing tokens (if any) are parsed by the children of the target, building up a tuple of results</li>
 <li>The target's <a class="el" href="classarg__router_1_1policy_1_1router.html">policy::router</a> is then called with the results (again, if any)</li>
