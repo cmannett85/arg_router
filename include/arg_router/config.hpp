@@ -21,8 +21,11 @@ constexpr auto short_prefix = std::string_view{AR_SHORT_PREFIX};
 static_assert(short_prefix.size() >= 1,
               "Short prefix must have at least one character");
 
-static_assert(long_prefix.size() > short_prefix.size(),
-              "Long prefix must be longer than short prefix");
+static_assert(long_prefix.size() >= short_prefix.size(),
+              "Long prefix must be longer or the same as short prefix");
+
+static_assert(short_prefix != long_prefix,
+              "Short and long prefixes cannot be the same");
 
 /** Allocator for all STL types.
  *

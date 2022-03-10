@@ -397,6 +397,28 @@ struct has_minimum_count_method {
 template <typename T>
 constexpr bool has_minimum_count_method_v = has_minimum_count_method<T>::value;
 
+/** Determine if a type has a <TT>process_value_tokens</TT> static method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+struct has_process_value_tokens_method {
+    template <typename U>
+    using type =
+        decltype(U::process_value_tokens(std::declval<span<const char*>&>(),
+                                         std::declval<parsing::token_list&>()));
+
+    constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
+};
+
+/** Helper variable for has_process_value_tokens_method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+constexpr bool has_process_value_tokens_method_v =
+    has_process_value_tokens_method<T>::value;
+
 /** Determine if a type has a <TT>push_back(typename T::value_type)</TT> method.
  *
  * @tparam T Type to query

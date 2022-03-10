@@ -84,6 +84,28 @@ public:
     {
     }
 
+    /** Called during initial token processing to handle the value tokens.
+     *
+     * This is only used if the node doesn't have a policy that implements a
+     * <TT>maximum_count()</TT> method, which means that all tokens in @a args
+     * will be transferred to @a result with a prefix type of 
+     * parsing::prefix_type::NONE.
+     * @param args Command line arguments, remove the tokens that would be
+     * handled by this node
+     * @param result The token_list result, add tokens removed from @a args into
+     * this
+     * @return void
+     */
+    constexpr static void process_value_tokens(span<const char*>& args,
+                                               parsing::token_list& result)
+    {
+        result.reserve(result.pending_view().size() + args.size());
+        for (auto arg : args) {
+            result.emplace_pending(parsing::prefix_type::NONE, arg);
+        }
+        args = {};
+    }
+
     /** Always returns true as positional arguments do not have a token to
      * match, @em unless the maximum count has been reached (if present).
      *
@@ -102,7 +124,7 @@ public:
     template <typename Fn>
     constexpr bool match([[maybe_unused]] const parsing::token_type& token,
                          const Fn& visitor,
-                         const std::optional<T>& result) const
+                         const std::optional<T>& result = {}) const
     {
         if constexpr (traits::has_push_back_method_v<T> &&
                       traits::has_maximum_count_method_v<parent_type>) {

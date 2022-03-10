@@ -2,39 +2,153 @@
 
 #pragma once
 
+#include "arg_router/basic_types.hpp"
+#include "arg_router/exception.hpp"
+#include "arg_router/policy/multi_stage_value.hpp"
 #include "arg_router/traits.hpp"
+#include "arg_router/utility/tuple_iterator.hpp"
+
+#include <bitset>
 
 namespace arg_router
 {
 /** Namespace containing types and functions to aid parsing. */
 namespace parsing
 {
+namespace detail
+{
+template <typename Node, typename Fn, std::size_t N>
+constexpr bool find(const Node& node,
+                    parsing::token_type token,
+                    std::bitset<N> hit_flags,
+                    const Fn& visitor)
+{
+    auto result = false;
+    utility::tuple_iterator(
+        [&](auto i, const auto& node) {
+            if (result || hit_flags[i]) {
+                return;
+            }
+
+            // Wrap the caller's visitor with one that forwards the child
+            // index
+            const auto wrapped_visitor = [&](const auto& child) {
+                visitor(i, child);
+            };
+
+            if (node.match(token, wrapped_visitor)) {
+                result = true;
+            }
+        },
+        node.children());
+
+    return result;
+}
+
+template <typename Node>
+void expand_arguments(const Node& node,
+                      span<const char*>& args,
+                      token_list& result)
+{
+    using hit_flags_type =
+        std::bitset<std::tuple_size_v<typename Node::children_type>>;
+
+    auto hit_flags = hit_flags_type{};
+    while (!args.empty()) {
+        // Convert to a token_type and try to find the matching node
+        const auto tt = get_token_type(args.front());
+
+        // Expand out if it's collapsed short-form flags, this is valid because
+        // no value tokens are at the start of token processing chain - unless
+        // this is for positional arguments but that's user ambiguity which we
+        // can't eliminate (it's not psychic)
+        if (tt.prefix == prefix_type::SHORT && tt.name.size() > 1u) {
+            // Expand it out
+            for (auto i = 0u; i < tt.name.size(); ++i) {
+                result.emplace_pending(prefix_type::SHORT,
+                                       std::string_view{&(tt.name[i]), 1});
+            }
+            args = args.subspan(1);
+            continue;
+        }
+
+        const auto found_node =
+            find(node, tt, hit_flags, [&](auto i, const auto& child) {
+                // We have a match, but is it just a positional_arg absorbing
+                // everything?  Check by looking at it's name policies
+                using child_type = std::decay_t<decltype(child)>;
+
+                // Don't revisit nodes, this prevents the first positional_arg
+                // from consuming everything
+                hit_flags[i] = !policy::has_multi_stage_value_v<child_type>;
+
+                if constexpr (traits::has_long_name_method_v<child_type> ||
+                              traits::has_short_name_method_v<child_type> ||
+                              traits::has_none_name_method_v<child_type>) {
+                    // It's not a positional_arg, so add the name token
+                    result.add_pending(tt);
+                    args = args.subspan(1);
+                }
+
+                // Using the count of the node, add the correct number of NONE
+                // (i.e. value) tokens to the list
+                if constexpr (traits::has_maximum_count_method_v<child_type>) {
+                    const auto value_count =
+                        std::min(child_type::maximum_count(), args.size());
+                    if (value_count > 0u) {
+                        result.reserve(result.pending_view().size() +
+                                       value_count);
+                        for (auto i = 0u; i < value_count; ++i) {
+                            result.emplace_pending(prefix_type::NONE, args[i]);
+                        }
+                        args = args.subspan(value_count);
+                    }
+                } else if constexpr (traits::has_process_value_tokens_method_v<
+                                         child_type>) {
+                    child_type::process_value_tokens(args, result);
+                }
+
+                // Recurse using the found node if necessary
+                if constexpr ((std::tuple_size_v<
+                                  typename child_type::children_type>) > 0) {
+                    if (!args.empty()) {
+                        expand_arguments(child, args, result);
+                    }
+                }
+            });
+
+        // If we can't find the node, just add it as our best guess. We do not
+        // error here as the purpose of this parsing phase is it to categorise
+        // as best we can the tokens, better error checking happens later
+        if (!found_node) {
+            result.add_pending(tt);
+            args = args.subspan(1);
+        }
+    }
+}
+}  // namespace detail
+
 /** Takes the main function arguments and creates a token_list from it.
  *
- * This function will ignore the first argument (program name) and expand out
- * any collapsed short form arguments.
+ * Collapsed short names are expanded.
+ * @tparam Root Root node type
+ * @param root Root instance
  * @param argc Argument count
  * @param argv Argument string array
  * @return Token list
  */
-[[nodiscard]] inline token_list expand_arguments(int argc, const char* argv[])
+template <typename Root>
+[[nodiscard]] token_list expand_arguments(const Root& root,
+                                          int argc,
+                                          char* argv[])
 {
+    auto args = span<const char*>(const_cast<const char**>(&argv[1]), argc - 1);
     auto result = token_list{};
 
-    // Start at 1 to skip the program name
-    for (auto i = 1; i < argc; ++i) {
-        const auto token = std::string_view{argv[i]};
-        const auto [prefix, stripped] = parsing::get_token_type(token);
-
-        if (prefix == parsing::prefix_type::SHORT) {
-            for (auto j = 0u; j < stripped.size(); ++j) {
-                result.emplace_pending(prefix,
-                                       std::string_view{&(stripped[j]), 1});
-            }
-        } else {
-            result.emplace_pending(prefix, stripped);
-        }
-    }
+    // Arguments must be brute forced as we don't know at the this stage if they
+    // are args, flags, or values for a positional_arg - not even the prefix is
+    // proof!
+    detail::expand_arguments(root, args, result);
 
     return result;
 }

@@ -162,13 +162,17 @@ public:
      * @return True if a child was found
      */
     template <typename Fn, typename ResultsTuple = std::tuple<>>
-    constexpr bool find(const parsing::token_type& token,
+    constexpr bool find(parsing::token_type token,
                         const Fn& visitor,
                         const ResultsTuple& results_tuple = {}) const
     {
         auto result = false;
         utility::tuple_iterator(
             [&](auto i, const auto& node) {
+                if (result) {
+                    return;
+                }
+
                 using node_type = std::decay_t<decltype(node)>;
 
                 // Wrap the caller's visitor with one that forwards the child
@@ -181,10 +185,6 @@ public:
                     decltype(&node_type::template match<
                              std::decay_t<decltype(wrapped_visitor)>>)>;
 
-                if (result) {
-                    return;
-                }
-
                 if constexpr ((i < std::tuple_size_v<ResultsTuple>)&&  //
                               (match_arity == 3)) {
                     if (node.match(token,
@@ -192,7 +192,7 @@ public:
                                    std::get<i.value>(results_tuple))) {
                         result = true;
                     }
-                } else if constexpr (match_arity == 2) {
+                } else {
                     if (node.match(token, wrapped_visitor)) {
                         result = true;
                     }

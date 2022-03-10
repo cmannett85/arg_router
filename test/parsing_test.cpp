@@ -90,46 +90,6 @@ BOOST_AUTO_TEST_CASE(get_token_type_test)
          std::tuple{"", parsing::token_type{parsing::prefix_type::NONE, ""}}});
 }
 
-BOOST_AUTO_TEST_CASE(expand_arguments_test)
-{
-    auto f = [](auto input, auto expected) {
-        const auto result = parsing::expand_arguments(input.size(),  //
-                                                      input.data());
-        BOOST_CHECK_EQUAL(result, expected);
-    };
-
-    test::data_set(
-        f,
-        {
-            std::tuple{std::vector{"program name", "--foo", "-g", "-d", "42"},
-                       parsing::token_list{{parsing::prefix_type::LONG, "foo"},
-                                           {parsing::prefix_type::SHORT, "g"},
-                                           {parsing::prefix_type::SHORT, "d"},
-                                           {parsing::prefix_type::NONE, "42"}}},
-            std::tuple{std::vector{"program name", "-fwed"},
-                       parsing::token_list{{parsing::prefix_type::SHORT, "f"},
-                                           {parsing::prefix_type::SHORT, "w"},
-                                           {parsing::prefix_type::SHORT, "e"},
-                                           {parsing::prefix_type::SHORT, "d"}}},
-            std::tuple{std::vector{"program name",
-                                   "--foo",
-                                   "42",
-                                   "-venv",
-                                   "-d",
-                                   "-abc"},
-                       parsing::token_list{{parsing::prefix_type::LONG, "foo"},
-                                           {parsing::prefix_type::NONE, "42"},
-                                           {parsing::prefix_type::SHORT, "v"},
-                                           {parsing::prefix_type::SHORT, "e"},
-                                           {parsing::prefix_type::SHORT, "n"},
-                                           {parsing::prefix_type::SHORT, "v"},
-                                           {parsing::prefix_type::SHORT, "d"},
-                                           {parsing::prefix_type::SHORT, "a"},
-                                           {parsing::prefix_type::SHORT, "b"},
-                                           {parsing::prefix_type::SHORT, "c"}}},
-        });
-}
-
 BOOST_AUTO_TEST_CASE(string_from_prefix_test)
 {
     auto f = [](auto prefix, auto expected) {
