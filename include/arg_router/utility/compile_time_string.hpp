@@ -57,6 +57,23 @@ public:
         return {sv_.data(), sv_.size()};
     }
 
+    /** Number of UTF-8 code points in the string.
+     *
+     * @note This is strictly a UTF-8 parser, it ignores the current locale
+     * @return Code points
+     */
+    [[nodiscard]] constexpr static std::size_t u8_num_code_points() noexcept
+    {
+        constexpr auto str = get();
+
+        auto result = std::size_t{0};
+        for (auto c : str) {
+            result += (c & 0xC0) != 0x80;
+        }
+
+        return result;
+    }
+
     /** Appends @a T to this string type.
      *
      * @tparam T String to append
