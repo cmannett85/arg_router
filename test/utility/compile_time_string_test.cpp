@@ -114,6 +114,26 @@ BOOST_AUTO_TEST_CASE(convert_integral_to_cts_test)
     }
 }
 
+BOOST_AUTO_TEST_CASE(u8_num_code_points_test)
+{
+    {
+        using str = S_("");
+        static_assert(str::u8_num_code_points() == 0);
+    }
+    {
+        using str = S_("hello");
+        static_assert(str::u8_num_code_points() == 5);
+    }
+    {
+        using str = S_("zß水🍌");
+        static_assert(str::u8_num_code_points() == 4);
+    }
+    {
+        using str = S_("Δàrö");
+        static_assert(str::u8_num_code_points() == 4);
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

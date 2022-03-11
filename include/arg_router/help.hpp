@@ -248,8 +248,9 @@ private:
     [[nodiscard]] constexpr static std::size_t description_column_start(
         std::size_t current_max) noexcept
     {
-        constexpr auto this_row_start =
-            (Depth * indent_spaces) + HelpData::label::size() + indent_spaces;
+        constexpr auto this_row_start = (Depth * indent_spaces) +
+                                        HelpData::label::u8_num_code_points() +
+                                        indent_spaces;
         current_max = std::max(current_max, this_row_start);
 
         utility::tuple_type_iterator<typename HelpData::children>([&](auto i) {
@@ -272,8 +273,8 @@ private:
                    << HelpData::label::get();
 
             if constexpr (!HelpData::description::empty()) {
-                constexpr auto gap = DescStart - indent -  //
-                                     HelpData::label::size();
+                constexpr auto gap =
+                    DescStart - indent - HelpData::label::u8_num_code_points();
                 stream << utility::create_sequence_cts_t<gap, ' '>::get()
                        << HelpData::description::get();
             }
