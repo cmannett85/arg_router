@@ -1,7 +1,7 @@
 var searchData=
 [
   ['default_5fleaf_5fhelp_5fdata_5ftype_62',['default_leaf_help_data_type',['../classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html',1,'arg_router::tree_node']]],
-  ['default_5fmatch_63',['default_match',['../namespacearg__router_1_1parsing.html#ab74f8cc6ff57b803b7c39026e0cecc5a',1,'arg_router::parsing']]],
+  ['default_5fmatch_63',['default_match',['../namespacearg__router_1_1parsing.html#a8cd5ccafb2ad5067217c034ecf0c9d0a',1,'arg_router::parsing']]],
   ['default_5fvalidator_64',['default_validator',['../namespacearg__router_1_1policy_1_1validation.html#a3d0ef627a5432bc462c0044a6b01f583',1,'arg_router::policy::validation']]],
   ['default_5fvalue_65',['default_value',['../classarg__router_1_1policy_1_1default__value.html',1,'arg_router::policy::default_value&lt; T &gt;'],['../classarg__router_1_1policy_1_1default__value.html#a2eb6d4062fd6aedfd256dd277ae0c390',1,'arg_router::policy::default_value::default_value()']]],
   ['dependent_66',['dependent',['../namespacearg__router_1_1policy.html#a0a1111553167ea9adc65c215f75c7f06',1,'arg_router::policy']]],

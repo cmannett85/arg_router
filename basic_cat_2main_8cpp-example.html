@@ -118,7 +118,7 @@ $(function() {
 <div class="line">    <span class="keywordflow">switch</span> (theme) {</div>
 <div class="line">    <span class="keywordflow">case</span> theme_t::CLASSIC: std::cout &lt;&lt; <span class="stringliteral">&quot;\033[31m&quot;</span>; <span class="keywordflow">break</span>;</div>
 <div class="line">    <span class="keywordflow">case</span> theme_t::SOLARIZED: std::cout &lt;&lt; <span class="stringliteral">&quot;\033[32m&quot;</span>; <span class="keywordflow">break</span>;</div>
-<div class="line">    <span class="keywordflow">default</span>: std::cout &lt;&lt; <span class="stringliteral">&quot;\033[0m&quot;</span> &lt;&lt; std::endl; <span class="keywordflow">break</span>;</div>
+<div class="line">    <span class="keywordflow">default</span>: std::cout &lt;&lt; <span class="stringliteral">&quot;\033[0m&quot;</span>; <span class="keywordflow">break</span>;</div>
 <div class="line">    }</div>
 <div class="line">}</div>
 <div class="line"> </div>
@@ -165,7 +165,7 @@ $(function() {
 <div class="line"> </div>
 <div class="line">        <span class="keyword">auto</span> line_number = 0;</div>
 <div class="line">        <span class="keywordflow">for</span> (<span class="keyword">auto</span> line = <span class="stringliteral">&quot;&quot;</span>s; std::getline(stream, line);) {</div>
-<div class="line">            <span class="keywordflow">if</span> (line_number++ == max_lines) {</div>
+<div class="line">            <span class="keywordflow">if</span> (++line_number == max_lines) {</div>
 <div class="line">                <span class="keywordflow">break</span>;</div>
 <div class="line">            }</div>
 <div class="line"> </div>
@@ -240,10 +240,12 @@ $(function() {
 <div class="line">                     arp::short_name&lt;&#39;n&#39;&gt;),</div>
 <div class="line">            ar::arg&lt;int&gt;(arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;max-lines&quot;</span>)&gt;,</div>
 <div class="line">                         arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Maximum lines to output&quot;</span>)&gt;,</div>
+<div class="line">                         arp::value_separator&lt;&#39;=&#39;&gt;,</div>
 <div class="line">                         arp::default_value{-1}),</div>
 <div class="line">            ar::arg&lt;std::optional&lt;std::size_t&gt;&gt;(</div>
 <div class="line">                arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;max-line-length&quot;</span>)&gt;,</div>
 <div class="line">                arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Maximum line length&quot;</span>)&gt;,</div>
+<div class="line">                arp::value_separator&lt;&#39;=&#39;&gt;,</div>
 <div class="line">                arp::default_value{std::optional&lt;std::size_t&gt;{}}),</div>
 <div class="line">            ard::one_of(</div>
 <div class="line">                arp::default_value{<span class="stringliteral">&quot;...&quot;</span>},</div>
@@ -258,11 +260,12 @@ $(function() {
 <div class="line">                    arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;line-suffix&quot;</span>)&gt;,</div>
 <div class="line">                    arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(</div>
 <div class="line">                        <span class="stringliteral">&quot;Shortens line length to maximum with the &quot;</span></div>
-<div class="line">                        <span class="stringliteral">&quot;given suffix if max line length reached&quot;</span>)&gt;)),</div>
+<div class="line">                        <span class="stringliteral">&quot;given suffix if max line length reached&quot;</span>)&gt;,</div>
+<div class="line">                    arp::value_separator&lt;&#39;=&#39;&gt;)),</div>
 <div class="line">            ar::arg&lt;theme_t&gt;(</div>
 <div class="line">                arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;theme&quot;</span>)&gt;,</div>
-<div class="line">                arp::short_name&lt;&#39;t&#39;&gt;,</div>
 <div class="line">                arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Set the output colour theme&quot;</span>)&gt;,</div>
+<div class="line">                arp::value_separator&lt;&#39;=&#39;&gt;,</div>
 <div class="line">                arp::default_value{theme_t::NONE},</div>
 <div class="line">                arp::custom_parser&lt;theme_t&gt;{[](std::string_view <a class="code" href="namespacearg__router.html#a29537daeb3ba7d1b8749d3e1e9d83f1b">arg</a>) {</div>
 <div class="line">                    <span class="keywordflow">return</span> theme_from_string(arg);</div>
@@ -275,7 +278,8 @@ $(function() {
 <div class="line">                        <span class="stringliteral">&quot;Verbosity level, number of &#39;v&#39;s sets level&quot;</span>)&gt;),</div>
 <div class="line">                ar::arg&lt;verbosity_level_t&gt;(</div>
 <div class="line">                    arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;verbose&quot;</span>)&gt;,</div>
-<div class="line">                    arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Verbosity level&quot;</span>)&gt;),</div>
+<div class="line">                    arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Verbosity level&quot;</span>)&gt;,</div>
+<div class="line">                    arp::value_separator&lt;&#39;=&#39;&gt;),</div>
 <div class="line">                arp::min_max_value{verbosity_level_t::ERROR,</div>
 <div class="line">                                   verbosity_level_t::DEBUG}),</div>
 <div class="line">            ar::positional_arg&lt;std::vector&lt;std::string_view&gt;&gt;(</div>

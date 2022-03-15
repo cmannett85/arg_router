@@ -109,6 +109,7 @@ $(function() {
 <div class="line">        ar::arg&lt;int&gt;(</div>
 <div class="line">            arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;max-lines&quot;</span>)&gt;,</div>
 <div class="line">            arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Maximum lines to output&quot;</span>)&gt;,</div>
+<div class="line">            arp::value_separator&lt;&#39;=&#39;&gt;,</div>
 <div class="line">            arp::default_value{-1}),</div>
 <div class="line">        ar::positional_arg&lt;std::vector&lt;std::string_view&gt;&gt;(</div>
 <div class="line">            arp::required,</div>
@@ -127,6 +128,7 @@ $(function() {
 <p><code>arg&lt;T&gt;</code> does exactly what you would expect, it defines an argument that expects a value to follow it on the command line. If an argument is not <code>required</code> then it may have a <code>default_value</code> (if neither are set, then a default initialised value is used instead), this is passed to the <code>router</code>'s <code>Callable</code> on parsing if it isn't specified by the user on the command line.</p>
 <p>A <code>flag</code> is essentially an <code>arg&lt;bool&gt;{default_value{false}}</code>, except that it doesn't expect an argument value to follow on the command line as it <em>is</em> the value. Flags cannot have default arguments or be marked as required.</p>
 <p>An <code>alias</code> policy allows you to define an argument that acts as a link to other arguments, so in our example above passing <code>-A</code> on the command line would actually set the <code>-E</code> and <code>-n</code> flags to true. You can use either the long or short name of the aliased flag, but the <code>value_type</code>s (<code>bool</code> for a flag) must be the same.</p>
+<p>By default whitespace is used to separate out the command line tokens, this is done by the terminal/OS invoking the program, but often '=' is used a name/value token separator. <code><a class="el" href="namespacearg__router.html">arg_router</a></code> supports this with the <code>value_separator</code> policy as used in the <code>arg&lt;int&gt;</code> node in the example. Be aware that it is a compile-time error to specify a short name with <code>value_separator</code> as it becomes ambiguous with multiple flag collapsed short name style.</p>
 <p><code>positional_arg&lt;T&gt;</code> does not use a 'marker' token on the command line for which its value follows, the values position in the command line arguments determines what it is for. The order that arguments are specified on the command line normally don't matter, but for positional arguments they do for example in our cat program the files must be specified after the arguments so passing <code>myfile.hpp -n</code> would trigger the parser to land on the <code>positional_arg</code> for <code>myfile.hpp</code> which would then greedily consume the <code>-n</code> causing the application to try to open the file <code>-n</code>... We'll cover constrained <code>positional_arg</code>s in later examples. The <code>display_name</code> policy is used when generating help or error output - it is not used when parsing.</p>
 <p>Assuming parsing was successful, the final <code>router</code> is called with the parsed argument e.g. if the user passed <code>-E file1 file2</code> then the <code>router</code> is passed <code>(true, false, -1, {"file1", "file2"})</code>.</p>
 <p>You may have noticed that the nodes are constructed with parentheses whilst the policies use braces, this is necessary due to CTAD rules that affect nodes which return a user-defined value type. This can be circumvented using a function to return the required instance, for example the actual type of a flag is <code>flag_t</code>, <code>flag(...)</code> is a function that creates one for you.</p>
@@ -137,6 +139,7 @@ $(function() {
 <div class="line">    ar::arg&lt;std::optional&lt;std::size_t&gt;&gt;(</div>
 <div class="line">        arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;max-line-length&quot;</span>)&gt;,</div>
 <div class="line">        arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Maximum line length&quot;</span>)&gt;,</div>
+<div class="line">        arp::value_separator&lt;&#39;=&#39;&gt;,</div>
 <div class="line">        arp::default_value{std::optional&lt;std::size_t&gt;{}}),</div>
 <div class="line">    ard::one_of(</div>
 <div class="line">        arp::default_value{<span class="stringliteral">&quot;...&quot;</span>},</div>
@@ -150,7 +153,8 @@ $(function() {
 <div class="line">            arp::dependent(arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;max-line-length&quot;</span>)&gt;),</div>
 <div class="line">            arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;line-suffix&quot;</span>)&gt;,</div>
 <div class="line">            arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Shortens line length to maximum with the &quot;</span></div>
-<div class="line">                                <span class="stringliteral">&quot;given suffix if max line length reached&quot;</span>)&gt;),</div>
+<div class="line">                                <span class="stringliteral">&quot;given suffix if max line length reached&quot;</span>)&gt;,</div>
+<div class="line">            arp::value_separator&lt;&#39;=&#39;&gt;)),</div>
 <div class="line">    ...</div>
 <div class="line">    arp::router{[](<span class="keywordtype">bool</span> show_all,</div>
 <div class="line">                   <span class="keywordtype">bool</span> show_ends,</div>
@@ -175,8 +179,8 @@ $(function() {
 <div class="line">    ...</div>
 <div class="line">    ar::arg&lt;theme_t&gt;(</div>
 <div class="line">        arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;theme&quot;</span>)&gt;,</div>
-<div class="line">        arp::short_name&lt;&#39;t&#39;&gt;,</div>
 <div class="line">        arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Set the output colour theme&quot;</span>)&gt;,</div>
+<div class="line">        arp::value_separator&lt;&#39;=&#39;&gt;,</div>
 <div class="line">        arp::default_value{theme_t::NONE},</div>
 <div class="line">        arp::custom_parser&lt;theme_t&gt;{[](std::string_view <a class="code" href="namespacearg__router.html#a29537daeb3ba7d1b8749d3e1e9d83f1b">arg</a>) {</div>
 <div class="line">            <span class="keywordflow">return</span> theme_from_string(arg) }})</div>
@@ -246,6 +250,7 @@ $(function() {
 <div class="line">            arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Verbosity level, number of &#39;v&#39;s sets level&quot;</span>)&gt;),</div>
 <div class="line">        ar::arg&lt;verbosity_level_t&gt;(</div>
 <div class="line">            arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;verbose&quot;</span>)&gt;,</div>
+<div class="line">            arp::value_separator&lt;&#39;=&#39;&gt;,</div>
 <div class="line">            arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Verbosity level&quot;</span>)&gt;)),</div>
 <div class="line">    ...</div>
 <div class="line">    arp::router{[](<span class="keywordtype">bool</span> show_all,</div>
