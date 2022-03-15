@@ -35,6 +35,8 @@ class help_t :
                   "Help must not have a display name policy");
     static_assert(!traits::has_none_name_method_v<help_t>,
                   "Help must not have a none name policy");
+    static_assert(!traits::has_value_separator_method_v<help_t>,
+                  "Help must not have a value separator policy");
 
     using parent_type =
         tree_node<policy::no_result_value<>, std::decay_t<Policies>...>;

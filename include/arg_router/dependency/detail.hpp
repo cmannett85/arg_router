@@ -107,6 +107,8 @@ class basic_one_of_t :
                   "basic_one_of_t must not have a short name policy");
     static_assert(!traits::has_none_name_method_v<basic_one_of_t>,
                   "basic_one_of_t must not have a none name policy");
+    static_assert(!traits::has_value_separator_method_v<basic_one_of_t>,
+                  "basic_one_of_t must not have a value separator policy");
 
 protected:
     using typename parent_type::children_type;

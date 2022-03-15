@@ -1,4 +1,4 @@
-![Documentation Generator](https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg) ![Unit test coverage](https://img.shields.io/badge/Unit_Test_Coverage-99.5%25-brightgreen)
+![Documentation Generator](https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg) ![Unit test coverage](https://img.shields.io/badge/Unit_Test_Coverage-99.6%25-brightgreen)
 
 # arg_router
 `arg_router` is a C++17 command line parser and router.  It uses policy-based objects hierarchically, so the parsing code is self-describing.  Rather than just providing a parsing service that returns a map of `variant`s/`any`s, it allows you to bind `Callable` instances to points in the parse structure, so complex command line arguments can directly call functions with the expected arguments - rather than you having to do this yourself.
@@ -45,6 +45,7 @@ ar::root(
         ar::arg<int>(
             arp::long_name<S_("max-lines")>,
             arp::description<S_("Maximum lines to output")>,
+            arp::value_separator<'='>,
             arp::default_value{-1}),
         ar::positional_arg<std::vector<std::string_view>>(
             arp::required,
@@ -72,6 +73,8 @@ A `flag` is essentially an `arg<bool>{default_value{false}}`, except that it doe
 
 An `alias` policy allows you to define an argument that acts as a link to other arguments, so in our example above passing `-A` on the command line would actually set the `-E` and `-n` flags to true.  You can use either the long or short name of the aliased flag, but the `value_type`s (`bool` for a flag) must be the same.
 
+By default whitespace is used to separate out the command line tokens, this is done by the terminal/OS invoking the program, but often '=' is used a name/value token separator.  `arg_router` supports this with the `value_separator` policy as used in the `arg<int>` node in the example.  Be aware that it is a compile-time error to specify a short name with `value_separator` as it becomes ambiguous with multiple flag collapsed short name style.
+
 `positional_arg<T>` does not use a 'marker' token on the command line for which its value follows, the values position in the command line arguments determines what it is for.  The order that arguments are specified on the command line normally don't matter, but for positional arguments they do; for example in our cat program the files must be specified after the arguments so passing `myfile.hpp -n` would trigger the parser to land on the `positional_arg` for `myfile.hpp` which would then greedily consume the `-n` causing the application to try to open the file `-n`...  We'll cover constrained `positional_arg`s in later examples.  The `display_name` policy is used when generating help or error output - it is not used when parsing.
 
 Assuming parsing was successful, the final `router` is called with the parsed argument e.g. if the user passed `-E file1 file2` then the `router` is passed `(true, false, -1, {"file1", "file2"})`.
@@ -87,6 +90,7 @@ ar::mode(
     ar::arg<std::optional<std::size_t>>(
         arp::long_name<S_("max-line-length")>,
         arp::description<S_("Maximum line length")>,
+        arp::value_separator<'='>,
         arp::default_value{std::optional<std::size_t>{}}),
     ard::one_of(
         arp::default_value{"..."},
@@ -100,7 +104,8 @@ ar::mode(
             arp::dependent(arp::long_name<S_("max-line-length")>),
             arp::long_name<S_("line-suffix")>,
             arp::description<S_("Shortens line length to maximum with the "
-                                "given suffix if max line length reached")>),
+                                "given suffix if max line length reached")>,
+            arp::value_separator<'='>)),
     ...
     arp::router{[](bool show_all,
                    bool show_ends,
@@ -133,8 +138,8 @@ ar::mode(
     ...
     ar::arg<theme_t>(
         arp::long_name<S_("theme")>,
-        arp::short_name<'t'>,
         arp::description<S_("Set the output colour theme")>,
+        arp::value_separator<'='>,
         arp::default_value{theme_t::NONE},
         arp::custom_parser<theme_t>{[](std::string_view arg) {
             return theme_from_string(arg); }})
@@ -218,6 +223,7 @@ ar::mode(
             arp::description<S_("Verbosity level, number of 'v's sets level")>),
         ar::arg<verbosity_level_t>(
             arp::long_name<S_("verbose")>,
+            arp::value_separator<'='>,
             arp::description<S_("Verbosity level")>)),
     ...
     arp::router{[](bool show_all,

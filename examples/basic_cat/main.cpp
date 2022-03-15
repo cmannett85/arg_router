@@ -48,7 +48,7 @@ void set_theme(theme_t theme)
     switch (theme) {
     case theme_t::CLASSIC: std::cout << "\033[31m"; break;
     case theme_t::SOLARIZED: std::cout << "\033[32m"; break;
-    default: std::cout << "\033[0m" << std::endl; break;
+    default: std::cout << "\033[0m"; break;
     }
 }
 
@@ -95,7 +95,7 @@ void cat(bool show_ends,
 
         auto line_number = 0;
         for (auto line = ""s; std::getline(stream, line);) {
-            if (line_number++ == max_lines) {
+            if (++line_number == max_lines) {
                 break;
             }
 
@@ -170,10 +170,12 @@ int main(int argc, char* argv[])
                      arp::short_name<'n'>),
             ar::arg<int>(arp::long_name<S_("max-lines")>,
                          arp::description<S_("Maximum lines to output")>,
+                         arp::value_separator<'='>,
                          arp::default_value{-1}),
             ar::arg<std::optional<std::size_t>>(
                 arp::long_name<S_("max-line-length")>,
                 arp::description<S_("Maximum line length")>,
+                arp::value_separator<'='>,
                 arp::default_value{std::optional<std::size_t>{}}),
             ard::one_of(
                 arp::default_value{"..."},
@@ -188,11 +190,12 @@ int main(int argc, char* argv[])
                     arp::long_name<S_("line-suffix")>,
                     arp::description<S_(
                         "Shortens line length to maximum with the "
-                        "given suffix if max line length reached")>)),
+                        "given suffix if max line length reached")>,
+                    arp::value_separator<'='>)),
             ar::arg<theme_t>(
                 arp::long_name<S_("theme")>,
-                arp::short_name<'t'>,
                 arp::description<S_("Set the output colour theme")>,
+                arp::value_separator<'='>,
                 arp::default_value{theme_t::NONE},
                 arp::custom_parser<theme_t>{[](std::string_view arg) {
                     return theme_from_string(arg);
@@ -205,7 +208,8 @@ int main(int argc, char* argv[])
                         "Verbosity level, number of 'v's sets level")>),
                 ar::arg<verbosity_level_t>(
                     arp::long_name<S_("verbose")>,
-                    arp::description<S_("Verbosity level")>),
+                    arp::description<S_("Verbosity level")>,
+                    arp::value_separator<'='>),
                 arp::min_max_value{verbosity_level_t::ERROR,
                                    verbosity_level_t::DEBUG}),
             ar::positional_arg<std::vector<std::string_view>>(

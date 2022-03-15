@@ -5,6 +5,7 @@
 #include "arg_router/policy/description.hpp"
 #include "arg_router/policy/min_max_value.hpp"
 #include "arg_router/policy/validator.hpp"
+#include "arg_router/policy/value_separator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 #include "test_helpers.hpp"
@@ -140,6 +141,44 @@ BOOST_AUTO_TEST_CASE(single_arg_parse_test)
     r.parse(args.size(), const_cast<char**>(args.data()));
     BOOST_REQUIRE(!!result);
     BOOST_CHECK_EQUAL(*result, 42);
+}
+
+BOOST_AUTO_TEST_CASE(single_arg_separator_parse_test)
+{
+    auto result = std::optional<int>{};
+    const auto r = root(arg<int>(policy::long_name<S_("hello")>,
+                                 policy::description<S_("Hello description")>,
+                                 policy::value_separator<'='>,
+                                 policy::router{[&](int value) {
+                                     BOOST_CHECK(!result);
+                                     result = value;
+                                 }}),
+                        policy::validation::default_validator);
+
+    auto f = [&](auto args, auto expected, auto fail_message) {
+        result.reset();
+
+        try {
+            r.parse(args.size(), const_cast<char**>(args.data()));
+            BOOST_CHECK(fail_message.empty());
+            BOOST_REQUIRE(!!result);
+            BOOST_CHECK_EQUAL(*result, expected);
+        } catch (parse_exception& e) {
+            BOOST_CHECK_EQUAL(e.what(), fail_message);
+        }
+    };
+
+    test::data_set(
+        f,
+        {
+            std::tuple{std::vector{"foo", "--hello=42"}, 42, ""s},
+            std::tuple{std::vector{"foo", "--hello", "42"},
+                       0,
+                       "Expected to find value separator '=' in \"--hello\""s},
+            std::tuple{std::vector{"foo", "--hello="},
+                       0,
+                       "Unable to find value after separator: --hello="s},
+        });
 }
 
 BOOST_AUTO_TEST_CASE(single_string_arg_parse_test)
@@ -922,6 +961,7 @@ BOOST_AUTO_TEST_CASE(alias_arg_parse_test)
                            policy::default_value(42),
                            policy::description<S_("Second description")>),
                   arg<int>(policy::long_name<S_("arg3")>,
+                           policy::value_separator<'='>,
                            policy::default_value(84),
                            policy::description<S_("Third description")>),
                   arg<int>(policy::short_name<'a'>,
@@ -960,9 +1000,15 @@ BOOST_AUTO_TEST_CASE(alias_arg_parse_test)
             std::tuple{std::vector{"foo", "--arg1", "false", "-a", "9"},
                        std::tuple{false, 9, 9},
                        ""},
+            std::tuple{std::vector{"foo", "--arg1", "false", "--arg3=9"},
+                       std::tuple{false, 42, 9},
+                       ""},
             std::tuple{std::vector{"foo", "--arg2", "13", "-a", "9"},
-                       std::tuple{false, 9, 9},
+                       std::tuple{false, 0, 0},
                        "Argument has already been set: --arg2"},
+            std::tuple{std::vector{"foo", "--arg3=13", "-a", "9"},
+                       std::tuple{false, 0, 0},
+                       "Argument has already been set: --arg3"},
             std::tuple{std::vector{"foo", "-a", "9"},
                        std::tuple{false, 9, 9},
                        "Missing required argument: --arg1"},
@@ -1576,6 +1622,9 @@ BOOST_AUTO_TEST_CASE(help_test)
                      flag(policy::short_name<'b'>,
                           policy::description<S_("b description")>,
                           policy::router{[](bool) {}}),
+                     arg<int>(policy::long_name<S_("arg1")>,
+                              policy::value_separator<'='>,
+                              policy::router{[](int) {}}),
                      help(policy::long_name<S_("help")>,
                           policy::short_name<'h'>,
                           policy::description<S_("Help output")>,
@@ -1587,10 +1636,11 @@ BOOST_AUTO_TEST_CASE(help_test)
 
 My foo is good for you
 
-    --flag1,-a    Flag1 description
+    --flag1,-a        Flag1 description
     --flag2
-    -b            b description
-    --help,-h     Help output
+    -b                b description
+    --arg1=<Value>
+    --help,-h         Help output
 )"s},
             std::tuple{
                 root(help(policy::long_name<S_("help")>,
@@ -1603,6 +1653,9 @@ My foo is good for you
                                policy::short_name<'a'>,
                                policy::description<S_("Flag1 description")>),
                           flag(policy::long_name<S_("flag2")>),
+                          arg<int>(policy::long_name<S_("arg1")>,
+                                   policy::value_separator<'='>,
+                                   policy::description<S_("Arg1 description")>),
                           flag(policy::short_name<'b'>,
                                policy::description<S_("b description")>),
                           policy::router{[](bool, bool, bool) {}}),
@@ -1611,10 +1664,11 @@ My foo is good for you
 
 My foo is good for you
 
-    --help,-h         Help output
-        --flag1,-a    Flag1 description
+    --help,-h             Help output
+        --flag1,-a        Flag1 description
         --flag2
-        -b            b description
+        --arg1=<Value>    Arg1 description
+        -b                b description
 )"s}});
 }
 
@@ -1640,6 +1694,33 @@ int main() {
         "Root must have a validator policy, use "
         "policy::validation::default_validator unless you have created a "
         "custom one");
+}
+
+BOOST_AUTO_TEST_CASE(must_not_have_value_separator_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/validator.hpp"
+#include "arg_router/policy/value_separator.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+using default_validator_type =
+    std::decay_t<decltype(policy::validation::default_validator)>;
+
+int main() {
+    root_t<
+        flag_t<
+            policy::short_name_t<traits::integral_constant<'a'>>,
+            policy::long_name_t<S_("test")>,
+            policy::router<std::less<>>>,
+        policy::value_separator_t<traits::integral_constant<'='>>,
+        default_validator_type>();
+    return 0;
+}
+    )",
+        "Root must not have a value separator policy");
 }
 
 BOOST_AUTO_TEST_CASE(must_have_at_least_one_child_test)

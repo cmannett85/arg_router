@@ -341,6 +341,27 @@ int main() {
         "Positional arg must not have a none name policy");
 }
 
+BOOST_AUTO_TEST_CASE(must_not_have_value_separator_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/display_name.hpp"
+#include "arg_router/policy/value_separator.hpp"
+#include "arg_router/positional_arg.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    auto f = positional_arg<std::vector<int>>(
+                policy::display_name<S_("hello")>,
+                policy::value_separator<'='>);
+    return 0;
+}
+    )",
+        "Positional arg must not have a value separator policy");
+}
+
 BOOST_AUTO_TEST_CASE(min_count_greater_than_max_count_test)
 {
     test::death_test_compile(

@@ -1,11 +1,13 @@
 /* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
 
 #include "arg_router/parsing.hpp"
+#include "arg_router/arg.hpp"
 #include "arg_router/flag.hpp"
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/short_name.hpp"
 #include "arg_router/policy/validator.hpp"
+#include "arg_router/policy/value_separator.hpp"
 #include "arg_router/root.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
@@ -17,7 +19,7 @@ using namespace std::string_view_literals;
 
 BOOST_AUTO_TEST_SUITE(parsing_suite)
 
-BOOST_AUTO_TEST_CASE(flag_default_match_test)
+BOOST_AUTO_TEST_CASE(default_match_test)
 {
     {
         const auto f =
@@ -69,6 +71,22 @@ BOOST_AUTO_TEST_CASE(flag_default_match_test)
         const auto result = parsing::default_match<std::decay_t<decltype(f)>>(
             {parsing::prefix_type::SHORT, "a"});
         BOOST_CHECK(!result);
+    }
+
+    {
+        const auto a = arg<int>(policy::long_name<S_("arg")>,
+                                policy::value_separator<'='>);
+        const auto result = parsing::default_match<std::decay_t<decltype(a)>>(
+            {parsing::prefix_type::LONG, "arg"});
+        BOOST_CHECK(result);
+    }
+
+    {
+        const auto a = arg<int>(policy::long_name<S_("arg")>,
+                                policy::value_separator<'='>);
+        const auto result = parsing::default_match<std::decay_t<decltype(a)>>(
+            {parsing::prefix_type::LONG, "arg=42"});
+        BOOST_CHECK(result);
     }
 }
 

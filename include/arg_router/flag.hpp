@@ -43,6 +43,8 @@ class flag_t :
                   "Flag must not have a display name policy");
     static_assert(!traits::has_none_name_method_v<flag_t>,
                   "Flag must not have a none name policy");
+    static_assert(!traits::has_value_separator_method_v<flag_t>,
+                  "Flag must not have a value separator policy");
 
 public:
     using typename parent_type::policies_type;

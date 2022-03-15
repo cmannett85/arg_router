@@ -12,7 +12,7 @@ namespace policy
 /** Represents the short name of an argument.
  * 
  * Although this type only accepts a single character, the parser expects it
- * (or the short name group it is a part of) to be preceded by a hyphen.
+ * (or the short name group it is a part of) to be preceded by the short prefix.
  * @tparam S Integral constant that can be implicitly converted to a char
  */
 template <typename S>

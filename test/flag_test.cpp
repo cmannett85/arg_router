@@ -242,6 +242,26 @@ int main() {
         "Flag must not have a none name policy");
 }
 
+BOOST_AUTO_TEST_CASE(must_not_have_value_separator_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/flag.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/value_separator.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    auto f = flag(policy::long_name<S_("hello")>,
+                  policy::value_separator<'='>);
+    return 0;
+}
+    )",
+        "Flag must not have a value separator policy");
+}
+
 BOOST_AUTO_TEST_CASE(parse_policy_test)
 {
     test::death_test_compile(

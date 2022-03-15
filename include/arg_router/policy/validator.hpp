@@ -20,6 +20,7 @@
 #include "arg_router/policy/required.hpp"
 #include "arg_router/policy/router.hpp"
 #include "arg_router/policy/short_name.hpp"
+#include "arg_router/policy/value_separator.hpp"
 #include "arg_router/positional_arg.hpp"
 #include "arg_router/root.hpp"
 #include "arg_router/utility/tree_recursor.hpp"
@@ -644,6 +645,12 @@ inline constexpr auto default_validator = validator<
            despecialised_unique_in_owner,
            parent_types<parent_index_pair_type<0, mode_t>,
                         parent_index_pair_type<1, root_t>>>,
+    // value_separator
+    rule_q<common_rules::despecialised_any_of_rule<policy::value_separator_t>,
+           despecialised_unique_in_owner,
+           policy_parent_must_not_have_policy<policy::short_name_t>,
+           policy_parent_must_not_have_policy<policy::none_name_t>,
+           policy_parent_must_not_have_policy<policy::display_name_t>>,
     // Generic policy rule
     rule<policy::is_policy,  //
          despecialised_unique_in_owner>,

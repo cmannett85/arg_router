@@ -359,6 +359,26 @@ struct has_description_method {
 template <typename T>
 constexpr bool has_description_method_v = has_description_method<T>::value;
 
+/** Determine if a type has a <TT>value_separator()</TT> static method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+struct has_value_separator_method {
+    template <typename U>
+    using type = decltype(U::value_separator());
+
+    constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
+};
+
+/** Helper variable for has_value_separator_method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+constexpr bool has_value_separator_method_v =
+    has_value_separator_method<T>::value;
+
 /** Determine if a type has a <TT>maximum_count()</TT> static method.
  *
  * @tparam T Type to query

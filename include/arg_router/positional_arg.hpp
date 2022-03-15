@@ -43,6 +43,8 @@ class positional_arg_t : public tree_node<std::decay_t<Policies>...>
                   "Positional arg must not have a short name policy");
     static_assert(!traits::has_none_name_method_v<positional_arg_t>,
                   "Positional arg must not have a none name policy");
+    static_assert(!traits::has_value_separator_method_v<positional_arg_t>,
+                  "Positional arg must not have a value separator policy");
 
 public:
     using typename parent_type::policies_type;
