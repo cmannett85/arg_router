@@ -9,8 +9,6 @@
 #include "arg_router/utility/string_view_ops.hpp"
 #include "arg_router/utility/tuple_iterator.hpp"
 
-#include <bitset>
-
 namespace arg_router
 {
 /** Namespace containing types and functions to aid parsing. */
@@ -33,16 +31,15 @@ template <typename Node>
     return result;
 }
 
-template <typename Node, typename Fn, std::size_t N>
+template <typename Node, typename Fn>
 [[nodiscard]] constexpr bool find(const Node& node,
                                   parsing::token_type token,
-                                  std::bitset<N> hit_flags,
                                   const Fn& visitor)
 {
     auto result = false;
     utility::tuple_iterator(
         [&](auto i, const auto& node) {
-            if (result || hit_flags[i]) {
+            if (result) {
                 return;
             }
 
@@ -69,10 +66,6 @@ void expand_arguments(const Node& node,
     using namespace std::string_literals;
     using namespace utility::string_view_ops;
 
-    using hit_flags_type =
-        std::bitset<std::tuple_size_v<typename Node::children_type>>;
-
-    auto hit_flags = hit_flags_type{};
     while (!args.empty()) {
         // Convert to a token_type and try to find the matching node
         const auto tt = get_token_type(args.front());
@@ -97,7 +90,7 @@ void expand_arguments(const Node& node,
         };
 
         const auto found_node =
-            find(node, tt, hit_flags, [&](auto i, const auto& child) {
+            find(node, tt, [&](auto /*i*/, const auto& child) {
                 // We have a match, but is it just a positional_arg absorbing
                 // everything?  Check by looking at it's name policies
                 using child_type = std::decay_t<decltype(child)>;
@@ -106,10 +99,6 @@ void expand_arguments(const Node& node,
                     traits::has_long_name_method_v<child_type> ||
                     traits::has_short_name_method_v<child_type> ||
                     traits::has_none_name_method_v<child_type>;
-
-                // Don't revisit nodes, this prevents the first positional_arg
-                // from consuming everything
-                hit_flags[i] = !policy::has_multi_stage_value_v<child_type>;
 
                 if (tt.prefix == prefix_type::LONG) {
                     if constexpr (traits::has_value_separator_method_v<
