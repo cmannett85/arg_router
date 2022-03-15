@@ -227,6 +227,24 @@ protected:
         constexpr static auto num_policies = std::tuple_size_v<policies_type>;
 
     public:
+        [[nodiscard]] constexpr static auto value_separator_suffix()
+        {
+            [[maybe_unused]] constexpr auto separator_index =
+                boost::mp11::mp_find_if<
+                    policies_type,
+                    traits::has_value_separator_method>::value;
+
+            if constexpr (separator_index != num_policies) {
+                constexpr auto value_separator =
+                    std::tuple_element_t<separator_index,
+                                         policies_type>::value_separator();
+
+                return S_(value_separator){} + S_("<Value>"){};
+            } else {
+                return S_(""){};
+            }
+        }
+
         [[nodiscard]] constexpr static auto label_generator() noexcept
         {
             [[maybe_unused]] constexpr auto long_name_index =
@@ -250,25 +268,28 @@ protected:
 
                 return S_(config::long_prefix){} + S_(long_name){} +
                        S_(","){} +  //
-                       S_(config::short_prefix){} + S_(short_name){};
+                       S_(config::short_prefix){} + S_(short_name){} +
+                       value_separator_suffix();
             } else if constexpr (long_name_index != num_policies) {
                 constexpr auto long_name =
                     std::tuple_element_t<long_name_index,
                                          policies_type>::long_name();
 
-                return S_(config::long_prefix){} + S_(long_name){};
+                return S_(config::long_prefix){} + S_(long_name){} +
+                       value_separator_suffix();
             } else if constexpr (short_name_index != num_policies) {
                 constexpr auto short_name =
                     std::tuple_element_t<short_name_index,
                                          policies_type>::short_name();
 
-                return S_(config::short_prefix){} + S_(short_name){};
+                return S_(config::short_prefix){} + S_(short_name){} +
+                       value_separator_suffix();
             } else if constexpr (none_name_index != num_policies) {
                 constexpr auto none_name =
                     std::tuple_element_t<none_name_index,
                                          policies_type>::none_name();
 
-                return S_(none_name){};
+                return S_(none_name){} + value_separator_suffix();
             } else {
                 return S_(""){};
             }

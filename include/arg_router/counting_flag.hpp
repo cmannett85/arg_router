@@ -42,6 +42,8 @@ class counting_flag_t :
                   "Counting flag must not have a display name policy");
     static_assert(!traits::has_none_name_method_v<counting_flag_t>,
                   "Counting flag must not have a none name policy");
+    static_assert(!traits::has_value_separator_method_v<counting_flag_t>,
+                  "Counting flag must not have a value separator policy");
     static_assert(traits::supports_static_cast_conversion_v<T, std::size_t>,
                   "T must be explicitly convertible to std::size_t");
 

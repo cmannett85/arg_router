@@ -969,6 +969,29 @@ int main() {
         "Mode must not have a display name policy");
 }
 
+BOOST_AUTO_TEST_CASE(must_not_have_value_separator_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/flag.hpp"
+#include "arg_router/mode.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/none_name.hpp"
+#include "arg_router/policy/value_separator.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    auto f = mode(policy::none_name<S_("mode")>,
+                  policy::value_separator<'='>,
+                  flag(policy::long_name<S_("hello")>));
+    return 0;
+}
+    )",
+        "Mode must not have a value separator policy");
+}
+
 BOOST_AUTO_TEST_CASE(anonymous_child_mode_test)
 {
     test::death_test_compile(

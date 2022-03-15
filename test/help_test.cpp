@@ -1,6 +1,7 @@
 /* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
 
 #include "arg_router/help.hpp"
+#include "arg_router/arg.hpp"
 #include "arg_router/flag.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/description.hpp"
@@ -8,6 +9,7 @@
 #include "arg_router/policy/none_name.hpp"
 #include "arg_router/policy/router.hpp"
 #include "arg_router/policy/short_name.hpp"
+#include "arg_router/policy/value_separator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 #include "test_helpers.hpp"
@@ -108,21 +110,24 @@ BOOST_AUTO_TEST_CASE(generate_help_test)
                     flag(policy::long_name<S_("flag2")>),
                     flag(policy::short_name<'b'>,
                          policy::description<S_("b description")>),
+                    arg<int>(policy::long_name<S_("arg1")>,
+                             policy::value_separator<'='>),
                     help(policy::long_name<S_("help")>,
                          policy::short_name<'h'>,
                          policy::description<S_("Help output")>,
                          policy::program_name<S_("foo")>,
                          policy::program_version<S_("v3.14")>,
                          policy::program_intro<S_("My foo is good for you")>)},
-                traits::integral_constant<3>{},
+                traits::integral_constant<4>{},
                 R"(foo v3.14
 
 My foo is good for you
 
-    --flag1,-a    Flag1 description
+    --flag1,-a        Flag1 description
     --flag2
-    -b            b description
-    --help,-h     Help output
+    -b                b description
+    --arg1=<Value>
+    --help,-h         Help output
 )"s},
             std::tuple{
                 mock_root{
@@ -136,6 +141,9 @@ My foo is good for you
                               policy::short_name<'a'>,
                               policy::description<S_("Flag1 description")>),
                          flag(policy::long_name<S_("flag2")>),
+                         arg<int>(policy::long_name<S_("arg1")>,
+                                  policy::value_separator<'='>,
+                                  policy::description<S_("Arg1 description")>),
                          flag(policy::short_name<'b'>,
                               policy::description<S_("b description")>))},
                 traits::integral_constant<0>{},
@@ -143,10 +151,11 @@ My foo is good for you
 
 My foo is good for you
 
-    --help,-h         Help output
-        --flag1,-a    Flag1 description
+    --help,-h             Help output
+        --flag1,-a        Flag1 description
         --flag2
-        -b            b description
+        --arg1=<Value>    Arg1 description
+        -b                b description
 )"s},
             std::tuple{
                 mock_root{
@@ -598,6 +607,26 @@ int main() {
 }
     )",
         "Help must not have a none name policy");
+}
+
+BOOST_AUTO_TEST_CASE(must_not_have_value_separator_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/help.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/value_separator.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    auto f = help(policy::long_name<S_("hello")>,
+                  policy::value_separator<'='>);
+    return 0;
+}
+    )",
+        "Help must not have a value separator policy");
 }
 
 BOOST_AUTO_TEST_CASE(must_not_have_pre_parse_phase_test)

@@ -6,6 +6,7 @@
 #include "arg_router/exception.hpp"
 #include "arg_router/policy/multi_stage_value.hpp"
 #include "arg_router/traits.hpp"
+#include "arg_router/utility/string_view_ops.hpp"
 #include "arg_router/utility/tuple_iterator.hpp"
 
 #include <bitset>
@@ -17,11 +18,26 @@ namespace parsing
 {
 namespace detail
 {
+template <typename Node>
+[[nodiscard]] constexpr std::optional<token_type> handle_value_separator(
+    parsing::token_type token) noexcept
+{
+    auto result = std::optional<token_type>{};
+
+    constexpr auto split_char = Node::value_separator();
+    const auto index = token.name.find_first_of(split_char);
+    if (index != std::string_view::npos) {
+        result = {token.prefix, token.name.substr(0, index)};
+    }
+
+    return result;
+}
+
 template <typename Node, typename Fn, std::size_t N>
-constexpr bool find(const Node& node,
-                    parsing::token_type token,
-                    std::bitset<N> hit_flags,
-                    const Fn& visitor)
+[[nodiscard]] constexpr bool find(const Node& node,
+                                  parsing::token_type token,
+                                  std::bitset<N> hit_flags,
+                                  const Fn& visitor)
 {
     auto result = false;
     utility::tuple_iterator(
@@ -50,6 +66,9 @@ void expand_arguments(const Node& node,
                       span<const char*>& args,
                       token_list& result)
 {
+    using namespace std::string_literals;
+    using namespace utility::string_view_ops;
+
     using hit_flags_type =
         std::bitset<std::tuple_size_v<typename Node::children_type>>;
 
@@ -72,22 +91,60 @@ void expand_arguments(const Node& node,
             continue;
         }
 
+        const auto consume = [&]() {
+            result.add_pending(tt);
+            args = args.subspan(1);
+        };
+
         const auto found_node =
             find(node, tt, hit_flags, [&](auto i, const auto& child) {
                 // We have a match, but is it just a positional_arg absorbing
                 // everything?  Check by looking at it's name policies
                 using child_type = std::decay_t<decltype(child)>;
 
+                constexpr auto is_named =
+                    traits::has_long_name_method_v<child_type> ||
+                    traits::has_short_name_method_v<child_type> ||
+                    traits::has_none_name_method_v<child_type>;
+
                 // Don't revisit nodes, this prevents the first positional_arg
                 // from consuming everything
                 hit_flags[i] = !policy::has_multi_stage_value_v<child_type>;
 
-                if constexpr (traits::has_long_name_method_v<child_type> ||
-                              traits::has_short_name_method_v<child_type> ||
-                              traits::has_none_name_method_v<child_type>) {
+                if (tt.prefix == prefix_type::LONG) {
+                    if constexpr (traits::has_value_separator_method_v<
+                                      child_type>) {
+                        const auto split_token =
+                            detail::handle_value_separator<child_type>(tt);
+                        if (!split_token) {
+                            throw parse_exception{
+                                "Expected to find value separator '"s +
+                                child_type::value_separator() + "' in \"" +
+                                args[0] + "\""};
+                        }
+                        result.add_pending(*split_token);
+
+                        // Update the args entry to point just to the value part
+                        const auto offset =
+                            split_token->name.size() +
+                            child_type::value_separator().size();
+                        args[0] +=
+                            to_string(split_token->prefix).size() + offset;
+
+                        // Someone has put the value separator but then no value
+                        // after it...
+                        if (offset == tt.name.size()) {
+                            throw parse_exception{
+                                "Unable to find value after separator",
+                                tt};
+                        }
+                    } else if constexpr (is_named) {
+                        // It's not a positional_arg, so add the name token
+                        consume();
+                    }
+                } else if (is_named) {
                     // It's not a positional_arg, so add the name token
-                    result.add_pending(tt);
-                    args = args.subspan(1);
+                    consume();
                 }
 
                 // Using the count of the node, add the correct number of NONE
@@ -118,11 +175,10 @@ void expand_arguments(const Node& node,
             });
 
         // If we can't find the node, just add it as our best guess. We do not
-        // error here as the purpose of this parsing phase is it to categorise
-        // as best we can the tokens, better error checking happens later
+        // error here as the purpose of this parsing phase is to categorise as
+        // best we can the tokens, better error checking happens later
         if (!found_node) {
-            result.add_pending(tt);
-            args = args.subspan(1);
+            consume();
         }
     }
 }
@@ -160,12 +216,23 @@ template <typename Root>
  * @return True if token matches the long or short form name
  */
 template <typename T>
-[[nodiscard]] constexpr bool default_match(const token_type& token) noexcept
+[[nodiscard]] constexpr bool default_match(token_type token) noexcept
 {
+    using namespace std::string_literals;
+
     if constexpr (traits::has_long_name_method_v<T>) {
-        if ((token.prefix == prefix_type::LONG) &&
-            (token.name == T::long_name())) {
-            return true;
+        if (token.prefix == prefix_type::LONG) {
+            if constexpr (traits::has_value_separator_method_v<T>) {
+                const auto split_token =
+                    detail::handle_value_separator<T>(token);
+                if (split_token) {
+                    token = *split_token;
+                }
+            }
+
+            if (token.name == T::long_name()) {
+                return true;
+            }
         }
     }
     if constexpr (traits::has_short_name_method_v<T>) {

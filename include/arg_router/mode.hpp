@@ -33,6 +33,8 @@ class mode_t :
                   "Mode must not have a short name policy");
     static_assert(!traits::has_display_name_method_v<mode_t>,
                   "Mode must not have a display name policy");
+    static_assert(!traits::has_value_separator_method_v<mode_t>,
+                  "Mode must not have a value separator policy");
 
     struct skip_tag {
     };

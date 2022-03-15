@@ -49,6 +49,8 @@ private:
                       !traits::has_none_name_method_v<parent_type> &&
                       !traits::has_description_method_v<parent_type>,
                   "Root cannot have name or description policies");
+    static_assert(!traits::has_value_separator_method_v<parent_type>,
+                  "Root must not have a value separator policy");
 
     constexpr static auto validator_index =
         algorithm::find_specialisation_v<policy::validation::validator,

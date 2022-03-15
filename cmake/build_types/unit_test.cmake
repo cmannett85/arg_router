@@ -37,6 +37,7 @@ set(TEST_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/policy/router_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/policy/short_name_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/policy/validator_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/policy/value_separator_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/positional_arg_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/root_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/test_helpers.cpp

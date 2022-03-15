@@ -291,6 +291,31 @@ int main() {
         "basic_one_of_t must not have a none name policy");
 }
 
+BOOST_AUTO_TEST_CASE(must_not_have_value_separator_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/arg.hpp"
+#include "arg_router/dependency/alias_group.hpp"
+#include "arg_router/policy/default_value.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/value_separator.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+namespace ard = arg_router::dependency;
+
+int main() {
+    auto f = ard::alias_group(arg<double>(policy::long_name<S_("arg1")>),
+                              arg<double>(policy::long_name<S_("arg2")>),
+                              policy::value_separator<'='>,
+                              policy::default_value{42});
+    return 0;
+}
+    )",
+        "basic_one_of_t must not have a value separator policy");
+}
+
 BOOST_AUTO_TEST_CASE(all_children_must_be_named_test)
 {
     test::death_test_compile(
