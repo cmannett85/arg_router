@@ -39,6 +39,9 @@ set(TEST_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/policy/validator_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/policy/value_separator_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/positional_arg_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/root_tests/death_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/root_tests/positional_arg_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/root_tests/top_level_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/root_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/test_helpers.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/token_list_test.cpp
