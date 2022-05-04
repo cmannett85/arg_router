@@ -16,9 +16,9 @@ using namespace ar::utility::string_view_ops;
 
 namespace
 {
-enum class theme_t { NONE, CLASSIC, SOLARIZED };
+enum class theme_t { none, classic, solarized };
 
-enum class verbosity_level_t { ERROR, WARNING, INFO, DEBUG };
+enum class verbosity_level_t { error, warning, info, debug };
 
 constexpr auto version = "v3.14"sv;
 constexpr auto no_line_limit = -1;
@@ -31,12 +31,12 @@ constexpr auto offset = std::uint8_t{64};
 
 theme_t theme_from_string(std::string_view arg)
 {
-    if (arg == "NONE") {
-        return theme_t::NONE;
-    } else if (arg == "CLASSIC") {
-        return theme_t::CLASSIC;
-    } else if (arg == "SOLARIZED") {
-        return theme_t::SOLARIZED;
+    if (arg == "none") {
+        return theme_t::none;
+    } else if (arg == "classic") {
+        return theme_t::classic;
+    } else if (arg == "solarized") {
+        return theme_t::solarized;
     }
 
     throw ar::parse_exception{"Unknown theme argument: "s + arg};
@@ -46,8 +46,8 @@ void set_theme(theme_t theme)
 {
     // In no-one's world are these a 'theme', but it's just example code...
     switch (theme) {
-    case theme_t::CLASSIC: std::cout << "\033[31m"; break;
-    case theme_t::SOLARIZED: std::cout << "\033[32m"; break;
+    case theme_t::classic: std::cout << "\033[31m"; break;
+    case theme_t::solarized: std::cout << "\033[32m"; break;
     default: std::cout << "\033[0m"; break;
     }
 }
@@ -127,14 +127,14 @@ template <>
 struct ar::parser<verbosity_level_t> {
     [[nodiscard]] static inline verbosity_level_t parse(std::string_view arg)
     {
-        if (arg == "ERROR") {
-            return verbosity_level_t::ERROR;
-        } else if (arg == "WARNING") {
-            return verbosity_level_t::WARNING;
-        } else if (arg == "INFO") {
-            return verbosity_level_t::INFO;
-        } else if (arg == "DEBUG") {
-            return verbosity_level_t::DEBUG;
+        if (arg == "error") {
+            return verbosity_level_t::error;
+        } else if (arg == "warning") {
+            return verbosity_level_t::warning;
+        } else if (arg == "info") {
+            return verbosity_level_t::info;
+        } else if (arg == "debug") {
+            return verbosity_level_t::debug;
         }
 
         throw ar::parse_exception{"Unknown verbosity argument: "s + arg};
@@ -196,12 +196,12 @@ int main(int argc, char* argv[])
                 arp::long_name<S_("theme")>,
                 arp::description<S_("Set the output colour theme")>,
                 arp::value_separator<'='>,
-                arp::default_value{theme_t::NONE},
+                arp::default_value{theme_t::none},
                 arp::custom_parser<theme_t>{[](std::string_view arg) {
                     return theme_from_string(arg);
                 }}),
             ard::alias_group(
-                arp::default_value{verbosity_level_t::INFO},
+                arp::default_value{verbosity_level_t::info},
                 ar::counting_flag<verbosity_level_t>(
                     arp::short_name<'v'>,
                     arp::description<S_(
@@ -210,8 +210,8 @@ int main(int argc, char* argv[])
                     arp::long_name<S_("verbose")>,
                     arp::description<S_("Verbosity level")>,
                     arp::value_separator<'='>),
-                arp::min_max_value{verbosity_level_t::ERROR,
-                                   verbosity_level_t::DEBUG}),
+                arp::min_max_value{verbosity_level_t::error,
+                                   verbosity_level_t::debug}),
             ar::positional_arg<std::vector<std::string_view>>(
                 arp::required,
                 arp::display_name<S_("FILES")>,
@@ -232,7 +232,7 @@ int main(int argc, char* argv[])
                         max_line_length,
                         max_line_handling,
                         std::move(files));
-                    set_theme(theme_t::NONE);
+                    set_theme(theme_t::none);
                 }}))
         .parse(argc, argv);
 

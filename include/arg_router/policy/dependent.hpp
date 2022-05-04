@@ -34,17 +34,21 @@ public:
     {
     }
 
-    /** Checks both the pending and processed tokens for all known names of the
-     * targets.
-     *
+    /** Scans the processed tokens to find all the dependent node names.
+     *  
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
-     * @param tokens Token list as received from the owning node
-     * @param parents Parents instances pack
-     * @exception parse_exception Thrown if any dependent argument is missing
+     * @param tokens Currently processed tokens
+     * @param processed_tokens Processed tokens performed by previous pre-parse
+     * phases calls on other nodes
+     * @param parents Parent node instances
+     * @return Either true if successful, or a parse_exception if a dependent
+     * argument is missing
      */
     template <typename... Parents>
-    void pre_parse_phase(parsing::token_list& tokens,
-                         [[maybe_unused]] const Parents&... parents) const
+    [[nodiscard]] parsing::pre_parse_result pre_parse_phase(
+        [[maybe_unused]] parsing::dynamic_token_adapter& tokens,
+        parsing::token_list::pending_view_type processed_tokens,
+        [[maybe_unused]] const Parents&... parents) const
     {
         // Find the owning mode
         using mode_type = typename nearest_mode<Parents...>::type;
@@ -56,39 +60,36 @@ public:
         static_assert(cyclic_dependency_checker<targets, mode_type>::value,
                       "Cyclic dependency detected");
 
-        // Find the target tokens, tokens that have already been processed are
-        // valid too
+        auto result =
+            parsing::pre_parse_result{parsing::pre_parse_action::valid_node};
         utility::tuple_type_iterator<targets>([&](auto i) {
             using target = std::tuple_element_t<i, targets>;
 
             const auto finder = [&](parsing::token_type token) {
-                auto found = std::find(tokens.pending_view().begin(),
-                                       tokens.pending_view().end(),
-                                       token) != tokens.pending_view().end();
-                if (!found) {
-                    found = std::find(tokens.processed_view().begin(),
-                                      tokens.processed_view().end(),
-                                      token) != tokens.processed_view().end();
-                }
-
-                return found;
+                return std::find(processed_tokens.begin(),
+                                 processed_tokens.end(),
+                                 token) != processed_tokens.end();
             };
 
             auto found = false;
             if constexpr (traits::has_long_name_method_v<target>) {
-                found = finder({parsing::prefix_type::LONG,  //
+                found = finder({parsing::prefix_type::long_,  //
                                 target::long_name()});
             }
             if constexpr (traits::has_short_name_method_v<target>) {
-                found = !found && finder({parsing::prefix_type::SHORT,
+                found = !found && finder({parsing::prefix_type::short_,
                                           target::short_name()});
             }
 
-            if (!found) {
-                throw parse_exception{"Dependent argument missing",
-                                      parsing::node_token_type<target>()};
+            if (!found && !result.has_error()) {
+                result = parse_exception{
+                    "Dependent argument missing (needs to be before the "
+                    "requiring token on the command line)",
+                    parsing::node_token_type<target>()};
             }
         });
+
+        return result;
     }
 
 private:
@@ -106,33 +107,11 @@ private:
         boost::mp11::mp_all_of<depends_policies_type, policy_checker>::value,
         "All parameters must provide a long and/or short form name");
 
-    // Find the nearest parent with a routing policy
+    // Find the nearest parent with a routing policy. By definition the
+    // dependent cannot be the owner, so filter that out
     template <typename... Parents>
-    struct nearest_mode {
-        // By definition the dependent cannot be the owner, so filter that out
-        using parent_tuple = boost::mp11::mp_pop_front<std::tuple<Parents...>>;
-
-        template <typename Parent>
-        struct policy_finder {
-            constexpr static bool value =
-                boost::mp11::mp_find_if_q<
-                    typename Parent::policies_type,
-                    boost::mp11::mp_bind<policy::has_routing_phase_method,
-                                         boost::mp11::_1>>::value !=
-                std::tuple_size_v<typename Parent::policies_type>;
-        };
-
-        using parent_index =
-            boost::mp11::mp_find_if<parent_tuple, policy_finder>;
-
-        using type =
-            boost::mp11::mp_eval_if_c<parent_index::value ==
-                                          std::tuple_size_v<parent_tuple>,
-                                      void,
-                                      boost::mp11::mp_at,
-                                      parent_tuple,
-                                      parent_index>;
-    };
+    using nearest_mode = policy::nearest_mode_like<
+        boost::mp11::mp_pop_front<std::tuple<Parents...>>>;
 
     // Starting from ModeType, recurse down through the tree and find all the
     // nodes referred to in DependsPolicies

@@ -18,8 +18,7 @@ constexpr auto long_prefix = std::string_view{AR_LONG_PREFIX};
 /** Short form argument prefix. */
 constexpr auto short_prefix = std::string_view{AR_SHORT_PREFIX};
 
-static_assert(short_prefix.size() >= 1,
-              "Short prefix must have at least one character");
+static_assert(short_prefix.size() == 1, "Short prefix must be one character");
 
 static_assert(long_prefix.size() >= short_prefix.size(),
               "Long prefix must be longer or the same as short prefix");

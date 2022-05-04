@@ -19,73 +19,65 @@ using namespace std::string_view_literals;
 
 BOOST_AUTO_TEST_SUITE(parsing_suite)
 
-BOOST_AUTO_TEST_CASE(default_match_test)
+BOOST_AUTO_TEST_CASE(match_test)
 {
     {
-        const auto f =
+        [[maybe_unused]] const auto f =
             flag(policy::long_name<S_("hello")>, policy::short_name<'H'>);
-        const auto result = parsing::default_match<std::decay_t<decltype(f)>>(
-            {parsing::prefix_type::LONG, "hello"});
+        const auto result = parsing::match<std::decay_t<decltype(f)>>(
+            {parsing::prefix_type::long_, "hello"});
         BOOST_CHECK(result);
     }
 
     {
-        const auto f =
+        [[maybe_unused]] const auto f =
             flag(policy::long_name<S_("hello")>, policy::short_name<'H'>);
-        const auto result = parsing::default_match<std::decay_t<decltype(f)>>(
-            {parsing::prefix_type::SHORT, "H"});
+        const auto result = parsing::match<std::decay_t<decltype(f)>>(
+            {parsing::prefix_type::short_, "H"});
         BOOST_CHECK(result);
     }
 
     {
-        const auto f =
+        [[maybe_unused]] const auto f =
             flag(policy::long_name<S_("hello")>, policy::short_name<'H'>);
-        const auto result = parsing::default_match<std::decay_t<decltype(f)>>(
-            {parsing::prefix_type::LONG, "foo"});
+        const auto result = parsing::match<std::decay_t<decltype(f)>>(
+            {parsing::prefix_type::long_, "foo"});
         BOOST_CHECK(!result);
     }
 
     {
-        const auto f = flag(policy::long_name<S_("hello")>);
-        const auto result = parsing::default_match<std::decay_t<decltype(f)>>(
-            {parsing::prefix_type::LONG, "hello"});
+        [[maybe_unused]] const auto f = flag(policy::long_name<S_("hello")>);
+        const auto result = parsing::match<std::decay_t<decltype(f)>>(
+            {parsing::prefix_type::long_, "hello"});
         BOOST_CHECK(result);
     }
 
     {
-        const auto f = flag(policy::long_name<S_("hello")>);
-        const auto result = parsing::default_match<std::decay_t<decltype(f)>>(
-            {parsing::prefix_type::LONG, "foo"});
+        [[maybe_unused]] const auto f = flag(policy::long_name<S_("hello")>);
+        const auto result = parsing::match<std::decay_t<decltype(f)>>(
+            {parsing::prefix_type::long_, "foo"});
         BOOST_CHECK(!result);
     }
 
     {
-        const auto f = flag(policy::short_name<'H'>);
-        const auto result = parsing::default_match<std::decay_t<decltype(f)>>(
-            {parsing::prefix_type::SHORT, "H"});
+        [[maybe_unused]] const auto f = flag(policy::short_name<'H'>);
+        const auto result = parsing::match<std::decay_t<decltype(f)>>(
+            {parsing::prefix_type::short_, "H"});
         BOOST_CHECK(result);
     }
 
     {
-        const auto f = flag(policy::short_name<'H'>);
-        const auto result = parsing::default_match<std::decay_t<decltype(f)>>(
-            {parsing::prefix_type::SHORT, "a"});
+        [[maybe_unused]] const auto f = flag(policy::short_name<'H'>);
+        const auto result = parsing::match<std::decay_t<decltype(f)>>(
+            {parsing::prefix_type::short_, "a"});
         BOOST_CHECK(!result);
     }
 
     {
-        const auto a = arg<int>(policy::long_name<S_("arg")>,
-                                policy::value_separator<'='>);
-        const auto result = parsing::default_match<std::decay_t<decltype(a)>>(
-            {parsing::prefix_type::LONG, "arg"});
-        BOOST_CHECK(result);
-    }
-
-    {
-        const auto a = arg<int>(policy::long_name<S_("arg")>,
-                                policy::value_separator<'='>);
-        const auto result = parsing::default_match<std::decay_t<decltype(a)>>(
-            {parsing::prefix_type::LONG, "arg=42"});
+        [[maybe_unused]] const auto a = arg<int>(policy::long_name<S_("arg")>,
+                                                 policy::value_separator<'='>);
+        const auto result = parsing::match<std::decay_t<decltype(a)>>(
+            {parsing::prefix_type::long_, "arg"});
         BOOST_CHECK(result);
     }
 }
@@ -100,12 +92,12 @@ BOOST_AUTO_TEST_CASE(get_token_type_test)
     test::data_set(
         f,
         {std::tuple{"--hello",
-                    parsing::token_type{parsing::prefix_type::LONG, "hello"}},
+                    parsing::token_type{parsing::prefix_type::long_, "hello"}},
          std::tuple{"-h",
-                    parsing::token_type{parsing::prefix_type::SHORT, "h"}},
+                    parsing::token_type{parsing::prefix_type::short_, "h"}},
          std::tuple{"hello",
-                    parsing::token_type{parsing::prefix_type::NONE, "hello"}},
-         std::tuple{"", parsing::token_type{parsing::prefix_type::NONE, ""}}});
+                    parsing::token_type{parsing::prefix_type::none, "hello"}},
+         std::tuple{"", parsing::token_type{parsing::prefix_type::none, ""}}});
 }
 
 BOOST_AUTO_TEST_CASE(string_from_prefix_test)
@@ -117,9 +109,9 @@ BOOST_AUTO_TEST_CASE(string_from_prefix_test)
 
     test::data_set(f,
                    {
-                       std::tuple{parsing::prefix_type::LONG, "--"},
-                       std::tuple{parsing::prefix_type::SHORT, "-"},
-                       std::tuple{parsing::prefix_type::NONE, ""},
+                       std::tuple{parsing::prefix_type::long_, "--"},
+                       std::tuple{parsing::prefix_type::short_, "-"},
+                       std::tuple{parsing::prefix_type::none, ""},
                    });
 }
 

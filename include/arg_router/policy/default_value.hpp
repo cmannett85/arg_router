@@ -22,6 +22,9 @@ public:
     /** Alias of @a T. */
     using value_type = T;
 
+    /** Policy priority. */
+    constexpr static auto priority = std::size_t{500};
+
     /** Constructor
      *
      * @param value Default value

@@ -7,6 +7,8 @@
 #include "arg_router/policy/no_result_value.hpp"
 #include "arg_router/tree_node.hpp"
 
+#include <bitset>
+
 namespace arg_router
 {
 /** Allows the grouping of nodes to define operational modes for a program.
@@ -33,8 +35,6 @@ class mode_t :
                   "Mode must not have a short name policy");
     static_assert(!traits::has_display_name_method_v<mode_t>,
                   "Mode must not have a display name policy");
-    static_assert(!traits::has_value_separator_method_v<mode_t>,
-                  "Mode must not have a value separator policy");
 
     struct skip_tag {
     };
@@ -121,12 +121,141 @@ public:
     constexpr bool match(const parsing::token_type& token,
                          const Fn& visitor) const
     {
-        if (is_anonymous || parsing::default_match<mode_t>(token)) {
+        if (is_anonymous || parsing::match<mode_t>(token)) {
             visitor(*this);
             return true;
         }
 
         return false;
+    }
+
+    /** Mode pre-parse implementation.
+     *
+     * Delegates the pre-parsing to any matching child modes, otherwise iterates
+     * over the tokens dispatching to any matching children until the tokens
+     * are consumed or all of the children have been matched.
+     * @tparam Parents Pack of parent tree nodes in ascending ancestry order
+     * @param args Span of raw command line tokens
+     * @param tokens Processed tokens
+     * @param parents Parent node instances
+     * @return True if this node is anonymous, or if the leading token matches
+     * label
+     * @exception parse_exception Thrown if a child node cannot be found, or
+     * a delegated child pre-parse policy throws
+     */
+    template <typename... Parents>
+    [[nodiscard]] bool pre_parse(vector<parsing::token_type>& args,
+                                 parsing::token_list& tokens,
+                                 const Parents&... parents) const
+    {
+        using namespace utility::string_view_ops;
+        using namespace std::string_literals;
+
+        static_assert(!is_anonymous || (sizeof...(Parents) <= 1),
+                      "Anonymous modes can only exist under the root");
+
+        // If we're not anonymous then check the leading token is a match.  We
+        // can just delegate to the default implementation for this
+        if constexpr (!is_anonymous) {
+            auto match = parent_type::pre_parse(args, tokens, parents...);
+            if (!match) {
+                return false;
+            }
+
+            // Check if the next token (if any) matches a child mode.  If so,
+            // delegate to that
+            if (!args.empty()) {
+                match = false;
+                utility::tuple_iterator(
+                    [&](auto /*i*/, const auto& child) {
+                        using child_type = std::decay_t<decltype(child)>;
+                        if constexpr (traits::is_specialisation_of_v<child_type,
+                                                                     mode_t>) {
+                            if (!match) {
+                                match = child.pre_parse(args,
+                                                        tokens,
+                                                        *this,
+                                                        parents...);
+                            }
+                        }
+                    },
+                    this->children());
+                if (match) {
+                    return match;
+                }
+            }
+        }
+
+        // Iterate over the tokens until consumed, skipping children already
+        // processed that cannot be repeated on the command line
+        auto matched = std::bitset<std::tuple_size_v<children_type>>{};
+        while (!args.empty()) {
+            // Take a copy of the front token for the error messages
+            const auto front_token = args.front();
+
+            auto match = false;
+            utility::tuple_iterator(
+                [&](auto i, const auto& child) {
+                    using child_type = std::decay_t<decltype(child)>;
+
+                    // The token(s) have been processed so skip over any
+                    // remaining children
+                    if (match) {
+                        return;
+                    }
+
+                    const auto perform_pre_parse = [&]() {
+                        return child.pre_parse(args, tokens, *this, parents...);
+                    };
+
+                    if constexpr (!child_type::is_named &&
+                                  !policy::has_multi_stage_value_v<
+                                      child_type>) {
+                        // Child is not named and can only appear on the
+                        // command line once, so only perform the pre-parse if
+                        // it hasn't been matched already
+                        if (!matched[i]) {
+                            match = perform_pre_parse();
+                        }
+                    } else if constexpr (child_type::is_named &&
+                                         !policy::has_multi_stage_value_v<
+                                             child_type>) {
+                        // Child is named, but can only appear once on the
+                        // command line, so perform the pre-parse and if there
+                        // is a match check it isn't already matched
+                        match = perform_pre_parse();
+                        if (match && matched[i]) {
+                            throw parse_exception{"Repeated argument",
+                                                  front_token};
+                        }
+                    } else if constexpr (child_type::is_named &&
+                                         policy::has_multi_stage_value_v<
+                                             child_type>) {
+                        // Child is named and can appear multiple times on the
+                        // command line, so always perform a pre-parse
+                        match = perform_pre_parse();
+                    }
+
+                    // Update the matched bitset
+                    if (match) {
+                        matched.set(i);
+                    }
+                },
+                this->children());
+
+            // If there was no match, but the arg has changed, then re-run the
+            // check again.  This is valid because policies are free to modify
+            // the unprocessed args list as their pre-parse process
+            if (!match) {
+                if (matched.all()) {
+                    throw parse_exception{"Unhandled arguments", args};
+                } else {
+                    throw parse_exception{"Unknown argument", front_token};
+                }
+            }
+        }
+
+        return true;
     }
 
     /** Parse function.

@@ -2,9 +2,10 @@
 
 #pragma once
 
-#include "arg_router/token_type.hpp"
+#include "arg_router/dynamic_token_adapter.hpp"
 
 #include <boost/mp11/algorithm.hpp>
+#include <boost/mp11/bind.hpp>
 
 #include <type_traits>
 
@@ -62,7 +63,8 @@ struct has_pre_parse_phase_method {
     template <typename U>
     using type = decltype(  //
         std::declval<const U&>().template pre_parse_phase<>(
-            std::declval<parsing::token_list&>()));
+            std::declval<parsing::dynamic_token_adapter&>(),
+            std::declval<parsing::token_list::pending_view_type>()));
 
     constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
 };
@@ -181,5 +183,57 @@ struct has_missing_phase_method {
 template <typename T, typename ValueType>
 constexpr static bool has_missing_phase_method_v =
     has_missing_phase_method<T, ValueType>::value;
+
+/** Determine if a policy has a <TT>priority</TT> member.
+ *
+ * @tparam T Policy type to query
+ */
+template <typename T>
+struct has_priority {
+    static_assert(policy::is_policy_v<T>, "T must be a policy");
+
+    template <typename U>
+    using type = decltype(U::priority);
+
+    constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
+};
+
+/** Helper variable for has_priority.
+ *
+ * @tparam T Policy type to query
+ */
+template <typename T>
+constexpr static bool has_priority_v = has_priority<T>::value;
+
+/** Searches up through @a ParentsTuple and returns the first mode-like type
+ * hit.
+ *
+ * A 'mode-like' type is one defined as owning a routing phase policy.
+ * @tparam ParentsTuple Parent node type list in ascending ancestry order
+ */
+template <typename ParentsTuple>
+class nearest_mode_like
+{
+    template <typename Parent>
+    struct policy_finder {
+        constexpr static bool value =
+            boost::mp11::mp_find_if_q<
+                typename Parent::policies_type,
+                boost::mp11::mp_bind<has_routing_phase_method,
+                                     boost::mp11::_1>>::value !=
+            std::tuple_size_v<typename Parent::policies_type>;
+    };
+
+    using parent_index = boost::mp11::mp_find_if<ParentsTuple, policy_finder>;
+
+public:
+    /** The discovered mode-like type, or void if one was not found. */
+    using type = boost::mp11::mp_eval_if_c<parent_index::value ==
+                                               std::tuple_size_v<ParentsTuple>,
+                                           void,
+                                           boost::mp11::mp_at,
+                                           ParentsTuple,
+                                           parent_index>;
+};
 }  // namespace policy
 }  // namespace arg_router

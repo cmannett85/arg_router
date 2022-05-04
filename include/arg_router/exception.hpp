@@ -45,6 +45,17 @@ public:
     {
     }
 
+    /** Token list constructor.
+     *
+     * @param message Error message
+     * @param tokens Tokens that caused the error
+     */
+    explicit parse_exception(const string& message,
+                             const vector<parsing::token_type>& tokens) :
+        std::invalid_argument{message + ": " + parsing::to_string(tokens)}
+    {
+    }
+
     virtual ~parse_exception() override = default;
 };
 }  // namespace arg_router

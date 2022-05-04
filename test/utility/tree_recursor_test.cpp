@@ -244,7 +244,7 @@ BOOST_AUTO_TEST_CASE(tree_type_recursor_test)
 
     using result_type = utility::tree_type_recursor_t<tree_type_visitor, Root>;
 
-    static_assert(std::tuple_size_v<result_type> == 14, "Test failed");
+    static_assert(std::tuple_size_v<result_type> == 16, "Test failed");
     static_assert(
         std::is_same_v<
             std::tuple_element_t<0, result_type>,
@@ -256,7 +256,7 @@ BOOST_AUTO_TEST_CASE(tree_type_recursor_test)
         "Test failed");
     static_assert(
         std::is_same_v<
-            std::tuple_element_t<4, result_type>,
+            std::tuple_element_t<5, result_type>,
             std::tuple<flag_t<policy::description_t<S_("test1")>,
                               policy::long_name_t<S_("test")>,
                               policy::router<std::function<void(bool)>>>,
@@ -264,7 +264,7 @@ BOOST_AUTO_TEST_CASE(tree_type_recursor_test)
         "Test failed");
     static_assert(
         std::is_same_v<
-            std::tuple_element_t<7, result_type>,
+            std::tuple_element_t<9, result_type>,
             std::tuple<
                 policy::short_name_t<traits::integral_constant<'a'>>,
                 flag_t<policy::description_t<S_("test2")>,
@@ -277,7 +277,7 @@ BOOST_AUTO_TEST_CASE(tree_type_recursor_test)
         "Test failed");
     static_assert(
         std::is_same_v<
-            std::tuple_element_t<10, result_type>,
+            std::tuple_element_t<12, result_type>,
             std::tuple<policy::router<std::function<void(bool)>>,
                        arg_router::mode_t<  //
                            flag_t<policy::description_t<S_("test2")>,
@@ -287,7 +287,7 @@ BOOST_AUTO_TEST_CASE(tree_type_recursor_test)
                        Root>>,
         "Test failed");
     static_assert(std::is_same_v<                             //
-                      std::tuple_element_t<13, result_type>,  //
+                      std::tuple_element_t<15, result_type>,  //
                       std::tuple<Root>>,
                   "Test failed");
 }

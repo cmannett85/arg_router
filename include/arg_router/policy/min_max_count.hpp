@@ -40,6 +40,9 @@ class min_max_count_t
                   "MinType must be less than or equal to MaxType");
 
 public:
+    /** Policy priority. */
+    constexpr static auto priority = std::size_t{750};
+
     /** @return Minimum count value. */
     [[nodiscard]] constexpr static std::size_t minimum_count() noexcept
     {
@@ -52,28 +55,52 @@ public:
         return MaxType::value;
     }
 
-    /** Checks that there are enough pending tokens in the list to reach the
-     * minimum count.
+    /** Copies an appropriate amount of tokens from @a args to @a result.
+     * 
+     * This policy performs label and bulk value token processing.  If the
+     * owning node is named, then the first token is expected to match, if not
+     * then false is returned immediately.
+     * 
+     * Then up to maximum_count() @result the @arg tokens are processed.  If the
+     * maximum available is less than minimum_count(), a parse error will occur.
      * 
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
-     * @param tokens Token list as received from the owning node, this is not
-     * modified
-     * @param parents Parents instances pack
-     * @exception parse_exception Thrown if minimum count not reached
+     * @param tokens Currently processed tokens
+     * @param processed_tokens Processed tokens performed by previous pre-parse
+     * phases calls on other nodes
+     * @param parents Parent node instances
+     * @return Either true if successful, or a parse_exception if the minimum
+     * count is not reached
      */
     template <typename... Parents>
-    void pre_parse_phase(parsing::token_list& tokens,
-                         [[maybe_unused]] const Parents&... parents) const
+    [[nodiscard]] parsing::pre_parse_result pre_parse_phase(
+        parsing::dynamic_token_adapter& tokens,
+        [[maybe_unused]] parsing::token_list::pending_view_type
+            processed_tokens,
+        [[maybe_unused]] const Parents&... parents) const
     {
-        static_assert(sizeof...(Parents) >= 1,
-                      "Alias requires at least 1 parent");
+        static_assert((sizeof...(Parents) >= 1),
+                      "At least one parent needed for min_max_count_t");
 
-        using node_type = boost::mp11::mp_first<std::tuple<Parents...>>;
+        using owner_type = boost::mp11::mp_first<std::tuple<Parents...>>;
 
-        if (tokens.pending_view().size() < minimum_count()) {
-            throw parse_exception{"Minimum count not reached",
-                                  parsing::node_token_type<node_type>()};
+        constexpr auto min_count =
+            minimum_count() + (owner_type::is_named ? 1 : 0);
+        constexpr auto max_count = maximum_count();
+
+        // Check that we are in the bounds.  We can't check that we have
+        // exceeded the maximum because there may be other nodes that will
+        // consume tokens, so this node will take its maximum (potentially) and
+        // any left over tokens will be trigger an error later in the processing
+        if (tokens.size() < min_count) {
+            return parse_exception{"Minimum count not reached",
+                                   parsing::node_token_type<owner_type>()};
         }
+
+        // Transfer any remaining up to the maximum count
+        tokens.transfer(tokens.begin() + std::min(max_count, tokens.size()));
+
+        return parsing::pre_parse_action::valid_node;
     }
 };
 

@@ -19,8 +19,8 @@
 #include "arg_router/policy/none_name.hpp"
 #include "arg_router/policy/required.hpp"
 #include "arg_router/policy/router.hpp"
+#include "arg_router/policy/short_form_expander.hpp"
 #include "arg_router/policy/short_name.hpp"
-#include "arg_router/policy/value_separator.hpp"
 #include "arg_router/positional_arg.hpp"
 #include "arg_router/root.hpp"
 #include "arg_router/utility/tree_recursor.hpp"
@@ -645,12 +645,6 @@ inline constexpr auto default_validator = validator<
            despecialised_unique_in_owner,
            parent_types<parent_index_pair_type<0, mode_t>,
                         parent_index_pair_type<1, root_t>>>,
-    // value_separator
-    rule_q<common_rules::despecialised_any_of_rule<policy::value_separator_t>,
-           despecialised_unique_in_owner,
-           policy_parent_must_not_have_policy<policy::short_name_t>,
-           policy_parent_must_not_have_policy<policy::none_name_t>,
-           policy_parent_must_not_have_policy<policy::display_name_t>>,
     // Generic policy rule
     rule<policy::is_policy,  //
          despecialised_unique_in_owner>,
@@ -670,7 +664,6 @@ inline constexpr auto default_validator = validator<
     // Counting flag
     rule_q<common_rules::despecialised_any_of_rule<counting_flag_t>,
            must_not_have_policies<policy::no_result_value,
-                                  policy::min_max_count_t,
                                   policy::required_t,
                                   policy::validation::validator>>,
     // Positional arg
@@ -698,7 +691,8 @@ inline constexpr auto default_validator = validator<
     // Mode
     rule_q<
         common_rules::despecialised_any_of_rule<mode_t>,
-        must_not_have_policies<policy::multi_stage_value, policy::required_t>,
+        must_not_have_policies<policy::multi_stage_value,  //
+                               policy::required_t>,
         positional_args_must_be_at_end<positional_arg_t>,
         positional_args_must_have_fixed_count_if_not_at_end<positional_arg_t>,
         parent_types<parent_index_pair_type<0, root_t>,
@@ -707,6 +701,7 @@ inline constexpr auto default_validator = validator<
     rule_q<common_rules::despecialised_any_of_rule<help_t>,
            must_not_have_policies<policy::multi_stage_value,
                                   policy::required_t,
+                                  policy::short_form_expander_t,
                                   policy::validation::validator>,
            parent_types<parent_index_pair_type<0, root_t>>>,
     // Root

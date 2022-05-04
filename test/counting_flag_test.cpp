@@ -45,24 +45,24 @@ BOOST_AUTO_TEST_CASE(match_test)
         std::tuple{
             std::tuple{
                 counting_flag<std::size_t>(policy::long_name<S_("hello")>),
-                parsing::token_type{parsing::prefix_type::LONG, "hello"},
+                parsing::token_type{parsing::prefix_type::long_, "hello"},
                 true},
             std::tuple{counting_flag<std::size_t>(policy::short_name<'h'>),
-                       parsing::token_type{parsing::prefix_type::SHORT, "h"},
+                       parsing::token_type{parsing::prefix_type::short_, "h"},
                        true},
             std::tuple{
                 counting_flag<std::size_t>(policy::long_name<S_("hello")>,
                                            policy::short_name<'h'>),
-                parsing::token_type{parsing::prefix_type::SHORT, "h"},
+                parsing::token_type{parsing::prefix_type::short_, "h"},
                 true},
             std::tuple{
                 counting_flag<std::size_t>(policy::long_name<S_("hello")>,
                                            policy::short_name<'h'>),
-                parsing::token_type{parsing::prefix_type::LONG, "hello"},
+                parsing::token_type{parsing::prefix_type::long_, "hello"},
                 true},
             std::tuple{
                 counting_flag<std::size_t>(policy::long_name<S_("goodbye")>),
-                parsing::token_type{parsing::prefix_type::LONG, "hello"},
+                parsing::token_type{parsing::prefix_type::long_, "hello"},
                 false}});
 }
 
@@ -72,7 +72,7 @@ BOOST_AUTO_TEST_CASE(parse_test)
                  auto tokens,
                  auto expected_tokens,
                  auto expected_result,
-                 auto... parents) {
+                 const auto&... parents) {
         const auto result = node.parse(tokens, parents...);
         BOOST_CHECK_EQUAL(result, expected_result);
         BOOST_CHECK_EQUAL(tokens.pending_view(), expected_tokens);
@@ -82,30 +82,15 @@ BOOST_AUTO_TEST_CASE(parse_test)
         f,
         std::tuple{
             std::tuple{counting_flag<std::size_t>(policy::short_name<'h'>),
-                       parsing::token_list{{parsing::prefix_type::SHORT, "h"}},
+                       parsing::token_list{{parsing::prefix_type::short_, "h"}},
                        parsing::token_list{},
                        true},
-            std::tuple{counting_flag<std::size_t>(policy::long_name<S_("foo")>),
-                       parsing::token_list{{parsing::prefix_type::LONG, "foo"}},
-                       parsing::token_list{},
-                       true},
-            std::tuple{counting_flag<std::size_t>(
-                           policy::short_name<'a'>,
-                           policy::alias(policy::short_name<'h'>,
-                                         policy::short_name<'g'>)),
-                       parsing::token_list{{parsing::prefix_type::SHORT, "a"}},
-                       parsing::token_list{
-                           {parsing::prefix_type::SHORT, "h"},
-                           {parsing::prefix_type::SHORT, "g"},
-                       },
-                       true,
-                       mode(counting_flag<std::size_t>(
-                                policy::short_name<'a'>,
-                                policy::alias(policy::short_name<'h'>,
-                                              policy::short_name<'g'>)),
-                            counting_flag<std::size_t>(policy::short_name<'h'>),
-                            counting_flag<std::size_t>(policy::short_name<'g'>),
-                            policy::router{[](bool, bool, bool) {}})}});
+            std::tuple{
+                counting_flag<std::size_t>(policy::long_name<S_("foo")>),
+                parsing::token_list{{parsing::prefix_type::long_, "foo"}},
+                parsing::token_list{},
+                true},
+        });
 }
 
 BOOST_AUTO_TEST_CASE(merge_test)
@@ -273,26 +258,6 @@ int main() {
 }
     )",
         "Counting flag must not have a none name policy");
-}
-
-BOOST_AUTO_TEST_CASE(must_not_have_value_separator_test)
-{
-    test::death_test_compile(
-        R"(
-#include "arg_router/counting_flag.hpp"
-#include "arg_router/policy/long_name.hpp"
-#include "arg_router/policy/value_separator.hpp"
-#include "arg_router/utility/compile_time_string.hpp"
-
-using namespace arg_router;
-
-int main() {
-    auto f = counting_flag<int>(policy::long_name<S_("hello")>,
-                                policy::value_separator<'='>);
-    return 0;
-}
-    )",
-        "Counting flag must not have a value separator policy");
 }
 
 BOOST_AUTO_TEST_CASE(parse_policy_test)

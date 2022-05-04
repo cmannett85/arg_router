@@ -35,10 +35,12 @@ set(TEST_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/policy/min_max_value_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/policy/required_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/policy/router_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/policy/short_form_expander_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/policy/short_name_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/policy/validator_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/policy/value_separator_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/positional_arg_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/dynamic_token_adapter_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/root_tests/death_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/root_tests/positional_arg_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/root_tests/top_level_test.cpp
@@ -48,6 +50,7 @@ set(TEST_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/traits_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/tree_node_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/compile_time_string_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/utility/result_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/string_view_ops_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/tree_recursor_test.cpp
 )

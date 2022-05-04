@@ -42,6 +42,7 @@ set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/dependency/alias_group.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/dependency/detail.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/dependency/one_of.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/dynamic_token_adapter.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/exception.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/flag.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/global_parser.hpp
@@ -69,6 +70,7 @@ set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/program_version.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/required.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/router.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/short_form_expander.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/short_name.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/validator.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/value_separator.hpp

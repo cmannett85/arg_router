@@ -13,6 +13,11 @@ namespace arg_router
 {
 namespace parsing
 {
+inline std::ostream& operator<<(std::ostream& stream, prefix_type prefix)
+{
+    return stream << to_string(prefix);
+}
+
 inline std::ostream& operator<<(std::ostream& stream, const token_type& token)
 {
     return stream << to_string(token);
@@ -28,7 +33,37 @@ inline std::ostream& operator<<(std::ostream& stream,
 {
     return stream << to_string(view);
 }
+
+inline std::ostream& operator<<(std::ostream& stream, pre_parse_action action)
+{
+    switch (action) {
+    case pre_parse_action::skip_node: return stream << "skip_node";
+    case pre_parse_action::valid_node: return stream << "valid_node";
+    case pre_parse_action::skip_node_but_use_tokens:
+        return stream << "skip_node_but_use_tokens";
+    default: return stream << "<Unknown>";
+    }
+}
+
+inline std::ostream& operator<<(std::ostream& stream, pre_parse_result result)
+{
+    if (result.has_error()) {
+        return stream << "<exception>";
+    }
+
+    return stream << result.extract();
+}
 }  // namespace parsing
+
+template <typename T>
+std::ostream& operator<<(std::ostream& stream, span<T> v)
+{
+    stream << "{";
+    for (auto&& item : v) {
+        stream << item << ",";
+    }
+    return stream << "}";
+}
 }  // namespace arg_router
 
 // Naughty, but only used in the test code
@@ -46,7 +81,7 @@ ostream& operator<<(ostream& stream, const optional<T>& o)
 template <typename T>
 ostream& operator<<(ostream& stream, const vector<T>& v)
 {
-    stream << "}";
+    stream << "{";
     for (auto&& item : v) {
         stream << item << ",";
     }

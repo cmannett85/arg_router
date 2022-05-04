@@ -29,8 +29,10 @@ BOOST_AUTO_TEST_CASE(constructor_test)
         std::is_same_v<
             std::decay_t<decltype(l.children())>,
             std::tuple<
-                flag_t<policy::short_name_t<traits::integral_constant<'a'>>>,
-                flag_t<policy::short_name_t<traits::integral_constant<'b'>>>>>,
+                flag_t<policy::short_form_expander_t<>,
+                       policy::short_name_t<traits::integral_constant<'a'>>>,
+                flag_t<policy::short_form_expander_t<>,
+                       policy::short_name_t<traits::integral_constant<'b'>>>>>,
         "Constructor test failed");
 
     BOOST_CHECK_EQUAL(std::get<0>(l.children()).short_name(), "a");
@@ -38,7 +40,7 @@ BOOST_AUTO_TEST_CASE(constructor_test)
 
 BOOST_AUTO_TEST_CASE(list_expander_test)
 {
-    const auto result = list_expander(
+    [[maybe_unused]] const auto result = list_expander(
         flag(policy::short_name<'a'>),
         list{flag(policy::short_name<'b'>), flag(policy::short_name<'c'>)},
         flag(policy::short_name<'d'>));
@@ -46,10 +48,14 @@ BOOST_AUTO_TEST_CASE(list_expander_test)
         std::is_same_v<
             std::decay_t<decltype(result)>,
             std::tuple<
-                flag_t<policy::short_name_t<traits::integral_constant<'a'>>>,
-                flag_t<policy::short_name_t<traits::integral_constant<'b'>>>,
-                flag_t<policy::short_name_t<traits::integral_constant<'c'>>>,
-                flag_t<policy::short_name_t<traits::integral_constant<'d'>>>>>,
+                flag_t<policy::short_form_expander_t<>,
+                       policy::short_name_t<traits::integral_constant<'a'>>>,
+                flag_t<policy::short_form_expander_t<>,
+                       policy::short_name_t<traits::integral_constant<'b'>>>,
+                flag_t<policy::short_form_expander_t<>,
+                       policy::short_name_t<traits::integral_constant<'c'>>>,
+                flag_t<policy::short_form_expander_t<>,
+                       policy::short_name_t<traits::integral_constant<'d'>>>>>,
         "list_expander test failed");
 }
 

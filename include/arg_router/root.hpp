@@ -36,12 +36,11 @@ public:
 private:
     static_assert(!parent_type::template any_phases_v<
                       bool,  // Type doesn't matter, as long as it isn't void
-                      policy::has_pre_parse_phase_method,
                       policy::has_parse_phase_method,
                       policy::has_validation_phase_method,
                       policy::has_routing_phase_method,
                       policy::has_missing_phase_method>,
-                  "Root does not support policies with any parsing phases");
+                  "Root only supports a pre-parse phase");
 
     static_assert(!traits::has_long_name_method_v<parent_type> &&
                       !traits::has_short_name_method_v<parent_type> &&
@@ -49,8 +48,6 @@ private:
                       !traits::has_none_name_method_v<parent_type> &&
                       !traits::has_description_method_v<parent_type>,
                   "Root cannot have name or description policies");
-    static_assert(!traits::has_value_separator_method_v<parent_type>,
-                  "Root must not have a value separator policy");
 
     constexpr static auto validator_index =
         algorithm::find_specialisation_v<policy::validation::validator,
@@ -118,25 +115,47 @@ public:
      */
     void parse(int argc, char* argv[]) const
     {
-        auto tokens = parsing::expand_arguments<root_t>(*this, argc, argv);
+        // Skip the program name
+        auto args = vector<parsing::token_type>{};
+        args.reserve(argc - 1);
+        for (auto i = 1; i < argc; ++i) {
+            args.emplace_back(parsing::prefix_type::none, argv[i]);
+        }
+        auto tokens = parsing::token_list{};
 
-        // Find the initial child, if there are no tokens then create an empty
-        // one - an anonymous mode will still be found
-        const auto first_token =
-            tokens.pending_view().empty() ?
-                parsing::token_type{parsing::prefix_type::NONE, ""} :
-                tokens.pending_view().front();
-        const auto found_child =
-            parent_type::find(first_token,
-                              [&](auto /*i*/, const auto& child) {  //
-                                  child.parse(tokens, *this);
-                              });
-        if (!found_child) {
-            if (tokens.pending_view().empty()) {
+        // Process any pre-parse policies, the return doesn't matter as we will
+        // always delegate to the children
+        (void)parent_type::pre_parse(args, tokens, *this);
+
+        // Take a copy of the front token for the error messages
+        const auto front_token =
+            args.empty() ?  //
+                parsing::token_type{parsing::prefix_type::none, ""} :
+                args.front();
+
+        // Find a matching child
+        auto match = false;
+        utility::tuple_iterator(
+            [&](auto /*i*/, const auto& child) {
+                // Skip any remaining children if one has been found
+                if (match) {
+                    return;
+                }
+
+                match = child.pre_parse(args, tokens, *this);
+                if (match) {
+                    if (!args.empty()) {
+                        throw parse_exception{"Unhandled arguments", args};
+                    }
+                    child.parse(tokens, *this);
+                }
+            },
+            this->children());
+        if (!match) {
+            if (front_token.name.empty()) {
                 throw parse_exception{"No arguments passed"};
             } else {
-                throw parse_exception{"Unknown argument",
-                                      tokens.pending_view().front()};
+                throw parse_exception{"Unknown argument", front_token};
             }
         }
     }

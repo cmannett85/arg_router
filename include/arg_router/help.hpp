@@ -4,6 +4,7 @@
 
 #include "arg_router/parsing.hpp"
 #include "arg_router/policy/flatten_help.hpp"
+#include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/policy/no_result_value.hpp"
 #include "arg_router/policy/program_intro.hpp"
 #include "arg_router/policy/program_name.hpp"
@@ -22,7 +23,9 @@ namespace arg_router
  */
 template <typename... Policies>
 class help_t :
-    public tree_node<policy::no_result_value<>, std::decay_t<Policies>...>
+    public tree_node<policy::no_result_value<>,
+                     std::decay_t<decltype(policy::min_count<0>)>,
+                     std::decay_t<Policies>...>
 {
     static_assert(
         policy::is_all_policies_v<std::tuple<std::decay_t<Policies>...>>,
@@ -35,11 +38,10 @@ class help_t :
                   "Help must not have a display name policy");
     static_assert(!traits::has_none_name_method_v<help_t>,
                   "Help must not have a none name policy");
-    static_assert(!traits::has_value_separator_method_v<help_t>,
-                  "Help must not have a value separator policy");
 
-    using parent_type =
-        tree_node<policy::no_result_value<>, std::decay_t<Policies>...>;
+    using parent_type = tree_node<policy::no_result_value<>,
+                                  std::decay_t<decltype(policy::min_count<0>)>,
+                                  std::decay_t<Policies>...>;
 
     constexpr static auto indent_spaces = 4u;
 
@@ -129,7 +131,9 @@ public:
      * @param policies Policy instances
      */
     constexpr explicit help_t(Policies... policies) noexcept :
-        parent_type{policy::no_result_value<>{}, std::move(policies)...}
+        parent_type{policy::no_result_value<>{},
+                    policy::min_count<0>,
+                    std::move(policies)...}
     {
     }
 
@@ -150,12 +154,21 @@ public:
     constexpr bool match(const parsing::token_type& token,
                          const Fn& visitor) const
     {
-        if (parsing::default_match<help_t>(token)) {
+        if (parsing::match<help_t>(token)) {
             visitor(*this);
             return true;
         }
 
         return false;
+    }
+
+    template <typename... Parents>
+    [[nodiscard]] bool pre_parse(vector<parsing::token_type>& args,
+                                 parsing::token_list& tokens,
+                                 const Parents&... parents) const
+
+    {
+        return parent_type::pre_parse(args, tokens, *this, parents...);
     }
 
     /** Parse function.
@@ -211,13 +224,13 @@ public:
     }
 
 private:
-    static_assert(!parent_type::template any_phases_v<
-                      bool,  // Type doesn't matter, as long as it isn't void
-                      policy::has_pre_parse_phase_method,
-                      policy::has_parse_phase_method,
-                      policy::has_validation_phase_method,
-                      policy::has_missing_phase_method>,
-                  "Help only supports policies with a routing phase");
+    static_assert(
+        !parent_type::template any_phases_v<
+            bool,  // Type doesn't matter, as long as it isn't void
+            policy::has_parse_phase_method,
+            policy::has_validation_phase_method,
+            policy::has_missing_phase_method>,
+        "Help only supports policies with pre-parse and routing phases");
 
     template <typename Node, typename TargetFn>
     static void find_help_target(parsing::token_list& tokens,

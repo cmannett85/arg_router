@@ -7,6 +7,8 @@
 
 using namespace arg_router;
 
+BOOST_AUTO_TEST_SUITE(parsing_suite)
+
 BOOST_AUTO_TEST_SUITE(token_list_suite)
 
 BOOST_AUTO_TEST_CASE(default_constructor_test)
@@ -20,46 +22,46 @@ BOOST_AUTO_TEST_CASE(default_constructor_test)
 
 BOOST_AUTO_TEST_CASE(init_constructor_test)
 {
-    const auto tl = parsing::token_list{{parsing::prefix_type::LONG, "long"},
-                                        {parsing::prefix_type::SHORT, "s"},
-                                        {parsing::prefix_type::NONE, "none"}};
+    const auto tl = parsing::token_list{{parsing::prefix_type::long_, "long"},
+                                        {parsing::prefix_type::short_, "s"},
+                                        {parsing::prefix_type::none, "none"}};
     BOOST_CHECK(!tl.pending_view().empty());
     BOOST_CHECK(tl.processed_view().empty());
     BOOST_CHECK_EQUAL(tl.pending_view().size(), 3);
 
     BOOST_CHECK_EQUAL(
         tl.pending_view()[0],
-        (parsing::token_type{parsing::prefix_type::LONG, "long"}));
+        (parsing::token_type{parsing::prefix_type::long_, "long"}));
     BOOST_CHECK_EQUAL(  //
         tl.pending_view()[1],
-        (parsing::token_type{parsing::prefix_type::SHORT, "s"}));
+        (parsing::token_type{parsing::prefix_type::short_, "s"}));
     BOOST_CHECK_EQUAL(
         tl.pending_view()[2],
-        (parsing::token_type{parsing::prefix_type::NONE, "none"}));
+        (parsing::token_type{parsing::prefix_type::none, "none"}));
 
     BOOST_CHECK_EQUAL(
         tl.pending_view().front(),
-        (parsing::token_type{parsing::prefix_type::LONG, "long"}));
+        (parsing::token_type{parsing::prefix_type::long_, "long"}));
 
     BOOST_CHECK_EQUAL(
         tl,
-        (parsing::token_list{{parsing::prefix_type::LONG, "long"},
-                             {parsing::prefix_type::SHORT, "s"},
-                             {parsing::prefix_type::NONE, "none"}}));
+        (parsing::token_list{{parsing::prefix_type::long_, "long"},
+                             {parsing::prefix_type::short_, "s"},
+                             {parsing::prefix_type::none, "none"}}));
 }
 
-BOOST_AUTO_TEST_CASE(add_pending_test)
+BOOST_AUTO_TEST_CASE(push_back_pending_test)
 {
     auto tl = parsing::token_list{};
     BOOST_CHECK(tl.pending_view().empty());
     BOOST_CHECK(tl.processed_view().empty());
 
-    tl.add_pending({parsing::prefix_type::LONG, "long"});
+    tl.push_back_pending({parsing::prefix_type::long_, "long"});
     BOOST_CHECK(!tl.pending_view().empty());
     BOOST_CHECK(tl.processed_view().empty());
     BOOST_CHECK_EQUAL(tl.pending_view().size(), 1);
 
-    tl.add_pending({parsing::prefix_type::SHORT, "s"});
+    tl.push_back_pending({parsing::prefix_type::short_, "s"});
     BOOST_CHECK(!tl.pending_view().empty());
     BOOST_CHECK(tl.processed_view().empty());
     BOOST_CHECK_EQUAL(tl.pending_view().size(), 2);
@@ -67,9 +69,9 @@ BOOST_AUTO_TEST_CASE(add_pending_test)
 
 BOOST_AUTO_TEST_CASE(mark_as_processed_test)
 {
-    auto tl = parsing::token_list{{parsing::prefix_type::LONG, "long"},
-                                  {parsing::prefix_type::SHORT, "s"},
-                                  {parsing::prefix_type::NONE, "none"}};
+    auto tl = parsing::token_list{{parsing::prefix_type::long_, "long"},
+                                  {parsing::prefix_type::short_, "s"},
+                                  {parsing::prefix_type::none, "none"}};
     BOOST_CHECK(!tl.pending_view().empty());
     BOOST_CHECK(tl.processed_view().empty());
     BOOST_CHECK_EQUAL(tl.pending_view().size(), 3);
@@ -80,24 +82,24 @@ BOOST_AUTO_TEST_CASE(mark_as_processed_test)
 
     BOOST_CHECK_EQUAL(  //
         tl.pending_view()[0],
-        (parsing::token_type{parsing::prefix_type::SHORT, "s"}));
+        (parsing::token_type{parsing::prefix_type::short_, "s"}));
     BOOST_CHECK_EQUAL(
         tl.pending_view()[1],
-        (parsing::token_type{parsing::prefix_type::NONE, "none"}));
+        (parsing::token_type{parsing::prefix_type::none, "none"}));
     BOOST_CHECK_EQUAL(  //
         tl.processed_view()[0],
-        (parsing::token_type{parsing::prefix_type::LONG, "long"}));
+        (parsing::token_type{parsing::prefix_type::long_, "long"}));
     BOOST_CHECK_EQUAL(
         tl.pending_view(),
-        (parsing::token_list{{parsing::prefix_type::SHORT, "s"},
-                             {parsing::prefix_type::NONE, "none"}}));
+        (parsing::token_list{{parsing::prefix_type::short_, "s"},
+                             {parsing::prefix_type::none, "none"}}));
 }
 
 BOOST_AUTO_TEST_CASE(mark_as_processed_n_test)
 {
-    auto tl = parsing::token_list{{parsing::prefix_type::LONG, "long"},
-                                  {parsing::prefix_type::SHORT, "s"},
-                                  {parsing::prefix_type::NONE, "none"}};
+    auto tl = parsing::token_list{{parsing::prefix_type::long_, "long"},
+                                  {parsing::prefix_type::short_, "s"},
+                                  {parsing::prefix_type::none, "none"}};
     BOOST_CHECK(!tl.pending_view().empty());
     BOOST_CHECK(tl.processed_view().empty());
     BOOST_CHECK_EQUAL(tl.pending_view().size(), 3);
@@ -108,13 +110,13 @@ BOOST_AUTO_TEST_CASE(mark_as_processed_n_test)
 
     BOOST_CHECK_EQUAL(
         tl.pending_view()[0],
-        (parsing::token_type{parsing::prefix_type::NONE, "none"}));
+        (parsing::token_type{parsing::prefix_type::none, "none"}));
     BOOST_CHECK_EQUAL(  //
         tl.processed_view()[0],
-        (parsing::token_type{parsing::prefix_type::LONG, "long"}));
+        (parsing::token_type{parsing::prefix_type::long_, "long"}));
     BOOST_CHECK_EQUAL(  //
         tl.processed_view()[1],
-        (parsing::token_type{parsing::prefix_type::SHORT, "s"}));
+        (parsing::token_type{parsing::prefix_type::short_, "s"}));
 
     tl.mark_as_processed();
     BOOST_CHECK(tl.pending_view().empty());
@@ -124,9 +126,9 @@ BOOST_AUTO_TEST_CASE(mark_as_processed_n_test)
 
 BOOST_AUTO_TEST_CASE(repeated_mark_as_processed_test)
 {
-    auto tl = parsing::token_list{{parsing::prefix_type::LONG, "long"},
-                                  {parsing::prefix_type::SHORT, "s"},
-                                  {parsing::prefix_type::NONE, "none"}};
+    auto tl = parsing::token_list{{parsing::prefix_type::long_, "long"},
+                                  {parsing::prefix_type::short_, "s"},
+                                  {parsing::prefix_type::none, "none"}};
     BOOST_CHECK(!tl.pending_view().empty());
     BOOST_CHECK(tl.processed_view().empty());
     BOOST_CHECK_EQUAL(tl.pending_view().size(), 3);
@@ -149,9 +151,9 @@ BOOST_AUTO_TEST_CASE(insert_pending_test)
 {
     auto t1 = parsing::token_list{};
 
-    auto t2 = parsing::token_list{{parsing::prefix_type::LONG, "long"},
-                                  {parsing::prefix_type::SHORT, "s"},
-                                  {parsing::prefix_type::NONE, "none"}};
+    auto t2 = parsing::token_list{{parsing::prefix_type::long_, "long"},
+                                  {parsing::prefix_type::short_, "s"},
+                                  {parsing::prefix_type::none, "none"}};
     t1.insert_pending(t1.pending_view().begin(),
                       t2.pending_view().begin(),
                       t2.pending_view().end());
@@ -162,12 +164,12 @@ BOOST_AUTO_TEST_CASE(insert_pending_test)
                       t2.pending_view().end());
     BOOST_CHECK_EQUAL(
         t1,
-        (parsing::token_list{{parsing::prefix_type::LONG, "long"},
-                             {parsing::prefix_type::SHORT, "s"},
-                             {parsing::prefix_type::NONE, "none"},
-                             {parsing::prefix_type::LONG, "long"},
-                             {parsing::prefix_type::SHORT, "s"},
-                             {parsing::prefix_type::NONE, "none"}}));
+        (parsing::token_list{{parsing::prefix_type::long_, "long"},
+                             {parsing::prefix_type::short_, "s"},
+                             {parsing::prefix_type::none, "none"},
+                             {parsing::prefix_type::long_, "long"},
+                             {parsing::prefix_type::short_, "s"},
+                             {parsing::prefix_type::none, "none"}}));
 
     t1.mark_as_processed(3);
     BOOST_CHECK_EQUAL(t1.pending_view().size(), 3);
@@ -179,12 +181,12 @@ BOOST_AUTO_TEST_CASE(insert_pending_test)
                       t2.pending_view().end());
     BOOST_CHECK_EQUAL(
         t1,
-        (parsing::token_list{{parsing::prefix_type::LONG, "long"},
-                             {parsing::prefix_type::SHORT, "s"},
-                             {parsing::prefix_type::NONE, "none"},
-                             {parsing::prefix_type::LONG, "long"},
-                             {parsing::prefix_type::SHORT, "s"},
-                             {parsing::prefix_type::NONE, "none"}}));
+        (parsing::token_list{{parsing::prefix_type::long_, "long"},
+                             {parsing::prefix_type::short_, "s"},
+                             {parsing::prefix_type::none, "none"},
+                             {parsing::prefix_type::long_, "long"},
+                             {parsing::prefix_type::short_, "s"},
+                             {parsing::prefix_type::none, "none"}}));
     BOOST_CHECK_EQUAL(t1.pending_view().size(), 6);
     BOOST_CHECK(t1.processed_view().empty());
 }
@@ -192,17 +194,19 @@ BOOST_AUTO_TEST_CASE(insert_pending_test)
 BOOST_AUTO_TEST_CASE(swap_test)
 {
     auto t1 = parsing::token_list{};
-    auto t2 = parsing::token_list{{parsing::prefix_type::LONG, "long"},
-                                  {parsing::prefix_type::SHORT, "s"},
-                                  {parsing::prefix_type::NONE, "none"}};
+    auto t2 = parsing::token_list{{parsing::prefix_type::long_, "long"},
+                                  {parsing::prefix_type::short_, "s"},
+                                  {parsing::prefix_type::none, "none"}};
 
     swap(t1, t2);
     BOOST_CHECK_EQUAL(
         t1,
-        (parsing::token_list{{parsing::prefix_type::LONG, "long"},
-                             {parsing::prefix_type::SHORT, "s"},
-                             {parsing::prefix_type::NONE, "none"}}));
+        (parsing::token_list{{parsing::prefix_type::long_, "long"},
+                             {parsing::prefix_type::short_, "s"},
+                             {parsing::prefix_type::none, "none"}}));
     BOOST_CHECK_EQUAL(t2, parsing::token_list{});
 }
+
+BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

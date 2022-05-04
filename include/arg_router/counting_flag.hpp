@@ -3,7 +3,9 @@
 #pragma once
 
 #include "arg_router/parsing.hpp"
+#include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/policy/multi_stage_value.hpp"
+#include "arg_router/policy/short_form_expander.hpp"
 #include "arg_router/tree_node.hpp"
 
 namespace arg_router
@@ -12,15 +14,9 @@ namespace arg_router
  *
  * A flag is a boolean indicator, it has no value assigned on the command line,
  * its presence represents a positive boolean value.  However a counting flag's
- * value is the number of times it appears on the command line.
- * 
- * Just like 'normal' flags, counting flags with shortnames can be concatenated
- * or 'collapsed' on the command line,
- * e.g.
- * @code
- * foo -a -b -c
- * foo -abc
- * @endcode
+ * value is the number of times it appears on the command line.  By default this
+ * type does not do short-form name collapsing, add policy::short_form_expander
+ * to the policies during construction to enable that.
  * 
  * Create with the counting_flag(Policies...) function for consistency with
  * arg_t.
@@ -30,6 +26,7 @@ namespace arg_router
 template <typename T, typename... Policies>
 class counting_flag_t :
     public tree_node<policy::multi_stage_value<T, bool>,
+                     std::decay_t<decltype(policy::fixed_count<0>)>,
                      std::decay_t<Policies>...>
 {
     static_assert(
@@ -42,13 +39,13 @@ class counting_flag_t :
                   "Counting flag must not have a display name policy");
     static_assert(!traits::has_none_name_method_v<counting_flag_t>,
                   "Counting flag must not have a none name policy");
-    static_assert(!traits::has_value_separator_method_v<counting_flag_t>,
-                  "Counting flag must not have a value separator policy");
     static_assert(traits::supports_static_cast_conversion_v<T, std::size_t>,
                   "T must be explicitly convertible to std::size_t");
 
-    using parent_type = tree_node<policy::multi_stage_value<T, bool>,
-                                  std::decay_t<Policies>...>;
+    using parent_type =
+        tree_node<policy::multi_stage_value<T, bool>,
+                  std::decay_t<decltype(policy::fixed_count<0>)>,
+                  std::decay_t<Policies>...>;
 
 public:
     using typename parent_type::policies_type;
@@ -67,6 +64,7 @@ public:
      */
     constexpr explicit counting_flag_t(Policies... policies) noexcept :
         parent_type{policy::multi_stage_value<T, bool>{merge_impl},
+                    policy::fixed_count<0>,
                     std::move(policies)...}
     {
     }
@@ -88,12 +86,21 @@ public:
     constexpr bool match(const parsing::token_type& token,
                          const Fn& visitor) const
     {
-        if (parsing::default_match<counting_flag_t>(token)) {
+        if (parsing::match<counting_flag_t>(token)) {
             visitor(*this);
             return true;
         }
 
         return false;
+    }
+
+    template <typename... Parents>
+    [[nodiscard]] bool pre_parse(vector<parsing::token_type>& args,
+                                 parsing::token_list& tokens,
+                                 const Parents&... parents) const
+
+    {
+        return parent_type::pre_parse(args, tokens, *this, parents...);
     }
 
     /** Parse function.
@@ -105,24 +112,15 @@ public:
      * @exception parse_exception Thrown if parsing failed
      */
     template <typename... Parents>
-    bool parse(parsing::token_list& tokens, const Parents&... parents) const
+    bool parse(parsing::token_list& tokens,
+               [[maybe_unused]] const Parents&... parents) const
     {
         // Remove this node's name
         tokens.mark_as_processed();
 
-        // Pre-parse
-        utility::tuple_type_iterator<policies_type>([&](auto i) {
-            using policy_type = std::tuple_element_t<i, policies_type>;
-            if constexpr (policy::has_pre_parse_phase_method_v<policy_type>) {
-                this->policy_type::pre_parse_phase(tokens, *this, parents...);
-            }
-        });
-
         // Presence of the flag yields a constant true.  Validation is done by
         // the parent mode as it carries the final result
-        const auto result = true;
-
-        return result;
+        return true;
     }
 
 private:
@@ -150,6 +148,14 @@ private:
 /** Constructs a counting_flag_t with the given policies.
  *
  * This is used for similarity with arg_t.
+ * 
+ * Just like 'normal' flags, counting flags with shortnames can be concatenated
+ * or 'collapsed' on the command line,
+ * e.g.
+ * @code
+ * foo -a -b -c
+ * foo -abc
+ * @endcode
  * @tparam Policies Pack of policies that define its behaviour
  * @param policies Pack of policy instances
  * @return Flag instance
@@ -157,7 +163,19 @@ private:
 template <typename T, typename... Policies>
 [[nodiscard]] constexpr auto counting_flag(Policies... policies) noexcept
 {
-    return counting_flag_t<T, std::decay_t<Policies>...>{
-        std::move(policies)...};
+    // Add the short-form expander if one of the policies implements the short
+    // name method
+    if constexpr (boost::mp11::mp_any_of<
+                      std::tuple<std::decay_t<Policies>...>,
+                      traits::has_short_name_method>::value) {
+        return counting_flag_t<T,
+                               policy::short_form_expander_t<>,
+                               std::decay_t<Policies>...>{
+            policy::short_form_expander,
+            std::move(policies)...};
+    } else {
+        return counting_flag_t<T, std::decay_t<Policies>...>{
+            std::move(policies)...};
+    }
 }
 }  // namespace arg_router

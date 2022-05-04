@@ -153,18 +153,23 @@ public:
         return true;
     }
 
+    /* Forward the request onto the parent's definition.  As there is no
+     * polymorphism in the library, we have to create this stub so the
+     * <TT>*this</TT> expression evaluates to the correct type
+     */
+    template <typename... Parents>
+    [[nodiscard]] bool pre_parse(ar::span<const char*>& args,
+                                 ar::parsing::token_list& tokens,
+                                 const Parents&... parents) const
+
+    {
+        return parent_type::pre_parse(args, tokens, *this, parents...);
+    }
+
     template <typename... Parents>
     value_type parse(ar::parsing::token_list& tokens,
                      const Parents&... parents) const
     {
-        // Pre-parse
-        ar::utility::tuple_type_iterator<policies_type>([&](auto i) {
-            using policy_type = std::tuple_element_t<i, policies_type>;
-            if constexpr (arp::has_pre_parse_phase_method_v<policy_type>) {
-                this->policy_type::pre_parse_phase(tokens, *this, parents...);
-            }
-        });
-
         // The fixed count guarantees there is a single token
         auto view = tokens.pending_view();
         auto result = parent_type::template parse<value_type>(view.front().name,

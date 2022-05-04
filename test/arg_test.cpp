@@ -26,7 +26,8 @@ BOOST_AUTO_TEST_CASE(is_tree_node_test)
 
 BOOST_AUTO_TEST_CASE(policies_test)
 {
-    auto f = arg<int>(policy::long_name<S_("hello")>, policy::short_name<'H'>);
+    [[maybe_unused]] auto f = arg<int>(policy::long_name<S_("hello")>,  //
+                                       policy::short_name<'H'>);
     static_assert(f.long_name() == "hello"sv, "Long name test fail");
     static_assert(f.short_name() == "H", "Short name test fail");
 }
@@ -49,23 +50,26 @@ BOOST_AUTO_TEST_CASE(match_test)
     test::data_set(
         f,
         std::tuple{
-            std::tuple{arg<int>(policy::long_name<S_("hello")>),
-                       parsing::token_type{parsing::prefix_type::LONG, "hello"},
-                       true},
+            std::tuple{
+                arg<int>(policy::long_name<S_("hello")>),
+                parsing::token_type{parsing::prefix_type::long_, "hello"},
+                true},
             std::tuple{arg<int>(policy::short_name<'h'>),
-                       parsing::token_type{parsing::prefix_type::SHORT, "h"},
+                       parsing::token_type{parsing::prefix_type::short_, "h"},
                        true},
             std::tuple{arg<int>(policy::long_name<S_("hello")>,
                                 policy::short_name<'h'>),
-                       parsing::token_type{parsing::prefix_type::SHORT, "h"},
+                       parsing::token_type{parsing::prefix_type::short_, "h"},
                        true},
-            std::tuple{arg<int>(policy::long_name<S_("hello")>,
-                                policy::short_name<'h'>),
-                       parsing::token_type{parsing::prefix_type::LONG, "hello"},
-                       true},
-            std::tuple{arg<int>(policy::long_name<S_("goodbye")>),
-                       parsing::token_type{parsing::prefix_type::LONG, "hello"},
-                       false}});
+            std::tuple{
+                arg<int>(policy::long_name<S_("hello")>,
+                         policy::short_name<'h'>),
+                parsing::token_type{parsing::prefix_type::long_, "hello"},
+                true},
+            std::tuple{
+                arg<int>(policy::long_name<S_("goodbye")>),
+                parsing::token_type{parsing::prefix_type::long_, "hello"},
+                false}});
 }
 
 BOOST_AUTO_TEST_CASE(parse_test)
@@ -77,7 +81,7 @@ BOOST_AUTO_TEST_CASE(parse_test)
                  auto expected_result,
                  auto expected_router_hit,
                  auto fail_message,
-                 auto... parents) {
+                 const auto&... parents) {
         router_hit = false;
         try {
             const auto result = node.parse(tokens, parents...);
@@ -94,51 +98,33 @@ BOOST_AUTO_TEST_CASE(parse_test)
     test::data_set(
         f,
         std::tuple{
-            std::tuple{arg<int>(policy::long_name<S_("test")>),
-                       parsing::token_list{{parsing::prefix_type::LONG, "test"},
-                                           {parsing::prefix_type::NONE, "42"}},
-                       parsing::token_list{},
-                       42,
-                       false,
-                       ""s},
             std::tuple{
                 arg<int>(policy::long_name<S_("test")>),
-                parsing::token_list{{parsing::prefix_type::LONG, "test"}},
-                parsing::token_list{{parsing::prefix_type::LONG, "test"}},
+                parsing::token_list{{parsing::prefix_type::long_, "test"},
+                                    {parsing::prefix_type::none, "42"}},
+                parsing::token_list{},
+                42,
+                false,
+                ""s},
+            std::tuple{
+                arg<int>(policy::long_name<S_("test")>),
+                parsing::token_list{{parsing::prefix_type::long_, "test"}},
+                parsing::token_list{{parsing::prefix_type::long_, "test"}},
                 0,
                 false,
                 "Missing argument: --test"s},
             std::tuple{
                 arg<int>(policy::long_name<S_("test")>,
-                         policy::alias(policy::short_name<'h'>,
-                                       policy::short_name<'g'>)),
-                parsing::token_list{{parsing::prefix_type::LONG, "test"},
-                                    {parsing::prefix_type::NONE, "42"}},
-                parsing::token_list{{parsing::prefix_type::LONG, "second"},
-                                    {parsing::prefix_type::NONE, "42"},
-                                    {parsing::prefix_type::SHORT, "g"},
-                                    {parsing::prefix_type::NONE, "42"}},
+                         policy::router{[&](int result) {
+                             BOOST_CHECK_EQUAL(result, 42);
+                             router_hit = true;
+                         }}),
+                parsing::token_list{{parsing::prefix_type::long_, "test"},
+                                    {parsing::prefix_type::none, "42"}},
+                parsing::token_list{},
                 42,
-                false,
-                ""s,
-                mode(arg<int>(policy::long_name<S_("test")>,
-                              policy::alias(policy::short_name<'h'>,
-                                            policy::short_name<'g'>)),
-                     arg<int>(policy::long_name<S_("second")>,
-                              policy::short_name<'h'>),
-                     arg<int>(policy::short_name<'g'>),
-                     policy::router{[](int, int, int) {}})},
-            std::tuple{arg<int>(policy::long_name<S_("test")>,
-                                policy::router{[&](int result) {
-                                    BOOST_CHECK_EQUAL(result, 42);
-                                    router_hit = true;
-                                }}),
-                       parsing::token_list{{parsing::prefix_type::LONG, "test"},
-                                           {parsing::prefix_type::NONE, "42"}},
-                       parsing::token_list{},
-                       42,
-                       true,
-                       ""s}});
+                true,
+                ""s}});
 }
 
 BOOST_AUTO_TEST_CASE(help_test)
@@ -165,23 +151,24 @@ BOOST_AUTO_TEST_CASE(help_test)
         BOOST_CHECK_EQUAL(help_data::description::get(), expected_description);
     };
 
-    test::data_set(f,
-                   std::tuple{
-                       std::tuple{arg<int>(policy::short_name<'h'>,
-                                           policy::long_name<S_("hello")>,
-                                           policy::description<S_("An arg!")>),
-                                  "--hello,-h",
-                                  "An arg!"},
-                       std::tuple{arg<int>(policy::long_name<S_("hello")>,
-                                           policy::description<S_("An arg!")>),
-                                  "--hello",
-                                  "An arg!"},
-                       std::tuple{arg<int>(policy::short_name<'h'>,
-                                           policy::description<S_("An arg!")>),
-                                  "-h",
-                                  "An arg!"},
-                       std::tuple{arg<int>(policy::short_name<'h'>), "-h", ""},
-                   });
+    test::data_set(
+        f,
+        std::tuple{
+            std::tuple{arg<int>(policy::short_name<'h'>,
+                                policy::long_name<S_("hello")>,
+                                policy::description<S_("An arg!")>),
+                       "--hello,-h <Value>",
+                       "An arg!"},
+            std::tuple{arg<int>(policy::long_name<S_("hello")>,
+                                policy::description<S_("An arg!")>),
+                       "--hello <Value>",
+                       "An arg!"},
+            std::tuple{arg<int>(policy::short_name<'h'>,
+                                policy::description<S_("An arg!")>),
+                       "-h <Value>",
+                       "An arg!"},
+            std::tuple{arg<int>(policy::short_name<'h'>), "-h <Value>", ""},
+        });
 }
 
 BOOST_AUTO_TEST_SUITE(death_suite)

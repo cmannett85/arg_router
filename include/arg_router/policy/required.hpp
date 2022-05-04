@@ -19,6 +19,9 @@ template <typename = void>  // This is needed due so it can be used in
 class required_t            // template template parameters
 {
 public:
+    /** Policy priority. */
+    constexpr static auto priority = std::size_t{450};
+
     /** Throw an error.
      * 
      * @tparam ValueType Parsed value type, not used in this method

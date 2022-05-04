@@ -123,6 +123,35 @@ public:
 
         return found;
     }
+
+    /** Propagates the pre-parse phase to the child, returns on a positive
+     * return from one of them
+     *
+     * @tparam Parents Pack of parent tree nodes in ascending ancestry order
+     * @param args Unprocessed tokens
+     * @param tokens Processed tokens
+     * @param parents Parent node instances
+     * @return True if the leading tokens in @a args are consumable by one of
+     * the child nodes
+     * @exception parse_exception Thrown if any of the child pre-parse
+     * implementations have returned an exception
+     */
+    template <typename... Parents>
+    [[nodiscard]] bool pre_parse(vector<parsing::token_type>& args,
+                                 parsing::token_list& tokens,
+                                 const Parents&... parents) const
+    {
+        auto found = false;
+        utility::tuple_iterator(
+            [&](auto /*i*/, const auto& child) {
+                if (!found) {
+                    found = child.pre_parse(args, tokens, parents...);
+                }
+            },
+            this->children());
+
+        return found;
+    }
 };
 
 /** Constructs a alias_group_t with the given policies and children.
