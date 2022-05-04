@@ -114,12 +114,12 @@ $(function() {
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    {</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        constexpr <span class="keyword">auto</span> str = <a class="code" href="classarg__router_1_1utility_1_1compile__time__string.html#a850e76a6f8f7cb1805a4303773532cbf">get</a>();</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        <span class="keyword">auto</span> result = std::size_t{0};</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        <span class="keyword">auto</span> <a class="code" href="classarg__router_1_1utility_1_1result.html">result</a> = std::size_t{0};</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">auto</span> c : str) {</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;            result += (c &amp; 0xC0) != 0x80;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;            <a class="code" href="classarg__router_1_1utility_1_1result.html">result</a> += (c &amp; 0xC0) != 0x80;</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        }</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        <span class="keywordflow">return</span> result;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classarg__router_1_1utility_1_1result.html">result</a>;</div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    }</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
@@ -265,6 +265,7 @@ $(function() {
 <div class="line"><a name="l00268"></a><span class="lineno"><a class="line" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">  268</a></span>&#160;<span class="preprocessor">#define S_(tok) AR_STR_N(AR_MAX_CTS_SIZE, tok)</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="anamespacearg__router_1_1utility_html_a1969b9a6d6dab3984d8f2a2119c08937"><div class="ttname"><a href="namespacearg__router_1_1utility.html#a1969b9a6d6dab3984d8f2a2119c08937">arg_router::utility::create_sequence_cts_t</a></div><div class="ttdeci">typename create_sequence_cts&lt; N, C &gt;::type create_sequence_cts_t</div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00145">compile_time_string.hpp:145</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1utility_1_1result_html"><div class="ttname"><a href="classarg__router_1_1utility_1_1result.html">arg_router::utility::result</a></div><div class="ttdef"><b>Definition:</b> <a href="result_8hpp_source.html#l00019">result.hpp:19</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1math_html_a7685a22f45fc1767d3f0ab8db5a85bd6"><div class="ttname"><a href="namespacearg__router_1_1math.html#a7685a22f45fc1767d3f0ab8db5a85bd6">arg_router::math::num_digits</a></div><div class="ttdeci">constexpr T num_digits(T value) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="math_8hpp_source.html#l00032">math.hpp:32</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1utility_html_ac1a030095dca0eefcac3295e612ffbbc"><div class="ttname"><a href="namespacearg__router_1_1utility.html#ac1a030095dca0eefcac3295e612ffbbc">arg_router::utility::convert_to_cts_t</a></div><div class="ttdeci">typename convert_to_cts&lt; T &gt;::type convert_to_cts_t</div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00165">compile_time_string.hpp:165</a></div></div>
 <div class="ttc" id="astructarg__router_1_1utility_1_1convert__to__cts_html"><div class="ttname"><a href="structarg__router_1_1utility_1_1convert__to__cts.html">arg_router::utility::convert_to_cts</a></div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00153">compile_time_string.hpp:153</a></div></div>

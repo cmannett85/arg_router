@@ -96,6 +96,7 @@ Tag Type</h2>
 <h2><a class="anchor" id="policies_basic_parsing_phase"></a>
 Parsing Phase Provider</h2>
 <p>Most of the policies do more than the above though, they take an active part in the parsing. Parsing a token is a multi-stage process for most nodes and policies facilitate this by supporting a series of common methods that are detected by nodes at compile-time (see <a class="el" href="namespacearg__router_1_1policy.html">policy</a> namespace's <code>has_*_method</code> traits types).</p>
+<p>All policies that provide a phase method where multiple policies can provide an implementation (i.e. <em>not</em> parse, routing, or missing phases) should hold a <code>priority</code> static member that provides the order policies should be called in (when applicable). The lower the number, the lower the priority. Policies in the library vary from 0 to 1000, where 0 means that the priority is irrelevant. If no priority is specified, 0 is assumed.</p>
 <h3><a class="anchor" id="policies_basic_parsing_phase_pre"></a>
 Pre-Parse Phase</h3>
 <p>As the name suggests this is a phase that performs some kind of input checking or manipulation before parsing occurs. <a class="el" href="classarg__router_1_1policy_1_1alias__t.html">policy::alias_t</a> is a complex example of this, it copies the current token's value (i.e. the alias' value) and then creates new tokens for all the aliased arguments using that value. In other words it creates new tokens and values as if the user had passed them in, ready for a later parsing process to consume.</p>
@@ -117,6 +118,7 @@ Routing Phase</h3>
 Missing Phase</h3>
 <p>Although the 'Routing Phase' is the final 'normal' phase, there is another that is performed on child nodes who have not been given a token to parse i.e. the token(s) they represent are not present on the command line.</p>
 <p>The two standard policies that implement this phase are <a class="el" href="classarg__router_1_1policy_1_1default__value.html">policy::default_value</a> and <a class="el" href="classarg__router_1_1policy_1_1required__t.html">policy::required_t</a>. They either return a user-defined default value or throw an exception respectively.</p>
+<dl class="section note"><dt>Note</dt><dd>Only one policy used by a <a class="el" href="classarg__router_1_1tree__node.html">tree_node</a> can support a missing phase.</dd></dl>
 <h1><a class="anchor" id="policies_defining"></a>
 Defining a Policy</h1>
 <p>Because the parse tree nodes derive from (typically) multiple policies so that their methods become available to the public interface of the nodes, policies themselves do not have a base class (the old diamond inheritance problems). So in order to 'mark' a type as a policy so it can be detected as such by <a class="el" href="namespacearg__router.html">arg_router</a>, it needs to specialise itself into <a class="el" href="structarg__router_1_1policy_1_1is__policy.html">policy::is_policy</a>. </p>

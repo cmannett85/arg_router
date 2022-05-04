@@ -115,8 +115,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aa0248a73c3c71b1aa1ca0d5601a7d440"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af09a16f019f5241059dc4f03dbfe08f1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1parsing_1_1token__list.html#af09a16f019f5241059dc4f03dbfe08f1">reserve</a> (<a class="el" href="classarg__router_1_1parsing_1_1token__list.html#ac861bb9addb4e8d0f0ce9a337dc4738c">size_type</a> new_cap)</td></tr>
 <tr class="separator:af09a16f019f5241059dc4f03dbfe08f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abacadce865aec132703bd698754ac862"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1parsing_1_1token__list.html#abacadce865aec132703bd698754ac862">add_pending</a> (const <a class="el" href="classarg__router_1_1parsing_1_1token__list.html#af9d9a77396d847714e483ae55416bc4a">value_type</a> &amp;value)</td></tr>
-<tr class="separator:abacadce865aec132703bd698754ac862"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60a9d3faa72f9ea9dbf27205b1092efb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1parsing_1_1token__list.html#a60a9d3faa72f9ea9dbf27205b1092efb">push_back_pending</a> (const <a class="el" href="classarg__router_1_1parsing_1_1token__list.html#af9d9a77396d847714e483ae55416bc4a">value_type</a> &amp;value)</td></tr>
+<tr class="separator:a60a9d3faa72f9ea9dbf27205b1092efb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaad8796b941d94bab7fba7319cb07861"><td class="memTemplParams" colspan="2">template&lt;class... Args&gt; </td></tr>
 <tr class="memitem:aaad8796b941d94bab7fba7319cb07861"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classarg__router_1_1parsing_1_1token__list.html#a7c09e4ad39d96a5e9ae22166f8fb93ab">const_reference</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1parsing_1_1token__list.html#aaad8796b941d94bab7fba7319cb07861">emplace_pending</a> (Args &amp;&amp;... args)</td></tr>
 <tr class="separator:aaad8796b941d94bab7fba7319cb07861"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -133,7 +133,7 @@ Public Member Functions</h2></td></tr>
 <p>This is similar in implementation to a boost::container::devector. It consists of the two views of the command line token array: pending and processed. Initially all tokens are pending and then as they processed by the nodes, they mark the tokens as processed, which moves them to the back of the processed view.</p>
 <p>Of course we don't really keep two separate lists, there's only one, and marking them as processed simply moves the pointer that separates the two views of the container. </p>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00094">94</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00098">98</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="a4f487fc255b08f4a5fd514493b38b8bd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4f487fc255b08f4a5fd514493b38b8bd">&#9670;&nbsp;</a></span>allocator_type</h2>
@@ -148,7 +148,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Container allocator type. </p>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00102">102</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00106">106</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -165,7 +165,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>const <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a>&amp; alias. </p>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00106">106</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00110">110</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -182,7 +182,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>View type for the pending tokens. </p>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00108">108</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00112">112</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -199,7 +199,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>std::size_t alias. </p>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00104">104</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00108">108</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -216,7 +216,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p><a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> alias. </p>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00100">100</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00104">104</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -252,7 +252,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00124">124</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00128">128</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -298,46 +298,11 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00136">136</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00140">140</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="abacadce865aec132703bd698754ac862"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abacadce865aec132703bd698754ac862">&#9670;&nbsp;</a></span>add_pending()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void arg_router::parsing::token_list::add_pending </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="classarg__router_1_1parsing_1_1token__list.html#af9d9a77396d847714e483ae55416bc4a">value_type</a> &amp;&#160;</td>
-          <td class="paramname"><em>value</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Add new element to the end of the pending view.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">value</td><td>Element to add </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00207">207</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
-
-</div>
-</div>
 <a id="aaad8796b941d94bab7fba7319cb07861"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aaad8796b941d94bab7fba7319cb07861">&#9670;&nbsp;</a></span>emplace_pending()</h2>
 
@@ -378,7 +343,7 @@ template&lt;class... Args&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Reference to newly constructed element </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00216">216</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00223">223</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -434,7 +399,7 @@ template&lt;typename InputIt &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Iterator to one-past-the-end of the inserted sequence </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00241">241</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00248">248</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -469,7 +434,7 @@ template&lt;typename InputIt &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00227">227</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00234">234</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -498,7 +463,7 @@ template&lt;typename InputIt &gt; </div>
 <p>Maximum size of container.</p>
 <dl class="section return"><dt>Returns</dt><dd>Container size. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00170">170</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00174">174</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -535,7 +500,7 @@ template&lt;typename InputIt &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if not equal </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00192">192</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00196">196</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -572,7 +537,7 @@ template&lt;typename InputIt &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if equal </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00181">181</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00185">185</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -601,7 +566,7 @@ template&lt;typename InputIt &gt; </div>
 <p>View of the tokens still to be processed.</p>
 <dl class="section return"><dt>Returns</dt><dd>Pending view </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00152">152</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00156">156</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -630,7 +595,42 @@ template&lt;typename InputIt &gt; </div>
 <p>View of the tokens that have been processed.</p>
 <dl class="section return"><dt>Returns</dt><dd>Pending view </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00161">161</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00165">165</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a60a9d3faa72f9ea9dbf27205b1092efb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a60a9d3faa72f9ea9dbf27205b1092efb">&#9670;&nbsp;</a></span>push_back_pending()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void arg_router::parsing::token_list::push_back_pending </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classarg__router_1_1parsing_1_1token__list.html#af9d9a77396d847714e483ae55416bc4a">value_type</a> &amp;&#160;</td>
+          <td class="paramname"><em>value</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Add new element to the end of the pending view.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">value</td><td>Element to add </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00211">211</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -665,7 +665,7 @@ template&lt;typename InputIt &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00201">201</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00205">205</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -700,7 +700,7 @@ template&lt;typename InputIt &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00267">267</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00274">274</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>

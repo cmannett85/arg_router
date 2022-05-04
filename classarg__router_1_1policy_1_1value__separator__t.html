@@ -69,7 +69,9 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
+<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="classarg__router_1_1policy_1_1value__separator__t-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">arg_router::policy::value_separator_t&lt; S &gt; Class Template Reference</div>  </div>
@@ -83,18 +85,28 @@ Public Types</h2></td></tr>
 <tr class="memitem:aa8d245e1bdbb82dfacc28c5b4596180b"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1value__separator__t.html#aa8d245e1bdbb82dfacc28c5b4596180b">string_type</a> = S</td></tr>
 <tr class="separator:aa8d245e1bdbb82dfacc28c5b4596180b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:aa1f56621844ff9dafe1c67692114d01f"><td class="memTemplParams" colspan="2">template&lt;typename... Parents&gt; </td></tr>
+<tr class="memitem:aa1f56621844ff9dafe1c67692114d01f"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacearg__router_1_1parsing.html#a915cb96b9e236101aa9efd660a82f950">parsing::pre_parse_result</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1value__separator__t.html#aa1f56621844ff9dafe1c67692114d01f">pre_parse_phase</a> (<a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter.html">parsing::dynamic_token_adapter</a> &amp;tokens, [[maybe_unused]] <a class="el" href="classarg__router_1_1parsing_1_1token__list.html#a93a9014911eaf2832f746ea83ee2374a">parsing::token_list::pending_view_type</a> processed_tokens, [[maybe_unused]] const Parents &amp;... parents) const</td></tr>
+<tr class="separator:aa1f56621844ff9dafe1c67692114d01f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a49f79f64326cd5667687a2a81687784d"><td class="memItemLeft" align="right" valign="top">constexpr static std::string_view&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1value__separator__t.html#a49f79f64326cd5667687a2a81687784d">value_separator</a> () noexcept</td></tr>
 <tr class="separator:a49f79f64326cd5667687a2a81687784d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
+Static Public Attributes</h2></td></tr>
+<tr class="memitem:a5b2bb8b3ea4bdff97385b2774770f7a6"><td class="memItemLeft" align="right" valign="top">constexpr static auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1value__separator__t.html#a5b2bb8b3ea4bdff97385b2774770f7a6">priority</a> = std::size_t{1000}</td></tr>
+<tr class="separator:a5b2bb8b3ea4bdff97385b2774770f7a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename S&gt;<br />
 class arg_router::policy::value_separator_t&lt; S &gt;</h3>
 
 <p>Represents the character that separates a label token from its value token(s).</p>
-<p>Your terminal will take of separating tokens using whitespace by default, but often a different character is used e.g. <code>&ndash;arg=42</code> - this policy specifies that. </p><dl class="section note"><dt>Note</dt><dd>This is only applied to long form name tokens in <a class="el" href="classarg__router_1_1root__t.html">root_t</a> </dd></dl>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
+<p>Your terminal will separate tokens using whitespace by default, but often a different character is used e.g. <code>&ndash;arg=42</code> - this policy specifies that character. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">S</td><td>Integral constant that can be implicitly converted to a char </td></tr>
   </table>
@@ -123,6 +135,70 @@ template&lt;typename S &gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="aa1f56621844ff9dafe1c67692114d01f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa1f56621844ff9dafe1c67692114d01f">&#9670;&nbsp;</a></span>pre_parse_phase()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename S &gt; </div>
+<div class="memtemplate">
+template&lt;typename... Parents&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacearg__router_1_1parsing.html#a915cb96b9e236101aa9efd660a82f950">parsing::pre_parse_result</a> <a class="el" href="classarg__router_1_1policy_1_1value__separator__t.html">arg_router::policy::value_separator_t</a>&lt; S &gt;::pre_parse_phase </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter.html">parsing::dynamic_token_adapter</a> &amp;&#160;</td>
+          <td class="paramname"><em>tokens</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">[[maybe_unused] ] <a class="el" href="classarg__router_1_1parsing_1_1token__list.html#a93a9014911eaf2832f746ea83ee2374a">parsing::token_list::pending_view_type</a>&#160;</td>
+          <td class="paramname"><em>processed_tokens</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">[[maybe_unused] ] const Parents &amp;...&#160;</td>
+          <td class="paramname"><em>parents</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Splits the label token from the value using the separator.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Parents</td><td>Pack of parent tree nodes in ascending ancestry order </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">tokens</td><td>Currently processed tokens </td></tr>
+    <tr><td class="paramname">processed_tokens</td><td>Processed tokens performed by previous pre-parse phases calls on other nodes </td></tr>
+    <tr><td class="paramname">parents</td><td>Parent node instances </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if the owning node's label token matches the label part of the first token, false otherwise. No exception is stored in the return value </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="value__separator_8hpp_source.html#l00060">60</a> of file <a class="el" href="value__separator_8hpp_source.html">value_separator.hpp</a>.</p>
+
+</div>
+</div>
 <a id="a49f79f64326cd5667687a2a81687784d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a49f79f64326cd5667687a2a81687784d">&#9670;&nbsp;</a></span>value_separator()</h2>
 
@@ -150,7 +226,35 @@ template&lt;typename S &gt; </div>
 <p>Returns the separator.</p>
 <dl class="section return"><dt>Returns</dt><dd>Separator character </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="value__separator_8hpp_source.html#l00040">40</a> of file <a class="el" href="value__separator_8hpp_source.html">value_separator.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="value__separator_8hpp_source.html#l00043">43</a> of file <a class="el" href="value__separator_8hpp_source.html">value_separator.hpp</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="a5b2bb8b3ea4bdff97385b2774770f7a6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5b2bb8b3ea4bdff97385b2774770f7a6">&#9670;&nbsp;</a></span>priority</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename S &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr static auto <a class="el" href="classarg__router_1_1policy_1_1value__separator__t.html">arg_router::policy::value_separator_t</a>&lt; S &gt;::priority = std::size_t{1000}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Policy priority. </p>
+
+<p class="definition">Definition at line <a class="el" href="value__separator_8hpp_source.html#l00037">37</a> of file <a class="el" href="value__separator_8hpp_source.html">value_separator.hpp</a>.</p>
 
 </div>
 </div>

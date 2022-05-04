@@ -87,9 +87,9 @@ Public Types</h2></td></tr>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a316586bc2513b3036a26ec420ceb4a7a"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1dependent__t.html#a316586bc2513b3036a26ec420ceb4a7a">dependent_t</a> ([[maybe_unused]] const DependsPolicies &amp;... policies) noexcept</td></tr>
 <tr class="separator:a316586bc2513b3036a26ec420ceb4a7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3714e2ad842cb54533243ff3cae1ae01"><td class="memTemplParams" colspan="2">template&lt;typename... Parents&gt; </td></tr>
-<tr class="memitem:a3714e2ad842cb54533243ff3cae1ae01"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1dependent__t.html#a3714e2ad842cb54533243ff3cae1ae01">pre_parse_phase</a> (<a class="el" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a> &amp;tokens, [[maybe_unused]] const Parents &amp;... parents) const</td></tr>
-<tr class="separator:a3714e2ad842cb54533243ff3cae1ae01"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a979e056f4e3e44a696b28151776aea62"><td class="memTemplParams" colspan="2">template&lt;typename... Parents&gt; </td></tr>
+<tr class="memitem:a979e056f4e3e44a696b28151776aea62"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacearg__router_1_1parsing.html#a915cb96b9e236101aa9efd660a82f950">parsing::pre_parse_result</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1dependent__t.html#a979e056f4e3e44a696b28151776aea62">pre_parse_phase</a> ([[maybe_unused]] <a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter.html">parsing::dynamic_token_adapter</a> &amp;tokens, <a class="el" href="classarg__router_1_1parsing_1_1token__list.html#a93a9014911eaf2832f746ea83ee2374a">parsing::token_list::pending_view_type</a> processed_tokens, [[maybe_unused]] const Parents &amp;... parents) const</td></tr>
+<tr class="separator:a979e056f4e3e44a696b28151776aea62"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename... DependsPolicies&gt;<br />
@@ -163,8 +163,8 @@ template&lt;typename... DependsPolicies&gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a3714e2ad842cb54533243ff3cae1ae01"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3714e2ad842cb54533243ff3cae1ae01">&#9670;&nbsp;</a></span>pre_parse_phase()</h2>
+<a id="a979e056f4e3e44a696b28151776aea62"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a979e056f4e3e44a696b28151776aea62">&#9670;&nbsp;</a></span>pre_parse_phase()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -177,10 +177,16 @@ template&lt;typename... Parents&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classarg__router_1_1policy_1_1dependent__t.html">arg_router::policy::dependent_t</a>&lt; DependsPolicies &gt;::pre_parse_phase </td>
+          <td class="memname"><a class="el" href="namespacearg__router_1_1parsing.html#a915cb96b9e236101aa9efd660a82f950">parsing::pre_parse_result</a> <a class="el" href="classarg__router_1_1policy_1_1dependent__t.html">arg_router::policy::dependent_t</a>&lt; DependsPolicies &gt;::pre_parse_phase </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a> &amp;&#160;</td>
+          <td class="paramtype">[[maybe_unused] ] <a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter.html">parsing::dynamic_token_adapter</a> &amp;&#160;</td>
           <td class="paramname"><em>tokens</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classarg__router_1_1parsing_1_1token__list.html#a93a9014911eaf2832f746ea83ee2374a">parsing::token_list::pending_view_type</a>&#160;</td>
+          <td class="paramname"><em>processed_tokens</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -200,7 +206,7 @@ template&lt;typename... Parents&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Checks both the pending and processed tokens for all known names of the targets.</p>
+<p>Scans the processed tokens to find all the dependent node names.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Parents</td><td>Pack of parent tree nodes in ascending ancestry order </td></tr>
@@ -209,19 +215,15 @@ template&lt;typename... Parents&gt; </div>
 </dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">tokens</td><td>Token list as received from the owning node </td></tr>
-    <tr><td class="paramname">parents</td><td>Parents instances pack </td></tr>
+    <tr><td class="paramname">tokens</td><td>Currently processed tokens </td></tr>
+    <tr><td class="paramname">processed_tokens</td><td>Processed tokens performed by previous pre-parse phases calls on other nodes </td></tr>
+    <tr><td class="paramname">parents</td><td>Parent node instances </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname"><a class="el" href="classarg__router_1_1parse__exception.html">parse_exception</a></td><td>Thrown if any dependent argument is missing </td></tr>
-  </table>
-  </dd>
-</dl>
+<dl class="section return"><dt>Returns</dt><dd>Either true if successful, or a <a class="el" href="classarg__router_1_1parse__exception.html">parse_exception</a> if a dependent argument is missing </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="dependent_8hpp_source.html#l00046">46</a> of file <a class="el" href="dependent_8hpp_source.html">dependent.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dependent_8hpp_source.html#l00048">48</a> of file <a class="el" href="dependent_8hpp_source.html">dependent.hpp</a>.</p>
 
 </div>
 </div>

@@ -102,6 +102,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab12dc581cd47606e5f765388fe10c18c"><td class="memTemplParams" colspan="2">template&lt;typename Fn &gt; </td></tr>
 <tr class="memitem:ab12dc581cd47606e5f765388fe10c18c"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1dependency_1_1one__of__t.html#ab12dc581cd47606e5f765388fe10c18c">match</a> (const <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a> &amp;token, const Fn &amp;visitor) const</td></tr>
 <tr class="separator:ab12dc581cd47606e5f765388fe10c18c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae27530cc08ef6cb0ff46e7fd6e529317"><td class="memTemplParams" colspan="2">template&lt;typename... Parents&gt; </td></tr>
+<tr class="memitem:ae27530cc08ef6cb0ff46e7fd6e529317"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1dependency_1_1one__of__t.html#ae27530cc08ef6cb0ff46e7fd6e529317">pre_parse</a> (<a class="el" href="namespacearg__router.html#a3d789cf2175008b4124de867a13a2edf">vector</a>&lt; <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a> &gt; &amp;args, <a class="el" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a> &amp;tokens, const Parents &amp;... parents) const</td></tr>
+<tr class="separator:ae27530cc08ef6cb0ff46e7fd6e529317"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename... Params&gt;<br />
@@ -132,7 +135,7 @@ template&lt;typename... Params&gt; </div>
 </div><div class="memdoc">
 <p>A tuple of all the child tree node types in parameters_type, with any lists expanded </p>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00041">41</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00064">64</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>
@@ -151,7 +154,7 @@ template&lt;typename... Params&gt; </div>
 </div><div class="memdoc">
 <p>A tuple of all the policy types in parameters_type. </p>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00033">33</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00052">52</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>
@@ -268,6 +271,76 @@ template&lt;typename Fn &gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>Match result </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="one__of_8hpp_source.html#l00088">88</a> of file <a class="el" href="one__of_8hpp_source.html">one_of.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ae27530cc08ef6cb0ff46e7fd6e529317"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae27530cc08ef6cb0ff46e7fd6e529317">&#9670;&nbsp;</a></span>pre_parse()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename... Params&gt; </div>
+<div class="memtemplate">
+template&lt;typename... Parents&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="classarg__router_1_1dependency_1_1one__of__t.html">arg_router::dependency::one_of_t</a>&lt; Params &gt;::pre_parse </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacearg__router.html#a3d789cf2175008b4124de867a13a2edf">vector</a>&lt; <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>args</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a> &amp;&#160;</td>
+          <td class="paramname"><em>tokens</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Parents &amp;...&#160;</td>
+          <td class="paramname"><em>parents</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Propagates the pre-parse phase to the child, returns on a positive return from one of them</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Parents</td><td>Pack of parent tree nodes in ascending ancestry order </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">args</td><td>Unprocessed tokens </td></tr>
+    <tr><td class="paramname">tokens</td><td>Processed tokens </td></tr>
+    <tr><td class="paramname">parents</td><td>Parent node instances </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if the leading tokens in <em>args</em> are consumable by one of the child nodes </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classarg__router_1_1parse__exception.html">parse_exception</a></td><td>Thrown if any of the child pre-parse implementations have returned an exception </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="one__of_8hpp_source.html#l00116">116</a> of file <a class="el" href="one__of_8hpp_source.html">one_of.hpp</a>.</p>
 
 </div>
 </div>

@@ -69,6 +69,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
@@ -78,24 +79,35 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter.html">dynamic_token_adapter</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1parsing_1_1token__list.html">token_list</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:a915cb96b9e236101aa9efd660a82f950"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a915cb96b9e236101aa9efd660a82f950">pre_parse_result</a> = <a class="el" href="classarg__router_1_1utility_1_1result.html">utility::result</a>&lt; <a class="el" href="namespacearg__router_1_1parsing.html#a425dc604db76181e7af022986d3015a5">pre_parse_action</a>, <a class="el" href="classarg__router_1_1parse__exception.html">parse_exception</a> &gt;</td></tr>
+<tr class="separator:a915cb96b9e236101aa9efd660a82f950"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a6587078e07827bbbbabeae32b3ed2dd3"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3">prefix_type</a> : std::uint8_t </td></tr>
+<tr class="memitem:a425dc604db76181e7af022986d3015a5"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a425dc604db76181e7af022986d3015a5">pre_parse_action</a> : std::uint8_t { <a class="el" href="namespacearg__router_1_1parsing.html#a425dc604db76181e7af022986d3015a5af40dea4ad62e2a0d088148f25444da03">pre_parse_action::skip_node</a>, 
+<a class="el" href="namespacearg__router_1_1parsing.html#a425dc604db76181e7af022986d3015a5a28a603d48cf5ab4504b3bd1abfe13963">pre_parse_action::valid_node</a>, 
+<a class="el" href="namespacearg__router_1_1parsing.html#a425dc604db76181e7af022986d3015a5aa7a537586951f26ca795c5070b191bc7">pre_parse_action::skip_node_but_use_tokens</a>
+ }</td></tr>
+<tr class="separator:a425dc604db76181e7af022986d3015a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6587078e07827bbbbabeae32b3ed2dd3"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3">prefix_type</a> : std::uint8_t { , <a class="el" href="namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3a16466420ab71d5feae928666169b405c">prefix_type::short_</a>, 
+<a class="el" href="namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3a334c4a4c42fdb79d7ebc3e73b517e6f8">prefix_type::none</a>
+ }</td></tr>
 <tr class="separator:a6587078e07827bbbbabeae32b3ed2dd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a7a3c1dab796c38e9f3801e5806c31d01"><td class="memTemplParams" colspan="2">template&lt;typename Root &gt; </td></tr>
-<tr class="memitem:a7a3c1dab796c38e9f3801e5806c31d01"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classarg__router_1_1parsing_1_1token__list.html">token_list</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a7a3c1dab796c38e9f3801e5806c31d01">expand_arguments</a> (const Root &amp;<a class="el" href="namespacearg__router.html#a911ab5ded2b36269fdec3e768450d415">root</a>, int argc, char *argv[])</td></tr>
-<tr class="separator:a7a3c1dab796c38e9f3801e5806c31d01"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8cd5ccafb2ad5067217c034ecf0c9d0a"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a8cd5ccafb2ad5067217c034ecf0c9d0a"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a8cd5ccafb2ad5067217c034ecf0c9d0a">default_match</a> (<a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> token) noexcept</td></tr>
-<tr class="separator:a8cd5ccafb2ad5067217c034ecf0c9d0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae2cbfdf6379f66e446801b6a915e3144"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ae2cbfdf6379f66e446801b6a915e3144"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#ae2cbfdf6379f66e446801b6a915e3144">match</a> (<a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> token) noexcept</td></tr>
+<tr class="separator:ae2cbfdf6379f66e446801b6a915e3144"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8389f839b76e96cfadf1b7527ef2e651"><td class="memTemplParams" colspan="2">template&lt;typename Node &gt; </td></tr>
 <tr class="memitem:a8389f839b76e96cfadf1b7527ef2e651"><td class="memTemplItemLeft" align="right" valign="top">constexpr <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a8389f839b76e96cfadf1b7527ef2e651">node_token_type</a> () noexcept</td></tr>
 <tr class="separator:a8389f839b76e96cfadf1b7527ef2e651"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -129,6 +141,8 @@ Functions</h2></td></tr>
 <tr class="separator:aaf885484d51dfc84fa19704691937ff6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8aca52a03726c89927c96ffcf3dacf47"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacearg__router.html#abafabad5af18e8dda89e6b568b594738">string</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a8aca52a03726c89927c96ffcf3dacf47">to_string</a> (const <a class="el" href="classarg__router_1_1parsing_1_1token__list_1_1processed__view__type.html">token_list::processed_view_type</a> &amp;view)</td></tr>
 <tr class="separator:a8aca52a03726c89927c96ffcf3dacf47"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e91ad1aecfc7ff6e40f0d4918d88f96"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacearg__router.html#abafabad5af18e8dda89e6b568b594738">string</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a3e91ad1aecfc7ff6e40f0d4918d88f96">to_string</a> (const <a class="el" href="namespacearg__router.html#a3d789cf2175008b4124de867a13a2edf">vector</a>&lt; <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> &gt; &amp;view)</td></tr>
+<tr class="separator:a3e91ad1aecfc7ff6e40f0d4918d88f96"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a112b9b4f768b06fdd2a81f128966e9c6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacearg__router.html#abafabad5af18e8dda89e6b568b594738">string</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a112b9b4f768b06fdd2a81f128966e9c6">to_string</a> (const <a class="el" href="classarg__router_1_1parsing_1_1token__list.html">token_list</a> &amp;tokens)</td></tr>
 <tr class="separator:a112b9b4f768b06fdd2a81f128966e9c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a71a7566d5831eeeb4c5cd1cdaad216be"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a71a7566d5831eeeb4c5cd1cdaad216be">get_token_type</a> (std::string_view token)</td></tr>
@@ -136,7 +150,58 @@ Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Namespace containing types and functions to aid parsing. </p>
-</div><h2 class="groupheader">Enumeration Type Documentation</h2>
+</div><h2 class="groupheader">Typedef Documentation</h2>
+<a id="a915cb96b9e236101aa9efd660a82f950"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a915cb96b9e236101aa9efd660a82f950">&#9670;&nbsp;</a></span>pre_parse_result</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="namespacearg__router_1_1parsing.html#a915cb96b9e236101aa9efd660a82f950">arg_router::parsing::pre_parse_result</a> = typedef <a class="el" href="classarg__router_1_1utility_1_1result.html">utility::result</a>&lt;<a class="el" href="namespacearg__router_1_1parsing.html#a425dc604db76181e7af022986d3015a5">pre_parse_action</a>, <a class="el" href="classarg__router_1_1parse__exception.html">parse_exception</a>&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Policy-level pre-parse phase result type. </p>
+
+<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00026">26</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="a425dc604db76181e7af022986d3015a5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a425dc604db76181e7af022986d3015a5">&#9670;&nbsp;</a></span>pre_parse_action</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="namespacearg__router_1_1parsing.html#a425dc604db76181e7af022986d3015a5">arg_router::parsing::pre_parse_action</a> : std::uint8_t</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Owning nodes requested action by a pre-parse implementing policy. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a425dc604db76181e7af022986d3015a5af40dea4ad62e2a0d088148f25444da03"></a>skip_node&#160;</td><td class="fielddoc"><p>This policy is not applicable to the tokens </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a425dc604db76181e7af022986d3015a5a28a603d48cf5ab4504b3bd1abfe13963"></a>valid_node&#160;</td><td class="fielddoc"><p>This policy is applicable to the tokens </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a425dc604db76181e7af022986d3015a5aa7a537586951f26ca795c5070b191bc7"></a>skip_node_but_use_tokens&#160;</td><td class="fielddoc"><p>Same as skip_node, but any changes to the given tokens should be made permanent as long as no later policy returns skip_node </p>
+</td></tr>
+</table>
+
+<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00014">14</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
+
+</div>
+</div>
 <a id="a6587078e07827bbbbabeae32b3ed2dd3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6587078e07827bbbbabeae32b3ed2dd3">&#9670;&nbsp;</a></span>prefix_type</h2>
 
@@ -157,110 +222,19 @@ Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p>Enum for the prefix type on a token. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a6587078e07827bbbbabeae32b3ed2dd3a16466420ab71d5feae928666169b405c"></a>short_&#160;</td><td class="fielddoc"><p>Long prefix. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a6587078e07827bbbbabeae32b3ed2dd3a334c4a4c42fdb79d7ebc3e73b517e6f8"></a>none&#160;</td><td class="fielddoc"><p>Short prefix. </p>
+<p>No prefix </p>
+</td></tr>
+</table>
 
 <p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00013">13</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a8cd5ccafb2ad5067217c034ecf0c9d0a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8cd5ccafb2ad5067217c034ecf0c9d0a">&#9670;&nbsp;</a></span>default_match()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">constexpr bool arg_router::parsing::default_match </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a>&#160;</td>
-          <td class="paramname"><em>token</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>The standard implementation of the match method.</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">T</td><td>Type to implement the method for </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">token</td><td>The token to match against </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>True if token matches the long or short form name </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00208">208</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a7a3c1dab796c38e9f3801e5806c31d01"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7a3c1dab796c38e9f3801e5806c31d01">&#9670;&nbsp;</a></span>expand_arguments()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename Root &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classarg__router_1_1parsing_1_1token__list.html">token_list</a> arg_router::parsing::expand_arguments </td>
-          <td>(</td>
-          <td class="paramtype">const Root &amp;&#160;</td>
-          <td class="paramname"><em>root</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>argc</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">char *&#160;</td>
-          <td class="paramname"><em>argv</em>[]&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Takes the main function arguments and creates a <a class="el" href="classarg__router_1_1parsing_1_1token__list.html">token_list</a> from it.</p>
-<p>Collapsed short names are expanded. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">Root</td><td>Root node type </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">root</td><td>Root instance </td></tr>
-    <tr><td class="paramname">argc</td><td>Argument count </td></tr>
-    <tr><td class="paramname">argv</td><td>Argument string array </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Token list </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00186">186</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
-
-</div>
-</div>
 <a id="a71a7566d5831eeeb4c5cd1cdaad216be"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a71a7566d5831eeeb4c5cd1cdaad216be">&#9670;&nbsp;</a></span>get_token_type()</h2>
 
@@ -293,7 +267,51 @@ template&lt;typename Root &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Token type </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00482">482</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00499">499</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ae2cbfdf6379f66e446801b6a915e3144"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae2cbfdf6379f66e446801b6a915e3144">&#9670;&nbsp;</a></span>match()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr bool arg_router::parsing::match </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a>&#160;</td>
+          <td class="paramname"><em>token</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Matches <em>token</em> to <em>T</em> by comparing the token against the long, short, or none name traits.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>Type providing the long, short, or none name methods </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">token</td><td>The token to match against </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if token matches </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00036">36</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
 
 </div>
 </div>
@@ -331,7 +349,7 @@ template&lt;typename Node &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00252">252</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00071">71</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
 
 </div>
 </div>
@@ -378,7 +396,7 @@ template&lt;typename Node &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if lexicographically equal </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00372">372</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00379">379</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -425,7 +443,7 @@ template&lt;typename Node &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if lexicographically equal </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00438">438</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00445">445</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -472,7 +490,7 @@ template&lt;typename Node &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if lexicographically equal </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00346">346</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00353">353</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -519,7 +537,7 @@ template&lt;typename Node &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if lexicographically equal </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00411">411</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00418">418</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -566,7 +584,7 @@ template&lt;typename Node &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if lexicographically equal </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00359">359</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00366">366</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -613,7 +631,7 @@ template&lt;typename Node &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if lexicographically equal </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00424">424</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00431">431</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -660,7 +678,7 @@ template&lt;typename Node &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if lexicographically equal </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00333">333</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00340">340</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -707,7 +725,7 @@ template&lt;typename Node &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if lexicographically equal </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00320">320</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00327">327</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -754,7 +772,7 @@ template&lt;typename Node &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if lexicographically equal </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00398">398</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00405">405</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -801,7 +819,7 @@ template&lt;typename Node &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if lexicographically equal </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00384">384</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00391">391</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -847,12 +865,12 @@ template&lt;typename Node &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00285">285</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00292">292</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
 <a id="a112b9b4f768b06fdd2a81f128966e9c6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a112b9b4f768b06fdd2a81f128966e9c6">&#9670;&nbsp;</a></span>to_string() <span class="overload">[1/5]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a112b9b4f768b06fdd2a81f128966e9c6">&#9670;&nbsp;</a></span>to_string() <span class="overload">[1/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -883,12 +901,12 @@ template&lt;typename Node &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>String representation of <em>tokens</em> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00471">471</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00488">488</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
 <a id="aaf885484d51dfc84fa19704691937ff6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaf885484d51dfc84fa19704691937ff6">&#9670;&nbsp;</a></span>to_string() <span class="overload">[2/5]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aaf885484d51dfc84fa19704691937ff6">&#9670;&nbsp;</a></span>to_string() <span class="overload">[2/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -919,12 +937,12 @@ template&lt;typename Node &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>String representation of <em>view</em> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00450">450</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00457">457</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
 <a id="a8aca52a03726c89927c96ffcf3dacf47"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8aca52a03726c89927c96ffcf3dacf47">&#9670;&nbsp;</a></span>to_string() <span class="overload">[3/5]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a8aca52a03726c89927c96ffcf3dacf47">&#9670;&nbsp;</a></span>to_string() <span class="overload">[3/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -955,12 +973,12 @@ template&lt;typename Node &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>String representation of <em>view</em> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00460">460</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00467">467</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
 <a id="a75eafb76ba98b2b1a08953b4029a86ad"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a75eafb76ba98b2b1a08953b4029a86ad">&#9670;&nbsp;</a></span>to_string() <span class="overload">[4/5]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a75eafb76ba98b2b1a08953b4029a86ad">&#9670;&nbsp;</a></span>to_string() <span class="overload">[4/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -991,12 +1009,48 @@ template&lt;typename Node &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>String representation of <em>token</em> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00076">76</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00080">80</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a3e91ad1aecfc7ff6e40f0d4918d88f96"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3e91ad1aecfc7ff6e40f0d4918d88f96">&#9670;&nbsp;</a></span>to_string() <span class="overload">[5/6]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacearg__router.html#abafabad5af18e8dda89e6b568b594738">string</a> arg_router::parsing::to_string </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="namespacearg__router.html#a3d789cf2175008b4124de867a13a2edf">vector</a>&lt; <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>view</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Creates a string representation of <em>view</em>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">view</td><td>Processed tokens to convert </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>String representation of <em>view</em> </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00478">478</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
 <a id="a3f0c82064ba9f3aa78edec0f67383516"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3f0c82064ba9f3aa78edec0f67383516">&#9670;&nbsp;</a></span>to_string() <span class="overload">[5/5]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a3f0c82064ba9f3aa78edec0f67383516">&#9670;&nbsp;</a></span>to_string() <span class="overload">[6/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1027,7 +1081,7 @@ template&lt;typename Node &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>String version of <em>prefix</em> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00021">21</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00025">25</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>

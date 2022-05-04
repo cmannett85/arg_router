@@ -146,13 +146,13 @@ $(function() {
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;            <span class="stringliteral">&quot;disable&quot;</span>sv,</div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        };</div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        <span class="keyword">const</span> <span class="keyword">auto</span> match = [&amp;](<span class="keyword">const</span> <span class="keyword">auto</span>&amp; list) {</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        <span class="keyword">const</span> <span class="keyword">auto</span> <a class="code" href="namespacearg__router_1_1parsing.html#ae2cbfdf6379f66e446801b6a915e3144">match</a> = [&amp;](<span class="keyword">const</span> <span class="keyword">auto</span>&amp; list) {</div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;            <span class="keywordflow">return</span> std::find(list.begin(), list.end(), token) != list.end();</div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        };</div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        <span class="keywordflow">if</span> (match(true_tokens)) {</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="namespacearg__router_1_1parsing.html#ae2cbfdf6379f66e446801b6a915e3144">match</a>(true_tokens)) {</div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (match(false_tokens)) {</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="namespacearg__router_1_1parsing.html#ae2cbfdf6379f66e446801b6a915e3144">match</a>(false_tokens)) {</div>
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        }</div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
@@ -182,6 +182,7 @@ $(function() {
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="astructarg__router_1_1parser_html"><div class="ttname"><a href="structarg__router_1_1parser.html">arg_router::parser</a></div><div class="ttdef"><b>Definition:</b> <a href="global__parser_8hpp_source.html#l00025">global_parser.hpp:25</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1parsing_html_ae2cbfdf6379f66e446801b6a915e3144"><div class="ttname"><a href="namespacearg__router_1_1parsing.html#ae2cbfdf6379f66e446801b6a915e3144">arg_router::parsing::match</a></div><div class="ttdeci">constexpr bool match(token_type token) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="parsing_8hpp_source.html#l00036">parsing.hpp:36</a></div></div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00012">algorithm.hpp:12</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

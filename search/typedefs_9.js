@@ -1,8 +1,5 @@
 var searchData=
 [
-  ['parameters_5ftype_604',['parameters_type',['../classarg__router_1_1tree__node.html#a5a12205635e06b3b4ace0d8101419bcd',1,'arg_router::tree_node']]],
-  ['parser_5ftype_605',['parser_type',['../classarg__router_1_1policy_1_1custom__parser.html#afa60af08741106e17b21c46799dc8add',1,'arg_router::policy::custom_parser']]],
-  ['pending_5fview_5ftype_606',['pending_view_type',['../classarg__router_1_1parsing_1_1token__list.html#a93a9014911eaf2832f746ea83ee2374a',1,'arg_router::parsing::token_list']]],
-  ['phase_5ffinder_5ft_607',['phase_finder_t',['../classarg__router_1_1tree__node.html#a86e94be4e7ea24708d9b6e7240393ea1',1,'arg_router::tree_node']]],
-  ['policies_5ftype_608',['policies_type',['../classarg__router_1_1tree__node.html#aec3a4f4e8c0b7d0b7a5d911b18fb9bc3',1,'arg_router::tree_node']]]
+  ['merge_5ffn_682',['merge_fn',['../classarg__router_1_1policy_1_1multi__stage__value.html#a5a463b5dc6c149a3f5e5340886db012e',1,'arg_router::policy::multi_stage_value']]],
+  ['multi_5fstage_5fvalue_5ftag_683',['multi_stage_value_tag',['../namespacearg__router_1_1policy.html#aaf62073f7e7389b9719a824f5a42e9ef',1,'arg_router::policy']]]
 ];

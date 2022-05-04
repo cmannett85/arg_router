@@ -98,6 +98,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a38e3c2694eff6766245d22763c8a8761"><td class="memTemplParams" colspan="2">template&lt;typename Fn &gt; </td></tr>
 <tr class="memitem:a38e3c2694eff6766245d22763c8a8761"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1dependency_1_1alias__group__t.html#a38e3c2694eff6766245d22763c8a8761">match</a> (const <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a> &amp;token, const Fn &amp;visitor) const</td></tr>
 <tr class="separator:a38e3c2694eff6766245d22763c8a8761"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8cf3c47f9bac90fb97fbc45f434d58ea"><td class="memTemplParams" colspan="2">template&lt;typename... Parents&gt; </td></tr>
+<tr class="memitem:a8cf3c47f9bac90fb97fbc45f434d58ea"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1dependency_1_1alias__group__t.html#a8cf3c47f9bac90fb97fbc45f434d58ea">pre_parse</a> (<a class="el" href="namespacearg__router.html#a3d789cf2175008b4124de867a13a2edf">vector</a>&lt; <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a> &gt; &amp;args, <a class="el" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a> &amp;tokens, const Parents &amp;... parents) const</td></tr>
+<tr class="separator:a8cf3c47f9bac90fb97fbc45f434d58ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename... Params&gt;<br />
@@ -228,6 +231,76 @@ template&lt;typename Fn &gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>Match result </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="alias__group_8hpp_source.html#l00112">112</a> of file <a class="el" href="alias__group_8hpp_source.html">alias_group.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a8cf3c47f9bac90fb97fbc45f434d58ea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8cf3c47f9bac90fb97fbc45f434d58ea">&#9670;&nbsp;</a></span>pre_parse()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename... Params&gt; </div>
+<div class="memtemplate">
+template&lt;typename... Parents&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="classarg__router_1_1dependency_1_1alias__group__t.html">arg_router::dependency::alias_group_t</a>&lt; Params &gt;::pre_parse </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacearg__router.html#a3d789cf2175008b4124de867a13a2edf">vector</a>&lt; <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>args</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a> &amp;&#160;</td>
+          <td class="paramname"><em>tokens</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Parents &amp;...&#160;</td>
+          <td class="paramname"><em>parents</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Propagates the pre-parse phase to the child, returns on a positive return from one of them</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Parents</td><td>Pack of parent tree nodes in ascending ancestry order </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">args</td><td>Unprocessed tokens </td></tr>
+    <tr><td class="paramname">tokens</td><td>Processed tokens </td></tr>
+    <tr><td class="paramname">parents</td><td>Parent node instances </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if the leading tokens in <em>args</em> are consumable by one of the child nodes </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classarg__router_1_1parse__exception.html">parse_exception</a></td><td>Thrown if any of the child pre-parse implementations have returned an exception </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="alias__group_8hpp_source.html#l00140">140</a> of file <a class="el" href="alias__group_8hpp_source.html">alias_group.hpp</a>.</p>
 
 </div>
 </div>

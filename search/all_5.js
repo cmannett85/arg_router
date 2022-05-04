@@ -1,10 +1,13 @@
 var searchData=
 [
-  ['generate_5fhelp_88',['generate_help',['../classarg__router_1_1help__t.html#af1100691f04dea590ea57ca74ad8e485',1,'arg_router::help_t']]],
-  ['get_89',['get',['../classarg__router_1_1utility_1_1compile__time__string.html#a850e76a6f8f7cb1805a4303773532cbf',1,'arg_router::utility::compile_time_string']]],
-  ['get_5fdefault_5fvalue_90',['get_default_value',['../classarg__router_1_1policy_1_1default__value.html#ae843cec33bcf06510073203b1eab883e',1,'arg_router::policy::default_value']]],
-  ['get_5ftoken_5ftype_91',['get_token_type',['../namespacearg__router_1_1parsing.html#a71a7566d5831eeeb4c5cd1cdaad216be',1,'arg_router::parsing']]],
-  ['get_5ftype_92',['get_type',['../namespacearg__router_1_1traits.html#a583085d5317dee19e8b9b31591b8a22a',1,'arg_router::traits']]],
-  ['get_5fvalue_5ftype_93',['get_value_type',['../namespacearg__router_1_1traits.html#ac436bd1d964e7c584c5d40af98b95283',1,'arg_router::traits']]],
-  ['git_5frevision_94',['git_revision',['../namespacearg__router.html#a398d5ec8547fe9e1ad7dee8af88c2310',1,'arg_router']]]
+  ['find_81',['find',['../classarg__router_1_1tree__node.html#a3d51367f87893bddee652f0895680e1e',1,'arg_router::tree_node']]],
+  ['find_5fspecialisation_82',['find_specialisation',['../classarg__router_1_1algorithm_1_1find__specialisation.html',1,'arg_router::algorithm']]],
+  ['find_5fspecialisation_5fv_83',['find_specialisation_v',['../namespacearg__router_1_1algorithm.html#a6ec178bdd8a13b8cce0b4accb53bceab',1,'arg_router::algorithm']]],
+  ['first_5ftype_84',['first_type',['../structarg__router_1_1algorithm_1_1unzip.html#af3593f060d40b2d3e779adfe94c834e1',1,'arg_router::algorithm::unzip']]],
+  ['fixed_5fcount_85',['fixed_count',['../namespacearg__router_1_1policy.html#aad881925b6e3abed579787e83350a734',1,'arg_router::policy']]],
+  ['flag_86',['flag',['../namespacearg__router.html#a4d74ea4c448ba12c0cc059bb5d8fad4c',1,'arg_router']]],
+  ['flag_5ft_87',['flag_t',['../classarg__router_1_1flag__t.html',1,'arg_router::flag_t&lt; Policies &gt;'],['../classarg__router_1_1flag__t.html#a88f6ae7314dbbc313abd2507cd36c692',1,'arg_router::flag_t::flag_t()']]],
+  ['flatten_5fhelp_88',['flatten_help',['../namespacearg__router_1_1policy.html#ab67db91587c1eb1c3979e028c82fd6e4',1,'arg_router::policy']]],
+  ['flatten_5fhelp_5ft_89',['flatten_help_t',['../structarg__router_1_1policy_1_1flatten__help__t.html',1,'arg_router::policy']]],
+  ['fn_90',['fn',['../structarg__router_1_1policy_1_1validation_1_1parent__index__pair__type.html#ab14c4cbe5c91e4591936d08edeea7f59',1,'arg_router::policy::validation::parent_index_pair_type']]]
 ];
