@@ -35,6 +35,13 @@ namespace arg_router
  * policies facilitate this by supporting a series of common methods that are
  * detected by nodes at compile-time (see @ref policy namespace's
  * <TT>has_*_method</TT> traits types).
+ *
+ * All policies that provide a phase method where multiple policies can provide
+ * an implementation (i.e. @em not parse, routing, or missing phases) should
+ * hold a `priority` static member that provides the order policies should be
+ * called in (when applicable).  The lower the number, the lower the priority.
+ * Policies in the library vary from 0 to 1000, where 0 means that the priority
+ * is irrelevant.  If no priority is specified, 0 is assumed.
  * 
  * @subsubsection policies_basic_parsing_phase_pre Pre-Parse Phase
  * As the name suggests this is a phase that performs some kind of input
@@ -97,6 +104,8 @@ namespace arg_router
  * The two standard policies that implement this phase are policy::default_value
  * and policy::required_t.  They either return a user-defined default value or
  * throw an exception respectively.
+ *
+ * @note Only one policy used by a tree_node can support a missing phase.
  * 
  * @section policies_defining Defining a Policy
  * Because the parse tree nodes derive from (typically) multiple policies so

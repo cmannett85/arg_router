@@ -2,6 +2,7 @@
 
 #include "arg_router/policy/min_max_value.hpp"
 #include "arg_router/policy/validator.hpp"
+#include "arg_router/policy/value_separator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 #include "test_helpers.hpp"
@@ -266,20 +267,20 @@ BOOST_AUTO_TEST_CASE(anonymous_triple_flag_parse_test)
                        "Unknown argument: --foo"},
             std::tuple{std::vector{"foo", "--flag1", "--flag2", "-t", "--foo"},
                        std::array{false, false, false},
-                       "Unknown argument: --foo"},
+                       "Unhandled arguments: --foo"},
             std::tuple{std::vector{"foo", "--flag2", "-t", "--flag1", "--foo"},
                        std::array{false, false, false},
-                       "Unknown argument: --foo"},
+                       "Unhandled arguments: --foo"},
             std::tuple{std::vector{"foo", "--flag1", "--flag1"},
                        std::array{false, false, false},
-                       "Argument has already been set: --flag1"},
+                       "Repeated argument: --flag1"},
             std::tuple{std::vector{"foo", "-t", "-t"},
                        std::array{false, false, false},
-                       "Argument has already been set: -t"},
+                       "Repeated argument: -t"},
             std::tuple{
                 std::vector{"foo", "--flag2", "-t", "--flag1", "--flag2"},
                 std::array{false, false, false},
-                "Argument has already been set: --flag2"},
+                "Repeated argument: --flag2"},
         });
 }
 
@@ -357,7 +358,7 @@ BOOST_AUTO_TEST_CASE(named_single_mode_parse_test)
                                    "-t",
                                    "--foo"},
                        std::array{false, false, false},
-                       "Unknown argument: --foo"},
+                       "Unhandled arguments: --foo"},
             std::tuple{std::vector{"foo",
                                    "my-mode",
                                    "--flag2",
@@ -365,13 +366,13 @@ BOOST_AUTO_TEST_CASE(named_single_mode_parse_test)
                                    "--flag1",
                                    "--foo"},
                        std::array{false, false, false},
-                       "Unknown argument: --foo"},
+                       "Unhandled arguments: --foo"},
             std::tuple{std::vector{"foo", "my-mode", "--flag1", "--flag1"},
                        std::array{false, false, false},
-                       "Argument has already been set: --flag1"},
+                       "Repeated argument: --flag1"},
             std::tuple{std::vector{"foo", "my-mode", "-t", "-t"},
                        std::array{false, false, false},
-                       "Argument has already been set: -t"},
+                       "Repeated argument: -t"},
             std::tuple{std::vector{"foo",
                                    "my-mode",
                                    "--flag2",
@@ -379,7 +380,7 @@ BOOST_AUTO_TEST_CASE(named_single_mode_parse_test)
                                    "--flag1",
                                    "--flag2"},
                        std::array{false, false, false},
-                       "Argument has already been set: --flag2"},
+                       "Repeated argument: --flag2"},
             std::tuple{std::vector{"foo", "--flag1"},
                        std::array{true, false, false},
                        "Unknown argument: --flag1"},
@@ -1039,16 +1040,18 @@ BOOST_AUTO_TEST_CASE(counting_flag_test)
                        "Maximum value exceeded: -b"},
             std::tuple{std::vector{"foo", "mode3", "-bbab"},
                        std::tuple{true, std::size_t{3}},
-                       ""},
+                       "Dependent argument missing (needs to be before the "
+                       "requiring token on the command line): -a"},
             std::tuple{std::vector{"foo", "mode3", "-abbb"},
                        std::tuple{true, std::size_t{3}},
                        ""},
-            std::tuple{std::vector{"foo", "mode3", "-bbba"},
-                       std::tuple{true, std::size_t{3}},
+            std::tuple{std::vector{"foo", "mode3", "-a"},
+                       std::tuple{true, std::size_t{0}},
                        ""},
             std::tuple{std::vector{"foo", "mode3", "-bbb"},
                        std::tuple{false, std::size_t{0}},
-                       "Dependent argument missing: -a"},
+                       "Dependent argument missing (needs to be before the "
+                       "requiring token on the command line): -a"},
         });
 }
 

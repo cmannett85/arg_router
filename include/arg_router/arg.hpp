@@ -72,12 +72,21 @@ public:
     constexpr bool match(const parsing::token_type& token,
                          const Fn& visitor) const
     {
-        if (parsing::default_match<arg_t>(token)) {
+        if (parsing::match<arg_t>(token)) {
             visitor(*this);
             return true;
         }
 
         return false;
+    }
+
+    template <typename... Parents>
+    [[nodiscard]] bool pre_parse(vector<parsing::token_type>& args,
+                                 parsing::token_list& tokens,
+                                 const Parents&... parents) const
+
+    {
+        return parent_type::pre_parse(args, tokens, *this, parents...);
     }
 
     /** Parse function.
@@ -102,14 +111,6 @@ public:
 
         // Remove this node's name
         tokens.mark_as_processed();
-
-        // Pre-parse
-        utility::tuple_type_iterator<policies_type>([&](auto i) {
-            using policy_type = std::tuple_element_t<i, policies_type>;
-            if constexpr (policy::has_pre_parse_phase_method_v<policy_type>) {
-                this->policy_type::pre_parse_phase(tokens, *this, parents...);
-            }
-        });
 
         // Parse the value token
         auto result = parent_type::template parse<value_type>(

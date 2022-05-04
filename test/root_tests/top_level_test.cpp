@@ -1,6 +1,7 @@
 /* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
 
 #include "arg_router/policy/validator.hpp"
+#include "arg_router/policy/value_separator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 #include "test_helpers.hpp"
@@ -149,7 +150,7 @@ BOOST_AUTO_TEST_CASE(single_arg_separator_parse_test)
                                  }}),
                         policy::validation::default_validator);
 
-    auto f = [&](auto args, auto expected, auto fail_message) {
+    auto f = [&](auto args, auto expected, std::string fail_message) {
         result.reset();
 
         try {
@@ -162,17 +163,16 @@ BOOST_AUTO_TEST_CASE(single_arg_separator_parse_test)
         }
     };
 
-    test::data_set(
-        f,
-        {
-            std::tuple{std::vector{"foo", "--hello=42"}, 42, ""s},
-            std::tuple{std::vector{"foo", "--hello", "42"},
-                       0,
-                       "Expected to find value separator '=' in \"--hello\""s},
-            std::tuple{std::vector{"foo", "--hello="},
-                       0,
-                       "Unable to find value after separator: --hello="s},
-        });
+    test::data_set(f,
+                   {
+                       std::tuple{std::vector{"foo", "--hello=42"}, 42, ""},
+                       std::tuple{std::vector{"foo", "--hello", "42"},
+                                  0,
+                                  "Unknown argument: --hello"},
+                       std::tuple{std::vector{"foo", "--hello="},
+                                  0,
+                                  "Unknown argument: --hello="},
+                   });
 }
 
 BOOST_AUTO_TEST_CASE(single_string_arg_parse_test)
@@ -409,7 +409,6 @@ My foo is good for you
                                policy::description<S_("Flag1 description")>),
                           flag(policy::long_name<S_("flag2")>),
                           arg<int>(policy::long_name<S_("arg1")>,
-                                   policy::value_separator<'='>,
                                    policy::description<S_("Arg1 description")>),
                           flag(policy::short_name<'b'>,
                                policy::description<S_("b description")>),
@@ -422,7 +421,7 @@ My foo is good for you
     --help,-h             Help output
         --flag1,-a        Flag1 description
         --flag2
-        --arg1=<Value>    Arg1 description
+        --arg1 <Value>    Arg1 description
         -b                b description
 )"s}});
 }

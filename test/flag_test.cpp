@@ -25,9 +25,12 @@ BOOST_AUTO_TEST_CASE(is_tree_node_test)
 
 BOOST_AUTO_TEST_CASE(policies_test)
 {
-    auto f = flag(policy::long_name<S_("hello")>, policy::short_name<'H'>);
+    [[maybe_unused]] auto f =
+        flag(policy::long_name<S_("hello")>, policy::short_name<'H'>);
     static_assert(f.long_name() == "hello"sv, "Long name test fail");
     static_assert(f.short_name() == "H", "Short name test fail");
+    static_assert(f.minimum_count() == 0, "Minimum count test fail");
+    static_assert(f.maximum_count() == 0, "Maximum count test fail");
 }
 
 BOOST_AUTO_TEST_CASE(match_test)
@@ -48,23 +51,25 @@ BOOST_AUTO_TEST_CASE(match_test)
     test::data_set(
         f,
         std::tuple{
-            std::tuple{flag(policy::long_name<S_("hello")>),
-                       parsing::token_type{parsing::prefix_type::LONG, "hello"},
-                       true},
+            std::tuple{
+                flag(policy::long_name<S_("hello")>),
+                parsing::token_type{parsing::prefix_type::long_, "hello"},
+                true},
             std::tuple{flag(policy::short_name<'h'>),
-                       parsing::token_type{parsing::prefix_type::SHORT, "h"},
+                       parsing::token_type{parsing::prefix_type::short_, "h"},
                        true},
             std::tuple{
                 flag(policy::long_name<S_("hello")>, policy::short_name<'h'>),
-                parsing::token_type{parsing::prefix_type::SHORT, "h"},
+                parsing::token_type{parsing::prefix_type::short_, "h"},
                 true},
             std::tuple{
                 flag(policy::long_name<S_("hello")>, policy::short_name<'h'>),
-                parsing::token_type{parsing::prefix_type::LONG, "hello"},
+                parsing::token_type{parsing::prefix_type::long_, "hello"},
                 true},
-            std::tuple{flag(policy::long_name<S_("goodbye")>),
-                       parsing::token_type{parsing::prefix_type::LONG, "hello"},
-                       false}});
+            std::tuple{
+                flag(policy::long_name<S_("goodbye")>),
+                parsing::token_type{parsing::prefix_type::long_, "hello"},
+                false}});
 }
 
 BOOST_AUTO_TEST_CASE(parse_test)
@@ -75,7 +80,7 @@ BOOST_AUTO_TEST_CASE(parse_test)
                  auto expected_tokens,
                  auto expected_result,
                  auto expected_router_hit,
-                 auto... parents) {
+                 const auto&... parents) {
         router_hit = false;
         const auto result = node.parse(tokens, parents...);
         BOOST_CHECK_EQUAL(result, expected_result);
@@ -87,32 +92,16 @@ BOOST_AUTO_TEST_CASE(parse_test)
         f,
         std::tuple{
             std::tuple{flag(policy::short_name<'h'>),
-                       parsing::token_list{{parsing::prefix_type::SHORT, "h"}},
+                       parsing::token_list{{parsing::prefix_type::short_, "h"}},
                        parsing::token_list{},
                        true,
                        false},
-            std::tuple{flag(policy::short_name<'a'>,
-                            policy::alias(policy::short_name<'h'>,
-                                          policy::short_name<'g'>)),
-                       parsing::token_list{{parsing::prefix_type::SHORT, "a"}},
-                       parsing::token_list{
-                           {parsing::prefix_type::SHORT, "h"},
-                           {parsing::prefix_type::SHORT, "g"},
-                       },
-                       true,
-                       false,
-                       mode(flag(policy::short_name<'a'>,
-                                 policy::alias(policy::short_name<'h'>,
-                                               policy::short_name<'g'>)),
-                            flag(policy::short_name<'h'>),
-                            flag(policy::short_name<'g'>),
-                            policy::router{[](bool, bool, bool) {}})},
             std::tuple{flag(policy::short_name<'a'>,  //
                             policy::router{[&](bool result) {
                                 BOOST_CHECK(result);
                                 router_hit = true;
                             }}),
-                       parsing::token_list{{parsing::prefix_type::SHORT, "a"}},
+                       parsing::token_list{{parsing::prefix_type::short_, "a"}},
                        parsing::token_list{},
                        true,
                        true}});
@@ -240,26 +229,6 @@ int main() {
 }
     )",
         "Flag must not have a none name policy");
-}
-
-BOOST_AUTO_TEST_CASE(must_not_have_value_separator_test)
-{
-    test::death_test_compile(
-        R"(
-#include "arg_router/flag.hpp"
-#include "arg_router/policy/long_name.hpp"
-#include "arg_router/policy/value_separator.hpp"
-#include "arg_router/utility/compile_time_string.hpp"
-
-using namespace arg_router;
-
-int main() {
-    auto f = flag(policy::long_name<S_("hello")>,
-                  policy::value_separator<'='>);
-    return 0;
-}
-    )",
-        "Flag must not have a value separator policy");
 }
 
 BOOST_AUTO_TEST_CASE(parse_policy_test)

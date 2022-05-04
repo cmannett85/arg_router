@@ -3,14 +3,11 @@
 #pragma once
 
 #include "arg_router/algorithm.hpp"
-#include "arg_router/exception.hpp"
 #include "arg_router/parsing.hpp"
 #include "arg_router/policy/no_result_value.hpp"
 #include "arg_router/policy/policy.hpp"
 #include "arg_router/utility/tree_recursor.hpp"
 #include "arg_router/utility/tuple_iterator.hpp"
-
-#include <boost/mp11/bind.hpp>
 
 namespace arg_router
 {
@@ -30,6 +27,9 @@ public:
     /** Tuple of policy types. */
     using aliased_policies_type = std::tuple<std::decay_t<AliasedPolicies>...>;
 
+    /** Policy priority. */
+    constexpr static auto priority = std::size_t{100};
+
     /** Constructor.
      *
      * @param policies Policy instances
@@ -42,27 +42,30 @@ public:
     /** Duplicates any value tokens as aliases of other nodes.
      * 
      * The token duplication mechanism has two approaches, depending on the
-     * owning node's properties:
-     * - If the node has a fixed count:
-     *   - If the count is zero then it is flag-like so the aliased names are
-     *     just inserted into @a tokens after the current token
-     *   - If the count is greater than zero then it is argument-like and the
-     *     aliased names are inserted, each followed by @em count tokens
-     *     (i.e. the values), after the current @em count tokens
-     * - Otherwise the node is assumed to have no value tokens (i.e. flag-like).
-     *   If this is dangerous for your node type (e.g. is has a variable length
-     *   of value tokens), then aliasing should be banned for it at
-     *   validator-level
+     * owning node's fixed count:
+     *  - If the count is zero then it is flag-like so the aliased names are
+     *    just appended to the processed part of @a tokens
+     *  - If the count is greater than zero then it is argument-like and the
+     *    aliased names are appended to the processed part of @a tokens,
+     *    each followed by @em count tokens (i.e. the values)
+     *  
+     * In either circumstance the original tokens are removed as they are for
+     * the alias, rather than the @em aliased.
      *
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
-     * @param tokens Token list as received from the owning node
-     * @param parents Parents instances pack
-     * @exception parse_exception Thrown if @a view does not have enough tokens
-     * in for the required value count
+     * @param tokens Currently processed tokens
+     * @param processed_tokens Processed tokens performed by previous pre-parse
+     * phases calls on other nodes
+     * @param parents Parent node instances
+     * @return Either true if successful, or a parse_exception if there too
+     * few value tokens
      */
     template <typename... Parents>
-    void pre_parse_phase(parsing::token_list& tokens,
-                         [[maybe_unused]] const Parents&... parents) const
+    [[nodiscard]] parsing::pre_parse_result pre_parse_phase(
+        parsing::dynamic_token_adapter& tokens,
+        [[maybe_unused]] parsing::token_list::pending_view_type
+            processed_tokens,
+        [[maybe_unused]] const Parents&... parents) const
     {
         using node_type = boost::mp11::mp_first<std::tuple<Parents...>>;
         static_assert(
@@ -84,32 +87,70 @@ public:
         static_assert(cyclic_dependency_checker<targets, mode_type>::value,
                       "Cyclic dependency detected");
 
-        constexpr auto count = node_fixed_count<node_type>();
-
         // Verify that all the targets have the same count
+        constexpr auto count = node_fixed_count<node_type>();
         check_target_counts<count, targets>();
 
-        const auto view = tokens.pending_view();
-        if (count > view.size()) {
-            throw parse_exception{
+        // +1 because the node must be named
+        if ((count + 1) > tokens.size()) {
+            return parse_exception{
                 "Too few values for alias, needs " + std::to_string(count),
                 parsing::node_token_type<node_type>()};
         }
 
-        auto new_tokens = parsing::token_list{};
-        new_tokens.reserve(std::tuple_size_v<targets> * (count + 1));
+        // Because this node's job is to insert extra tokens, and therefore
+        // isn't a 'real' node in itself, it needs to return
+        // skip_node_but_use_tokens so the owning tree node keeps the
+        // side-effects (i.e. the updated lists) but doesn't check the label
+        // token.  We don't want label checking in the owning tree_node because
+        // we need to _replace_ the alias label token with the aliased tokens,
+        // so any label check against this node will fail.  However, we do need
+        // to do a label check _here_, otherwise this aliasing will occur
+        // everytime the pre-parse is called - even on tokens that do not belong
+        // to this aliased node!
+        {
+            auto alias_label = *tokens.begin();
+            if (alias_label.prefix == parsing::prefix_type::none) {
+                alias_label = parsing::get_token_type(alias_label.name);
+            }
+
+            if (!parsing::match<node_type>(alias_label)) {
+                return parsing::pre_parse_action::skip_node;
+            }
+        }
+
+        // Attempt a transfer so we can guarantee that the original tokens are
+        // in the processed container (this is a no-op if they already are)
+        tokens.transfer(tokens.begin() + count);
+
+        tokens.processed().reserve(tokens.processed().size() +
+                                   (std::tuple_size_v<targets> * (count + 1)));
+
         utility::tuple_type_iterator<targets>([&](auto i) {
             using target_type = std::tuple_element_t<i, targets>;
-            new_tokens.add_pending(parsing::node_token_type<target_type>());
+            const auto tt = parsing::node_token_type<target_type>();
 
+            // Copy the aliased tokens to the front of the unprocessed
+            auto it = tokens.processed().insert(
+                tokens.processed().begin() + ((i + 1) * (count + 1)),
+                tt);
+
+            auto value_it = tokens.begin();
             for (auto j = 0u; j < count; ++j) {
-                new_tokens.add_pending(view[j]);
+                // Pre-increment the value iterator so we skip over the
+                // label token
+                tokens.processed().insert(++it, *(++value_it));
             }
         });
 
-        tokens.insert_pending(view.begin() + count,
-                              new_tokens.pending_view().begin(),
-                              new_tokens.pending_view().end());
+        // Now remove the original tokens as they refer to the aliased node
+        tokens.processed().erase(tokens.processed().begin(),
+                                 tokens.processed().begin() + count + 1);
+
+        // The owning node's name checker will fail us now (because we removed
+        // this node's label token), but we still want to keep the processed
+        // and unprocessed container changes for later processing
+        return parsing::pre_parse_action::skip_node_but_use_tokens;
     }
 
 private:
@@ -130,46 +171,21 @@ private:
     template <typename NodeType>
     [[nodiscard]] constexpr static std::size_t node_fixed_count() noexcept
     {
-        // Does it have a fixed count?
-        if constexpr (traits::has_minimum_count_method_v<NodeType> &&
-                      traits::has_maximum_count_method_v<NodeType>) {
-            if constexpr (NodeType::minimum_count() ==
-                          NodeType::maximum_count()) {
-                return NodeType::minimum_count();
-            }
-        }
+        static_assert(
+            traits::has_minimum_count_method_v<NodeType> &&
+                traits::has_maximum_count_method_v<NodeType>,
+            "Aliased nodes must have minimum and maximum count methods");
+        static_assert(NodeType::minimum_count() == NodeType::maximum_count(),
+                      "Aliased nodes must have a fixed count");
 
-        // Otherwise assume flag-like
-        return 0;
+        return NodeType::minimum_count();
     }
 
-    // Find the nearest parent with a routing policy
+    // Find the nearest parent with a routing policy. By definition the aliased
+    // cannot be the owner, so filter that out
     template <typename... Parents>
-    struct nearest_mode {
-        // By definition the aliased cannot be the owner, so filter that out
-        using parent_tuple = boost::mp11::mp_pop_front<std::tuple<Parents...>>;
-
-        template <typename Parent>
-        struct policy_finder {
-            constexpr static bool value =
-                boost::mp11::mp_find_if_q<
-                    typename Parent::policies_type,
-                    boost::mp11::mp_bind<policy::has_routing_phase_method,
-                                         boost::mp11::_1>>::value !=
-                std::tuple_size_v<typename Parent::policies_type>;
-        };
-
-        using parent_index =
-            boost::mp11::mp_find_if<parent_tuple, policy_finder>;
-
-        using type =
-            boost::mp11::mp_eval_if_c<parent_index::value ==
-                                          std::tuple_size_v<parent_tuple>,
-                                      void,
-                                      boost::mp11::mp_at,
-                                      parent_tuple,
-                                      parent_index>;
-    };
+    using nearest_mode = policy::nearest_mode_like<
+        boost::mp11::mp_pop_front<std::tuple<Parents...>>>;
 
     // Starting from ModeType, recurse down through the tree and find all the
     // nodes referred to in AliasPolicies

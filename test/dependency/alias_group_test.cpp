@@ -13,9 +13,47 @@
 #include "arg_router/utility/compile_time_string.hpp"
 
 #include "test_helpers.hpp"
+#include "test_printers.hpp"
 
 using namespace arg_router;
 namespace ard = arg_router::dependency;
+
+namespace
+{
+template <typename... Policies>
+class stub_node : public tree_node<Policies...>
+{
+public:
+    using value_type = bool;
+
+    constexpr explicit stub_node(Policies... policies) :
+        tree_node<Policies...>{std::move(policies)...}
+    {
+    }
+
+    template <typename... Parents>
+    bool pre_parse(std::vector<parsing::token_type>& args,
+                   parsing::token_list& tokens,
+                   const Parents&...) const
+    {
+        BOOST_CHECK_EQUAL(args, expected_args);
+        BOOST_CHECK_EQUAL(tokens, expected_tokens);
+
+        if (return_value) {
+            args = new_args;
+            tokens = new_tokens;
+        }
+
+        return return_value;
+    }
+
+    std::vector<parsing::token_type> expected_args;
+    std::vector<parsing::token_type> new_args;
+    parsing::token_list expected_tokens;
+    parsing::token_list new_tokens;
+    bool return_value;
+};
+}  // namespace
 
 BOOST_AUTO_TEST_SUITE(dependency_suite)
 
@@ -107,20 +145,89 @@ BOOST_AUTO_TEST_CASE(match_test)
                 ard::alias_group(arg<double>(policy::long_name<S_("arg1")>),
                                  arg<double>(policy::long_name<S_("arg2")>),
                                  policy::required),
-                parsing::token_type{parsing::prefix_type::LONG, "arg1"},
+                parsing::token_type{parsing::prefix_type::long_, "arg1"},
                 traits::integral_constant<std::size_t{0}>{}},
             std::tuple{
                 ard::alias_group(arg<double>(policy::long_name<S_("arg1")>),
                                  arg<double>(policy::long_name<S_("arg2")>),
                                  policy::required),
-                parsing::token_type{parsing::prefix_type::LONG, "arg2"},
+                parsing::token_type{parsing::prefix_type::long_, "arg2"},
                 traits::integral_constant<std::size_t{1}>{}},
             std::tuple{
                 ard::alias_group(arg<double>(policy::long_name<S_("arg1")>),
                                  arg<double>(policy::long_name<S_("arg2")>),
                                  policy::required),
-                parsing::token_type{parsing::prefix_type::LONG, "arg3"},
+                parsing::token_type{parsing::prefix_type::long_, "arg3"},
                 traits::integral_constant<std::size_t{42}>{}},
+        });
+}
+
+BOOST_AUTO_TEST_CASE(pre_parse_test)
+{
+    auto f = [](auto node,
+                auto child_index,
+                auto expected_args,
+                auto new_args,
+                auto expected_tokens,
+                auto new_tokens,
+                auto expected_result) {
+        auto& expected_child = std::get<child_index>(node.children());
+        expected_child.expected_args = expected_args;
+        expected_child.new_args = new_args;
+        expected_child.expected_tokens = expected_tokens;
+        expected_child.new_tokens = new_tokens;
+        expected_child.return_value = expected_result;
+
+        auto& not_expected_child =
+            std::get<(child_index == 0 ? 1 : 0)>(node.children());
+        not_expected_child.expected_args = expected_args;
+        not_expected_child.expected_tokens = expected_tokens;
+        not_expected_child.return_value = false;
+
+        const auto result = node.pre_parse(expected_args, expected_tokens);
+
+        BOOST_CHECK_EQUAL(result, expected_result);
+        BOOST_CHECK_EQUAL(new_tokens, expected_tokens);
+        BOOST_CHECK_EQUAL(expected_args, new_args);
+    };
+
+    test::data_set(
+        f,
+        std::tuple{
+            std::tuple{
+                ard::alias_group(stub_node{policy::long_name<S_("arg1")>},
+                                 stub_node{policy::long_name<S_("arg2")>},
+                                 policy::required),
+                traits::integral_constant<0>{},
+                std::vector<parsing::token_type>{
+                    {parsing::prefix_type::none, "--arg1"}},
+                std::vector<parsing::token_type>{},
+                parsing::token_list{},
+                parsing::token_list{{parsing::prefix_type::long_, "arg1"}},
+                true},
+            std::tuple{
+                ard::alias_group(stub_node{policy::long_name<S_("arg1")>},
+                                 stub_node{policy::long_name<S_("arg2")>},
+                                 policy::required),
+                traits::integral_constant<1>{},
+                std::vector<parsing::token_type>{
+                    {parsing::prefix_type::none, "--arg2"}},
+                std::vector<parsing::token_type>{},
+                parsing::token_list{},
+                parsing::token_list{{parsing::prefix_type::long_, "arg2"}},
+                true},
+            std::tuple{
+                ard::alias_group(stub_node{policy::long_name<S_("arg1")>},
+                                 stub_node{policy::long_name<S_("arg2")>},
+                                 policy::required),
+                traits::integral_constant<0>{},
+                std::vector<parsing::token_type>{
+                    {parsing::prefix_type::none, "bad"}},
+                std::vector<parsing::token_type>{
+                    {parsing::prefix_type::none, "bad"}},
+                parsing::token_list{},
+                parsing::token_list{},
+                false},
         });
 }
 
@@ -165,8 +272,8 @@ BOOST_AUTO_TEST_CASE(help_test)
                                  arg<double>(policy::long_name<S_("arg2")>),
                                  policy::required),
                 std::vector{
-                    std::pair{"┌ --arg1", ""},
-                    std::pair{"└ --arg2", ""},
+                    std::pair{"┌ --arg1 <Value>", ""},
+                    std::pair{"└ --arg2 <Value>", ""},
                 }},
             std::tuple{
                 ard::alias_group(arg<double>(policy::long_name<S_("arg1")>),
@@ -174,8 +281,8 @@ BOOST_AUTO_TEST_CASE(help_test)
                                              policy::description<S_("A desc")>),
                                  policy::required),
                 std::vector{
-                    std::pair{"┌ --arg1", ""},
-                    std::pair{"└ -b", "A desc"},
+                    std::pair{"┌ --arg1 <Value>", ""},
+                    std::pair{"└ -b <Value>", "A desc"},
                 }},
             std::tuple{
                 ard::alias_group(arg<bool>(policy::long_name<S_("arg1")>),
@@ -186,9 +293,9 @@ BOOST_AUTO_TEST_CASE(help_test)
                                            policy::description<S_("A desc")>),
                                  policy::required),
                 std::vector{
-                    std::pair{"┌ --arg1", ""},
+                    std::pair{"┌ --arg1 <Value>", ""},
                     std::pair{"├ --flag,-f", "Hello"},
-                    std::pair{"└ -b", "A desc"},
+                    std::pair{"└ -b <Value>", "A desc"},
                 }},
         });
 }
@@ -289,31 +396,6 @@ int main() {
 }
     )",
         "basic_one_of_t must not have a none name policy");
-}
-
-BOOST_AUTO_TEST_CASE(must_not_have_value_separator_test)
-{
-    test::death_test_compile(
-        R"(
-#include "arg_router/arg.hpp"
-#include "arg_router/dependency/alias_group.hpp"
-#include "arg_router/policy/default_value.hpp"
-#include "arg_router/policy/long_name.hpp"
-#include "arg_router/policy/value_separator.hpp"
-#include "arg_router/utility/compile_time_string.hpp"
-
-using namespace arg_router;
-namespace ard = arg_router::dependency;
-
-int main() {
-    auto f = ard::alias_group(arg<double>(policy::long_name<S_("arg1")>),
-                              arg<double>(policy::long_name<S_("arg2")>),
-                              policy::value_separator<'='>,
-                              policy::default_value{42});
-    return 0;
-}
-    )",
-        "basic_one_of_t must not have a value separator policy");
 }
 
 BOOST_AUTO_TEST_CASE(all_children_must_be_named_test)

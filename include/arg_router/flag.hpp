@@ -5,6 +5,7 @@
 #include "arg_router/parsing.hpp"
 #include "arg_router/policy/default_value.hpp"
 #include "arg_router/policy/min_max_count.hpp"
+#include "arg_router/policy/short_form_expander.hpp"
 #include "arg_router/tree_node.hpp"
 
 namespace arg_router
@@ -13,28 +14,27 @@ namespace arg_router
  *
  * A flag is a boolean indicator, it has no value assigned on the command line,
  * its presence represents a positive boolean value.  It has a default value of
- * false and a fixed count of 0.
- * 
- * Flags with shortnames can be concatenated or 'collapsed' on the command line,
- * e.g.
- * @code
- * foo -a -b -c
- * foo -abc
- * @endcode
+ * false and a fixed count of 0.  By default this type does not do short-form
+ * name collapsing, add policy::short_form_expander to the policies during
+ * construction to enable that.
  * 
  * Create with the flag(Policies...) function for consistency with arg_t.
  * @tparam Policies Pack of policies that define its behaviour
  */
 template <typename... Policies>
 class flag_t :
-    public tree_node<policy::default_value<bool>, std::decay_t<Policies>...>
+    public tree_node<policy::default_value<bool>,
+                     std::decay_t<decltype(policy::fixed_count<0>)>,
+                     std::decay_t<Policies>...>
 {
     static_assert(
         policy::is_all_policies_v<std::tuple<std::decay_t<Policies>...>>,
         "Flags must only contain policies (not other nodes)");
 
     using parent_type =
-        tree_node<policy::default_value<bool>, std::decay_t<Policies>...>;
+        tree_node<policy::default_value<bool>,
+                  std::decay_t<decltype(policy::fixed_count<0>)>,
+                  std::decay_t<Policies>...>;
 
     static_assert(traits::has_long_name_method_v<flag_t> ||
                       traits::has_short_name_method_v<flag_t>,
@@ -43,8 +43,6 @@ class flag_t :
                   "Flag must not have a display name policy");
     static_assert(!traits::has_none_name_method_v<flag_t>,
                   "Flag must not have a none name policy");
-    static_assert(!traits::has_value_separator_method_v<flag_t>,
-                  "Flag must not have a value separator policy");
 
 public:
     using typename parent_type::policies_type;
@@ -62,7 +60,9 @@ public:
      * @param policies Policy instances
      */
     constexpr explicit flag_t(Policies... policies) noexcept :
-        parent_type{policy::default_value<bool>{false}, std::move(policies)...}
+        parent_type{policy::default_value<bool>{false},
+                    policy::fixed_count<0>,
+                    std::move(policies)...}
     {
     }
 
@@ -83,12 +83,21 @@ public:
     constexpr bool match(const parsing::token_type& token,
                          const Fn& visitor) const
     {
-        if (parsing::default_match<flag_t>(token)) {
+        if (parsing::match<flag_t>(token)) {
             visitor(*this);
             return true;
         }
 
         return false;
+    }
+
+    template <typename... Parents>
+    [[nodiscard]] bool pre_parse(vector<parsing::token_type>& args,
+                                 parsing::token_list& tokens,
+                                 const Parents&... parents) const
+
+    {
+        return parent_type::pre_parse(args, tokens, *this, parents...);
     }
 
     /** Parse function.
@@ -101,18 +110,10 @@ public:
      */
     template <typename... Parents>
     value_type parse(parsing::token_list& tokens,
-                     const Parents&... parents) const
+                     [[maybe_unused]] const Parents&... parents) const
     {
         // Remove this node's name
         tokens.mark_as_processed();
-
-        // Pre-parse
-        utility::tuple_type_iterator<policies_type>([&](auto i) {
-            using policy_type = std::tuple_element_t<i, policies_type>;
-            if constexpr (policy::has_pre_parse_phase_method_v<policy_type>) {
-                this->policy_type::pre_parse_phase(tokens, *this, parents...);
-            }
-        });
 
         // Presence of the flag yields a constant true
         const auto result = true;
@@ -140,6 +141,13 @@ private:
 /** Constructs a flag_t with the given policies.
  *
  * This is used for similarity with arg_t.
+ * 
+ * Flags with shortnames can be concatenated or 'collapsed' on the command line,
+ * e.g.
+ * @code
+ * foo -a -b -c
+ * foo -abc
+ * @endcode
  * @tparam Policies Pack of policies that define its behaviour
  * @param policies Pack of policy instances
  * @return Flag instance
@@ -147,6 +155,14 @@ private:
 template <typename... Policies>
 [[nodiscard]] constexpr auto flag(Policies... policies) noexcept
 {
-    return flag_t{std::move(policies)...};
+    // Add the short-form expander if one of the policies implements the short
+    // name method
+    if constexpr (boost::mp11::mp_any_of<
+                      std::tuple<std::decay_t<Policies>...>,
+                      traits::has_short_name_method>::value) {
+        return flag_t{policy::short_form_expander, std::move(policies)...};
+    } else {
+        return flag_t{std::move(policies)...};
+    }
 }
 }  // namespace arg_router

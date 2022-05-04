@@ -66,23 +66,25 @@ BOOST_AUTO_TEST_CASE(match_test)
     test::data_set(
         f,
         std::tuple{
-            std::tuple{help(policy::long_name<S_("hello")>),
-                       parsing::token_type{parsing::prefix_type::LONG, "hello"},
-                       true},
+            std::tuple{
+                help(policy::long_name<S_("hello")>),
+                parsing::token_type{parsing::prefix_type::long_, "hello"},
+                true},
             std::tuple{help(policy::short_name<'h'>),
-                       parsing::token_type{parsing::prefix_type::SHORT, "h"},
+                       parsing::token_type{parsing::prefix_type::short_, "h"},
                        true},
             std::tuple{
                 help(policy::long_name<S_("hello")>, policy::short_name<'h'>),
-                parsing::token_type{parsing::prefix_type::SHORT, "h"},
+                parsing::token_type{parsing::prefix_type::short_, "h"},
                 true},
             std::tuple{
                 help(policy::long_name<S_("hello")>, policy::short_name<'h'>),
-                parsing::token_type{parsing::prefix_type::LONG, "hello"},
+                parsing::token_type{parsing::prefix_type::long_, "hello"},
                 true},
-            std::tuple{help(policy::long_name<S_("goodbye")>),
-                       parsing::token_type{parsing::prefix_type::LONG, "hello"},
-                       false}});
+            std::tuple{
+                help(policy::long_name<S_("goodbye")>),
+                parsing::token_type{parsing::prefix_type::long_, "hello"},
+                false}});
 }
 
 BOOST_AUTO_TEST_CASE(generate_help_test)
@@ -127,6 +129,32 @@ My foo is good for you
     --flag2
     -b                b description
     --arg1=<Value>
+    --help,-h         Help output
+)"s},
+            std::tuple{
+                mock_root{
+                    flag(policy::long_name<S_("flag1")>,
+                         policy::short_name<'a'>,
+                         policy::description<S_("Flag1 description")>),
+                    flag(policy::long_name<S_("flag2")>),
+                    flag(policy::short_name<'b'>,
+                         policy::description<S_("b description")>),
+                    arg<int>(policy::long_name<S_("arg1")>),
+                    help(policy::long_name<S_("help")>,
+                         policy::short_name<'h'>,
+                         policy::description<S_("Help output")>,
+                         policy::program_name<S_("foo")>,
+                         policy::program_version<S_("v3.14")>,
+                         policy::program_intro<S_("My foo is good for you")>)},
+                traits::integral_constant<4>{},
+                R"(foo v3.14
+
+My foo is good for you
+
+    --flag1,-a        Flag1 description
+    --flag2
+    -b                b description
+    --arg1 <Value>
     --help,-h         Help output
 )"s},
             std::tuple{
@@ -349,7 +377,7 @@ BOOST_AUTO_TEST_CASE(parse_test)
                          policy::router{
                              [&](auto stream) { output = stream.str(); }})},
                 traits::integral_constant<3>{},
-                parsing::token_list{{parsing::prefix_type::LONG, "help"}},
+                parsing::token_list{{parsing::prefix_type::long_, "help"}},
                 ""s,
                 R"(foo v3.14
 
@@ -377,7 +405,7 @@ My foo is good for you
                          policy::router{
                              [&](auto stream) { output = stream.str(); }})},
                 traits::integral_constant<3>{},
-                parsing::token_list{{parsing::prefix_type::SHORT, "h"}},
+                parsing::token_list{{parsing::prefix_type::short_, "h"}},
                 ""s,
                 R"(foo v3.14
 
@@ -411,8 +439,8 @@ My foo is good for you
                               policy::short_name<'c'>,
                               policy::description<S_("Flag3 description")>))},
                 traits::integral_constant<0>{},
-                parsing::token_list{{parsing::prefix_type::SHORT, "h"},
-                                    {parsing::prefix_type::NONE, "mode1"}},
+                parsing::token_list{{parsing::prefix_type::short_, "h"},
+                                    {parsing::prefix_type::none, "mode1"}},
                 ""s,
                 R"(foo v3.14
 
@@ -446,8 +474,8 @@ mode1             Mode1 description
                               policy::short_name<'c'>,
                               policy::description<S_("Flag3 description")>))},
                 traits::integral_constant<0>{},
-                parsing::token_list{{parsing::prefix_type::SHORT, "h"},
-                                    {parsing::prefix_type::NONE, "mode2"}},
+                parsing::token_list{{parsing::prefix_type::short_, "h"},
+                                    {parsing::prefix_type::none, "mode2"}},
                 ""s,
                 R"(foo v3.14
 
@@ -473,8 +501,8 @@ mode2
                          policy::router{
                              [&](auto stream) { output = stream.str(); }})},
                 traits::integral_constant<3>{},
-                parsing::token_list{{parsing::prefix_type::LONG, "help"},
-                                    {parsing::prefix_type::SHORT, "b"}},
+                parsing::token_list{{parsing::prefix_type::long_, "help"},
+                                    {parsing::prefix_type::short_, "b"}},
                 ""s,
                 R"(foo v3.14
 
@@ -505,9 +533,9 @@ My foo is good for you
                               policy::short_name<'c'>,
                               policy::description<S_("Flag3 description")>))},
                 traits::integral_constant<0>{},
-                parsing::token_list{{parsing::prefix_type::SHORT, "h"},
-                                    {parsing::prefix_type::NONE, "mode1"},
-                                    {parsing::prefix_type::LONG, "flag2"}},
+                parsing::token_list{{parsing::prefix_type::short_, "h"},
+                                    {parsing::prefix_type::none, "mode1"},
+                                    {parsing::prefix_type::long_, "flag2"}},
                 ""s,
                 R"(foo v3.14
 
@@ -532,8 +560,8 @@ My foo is good for you
                          policy::router{
                              [&](auto stream) { output = stream.str(); }})},
                 traits::integral_constant<3>{},
-                parsing::token_list{{parsing::prefix_type::LONG, "help"},
-                                    {parsing::prefix_type::LONG, "foo"}},
+                parsing::token_list{{parsing::prefix_type::long_, "help"},
+                                    {parsing::prefix_type::long_, "foo"}},
                 "Unknown argument: --foo"s,
                 ""s},
             std::tuple{
@@ -559,9 +587,9 @@ My foo is good for you
                               policy::short_name<'c'>,
                               policy::description<S_("Flag3 description")>))},
                 traits::integral_constant<0>{},
-                parsing::token_list{{parsing::prefix_type::SHORT, "h"},
-                                    {parsing::prefix_type::NONE, "mode1"},
-                                    {parsing::prefix_type::LONG, "foo"}},
+                parsing::token_list{{parsing::prefix_type::short_, "h"},
+                                    {parsing::prefix_type::none, "mode1"},
+                                    {parsing::prefix_type::long_, "foo"}},
                 "Unknown argument: --foo"s,
                 ""s},
         });
@@ -609,46 +637,6 @@ int main() {
         "Help must not have a none name policy");
 }
 
-BOOST_AUTO_TEST_CASE(must_not_have_value_separator_test)
-{
-    test::death_test_compile(
-        R"(
-#include "arg_router/help.hpp"
-#include "arg_router/policy/long_name.hpp"
-#include "arg_router/policy/value_separator.hpp"
-#include "arg_router/utility/compile_time_string.hpp"
-
-using namespace arg_router;
-
-int main() {
-    auto f = help(policy::long_name<S_("hello")>,
-                  policy::value_separator<'='>);
-    return 0;
-}
-    )",
-        "Help must not have a value separator policy");
-}
-
-BOOST_AUTO_TEST_CASE(must_not_have_pre_parse_phase_test)
-{
-    test::death_test_compile(
-        R"(
-#include "arg_router/help.hpp"
-#include "arg_router/policy/long_name.hpp"
-#include "arg_router/policy/min_max_count.hpp"
-#include "arg_router/utility/compile_time_string.hpp"
-
-using namespace arg_router;
-
-int main() {
-    const auto m = help(policy::long_name<S_("help")>,
-                        policy::max_count<3>);
-    return 0;
-}
-    )",
-        "Help only supports policies with a routing phase");
-}
-
 BOOST_AUTO_TEST_CASE(must_not_have_parse_phase_test)
 {
     test::death_test_compile(
@@ -666,7 +654,7 @@ int main() {
     return 0;
 }
     )",
-        "Help only supports policies with a routing phase");
+        "Help only supports policies with pre-parse and routing phases");
 }
 
 BOOST_AUTO_TEST_CASE(must_not_have_validation_phase_test)
@@ -686,7 +674,7 @@ int main() {
     return 0;
 }
     )",
-        "Help only supports policies with a routing phase");
+        "Help only supports policies with pre-parse and routing phases");
 }
 
 BOOST_AUTO_TEST_CASE(must_not_have_missing_phase_test)
@@ -706,7 +694,7 @@ int main() {
     return 0;
 }
     )",
-        "Help only supports policies with a routing phase");
+        "Help only supports policies with pre-parse and routing phases");
 }
 
 BOOST_AUTO_TEST_CASE(generate_help_node_must_have_help_data_test)

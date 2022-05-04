@@ -2,33 +2,64 @@
 
 #pragma once
 
+#include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/tree_node.hpp"
 
 namespace arg_router
 {
+namespace detail
+{
+template <typename... Policies>
+class add_missing_min_max_policy
+{
+    template <typename Policy>
+    struct has_min_max_t {
+        constexpr static bool value =
+            traits::has_minimum_count_method_v<Policy> &&
+            traits::has_maximum_count_method_v<Policy>;
+    };
+
+    using policies_tuple = std::tuple<std::decay_t<Policies>...>;
+    using unbounded_policy_type = std::decay_t<decltype(policy::min_count<0>)>;
+
+public:
+    constexpr static auto has_min_max =
+        boost::mp11::mp_find_if<policies_tuple, has_min_max_t>::value !=
+        std::tuple_size_v<policies_tuple>;
+
+    using type = std::conditional_t<
+        has_min_max,
+        boost::mp11::mp_rename<policies_tuple, tree_node>,
+        boost::mp11::mp_rename<
+            boost::mp11::mp_push_front<policies_tuple, unbounded_policy_type>,
+            tree_node>>;
+};
+}  // namespace detail
+
 /** Represents a positional argument on the command line that has potentially
  * multiple values that need parsing.
  *
+ * If no policy implementing <TT>minimum_count()</TT> and
+ * <TT>maximum_count()</TT> methods is used (e.g. policy::min_max_count_t), then
+ * an unbounded policy::min_max_count_t is prepended to the policies internally.
  * @tparam T Argument value type, must have a <TT>push_back(..)</TT> method
  * @tparam Policies Pack of policies that define its behaviour
  */
 template <typename T, typename... Policies>
-class positional_arg_t : public tree_node<std::decay_t<Policies>...>
+class positional_arg_t :
+    public detail::add_missing_min_max_policy<Policies...>::type
 {
     static_assert(
         policy::is_all_policies_v<std::tuple<std::decay_t<Policies>...>>,
         "Positional args must only contain policies (not other nodes)");
 
-    using parent_type = tree_node<std::decay_t<Policies>...>;
+    using parent_type =
+        typename detail::add_missing_min_max_policy<Policies...>::type;
 
     template <std::size_t N>
     constexpr static bool has_fixed_count = []() {
-        if constexpr (traits::has_minimum_count_method_v<parent_type> &&
-                      traits::has_maximum_count_method_v<parent_type>) {
-            return (parent_type::minimum_count() == N) &&
-                   (parent_type::maximum_count() == N);
-        }
-        return false;
+        return (parent_type::minimum_count() == N) &&
+               (parent_type::maximum_count() == N);
     }();
 
     static_assert(!has_fixed_count<0>, "Cannot have a fixed count of zero");
@@ -43,8 +74,6 @@ class positional_arg_t : public tree_node<std::decay_t<Policies>...>
                   "Positional arg must not have a short name policy");
     static_assert(!traits::has_none_name_method_v<positional_arg_t>,
                   "Positional arg must not have a none name policy");
-    static_assert(!traits::has_value_separator_method_v<positional_arg_t>,
-                  "Positional arg must not have a value separator policy");
 
 public:
     using typename parent_type::policies_type;
@@ -81,8 +110,21 @@ public:
      *
      * @param policies Policy instances
      */
-    constexpr explicit positional_arg_t(Policies... policies) noexcept :
+    template <auto has_min_max =
+                  detail::add_missing_min_max_policy<Policies...>::has_min_max>
+    constexpr explicit positional_arg_t(
+        Policies... policies,
+        std::enable_if_t<has_min_max>* = nullptr) noexcept :
         parent_type{std::move(policies)...}
+    {
+    }
+
+    template <auto has_min_max =
+                  detail::add_missing_min_max_policy<Policies...>::has_min_max>
+    constexpr explicit positional_arg_t(
+        Policies... policies,
+        std::enable_if_t<!has_min_max>* = nullptr) noexcept :
+        parent_type{policy::min_count<0>, std::move(policies)...}
     {
     }
 
@@ -91,7 +133,7 @@ public:
      * This is only used if the node doesn't have a policy that implements a
      * <TT>maximum_count()</TT> method, which means that all tokens in @a args
      * will be transferred to @a result with a prefix type of 
-     * parsing::prefix_type::NONE.
+     * parsing::prefix_type::none.
      * @param args Command line arguments, remove the tokens that would be
      * handled by this node
      * @param result The token_list result, add tokens removed from @a args into
@@ -103,7 +145,7 @@ public:
     {
         result.reserve(result.pending_view().size() + args.size());
         for (auto arg : args) {
-            result.emplace_pending(parsing::prefix_type::NONE, arg);
+            result.emplace_pending(parsing::prefix_type::none, arg);
         }
         args = {};
     }
@@ -128,8 +170,7 @@ public:
                          const Fn& visitor,
                          const std::optional<T>& result = {}) const
     {
-        if constexpr (traits::has_push_back_method_v<T> &&
-                      traits::has_maximum_count_method_v<parent_type>) {
+        if constexpr (traits::has_push_back_method_v<T>) {
             if (result &&
                 (std::size(*result) >= parent_type::maximum_count())) {
                 return false;
@@ -143,6 +184,15 @@ public:
 
         visitor(*this);
         return true;
+    }
+
+    template <typename... Parents>
+    [[nodiscard]] bool pre_parse(vector<parsing::token_type>& args,
+                                 parsing::token_list& tokens,
+                                 const Parents&... parents) const
+
+    {
+        return parent_type::pre_parse(args, tokens, *this, parents...);
     }
 
     /** Parse function.
@@ -159,18 +209,10 @@ public:
     value_type parse(parsing::token_list& tokens,
                      const Parents&... parents) const
     {
-        // Pre-parse
-        utility::tuple_type_iterator<policies_type>([&](auto i) {
-            using policy_type = std::tuple_element_t<i, policies_type>;
-            if constexpr (policy::has_pre_parse_phase_method_v<policy_type>) {
-                this->policy_type::pre_parse_phase(tokens, *this, parents...);
-            }
-        });
-
-        auto view = tokens.pending_view();
-        if constexpr (traits::has_maximum_count_method_v<positional_arg_t>) {
-            view = view.subspan(0, positional_arg_t::maximum_count());
-        }
+        const auto tokens_to_consume =
+            std::min(tokens.pending_view().size(),
+                     positional_arg_t::maximum_count());
+        const auto view = tokens.pending_view().subspan(0, tokens_to_consume);
 
         auto result = value_type{};
         if constexpr (traits::has_push_back_method_v<value_type>) {

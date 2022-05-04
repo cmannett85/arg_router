@@ -119,12 +119,12 @@ BOOST_AUTO_TEST_CASE(routing_phase_test)
                        5},
             std::tuple{
                 [&]() { fn_hit = true; },
-                parsing::token_list{{parsing::prefix_type::LONG, "test1"}},
+                parsing::token_list{{parsing::prefix_type::long_, "test1"}},
                 "Unhandled arguments: --test1"s},
             std::tuple{
                 [&]() { fn_hit = true; },
-                parsing::token_list{{parsing::prefix_type::LONG, "test1"},
-                                    {parsing::prefix_type::SHORT, "t"}},
+                parsing::token_list{{parsing::prefix_type::long_, "test1"},
+                                    {parsing::prefix_type::short_, "t"}},
                 "Unhandled arguments: --test1, -t"s},
         });
 }

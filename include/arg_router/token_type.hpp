@@ -10,7 +10,11 @@ namespace arg_router
 namespace parsing
 {
 /** Enum for the prefix type on a token. */
-enum class prefix_type : std::uint8_t { LONG, SHORT, NONE };
+enum class prefix_type : std::uint8_t {
+    long_,   /// Long prefix
+    short_,  /// Short prefix
+    none     /// No prefix
+};
 
 /** Creates a string version of @a prefix.
  *
@@ -21,8 +25,8 @@ enum class prefix_type : std::uint8_t { LONG, SHORT, NONE };
 [[nodiscard]] constexpr std::string_view to_string(prefix_type prefix) noexcept
 {
     switch (prefix) {
-    case prefix_type::LONG: return config::long_prefix;
-    case prefix_type::SHORT: return config::short_prefix;
+    case prefix_type::long_: return config::long_prefix;
+    case prefix_type::short_: return config::short_prefix;
     default: return "";
     }
 }
@@ -93,7 +97,7 @@ struct token_type {
  */
 class token_list
 {
-    using base_type = std::vector<token_type, config::allocator<token_type>>;
+    using base_type = vector<token_type>;
 
 public:
     /** token_type alias. */
@@ -204,7 +208,10 @@ public:
      *
      * @param value Element to add
      */
-    inline void add_pending(const value_type& value) { data_.push_back(value); }
+    inline void push_back_pending(const value_type& value)
+    {
+        data_.push_back(value);
+    }
 
     /** Create one element in-place and add to the end of the container.
      *
@@ -463,6 +470,16 @@ template <typename ViewType>
     return detail::token_list_view_to_string(view);
 }
 
+/** Creates a string representation of @a view.
+ * 
+ * @param view Processed tokens to convert
+ * @return String representation of @a view
+ */
+[[nodiscard]] inline string to_string(const vector<token_type>& view)
+{
+    return detail::token_list_view_to_string(view);
+}
+
 /** Creates a string representation of the pending view of @a tokens.
  * 
  * @param tokens Tokens to convert
@@ -485,12 +502,12 @@ template <typename ViewType>
 
     if (token.substr(0, long_prefix.size()) == long_prefix) {
         token.remove_prefix(long_prefix.size());
-        return {prefix_type::LONG, token};
+        return {prefix_type::long_, token};
     } else if (token.substr(0, short_prefix.size()) == short_prefix) {
         token.remove_prefix(short_prefix.size());
-        return {prefix_type::SHORT, token};
+        return {prefix_type::short_, token};
     } else {
-        return {prefix_type::NONE, token};
+        return {prefix_type::none, token};
     }
 }
 }  // namespace parsing

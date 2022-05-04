@@ -6,11 +6,13 @@
 #include "arg_router/config.hpp"
 #include "arg_router/global_parser.hpp"
 #include "arg_router/list.hpp"
+#include "arg_router/parsing.hpp"
+#include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/policy/policy.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 #include "arg_router/utility/tuple_iterator.hpp"
 
-#include <limits>
+#include <iostream>
 
 namespace arg_router
 {
@@ -24,6 +26,23 @@ class tree_node :
         boost::mp11::mp_filter<policy::is_policy,
                                std::tuple<std::decay_t<Params>...>>>
 {
+    template <typename LHS, typename RHS>
+    struct priority_order {
+        template <typename T>
+        struct get_priority_or_default {
+            constexpr static std::size_t value = []() {
+                if constexpr (policy::has_priority_v<T>) {
+                    return T::priority;
+                } else {
+                    return 0;
+                }
+            }();
+        };
+
+        constexpr static auto value = get_priority_or_default<LHS>::value >
+                                      get_priority_or_default<RHS>::value;
+    };
+
 public:
     /** The policies and child node types. */
     using parameters_type = std::tuple<std::decay_t<Params>...>;
@@ -31,6 +50,10 @@ public:
     /** A tuple of all the policy types in parameters_type. */
     using policies_type =
         boost::mp11::mp_filter<policy::is_policy, parameters_type>;
+
+    /** policies_type ordered by priority */
+    using priority_ordered_policies_type =
+        boost::mp11::mp_sort<policies_type, priority_order>;
 
     /** A tuple of all the child tree node types in parameters_type,
      * with any lists expanded
@@ -45,6 +68,14 @@ public:
             std::tuple_size_v<std::decay_t<decltype(list_expander(
                 std::declval<std::decay_t<Params>>()...))>>,
         "tree_node constructor can only accept other tree_nodes and policies");
+
+    /** Evaluates to true if this node has a name token that appears on the
+     * command line.
+     */
+    constexpr static auto is_named =
+        traits::has_short_name_method_v<tree_node> ||
+        traits::has_long_name_method_v<tree_node> ||
+        traits::has_none_name_method_v<tree_node>;
 
     /** Finds a policy that the @a PolicyChecker predicate passes.
      *
@@ -134,6 +165,12 @@ public:
         any_phases<ValueType, PolicyCheckers...>::value;
 
     /** Returns a reference to the children.
+     *
+     * @return Children
+     */
+    [[nodiscard]] children_type& children() noexcept { return children_; }
+
+    /** Const overload.
      *
      * @return Children
      */
@@ -229,6 +266,17 @@ protected:
     public:
         [[nodiscard]] constexpr static auto value_separator_suffix()
         {
+            constexpr bool fixed_count_of_one = []() {
+                if constexpr (traits::has_minimum_count_method_v<tree_node> &&
+                              traits::has_maximum_count_method_v<tree_node>) {
+                    return (tree_node::minimum_count() ==
+                            tree_node::maximum_count()) &&
+                           (tree_node::minimum_count() == 1);
+                }
+
+                return false;
+            }();
+
             [[maybe_unused]] constexpr auto separator_index =
                 boost::mp11::mp_find_if<
                     policies_type,
@@ -240,6 +288,8 @@ protected:
                                          policies_type>::value_separator();
 
                 return S_(value_separator){} + S_("<Value>"){};
+            } else if constexpr (fixed_count_of_one) {
+                return S_(" <Value>"){};
             } else {
                 return S_(""){};
             }
@@ -343,9 +393,8 @@ protected:
                 constexpr auto max_count = []() {
                     if constexpr (traits::has_maximum_count_method_v<
                                       tree_node>) {
-                        constexpr auto max_value = std::numeric_limits<
-                            decltype(tree_node::maximum_count())>::max();
-                        if constexpr (tree_node::maximum_count() == max_value) {
+                        if constexpr (tree_node::maximum_count() ==
+                                      policy::min_count<0>.maximum_count()) {
                             return S_("N"){};
                         } else {
                             return utility::convert_integral_to_cts_t<
@@ -389,6 +438,119 @@ protected:
         using children = std::tuple<>;
     };
 
+    /** Constructor.
+     *
+     * @param params Policy and child instances
+     */
+    constexpr explicit tree_node(Params... params) noexcept :
+        traits::unpack_and_derive<policies_type>{
+            common_filter<policy::is_policy>(params...)},
+        children_(common_filter_tuple<is_tree_node>(
+            list_expander(std::move(params)...)))
+    {
+    }
+
+    /** Default pre_parse implementation.
+     *
+     * This implementation simply iterates over the pre-parse phase implementing
+     * policies, and uses the results to update @a args and @a tokens.
+     * 
+     * @note The implementation does not prepend <TT>*this</TT> into @a parents,
+     * so derived types are expected to reimplement this so the first parent
+     * is the correct type (remember there are no virtual methods in this
+     * library)
+     * @tparam Parents Pack of parent tree nodes in ascending ancestry order
+     * @param args Unprocessed tokens
+     * @param tokens Processed tokens
+     * @param parents Parent node instances
+     * @return True if the leading tokens in @a args are consumable by this node
+     * @exception parse_exception Thrown if any of the policies' pre-parse
+     * implementations have returned an exception
+     */
+    template <typename... Parents>
+    [[nodiscard]] bool pre_parse(vector<parsing::token_type>& args,
+                                 parsing::token_list& tokens,
+                                 const Parents&... parents) const
+    {
+        auto result = vector<parsing::token_type>{};
+        auto tmp_args = args;
+        auto adapter = parsing::dynamic_token_adapter{result, tmp_args};
+
+        auto match =
+            parsing::pre_parse_result{parsing::pre_parse_action::valid_node};
+        utility::tuple_type_iterator<
+            priority_ordered_policies_type>([&](auto i) {
+            using policy_type =
+                std::tuple_element_t<i, priority_ordered_policies_type>;
+            if constexpr (policy::has_pre_parse_phase_method_v<policy_type>) {
+                if (match == parsing::pre_parse_action::skip_node) {
+                    return;
+                }
+
+                // Keep the skip_node_but_use_tokens state if later policies
+                // return valid_node
+                const auto keep_tokens =
+                    match ==
+                    parsing::pre_parse_action::skip_node_but_use_tokens;
+                match =
+                    this->policy_type::pre_parse_phase(adapter,
+                                                       tokens.pending_view(),
+                                                       parents...);
+                if (keep_tokens &&
+                    (match == parsing::pre_parse_action::valid_node)) {
+                    match = parsing::pre_parse_action::skip_node_but_use_tokens;
+                }
+            }
+        });
+
+        // If we have a result and it is false, then exit early.  We need to
+        // wait until after name checking is (possibly) performed to throw an
+        // exception, otherwise a parse-stopping exception could be thrown when
+        // the target of the token isn't even this node
+        if (match == parsing::pre_parse_action::skip_node) {
+            return false;
+        }
+
+        // Check the first token against the names (if the node is named of
+        // course)
+        if (is_named &&
+            (match != parsing::pre_parse_action::skip_node_but_use_tokens)) {
+            // If the node is named but there are no tokens, then take the first
+            // from args.  If args is empty, then return false
+            if (result.empty()) {
+                if (tmp_args.empty()) {
+                    return false;
+                }
+                result.push_back(tmp_args.front());
+                tmp_args.erase(tmp_args.begin());
+            }
+
+            // The first token may not have been processed, so convert
+            auto& first_token = result.front();
+            if (first_token.prefix == parsing::prefix_type::none) {
+                first_token = parsing::get_token_type(first_token.name);
+            }
+
+            // And then test it is correct unless we are skipping
+            if (!parsing::match<tree_node>(first_token)) {
+                return false;
+            }
+        }
+
+        // If the policy checking returned an exception, now is the time to
+        // throw it
+        match.throw_exception();
+
+        // Update args and tokens as we have a successful match
+        tokens.reserve(tokens.pending_view().size() + result.size());
+        tokens.insert_pending(tokens.pending_view().end(),
+                              result.begin(),
+                              result.end());
+        args = tmp_args;
+
+        return match != parsing::pre_parse_action::skip_node;
+    }
+
     /** Generic parse call, uses a policy that supports the parse phase if
      * present, or the global parser.
      *
@@ -412,6 +574,13 @@ protected:
                                         typename finder_type::finder>::value  //
              <= 1),
             "Only zero or one policies supporting a parse phase is supported");
+        static_assert(
+            (boost::mp11::mp_count_if_q<
+                 policies_type,
+                 typename phase_finder<policy::has_missing_phase_method,
+                                       ValueType>::finder>::value <= 1),
+            "Only zero or one policies supporting a missing phase is "
+            "supported");
 
         if constexpr (std::is_void_v<policy_type>) {
             return parser<ValueType>::parse(token);
@@ -420,19 +589,6 @@ protected:
                 token,
                 parents...);
         }
-    }
-
-protected:
-    /** Constructor.
-     *
-     * @param params Policy and child instances
-     */
-    constexpr explicit tree_node(Params... params) noexcept :
-        traits::unpack_and_derive<policies_type>{
-            common_filter<policy::is_policy>(params...)},
-        children_(common_filter_tuple<is_tree_node>(
-            list_expander(std::move(params)...)))
-    {
     }
 
 private:
