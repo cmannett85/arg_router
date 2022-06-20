@@ -1,6 +1,7 @@
 var searchData=
 [
-  ['value_650',['value',['../classarg__router_1_1algorithm_1_1find__specialisation.html#a399a35709f16adde41ada25ef848514c',1,'arg_router::algorithm::find_specialisation::value()'],['../structarg__router_1_1algorithm_1_1has__specialisation.html#ae8c9d4f0bca69019ca564eb0bd0e4353',1,'arg_router::algorithm::has_specialisation::value()']]],
-  ['value_5fseparator_651',['value_separator',['../namespacearg__router_1_1policy.html#a91d73d78aa19f0189ea82fcd0ac61b00',1,'arg_router::policy']]],
-  ['version_5fstring_652',['version_string',['../namespacearg__router.html#af4cd92a6007eabf135ad3732ab648d66',1,'arg_router']]]
+  ['short_5fform_5fexpander_657',['short_form_expander',['../namespacearg__router_1_1policy.html#a81a4ab36b8c2048a8c7ec0429c98f23e',1,'arg_router::policy']]],
+  ['short_5fname_658',['short_name',['../namespacearg__router_1_1policy.html#a5eeeaadd8d711b8a761c57fbbc8c312c',1,'arg_router::policy']]],
+  ['short_5fprefix_659',['short_prefix',['../namespacearg__router_1_1config.html#a46080eba5c23480d20901c2c412a8eed',1,'arg_router::config']]],
+  ['supports_5fstatic_5fcast_5fconversion_5fv_660',['supports_static_cast_conversion_v',['../namespacearg__router_1_1traits.html#a297f44147f20027fdaa4eed223980213',1,'arg_router::traits']]]
 ];

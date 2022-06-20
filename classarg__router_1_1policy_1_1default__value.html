@@ -88,8 +88,6 @@ Public Types</h2></td></tr>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a2eb6d4062fd6aedfd256dd277ae0c390"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1default__value.html#a2eb6d4062fd6aedfd256dd277ae0c390">default_value</a> (<a class="el" href="classarg__router_1_1policy_1_1default__value.html#a608c8c207395438c1e56aa52d5d6225d">value_type</a> value) noexcept</td></tr>
 <tr class="separator:a2eb6d4062fd6aedfd256dd277ae0c390"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae843cec33bcf06510073203b1eab883e"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1default__value.html#ae843cec33bcf06510073203b1eab883e">get_default_value</a> () const noexcept -&gt; std::conditional_t&lt; <a class="el" href="namespacearg__router_1_1config.html#a78e160dd9f602656e0ebb5a4833402a4">config::l1_cache_size</a>() &gt;=sizeof(<a class="el" href="classarg__router_1_1policy_1_1default__value.html#a608c8c207395438c1e56aa52d5d6225d">value_type</a>), <a class="el" href="classarg__router_1_1policy_1_1default__value.html#a608c8c207395438c1e56aa52d5d6225d">value_type</a>, const <a class="el" href="classarg__router_1_1policy_1_1default__value.html#a608c8c207395438c1e56aa52d5d6225d">value_type</a> &amp; &gt;</td></tr>
-<tr class="separator:ae843cec33bcf06510073203b1eab883e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0abb970a4d5cb9f606a8b26cdd9feefc"><td class="memTemplParams" colspan="2">template&lt;typename ValueType , typename... Parents&gt; </td></tr>
 <tr class="memitem:a0abb970a4d5cb9f606a8b26cdd9feefc"><td class="memTemplItemLeft" align="right" valign="top">constexpr ValueType&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1default__value.html#a0abb970a4d5cb9f606a8b26cdd9feefc">missing_phase</a> ([[maybe_unused]] const Parents &amp;... parents) const noexcept</td></tr>
 <tr class="separator:a0abb970a4d5cb9f606a8b26cdd9feefc"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -171,40 +169,6 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ae843cec33bcf06510073203b1eab883e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae843cec33bcf06510073203b1eab883e">&#9670;&nbsp;</a></span>get_default_value()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">constexpr auto <a class="el" href="classarg__router_1_1policy_1_1default__value.html">arg_router::policy::default_value</a>&lt; T &gt;::get_default_value </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const -&gt; std::conditional_t&lt;<a class="el" href="namespacearg__router_1_1config.html#a78e160dd9f602656e0ebb5a4833402a4">config::l1_cache_size</a>() &gt;= sizeof(<a class="el" href="classarg__router_1_1policy_1_1default__value.html#a608c8c207395438c1e56aa52d5d6225d">value_type</a>),
-                              <a class="el" href="classarg__router_1_1policy_1_1default__value.html#a608c8c207395438c1e56aa52d5d6225d">value_type</a>,
-                              const <a class="el" href="classarg__router_1_1policy_1_1default__value.html#a608c8c207395438c1e56aa52d5d6225d">value_type</a>&amp;&gt;
-    </td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Returns the default value.</p>
-<dl class="section return"><dt>Returns</dt><dd>Default value, a reference to it if the object is larger than a cache line </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="default__value_8hpp_source.html#l00042">42</a> of file <a class="el" href="default__value_8hpp_source.html">default_value.hpp</a>.</p>
-
-</div>
-</div>
 <a id="a0abb970a4d5cb9f606a8b26cdd9feefc"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0abb970a4d5cb9f606a8b26cdd9feefc">&#9670;&nbsp;</a></span>missing_phase()</h2>
 
@@ -248,7 +212,7 @@ template&lt;typename ValueType , typename... Parents&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Default value </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="default__value_8hpp_source.html#l00060">60</a> of file <a class="el" href="default__value_8hpp_source.html">default_value.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="default__value_8hpp_source.html#l00047">47</a> of file <a class="el" href="default__value_8hpp_source.html">default_value.hpp</a>.</p>
 
 </div>
 </div>

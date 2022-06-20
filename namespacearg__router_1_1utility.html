@@ -84,6 +84,8 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1utility_1_1compile__time__optional.html">compile_time_optional</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1utility_1_1compile__time__string.html">compile_time_string</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structarg__router_1_1utility_1_1convert__integral__to__cts.html">convert_integral_to_cts</a></td></tr>
@@ -94,7 +96,9 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1utility_1_1result.html">result</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structarg__router_1_1utility_1_1tree__type__recursor.html">tree_type_recursor</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structarg__router_1_1utility_1_1tree__type__recursor__collector.html">tree_type_recursor_collector</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1utility_1_1unsafe__any__t.html">unsafe_any_t</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
@@ -108,18 +112,23 @@ Typedefs</h2></td></tr>
 <tr class="memitem:a432ca5a24df3c55882c383f01f597c24"><td class="memTemplParams" colspan="2">template&lt;auto Value&gt; </td></tr>
 <tr class="memitem:a432ca5a24df3c55882c383f01f597c24"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1utility.html#a432ca5a24df3c55882c383f01f597c24">convert_integral_to_cts_t</a> = typename <a class="el" href="structarg__router_1_1utility_1_1convert__integral__to__cts.html">convert_integral_to_cts</a>&lt; Value &gt;::type</td></tr>
 <tr class="separator:a432ca5a24df3c55882c383f01f597c24"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a577bf999e7250f595ec2e43571b0714f"><td class="memTemplParams" colspan="2">template&lt;template&lt; typename... &gt; typename Visitor, typename Root &gt; </td></tr>
-<tr class="memitem:a577bf999e7250f595ec2e43571b0714f"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1utility.html#a577bf999e7250f595ec2e43571b0714f">tree_type_recursor_t</a> = typename <a class="el" href="structarg__router_1_1utility_1_1tree__type__recursor.html">tree_type_recursor</a>&lt; Visitor, Root &gt;::type</td></tr>
-<tr class="separator:a577bf999e7250f595ec2e43571b0714f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a93d08b88c1e3166652103a4208d45063"><td class="memTemplParams" colspan="2">template&lt;template&lt; typename... &gt; typename Visitor, typename Root &gt; </td></tr>
+<tr class="memitem:a93d08b88c1e3166652103a4208d45063"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1utility.html#a93d08b88c1e3166652103a4208d45063">tree_type_recursor_collector_t</a> = typename <a class="el" href="structarg__router_1_1utility_1_1tree__type__recursor__collector.html">tree_type_recursor_collector</a>&lt; Visitor, Root &gt;::type</td></tr>
+<tr class="separator:a93d08b88c1e3166652103a4208d45063"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae043ae4c53048fdf30045cf4c163db05"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1utility.html#ae043ae4c53048fdf30045cf4c163db05">unsafe_any</a> = <a class="el" href="classarg__router_1_1utility_1_1unsafe__any__t.html">unsafe_any_t</a>&lt; sizeof(std::string_view)&gt;</td></tr>
+<tr class="separator:ae043ae4c53048fdf30045cf4c163db05"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a8c2771daff65998317f1853a68d3453b"><td class="memTemplParams" colspan="2">template&lt;typename Visitor , typename Root &gt; </td></tr>
-<tr class="memitem:a8c2771daff65998317f1853a68d3453b"><td class="memTemplItemLeft" align="right" valign="top">constexpr void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1utility.html#a8c2771daff65998317f1853a68d3453b">tree_recursor</a> ()</td></tr>
-<tr class="separator:a8c2771daff65998317f1853a68d3453b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5cb15613aecdb3e4b2c497679da99e26"><td class="memTemplParams" colspan="2">template&lt;typename Visitor , typename SkipFn , typename Root &gt; </td></tr>
-<tr class="memitem:a5cb15613aecdb3e4b2c497679da99e26"><td class="memTemplItemLeft" align="right" valign="top">constexpr void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1utility.html#a5cb15613aecdb3e4b2c497679da99e26">tree_recursor</a> ()</td></tr>
-<tr class="separator:a5cb15613aecdb3e4b2c497679da99e26"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a246452797205e03f6e1e2a7f56fa140e"><td class="memTemplParams" colspan="2">template&lt;typename Visitor , typename Root &gt; </td></tr>
+<tr class="memitem:a246452797205e03f6e1e2a7f56fa140e"><td class="memTemplItemLeft" align="right" valign="top">constexpr void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1utility.html#a246452797205e03f6e1e2a7f56fa140e">tree_recursor</a> (Visitor visitor, const Root &amp;<a class="el" href="namespacearg__router.html#a911ab5ded2b36269fdec3e768450d415">root</a>)</td></tr>
+<tr class="separator:a246452797205e03f6e1e2a7f56fa140e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a2a689690e0a614358f4adb484697f7"><td class="memTemplParams" colspan="2">template&lt;typename Visitor , typename SkipFn , typename Root &gt; </td></tr>
+<tr class="memitem:a6a2a689690e0a614358f4adb484697f7"><td class="memTemplItemLeft" align="right" valign="top">constexpr void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1utility.html#a6a2a689690e0a614358f4adb484697f7">tree_type_recursor</a> ()</td></tr>
+<tr class="separator:a6a2a689690e0a614358f4adb484697f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a18af062506e86c8b5766a48f841750a8"><td class="memTemplParams" colspan="2">template&lt;typename Visitor , typename Root &gt; </td></tr>
+<tr class="memitem:a18af062506e86c8b5766a48f841750a8"><td class="memTemplItemLeft" align="right" valign="top">constexpr void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1utility.html#a18af062506e86c8b5766a48f841750a8">tree_type_recursor</a> ()</td></tr>
+<tr class="separator:a18af062506e86c8b5766a48f841750a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a99e297c7383915d8754a23f4dcfa07b5"><td class="memTemplParams" colspan="2">template&lt;typename F , typename Tuple &gt; </td></tr>
 <tr class="memitem:a99e297c7383915d8754a23f4dcfa07b5"><td class="memTemplItemLeft" align="right" valign="top">constexpr std::enable_if_t&lt; <a class="el" href="namespacearg__router_1_1traits.html#a3fb5f200575fec97170262ab4e077699">traits::is_tuple_like_v</a>&lt; std::decay_t&lt; Tuple &gt; &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1utility.html#a99e297c7383915d8754a23f4dcfa07b5">tuple_iterator</a> (F &amp;&amp;f, Tuple &amp;&amp;tuple)</td></tr>
 <tr class="separator:a99e297c7383915d8754a23f4dcfa07b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -209,8 +218,8 @@ template&lt;std::size_t N, char C&gt; </div>
 
 </div>
 </div>
-<a id="a577bf999e7250f595ec2e43571b0714f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a577bf999e7250f595ec2e43571b0714f">&#9670;&nbsp;</a></span>tree_type_recursor_t</h2>
+<a id="a93d08b88c1e3166652103a4208d45063"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a93d08b88c1e3166652103a4208d45063">&#9670;&nbsp;</a></span>tree_type_recursor_collector_t</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -218,11 +227,11 @@ template&lt;std::size_t N, char C&gt; </div>
 template&lt;template&lt; typename... &gt; typename Visitor, typename Root &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="namespacearg__router_1_1utility.html#a577bf999e7250f595ec2e43571b0714f">arg_router::utility::tree_type_recursor_t</a> = typedef typename <a class="el" href="structarg__router_1_1utility_1_1tree__type__recursor.html">tree_type_recursor</a>&lt;Visitor, Root&gt;::type</td>
+          <td class="memname">using <a class="el" href="namespacearg__router_1_1utility.html#a93d08b88c1e3166652103a4208d45063">arg_router::utility::tree_type_recursor_collector_t</a> = typedef typename <a class="el" href="structarg__router_1_1utility_1_1tree__type__recursor__collector.html">tree_type_recursor_collector</a>&lt;Visitor, Root&gt;::type</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Helper alias for <a class="el" href="structarg__router_1_1utility_1_1tree__type__recursor.html">tree_type_recursor</a>.</p>
+<p>Helper alias for <a class="el" href="structarg__router_1_1utility_1_1tree__type__recursor__collector.html">tree_type_recursor_collector</a>.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Visitor</td><td>Visitor object type </td></tr>
@@ -231,13 +240,30 @@ template&lt;template&lt; typename... &gt; typename Visitor, typename Root &gt; <
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="tree__recursor_8hpp_source.html#l00167">167</a> of file <a class="el" href="tree__recursor_8hpp_source.html">tree_recursor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__recursor_8hpp_source.html#l00209">209</a> of file <a class="el" href="tree__recursor_8hpp_source.html">tree_recursor.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ae043ae4c53048fdf30045cf4c163db05"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae043ae4c53048fdf30045cf4c163db05">&#9670;&nbsp;</a></span>unsafe_any</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="namespacearg__router_1_1utility.html#ae043ae4c53048fdf30045cf4c163db05">arg_router::utility::unsafe_any</a> = typedef <a class="el" href="classarg__router_1_1utility_1_1unsafe__any__t.html">unsafe_any_t</a>&lt;sizeof(std::string_view)&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Typedef for an <a class="el" href="classarg__router_1_1utility_1_1unsafe__any__t.html">unsafe_any_t</a> with internal storage big enough to fit a <code>std::string_view</code>. </p>
+
+<p class="definition">Definition at line <a class="el" href="unsafe__any_8hpp_source.html#l00217">217</a> of file <a class="el" href="unsafe__any_8hpp_source.html">unsafe_any.hpp</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a8c2771daff65998317f1853a68d3453b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8c2771daff65998317f1853a68d3453b">&#9670;&nbsp;</a></span>tree_recursor() <span class="overload">[1/2]</span></h2>
+<a id="a246452797205e03f6e1e2a7f56fa140e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a246452797205e03f6e1e2a7f56fa140e">&#9670;&nbsp;</a></span>tree_recursor()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -250,8 +276,19 @@ template&lt;typename Visitor , typename Root &gt; </div>
         <tr>
           <td class="memname">constexpr void arg_router::utility::tree_recursor </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">Visitor&#160;</td>
+          <td class="paramname"><em>visitor</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const Root &amp;&#160;</td>
+          <td class="paramname"><em>root</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -260,29 +297,34 @@ template&lt;typename Visitor , typename Root &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Depth-first recurse through the parse tree, calling <em>Visitor</em> on every <a class="el" href="classarg__router_1_1tree__node.html">tree_node</a> and policy.</p>
-<p><em>Fn</em> must be object with the same method signatue as below: </p><div class="fragment"><div class="line"><span class="keyword">struct </span>my_fn {</div>
-<div class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Current, <span class="keyword">typename</span>... Parents&gt;</div>
-<div class="line">    constexpr <span class="keyword">static</span> <span class="keywordtype">void</span> fn()</div>
-<div class="line">    {</div>
-<div class="line">        ...</div>
-<div class="line">    }</div>
-<div class="line">};</div>
-</div><!-- fragment --><p> Where <code>Current</code> is the current type from the tree, from the root down to policy level, and <code>Parents</code> is a pack of ancestors in increasing generation from <code>Current</code>. The last in the pack is always the root unless <code>Current</code> is itself the root. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
+<p>Depth-first search of the node tree, calling <em>visitor</em> on every <a class="el" href="classarg__router_1_1tree__node.html">tree_node</a>.</p>
+<p><em>Visitor</em> must be a Callable with the same method signatue as below: </p><div class="fragment"><div class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> Current, <span class="keyword">typename</span>... Parents&gt;</div>
+<div class="line"><span class="keywordtype">void</span> operator()(<span class="keyword">const</span> Current&amp; current, <span class="keyword">const</span> Parents&amp;... parents)</div>
+<div class="line">{</div>
+<div class="line">    ...</div>
+<div class="line">}</div>
+</div><!-- fragment --><p> Where <code>current</code> is the current node from the tree, and <code>parents</code> is a pack of ancestors in increasing generation from <code>current</code>. The last in the pack is always <em>root</em>. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">Visitor</td><td>Visitor object type </td></tr>
-    <tr><td class="paramname">Root</td><td>Start object type in the parse tree </td></tr>
+    <tr><td class="paramname">Visitor</td><td>Visitor type </td></tr>
+    <tr><td class="paramname">Root</td><td><a class="el" href="classarg__router_1_1tree__node.html">tree_node</a> derived type to start from </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">visitor</td><td>Callable called on each <a class="el" href="classarg__router_1_1tree__node.html">tree_node</a> visited </td></tr>
+    <tr><td class="paramname">root</td><td>Tree node to start from (must be a <a class="el" href="classarg__router_1_1tree__node.html">tree_node</a> derived type!) </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>void </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="tree__recursor_8hpp_source.html#l00107">107</a> of file <a class="el" href="tree__recursor_8hpp_source.html">tree_recursor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__recursor_8hpp_source.html#l00119">119</a> of file <a class="el" href="tree__recursor_8hpp_source.html">tree_recursor.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a5cb15613aecdb3e4b2c497679da99e26"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5cb15613aecdb3e4b2c497679da99e26">&#9670;&nbsp;</a></span>tree_recursor() <span class="overload">[2/2]</span></h2>
+<a id="a6a2a689690e0a614358f4adb484697f7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6a2a689690e0a614358f4adb484697f7">&#9670;&nbsp;</a></span>tree_type_recursor() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -293,7 +335,7 @@ template&lt;typename Visitor , typename SkipFn , typename Root &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr void arg_router::utility::tree_recursor </td>
+          <td class="memname">constexpr void arg_router::utility::tree_type_recursor </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -305,7 +347,15 @@ template&lt;typename Visitor , typename SkipFn , typename Root &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Specialisation of <a class="el" href="namespacearg__router_1_1utility.html#a8c2771daff65998317f1853a68d3453b">tree_recursor()</a> where a skip function can be used to ignore subtrees.</p>
+<p>Depth-first recurse through the parse tree, calling <em>Visitor</em> on every <a class="el" href="classarg__router_1_1tree__node.html">tree_node</a> <em>and</em> its policies.</p>
+<p><em>Visitor</em> must be object with the same method signatue as below: </p><div class="fragment"><div class="line"><span class="keyword">struct </span>my_fn {</div>
+<div class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Current, <span class="keyword">typename</span>... Parents&gt;</div>
+<div class="line">    constexpr <span class="keyword">static</span> <span class="keywordtype">void</span> fn()</div>
+<div class="line">    {</div>
+<div class="line">        ...</div>
+<div class="line">    }</div>
+<div class="line">};</div>
+</div><!-- fragment --><p> Where <code>Current</code> is the current type from the tree, and <code>Parents</code> is a pack of ancestors in increasing generation from <code>Current</code>. The last in the pack is always the root.</p>
 <p><em>SkipFn</em> must be object with the same method signatue as below: </p><div class="fragment"><div class="line"><span class="keyword">struct </span>my_skip_fn {</div>
 <div class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Current, <span class="keyword">typename</span>... Parents&gt;</div>
 <div class="line">    constexpr <span class="keyword">static</span> <span class="keywordtype">bool</span> fn()</div>
@@ -314,18 +364,57 @@ template&lt;typename Visitor , typename SkipFn , typename Root &gt; </div>
 <div class="line">        <span class="keywordflow">return</span> condition_met;</div>
 <div class="line">    }</div>
 <div class="line">};</div>
-</div><!-- fragment --><p> If the return value is true, then the <code>Current</code> node and any subtree below it are skipped i.e. <em>Fn</em> is not called.</p>
+</div><!-- fragment --><p> If the return value is true, then the <code>Current</code> node or policy and any subtree below it are skipped i.e. <code>fn</code> is not called.</p>
+<dl class="section note"><dt>Note</dt><dd>Unlike <a class="el" href="namespacearg__router_1_1utility.html#a246452797205e03f6e1e2a7f56fa140e">tree_recursor(Visitor visitor, const Root&amp; root)</a>, this will recurse into <a class="el" href="classarg__router_1_1tree__node.html">tree_node</a> policies. </dd></dl>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">Visitor</td><td>Visitor object type </td></tr>
-    <tr><td class="paramname">SkipFn</td><td>Functional object type to skip recursion on current node </td></tr>
+    <tr><td class="paramname">Visitor</td><td>Visitor type </td></tr>
+    <tr><td class="paramname">SkipFn</td><td>Skip function type </td></tr>
     <tr><td class="paramname">Root</td><td>Start object type in the parse tree </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>void </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="tree__recursor_8hpp_source.html#l00135">135</a> of file <a class="el" href="tree__recursor_8hpp_source.html">tree_recursor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__recursor_8hpp_source.html#l00163">163</a> of file <a class="el" href="tree__recursor_8hpp_source.html">tree_recursor.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a18af062506e86c8b5766a48f841750a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a18af062506e86c8b5766a48f841750a8">&#9670;&nbsp;</a></span>tree_type_recursor() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Visitor , typename Root &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr void arg_router::utility::tree_type_recursor </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Overload without a skip function.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Visitor</td><td>Visitor type </td></tr>
+    <tr><td class="paramname">Root</td><td>Start object type in the parse tree </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>void </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="tree__recursor_8hpp_source.html#l00175">175</a> of file <a class="el" href="tree__recursor_8hpp_source.html">tree_recursor.hpp</a>.</p>
 
 </div>
 </div>

@@ -94,9 +94,9 @@ Public Types</h2></td></tr>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ae90c0bc80faf795e00fd4747b79a9c97"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1alias__t.html#ae90c0bc80faf795e00fd4747b79a9c97">alias_t</a> ([[maybe_unused]] const AliasedPolicies &amp;... policies)</td></tr>
 <tr class="separator:ae90c0bc80faf795e00fd4747b79a9c97"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a05685dfdcdaf6e8e6c68bc0159d4e437"><td class="memTemplParams" colspan="2">template&lt;typename... Parents&gt; </td></tr>
-<tr class="memitem:a05685dfdcdaf6e8e6c68bc0159d4e437"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacearg__router_1_1parsing.html#a915cb96b9e236101aa9efd660a82f950">parsing::pre_parse_result</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1alias__t.html#a05685dfdcdaf6e8e6c68bc0159d4e437">pre_parse_phase</a> (<a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter.html">parsing::dynamic_token_adapter</a> &amp;tokens, [[maybe_unused]] <a class="el" href="classarg__router_1_1parsing_1_1token__list.html#a93a9014911eaf2832f746ea83ee2374a">parsing::token_list::pending_view_type</a> processed_tokens, [[maybe_unused]] const Parents &amp;... parents) const</td></tr>
-<tr class="separator:a05685dfdcdaf6e8e6c68bc0159d4e437"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a244aad905750fd3b2858ea3d8596bb77"><td class="memTemplParams" colspan="2">template&lt;typename ProcessedTarget , typename... Parents&gt; </td></tr>
+<tr class="memitem:a244aad905750fd3b2858ea3d8596bb77"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacearg__router_1_1parsing.html#a915cb96b9e236101aa9efd660a82f950">parsing::pre_parse_result</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1alias__t.html#a244aad905750fd3b2858ea3d8596bb77">pre_parse_phase</a> (<a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter.html">parsing::dynamic_token_adapter</a> &amp;tokens, [[maybe_unused]] <a class="el" href="classarg__router_1_1utility_1_1compile__time__optional.html">utility::compile_time_optional</a>&lt; ProcessedTarget &gt; processed_target, <a class="el" href="classarg__router_1_1parsing_1_1parse__target.html">parsing::parse_target</a> &amp;target, const Parents &amp;... parents) const</td></tr>
+<tr class="separator:a244aad905750fd3b2858ea3d8596bb77"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
@@ -176,15 +176,15 @@ template&lt;typename... AliasedPolicies&gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a05685dfdcdaf6e8e6c68bc0159d4e437"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a05685dfdcdaf6e8e6c68bc0159d4e437">&#9670;&nbsp;</a></span>pre_parse_phase()</h2>
+<a id="a244aad905750fd3b2858ea3d8596bb77"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a244aad905750fd3b2858ea3d8596bb77">&#9670;&nbsp;</a></span>pre_parse_phase()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename... AliasedPolicies&gt; </div>
 <div class="memtemplate">
-template&lt;typename... Parents&gt; </div>
+template&lt;typename ProcessedTarget , typename... Parents&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -198,13 +198,19 @@ template&lt;typename... Parents&gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">[[maybe_unused] ] <a class="el" href="classarg__router_1_1parsing_1_1token__list.html#a93a9014911eaf2832f746ea83ee2374a">parsing::token_list::pending_view_type</a>&#160;</td>
-          <td class="paramname"><em>processed_tokens</em>, </td>
+          <td class="paramtype">[[maybe_unused] ] <a class="el" href="classarg__router_1_1utility_1_1compile__time__optional.html">utility::compile_time_optional</a>&lt; ProcessedTarget &gt;&#160;</td>
+          <td class="paramname"><em>processed_target</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">[[maybe_unused] ] const Parents &amp;...&#160;</td>
+          <td class="paramtype"><a class="el" href="classarg__router_1_1parsing_1_1parse__target.html">parsing::parse_target</a> &amp;&#160;</td>
+          <td class="paramname"><em>target</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Parents &amp;...&#160;</td>
           <td class="paramname"><em>parents</em>&#160;</td>
         </tr>
         <tr>
@@ -227,6 +233,7 @@ template&lt;typename... Parents&gt; </div>
 <p>In either circumstance the original tokens are removed as they are for the alias, rather than the <em>aliased</em>.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
+    <tr><td class="paramname">ProcessedTarget</td><td><em>processed_target</em> payload type </td></tr>
     <tr><td class="paramname">Parents</td><td>Pack of parent tree nodes in ascending ancestry order </td></tr>
   </table>
   </dd>
@@ -234,14 +241,15 @@ template&lt;typename... Parents&gt; </div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">tokens</td><td>Currently processed tokens </td></tr>
-    <tr><td class="paramname">processed_tokens</td><td>Processed tokens performed by previous pre-parse phases calls on other nodes </td></tr>
+    <tr><td class="paramname">processed_target</td><td>Previously processed parse_target of parent node, or empty is there is no non-root parent </td></tr>
+    <tr><td class="paramname">target</td><td>Pre-parse generated target </td></tr>
     <tr><td class="paramname">parents</td><td>Parent node instances </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Either true if successful, or a <a class="el" href="classarg__router_1_1parse__exception.html">parse_exception</a> if there too few value tokens </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="alias_8hpp_source.html#l00064">64</a> of file <a class="el" href="alias_8hpp_source.html">alias.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="alias_8hpp_source.html#l00066">66</a> of file <a class="el" href="alias_8hpp_source.html">alias.hpp</a>.</p>
 
 </div>
 </div>

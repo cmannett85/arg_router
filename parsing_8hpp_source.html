@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>arg_router: arg_router/parsing.hpp Source File</title>
+<title>arg_router: arg_router/parsing/parsing.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -63,7 +63,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_529fe8366846da263013841a2c49df49.html">arg_router</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_529fe8366846da263013841a2c49df49.html">arg_router</a></li><li class="navelem"><a class="el" href="dir_3fe754cb77252ba7bc5ec607900495ba.html">parsing</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -85,7 +85,7 @@ $(function() {
 <div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1parsing.html#a425dc604db76181e7af022986d3015a5">   14</a></span>&#160;<span class="keyword">enum class</span> <a class="code" href="namespacearg__router_1_1parsing.html#a425dc604db76181e7af022986d3015a5">pre_parse_action</a> : std::uint8_t {</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <a class="code" href="namespacearg__router_1_1parsing.html#a425dc604db76181e7af022986d3015a5af40dea4ad62e2a0d088148f25444da03">skip_node</a>,</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <a class="code" href="namespacearg__router_1_1parsing.html#a425dc604db76181e7af022986d3015a5a28a603d48cf5ab4504b3bd1abfe13963">valid_node</a>,</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <a class="code" href="namespacearg__router_1_1parsing.html#a425dc604db76181e7af022986d3015a5aa7a537586951f26ca795c5070b191bc7">skip_node_but_use_tokens</a></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <a class="code" href="namespacearg__router_1_1parsing.html#a425dc604db76181e7af022986d3015a5a28b41fbca9cd22a8f8cb871a07b90b16">skip_node_but_use_sub_targets</a></div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;};</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
 <div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1parsing.html#a915cb96b9e236101aa9efd660a82f950">   26</a></span>&#160;<span class="keyword">using</span> <a class="code" href="classarg__router_1_1utility_1_1result.html">pre_parse_result</a> = <a class="code" href="classarg__router_1_1utility_1_1result.html">utility::result&lt;pre_parse_action, parse_exception&gt;</a>;</div>
@@ -138,13 +138,13 @@ $(function() {
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="anamespacearg__router_1_1parsing_html_a425dc604db76181e7af022986d3015a5"><div class="ttname"><a href="namespacearg__router_1_1parsing.html#a425dc604db76181e7af022986d3015a5">arg_router::parsing::pre_parse_action</a></div><div class="ttdeci">pre_parse_action</div><div class="ttdef"><b>Definition:</b> <a href="parsing_8hpp_source.html#l00014">parsing.hpp:14</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1parsing_html_a425dc604db76181e7af022986d3015a5a28a603d48cf5ab4504b3bd1abfe13963"><div class="ttname"><a href="namespacearg__router_1_1parsing.html#a425dc604db76181e7af022986d3015a5a28a603d48cf5ab4504b3bd1abfe13963">arg_router::parsing::pre_parse_action::valid_node</a></div><div class="ttdeci">@ valid_node</div></div>
-<div class="ttc" id="anamespacearg__router_1_1parsing_html_a425dc604db76181e7af022986d3015a5aa7a537586951f26ca795c5070b191bc7"><div class="ttname"><a href="namespacearg__router_1_1parsing.html#a425dc604db76181e7af022986d3015a5aa7a537586951f26ca795c5070b191bc7">arg_router::parsing::pre_parse_action::skip_node_but_use_tokens</a></div><div class="ttdeci">@ skip_node_but_use_tokens</div></div>
 <div class="ttc" id="aclassarg__router_1_1utility_1_1result_html"><div class="ttname"><a href="classarg__router_1_1utility_1_1result.html">arg_router::utility::result</a></div><div class="ttdef"><b>Definition:</b> <a href="result_8hpp_source.html#l00019">result.hpp:19</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1parsing_html_ae2cbfdf6379f66e446801b6a915e3144"><div class="ttname"><a href="namespacearg__router_1_1parsing.html#ae2cbfdf6379f66e446801b6a915e3144">arg_router::parsing::match</a></div><div class="ttdeci">constexpr bool match(token_type token) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="parsing_8hpp_source.html#l00036">parsing.hpp:36</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1parsing_html_a6587078e07827bbbbabeae32b3ed2dd3a16466420ab71d5feae928666169b405c"><div class="ttname"><a href="namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3a16466420ab71d5feae928666169b405c">arg_router::parsing::prefix_type::short_</a></div><div class="ttdeci">@ short_</div><div class="ttdoc">Long prefix.</div></div>
 <div class="ttc" id="anamespacearg__router_1_1parsing_html_a8389f839b76e96cfadf1b7527ef2e651"><div class="ttname"><a href="namespacearg__router_1_1parsing.html#a8389f839b76e96cfadf1b7527ef2e651">arg_router::parsing::node_token_type</a></div><div class="ttdeci">constexpr token_type node_token_type() noexcept</div><div class="ttdef"><b>Definition:</b> <a href="parsing_8hpp_source.html#l00071">parsing.hpp:71</a></div></div>
 <div class="ttc" id="astructarg__router_1_1parsing_1_1token__type_html"><div class="ttname"><a href="structarg__router_1_1parsing_1_1token__type.html">arg_router::parsing::token_type</a></div><div class="ttdef"><b>Definition:</b> <a href="token__type_8hpp_source.html#l00037">token_type.hpp:37</a></div></div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00012">algorithm.hpp:12</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1parsing_html_a425dc604db76181e7af022986d3015a5a28b41fbca9cd22a8f8cb871a07b90b16"><div class="ttname"><a href="namespacearg__router_1_1parsing.html#a425dc604db76181e7af022986d3015a5a28b41fbca9cd22a8f8cb871a07b90b16">arg_router::parsing::pre_parse_action::skip_node_but_use_sub_targets</a></div><div class="ttdeci">@ skip_node_but_use_sub_targets</div></div>
 <div class="ttc" id="anamespacearg__router_1_1parsing_html_a6587078e07827bbbbabeae32b3ed2dd3a334c4a4c42fdb79d7ebc3e73b517e6f8"><div class="ttname"><a href="namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3a334c4a4c42fdb79d7ebc3e73b517e6f8">arg_router::parsing::prefix_type::none</a></div><div class="ttdeci">@ none</div><div class="ttdoc">Short prefix.</div></div>
 <div class="ttc" id="anamespacearg__router_1_1parsing_html_a425dc604db76181e7af022986d3015a5af40dea4ad62e2a0d088148f25444da03"><div class="ttname"><a href="namespacearg__router_1_1parsing.html#a425dc604db76181e7af022986d3015a5af40dea4ad62e2a0d088148f25444da03">arg_router::parsing::pre_parse_action::skip_node</a></div><div class="ttdeci">@ skip_node</div></div>
 <!-- start footer part -->

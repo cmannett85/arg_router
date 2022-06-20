@@ -87,9 +87,9 @@ Public Types</h2></td></tr>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a74675508bc9199cd88a4d7987929ac34"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1router.html#a74675508bc9199cd88a4d7987929ac34">router</a> (Fn f) noexcept</td></tr>
 <tr class="separator:a74675508bc9199cd88a4d7987929ac34"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2882f88263153979748a2f537bc2aca7"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; </td></tr>
-<tr class="memitem:a2882f88263153979748a2f537bc2aca7"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1router.html#a2882f88263153979748a2f537bc2aca7">routing_phase</a> (const <a class="el" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a> &amp;tokens, Args &amp;&amp;... args) const</td></tr>
-<tr class="separator:a2882f88263153979748a2f537bc2aca7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a209dbbebed1293b17e67c231fc4cd7e8"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; </td></tr>
+<tr class="memitem:a209dbbebed1293b17e67c231fc4cd7e8"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1router.html#a209dbbebed1293b17e67c231fc4cd7e8">routing_phase</a> (Args &amp;&amp;... args) const</td></tr>
+<tr class="separator:a209dbbebed1293b17e67c231fc4cd7e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename Fn&gt;<br />
@@ -163,8 +163,8 @@ template&lt;typename Fn &gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a2882f88263153979748a2f537bc2aca7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2882f88263153979748a2f537bc2aca7">&#9670;&nbsp;</a></span>routing_phase()</h2>
+<a id="a209dbbebed1293b17e67c231fc4cd7e8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a209dbbebed1293b17e67c231fc4cd7e8">&#9670;&nbsp;</a></span>routing_phase()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -179,19 +179,9 @@ template&lt;typename... Args&gt; </div>
         <tr>
           <td class="memname">void <a class="el" href="classarg__router_1_1policy_1_1router.html">arg_router::policy::router</a>&lt; Fn &gt;::routing_phase </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a> &amp;&#160;</td>
-          <td class="paramname"><em>tokens</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype">Args &amp;&amp;...&#160;</td>
-          <td class="paramname"><em>args</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td> const</td>
+          <td class="paramname"><em>args</em></td><td>)</td>
+          <td> const</td>
         </tr>
       </table>
   </td>
@@ -209,19 +199,12 @@ template&lt;typename... Args&gt; </div>
 </dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">tokens</td><td>Token list, if there any entries remaining then an exception is thrown </td></tr>
     <tr><td class="paramname">args</td><td>Argument values </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname"><a class="el" href="classarg__router_1_1parse__exception.html">parse_exception</a></td><td>Thrown if <em>tokens</em> is not empty </td></tr>
-  </table>
-  </dd>
-</dl>
 
-<p class="definition">Definition at line <a class="el" href="router_8hpp_source.html#l00042">42</a> of file <a class="el" href="router_8hpp_source.html">router.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="router_8hpp_source.html#l00039">39</a> of file <a class="el" href="router_8hpp_source.html">router.hpp</a>.</p>
 
 </div>
 </div>

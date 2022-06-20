@@ -114,11 +114,8 @@ Public Types</h2></td></tr>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:af215c7c6d0b8639df1b7dab770803884"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classarg__router_1_1tree__node.html#a8d8381481e4cdf03739233815c70cd76">children_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#af215c7c6d0b8639df1b7dab770803884">children</a> () noexcept</td></tr>
 <tr class="separator:af215c7c6d0b8639df1b7dab770803884"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a35a2e8d65f2fd881626c4ce185f7496e"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classarg__router_1_1tree__node.html#a8d8381481e4cdf03739233815c70cd76">children_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#a35a2e8d65f2fd881626c4ce185f7496e">children</a> () const noexcept</td></tr>
-<tr class="separator:a35a2e8d65f2fd881626c4ce185f7496e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3d51367f87893bddee652f0895680e1e"><td class="memTemplParams" colspan="2">template&lt;typename Fn , typename ResultsTuple  = std::tuple&lt;&gt;&gt; </td></tr>
-<tr class="memitem:a3d51367f87893bddee652f0895680e1e"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#a3d51367f87893bddee652f0895680e1e">find</a> (<a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a> token, const Fn &amp;visitor, const ResultsTuple &amp;results_tuple={}) const</td></tr>
-<tr class="separator:a3d51367f87893bddee652f0895680e1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aad874ddd4fb241b3e162f10d1528fa9f"><td class="memItemLeft" align="right" valign="top">constexpr const <a class="el" href="classarg__router_1_1tree__node.html#a8d8381481e4cdf03739233815c70cd76">children_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#aad874ddd4fb241b3e162f10d1528fa9f">children</a> () const noexcept</td></tr>
+<tr class="separator:aad874ddd4fb241b3e162f10d1528fa9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
@@ -132,9 +129,9 @@ Static Public Attributes</h2></td></tr>
 Protected Member Functions</h2></td></tr>
 <tr class="memitem:a9a32b8c521d12ba9f8880805f905ef33"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#a9a32b8c521d12ba9f8880805f905ef33">tree_node</a> (Params... params) noexcept</td></tr>
 <tr class="separator:a9a32b8c521d12ba9f8880805f905ef33"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7edeebf857278aa9d8506b7ca479403c"><td class="memTemplParams" colspan="2">template&lt;typename... Parents&gt; </td></tr>
-<tr class="memitem:a7edeebf857278aa9d8506b7ca479403c"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#a7edeebf857278aa9d8506b7ca479403c">pre_parse</a> (<a class="el" href="namespacearg__router.html#a3d789cf2175008b4124de867a13a2edf">vector</a>&lt; <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a> &gt; &amp;args, <a class="el" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a> &amp;tokens, const Parents &amp;... parents) const</td></tr>
-<tr class="separator:a7edeebf857278aa9d8506b7ca479403c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af40bd11c46f72002e5a32f5c5d3c830e"><td class="memTemplParams" colspan="2">template&lt;typename Validator , bool HasTarget, typename Node , typename... Parents&gt; </td></tr>
+<tr class="memitem:af40bd11c46f72002e5a32f5c5d3c830e"><td class="memTemplItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="classarg__router_1_1parsing_1_1parse__target.html">parsing::parse_target</a> &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#af40bd11c46f72002e5a32f5c5d3c830e">pre_parse</a> (<a class="el" href="classarg__router_1_1parsing_1_1pre__parse__data.html">parsing::pre_parse_data</a>&lt; Validator, HasTarget &gt; pre_parse_data, const Node &amp;node, const Parents &amp;... parents) const</td></tr>
+<tr class="separator:af40bd11c46f72002e5a32f5c5d3c830e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2a8f5775af1259c3c3363160456dd94e"><td class="memTemplParams" colspan="2">template&lt;typename ValueType , typename... Parents&gt; </td></tr>
 <tr class="memitem:a2a8f5775af1259c3c3363160456dd94e"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#a2a8f5775af1259c3c3363160456dd94e">parse</a> (std::string_view token, const Parents &amp;... parents) const</td></tr>
 <tr class="separator:a2a8f5775af1259c3c3363160456dd94e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -151,7 +148,7 @@ class arg_router::tree_node&lt; Params &gt;</h3>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00024">24</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00023">23</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="a8d8381481e4cdf03739233815c70cd76"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8d8381481e4cdf03739233815c70cd76">&#9670;&nbsp;</a></span>children_type</h2>
@@ -168,7 +165,7 @@ template&lt;typename... Params&gt; </div>
 </div><div class="memdoc">
 <p>A tuple of all the child tree node types in parameters_type, with any lists expanded </p>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00064">64</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00063">63</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>
@@ -187,7 +184,7 @@ template&lt;typename... Params&gt; </div>
 </div><div class="memdoc">
 <p>The policies and child node types. </p>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00048">48</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00047">47</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>
@@ -215,7 +212,7 @@ template&lt;template&lt; typename... &gt; typename PolicyChecker, typename... Ar
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00110">110</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00109">109</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>
@@ -234,7 +231,7 @@ template&lt;typename... Params&gt; </div>
 </div><div class="memdoc">
 <p>A tuple of all the policy types in parameters_type. </p>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00052">52</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00051">51</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>
@@ -253,7 +250,7 @@ template&lt;typename... Params&gt; </div>
 </div><div class="memdoc">
 <p>policies_type ordered by priority </p>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00056">56</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00055">55</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>
@@ -291,13 +288,13 @@ template&lt;typename... Params&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00445">445</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00383">383</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a35a2e8d65f2fd881626c4ce185f7496e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a35a2e8d65f2fd881626c4ce185f7496e">&#9670;&nbsp;</a></span>children() <span class="overload">[1/2]</span></h2>
+<a id="aad874ddd4fb241b3e162f10d1528fa9f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aad874ddd4fb241b3e162f10d1528fa9f">&#9670;&nbsp;</a></span>children() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -308,7 +305,7 @@ template&lt;typename... Params&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const <a class="el" href="classarg__router_1_1tree__node.html#a8d8381481e4cdf03739233815c70cd76">children_type</a>&amp; <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node</a>&lt; Params &gt;::children </td>
+          <td class="memname">constexpr const <a class="el" href="classarg__router_1_1tree__node.html#a8d8381481e4cdf03739233815c70cd76">children_type</a>&amp; <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node</a>&lt; Params &gt;::children </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -316,14 +313,14 @@ template&lt;typename... Params&gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 <p>Const overload.</p>
 <dl class="section return"><dt>Returns</dt><dd>Children </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00177">177</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00176">176</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>
@@ -354,73 +351,7 @@ template&lt;typename... Params&gt; </div>
 <p>Returns a reference to the children.</p>
 <dl class="section return"><dt>Returns</dt><dd>Children </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00171">171</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a3d51367f87893bddee652f0895680e1e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3d51367f87893bddee652f0895680e1e">&#9670;&nbsp;</a></span>find()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename... Params&gt; </div>
-<div class="memtemplate">
-template&lt;typename Fn , typename ResultsTuple  = std::tuple&lt;&gt;&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">constexpr bool <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node</a>&lt; Params &gt;::find </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a>&#160;</td>
-          <td class="paramname"><em>token</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const Fn &amp;&#160;</td>
-          <td class="paramname"><em>visitor</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const ResultsTuple &amp;&#160;</td>
-          <td class="paramname"><em>results_tuple</em> = <code>{}</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">constexpr</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Finds the child matching token (if present) and calls <em>visitor</em> with a reference to it.</p>
-<p><em>visitor</em> needs to be equivalent to: </p><div class="fragment"><div class="line">[](<span class="keyword">auto</span> i, <span class="keyword">const</span> <span class="keyword">auto</span>&amp; child) { ... }</div>
-</div><!-- fragment --><p> <code>i</code> is the index of <code>child</code> in the owner's child list.</p>
-<p>This calls the match(..) const method on each child until it returns true. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">Fn</td><td>Visitor type </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">token</td><td>Command line token to match </td></tr>
-    <tr><td class="paramname">visitor</td><td>Visitor instance </td></tr>
-    <tr><td class="paramname">results_tuple</td><td>Parent results tuple, used to pass the current value (if any) to the found child's match(..) const method. Leave unset if not required </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>True if a child was found </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00202">202</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00170">170</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>
@@ -484,34 +415,34 @@ template&lt;typename ValueType , typename... Parents&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00565">565</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00538">538</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a7edeebf857278aa9d8506b7ca479403c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7edeebf857278aa9d8506b7ca479403c">&#9670;&nbsp;</a></span>pre_parse()</h2>
+<a id="af40bd11c46f72002e5a32f5c5d3c830e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af40bd11c46f72002e5a32f5c5d3c830e">&#9670;&nbsp;</a></span>pre_parse()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename... Params&gt; </div>
 <div class="memtemplate">
-template&lt;typename... Parents&gt; </div>
+template&lt;typename Validator , bool HasTarget, typename Node , typename... Parents&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node</a>&lt; Params &gt;::pre_parse </td>
+          <td class="memname">std::optional&lt;<a class="el" href="classarg__router_1_1parsing_1_1parse__target.html">parsing::parse_target</a>&gt; <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node</a>&lt; Params &gt;::pre_parse </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacearg__router.html#a3d789cf2175008b4124de867a13a2edf">vector</a>&lt; <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>args</em>, </td>
+          <td class="paramtype"><a class="el" href="classarg__router_1_1parsing_1_1pre__parse__data.html">parsing::pre_parse_data</a>&lt; Validator, HasTarget &gt;&#160;</td>
+          <td class="paramname"><em>pre_parse_data</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a> &amp;&#160;</td>
-          <td class="paramname"><em>tokens</em>, </td>
+          <td class="paramtype">const Node &amp;&#160;</td>
+          <td class="paramname"><em>node</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -531,24 +462,28 @@ template&lt;typename... Parents&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Default pre_parse implementation.</p>
-<p>This implementation simply iterates over the pre-parse phase implementing policies, and uses the results to update <em>args</em> and <em>tokens</em>.</p>
-<dl class="section note"><dt>Note</dt><dd>The implementation does not prepend <code>*this</code> into <em>parents</em>, so derived types are expected to reimplement this so the first parent is the correct type (remember there are no virtual methods in this library) </dd></dl>
+<p>Default pre-parse implementation.</p>
+<p>This implementation simply iterates over the pre-parse phase implementing policies, and uses the results to update <em>args</em> and generate a parse_target.</p>
+<p>The <em>validator</em> is called just before <em>args</em> is updated, and allows the caller to run a custom verification the on the <em>node</em> and <em>parents</em>. If the validator returns true then the result is kept, otherwise an empty result is returned from this method.</p>
+<dl class="section note"><dt>Note</dt><dd>The implementation does not prepend <code>*this</code> into <em>parents</em>, so derived types are expected to reimplement this so @ node is the correct type (remember there are no virtual methods in this library) </dd></dl>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
+    <tr><td class="paramname">Validator</td><td>Validator type </td></tr>
+    <tr><td class="paramname">HasTarget</td><td>True if <em>pre_parse_data</em> contains the parent's parse_target </td></tr>
+    <tr><td class="paramname">Node</td><td>This node's derived type </td></tr>
     <tr><td class="paramname">Parents</td><td>Pack of parent tree nodes in ascending ancestry order </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">args</td><td>Unprocessed tokens </td></tr>
-    <tr><td class="paramname">tokens</td><td>Processed tokens </td></tr>
+    <tr><td class="paramname">pre_parse_data</td><td>Pre-parse data aggregate </td></tr>
+    <tr><td class="paramname">node</td><td>This node instance </td></tr>
     <tr><td class="paramname">parents</td><td>Parent node instances </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>True if the leading tokens in <em>args</em> are consumable by this node </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Non-empty if the leading tokens in <em>args</em> are consumable by this node </dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname"><a class="el" href="classarg__router_1_1parse__exception.html">parse_exception</a></td><td>Thrown if any of the policies' pre-parse implementations have returned an exception </td></tr>
@@ -556,7 +491,7 @@ template&lt;typename... Parents&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00471">471</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00422">422</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>
@@ -595,7 +530,7 @@ template&lt;typename ValueType , template&lt; typename... &gt; typename... Polic
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00164">164</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00163">163</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>
@@ -626,7 +561,7 @@ template&lt;typename... Params&gt; </div>
 <div class="line">        traits::has_none_name_method_v&lt;tree_node&gt;</div>
 </div><!-- fragment --><p>Evaluates to true if this node has a name token that appears on the command line. </p>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00075">75</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00074">74</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>

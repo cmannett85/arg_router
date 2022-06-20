@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>arg_router: arg_router::traits::has_process_value_tokens_method&lt; T &gt; Struct Template Reference</title>
+<title>arg_router: arg_router::traits::arg_extractor&lt; T &gt; Struct Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -63,23 +63,23 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="namespacearg__router.html">arg_router</a></li><li class="navelem"><a class="el" href="namespacearg__router_1_1traits.html">traits</a></li><li class="navelem"><a class="el" href="structarg__router_1_1traits_1_1has__process__value__tokens__method.html">has_process_value_tokens_method</a></li>  </ul>
+<li class="navelem"><a class="el" href="namespacearg__router.html">arg_router</a></li><li class="navelem"><a class="el" href="namespacearg__router_1_1traits.html">traits</a></li><li class="navelem"><a class="el" href="structarg__router_1_1traits_1_1arg__extractor.html">arg_extractor</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
-  <div class="summary">
-<a href="structarg__router_1_1traits_1_1has__process__value__tokens__method-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">arg_router::traits::has_process_value_tokens_method&lt; T &gt; Struct Template Reference</div>  </div>
+<div class="title">arg_router::traits::arg_extractor&lt; T &gt; Struct Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
 <p><code>#include &lt;<a class="el" href="traits_8hpp_source.html">arg_router/traits.hpp</a>&gt;</code></p>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename T&gt;<br />
-struct arg_router::traits::has_process_value_tokens_method&lt; T &gt;</h3>
+struct arg_router::traits::arg_extractor&lt; T &gt;</h3>
 
-<p>Determine if a type has a <code>process_value_tokens</code> static method.</p>
+<p>Evaluates to a <code>std::tuple</code> of the return and argument types the <code>Callable</code> <em>T</em> has.</p>
+<p>The first tuple element type is the return type.</p>
+<p>From <a href="https://stackoverflow.com/a/27867127/498437">https://stackoverflow.com/a/27867127/498437</a>. </p><dl class="section note"><dt>Note</dt><dd>The specialisations are not complete, there are no volatile or ref-qualified versions. Does <b>NOT</b> work with overloaded or templated function/methods (obviously)</dd></dl>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">T</td><td>Type to query </td></tr>
@@ -87,7 +87,7 @@ struct arg_router::traits::has_process_value_tokens_method&lt; T &gt;</h3>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00425">425</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00516">516</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
 </div><hr/>The documentation for this struct was generated from the following file:<ul>
 <li>arg_router/<a class="el" href="traits_8hpp_source.html">traits.hpp</a></li>
 </ul>

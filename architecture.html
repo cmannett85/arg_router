@@ -88,7 +88,7 @@ Policies</h2>
 <p>Policies are common sets of behaviours which can be re-used between nodes, but more importantly for us, can be used by a library user to 'build' a custom <a class="el" href="classarg__router_1_1tree__node.html">tree_node</a> by assembling a collection of policies.</p>
 <p>Policies come in three basic flavours:</p><ul>
 <li>A core type, that just provides some static data (e.g. <a class="el" href="classarg__router_1_1policy_1_1long__name__t.html">policy::long_name_t</a>)</li>
-<li>A parsing type, that provides one or more methods that are used by the derived node to parse, check, and manipulate, the input tokens (e.g. <a class="el" href="classarg__router_1_1policy_1_1min__max__count__t.html">policy::min_max_count_t</a>)</li>
+<li>A parsing type, that provides one or more methods that are used by the derived node to generate, check, and manipulate the input tokens (e.g. <a class="el" href="classarg__router_1_1policy_1_1min__max__count__t.html">policy::min_max_count_t</a>)</li>
 <li>A tag type, that provides no data, just it's own presence which can be detected by other parts of the library</li>
 </ul>
 <h2><a class="anchor" id="node_relationships_nodes"></a>
@@ -98,16 +98,16 @@ Nodes</h2>
 <h2><a class="anchor" id="node_relationships_validation"></a>
 Validation</h2>
 <p>Although the nodes can do a lot of compile-time error checking themselves from analysing their children and policies, they can't check everything - mainly because you can easily get into dependency loops by nodes needing to know about other node types and vice-versa (which also leads to horrible spaghetti code).</p>
-<p>To prevent this, validation is done separately by a special policy called <a class="el" href="classarg__router_1_1policy_1_1validation_1_1validator.html">policy::validation::validator</a> that can only be derived from by the root node (<a class="el" href="classarg__router_1_1root__t.html">root_t</a>). As the root is the last to be instantiated (the leaves are created first), it has all the information needed to check the entire tree, <em>and</em> because nothing depends on the validator it can know about all the other nodes without causing dependency loops.</p>
+<p>To prevent this, <em>inter-node</em> validation is done separately by a special policy called <a class="el" href="classarg__router_1_1policy_1_1validation_1_1validator.html">policy::validation::validator</a> that can only be derived from by the root node (<a class="el" href="classarg__router_1_1root__t.html">root_t</a>). As the root is the last to be instantiated (the leaves are created first), it has all the information needed to check the entire tree, <em>and</em> because nothing depends on the validator it can know about all the other nodes without causing dependency loops.</p>
 <h1><a class="anchor" id="node_relationships_parsing"></a>
 Parsing</h1>
 <p>Parsing starts at the root node, and follows these basic steps:</p><ol type="1">
-<li>Pre-parse the input tokens to create a <a class="el" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a>. This is more complicated than it sounds because the input arguments have to be ran through the parse tree in order to determine how many 'value' tokens belong to each node - this is required for correct categorisation of input tokens. This stage is also where collapsed short-form flags are expanded</li>
-<li>Find the 'target' node. This is a node that carries a <a class="el" href="classarg__router_1_1policy_1_1router.html">policy::router</a> which will be invoked with the parsed tokens. It could be a top-level node (e.g a <code>&ndash;version</code> <a class="el" href="classarg__router_1_1flag__t.html">flag_t</a>), but more likely a mode-like (e.g. <a class="el" href="classarg__router_1_1mode__t.html">mode_t</a>) node which could be nested in a mode subtree</li>
-<li>Then the remaing tokens (if any) are parsed by the children of the target, building up a tuple of results</li>
-<li>The target's <a class="el" href="classarg__router_1_1policy_1_1router.html">policy::router</a> is then called with the results (again, if any)</li>
+<li>Push the tokens down the parse tree for the pre-parsing phase. Each node will inspect the leading token to see if it can be handled by the node, if so the correct number of tokens are pre-processed (e.g. short form expansion) and stored in a <a class="el" href="classarg__router_1_1parsing_1_1parse__target.html">parsing::parse_target</a> and returned to the root or parent mode.</li>
+<li>The <a class="el" href="classarg__router_1_1parsing_1_1parse__target.html">parsing::parse_target</a> initiates the parsing using the node that created it and the pre-processed tokens (if any). A validation phase is ran on the result if present (e.g. <a class="el" href="classarg__router_1_1policy_1_1min__max__value.html">policy::min_max_value</a>)</li>
+<li>If the target node is top-level, then the target's <a class="el" href="classarg__router_1_1policy_1_1router.html">policy::router</a> is then called by the node with the parse result. If not, the parent mode collects the results for all the <a class="el" href="classarg__router_1_1parsing_1_1parse__target.html">parsing::parse_target</a> instances it collected</li>
+<li>If applicable, any nodes under the parent mode that did not have an associated <a class="el" href="classarg__router_1_1parsing_1_1parse__target.html">parsing::parse_target</a>, have the missing phase ran on them (e.g. <a class="el" href="classarg__router_1_1policy_1_1default__value.html">policy::default_value</a>)</li>
 </ol>
-<p>The parsing within a node is split up into 'phases' which different policies implement different parts of. </p>
+<p>As you have probably gathered from the above, the pre-processing and parsing within a node is split up into 'phases' which different policies implement different parts of. </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
 <!-- start footer part -->

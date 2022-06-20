@@ -82,7 +82,7 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structarg__router_1_1traits_1_1always__false.html">always_false</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structarg__router_1_1traits_1_1arity.html">arity</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structarg__router_1_1traits_1_1arg__extractor.html">arg_extractor</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structarg__router_1_1traits_1_1has__description__method.html">has_description_method</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -100,7 +100,7 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structarg__router_1_1traits_1_1has__none__name__method.html">has_none_name_method</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structarg__router_1_1traits_1_1has__process__value__tokens__method.html">has_process_value_tokens_method</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structarg__router_1_1traits_1_1has__parse__method.html">has_parse_method</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structarg__router_1_1traits_1_1has__push__back__method.html">has_push_back_method</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -137,6 +137,12 @@ Typedefs</h2></td></tr>
 <tr class="memitem:a869c1774020d00627db3ab5e90a7b53a"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a869c1774020d00627db3ab5e90a7b53a"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1traits.html#a869c1774020d00627db3ab5e90a7b53a">add_optional_t</a> = typename <a class="el" href="structarg__router_1_1traits_1_1add__optional.html">add_optional</a>&lt; T &gt;::type</td></tr>
 <tr class="separator:a869c1774020d00627db3ab5e90a7b53a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac560711d5efdf61c81ddc6165e537737"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ac560711d5efdf61c81ddc6165e537737"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1traits.html#ac560711d5efdf61c81ddc6165e537737">arg_extractor_t</a> = typename <a class="el" href="structarg__router_1_1traits_1_1arg__extractor.html">arg_extractor</a>&lt; T &gt;::type</td></tr>
+<tr class="separator:ac560711d5efdf61c81ddc6165e537737"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af9f59bafbbda6e44b67fc8a06857d9c7"><td class="memTemplParams" colspan="2">template&lt;typename T , std::size_t I&gt; </td></tr>
+<tr class="memitem:af9f59bafbbda6e44b67fc8a06857d9c7"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1traits.html#af9f59bafbbda6e44b67fc8a06857d9c7">arg_type_at_index</a> = std::tuple_element_t&lt; I+1, <a class="el" href="namespacearg__router_1_1traits.html#ac560711d5efdf61c81ddc6165e537737">arg_extractor_t</a>&lt; T &gt; &gt;</td></tr>
+<tr class="separator:af9f59bafbbda6e44b67fc8a06857d9c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
@@ -185,9 +191,6 @@ Variables</h2></td></tr>
 <tr class="memitem:a53672f714d567be807963d292d78668e"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a53672f714d567be807963d292d78668e"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1traits.html#a53672f714d567be807963d292d78668e">has_minimum_count_method_v</a> = <a class="el" href="structarg__router_1_1traits_1_1has__minimum__count__method.html">has_minimum_count_method</a>&lt;T&gt;::value</td></tr>
 <tr class="separator:a53672f714d567be807963d292d78668e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a565413aa726912d0bc7b5054983b473b"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a565413aa726912d0bc7b5054983b473b"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1traits.html#a565413aa726912d0bc7b5054983b473b">has_process_value_tokens_method_v</a></td></tr>
-<tr class="separator:a565413aa726912d0bc7b5054983b473b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adff3672ffa49c8da3823272f3b2bf1a2"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:adff3672ffa49c8da3823272f3b2bf1a2"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1traits.html#adff3672ffa49c8da3823272f3b2bf1a2">has_push_back_method_v</a> = <a class="el" href="structarg__router_1_1traits_1_1has__push__back__method.html">has_push_back_method</a>&lt;T&gt;::value</td></tr>
 <tr class="separator:adff3672ffa49c8da3823272f3b2bf1a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -198,7 +201,7 @@ Variables</h2></td></tr>
 <tr class="memitem:a03867f77cf394cd4839dcfa8f9cbfd34"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1traits.html#a03867f77cf394cd4839dcfa8f9cbfd34">has_generate_help_method_v</a> = <a class="el" href="structarg__router_1_1traits_1_1has__generate__help__method.html">has_generate_help_method</a>&lt;T&gt;::value</td></tr>
 <tr class="separator:a03867f77cf394cd4839dcfa8f9cbfd34"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4e8216793fb97ac975b88ed7bf1e981a"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a4e8216793fb97ac975b88ed7bf1e981a"><td class="memTemplItemLeft" align="right" valign="top">constexpr std::size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1traits.html#a4e8216793fb97ac975b88ed7bf1e981a">arity_v</a> = <a class="el" href="structarg__router_1_1traits_1_1arity.html">arity</a>&lt;T&gt;::value</td></tr>
+<tr class="memitem:a4e8216793fb97ac975b88ed7bf1e981a"><td class="memTemplItemLeft" align="right" valign="top">constexpr std::size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1traits.html#a4e8216793fb97ac975b88ed7bf1e981a">arity_v</a> = std::tuple_size_v&lt;<a class="el" href="namespacearg__router_1_1traits.html#ac560711d5efdf61c81ddc6165e537737">arg_extractor_t</a>&lt;T&gt;&gt; - 1</td></tr>
 <tr class="separator:a4e8216793fb97ac975b88ed7bf1e981a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -226,6 +229,57 @@ template&lt;typename T &gt; </div>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00202">202</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ac560711d5efdf61c81ddc6165e537737"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac560711d5efdf61c81ddc6165e537737">&#9670;&nbsp;</a></span>arg_extractor_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="namespacearg__router_1_1traits.html#ac560711d5efdf61c81ddc6165e537737">arg_router::traits::arg_extractor_t</a> = typedef typename <a class="el" href="structarg__router_1_1traits_1_1arg__extractor.html">arg_extractor</a>&lt;T&gt;::type</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Helper alias for <a class="el" href="structarg__router_1_1traits_1_1arg__extractor.html">arg_extractor</a>.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>Type to query </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00546">546</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
+
+</div>
+</div>
+<a id="af9f59bafbbda6e44b67fc8a06857d9c7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af9f59bafbbda6e44b67fc8a06857d9c7">&#9670;&nbsp;</a></span>arg_type_at_index</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , std::size_t I&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="namespacearg__router_1_1traits.html#af9f59bafbbda6e44b67fc8a06857d9c7">arg_router::traits::arg_type_at_index</a> = typedef std::tuple_element_t&lt;I + 1, <a class="el" href="namespacearg__router_1_1traits.html#ac560711d5efdf61c81ddc6165e537737">arg_extractor_t</a>&lt;T&gt; &gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Evaluates to the argument type at index <em>I</em> in <code>Callable</code> <em>T</em>.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>Type to query </td></tr>
+    <tr><td class="paramname">I</td><td>Argument index </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00561">561</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -350,7 +404,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr std::size_t arg_router::traits::arity_v = <a class="el" href="structarg__router_1_1traits_1_1arity.html">arity</a>&lt;T&gt;::value</td>
+          <td class="memname">constexpr std::size_t arg_router::traits::arity_v = std::tuple_size_v&lt;<a class="el" href="namespacearg__router_1_1traits.html#ac560711d5efdf61c81ddc6165e537737">arg_extractor_t</a>&lt;T&gt;&gt; - 1</td>
         </tr>
       </table>
   </td>
@@ -359,7 +413,7 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Helper variable for <code>arity</code>.</p>
+<p>Evaluates to the number of arguments the <code>Callable</code> <em>T</em> has.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">T</td><td>Type to query </td></tr>
@@ -367,7 +421,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00535">535</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00553">553</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -466,7 +520,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00500">500</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00478">478</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -499,7 +553,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00479">479</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00457">457</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -635,41 +689,6 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a565413aa726912d0bc7b5054983b473b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a565413aa726912d0bc7b5054983b473b">&#9670;&nbsp;</a></span>has_process_value_tokens_method_v</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">constexpr bool arg_router::traits::has_process_value_tokens_method_v</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line">=</div>
-<div class="line">    has_process_value_tokens_method&lt;T&gt;::value</div>
-</div><!-- fragment --><p>Helper variable for <a class="el" href="structarg__router_1_1traits_1_1has__process__value__tokens__method.html">has_process_value_tokens_method</a>.</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">T</td><td>Type to query </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00439">439</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
-
-</div>
-</div>
 <a id="adff3672ffa49c8da3823272f3b2bf1a2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#adff3672ffa49c8da3823272f3b2bf1a2">&#9670;&nbsp;</a></span>has_push_back_method_v</h2>
 
@@ -699,7 +718,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00460">460</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00438">438</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
 
 </div>
 </div>

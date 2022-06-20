@@ -1,8 +1,7 @@
 var searchData=
 [
-  ['index_142',['index',['../structarg__router_1_1policy_1_1validation_1_1parent__index__pair__type.html#aa7ccd841fee0058fff63256f1f8e795b',1,'arg_router::policy::validation::parent_index_pair_type']]],
-  ['insert_143',['insert',['../classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a60e1970a9326292a69012bb03631f09c',1,'arg_router::parsing::dynamic_token_adapter::insert(iterator it, value_type value)'],['../classarg__router_1_1parsing_1_1dynamic__token__adapter.html#af812e6d9acacbaf22e122fc430f5449a',1,'arg_router::parsing::dynamic_token_adapter::insert(iterator it, Iter first, Iter last)']]],
-  ['insert_5fpending_144',['insert_pending',['../classarg__router_1_1parsing_1_1token__list.html#a4eb5ef1caa055f3e7ae563a0f01175a9',1,'arg_router::parsing::token_list']]],
+  ['index_143',['index',['../classarg__router_1_1policy_1_1nearest__mode__like.html#a50f877e8a2bb85745ec95144ada6027a',1,'arg_router::policy::nearest_mode_like::index()'],['../structarg__router_1_1policy_1_1validation_1_1parent__index__pair__type.html#aa7ccd841fee0058fff63256f1f8e795b',1,'arg_router::policy::validation::parent_index_pair_type::index()']]],
+  ['insert_144',['insert',['../classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a60e1970a9326292a69012bb03631f09c',1,'arg_router::parsing::dynamic_token_adapter::insert(iterator it, value_type value)'],['../classarg__router_1_1parsing_1_1dynamic__token__adapter.html#af812e6d9acacbaf22e122fc430f5449a',1,'arg_router::parsing::dynamic_token_adapter::insert(iterator it, Iter first, Iter last)']]],
   ['integral_5fconstant_145',['integral_constant',['../namespacearg__router_1_1traits.html#ab335cfad0ef1eeed3ad34d06694b0244',1,'arg_router::traits']]],
   ['is_5fall_5fpolicies_146',['is_all_policies',['../structarg__router_1_1policy_1_1is__all__policies.html',1,'arg_router::policy']]],
   ['is_5fall_5fpolicies_5fv_147',['is_all_policies_v',['../namespacearg__router_1_1policy.html#ab0b6b4c0174a2ba257d4431bda7241eb',1,'arg_router::policy']]],

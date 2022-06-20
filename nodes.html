@@ -69,11 +69,8 @@ $(function() {
 <div class="contents">
 <div class="toc"><h3>Table of Contents</h3>
 <ul><li class="level1"><a href="#nodes_parameter_organising">Parameter Organising</a></li>
-<li class="level1"><a href="#nodes_find">Find</a><ul><li class="level2"><a href="#nodes_match">Match</a></li>
-</ul>
-</li>
+<li class="level1"><a href="#nodes_pre_parse">Pre-Parse</a></li>
 <li class="level1"><a href="#nodes_parse">Parse</a></li>
-<li class="level1"><a href="#nodes_process_value_tokens">process_value_tokens(..)</a></li>
 </ul>
 </div>
 <div class="textblock"><p>Types that derive from <a class="el" href="classarg__router_1_1tree__node.html">tree_node</a> form the nodes of the parse tree.</p>
@@ -85,41 +82,33 @@ Parameter Organising</h1>
 <li>Anything else causes a <code>static_assert</code> failure</li>
 </ul>
 <p>Splitting out other <a class="el" href="classarg__router_1_1tree__node.html">tree_node</a> derived types has a further complexity due to <a class="el" href="classarg__router_1_1list.html">list</a>, which will need flattening first.</p>
-<h1><a class="anchor" id="nodes_find"></a>
-Find</h1>
-<p>One of the key pieces of functionality <a class="el" href="classarg__router_1_1tree__node.html">tree_node</a> provides is the ability for it to find a child node using a <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a>. This forms the core of how nodes are matched up against the user's command line tokens.</p>
-<p><a class="el" href="classarg__router_1_1tree__node.html#a3d51367f87893bddee652f0895680e1e">tree_node::find</a> uses a generic visitor <code>Callable</code> so that a matching node's type can be accessed by the caller. An optional results tuple can be provided too, this is so mode-like types (e.g. <a class="el" href="classarg__router_1_1mode__t.html">mode_t</a>) can provide the current result of that child node during the search. This is useful for some nodes that need iteratively 'filling' during parsing e.g. <a class="el" href="classarg__router_1_1positional__arg__t.html">positional_arg_t</a> which will match against any token (positional arguments are 'greedy') until it's maximum count is reached (if any, normally provided by <a class="el" href="classarg__router_1_1policy_1_1min__max__count__t.html">policy::min_max_count_t</a>).</p>
-<p>The find method works by iterating over the child tuple and calling each node's match method, which takes the queried token and a visitor <code>Callable</code> that accepts a const reference to the child node (e.g <a class="el" href="classarg__router_1_1flag__t.html#ad8dc963d4c304e80d00e55e4fcf0ab82">flag_t::match</a>), and an optional result arg as described above (e.g. <a class="el" href="classarg__router_1_1positional__arg__t.html#a4ada798a13c07c13eb3fe2dbd9414bc4">positional_arg_t::match</a>).</p>
-<h2><a class="anchor" id="nodes_match"></a>
-Match</h2>
-<p>The match method is one of two methods every <a class="el" href="classarg__router_1_1tree__node.html">tree_node</a> derived type must implement in order for compilation to succeed. It just needs to check that the input token_type (and optional result) is correct for the node, call the visitor with itself if it is correct, and return whether or not a match occurred.</p>
-<p>You don't need to provide a defaulted result type when implementing, <a class="el" href="classarg__router_1_1tree__node.html#a3d51367f87893bddee652f0895680e1e">tree_node::find</a> detects the arity of the target node's match method and the size of the requests result tuple (defaults to empty) and passes the result type accordingly. In other words only if the requestor provided a results tuple and your node's match method has a third argument, will you be passed a result value.</p>
-<p>For most node types the implementation involves checking that the input token_type matches one of the node's names (typically implemented by <a class="el" href="classarg__router_1_1policy_1_1long__name__t.html">policy::long_name_t</a>, <a class="el" href="classarg__router_1_1policy_1_1short__name__t.html">policy::short_name_t</a>, or <a class="el" href="classarg__router_1_1policy_1_1none__name__t.html">policy::none_name_t</a>). As this is a common use case, there is a convenience function that does the checking for you: parsing::default_match.</p>
+<h1><a class="anchor" id="nodes_pre_parse"></a>
+Pre-Parse</h1>
+<p>Every node needs pre-parse functionality because it is what the parent uses to determine if a set of tokens are for a particular child node. For a leaf node, the method performs these operations:</p><ol type="1">
+<li>The entire set of unprocessed tokens and the parents of a node are passed in</li>
+<li>A copy of the tokens and a temporary target are passed to each of the pre-parse phase supporting policies in priority order. Which then performs their operations on the input tokens. If the policies are adamant that the leading token(s) is not for this node, it will exit early - but not if an error occurs! Errors are saved for later</li>
+<li>If all passes, then the last check is for the name (if it has one)</li>
+<li>At this stage we know that the leading token(s) is for this node, so any error that was created by the policies can now be thrown</li>
+<li>If no error occured then we can move the processed tokens, the ones the policies have determined are for this node (usually using <a class="el" href="classarg__router_1_1policy_1_1min__max__count__t.html">policy::min_max_count_t</a>), into the <a class="el" href="classarg__router_1_1parsing_1_1parse__target.html">parsing::parse_target</a> and return it</li>
+</ol>
+<p>A mode-like node implements this method very differently, because its job is to collect the <a class="el" href="classarg__router_1_1parsing_1_1parse__target.html">parsing::parse_target</a> results of all of its children rather than directly processing the tokens itself.</p>
 <h1><a class="anchor" id="nodes_parse"></a>
 Parse</h1>
-<p>Every <a class="el" href="classarg__router_1_1tree__node.html">tree_node</a> derived type also needs to provide a parse function, which as the name suggests, processes some tokens from the <a class="el" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a> in order to produce a value that represents the tokens in some way.</p>
-<p>For more detail, let's look at what a typical node like <a class="el" href="classarg__router_1_1arg__t.html">arg_t</a> does:</p><ol type="1">
-<li>Check there are at least two tokens still to be processed, one for the arg's name and one for the value</li>
-<li>Call <a class="el" href="classarg__router_1_1parsing_1_1token__list.html#a6d6f59a3d781a45611921aea9e2c91a5">parsing::token_list::mark_as_processed</a> to mark the arg name as processed i.e. consume it from token pending list</li>
-<li>Call the pre-parse phase methods on the policies that support it</li>
-<li>Parse the value token using <a class="el" href="classarg__router_1_1tree__node.html#a2a8f5775af1259c3c3363160456dd94e">tree_node::parse</a></li>
-<li>Mark the value token as processed</li>
-<li>Call the valdation phase methods on the policies that support it</li>
+<p>Every <a class="el" href="classarg__router_1_1tree__node.html">tree_node</a> derived type also needs to provide a parse function, which as the name suggests, processes the tokens (if any) in the given <a class="el" href="classarg__router_1_1parsing_1_1parse__target.html">parsing::parse_target</a> in order to produce a value that represents the tokens in some way.</p>
+<p>It's important to note that the parse method is not called directly, the <a class="el" href="classarg__router_1_1parsing_1_1parse__target.html">parsing::parse_target</a> returned from the pre-parse is a type erasing function object type. When it is created it creates a closure around the target node and its parents, so when it is executed it calls the target node's parse method passing itself and the parents into it.</p>
+<p>Let's look at what a typical node like <a class="el" href="classarg__router_1_1arg__t.html">arg_t</a> does:</p><ol type="1">
+<li>Take the first token from the <a class="el" href="classarg__router_1_1parsing_1_1parse__target.html">parsing::parse_target</a>, this is guaranteed to be there because <a class="el" href="classarg__router_1_1arg__t.html">arg_t</a> has a <a class="el" href="namespacearg__router_1_1policy.html#aad881925b6e3abed579787e83350a734">policy::fixed_count</a> of 1. Then parse it using a parse-phase implementing policy if present, otherwise the global parser</li>
+<li>Pass the result to any validation-phase implementing policies</li>
 <li>If there is a routing phase policy, that call it with the parsed result</li>
 <li>Return the parsed value to the caller</li>
 </ol>
-<p>There are two exits for the node, if the node is top-level then once parsing is complete we can exit to the library user's code with it, as it's the only value expected to be parsed from the command line. However, often the node is the child of a mode-like type (e.g. <a class="el" href="classarg__router_1_1mode__t.html">mode_t</a>) which is building up a results tuple from the parsed tokens, in that case we return the value to the mode.</p>
+<p>There are two exits for the node, if the node is top-level then once parsing is complete we can exit to the library user's code with the result via the routing policy, as it's the only value expected to be parsed from the command line. However, often the node is the child of a mode-like type (e.g. <a class="el" href="classarg__router_1_1mode__t.html">mode_t</a>) which is building up a results tuple from the parsed tokens, in that case we return the value to the mode.</p>
 <p>It's important to note that every node needs this method, even if they don't parse a value off the command line e.g. <a class="el" href="classarg__router_1_1flag__t.html">flag_t</a> which does this:</p><ol type="1">
-<li>Call <a class="el" href="classarg__router_1_1parsing_1_1token__list.html#a6d6f59a3d781a45611921aea9e2c91a5">parsing::token_list::mark_as_processed</a> to mark the flag name as processed i.e. consume it from token pending list</li>
-<li>Call the pre-parse phase methods on the policies that support it</li>
-<li>If there is a routing phase policy, that call it with the parsed result</li>
-<li>Return the parsed value to the caller</li>
+<li>Create a <code>true</code> result</li>
+<li>If there is a routing phase policy, that call it with the result</li>
+<li>Return the result to the caller</li>
 </ol>
-<p>In this case the 'parsed result' is an implicit <code>true</code> boolean value as the presence of a flag indicates a positive value.</p>
-<h1><a class="anchor" id="nodes_process_value_tokens"></a>
-process_value_tokens(..)</h1>
-<p>This is an optional static method with the signature: </p><div class="fragment"><div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> process_value_tokens(span&lt;const char*&gt;&amp; args, parsing::token_list&amp; result)</div>
-</div><!-- fragment --><p> It is used by the input token processing phase if the owning node does <em>not</em> have a policy that implements <code>maximum_count()</code> and this method is present. This phase needs to work out how many 'value' tokens belong to each node so it can categorise them correctly, typically this is provided by a <code>maximum_count()</code>-implementing policy or nothing (i.e. no value tokens), but some nodes (e.g. <a class="el" href="classarg__router_1_1positional__arg__t.html">positional_arg_t</a>) <em>may</em> not have this policy but still consume value tokens - this method provides this functionality. </p>
+<p>I.e. there is no parsing as the presence of a flag indicates a positive value. </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
 <!-- start footer part -->

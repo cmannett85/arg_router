@@ -81,9 +81,9 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a12e52e21f952aa733daf609b1066f75d"><td class="memTemplParams" colspan="2">template&lt;typename... Parents&gt; </td></tr>
-<tr class="memitem:a12e52e21f952aa733daf609b1066f75d"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacearg__router_1_1parsing.html#a915cb96b9e236101aa9efd660a82f950">parsing::pre_parse_result</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1min__max__count__t.html#a12e52e21f952aa733daf609b1066f75d">pre_parse_phase</a> (<a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter.html">parsing::dynamic_token_adapter</a> &amp;tokens, [[maybe_unused]] <a class="el" href="classarg__router_1_1parsing_1_1token__list.html#a93a9014911eaf2832f746ea83ee2374a">parsing::token_list::pending_view_type</a> processed_tokens, [[maybe_unused]] const Parents &amp;... parents) const</td></tr>
-<tr class="separator:a12e52e21f952aa733daf609b1066f75d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a52f4d7361a8e0a1653e53327fe9552a2"><td class="memTemplParams" colspan="2">template&lt;typename ProcessedTarget , typename... Parents&gt; </td></tr>
+<tr class="memitem:a52f4d7361a8e0a1653e53327fe9552a2"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacearg__router_1_1parsing.html#a915cb96b9e236101aa9efd660a82f950">parsing::pre_parse_result</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1min__max__count__t.html#a52f4d7361a8e0a1653e53327fe9552a2">pre_parse_phase</a> (<a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter.html">parsing::dynamic_token_adapter</a> &amp;tokens, [[maybe_unused]] <a class="el" href="classarg__router_1_1utility_1_1compile__time__optional.html">utility::compile_time_optional</a>&lt; ProcessedTarget &gt; processed_target, [[maybe_unused]] <a class="el" href="classarg__router_1_1parsing_1_1parse__target.html">parsing::parse_target</a> &amp;target, [[maybe_unused]] const Parents &amp;... parents) const</td></tr>
+<tr class="separator:a52f4d7361a8e0a1653e53327fe9552a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -110,7 +110,7 @@ class arg_router::policy::min_max_count_t&lt; MinType, MaxType &gt;</h3>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00023">23</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00025">25</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a5c9b2f8b0bdb46a5ba8ad52e48e0940a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5c9b2f8b0bdb46a5ba8ad52e48e0940a">&#9670;&nbsp;</a></span>maximum_count()</h2>
@@ -138,7 +138,7 @@ template&lt;typename MinType , typename MaxType &gt; </div>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>Maximum count value. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00053">53</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00055">55</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
 
 </div>
 </div>
@@ -168,19 +168,19 @@ template&lt;typename MinType , typename MaxType &gt; </div>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>Minimum count value. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00047">47</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00049">49</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a12e52e21f952aa733daf609b1066f75d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a12e52e21f952aa733daf609b1066f75d">&#9670;&nbsp;</a></span>pre_parse_phase()</h2>
+<a id="a52f4d7361a8e0a1653e53327fe9552a2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a52f4d7361a8e0a1653e53327fe9552a2">&#9670;&nbsp;</a></span>pre_parse_phase()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename MinType , typename MaxType &gt; </div>
 <div class="memtemplate">
-template&lt;typename... Parents&gt; </div>
+template&lt;typename ProcessedTarget , typename... Parents&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -194,8 +194,14 @@ template&lt;typename... Parents&gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">[[maybe_unused] ] <a class="el" href="classarg__router_1_1parsing_1_1token__list.html#a93a9014911eaf2832f746ea83ee2374a">parsing::token_list::pending_view_type</a>&#160;</td>
-          <td class="paramname"><em>processed_tokens</em>, </td>
+          <td class="paramtype">[[maybe_unused] ] <a class="el" href="classarg__router_1_1utility_1_1compile__time__optional.html">utility::compile_time_optional</a>&lt; ProcessedTarget &gt;&#160;</td>
+          <td class="paramname"><em>processed_target</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">[[maybe_unused] ] <a class="el" href="classarg__router_1_1parsing_1_1parse__target.html">parsing::parse_target</a> &amp;&#160;</td>
+          <td class="paramname"><em>target</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -223,6 +229,7 @@ template&lt;typename... Parents&gt; </div>
 </dd></dl>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
+    <tr><td class="paramname">ProcessedTarget</td><td><em>processed_target</em> payload type </td></tr>
     <tr><td class="paramname">Parents</td><td>Pack of parent tree nodes in ascending ancestry order </td></tr>
   </table>
   </dd>
@@ -230,14 +237,15 @@ template&lt;typename... Parents&gt; </div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">tokens</td><td>Currently processed tokens </td></tr>
-    <tr><td class="paramname">processed_tokens</td><td>Processed tokens performed by previous pre-parse phases calls on other nodes </td></tr>
+    <tr><td class="paramname">processed_target</td><td>Previously processed parse_target of parent node, or empty is there is no non-root parent </td></tr>
+    <tr><td class="paramname">target</td><td>Pre-parse generated target </td></tr>
     <tr><td class="paramname">parents</td><td>Parent node instances </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Either true if successful, or a <a class="el" href="classarg__router_1_1parse__exception.html">parse_exception</a> if the minimum count is not reached </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00076">76</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00080">80</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
 
 </div>
 </div>
@@ -265,7 +273,7 @@ template&lt;typename MinType , typename MaxType &gt; </div>
 </div><div class="memdoc">
 <p>Policy priority. </p>
 
-<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00044">44</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00046">46</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
 
 </div>
 </div>

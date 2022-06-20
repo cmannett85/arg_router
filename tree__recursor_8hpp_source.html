@@ -75,113 +75,138 @@ $(function() {
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;arg_router/policy/policy.hpp&quot;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;arg_router/tree_node.hpp&quot;</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;arg_router/utility/tuple_iterator.hpp&quot;</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacearg__router.html">arg_router</a></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;{</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">namespace </span>utility</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;{</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keyword">namespace </span>detail</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;{</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">struct </span>always_false {</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span>...&gt;</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    [[nodiscard]] constexpr <span class="keyword">static</span> <span class="keywordtype">bool</span> fn() noexcept</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    {</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    }</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;};</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Visitor,</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;          <span class="keyword">typename</span> SkipFn,</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;          <span class="keyword">typename</span> Current,</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;          <span class="keyword">typename</span>... Parents&gt;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;constexpr <span class="keywordtype">void</span> tree_recursor_impl()</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;{</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keywordflow">if</span> constexpr (!SkipFn::template fn&lt;Current, Parents...&gt;()) {</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        <span class="keywordflow">if</span> constexpr (is_tree_node_v&lt;Current&gt;) {</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;            <span class="keyword">using</span> children_and_policies = boost::mp11::mp_append&lt;  <span class="comment">//</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;                <span class="keyword">typename</span> Current::children_type,</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;                <span class="keyword">typename</span> Current::policies_type&gt;;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;            <span class="comment">// Recurse into the types</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;            tuple_type_iterator&lt;children_and_policies&gt;([](<span class="keyword">auto</span> i) {</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;                <span class="keyword">using</span> type = std::tuple_element_t&lt;i, children_and_policies&gt;;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;                tree_recursor_impl&lt;Visitor,</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                                   SkipFn,</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                                   type,</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;                                   Current,</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                                   Parents...&gt;();</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;            });</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        }</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        Visitor::template fn&lt;Current, Parents...&gt;();</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    }</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;}</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;arg_router/tree_node.hpp&quot;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;arg_router/utility/tuple_iterator.hpp&quot;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacearg__router.html">arg_router</a></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;{</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">namespace </span>utility</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;{</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">namespace </span>detail</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;{</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">struct </span>always_false {</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span>...&gt;</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    [[nodiscard]] constexpr <span class="keyword">static</span> <span class="keywordtype">bool</span> fn() noexcept</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    {</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    }</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;};</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Visitor, <span class="keyword">typename</span> Current, <span class="keyword">typename</span>... Parents&gt;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;constexpr <span class="keywordtype">void</span> tree_recursor_impl(Visitor&amp; visitor,</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;                                  <span class="keyword">const</span> Current&amp; current,</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                                  <span class="keyword">const</span> Parents&amp;... parents)</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;{</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    visitor(current, parents...);</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <a class="code" href="namespacearg__router_1_1utility.html#a99e297c7383915d8754a23f4dcfa07b5">tuple_iterator</a>(</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        [&amp;](<span class="keyword">auto</span> <span class="comment">/*i*/</span>, <span class="keyword">const</span> <span class="keyword">auto</span>&amp; child) {</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;            tree_recursor_impl(visitor, child, current, parents...);</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        },</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        current.children());</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;}</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Visitor,</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;          <span class="keyword">typename</span> SkipFn,</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;          <span class="keyword">typename</span> Current,</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;          <span class="keyword">typename</span>... Parents&gt;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;constexpr <span class="keywordtype">void</span> tree_type_recursor_impl()</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;{</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordflow">if</span> constexpr (!SkipFn::template fn&lt;Current, Parents...&gt;()) {</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        Visitor::template fn&lt;Current, Parents...&gt;();</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="keywordflow">if</span> constexpr (is_tree_node_v&lt;Current&gt;) {</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;            <span class="keyword">using</span> policies_and_children_tuple =</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;                boost::mp11::mp_append&lt;<span class="keyword">typename</span> Current::policies_type,</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                                       <span class="keyword">typename</span> Current::children_type&gt;;</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>...&gt; <span class="keyword">typename</span> Visitor,</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;          <span class="keyword">typename</span> Current,</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;          <span class="keyword">typename</span>... Parents&gt;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">struct </span>tree_type_recursor_impl {</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> ChildOrPolicy&gt;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keyword">using</span> recurse = <span class="keyword">typename</span> tree_type_recursor_impl&lt;Visitor,</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                                                     ChildOrPolicy,</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                                                     Current,</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                                                     Parents...&gt;::type;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keyword">using</span> get_children_type = <span class="keyword">typename</span> T::children_type;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keyword">using</span> get_policies_type = <span class="keyword">typename</span> T::policies_type;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keyword">using</span> children_type = boost::mp11::mp_eval_if_c&lt;!is_tree_node_v&lt;Current&gt;,</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;                                                    std::tuple&lt;&gt;,</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                                                    get_children_type,</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                                                    Current&gt;;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keyword">using</span> policies_type = boost::mp11::mp_eval_if_c&lt;!is_tree_node_v&lt;Current&gt;,</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                                                    std::tuple&lt;&gt;,</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                                                    get_policies_type,</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                                                    Current&gt;;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;            tuple_type_iterator&lt;policies_and_children_tuple&gt;([](<span class="keyword">auto</span> i) {</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;                <span class="keyword">using</span> next_type =</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;                    std::tuple_element_t&lt;i, policies_and_children_tuple&gt;;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;                tree_type_recursor_impl&lt;Visitor,</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;                                        SkipFn,</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                                        next_type,</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                                        Current,</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                                        Parents...&gt;();</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;            });</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        }</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    }</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;}</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>...&gt; <span class="keyword">typename</span> Visitor,</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;          <span class="keyword">typename</span> Current,</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;          <span class="keyword">typename</span>... Parents&gt;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="keyword">struct </span>tree_type_recursor_collector_impl {</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> ChildOrPolicy&gt;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keyword">using</span> recurse =</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        <span class="keyword">typename</span> tree_type_recursor_collector_impl&lt;Visitor,</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                                                   ChildOrPolicy,</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                                                   Current,</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                                                   Parents...&gt;::type;</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <span class="keyword">using</span> type = boost::mp11::mp_eval_if_c&lt;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        !is_tree_node_v&lt;Current&gt;,</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        std::tuple&lt;<span class="keyword">typename</span> Visitor&lt;Current, Parents...&gt;::type&gt;,</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        boost::mp11::mp_push_back,</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        boost::mp11::mp_flatten&lt;boost::mp11::mp_transform&lt;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;            recurse,</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;            boost::mp11::mp_append&lt;children_type, policies_type&gt;&gt;&gt;,</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        <span class="keyword">typename</span> Visitor&lt;Current, Parents...&gt;::type&gt;;</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;};</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;}  <span class="comment">// namespace detail</span></div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Visitor, <span class="keyword">typename</span> Root&gt;</div>
-<div class="line"><a name="l00107"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1utility.html#a8c2771daff65998317f1853a68d3453b">  107</a></span>&#160;constexpr <span class="keywordtype">void</span> <a class="code" href="namespacearg__router_1_1utility.html#a8c2771daff65998317f1853a68d3453b">tree_recursor</a>()</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;{</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    detail::tree_recursor_impl&lt;Visitor, detail::always_false, Root&gt;();</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;}</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160; </div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Visitor, <span class="keyword">typename</span> SkipFn, <span class="keyword">typename</span> Root&gt;</div>
-<div class="line"><a name="l00135"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1utility.html#a5cb15613aecdb3e4b2c497679da99e26">  135</a></span>&#160;constexpr <span class="keywordtype">void</span> <a class="code" href="namespacearg__router_1_1utility.html#a8c2771daff65998317f1853a68d3453b">tree_recursor</a>()</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;{</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    detail::tree_recursor_impl&lt;Visitor, SkipFn, Root&gt;();</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;}</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160; </div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>...&gt; <span class="keyword">typename</span> Visitor, <span class="keyword">typename</span> Root&gt;</div>
-<div class="line"><a name="l00156"></a><span class="lineno"><a class="line" href="structarg__router_1_1utility_1_1tree__type__recursor.html">  156</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structarg__router_1_1utility_1_1tree__type__recursor.html">tree_type_recursor</a> {</div>
-<div class="line"><a name="l00158"></a><span class="lineno"><a class="line" href="structarg__router_1_1utility_1_1tree__type__recursor.html#a4e2528e365522c674843ab458bb90f6d">  158</a></span>&#160;    <span class="keyword">using</span> <a class="code" href="structarg__router_1_1utility_1_1tree__type__recursor.html#a4e2528e365522c674843ab458bb90f6d">type</a> = <span class="keyword">typename</span> detail::tree_type_recursor_impl&lt;Visitor, Root&gt;::type;</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;};</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160; </div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>...&gt; <span class="keyword">typename</span> Visitor, <span class="keyword">typename</span> Root&gt;</div>
-<div class="line"><a name="l00167"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1utility.html#a577bf999e7250f595ec2e43571b0714f">  167</a></span>&#160;<span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1utility.html#a577bf999e7250f595ec2e43571b0714f">tree_type_recursor_t</a> = <span class="keyword">typename</span> <a class="code" href="structarg__router_1_1utility_1_1tree__type__recursor.html#a4e2528e365522c674843ab458bb90f6d">tree_type_recursor&lt;Visitor, Root&gt;::type</a>;</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;}  <span class="comment">// namespace utility</span></div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="keyword">using</span> get_children_type = <span class="keyword">typename</span> T::children_type;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <span class="keyword">using</span> get_policies_type = <span class="keyword">typename</span> T::policies_type;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <span class="keyword">using</span> children_type = boost::mp11::mp_eval_if_c&lt;!is_tree_node_v&lt;Current&gt;,</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                                                    std::tuple&lt;&gt;,</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;                                                    get_children_type,</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;                                                    Current&gt;;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    <span class="keyword">using</span> policies_type = boost::mp11::mp_eval_if_c&lt;!is_tree_node_v&lt;Current&gt;,</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;                                                    std::tuple&lt;&gt;,</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;                                                    get_policies_type,</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                                                    Current&gt;;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    <span class="keyword">using</span> type = boost::mp11::mp_eval_if_c&lt;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        !is_tree_node_v&lt;Current&gt;,</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        std::tuple&lt;<span class="keyword">typename</span> Visitor&lt;Current, Parents...&gt;::type&gt;,</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        boost::mp11::mp_push_back,</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        boost::mp11::mp_flatten&lt;boost::mp11::mp_transform&lt;</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;            recurse,</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;            boost::mp11::mp_append&lt;children_type, policies_type&gt;&gt;&gt;,</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        <span class="keyword">typename</span> Visitor&lt;Current, Parents...&gt;::type&gt;;</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;};</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;}  <span class="comment">// namespace detail</span></div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Visitor, <span class="keyword">typename</span> Root&gt;</div>
+<div class="line"><a name="l00119"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1utility.html#a246452797205e03f6e1e2a7f56fa140e">  119</a></span>&#160;constexpr <span class="keywordtype">void</span> <a class="code" href="namespacearg__router_1_1utility.html#a246452797205e03f6e1e2a7f56fa140e">tree_recursor</a>(Visitor visitor, <span class="keyword">const</span> Root&amp; <a class="code" href="namespacearg__router.html#a911ab5ded2b36269fdec3e768450d415">root</a>)</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;{</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    detail::tree_recursor_impl(visitor, <a class="code" href="namespacearg__router.html#a911ab5ded2b36269fdec3e768450d415">root</a>);</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;}</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160; </div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Visitor, <span class="keyword">typename</span> SkipFn, <span class="keyword">typename</span> Root&gt;</div>
+<div class="line"><a name="l00163"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1utility.html#a6a2a689690e0a614358f4adb484697f7">  163</a></span>&#160;constexpr <span class="keywordtype">void</span> <a class="code" href="namespacearg__router_1_1utility.html#a6a2a689690e0a614358f4adb484697f7">tree_type_recursor</a>()</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;{</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;    detail::tree_type_recursor_impl&lt;Visitor, SkipFn, Root&gt;();</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;}</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160; </div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Visitor, <span class="keyword">typename</span> Root&gt;</div>
+<div class="line"><a name="l00175"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1utility.html#a18af062506e86c8b5766a48f841750a8">  175</a></span>&#160;constexpr <span class="keywordtype">void</span> <a class="code" href="namespacearg__router_1_1utility.html#a6a2a689690e0a614358f4adb484697f7">tree_type_recursor</a>()</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;{</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;    detail::tree_type_recursor_impl&lt;Visitor, detail::always_false, Root&gt;();</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;}</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160; </div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>...&gt; <span class="keyword">typename</span> Visitor, <span class="keyword">typename</span> Root&gt;</div>
+<div class="line"><a name="l00196"></a><span class="lineno"><a class="line" href="structarg__router_1_1utility_1_1tree__type__recursor__collector.html">  196</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structarg__router_1_1utility_1_1tree__type__recursor__collector.html">tree_type_recursor_collector</a> {</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;    <span class="keyword">using</span> <a class="code" href="structarg__router_1_1utility_1_1tree__type__recursor__collector.html#aef7134da3d61c6dade354db1592668d4">type</a> =</div>
+<div class="line"><a name="l00199"></a><span class="lineno"><a class="line" href="structarg__router_1_1utility_1_1tree__type__recursor__collector.html#aef7134da3d61c6dade354db1592668d4">  199</a></span>&#160;        <span class="keyword">typename</span> detail::tree_type_recursor_collector_impl&lt;Visitor, Root&gt;::type;</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;};</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160; </div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>...&gt; <span class="keyword">typename</span> Visitor, <span class="keyword">typename</span> Root&gt;</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;<span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1utility.html#a93d08b88c1e3166652103a4208d45063">tree_type_recursor_collector_t</a> =</div>
+<div class="line"><a name="l00209"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1utility.html#a93d08b88c1e3166652103a4208d45063">  209</a></span>&#160;    <span class="keyword">typename</span> <a class="code" href="structarg__router_1_1utility_1_1tree__type__recursor__collector.html#aef7134da3d61c6dade354db1592668d4">tree_type_recursor_collector&lt;Visitor, Root&gt;::type</a>;</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;}  <span class="comment">// namespace utility</span></div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="anamespacearg__router_1_1utility_html_a577bf999e7250f595ec2e43571b0714f"><div class="ttname"><a href="namespacearg__router_1_1utility.html#a577bf999e7250f595ec2e43571b0714f">arg_router::utility::tree_type_recursor_t</a></div><div class="ttdeci">typename tree_type_recursor&lt; Visitor, Root &gt;::type tree_type_recursor_t</div><div class="ttdef"><b>Definition:</b> <a href="tree__recursor_8hpp_source.html#l00167">tree_recursor.hpp:167</a></div></div>
-<div class="ttc" id="astructarg__router_1_1utility_1_1tree__type__recursor_html"><div class="ttname"><a href="structarg__router_1_1utility_1_1tree__type__recursor.html">arg_router::utility::tree_type_recursor</a></div><div class="ttdef"><b>Definition:</b> <a href="tree__recursor_8hpp_source.html#l00156">tree_recursor.hpp:156</a></div></div>
-<div class="ttc" id="astructarg__router_1_1utility_1_1tree__type__recursor_html_a4e2528e365522c674843ab458bb90f6d"><div class="ttname"><a href="structarg__router_1_1utility_1_1tree__type__recursor.html#a4e2528e365522c674843ab458bb90f6d">arg_router::utility::tree_type_recursor::type</a></div><div class="ttdeci">typename detail::tree_type_recursor_impl&lt; Visitor, Root &gt;::type type</div><div class="ttdef"><b>Definition:</b> <a href="tree__recursor_8hpp_source.html#l00158">tree_recursor.hpp:158</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1utility_html_a93d08b88c1e3166652103a4208d45063"><div class="ttname"><a href="namespacearg__router_1_1utility.html#a93d08b88c1e3166652103a4208d45063">arg_router::utility::tree_type_recursor_collector_t</a></div><div class="ttdeci">typename tree_type_recursor_collector&lt; Visitor, Root &gt;::type tree_type_recursor_collector_t</div><div class="ttdef"><b>Definition:</b> <a href="tree__recursor_8hpp_source.html#l00209">tree_recursor.hpp:209</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1utility_html_a246452797205e03f6e1e2a7f56fa140e"><div class="ttname"><a href="namespacearg__router_1_1utility.html#a246452797205e03f6e1e2a7f56fa140e">arg_router::utility::tree_recursor</a></div><div class="ttdeci">constexpr void tree_recursor(Visitor visitor, const Root &amp;root)</div><div class="ttdef"><b>Definition:</b> <a href="tree__recursor_8hpp_source.html#l00119">tree_recursor.hpp:119</a></div></div>
+<div class="ttc" id="astructarg__router_1_1utility_1_1tree__type__recursor__collector_html_aef7134da3d61c6dade354db1592668d4"><div class="ttname"><a href="structarg__router_1_1utility_1_1tree__type__recursor__collector.html#aef7134da3d61c6dade354db1592668d4">arg_router::utility::tree_type_recursor_collector::type</a></div><div class="ttdeci">typename detail::tree_type_recursor_collector_impl&lt; Visitor, Root &gt;::type type</div><div class="ttdef"><b>Definition:</b> <a href="tree__recursor_8hpp_source.html#l00199">tree_recursor.hpp:199</a></div></div>
+<div class="ttc" id="anamespacearg__router_html_a911ab5ded2b36269fdec3e768450d415"><div class="ttname"><a href="namespacearg__router.html#a911ab5ded2b36269fdec3e768450d415">arg_router::root</a></div><div class="ttdeci">constexpr auto root(Params... params) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="root_8hpp_source.html#l00188">root.hpp:188</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1utility_html_a99e297c7383915d8754a23f4dcfa07b5"><div class="ttname"><a href="namespacearg__router_1_1utility.html#a99e297c7383915d8754a23f4dcfa07b5">arg_router::utility::tuple_iterator</a></div><div class="ttdeci">constexpr std::enable_if_t&lt; traits::is_tuple_like_v&lt; std::decay_t&lt; Tuple &gt; &gt; &gt; tuple_iterator(F &amp;&amp;f, Tuple &amp;&amp;tuple)</div><div class="ttdef"><b>Definition:</b> <a href="tuple__iterator_8hpp_source.html#l00034">tuple_iterator.hpp:34</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1utility_html_a6a2a689690e0a614358f4adb484697f7"><div class="ttname"><a href="namespacearg__router_1_1utility.html#a6a2a689690e0a614358f4adb484697f7">arg_router::utility::tree_type_recursor</a></div><div class="ttdeci">constexpr void tree_type_recursor()</div><div class="ttdef"><b>Definition:</b> <a href="tree__recursor_8hpp_source.html#l00163">tree_recursor.hpp:163</a></div></div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00012">algorithm.hpp:12</a></div></div>
-<div class="ttc" id="anamespacearg__router_1_1utility_html_a8c2771daff65998317f1853a68d3453b"><div class="ttname"><a href="namespacearg__router_1_1utility.html#a8c2771daff65998317f1853a68d3453b">arg_router::utility::tree_recursor</a></div><div class="ttdeci">constexpr void tree_recursor()</div><div class="ttdef"><b>Definition:</b> <a href="tree__recursor_8hpp_source.html#l00107">tree_recursor.hpp:107</a></div></div>
+<div class="ttc" id="astructarg__router_1_1utility_1_1tree__type__recursor__collector_html"><div class="ttname"><a href="structarg__router_1_1utility_1_1tree__type__recursor__collector.html">arg_router::utility::tree_type_recursor_collector</a></div><div class="ttdef"><b>Definition:</b> <a href="tree__recursor_8hpp_source.html#l00196">tree_recursor.hpp:196</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

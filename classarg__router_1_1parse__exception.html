@@ -85,8 +85,6 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a155dbf6f640ab568828aca23cb828c84"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4a830ce4a207c239a0f381c1f5319bc9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1parse__exception.html#a4a830ce4a207c239a0f381c1f5319bc9">parse_exception</a> (const <a class="el" href="namespacearg__router.html#abafabad5af18e8dda89e6b568b594738">string</a> &amp;message, const <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a> &amp;token)</td></tr>
 <tr class="separator:a4a830ce4a207c239a0f381c1f5319bc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a33a272c6020c03d506a995d850ff0c04"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1parse__exception.html#a33a272c6020c03d506a995d850ff0c04">parse_exception</a> (const <a class="el" href="namespacearg__router.html#abafabad5af18e8dda89e6b568b594738">string</a> &amp;message, const <a class="el" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a> &amp;tokens)</td></tr>
-<tr class="separator:a33a272c6020c03d506a995d850ff0c04"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac79f07403392168f1e646fae82ead674"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1parse__exception.html#ac79f07403392168f1e646fae82ead674">parse_exception</a> (const <a class="el" href="namespacearg__router.html#abafabad5af18e8dda89e6b568b594738">string</a> &amp;message, const <a class="el" href="namespacearg__router.html#a3d789cf2175008b4124de867a13a2edf">vector</a>&lt; <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a> &gt; &amp;tokens)</td></tr>
 <tr class="separator:ac79f07403392168f1e646fae82ead674"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -96,7 +94,7 @@ Public Member Functions</h2></td></tr>
 <p class="definition">Definition at line <a class="el" href="exception_8hpp_source.html#l00014">14</a> of file <a class="el" href="exception_8hpp_source.html">exception.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a155dbf6f640ab568828aca23cb828c84"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a155dbf6f640ab568828aca23cb828c84">&#9670;&nbsp;</a></span>parse_exception() <span class="overload">[1/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a155dbf6f640ab568828aca23cb828c84">&#9670;&nbsp;</a></span>parse_exception() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -131,7 +129,7 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <a id="a4a830ce4a207c239a0f381c1f5319bc9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4a830ce4a207c239a0f381c1f5319bc9">&#9670;&nbsp;</a></span>parse_exception() <span class="overload">[2/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a4a830ce4a207c239a0f381c1f5319bc9">&#9670;&nbsp;</a></span>parse_exception() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -176,54 +174,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a33a272c6020c03d506a995d850ff0c04"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a33a272c6020c03d506a995d850ff0c04">&#9670;&nbsp;</a></span>parse_exception() <span class="overload">[3/4]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">arg_router::parse_exception::parse_exception </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="namespacearg__router.html#abafabad5af18e8dda89e6b568b594738">string</a> &amp;&#160;</td>
-          <td class="paramname"><em>message</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a> &amp;&#160;</td>
-          <td class="paramname"><em>tokens</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">explicit</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Token list constructor.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">message</td><td>Error message </td></tr>
-    <tr><td class="paramname">tokens</td><td>Tokens that caused the error </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="definition">Definition at line <a class="el" href="exception_8hpp_source.html#l00042">42</a> of file <a class="el" href="exception_8hpp_source.html">exception.hpp</a>.</p>
-
-</div>
-</div>
 <a id="ac79f07403392168f1e646fae82ead674"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac79f07403392168f1e646fae82ead674">&#9670;&nbsp;</a></span>parse_exception() <span class="overload">[4/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ac79f07403392168f1e646fae82ead674">&#9670;&nbsp;</a></span>parse_exception() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -264,7 +216,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="exception_8hpp_source.html#l00053">53</a> of file <a class="el" href="exception_8hpp_source.html">exception.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="exception_8hpp_source.html#l00042">42</a> of file <a class="el" href="exception_8hpp_source.html">exception.hpp</a>.</p>
 
 </div>
 </div>

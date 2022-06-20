@@ -92,29 +92,23 @@ $(function() {
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
 <div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1router.html#a74675508bc9199cd88a4d7987929ac34">   29</a></span>&#160;    constexpr <span class="keyword">explicit</span> <a class="code" href="classarg__router_1_1policy_1_1router.html#a74675508bc9199cd88a4d7987929ac34">router</a>(Fn f) noexcept : f_{std::move(f)} {}</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Args&gt;</div>
-<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1router.html#a2882f88263153979748a2f537bc2aca7">   42</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classarg__router_1_1policy_1_1router.html#a2882f88263153979748a2f537bc2aca7">routing_phase</a>(<span class="keyword">const</span> <a class="code" href="classarg__router_1_1parsing_1_1token__list.html">parsing::token_list</a>&amp; tokens, Args&amp;&amp;... args)<span class="keyword"> const</span></div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="keyword">    </span>{</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keywordflow">if</span> (!tokens.<a class="code" href="classarg__router_1_1parsing_1_1token__list.html#ab09398fc6bd23625c4ba2d7017341b6a">pending_view</a>().empty()) {</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;            <span class="keywordflow">throw</span> <a class="code" href="classarg__router_1_1parse__exception.html">parse_exception</a>{<span class="stringliteral">&quot;Unhandled arguments&quot;</span>, tokens};</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        }</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        f_(std::forward&lt;Args&gt;(args)...);</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    }</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    Fn f_;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;};</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Fn&gt;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="keyword">struct </span>is_policy&lt;router&lt;Fn&gt;&gt; : std::true_type {</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;};</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;}  <span class="comment">// namespace policy</span></div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Args&gt;</div>
+<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1router.html#a209dbbebed1293b17e67c231fc4cd7e8">   39</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classarg__router_1_1policy_1_1router.html#a209dbbebed1293b17e67c231fc4cd7e8">routing_phase</a>(Args&amp;&amp;... args)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keyword">    </span>{</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        f_(std::forward&lt;Args&gt;(args)...);</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    }</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    Fn f_;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;};</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Fn&gt;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="keyword">struct </span>is_policy&lt;router&lt;Fn&gt;&gt; : std::true_type {</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;};</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;}  <span class="comment">// namespace policy</span></div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclassarg__router_1_1parsing_1_1token__list_html_ab09398fc6bd23625c4ba2d7017341b6a"><div class="ttname"><a href="classarg__router_1_1parsing_1_1token__list.html#ab09398fc6bd23625c4ba2d7017341b6a">arg_router::parsing::token_list::pending_view</a></div><div class="ttdeci">pending_view_type pending_view() const</div><div class="ttdef"><b>Definition:</b> <a href="token__type_8hpp_source.html#l00156">token_type.hpp:156</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1parse__exception_html"><div class="ttname"><a href="classarg__router_1_1parse__exception.html">arg_router::parse_exception</a></div><div class="ttdef"><b>Definition:</b> <a href="exception_8hpp_source.html#l00014">exception.hpp:14</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1policy_1_1router_html_a2882f88263153979748a2f537bc2aca7"><div class="ttname"><a href="classarg__router_1_1policy_1_1router.html#a2882f88263153979748a2f537bc2aca7">arg_router::policy::router::routing_phase</a></div><div class="ttdeci">void routing_phase(const parsing::token_list &amp;tokens, Args &amp;&amp;... args) const</div><div class="ttdef"><b>Definition:</b> <a href="router_8hpp_source.html#l00042">router.hpp:42</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1parsing_1_1token__list_html"><div class="ttname"><a href="classarg__router_1_1parsing_1_1token__list.html">arg_router::parsing::token_list</a></div><div class="ttdef"><b>Definition:</b> <a href="token__type_8hpp_source.html#l00098">token_type.hpp:98</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1policy_1_1router_html_a209dbbebed1293b17e67c231fc4cd7e8"><div class="ttname"><a href="classarg__router_1_1policy_1_1router.html#a209dbbebed1293b17e67c231fc4cd7e8">arg_router::policy::router::routing_phase</a></div><div class="ttdeci">void routing_phase(Args &amp;&amp;... args) const</div><div class="ttdef"><b>Definition:</b> <a href="router_8hpp_source.html#l00039">router.hpp:39</a></div></div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00012">algorithm.hpp:12</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1policy_1_1router_html"><div class="ttname"><a href="classarg__router_1_1policy_1_1router.html">arg_router::policy::router</a></div><div class="ttdef"><b>Definition:</b> <a href="router_8hpp_source.html#l00019">router.hpp:19</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1policy_1_1router_html_a74675508bc9199cd88a4d7987929ac34"><div class="ttname"><a href="classarg__router_1_1policy_1_1router.html#a74675508bc9199cd88a4d7987929ac34">arg_router::policy::router::router</a></div><div class="ttdeci">constexpr router(Fn f) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="router_8hpp_source.html#l00029">router.hpp:29</a></div></div>

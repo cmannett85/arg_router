@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['find_5fspecialisation_5fv_601',['find_specialisation_v',['../namespacearg__router_1_1algorithm.html#a6ec178bdd8a13b8cce0b4accb53bceab',1,'arg_router::algorithm']]],
-  ['fixed_5fcount_602',['fixed_count',['../namespacearg__router_1_1policy.html#aad881925b6e3abed579787e83350a734',1,'arg_router::policy']]],
-  ['flatten_5fhelp_603',['flatten_help',['../namespacearg__router_1_1policy.html#ab67db91587c1eb1c3979e028c82fd6e4',1,'arg_router::policy']]]
+  ['empty_611',['empty',['../classarg__router_1_1utility_1_1compile__time__optional.html#a23da914e833434e5808aa4ab142a3910',1,'arg_router::utility::compile_time_optional']]]
 ];

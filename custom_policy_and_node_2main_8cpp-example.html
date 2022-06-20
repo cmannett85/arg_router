@@ -85,7 +85,7 @@ $(function() {
 <div class="line"><span class="comment">/* A ridiculous description policy implementation that appends a smiley face to</span></div>
 <div class="line"><span class="comment"> * the user supplied description.</span></div>
 <div class="line"><span class="comment"> *</span></div>
-<div class="line"><span class="comment"> * Although contrived this demonstrates the static data type of policy, where as</span></div>
+<div class="line"><span class="comment"> * Although contrived this demonstrates the static data form of policy, where as</span></div>
 <div class="line"><span class="comment"> * long as the policy provides a common method name then it can be used by the</span></div>
 <div class="line"><span class="comment"> * system.</span></div>
 <div class="line"><span class="comment"> */</span></div>
@@ -199,52 +199,32 @@ $(function() {
 <div class="line">    {</div>
 <div class="line">    }</div>
 <div class="line"> </div>
-<div class="line">    <span class="comment">/* As a positional arg doesn&#39;t have a label token we have no name to match</span></div>
-<div class="line"><span class="comment">     * against, but by using the triple arg overload of match(..) we gain</span></div>
-<div class="line"><span class="comment">     * access to the result the mode has created so we can see if it has been </span></div>
-<div class="line"><span class="comment">     * set already.</span></div>
-<div class="line"><span class="comment">     */</span></div>
-<div class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Fn&gt;</div>
-<div class="line">    constexpr <span class="keywordtype">bool</span> <a class="code" href="namespacearg__router_1_1parsing.html#ae2cbfdf6379f66e446801b6a915e3144">match</a>([[maybe_unused]] <span class="keyword">const</span> ar::parsing::token_type&amp; token,</div>
-<div class="line">                         <span class="keyword">const</span> Fn&amp; visitor,</div>
-<div class="line">                         <span class="keyword">const</span> std::optional&lt;T&gt;&amp; result)<span class="keyword"> const</span></div>
-<div class="line"><span class="keyword">    </span>{</div>
-<div class="line">        <span class="comment">//  If the value has already been set, then we&#39;ve already been used!</span></div>
-<div class="line">        <span class="keywordflow">if</span> (result) {</div>
-<div class="line">            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line">        }</div>
-<div class="line"> </div>
-<div class="line">        visitor(*<span class="keyword">this</span>);</div>
-<div class="line">        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line">    }</div>
-<div class="line"> </div>
 <div class="line">    <span class="comment">/* Forward the request onto the parent&#39;s definition.  As there is no</span></div>
 <div class="line"><span class="comment">     * polymorphism in the library, we have to create this stub so the</span></div>
 <div class="line"><span class="comment">     * &lt;TT&gt;*this&lt;/TT&gt; expression evaluates to the correct type</span></div>
 <div class="line"><span class="comment">     */</span></div>
-<div class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Parents&gt;</div>
-<div class="line">    [[nodiscard]] <span class="keywordtype">bool</span> pre_parse(ar::span&lt;const char*&gt;&amp; args,</div>
-<div class="line">                                 ar::parsing::token_list&amp; tokens,</div>
-<div class="line">                                 <span class="keyword">const</span> Parents&amp;... parents)<span class="keyword"> const</span></div>
+<div class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Validator, <span class="keywordtype">bool</span> HasTarget, <span class="keyword">typename</span>... Parents&gt;</div>
+<div class="line">    [[nodiscard]] std::optional&lt;ar::parsing::parse_target&gt; pre_parse(</div>
+<div class="line">        ar::parsing::pre_parse_data&lt;Validator, HasTarget&gt; pre_parse_data,</div>
+<div class="line">        <span class="keyword">const</span> Parents&amp;... parents)<span class="keyword"> const</span></div>
 <div class="line"><span class="keyword"></span> </div>
 <div class="line"><span class="keyword">    </span>{</div>
-<div class="line">        <span class="keywordflow">return</span> parent_type::pre_parse(args, tokens, *<span class="keyword">this</span>, parents...);</div>
+<div class="line">        <span class="keywordflow">return</span> parent_type::pre_parse(pre_parse_data, *<span class="keyword">this</span>, parents...);</div>
 <div class="line">    }</div>
 <div class="line"> </div>
 <div class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Parents&gt;</div>
-<div class="line">    value_type parse(ar::parsing::token_list&amp; tokens,</div>
+<div class="line">    value_type parse(ar::parsing::parse_target target,</div>
 <div class="line">                     <span class="keyword">const</span> Parents&amp;... parents)<span class="keyword"> const</span></div>
 <div class="line"><span class="keyword">    </span>{</div>
-<div class="line">        <span class="comment">// The fixed count guarantees there is a single token</span></div>
-<div class="line">        <span class="keyword">auto</span> view = tokens.pending_view();</div>
-<div class="line">        <span class="keyword">auto</span> result = parent_type::template parse&lt;value_type&gt;(view.front().name,</div>
-<div class="line">                                                              *<span class="keyword">this</span>,</div>
-<div class="line">                                                              parents...);</div>
+<div class="line">        <span class="comment">// The fixed count of 1 guarantees there is a single token.  Pass it</span></div>
+<div class="line">        <span class="comment">// onto the parent type which will use a custom parse if one is</span></div>
+<div class="line">        <span class="comment">// available, otherwise it will use the global parser</span></div>
+<div class="line">        <span class="keyword">auto</span> result = parent_type::template parse&lt;value_type&gt;(</div>
+<div class="line">            target.tokens().front().name,</div>
+<div class="line">            *<span class="keyword">this</span>,</div>
+<div class="line">            parents...);</div>
 <div class="line"> </div>
-<div class="line">        <span class="comment">// Pop the value</span></div>
-<div class="line">        tokens.mark_as_processed();</div>
-<div class="line"> </div>
-<div class="line">        <span class="comment">// Validation</span></div>
+<div class="line">        <span class="comment">// Run the result through the validation policies</span></div>
 <div class="line">        ar::utility::tuple_type_iterator&lt;policies_type&gt;([&amp;](<span class="keyword">auto</span> i) {</div>
 <div class="line">            <span class="keyword">using</span> policy_type = std::tuple_element_t&lt;i, policies_type&gt;;</div>
 <div class="line">            <span class="keywordflow">if</span> constexpr (arp::has_validation_phase_method_v&lt;policy_type,</div>
@@ -335,13 +315,14 @@ $(function() {
 <div class="line">                                       arp::display_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Value&quot;</span>)&gt;,</div>
 <div class="line">                                       smiley_description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Value to read&quot;</span>)&gt;,</div>
 <div class="line">                                       is_even&lt;int&gt;{}),</div>
-<div class="line">            arp::router{[](int) {}}))</div>
+<div class="line">            arp::router{[](<span class="keywordtype">int</span> value) {</div>
+<div class="line">                std::cout &lt;&lt; <span class="stringliteral">&quot;Value: &quot;</span> &lt;&lt; value &lt;&lt; std::endl;</div>
+<div class="line">            }}))</div>
 <div class="line">        .parse(argc, argv);</div>
 <div class="line"> </div>
 <div class="line">    <span class="keywordflow">return</span> EXIT_SUCCESS;</div>
 <div class="line">}</div>
 </div><!-- fragment --> </div><!-- contents -->
-<div class="ttc" id="anamespacearg__router_1_1parsing_html_ae2cbfdf6379f66e446801b6a915e3144"><div class="ttname"><a href="namespacearg__router_1_1parsing.html#ae2cbfdf6379f66e446801b6a915e3144">arg_router::parsing::match</a></div><div class="ttdeci">constexpr bool match(token_type token) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="parsing_8hpp_source.html#l00036">parsing.hpp:36</a></div></div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00012">algorithm.hpp:12</a></div></div>
 <div class="ttc" id="acompile__time__string_8hpp_html_a741f251b243f90ef2b4d915e50d40bac"><div class="ttname"><a href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a></div><div class="ttdeci">#define S_(tok)</div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00268">compile_time_string.hpp:268</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1policy_html_adeab7d3692839fb3dcc864b5cc1730b7"><div class="ttname"><a href="namespacearg__router_1_1policy.html#adeab7d3692839fb3dcc864b5cc1730b7">arg_router::policy::description</a></div><div class="ttdeci">constexpr auto description</div><div class="ttdef"><b>Definition:</b> <a href="description_8hpp_source.html#l00040">description.hpp:40</a></div></div>
