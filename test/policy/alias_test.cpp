@@ -16,6 +16,34 @@ using namespace std::string_literals;
 
 namespace
 {
+std::vector<utility::unsafe_any> expected_target_and_parents;
+
+template <typename Node, typename... Parents>
+void parse_checker(parsing::parse_target target,
+                   const Node& node,
+                   const Parents&... parents)
+{
+    BOOST_CHECK_EQUAL(std::type_index{typeid(Node)}.hash_code(),
+                      target.node_type().hash_code());
+
+    const auto target_and_parents_tuple =
+        std::tuple{std::cref(node), std::cref(parents)...};
+    utility::tuple_iterator(
+        [&](auto i, auto parent) {
+            const auto& expected_parent_cast =
+                expected_target_and_parents[i]
+                    .template get<std::decay_t<decltype(parent)>>()
+                    .get();
+            BOOST_CHECK_EQUAL(
+                reinterpret_cast<std::ptrdiff_t>(
+                    std::addressof(expected_parent_cast)),
+                reinterpret_cast<std::ptrdiff_t>(std::addressof(parent.get())));
+        },
+        target_and_parents_tuple);
+
+    expected_target_and_parents.clear();
+}
+
 template <typename... Policies>
 class stub_node : public tree_node<Policies...>
 {
@@ -27,12 +55,12 @@ public:
     {
     }
 
-    template <typename... Parents>
+    template <typename ProcessedTarget, typename... Parents>
     parsing::pre_parse_result pre_parse_phase(
         parsing::dynamic_token_adapter& tokens,
-        [[maybe_unused]] parsing::token_list::pending_view_type
-            processed_tokens,
-        [[maybe_unused]] const Parents&... parents) const
+        utility::compile_time_optional<ProcessedTarget> processed_target,
+        parsing::parse_target& target,
+        const Parents&... parents) const
     {
         auto retval =
             parsing::pre_parse_result{parsing::pre_parse_action::skip_node};
@@ -44,45 +72,45 @@ public:
                                                              policy::alias_t>) {
                     retval =
                         this->this_policy::pre_parse_phase(tokens,
-                                                           processed_tokens,
+                                                           processed_target,
+                                                           target,
                                                            parents...);
                 }
             });
 
         return retval;
     }
+
+    template <typename... Parents>
+    [[nodiscard]] value_type parse(parsing::parse_target target,
+                                   const Parents&... parents) const
+    {
+        parse_checker(target, *this, parents...);
+        return true;
+    }
 };
 
-template <std::size_t I, std::size_t... Is, typename T>
-const auto& get_node(const T& parent)
+struct pre_parse_test_data {
+    std::vector<parsing::token_type> tokens;
+    std::vector<utility::unsafe_any> target_and_parents;
+};
+
+template <std::size_t I, std::size_t... Is, typename Root>
+pre_parse_test_data make_pre_parse_test_data(
+    const Root& root,
+    std::vector<parsing::token_type> tokens)
 {
-    const auto& child = std::get<I>(parent.children());
+    auto result = pre_parse_test_data{};
+    result.tokens = std::move(tokens);
 
-    if constexpr (sizeof...(Is) > 0) {
-        return get_node<Is...>(child);
-    } else {
-        return child;
-    }
-}
+    const auto refs = test::get_parents<I, Is...>(root);
+    result.target_and_parents.reserve(
+        std::tuple_size_v<std::decay_t<decltype(refs)>>);
+    utility::tuple_iterator(
+        [&](auto /*i*/, auto ref) { result.target_and_parents.push_back(ref); },
+        refs);
 
-template <std::size_t I, std::size_t... Is, typename T>
-auto get_parents(const T& parent)
-{
-    auto result = std::tuple{std::ref(get_node<I, Is...>(parent))};
-
-    if constexpr (sizeof...(Is) > 0) {
-        // All this because you can't resize a tuple in std...
-        using index_tuple = boost::mp11::mp_pop_back<
-            std::tuple<traits::integral_constant<I>,
-                       traits::integral_constant<Is>...>>;
-        return std::apply(
-            [&](auto... NewIs) {
-                return std::tuple_cat(result, get_parents<NewIs...>(parent));
-            },
-            index_tuple{});
-    } else {
-        return result;
-    }
+    return result;
 }
 }  // namespace
 
@@ -155,94 +183,108 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
             policy::router{[](bool, bool) {}}}};
 
     auto f = [&](auto args,
-                 auto expected_result,
+                 auto expected_target_data,
                  auto expected_args,
-                 const auto parents_tuple) {
+                 auto parents_tuple) {
         auto result = vector<parsing::token_type>{};
-        auto processed_tokens = parsing::token_list{};
 
         std::apply(
-            [&](auto&&... parents) {
+            [&](auto&& node, auto&&... parents) {
                 auto adapter = parsing::dynamic_token_adapter{result, args};
+                auto target =
+                    parsing::parse_target{node.get(), (parents.get())...};
+
                 const auto match =
-                    std::get<0>(parents_tuple)
-                        .get()
-                        .pre_parse_phase(adapter,
-                                         processed_tokens.pending_view(),
-                                         (parents.get())...,
-                                         root);
+                    node.get().pre_parse_phase(adapter,
+                                               utility::compile_time_optional{},
+                                               target,
+                                               node.get(),
+                                               (parents.get())...);
                 BOOST_CHECK_EQUAL(
                     match,
-                    parsing::pre_parse_action::skip_node_but_use_tokens);
+                    parsing::pre_parse_action::skip_node_but_use_sub_targets);
+
+                BOOST_CHECK(target.tokens().empty());
+                BOOST_REQUIRE_EQUAL(expected_target_data.size(),
+                                    target.sub_targets().size());
+                for (auto i = 0u; i < expected_target_data.size(); ++i) {
+                    auto& sub_target = target.sub_targets()[i];
+                    const auto& expected_sub_target = expected_target_data[i];
+
+                    BOOST_CHECK_EQUAL(expected_sub_target.tokens,
+                                      sub_target.tokens());
+
+                    expected_target_and_parents =
+                        std::move(expected_sub_target.target_and_parents);
+                    BOOST_CHECK(sub_target);
+                    sub_target();
+                    BOOST_CHECK(!sub_target);
+                }
             },
             parents_tuple);
 
-        BOOST_CHECK_EQUAL(result, expected_result);
         BOOST_CHECK_EQUAL(args, expected_args);
     };
 
-    test::data_set(f,
-                   std::tuple{
-                       std::tuple{std::vector<parsing::token_type>{
-                                      {parsing::prefix_type::none, "--flag1"}},
-                                  std::vector<parsing::token_type>{
-                                      {parsing::prefix_type::long_, "flag2"}},
-                                  std::vector<parsing::token_type>{},
-                                  get_parents<0, 0>(root)},
-                       std::tuple{std::vector<parsing::token_type>{
-                                      {parsing::prefix_type::none, "--flag1"},
-                                      {parsing::prefix_type::none, "foo"}},
-                                  std::vector<parsing::token_type>{
-                                      {parsing::prefix_type::long_, "flag2"}},
-                                  std::vector<parsing::token_type>{
-                                      {parsing::prefix_type::none, "foo"}},
-                                  get_parents<0, 0>(root)},
-                       std::tuple{std::vector<parsing::token_type>{
-                                      {parsing::prefix_type::none, "--arg1"},
-                                      {parsing::prefix_type::none, "42"}},
-                                  std::vector<parsing::token_type>{
-                                      {parsing::prefix_type::long_, "arg3"},
-                                      {parsing::prefix_type::none, "42"}},
-                                  std::vector<parsing::token_type>{},
-                                  get_parents<1, 0>(root)},
-                       std::tuple{std::vector<parsing::token_type>{
-                                      {parsing::prefix_type::none, "--flag1"}},
-                                  std::vector<parsing::token_type>{
-                                      {parsing::prefix_type::long_, "flag2"},
-                                      {parsing::prefix_type::long_, "flag3"}},
-                                  std::vector<parsing::token_type>{},
-                                  get_parents<2, 0>(root)},
-                       std::tuple{std::vector<parsing::token_type>{
-                                      {parsing::prefix_type::none, "--arg1"},
-                                      {parsing::prefix_type::none, "1"},
-                                      {parsing::prefix_type::none, "2"},
-                                      {parsing::prefix_type::none, "3"},
-                                      {parsing::prefix_type::none, "4"}},
-                                  std::vector<parsing::token_type>{
-                                      {parsing::prefix_type::long_, "arg2"},
-                                      {parsing::prefix_type::none, "1"},
-                                      {parsing::prefix_type::none, "2"},
-                                      {parsing::prefix_type::none, "3"},
-                                      {parsing::prefix_type::long_, "arg3"},
-                                      {parsing::prefix_type::none, "1"},
-                                      {parsing::prefix_type::none, "2"},
-                                      {parsing::prefix_type::none, "3"}},
-                                  std::vector<parsing::token_type>{
-                                      {parsing::prefix_type::none, "4"}},
-                                  get_parents<3, 0>(root)},
-                       std::tuple{std::vector<parsing::token_type>{
-                                      {parsing::prefix_type::none, "--flag1"}},
-                                  std::vector<parsing::token_type>{
-                                      {parsing::prefix_type::long_, "flag2"}},
-                                  std::vector<parsing::token_type>{},
-                                  get_parents<4, 0, 0>(root)},
-                       std::tuple{std::vector<parsing::token_type>{
-                                      {parsing::prefix_type::none, "--flag1"}},
-                                  std::vector<parsing::token_type>{
-                                      {parsing::prefix_type::long_, "flag3"}},
-                                  std::vector<parsing::token_type>{},
-                                  get_parents<5, 0, 0>(root)},
-                   });
+    test::data_set(
+        f,
+        std::tuple{
+            std::tuple{std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "--flag1"}},
+                       std::vector{make_pre_parse_test_data<0, 1>(root, {})},
+                       std::vector<parsing::token_type>{},
+                       test::get_parents<0, 0>(root)},
+            std::tuple{std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "--flag1"},
+                           {parsing::prefix_type::none, "foo"}},
+                       std::vector{make_pre_parse_test_data<0, 1>(root, {})},
+                       std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "foo"}},
+                       test::get_parents<0, 0>(root)},
+            std::tuple{std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "--arg1"},
+                           {parsing::prefix_type::none, "42"}},
+                       std::vector{make_pre_parse_test_data<1, 2>(
+                           root,
+                           {{parsing::prefix_type::none, "42"}})},
+                       std::vector<parsing::token_type>{},
+                       test::get_parents<1, 0>(root)},
+            std::tuple{std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "--flag1"}},
+                       std::vector{make_pre_parse_test_data<2, 1>(root, {}),
+                                   make_pre_parse_test_data<2, 2>(root, {})},
+                       std::vector<parsing::token_type>{},
+                       test::get_parents<2, 0>(root)},
+            std::tuple{std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "--arg1"},
+                           {parsing::prefix_type::none, "1"},
+                           {parsing::prefix_type::none, "2"},
+                           {parsing::prefix_type::none, "3"},
+                           {parsing::prefix_type::none, "4"}},
+                       std::vector{make_pre_parse_test_data<3, 1>(
+                                       root,
+                                       {{parsing::prefix_type::none, "1"},
+                                        {parsing::prefix_type::none, "2"},
+                                        {parsing::prefix_type::none, "3"}}),
+                                   make_pre_parse_test_data<3, 2>(
+                                       root,
+                                       {{parsing::prefix_type::none, "1"},
+                                        {parsing::prefix_type::none, "2"},
+                                        {parsing::prefix_type::none, "3"}})},
+                       std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "4"}},
+                       test::get_parents<3, 0>(root)},
+            std::tuple{std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "--flag1"}},
+                       std::vector{make_pre_parse_test_data<4, 0, 1>(root, {})},
+                       std::vector<parsing::token_type>{},
+                       test::get_parents<4, 0, 0>(root)},
+            std::tuple{std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "--flag1"}},
+                       std::vector{make_pre_parse_test_data<5, 1>(root, {})},
+                       std::vector<parsing::token_type>{},
+                       test::get_parents<5, 0, 0>(root)},
+        });
 }
 
 BOOST_AUTO_TEST_CASE(pre_parse_phase_too_small_view_test)
@@ -262,14 +304,15 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_too_small_view_test)
     const auto& owner = std::get<0>(root.children());
     auto args = std::vector<parsing::token_type>{};
     auto adapter = parsing::dynamic_token_adapter{result, args};
-    auto processed_tokens = parsing::token_list{};
+    auto target = parsing::parse_target{owner, root};
 
     const auto match = owner.pre_parse_phase(adapter,
-                                             processed_tokens.pending_view(),
+                                             utility::compile_time_optional{},
+                                             target,
                                              owner,
                                              root);
 
-    BOOST_CHECK_EXCEPTION(match.extract(), parse_exception, [](const auto& e) {
+    BOOST_CHECK_EXCEPTION(match.get(), parse_exception, [](const auto& e) {
         return e.what() == "Too few values for alias, needs 2: --arg1"s;
     });
 }
@@ -362,10 +405,11 @@ public:
             std::tuple_element_t<0, typename stub_node::policies_type>;
             
         auto args = vector<parsing::token_type>{};
-        auto tokens = parsing::token_list{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
+        auto target = parsing::parse_target{*this, parents...};
         (void)this->this_policy::pre_parse_phase(adapter,
-                                                 tokens.pending_view(),
+                                                 utility::compile_time_optional{},
+                                                 target,
                                                  *this,
                                                  parents...);
     }
@@ -418,10 +462,11 @@ public:
             std::tuple_element_t<1, typename stub_node::policies_type>;
             
         auto args = vector<parsing::token_type>{};
-        auto tokens = parsing::token_list{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
+        auto target = parsing::parse_target{*this, parents...};
         (void)this->this_policy::pre_parse_phase(adapter,
-                                                 tokens.pending_view(),
+                                                 utility::compile_time_optional{},
+                                                 target,
                                                  *this,
                                                  parents...);
     }
@@ -479,10 +524,11 @@ public:
             std::tuple_element_t<2, typename stub_node::policies_type>;
             
         auto args = vector<parsing::token_type>{};
-        auto tokens = parsing::token_list{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
+        auto target = parsing::parse_target{*this, parents...};
         (void)this->this_policy::pre_parse_phase(adapter,
-                                                 tokens.pending_view(),
+                                                 utility::compile_time_optional{},
+                                                 target,
                                                  *this,
                                                  parents...);
     }
@@ -540,10 +586,11 @@ public:
             std::tuple_element_t<1, typename stub_node::policies_type>;
             
         auto args = vector<parsing::token_type>{};
-        auto tokens = parsing::token_list{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
+        auto target = parsing::parse_target{*this, parents...};
         (void)this->this_policy::pre_parse_phase(adapter,
-                                                 tokens.pending_view(),
+                                                 utility::compile_time_optional{},
+                                                 target,
                                                  *this,
                                                  parents...);
     }
@@ -604,10 +651,11 @@ public:
             std::tuple_element_t<1, typename stub_node::policies_type>;
             
         auto args = vector<parsing::token_type>{};
-        auto tokens = parsing::token_list{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
+        auto target = parsing::parse_target{*this, parents...};
         (void)this->this_policy::pre_parse_phase(adapter,
-                                                 tokens.pending_view(),
+                                                 utility::compile_time_optional{},
+                                                 target,
                                                  *this,
                                                  parents...);
     }
@@ -674,10 +722,11 @@ public:
             std::tuple_element_t<1, typename stub_node::policies_type>;
             
         auto args = vector<parsing::token_type>{};
-        auto tokens = parsing::token_list{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
+        auto target = parsing::parse_target{*this, parents...};
         (void)this->this_policy::pre_parse_phase(adapter,
-                                                 tokens.pending_view(),
+                                                 utility::compile_time_optional{},
+                                                 target,
                                                  *this,
                                                  parents...);
     }
@@ -740,10 +789,11 @@ public:
             std::tuple_element_t<1, typename stub_node::policies_type>;
             
         auto args = vector<parsing::token_type>{};
-        auto tokens = parsing::token_list{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
+        auto target = parsing::parse_target{*this, parents...};
         (void)this->this_policy::pre_parse_phase(adapter,
-                                                 tokens.pending_view(),
+                                                 utility::compile_time_optional{},
+                                                 target,
                                                  *this,
                                                  parents...);
     }
@@ -808,10 +858,11 @@ public:
             std::tuple_element_t<1, typename stub_node::policies_type>;
             
         auto args = vector<parsing::token_type>{};
-        auto tokens = parsing::token_list{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
+        auto target = parsing::parse_target{*this, parents...};
         (void)this->this_policy::pre_parse_phase(adapter,
-                                                 tokens.pending_view(),
+                                                 utility::compile_time_optional{},
+                                                 target,
                                                  *this,
                                                  parents...);
     }
@@ -876,10 +927,11 @@ public:
             std::tuple_element_t<1, typename stub_node::policies_type>;
             
         auto args = vector<parsing::token_type>{};
-        auto tokens = parsing::token_list{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
+        auto target = parsing::parse_target{*this, parents...};
         (void)this->this_policy::pre_parse_phase(adapter,
-                                                 tokens.pending_view(),
+                                                 utility::compile_time_optional{},
+                                                 target,
                                                  *this,
                                                  parents...);
     }
@@ -937,10 +989,11 @@ public:
             std::tuple_element_t<1, typename stub_node::policies_type>;
             
         auto args = vector<parsing::token_type>{};
-        auto tokens = parsing::token_list{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
+        auto target = parsing::parse_target{*this, parents...};
         (void)this->this_policy::pre_parse_phase(adapter,
-                                                 tokens.pending_view(),
+                                                 utility::compile_time_optional{},
+                                                 target,
                                                  *this,
                                                  parents...);
     }
@@ -997,10 +1050,11 @@ public:
             std::tuple_element_t<1, typename stub_node::policies_type>;
 
         auto args = vector<parsing::token_type>{};
-        auto tokens = parsing::token_list{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
+        auto target = parsing::parse_target{*this, parents...};
         (void)this->this_policy::pre_parse_phase(adapter,
-                                                 tokens.pending_view(),
+                                                 utility::compile_time_optional{},
+                                                 target,
                                                  *this,
                                                  parents...);
     }
@@ -1058,10 +1112,11 @@ public:
             std::tuple_element_t<1, typename stub_node::policies_type>;
 
         auto args = vector<parsing::token_type>{};
-        auto tokens = parsing::token_list{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
+        auto target = parsing::parse_target{*this, parents...};
         (void)this->this_policy::pre_parse_phase(adapter,
-                                                 tokens.pending_view(),
+                                                 utility::compile_time_optional{},
+                                                 target,
                                                  *this,
                                                  parents...);
     }

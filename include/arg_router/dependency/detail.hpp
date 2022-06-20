@@ -127,7 +127,7 @@ protected:
                                             policy::has_parse_phase_method,
                                             policy::has_routing_phase_method>,
         "basic_one_of_t does not support policies with pre-parse, parse, "
-        "validation, or routing phases; as it delegates those to its children");
+        "or routing phases; as it delegates those to its children");
 
     using basic_value_type = boost::mp11::mp_transform<
         traits::get_value_type,

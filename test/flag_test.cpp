@@ -33,78 +33,25 @@ BOOST_AUTO_TEST_CASE(policies_test)
     static_assert(f.maximum_count() == 0, "Maximum count test fail");
 }
 
-BOOST_AUTO_TEST_CASE(match_test)
-{
-    auto f = [](const auto& test_node,
-                const parsing::token_type& token,
-                bool expected_result) {
-        using test_node_type = std::decay_t<decltype(test_node)>;
-
-        const auto result = test_node.match(token, [&](const auto& node) {
-            using node_type = std::decay_t<decltype(node)>;
-            static_assert(std::is_same_v<node_type, test_node_type>,
-                          "match fail");
-        });
-        BOOST_CHECK_EQUAL(result, expected_result);
-    };
-
-    test::data_set(
-        f,
-        std::tuple{
-            std::tuple{
-                flag(policy::long_name<S_("hello")>),
-                parsing::token_type{parsing::prefix_type::long_, "hello"},
-                true},
-            std::tuple{flag(policy::short_name<'h'>),
-                       parsing::token_type{parsing::prefix_type::short_, "h"},
-                       true},
-            std::tuple{
-                flag(policy::long_name<S_("hello")>, policy::short_name<'h'>),
-                parsing::token_type{parsing::prefix_type::short_, "h"},
-                true},
-            std::tuple{
-                flag(policy::long_name<S_("hello")>, policy::short_name<'h'>),
-                parsing::token_type{parsing::prefix_type::long_, "hello"},
-                true},
-            std::tuple{
-                flag(policy::long_name<S_("goodbye")>),
-                parsing::token_type{parsing::prefix_type::long_, "hello"},
-                false}});
-}
-
 BOOST_AUTO_TEST_CASE(parse_test)
 {
     auto router_hit = false;
-    auto f = [&](auto node,
-                 auto tokens,
-                 auto expected_tokens,
-                 auto expected_result,
-                 auto expected_router_hit,
-                 const auto&... parents) {
+    auto f = [&](auto node, auto expected_router_hit) {
         router_hit = false;
-        const auto result = node.parse(tokens, parents...);
-        BOOST_CHECK_EQUAL(result, expected_result);
-        BOOST_CHECK_EQUAL(tokens.pending_view(), expected_tokens);
+        auto target = parsing::parse_target{{}, node};
+        const auto result = node.parse(std::move(target));
+        BOOST_CHECK_EQUAL(result, true);
         BOOST_CHECK_EQUAL(router_hit, expected_router_hit);
     };
 
-    test::data_set(
-        f,
-        std::tuple{
-            std::tuple{flag(policy::short_name<'h'>),
-                       parsing::token_list{{parsing::prefix_type::short_, "h"}},
-                       parsing::token_list{},
-                       true,
-                       false},
-            std::tuple{flag(policy::short_name<'a'>,  //
-                            policy::router{[&](bool result) {
-                                BOOST_CHECK(result);
-                                router_hit = true;
-                            }}),
-                       parsing::token_list{{parsing::prefix_type::short_, "a"}},
-                       parsing::token_list{},
-                       true,
-                       true}});
+    test::data_set(f,
+                   std::tuple{std::tuple{flag(policy::short_name<'h'>), false},
+                              std::tuple{flag(policy::short_name<'a'>,  //
+                                              policy::router{[&](bool result) {
+                                                  BOOST_CHECK(result);
+                                                  router_hit = true;
+                                              }}),
+                                         true}});
 }
 
 BOOST_AUTO_TEST_CASE(help_test)

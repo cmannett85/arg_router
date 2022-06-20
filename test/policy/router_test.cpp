@@ -75,29 +75,22 @@ BOOST_AUTO_TEST_CASE(type_test)
 BOOST_AUTO_TEST_CASE(routing_phase_test)
 {
     auto fn_hit = false;
-    auto f = [&](auto fn, auto tokens, auto fail_message, auto... args) {
+    auto f = [&](auto fn, auto... args) {
         fn_hit = false;
         auto r = stub_node{policy::router{std::move(fn)}};
 
-        try {
-            r.routing_phase(tokens, args...);
-            BOOST_CHECK(fail_message.empty());
-            BOOST_CHECK(fn_hit);
-        } catch (parse_exception& e) {
-            BOOST_CHECK_EQUAL(e.what(), fail_message);
-        }
+        r.routing_phase(args...);
+        BOOST_CHECK(fn_hit);
     };
 
     test::data_set(
         f,
         std::tuple{
-            std::tuple{[&]() { fn_hit = true; }, parsing::token_list{}, ""s},
+            std::tuple{[&]() { fn_hit = true; }},
             std::tuple{[&](auto val) {
                            fn_hit = true;
                            BOOST_CHECK_EQUAL(val, 13.6);
                        },
-                       parsing::token_list{},
-                       ""s,
                        13.6},
             std::tuple{[&](auto... val) {
                            static_assert(sizeof...(val) == 5,
@@ -110,22 +103,11 @@ BOOST_AUTO_TEST_CASE(routing_phase_test)
                            BOOST_CHECK_EQUAL(std::get<3>(val_tuple), 4);
                            BOOST_CHECK_EQUAL(std::get<4>(val_tuple), 5);
                        },
-                       parsing::token_list{},
-                       ""s,
                        1,
                        2,
                        3,
                        4,
                        5},
-            std::tuple{
-                [&]() { fn_hit = true; },
-                parsing::token_list{{parsing::prefix_type::long_, "test1"}},
-                "Unhandled arguments: --test1"s},
-            std::tuple{
-                [&]() { fn_hit = true; },
-                parsing::token_list{{parsing::prefix_type::long_, "test1"},
-                                    {parsing::prefix_type::short_, "t"}},
-                "Unhandled arguments: --test1, -t"s},
         });
 }
 

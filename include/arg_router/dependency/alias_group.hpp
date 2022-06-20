@@ -31,13 +31,9 @@ namespace dependency
  */
 template <typename... Params>
 class alias_group_t :
-    public detail::basic_one_of_t<S_("Alias Group: "),
-                                  policy::multi_stage_value_tag,
-                                  Params...>
+    public detail::basic_one_of_t<S_("Alias Group: "), Params...>
 {
-    using parent_type = detail::basic_one_of_t<S_("Alias Group: "),
-                                               policy::multi_stage_value_tag,
-                                               Params...>;
+    using parent_type = detail::basic_one_of_t<S_("Alias Group: "), Params...>;
 
 public:
     using typename parent_type::children_type;
@@ -91,61 +87,34 @@ public:
      * @param params Policy and child instances
      */
     constexpr explicit alias_group_t(Params... params) noexcept :
-        parent_type{policy::multi_stage_value_tag{}, std::move(params)...}
+        parent_type{std::move(params)...}
     {
-    }
-
-    /** Returns true and calls @a visitor if any of the children's match methods
-     * return true.
-     * 
-     * @a visitor needs to be equivalent to:
-     * @code
-     * [](const auto& node) { ... }
-     * @endcode
-     * <TT>node</TT> will be a reference to the first matching child.
-     * @tparam Fn Visitor type
-     * @param token Command line token to match
-     * @param visitor Visitor instance
-     * @return Match result
-     */
-    template <typename Fn>
-    constexpr bool match(const parsing::token_type& token,
-                         const Fn& visitor) const
-    {
-        auto found = false;
-        utility::tuple_iterator(
-            [&](auto /*i*/, const auto& child) {
-                if (!found) {
-                    found = child.match(token, visitor);
-                }
-            },
-            this->children());
-
-        return found;
     }
 
     /** Propagates the pre-parse phase to the child, returns on a positive
      * return from one of them
      *
+     * @tparam Validator Validator type\
+     * @tparam HasTarget True if @a pre_parse_data contains the parent's
+     * parse_target
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
-     * @param args Unprocessed tokens
-     * @param tokens Processed tokens
+     * @param pre_parse_data Pre-parse data aggregate
      * @param parents Parent node instances
-     * @return True if the leading tokens in @a args are consumable by one of
-     * the child nodes
+     * @return Non-empty if the leading tokens in @a args are consumable by this
+     * node
      * @exception parse_exception Thrown if any of the child pre-parse
      * implementations have returned an exception
      */
-    template <typename... Parents>
-    [[nodiscard]] bool pre_parse(vector<parsing::token_type>& args,
-                                 parsing::token_list& tokens,
-                                 const Parents&... parents) const
+    template <typename Validator, bool HasTarget, typename... Parents>
+    [[nodiscard]] std::optional<parsing::parse_target> pre_parse(
+        parsing::pre_parse_data<Validator, HasTarget> pre_parse_data,
+        const Parents&... parents) const
     {
-        auto found = false;
+        auto found = std::optional<parsing::parse_target>{};
         utility::tuple_iterator(
             [&](auto /*i*/, const auto& child) {
                 if (!found) {
-                    found = child.pre_parse(args, tokens, parents...);
+                    found = child.pre_parse(pre_parse_data, parents...);
                 }
             },
             this->children());

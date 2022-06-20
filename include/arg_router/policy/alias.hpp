@@ -3,9 +3,9 @@
 #pragma once
 
 #include "arg_router/algorithm.hpp"
-#include "arg_router/parsing.hpp"
 #include "arg_router/policy/no_result_value.hpp"
 #include "arg_router/policy/policy.hpp"
+#include "arg_router/utility/compile_time_optional.hpp"
 #include "arg_router/utility/tree_recursor.hpp"
 #include "arg_router/utility/tuple_iterator.hpp"
 
@@ -52,20 +52,23 @@ public:
      * In either circumstance the original tokens are removed as they are for
      * the alias, rather than the @em aliased.
      *
+     * @tparam ProcessedTarget @a processed_target payload type
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
      * @param tokens Currently processed tokens
-     * @param processed_tokens Processed tokens performed by previous pre-parse
-     * phases calls on other nodes
+     * @param processed_target Previously processed parse_target of parent
+     * node, or empty is there is no non-root parent
+     * @param target Pre-parse generated target
      * @param parents Parent node instances
      * @return Either true if successful, or a parse_exception if there too
      * few value tokens
      */
-    template <typename... Parents>
+    template <typename ProcessedTarget, typename... Parents>
     [[nodiscard]] parsing::pre_parse_result pre_parse_phase(
         parsing::dynamic_token_adapter& tokens,
-        [[maybe_unused]] parsing::token_list::pending_view_type
-            processed_tokens,
-        [[maybe_unused]] const Parents&... parents) const
+        [[maybe_unused]] utility::compile_time_optional<ProcessedTarget>
+            processed_target,
+        parsing::parse_target& target,
+        const Parents&... parents) const
     {
         using node_type = boost::mp11::mp_first<std::tuple<Parents...>>;
         static_assert(
@@ -78,18 +81,21 @@ public:
             "validation, or routing phases");
 
         // Find the owning mode
-        using mode_type = typename nearest_mode<Parents...>::type;
+        using mode_data = policy::nearest_mode_like<std::tuple<Parents...>>;
+        using mode_type = typename mode_data::type;
         static_assert(!std::is_void_v<mode_type>, "Cannot find parent mode");
 
-        // Find all the aliased targets
-        using targets =
-            typename alias_targets<aliased_policies_type, mode_type>::type;
-        static_assert(cyclic_dependency_checker<targets, mode_type>::value,
-                      "Cyclic dependency detected");
-
-        // Verify that all the targets have the same count
+        // Perform all the compile-time checking
         constexpr auto count = node_fixed_count<node_type>();
-        check_target_counts<count, targets>();
+        {
+            using targets =
+                typename alias_targets<aliased_policies_type, mode_type>::type;
+            static_assert(cyclic_dependency_checker<targets, mode_type>::value,
+                          "Cyclic dependency detected");
+
+            // Verify that all the targets have the same count
+            check_target_counts<count, targets>();
+        }
 
         // +1 because the node must be named
         if ((count + 1) > tokens.size()) {
@@ -98,10 +104,10 @@ public:
                 parsing::node_token_type<node_type>()};
         }
 
-        // Because this node's job is to insert extra tokens, and therefore
+        // Because this node's job is to create sub-targets, and therefore
         // isn't a 'real' node in itself, it needs to return
-        // skip_node_but_use_tokens so the owning tree node keeps the
-        // side-effects (i.e. the updated lists) but doesn't check the label
+        // skip_node_but_use_sub_targets so the owning tree node keeps the
+        // side-effects (i.e. the sub-targets) but doesn't check the label
         // token.  We don't want label checking in the owning tree_node because
         // we need to _replace_ the alias label token with the aliased tokens,
         // so any label check against this node will fail.  However, we do need
@@ -123,25 +129,35 @@ public:
         // in the processed container (this is a no-op if they already are)
         tokens.transfer(tokens.begin() + count);
 
-        tokens.processed().reserve(tokens.processed().size() +
-                                   (std::tuple_size_v<targets> * (count + 1)));
+        // Now do the runtime target building
+        const auto visitor = [&](const auto& current, const auto&... parents) {
+            using policies_type =
+                typename std::decay_t<decltype(current)>::policies_type;
 
-        utility::tuple_type_iterator<targets>([&](auto i) {
-            using target_type = std::tuple_element_t<i, targets>;
-            const auto tt = parsing::node_token_type<target_type>();
+            using intersection =
+                boost::mp11::mp_set_intersection<aliased_policies_type,
+                                                 policies_type>;
 
-            // Copy the aliased tokens to the front of the unprocessed
-            auto it = tokens.processed().insert(
-                tokens.processed().begin() + ((i + 1) * (count + 1)),
-                tt);
+            if constexpr ((std::tuple_size_v<intersection>) > 0) {
+                auto target_tokens = vector<parsing::token_type>{};
+                target_tokens.reserve(count);
 
-            auto value_it = tokens.begin();
-            for (auto j = 0u; j < count; ++j) {
-                // Pre-increment the value iterator so we skip over the
-                // label token
-                tokens.processed().insert(++it, *(++value_it));
+                auto value_it = tokens.begin();
+                for (auto j = 0u; j < count; ++j) {
+                    // Pre-increment the value iterator so we skip over the
+                    // label token
+                    target_tokens.push_back(*(++value_it));
+                }
+
+                target.add_sub_target({std::move(target_tokens),  //
+                                       current,
+                                       parents...});
             }
-        });
+        };
+        const auto& mode =
+            std::get<mode_data::index::value>(std::tuple{std::cref(parents)...})
+                .get();
+        utility::tree_recursor(visitor, mode);
 
         // Now remove the original tokens as they refer to the aliased node
         tokens.processed().erase(tokens.processed().begin(),
@@ -150,7 +166,7 @@ public:
         // The owning node's name checker will fail us now (because we removed
         // this node's label token), but we still want to keep the processed
         // and unprocessed container changes for later processing
-        return parsing::pre_parse_action::skip_node_but_use_tokens;
+        return parsing::pre_parse_action::skip_node_but_use_sub_targets;
     }
 
 private:
@@ -181,12 +197,6 @@ private:
         return NodeType::minimum_count();
     }
 
-    // Find the nearest parent with a routing policy. By definition the aliased
-    // cannot be the owner, so filter that out
-    template <typename... Parents>
-    using nearest_mode = policy::nearest_mode_like<
-        boost::mp11::mp_pop_front<std::tuple<Parents...>>>;
-
     // Starting from ModeType, recurse down through the tree and find all the
     // nodes referred to in AliasPolicies
     template <typename AliasPoliciesTuple, typename ModeType>
@@ -207,7 +217,7 @@ private:
         };
 
         using type = boost::mp11::mp_remove_if<
-            utility::tree_type_recursor_t<visitor, ModeType>,
+            utility::tree_type_recursor_collector_t<visitor, ModeType>,
             std::is_void>;
 
         static_assert(std::tuple_size_v<type> ==

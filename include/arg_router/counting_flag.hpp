@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "arg_router/parsing.hpp"
 #include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/policy/multi_stage_value.hpp"
 #include "arg_router/policy/short_form_expander.hpp"
@@ -69,55 +68,26 @@ public:
     {
     }
 
-    /** Returns true and calls @a visitor if @a token matches the name of this
-     * node.
-     * 
-     * @a visitor needs to be equivalent to:
-     * @code
-     * [](const auto& node) { ... }
-     * @endcode
-     * <TT>node</TT> will be a reference to this node.
-     * @tparam Fn Visitor type
-     * @param token Command line token to match
-     * @param visitor Visitor instance
-     * @return Match result
-     */
-    template <typename Fn>
-    constexpr bool match(const parsing::token_type& token,
-                         const Fn& visitor) const
-    {
-        if (parsing::match<counting_flag_t>(token)) {
-            visitor(*this);
-            return true;
-        }
-
-        return false;
-    }
-
-    template <typename... Parents>
-    [[nodiscard]] bool pre_parse(vector<parsing::token_type>& args,
-                                 parsing::token_list& tokens,
-                                 const Parents&... parents) const
+    template <typename Validator, bool HasTarget, typename... Parents>
+    [[nodiscard]] std::optional<parsing::parse_target> pre_parse(
+        parsing::pre_parse_data<Validator, HasTarget> pre_parse_data,
+        const Parents&... parents) const
 
     {
-        return parent_type::pre_parse(args, tokens, *this, parents...);
+        return parent_type::pre_parse(pre_parse_data, *this, parents...);
     }
 
     /** Parse function.
      * 
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
-     * @param tokens Token list
+     * @param target Parse target
      * @param parents Parents instances pack
      * @return Parsed result
-     * @exception parse_exception Thrown if parsing failed
      */
     template <typename... Parents>
-    bool parse(parsing::token_list& tokens,
-               [[maybe_unused]] const Parents&... parents) const
+    bool parse([[maybe_unused]] parsing::parse_target target,
+               [[maybe_unused]] const Parents&... parents) const noexcept
     {
-        // Remove this node's name
-        tokens.mark_as_processed();
-
         // Presence of the flag yields a constant true.  Validation is done by
         // the parent mode as it carries the final result
         return true;

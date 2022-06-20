@@ -1,6 +1,6 @@
 /* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
 
-#include "arg_router/global_parser.hpp"
+#include "arg_router/parsing/global_parser.hpp"
 
 #include "test_helpers.hpp"
 
@@ -127,7 +127,7 @@ BOOST_AUTO_TEST_CASE(unimplemented_parse_test)
 {
     test::death_test_compile(
         R"(
-#include "arg_router/global_parser.hpp"
+#include "arg_router/parsing/global_parser.hpp"
 
 struct my_struct{};
 

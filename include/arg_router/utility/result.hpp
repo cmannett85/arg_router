@@ -185,16 +185,16 @@ public:
         throw std::get<1>(data_);
     }
 
-    /** Const overload.
+    /** Returns the the result of this instance, or throw the exception if one
+     * is held.
      *
-     * As this is a const-overload, the value is copied out of the instance,
-     * so this method may be called more than once.
      * @return Result Either a copy of the result, or a const reference to it if
-     * the object is too big for the L1 cache
+     * the object is larger than a word and trivially constructible
      * @exception ExceptionType Thrown if the instance holds an exception
      */
-    auto extract() const
-        -> std::conditional_t<config::l1_cache_size() >= sizeof(result_type),
+    auto get() const
+        -> std::conditional_t<(sizeof(std::size_t) >= sizeof(result_type)) &&
+                                  std::is_copy_constructible_v<result_type>,
                               result_type,
                               const result_type&>
     {

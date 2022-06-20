@@ -3,8 +3,10 @@
 #pragma once
 
 #include "arg_router/exception.hpp"
-#include "arg_router/parsing.hpp"
+#include "arg_router/parsing/parse_target.hpp"
+#include "arg_router/parsing/parsing.hpp"
 #include "arg_router/policy/policy.hpp"
+#include "arg_router/utility/compile_time_optional.hpp"
 
 #include <limits>
 
@@ -64,19 +66,22 @@ public:
      * Then up to maximum_count() @result the @arg tokens are processed.  If the
      * maximum available is less than minimum_count(), a parse error will occur.
      * 
+     * @tparam ProcessedTarget @a processed_target payload type
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
      * @param tokens Currently processed tokens
-     * @param processed_tokens Processed tokens performed by previous pre-parse
-     * phases calls on other nodes
+     * @param processed_target Previously processed parse_target of parent
+     * node, or empty is there is no non-root parent
+     * @param target Pre-parse generated target
      * @param parents Parent node instances
      * @return Either true if successful, or a parse_exception if the minimum
      * count is not reached
      */
-    template <typename... Parents>
+    template <typename ProcessedTarget, typename... Parents>
     [[nodiscard]] parsing::pre_parse_result pre_parse_phase(
         parsing::dynamic_token_adapter& tokens,
-        [[maybe_unused]] parsing::token_list::pending_view_type
-            processed_tokens,
+        [[maybe_unused]] utility::compile_time_optional<ProcessedTarget>
+            processed_target,
+        [[maybe_unused]] parsing::parse_target& target,
         [[maybe_unused]] const Parents&... parents) const
     {
         static_assert((sizeof...(Parents) >= 1),
@@ -84,9 +89,30 @@ public:
 
         using owner_type = boost::mp11::mp_first<std::tuple<Parents...>>;
 
+        // The min/max values are for argument counts, and so need adjusting
+        // to accomodate the label tokens
         constexpr auto min_count =
             minimum_count() + (owner_type::is_named ? 1 : 0);
-        constexpr auto max_count = maximum_count();
+        constexpr auto max_count =
+            maximum_count() == 0 ?
+                maximum_count() :
+                (maximum_count() - (owner_type::is_named ? 0 : 1));
+
+        // If we are unnamed then check that tokens haven't already been parsed
+        // for the owner.  This is for the scenario where there are multiple
+        // positional arg-like types under a mode, and once one has been
+        // processed, then it should be skipped so subsequent ones are used
+        // instead
+        if constexpr (!owner_type::is_named) {
+            static_assert(!processed_target.empty,
+                          "processed_target cannot be empty");
+
+            if (has_filled_tokens(*processed_target,
+                                  std::type_index{typeid(owner_type)},
+                                  max_count)) {
+                return parsing::pre_parse_action::skip_node;
+            }
+        }
 
         // Check that we are in the bounds.  We can't check that we have
         // exceeded the maximum because there may be other nodes that will
@@ -101,6 +127,25 @@ public:
         tokens.transfer(tokens.begin() + std::min(max_count, tokens.size()));
 
         return parsing::pre_parse_action::valid_node;
+    }
+
+private:
+    [[nodiscard]] static bool has_filled_tokens(
+        const parsing::parse_target& target,
+        std::type_index owner_index,
+        std::size_t max_count) noexcept
+    {
+        if (target.node_type() == owner_index) {
+            return target.tokens().size() >= max_count;
+        }
+
+        for (const auto& sub_target : target.sub_targets()) {
+            if (has_filled_tokens(sub_target, owner_index, max_count)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 };
 

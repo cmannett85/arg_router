@@ -6,10 +6,91 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <typeindex>
+
 namespace arg_router
 {
 namespace test
 {
+/** Returns the node using the descending child indices, starting from @a root.
+ *
+ * For example:
+ * @code
+ * test::get_node<3, 2, 1>(root)
+ * @endcode
+ * Will access the child at index 3 of @a root, then it's child at index 2, then
+ * return it's child at index 1.
+ * @tparam I First index
+ * @tparam Is Optional nested indices
+ * @tparam Root Starting node type
+ * @param root Starting node
+ * @return Reference to node at the specified child indices
+ */
+template <std::size_t I, std::size_t... Is, typename Root>
+constexpr auto& get_node(Root& root) noexcept
+{
+    auto& child = std::get<I>(root.children());
+
+    if constexpr (sizeof...(Is) > 0) {
+        return get_node<Is...>(child);
+    } else {
+        return child;
+    }
+}
+
+/** Returns the <TT>std::type_index</TT> using the descending child indices,
+ * starting from @a root.
+ *
+ * @tparam I First index
+ * @tparam Is Optional nested indices
+ * @tparam Root Starting node type
+ * @param root Starting node
+ * @return Type index of node at the specified child indices
+ */
+template <std::size_t I, std::size_t... Is, typename Root>
+std::type_index get_type_index(const Root& root) noexcept
+{
+    const auto& child = get_node<I, Is...>(root);
+    return typeid(std::decay_t<decltype(child)>);
+}
+
+/** Generates a tuple of <TT>std::reference_wrapper<TT>s containing a node and
+ * all of its parents in ascending ancestry.
+ *
+ * For example:
+ * @code
+ * test::get_parents<3, 2, 1>(root)
+ * @endcode
+ * The template values are the indices of each successive child tuple starting
+ * from @a root.  So here the child at index 3 of @a root, then it's child at
+ * index 2, and then it's child at index 1; the tree instances are returned
+ * in reverse order.
+ * @tparam I First index
+ * @tparam Is Optional nested indices
+ * @tparam Root Starting node type
+ * @param root Starting node
+ * @return Tuple of parent references
+ */
+template <std::size_t I, std::size_t... Is, typename Root>
+constexpr auto get_parents(const Root& root) noexcept
+{
+    auto result = std::tuple{std::cref(get_node<I, Is...>(root))};
+
+    if constexpr (sizeof...(Is) > 0) {
+        // All this because you can't resize a tuple in std...
+        using index_tuple = boost::mp11::mp_pop_back<
+            std::tuple<traits::integral_constant<I>,
+                       traits::integral_constant<Is>...>>;
+        return std::apply(
+            [&](auto... NewIs) {
+                return std::tuple_cat(result, get_parents<NewIs...>(root));
+            },
+            index_tuple{});
+    } else {
+        return std::tuple_cat(result, std::tuple{std::cref(root)});
+    }
+}
+
 /** Loops through the list of argument sets in @a args and executes the test
  * function object @a f with them.
  *

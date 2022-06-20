@@ -4,7 +4,6 @@ cmake_minimum_required(VERSION 3.15)
 
 # Options
 option(DOCS_ONLY "Only build the documentation")
-option(BUILD_EXAMPLES "Build the examples")
 
 # Use the libraries brought in from vcpkg rather than the system ones
 if(NOT DOCS_ONLY)
@@ -42,15 +41,18 @@ set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/dependency/alias_group.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/dependency/detail.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/dependency/one_of.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/dynamic_token_adapter.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/exception.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/flag.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/global_parser.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/help.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/list.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/math.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/mode.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/parsing.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/parsing/dynamic_token_adapter.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/parsing/global_parser.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/parsing/parse_target.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/parsing/parsing.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/parsing/pre_parse_data.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/parsing/token_type.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/alias.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/custom_parser.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/default_value.hpp
@@ -76,14 +78,15 @@ set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/value_separator.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/positional_arg.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/root.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/token_type.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/traits.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/tree_node.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/tree_node_fwd.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/compile_time_string.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/compile_time_optional.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/string_view_ops.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/tree_recursor.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/tuple_iterator.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/unsafe_any.hpp
 )
 
 set(FOR_IDE
@@ -132,7 +135,5 @@ if(NOT DOCS_ONLY)
     enable_testing()
     add_subdirectory(test)
 
-    if(BUILD_EXAMPLES)
-        add_subdirectory(examples)
-    endif()
+    add_subdirectory(examples)
 endif()

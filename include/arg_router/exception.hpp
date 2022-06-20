@@ -3,7 +3,7 @@
 #pragma once
 
 #include "arg_router/basic_types.hpp"
-#include "arg_router/token_type.hpp"
+#include "arg_router/parsing/token_type.hpp"
 
 #include <stdexcept>
 
@@ -31,17 +31,6 @@ public:
     explicit parse_exception(const string& message,
                              const parsing::token_type& token) :
         std::invalid_argument{message + ": " + parsing::to_string(token)}
-    {
-    }
-
-    /** Token list constructor.
-     *
-     * @param message Error message
-     * @param tokens Tokens that caused the error
-     */
-    explicit parse_exception(const string& message,
-                             const parsing::token_list& tokens) :
-        std::invalid_argument{message + ": " + parsing::to_string(tokens)}
     {
     }
 

@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "arg_router/policy/policy.hpp"
 #include "arg_router/tree_node.hpp"
 #include "arg_router/utility/tuple_iterator.hpp"
 
@@ -20,42 +19,57 @@ struct always_false {
     }
 };
 
+template <typename Visitor, typename Current, typename... Parents>
+constexpr void tree_recursor_impl(Visitor& visitor,
+                                  const Current& current,
+                                  const Parents&... parents)
+{
+    visitor(current, parents...);
+
+    tuple_iterator(
+        [&](auto /*i*/, const auto& child) {
+            tree_recursor_impl(visitor, child, current, parents...);
+        },
+        current.children());
+}
+
 template <typename Visitor,
           typename SkipFn,
           typename Current,
           typename... Parents>
-constexpr void tree_recursor_impl()
+constexpr void tree_type_recursor_impl()
 {
     if constexpr (!SkipFn::template fn<Current, Parents...>()) {
-        if constexpr (is_tree_node_v<Current>) {
-            using children_and_policies = boost::mp11::mp_append<  //
-                typename Current::children_type,
-                typename Current::policies_type>;
+        Visitor::template fn<Current, Parents...>();
 
-            // Recurse into the types
-            tuple_type_iterator<children_and_policies>([](auto i) {
-                using type = std::tuple_element_t<i, children_and_policies>;
-                tree_recursor_impl<Visitor,
-                                   SkipFn,
-                                   type,
-                                   Current,
-                                   Parents...>();
+        if constexpr (is_tree_node_v<Current>) {
+            using policies_and_children_tuple =
+                boost::mp11::mp_append<typename Current::policies_type,
+                                       typename Current::children_type>;
+
+            tuple_type_iterator<policies_and_children_tuple>([](auto i) {
+                using next_type =
+                    std::tuple_element_t<i, policies_and_children_tuple>;
+                tree_type_recursor_impl<Visitor,
+                                        SkipFn,
+                                        next_type,
+                                        Current,
+                                        Parents...>();
             });
         }
-
-        Visitor::template fn<Current, Parents...>();
     }
 }
 
 template <template <typename...> typename Visitor,
           typename Current,
           typename... Parents>
-struct tree_type_recursor_impl {
+struct tree_type_recursor_collector_impl {
     template <typename ChildOrPolicy>
-    using recurse = typename tree_type_recursor_impl<Visitor,
-                                                     ChildOrPolicy,
-                                                     Current,
-                                                     Parents...>::type;
+    using recurse =
+        typename tree_type_recursor_collector_impl<Visitor,
+                                                   ChildOrPolicy,
+                                                   Current,
+                                                   Parents...>::type;
 
     template <typename T>
     using get_children_type = typename T::children_type;
@@ -82,10 +96,35 @@ struct tree_type_recursor_impl {
 };
 }  // namespace detail
 
-/** Depth-first recurse through the parse tree, calling @a Visitor on every
- * tree_node and policy.
+/** Depth-first search of the node tree, calling @a visitor on every tree_node.
  *
- * @a Fn must be object with the same method signatue as below:
+ * @a Visitor must be a Callable with the same method signatue as below:
+ * @code
+ * template <typename Current, typename... Parents>
+ * void operator()(const Current& current, const Parents&... parents)
+ * {
+ *     ...
+ * }
+ * @endcode
+ * Where <TT>current</TT> is the current node from the tree, and
+ * <TT>parents</TT> is a pack of ancestors in increasing generation from
+ * <TT>current</TT>.  The last in the pack is always @a root.
+ * @tparam Visitor Visitor type
+ * @tparam Root tree_node derived type to start from
+ * @param visitor Callable called on each tree_node visited
+ * @param root Tree node to start from (must be a tree_node derived type!)
+ * @return void
+ */
+template <typename Visitor, typename Root>
+constexpr void tree_recursor(Visitor visitor, const Root& root)
+{
+    detail::tree_recursor_impl(visitor, root);
+}
+
+/** Depth-first recurse through the parse tree, calling @a Visitor on every
+ * tree_node @em and its policies.
+ *
+ * @a Visitor must be object with the same method signatue as below:
  * @code
  * struct my_fn {
  *     template <typename Current, typename... Parents>
@@ -95,23 +134,10 @@ struct tree_type_recursor_impl {
  *     }
  * };
  * @endcode
- * Where <TT>Current</TT> is the current type from the tree, from the root down
- * to policy level, and <TT>Parents</TT> is a pack of ancestors in increasing
- * generation from <TT>Current</TT>.  The last in the pack is always the root
- * unless <TT>Current</TT> is itself the root.
- * @tparam Visitor Visitor object type
- * @tparam Root Start object type in the parse tree
- * @return void
- */
-template <typename Visitor, typename Root>
-constexpr void tree_recursor()
-{
-    detail::tree_recursor_impl<Visitor, detail::always_false, Root>();
-}
-
-/** Specialisation of tree_recursor() where a skip function can be used to
- * ignore subtrees.
- *
+ * Where <TT>Current</TT> is the current type from the tree, and
+ * <TT>Parents</TT> is a pack of ancestors in increasing generation from
+ * <TT>Current</TT>.  The last in the pack is always the root.
+ * 
  * @a SkipFn must be object with the same method signatue as below:
  * @code
  * struct my_skip_fn {
@@ -123,24 +149,38 @@ constexpr void tree_recursor()
  *     }
  * };
  * @endcode
- * If the return value is true, then the <TT>Current</TT> node and any subtree
- * below it are skipped i.e. @a Fn is not called.
+ * If the return value is true, then the <TT>Current</TT> node or policy and any
+ * subtree below it are skipped i.e. <TT>fn</TT> is not called.
  * 
- * @tparam Visitor Visitor object type
- * @tparam SkipFn Functional object type to skip recursion on current node
+ * @note Unlike tree_recursor(Visitor visitor, const Root& root), this will
+ * recurse into tree_node policies.
+ * @tparam Visitor Visitor type
+ * @tparam SkipFn Skip function type
  * @tparam Root Start object type in the parse tree
  * @return void
  */
 template <typename Visitor, typename SkipFn, typename Root>
-constexpr void tree_recursor()
+constexpr void tree_type_recursor()
 {
-    detail::tree_recursor_impl<Visitor, SkipFn, Root>();
+    detail::tree_type_recursor_impl<Visitor, SkipFn, Root>();
 }
 
-/** Similar in principle to tree_recursor(), but allows for a type to built up
- * from the visitor as it recurses.
+/** Overload without a skip function.
  *
- * @a Fn must be a template template type like below:
+ * @tparam Visitor Visitor type
+ * @tparam Root Start object type in the parse tree
+ * @return void
+ */
+template <typename Visitor, typename Root>
+constexpr void tree_type_recursor()
+{
+    detail::tree_type_recursor_impl<Visitor, detail::always_false, Root>();
+}
+
+/** Similar in principle to tree_type_recursor(), but allows for a type to be
+ * built up from the visitor as it recurses.
+ *
+ * @a Visitor must be a template template type like below:
  * @code
  * template <typename Current, typename... Parents>
  * struct my_fn_t {
@@ -153,17 +193,19 @@ constexpr void tree_recursor()
  * @tparam Root Start object type in the parse tree
  */
 template <template <typename...> typename Visitor, typename Root>
-struct tree_type_recursor {
+struct tree_type_recursor_collector {
     /** Tuple of all the @a Visitor result types. */
-    using type = typename detail::tree_type_recursor_impl<Visitor, Root>::type;
+    using type =
+        typename detail::tree_type_recursor_collector_impl<Visitor, Root>::type;
 };
 
-/** Helper alias for tree_type_recursor.
+/** Helper alias for tree_type_recursor_collector.
  *
  * @tparam Visitor Visitor object type
  * @tparam Root Start object type in the parse tree
  */
 template <template <typename...> typename Visitor, typename Root>
-using tree_type_recursor_t = typename tree_type_recursor<Visitor, Root>::type;
+using tree_type_recursor_collector_t =
+    typename tree_type_recursor_collector<Visitor, Root>::type;
 }  // namespace utility
 }  // namespace arg_router

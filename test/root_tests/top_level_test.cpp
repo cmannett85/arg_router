@@ -37,7 +37,7 @@ struct arg_router::parser<B> {
 
 BOOST_AUTO_TEST_SUITE(root_suite)
 
-BOOST_AUTO_TEST_SUITE(single_tests)
+BOOST_AUTO_TEST_SUITE(top_level_suite)
 
 BOOST_AUTO_TEST_CASE(is_tree_node_test)
 {

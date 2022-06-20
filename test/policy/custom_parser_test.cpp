@@ -1,7 +1,6 @@
 /* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
 
 #include "arg_router/policy/custom_parser.hpp"
-#include "arg_router/global_parser.hpp"
 #include "arg_router/tree_node.hpp"
 
 #include "test_helpers.hpp"

@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "arg_router/token_type.hpp"
+#include "arg_router/parsing/token_type.hpp"
 
 namespace arg_router
 {

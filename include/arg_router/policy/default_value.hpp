@@ -34,19 +34,6 @@ public:
     {
     }
 
-    /** Returns the default value.
-     *
-     * @return Default value, a reference to it if the object is larger than a
-     * cache line
-     */
-    [[nodiscard]] constexpr auto get_default_value() const noexcept
-        -> std::conditional_t<config::l1_cache_size() >= sizeof(value_type),
-                              value_type,
-                              const value_type&>
-    {
-        return value_;
-    }
-
     /** Called when the owning node's token (if any) is missing from the command
      * line, this will return the default value.
      * 

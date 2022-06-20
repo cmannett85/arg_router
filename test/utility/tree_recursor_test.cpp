@@ -212,7 +212,7 @@ BOOST_AUTO_TEST_CASE(tree_recursor_test)
                       policy::short_name_t<traits::integral_constant<'a'>>,
                       policy::router<std::function<void(bool)>>>>;
 
-    utility::tree_recursor<test_Fn, Root>();
+    utility::tree_type_recursor<test_Fn, Root>();
 }
 
 BOOST_AUTO_TEST_CASE(tree_recursor_skip_test)
@@ -227,10 +227,76 @@ BOOST_AUTO_TEST_CASE(tree_recursor_skip_test)
                           policy::short_name_t<traits::integral_constant<'a'>>>,
                    policy::router<std::function<void(bool)>>>>;
 
-    utility::tree_recursor<skip_test_fn, skip_Fn, Root>();
+    utility::tree_type_recursor<skip_test_fn, skip_Fn, Root>();
 }
 
-BOOST_AUTO_TEST_CASE(tree_type_recursor_test)
+BOOST_AUTO_TEST_CASE(tree_recursor_instance_test)
+{
+    const auto r =
+        root(mode(flag(policy::long_name<S_("hello")>,
+                       policy::description<S_("Hello description")>),
+                  arg<int>(policy::long_name<S_("arg")>,
+                           policy::required,
+                           policy::description<S_("Arg description")>),
+                  policy::router{[&](auto, auto) {}}),
+             policy::validation::default_validator);
+
+    auto hit = std::bitset<4>{};
+    auto hit_index = 0u;
+    const auto visitor = [&](const auto& current, const auto&... parents) {
+        using current_type = std::decay_t<decltype(current)>;
+
+        constexpr auto matcher = [](const auto& node) {
+            return std::is_same_v<current_type, std::decay_t<decltype(node)>>;
+        };
+
+        const auto address_checker = [&](auto expected_nodes) {
+            const auto parents_tuple =
+                std::tuple{std::cref(current), std::cref(parents)...};
+
+            static_assert(
+                std::tuple_size_v<std::decay_t<decltype(expected_nodes)>> ==
+                    (sizeof...(parents) + 1),
+                "Parents tuple size mismatch");
+            utility::tuple_iterator(
+                [&](auto i, auto expected_node) {
+                    using expected_node_type =
+                        typename std::decay_t<decltype(expected_node)>::type;
+                    using parent_type = typename std::tuple_element_t<
+                        i,
+                        std::decay_t<decltype(parents_tuple)>>::type;
+                    static_assert(
+                        std::is_same_v<expected_node_type, parent_type>,
+                        "Parent type mismatch");
+
+                    BOOST_CHECK_EQUAL(
+                        reinterpret_cast<std::ptrdiff_t>(
+                            std::addressof(expected_node.get())),
+                        reinterpret_cast<std::ptrdiff_t>(
+                            std::addressof(std::get<i>(parents_tuple).get())));
+                },
+                expected_nodes);
+        };
+
+        if constexpr (matcher(r)) {
+            address_checker(std::tuple{std::cref(r)});
+        } else if constexpr (matcher(test::get_node<0>(r))) {
+            address_checker(test::get_parents<0>(r));
+        } else if constexpr (matcher(test::get_node<0, 0>(r))) {
+            address_checker(test::get_parents<0, 0>(r));
+        } else if constexpr (matcher(test::get_node<0, 1>(r))) {
+            address_checker(test::get_parents<0, 1>(r));
+        }
+
+        BOOST_CHECK(!hit[hit_index]);
+        hit.set(hit_index++);
+    };
+    utility::tree_recursor(visitor, r);
+
+    BOOST_CHECK(hit.all());
+}
+
+BOOST_AUTO_TEST_CASE(tree_type_recursor_collector_test)
 {
     using Root =
         root_t<std::decay_t<decltype(policy::validation::default_validator)>,
@@ -242,7 +308,8 @@ BOOST_AUTO_TEST_CASE(tree_type_recursor_test)
                           policy::short_name_t<traits::integral_constant<'a'>>>,
                    policy::router<std::function<void(bool)>>>>;
 
-    using result_type = utility::tree_type_recursor_t<tree_type_visitor, Root>;
+    using result_type =
+        utility::tree_type_recursor_collector_t<tree_type_visitor, Root>;
 
     static_assert(std::tuple_size_v<result_type> == 16, "Test failed");
     static_assert(

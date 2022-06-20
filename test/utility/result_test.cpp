@@ -47,7 +47,7 @@ BOOST_AUTO_TEST_CASE(const_value_test)
         BOOST_CHECK(r_ptr);
         BOOST_CHECK_EQUAL(*r_ptr, value);
 
-        const auto extracted = r.extract();
+        const auto extracted = r.get();
         BOOST_CHECK_EQUAL(extracted, value);
 
         r.throw_exception();

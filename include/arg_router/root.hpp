@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "arg_router/parsing.hpp"
 #include "arg_router/policy/no_result_value.hpp"
 #include "arg_router/tree_node.hpp"
 
@@ -36,11 +35,12 @@ public:
 private:
     static_assert(!parent_type::template any_phases_v<
                       bool,  // Type doesn't matter, as long as it isn't void
+                      policy::has_pre_parse_phase_method,
                       policy::has_parse_phase_method,
                       policy::has_validation_phase_method,
                       policy::has_routing_phase_method,
                       policy::has_missing_phase_method>,
-                  "Root only supports a pre-parse phase");
+                  "Root does not support policies with any parsing phases");
 
     static_assert(!traits::has_long_name_method_v<parent_type> &&
                       !traits::has_short_name_method_v<parent_type> &&
@@ -121,11 +121,6 @@ public:
         for (auto i = 1; i < argc; ++i) {
             args.emplace_back(parsing::prefix_type::none, argv[i]);
         }
-        auto tokens = parsing::token_list{};
-
-        // Process any pre-parse policies, the return doesn't matter as we will
-        // always delegate to the children
-        (void)parent_type::pre_parse(args, tokens, *this);
 
         // Take a copy of the front token for the error messages
         const auto front_token =
@@ -134,20 +129,17 @@ public:
                 args.front();
 
         // Find a matching child
-        auto match = false;
+        auto match = std::optional<parsing::parse_target>{};
         utility::tuple_iterator(
             [&](auto /*i*/, const auto& child) {
                 // Skip any remaining children if one has been found
-                if (match) {
-                    return;
-                }
-
-                match = child.pre_parse(args, tokens, *this);
-                if (match) {
+                if (!match &&
+                    (match = child.pre_parse(parsing::pre_parse_data{args},
+                                             *this))) {
                     if (!args.empty()) {
                         throw parse_exception{"Unhandled arguments", args};
                     }
-                    child.parse(tokens, *this);
+                    (*match)();
                 }
             },
             this->children());

@@ -2,10 +2,10 @@
 
 #pragma once
 
-#include "arg_router/parsing.hpp"
 #include "arg_router/policy/multi_stage_value.hpp"
 #include "arg_router/policy/no_result_value.hpp"
 #include "arg_router/tree_node.hpp"
+#include "arg_router/utility/tree_recursor.hpp"
 
 #include <bitset>
 
@@ -104,76 +104,58 @@ public:
     {
     }
 
-    /** Returns true and calls @a visitor if @a token matches the name of this
-     * node, unless it is anonymous in which case it will return true.
-     * 
-     * @a visitor needs to be equivalent to:
-     * @code
-     * [](const auto& node) { ... }
-     * @endcode
-     * <TT>node</TT> will be a reference to this node.
-     * @tparam Fn Visitor type
-     * @param token Command line token to match
-     * @param visitor Visitor instance
-     * @return Match result
-     */
-    template <typename Fn>
-    constexpr bool match(const parsing::token_type& token,
-                         const Fn& visitor) const
-    {
-        if (is_anonymous || parsing::match<mode_t>(token)) {
-            visitor(*this);
-            return true;
-        }
-
-        return false;
-    }
-
     /** Mode pre-parse implementation.
      *
      * Delegates the pre-parsing to any matching child modes, otherwise iterates
      * over the tokens dispatching to any matching children until the tokens
      * are consumed or all of the children have been matched.
+     * @tparam Validator Validator type
+     * @tparam HasTarget True if @a pre_parse_data contains the parent's
+     * parse_target.  It is a static_assert failure is this true for a mode
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
-     * @param args Span of raw command line tokens
-     * @param tokens Processed tokens
+     * @param pre_parse_data Pre-parse data aggregate
      * @param parents Parent node instances
-     * @return True if this node is anonymous, or if the leading token matches
-     * label
+     * @return Non-empty if the leading tokens in @a args are consumable by this
+     * node
      * @exception parse_exception Thrown if a child node cannot be found, or
      * a delegated child pre-parse policy throws
      */
-    template <typename... Parents>
-    [[nodiscard]] bool pre_parse(vector<parsing::token_type>& args,
-                                 parsing::token_list& tokens,
-                                 const Parents&... parents) const
+    template <typename Validator, bool HasTarget, typename... Parents>
+    [[nodiscard]] std::optional<parsing::parse_target> pre_parse(
+        parsing::pre_parse_data<Validator, HasTarget> pre_parse_data,
+        const Parents&... parents) const
     {
         using namespace utility::string_view_ops;
         using namespace std::string_literals;
 
+        static_assert(!HasTarget,
+                      "Modes cannot receive pre_parse_data containing parent "
+                      "parse_targets");
         static_assert(!is_anonymous || (sizeof...(Parents) <= 1),
                       "Anonymous modes can only exist under the root");
+
+        auto& args = pre_parse_data.args();
 
         // If we're not anonymous then check the leading token is a match.  We
         // can just delegate to the default implementation for this
         if constexpr (!is_anonymous) {
-            auto match = parent_type::pre_parse(args, tokens, parents...);
+            auto match =
+                parent_type::pre_parse(pre_parse_data, *this, parents...);
             if (!match) {
-                return false;
+                return match;
             }
 
             // Check if the next token (if any) matches a child mode.  If so,
             // delegate to that
             if (!args.empty()) {
-                match = false;
+                match.reset();
                 utility::tuple_iterator(
                     [&](auto /*i*/, const auto& child) {
                         using child_type = std::decay_t<decltype(child)>;
                         if constexpr (traits::is_specialisation_of_v<child_type,
                                                                      mode_t>) {
                             if (!match) {
-                                match = child.pre_parse(args,
-                                                        tokens,
+                                match = child.pre_parse(pre_parse_data,
                                                         *this,
                                                         parents...);
                             }
@@ -186,6 +168,12 @@ public:
             }
         }
 
+        if (!pre_parse_data.validator()(*this, parents...)) {
+            return {};
+        }
+
+        auto target = parsing::parse_target{*this, parents...};
+
         // Iterate over the tokens until consumed, skipping children already
         // processed that cannot be repeated on the command line
         auto matched = std::bitset<std::tuple_size_v<children_type>>{};
@@ -193,9 +181,9 @@ public:
             // Take a copy of the front token for the error messages
             const auto front_token = args.front();
 
-            auto match = false;
+            auto match = std::optional<parsing::parse_target>{};
             utility::tuple_iterator(
-                [&](auto i, const auto& child) {
+                [&]([[maybe_unused]] auto i, const auto& child) {
                     using child_type = std::decay_t<decltype(child)>;
 
                     // The token(s) have been processed so skip over any
@@ -204,58 +192,50 @@ public:
                         return;
                     }
 
-                    const auto perform_pre_parse = [&]() {
-                        return child.pre_parse(args, tokens, *this, parents...);
-                    };
+                    // Skip past modes, as they're handled earlier
+                    if constexpr (!traits::is_specialisation_of_v<child_type,
+                                                                  mode_t>) {
+                        match = child.pre_parse(
+                            parsing::pre_parse_data{
+                                args,
+                                target,
+                                [&](const auto& real_child, const auto&...) {
+                                    using real_child_type =
+                                        std::decay_t<decltype(real_child)>;
+                                    return verify_match<real_child_type>(
+                                        matched[i],
+                                        front_token);
+                                }},
+                            *this,
+                            parents...);
 
-                    if constexpr (!child_type::is_named &&
-                                  !policy::has_multi_stage_value_v<
-                                      child_type>) {
-                        // Child is not named and can only appear on the
-                        // command line once, so only perform the pre-parse if
-                        // it hasn't been matched already
-                        if (!matched[i]) {
-                            match = perform_pre_parse();
+                        // Update the matched bitset
+                        if (match) {
+                            matched.set(i);
                         }
-                    } else if constexpr (child_type::is_named &&
-                                         !policy::has_multi_stage_value_v<
-                                             child_type>) {
-                        // Child is named, but can only appear once on the
-                        // command line, so perform the pre-parse and if there
-                        // is a match check it isn't already matched
-                        match = perform_pre_parse();
-                        if (match && matched[i]) {
-                            throw parse_exception{"Repeated argument",
-                                                  front_token};
-                        }
-                    } else if constexpr (child_type::is_named &&
-                                         policy::has_multi_stage_value_v<
-                                             child_type>) {
-                        // Child is named and can appear multiple times on the
-                        // command line, so always perform a pre-parse
-                        match = perform_pre_parse();
-                    }
-
-                    // Update the matched bitset
-                    if (match) {
-                        matched.set(i);
                     }
                 },
                 this->children());
 
-            // If there was no match, but the arg has changed, then re-run the
-            // check again.  This is valid because policies are free to modify
-            // the unprocessed args list as their pre-parse process
             if (!match) {
                 if (matched.all()) {
                     throw parse_exception{"Unhandled arguments", args};
-                } else {
-                    throw parse_exception{"Unknown argument", front_token};
+                }
+
+                throw parse_exception{"Unknown argument", front_token};
+            }
+
+            // Flatten out nested sub-targets
+            if (match->sub_targets().empty()) {
+                target.add_sub_target(std::move(*match));
+            } else {
+                for (auto& sub_target : match->sub_targets()) {
+                    target.add_sub_target(std::move(sub_target));
                 }
             }
         }
 
-        return true;
+        return target;
     }
 
     /** Parse function.
@@ -265,44 +245,13 @@ public:
      * return the parsed tuple.
      * 
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
-     * @param tokens Token list
+     * @param target Parse target
      * @param parents Parents instances pack
      * @exception parse_exception Thrown if parsing failed
      */
     template <typename... Parents>
-    void parse(parsing::token_list& tokens, const Parents&... parents) const
+    void parse(parsing::parse_target target, const Parents&... parents) const
     {
-        static_assert(!is_anonymous || (sizeof...(Parents) <= 1),
-                      "Anonymous modes can only exist under the root");
-
-        // Remove our token (if not anonymous) from the list, keep it for any
-        // error messages
-        [[maybe_unused]] auto mode_token = std::optional<parsing::token_type>{};
-        if constexpr (!is_anonymous) {
-            mode_token = tokens.pending_view().front();
-            tokens.mark_as_processed();
-        }
-
-        // Find any matching mode type and delegate parsing into it
-        if constexpr (!is_anonymous) {
-            if (!tokens.pending_view().empty()) {
-                auto found_child_mode = false;
-                parent_type::find(
-                    tokens.pending_view().front(),
-                    [&](auto /*i*/, const auto& child) {
-                        using child_type = std::decay_t<decltype(child)>;
-                        if constexpr (traits::is_specialisation_of_v<child_type,
-                                                                     mode_t>) {
-                            found_child_mode = true;
-                            child.parse(tokens, *this, parents...);
-                        }
-                    });
-                if (found_child_mode) {
-                    return;
-                }
-            }
-        }
-
         // Create an internal-use results tuple, this is made from
         // optional-wrapped children's value_types but any no_result_value
         // children are replaced with skip_tag - this makes it easier to iterate
@@ -311,22 +260,32 @@ public:
                                       children_type>;
         auto results = results_type{};
 
-        // Iterate over the tokens until consumed
-        while (!tokens.pending_view().empty()) {
-            // Find the matching child
-            const auto found = parent_type::find(
-                tokens.pending_view().front(),
-                [&](auto i, const auto& child) {
-                    process_result<i.value>(tokens,
-                                            results,
-                                            child,
-                                            *this,
-                                            parents...);
-                },
-                results);
-            if (!found) {
-                throw parse_exception{"Unknown argument",
-                                      tokens.pending_view().front()};
+        for (auto& sub_target : target.sub_targets()) {
+            const auto node_hash = sub_target.node_type();
+            auto result = sub_target();
+
+            if (result.has_value()) {
+                // We need to find the matching node to the sub_target.  We do
+                // this by searching each child's subtree for a match - this
+                // gives us the index into the results tuple and the sub node
+                // type for the match
+                auto found = false;
+                utility::tuple_iterator(
+                    [&](auto i, const auto& child) {
+                        if (found) {
+                            return;
+                        }
+
+                        match_child(child,
+                                    node_hash,
+                                    [&](const auto& sub_child) {
+                                        found = true;
+                                        process_result<i>(results,
+                                                          std::move(result),
+                                                          sub_child);
+                                    });
+                    },
+                    this->children());
             }
         }
 
@@ -362,7 +321,6 @@ public:
             std::apply(
                 [&](auto&&... args) {
                     this->routing_policy::routing_phase(
-                        tokens,  // Will always be empty
                         std::forward<std::decay_t<decltype(*args)>>(*args)...);
                 },
                 std::move(stripped_results));
@@ -375,9 +333,9 @@ public:
                 traits::always_false_v<Params...>,
                 "Mode must have a router or all its children are modes");
         } else {
-            // mode_token guaranteed to be valid here, because it the mode must
-            // not be anonymous to reach here
-            throw parse_exception{"Mode requires arguments", *mode_token};
+            // Mode guaranteed to be named here
+            throw parse_exception{"Mode requires arguments",
+                                  parsing::node_token_type<mode_t>()};
         }
     }
 
@@ -408,41 +366,80 @@ private:
                       child_has_routing_phase>::value,
                   "Non-mode children cannot have routing");
 
-    template <std::size_t I,
-              typename ResultsType,
-              typename ChildType,
-              typename... Parents>
-    void process_result(parsing::token_list& tokens,
-                        ResultsType& results,
-                        const ChildType& child,
-                        const Parents&... parents) const
+    template <typename Child, typename Handler>
+    static void match_child(const Child& child,
+                            std::type_index ti,
+                            Handler handler)
+    {
+        auto found = false;
+        utility::tree_recursor(
+            [&](const auto& node, const auto&...) {
+                using node_type = std::decay_t<decltype(node)>;
+
+                // Skip modes and nodes without a parse function.  In reality
+                // the runtime code will never allow that, but let's help the
+                // compiler out...
+                if constexpr (!traits::is_specialisation_of_v<node_type,
+                                                              mode_t> &&
+                              traits::has_parse_method_v<node_type>) {
+                    if (!found && (std::type_index{typeid(node_type)} == ti)) {
+                        found = true;
+                        handler(node);
+                    }
+                }
+            },
+            child);
+    }
+
+    template <typename Child>
+    static bool verify_match(bool already_matched,
+                             [[maybe_unused]] parsing::token_type token)
+    {
+        if constexpr (!Child::is_named &&
+                      !policy::has_multi_stage_value_v<Child>) {
+            // Child is not named and can only appear on the command line once,
+            // so only perform the pre-parse if it hasn't been matched already
+            return !already_matched;
+        } else if constexpr (Child::is_named &&
+                             !policy::has_multi_stage_value_v<Child>) {
+            // Child is named, but can only appear once on the command line, so
+            // perform the pre-parse and if there is a match check it isn't
+            // already matched
+            if (already_matched) {
+                throw parse_exception{"Argument has already been set", token};
+            }
+        }
+
+        return true;
+    }
+
+    template <std::size_t I, typename ResultsType, typename ChildType>
+    void process_result(ResultsType& results,
+                        utility::unsafe_any parse_result,
+                        const ChildType& child) const
     {
         using optional_result_type = std::tuple_element_t<I, ResultsType>;
 
+        // The mode check is just for the compiler, the runtime code prevents
+        // it reaching here
         if constexpr (!is_skip_tag_v<optional_result_type>) {
-            // Make a copy of the token in case we need it for the error message
-            // later (parsing consumes the tokens)
-            [[maybe_unused]] const auto first_token =
-                tokens.pending_view().front();
-
-            auto parse_result = child.parse(tokens, parents...);
             auto& result = std::get<I>(results);
 
             if constexpr (policy::has_multi_stage_value_v<ChildType>) {
-                child.merge(result, std::move(parse_result));
+                using result_type =
+                    traits::arg_type_at_index<decltype(&ChildType::merge), 1>;
+                child.merge(result, std::move(parse_result.get<result_type>()));
             } else {
                 if (result) {
-                    throw parse_exception{"Argument has already been set",
-                                          first_token};
+                    throw parse_exception{
+                        "Argument has already been set",
+                        parsing::node_token_type<ChildType>()};
                 }
 
-                result = std::move(parse_result);
+                using result_type = decltype(std::declval<ChildType>().parse(
+                    std::declval<parsing::parse_target>()));
+                result = std::move(parse_result.get<result_type>());
             }
-        } else {
-            // Even if the skip tag is set, we still need to process the token
-            // as it may have side effects that affect other token processing
-            // (e.g. aliases)
-            child.parse(tokens, parents...);
         }
     }
 
@@ -497,8 +494,13 @@ private:
                 using optional_result_type =
                     std::tuple_element_t<i, ResultsType>;
 
-                if constexpr (!is_skip_tag_v<optional_result_type> &&
-                              policy::has_multi_stage_value_v<child_type>) {
+                constexpr auto msv =
+                    policy::has_multi_stage_value_v<child_type> ||
+                    boost::mp11::mp_any_of<
+                        typename child_type::children_type,
+                        policy::has_multi_stage_value>::value;
+
+                if constexpr (!is_skip_tag_v<optional_result_type> && msv) {
                     using result_type =
                         typename optional_result_type::value_type;
                     const auto& result = *std::get<i>(results);

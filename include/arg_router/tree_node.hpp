@@ -4,15 +4,14 @@
 
 #include "arg_router/algorithm.hpp"
 #include "arg_router/config.hpp"
-#include "arg_router/global_parser.hpp"
 #include "arg_router/list.hpp"
-#include "arg_router/parsing.hpp"
+#include "arg_router/parsing/global_parser.hpp"
+#include "arg_router/parsing/parsing.hpp"
+#include "arg_router/parsing/pre_parse_data.hpp"
 #include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/policy/policy.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 #include "arg_router/utility/tuple_iterator.hpp"
-
-#include <iostream>
 
 namespace arg_router
 {
@@ -174,70 +173,9 @@ public:
      *
      * @return Children
      */
-    [[nodiscard]] const children_type& children() const noexcept
+    [[nodiscard]] constexpr const children_type& children() const noexcept
     {
         return children_;
-    }
-
-    /** Finds the child matching token (if present) and calls @a visitor with a
-     * reference to it.
-     *
-     * @a visitor needs to be equivalent to:
-     * @code
-     * [](auto i, const auto& child) { ... }
-     * @endcode
-     * <TT>i</TT> is the index of <TT>child</TT> in the owner's child list.
-     * 
-     * This calls the match(..) const method on each child until it returns
-     * true.
-     * @tparam Fn Visitor type
-     * @param token Command line token to match
-     * @param visitor Visitor instance
-     * @param results_tuple Parent results tuple, used to pass the current value
-     * (if any) to the found child's match(..) const method.  Leave unset if not
-     * required
-     * @return True if a child was found
-     */
-    template <typename Fn, typename ResultsTuple = std::tuple<>>
-    constexpr bool find(parsing::token_type token,
-                        const Fn& visitor,
-                        const ResultsTuple& results_tuple = {}) const
-    {
-        auto result = false;
-        utility::tuple_iterator(
-            [&](auto i, const auto& node) {
-                if (result) {
-                    return;
-                }
-
-                using node_type = std::decay_t<decltype(node)>;
-
-                // Wrap the caller's visitor with one that forwards the child
-                // index
-                const auto wrapped_visitor = [&](const auto& child) {
-                    visitor(i, child);
-                };
-
-                constexpr auto match_arity = traits::arity_v<
-                    decltype(&node_type::template match<
-                             std::decay_t<decltype(wrapped_visitor)>>)>;
-
-                if constexpr ((i < std::tuple_size_v<ResultsTuple>)&&  //
-                              (match_arity == 3)) {
-                    if (node.match(token,
-                                   wrapped_visitor,
-                                   std::get<i.value>(results_tuple))) {
-                        result = true;
-                    }
-                } else {
-                    if (node.match(token, wrapped_visitor)) {
-                        result = true;
-                    }
-                }
-            },
-            children());
-
-        return result;
     }
 
 protected:
@@ -450,31 +388,48 @@ protected:
     {
     }
 
-    /** Default pre_parse implementation.
+    /** Default pre-parse implementation.
      *
      * This implementation simply iterates over the pre-parse phase implementing
-     * policies, and uses the results to update @a args and @a tokens.
+     * policies, and uses the results to update @a args and generate a
+     * parse_target.
+     * 
+     * The @a validator is called just before @a args is updated, and allows the
+     * caller to run a custom verification the on the @a node and @a parents. If
+     * the validator returns true then the result is kept, otherwise an
+     * empty result is returned from this method.
      * 
      * @note The implementation does not prepend <TT>*this</TT> into @a parents,
-     * so derived types are expected to reimplement this so the first parent
-     * is the correct type (remember there are no virtual methods in this
-     * library)
+     * so derived types are expected to reimplement this so @ node is the
+     * correct type (remember there are no virtual methods in this library)
+     * @tparam Validator Validator type
+     * @tparam HasTarget True if @a pre_parse_data contains the parent's
+     * parse_target
+     * @tparam Node This node's derived type
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
-     * @param args Unprocessed tokens
-     * @param tokens Processed tokens
+     * @param pre_parse_data Pre-parse data aggregate
+     * @param node This node instance
      * @param parents Parent node instances
-     * @return True if the leading tokens in @a args are consumable by this node
+     * @return Non-empty if the leading tokens in @a args are consumable by this
+     * node
      * @exception parse_exception Thrown if any of the policies' pre-parse
      * implementations have returned an exception
      */
-    template <typename... Parents>
-    [[nodiscard]] bool pre_parse(vector<parsing::token_type>& args,
-                                 parsing::token_list& tokens,
-                                 const Parents&... parents) const
+    template <typename Validator,
+              bool HasTarget,
+              typename Node,
+              typename... Parents>
+    [[nodiscard]] std::optional<parsing::parse_target> pre_parse(
+        parsing::pre_parse_data<Validator, HasTarget> pre_parse_data,
+        const Node& node,
+        const Parents&... parents) const
     {
         auto result = vector<parsing::token_type>{};
-        auto tmp_args = args;
+        auto tmp_args = pre_parse_data.args();
         auto adapter = parsing::dynamic_token_adapter{result, tmp_args};
+
+        // At this stage, the target is only for collecting sub-targets
+        auto target = parsing::parse_target{node, parents...};
 
         auto match =
             parsing::pre_parse_result{parsing::pre_parse_action::valid_node};
@@ -487,18 +442,21 @@ protected:
                     return;
                 }
 
-                // Keep the skip_node_but_use_tokens state if later policies
-                // return valid_node
-                const auto keep_tokens =
+                // Keep the skip_node_but_use_sub_targets state if later
+                // policies return valid_node
+                const auto use_subs =
                     match ==
-                    parsing::pre_parse_action::skip_node_but_use_tokens;
-                match =
-                    this->policy_type::pre_parse_phase(adapter,
-                                                       tokens.pending_view(),
-                                                       parents...);
-                if (keep_tokens &&
+                    parsing::pre_parse_action::skip_node_but_use_sub_targets;
+                match = this->policy_type::pre_parse_phase(
+                    adapter,
+                    extract_parent_target(pre_parse_data),
+                    target,
+                    node,
+                    parents...);
+                if (use_subs &&
                     (match == parsing::pre_parse_action::valid_node)) {
-                    match = parsing::pre_parse_action::skip_node_but_use_tokens;
+                    match = parsing::pre_parse_action::
+                        skip_node_but_use_sub_targets;
                 }
             }
         });
@@ -508,32 +466,34 @@ protected:
         // exception, otherwise a parse-stopping exception could be thrown when
         // the target of the token isn't even this node
         if (match == parsing::pre_parse_action::skip_node) {
-            return false;
+            return {};
         }
 
-        // Check the first token against the names (if the node is named of
-        // course)
-        if (is_named &&
-            (match != parsing::pre_parse_action::skip_node_but_use_tokens)) {
-            // If the node is named but there are no tokens, then take the first
-            // from args.  If args is empty, then return false
-            if (result.empty()) {
-                if (tmp_args.empty()) {
-                    return false;
+        if constexpr (is_named) {
+            // Check the first token against the names (if the node is named of
+            // course)
+            if (match !=
+                parsing::pre_parse_action::skip_node_but_use_sub_targets) {
+                // If the node is named but there are no tokens, then take the
+                // first from args.  If args is empty, then return false
+                if (result.empty()) {
+                    if (tmp_args.empty()) {
+                        return {};
+                    }
+                    result.push_back(tmp_args.front());
+                    tmp_args.erase(tmp_args.begin());
                 }
-                result.push_back(tmp_args.front());
-                tmp_args.erase(tmp_args.begin());
-            }
 
-            // The first token may not have been processed, so convert
-            auto& first_token = result.front();
-            if (first_token.prefix == parsing::prefix_type::none) {
-                first_token = parsing::get_token_type(first_token.name);
-            }
+                // The first token may not have been processed, so convert
+                auto& first_token = result.front();
+                if (first_token.prefix == parsing::prefix_type::none) {
+                    first_token = parsing::get_token_type(first_token.name);
+                }
 
-            // And then test it is correct unless we are skipping
-            if (!parsing::match<tree_node>(first_token)) {
-                return false;
+                // And then test it is correct unless we are skipping
+                if (!parsing::match<tree_node>(first_token)) {
+                    return {};
+                }
             }
         }
 
@@ -541,14 +501,27 @@ protected:
         // throw it
         match.throw_exception();
 
-        // Update args and tokens as we have a successful match
-        tokens.reserve(tokens.pending_view().size() + result.size());
-        tokens.insert_pending(tokens.pending_view().end(),
-                              result.begin(),
-                              result.end());
-        args = tmp_args;
+        // If there are no processed tokens and no sub-targets then this node
+        // cannot do anything and therefore should not be used
+        if (result.empty() && target.sub_targets().empty()) {
+            return {};
+        }
 
-        return match != parsing::pre_parse_action::skip_node;
+        if (!pre_parse_data.validator()(node, parents...)) {
+            return {};
+        }
+
+        // Update the unprocessed args
+        pre_parse_data.args() = tmp_args;
+
+        // Update the target with the pre-parsed tokens.  Remove the label token
+        // if present
+        if (is_named && !result.empty()) {
+            result.erase(result.begin());
+        }
+        target.tokens(std::move(result));
+
+        return target;
     }
 
     /** Generic parse call, uses a policy that supports the parse phase if
@@ -637,6 +610,19 @@ private:
                 return common_filter<Fn>(std::forward<decltype(args)>(args)...);
             },
             tuple_params);
+    }
+
+    template <typename Validator, bool HasTarget>
+    [[nodiscard]] constexpr auto extract_parent_target(
+        [[maybe_unused]] parsing::pre_parse_data<Validator, HasTarget>
+            pre_parse_data) const noexcept
+    {
+        if constexpr (HasTarget) {
+            return utility::compile_time_optional{
+                std::cref(pre_parse_data.target())};
+        } else {
+            return utility::compile_time_optional{};
+        }
     }
 
     children_type children_;

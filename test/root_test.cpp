@@ -273,14 +273,14 @@ BOOST_AUTO_TEST_CASE(anonymous_triple_flag_parse_test)
                        "Unhandled arguments: --foo"},
             std::tuple{std::vector{"foo", "--flag1", "--flag1"},
                        std::array{false, false, false},
-                       "Repeated argument: --flag1"},
+                       "Argument has already been set: --flag1"},
             std::tuple{std::vector{"foo", "-t", "-t"},
                        std::array{false, false, false},
-                       "Repeated argument: -t"},
+                       "Argument has already been set: -t"},
             std::tuple{
                 std::vector{"foo", "--flag2", "-t", "--flag1", "--flag2"},
                 std::array{false, false, false},
-                "Repeated argument: --flag2"},
+                "Argument has already been set: --flag2"},
         });
 }
 
@@ -369,10 +369,10 @@ BOOST_AUTO_TEST_CASE(named_single_mode_parse_test)
                        "Unhandled arguments: --foo"},
             std::tuple{std::vector{"foo", "my-mode", "--flag1", "--flag1"},
                        std::array{false, false, false},
-                       "Repeated argument: --flag1"},
+                       "Argument has already been set: --flag1"},
             std::tuple{std::vector{"foo", "my-mode", "-t", "-t"},
                        std::array{false, false, false},
-                       "Repeated argument: -t"},
+                       "Argument has already been set: -t"},
             std::tuple{std::vector{"foo",
                                    "my-mode",
                                    "--flag2",
@@ -380,7 +380,7 @@ BOOST_AUTO_TEST_CASE(named_single_mode_parse_test)
                                    "--flag1",
                                    "--flag2"},
                        std::array{false, false, false},
-                       "Repeated argument: --flag2"},
+                       "Argument has already been set: --flag2"},
             std::tuple{std::vector{"foo", "--flag1"},
                        std::array{true, false, false},
                        "Unknown argument: --flag1"},
@@ -615,7 +615,7 @@ BOOST_AUTO_TEST_CASE(alias_flag_parse_test)
                                   std::array{true, true, true},
                                   ""},
                        std::tuple{std::vector{"foo", "-a", "--flag1"},
-                                  std::array{true, true, true},
+                                  std::array{true, false, true},
                                   "Argument has already been set: --flag1"},
                    });
 }

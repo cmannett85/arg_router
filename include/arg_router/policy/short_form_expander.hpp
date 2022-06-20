@@ -2,9 +2,11 @@
 
 #pragma once
 
-#include "arg_router/parsing.hpp"
+#include "arg_router/parsing/parse_target.hpp"
+#include "arg_router/parsing/parsing.hpp"
 #include "arg_router/policy/policy.hpp"
 #include "arg_router/traits.hpp"
+#include "arg_router/utility/compile_time_optional.hpp"
 
 namespace arg_router
 {
@@ -31,21 +33,24 @@ public:
      * policy then it just returns false.  Otherwise all the
      * characters in the token are converted into short form tokens, added
      * to @a tokens.
-     * 
+     *
+     * @tparam ProcessedTarget @a processed_target payload type
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
      * @param tokens Currently processed tokens
-     * @param processed_tokens Processed tokens performed by previous pre-parse
-     * phases calls on other nodes
+     * @param processed_target Previously processed parse_target of parent
+     * node, or empty is there is no non-root parent
+     * @param target Pre-parse generated target
      * @param parents Parent node instances
      * @return Always returns true because if the token doesn't match the short
      * form name, the node may have a long form one that does.  No exception is
      * stored in the return value
      */
-    template <typename... Parents>
+    template <typename ProcessedTarget, typename... Parents>
     [[nodiscard]] parsing::pre_parse_result pre_parse_phase(
         parsing::dynamic_token_adapter& tokens,
-        [[maybe_unused]] parsing::token_list::pending_view_type
-            processed_tokens,
+        [[maybe_unused]] utility::compile_time_optional<ProcessedTarget>
+            processed_target,
+        [[maybe_unused]] parsing::parse_target& target,
         [[maybe_unused]] const Parents&... parents) const
     {
         using owner_type = boost::mp11::mp_first<std::tuple<Parents...>>;

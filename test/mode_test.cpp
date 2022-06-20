@@ -48,6 +48,11 @@ struct test_help_data {
     using description = Description;
     using children = Children;
 };
+
+struct pre_parse_data {
+    std::type_index type_index;
+    std::vector<parsing::token_type> tokens;
+};
 }  // namespace
 
 BOOST_AUTO_TEST_SUITE(mode_suite)
@@ -71,55 +76,40 @@ BOOST_AUTO_TEST_CASE(anonymous_test)
                   "Fail");
 }
 
-BOOST_AUTO_TEST_CASE(anonymous_single_flag_match_test)
-{
-    const auto m = mode(flag(policy::long_name<S_("hello")>,
-                             policy::short_name<'l'>,
-                             policy::description<S_("Hello arg")>));
-
-    auto f = [&](auto token, auto expected_result) {
-        auto visitor_hit = false;
-        const auto result = m.match(token, [&](const auto& node) {
-            static_assert(std::is_same_v<std::decay_t<decltype(node)>,
-                                         std::decay_t<decltype(m)>>,
-                          "match fail");
-            visitor_hit = true;
-        });
-        BOOST_CHECK_EQUAL(result, expected_result);
-        BOOST_CHECK_EQUAL(visitor_hit, expected_result);
-    };
-
-    test::data_set(
-        f,
-        {
-            std::tuple{
-                parsing::token_type{parsing::prefix_type::long_, "hello"},
-                true},
-            std::tuple{
-                parsing::token_type{parsing::prefix_type::long_, "goodbye"},
-                true},
-        });
-}
-
 BOOST_AUTO_TEST_CASE(anonymous_single_flag_pre_parse_test)
 {
     const auto m = mode(flag(policy::long_name<S_("hello")>,
                              policy::short_name<'l'>,
-                             policy::description<S_("Hello arg")>));
+                             policy::description<S_("Hello arg")>),
+                        policy::router{[](auto) {}});
 
     auto f = [&](auto args,
-                 auto tokens,
                  auto expected_args,
-                 auto expected_tokens,
                  auto expected_result,
                  std::string fail_message) {
         try {
-            const auto result = m.pre_parse(args, tokens);
+            auto result = m.pre_parse(parsing::pre_parse_data{args});
 
             BOOST_CHECK(fail_message.empty());
-            BOOST_CHECK_EQUAL(result, expected_result);
             BOOST_CHECK_EQUAL(args, expected_args);
-            BOOST_CHECK_EQUAL(tokens, expected_tokens);
+            BOOST_REQUIRE_EQUAL(expected_result, !!result);
+
+            BOOST_CHECK(result->tokens().empty());
+            BOOST_CHECK_EQUAL(
+                result->node_type().hash_code(),
+                std::type_index{typeid(std::decay_t<decltype(m)>)}.hash_code());
+            if (expected_result) {
+                BOOST_REQUIRE_EQUAL(result->sub_targets().size(), 1);
+                auto& sub_target = result->sub_targets().front();
+                BOOST_CHECK_EQUAL(
+                    sub_target.node_type().hash_code(),
+                    std::type_index{
+                        typeid(std::decay_t<decltype(test::get_node<0>(m))>)}
+                        .hash_code());
+                BOOST_CHECK(sub_target.tokens().empty());
+            } else {
+                BOOST_CHECK(result->sub_targets().empty());
+            }
         } catch (parse_exception& e) {
             BOOST_CHECK_EQUAL(e.what(), fail_message);
         }
@@ -128,56 +118,49 @@ BOOST_AUTO_TEST_CASE(anonymous_single_flag_pre_parse_test)
     test::data_set(
         f,
         {
-            std::tuple{
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "--hello"}},
-                parsing::token_list{},
-                std::vector<parsing::token_type>{},
-                parsing::token_list{{parsing::prefix_type::long_, "hello"}},
-                true,
-                ""},
+            std::tuple{std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "--hello"}},
+                       std::vector<parsing::token_type>{},
+                       true,
+                       ""},
+            std::tuple{std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "--hello"},
+                           {parsing::prefix_type::none, "--goodbye"}},
+                       std::vector<parsing::token_type>{},
+                       false,
+                       "Unhandled arguments: --goodbye"},
             std::tuple{std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "-l"}},
-                       parsing::token_list{},
                        std::vector<parsing::token_type>{},
-                       parsing::token_list{{parsing::prefix_type::short_, "l"}},
                        true,
                        ""},
             std::tuple{std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "--goodbye"}},
-                       parsing::token_list{},
                        std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "--goodbye"}},
-                       parsing::token_list{},
                        false,
                        "Unknown argument: --goodbye"},
             std::tuple{std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "-h"}},
-                       parsing::token_list{},
                        std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "-h"}},
-                       parsing::token_list{},
                        false,
                        "Unknown argument: -h"},
             std::tuple{std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "--hello"},
                            {parsing::prefix_type::none, "--goodbye"}},
-                       parsing::token_list{},
                        std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "--goodbye"}},
-                       parsing::token_list{},
                        false,
                        "Unhandled arguments: --goodbye"},
             std::tuple{std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "--hello"},
                            {parsing::prefix_type::none, "--hello"}},
-                       parsing::token_list{},
                        std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "--hello"},
                            {parsing::prefix_type::none, "--hello"}},
-                       parsing::token_list{},
                        false,
-                       "Repeated argument: --hello"},
+                       "Argument has already been set: --hello"},
         });
 }
 
@@ -189,25 +172,18 @@ BOOST_AUTO_TEST_CASE(anonymous_single_flag_parse_test)
                              policy::description<S_("Hello arg")>),
                         policy::router([&](bool f1) { result = f1; }));
 
-    auto tokens = parsing::token_list{{parsing::prefix_type::long_, "hello"}};
-    m.parse(tokens);
+    auto target = parsing::parse_target{m};
+    target.add_sub_target(
+        {{{parsing::prefix_type::long_, "hello"}}, test::get_node<0>(m)});
+    target();
     BOOST_CHECK(result);
-    BOOST_CHECK(tokens.pending_view().empty());
 
     result = false;
-    tokens = parsing::token_list{{parsing::prefix_type::short_, "l"}};
-    m.parse(tokens);
+    target = parsing::parse_target{m};
+    target.add_sub_target(
+        {{{parsing::prefix_type::short_, "l"}}, test::get_node<0>(m)});
+    target();
     BOOST_CHECK(result);
-    BOOST_CHECK(tokens.pending_view().empty());
-
-    result = false;
-    tokens = parsing::token_list{{parsing::prefix_type::short_, "r"}};
-    BOOST_CHECK_EXCEPTION(  //
-        m.parse(tokens),
-        parse_exception,
-        [](const auto& e) { return e.what() == "Unknown argument: -r"s; });
-    BOOST_CHECK(!result);
-    BOOST_CHECK_EQUAL(tokens.pending_view().size(), 1);
 }
 
 BOOST_AUTO_TEST_CASE(anonymous_single_positional_single_count_arg_parse_test)
@@ -219,55 +195,21 @@ BOOST_AUTO_TEST_CASE(anonymous_single_positional_single_count_arg_parse_test)
                                  policy::fixed_count<1>),
              policy::router([&](int f1) { result = f1; }));
 
-    auto tokens = parsing::token_list{{parsing::prefix_type::none, "42"}};
-    m.parse(tokens);
+    auto target = parsing::parse_target{m};
+    target.add_sub_target(
+        {{{parsing::prefix_type::none, "42"}}, test::get_node<0>(m)});
+    target();
     BOOST_CHECK_EQUAL(result, 42);
-    BOOST_CHECK(tokens.pending_view().empty());
 
     result = 0;
-    tokens = parsing::token_list{{parsing::prefix_type::none, "42"},
-                                 {parsing::prefix_type::none, "84"}};
+    target = parsing::parse_target{m};
+    target.add_sub_target(
+        {{{parsing::prefix_type::none, "hello"}}, test::get_node<0>(m)});
     BOOST_CHECK_EXCEPTION(  //
-        m.parse(tokens),
+        target(),
         parse_exception,
-        [](const auto& e) { return e.what() == "Unknown argument: 84"s; });
+        [](const auto& e) { return e.what() == "Failed to parse: hello"s; });
     BOOST_CHECK_EQUAL(result, 0);
-    BOOST_CHECK_EQUAL(
-        tokens.pending_view(),
-        (parsing::token_list{{parsing::prefix_type::none, "84"}}));
-}
-
-BOOST_AUTO_TEST_CASE(anonymous_triple_flag_match_test)
-{
-    const auto m = mode(
-        flag(policy::long_name<S_("hello")>,
-             policy::short_name<'l'>,
-             policy::description<S_("Hello arg")>),
-        flag(policy::long_name<S_("foo")>, policy::description<S_("Foo arg")>),
-        flag(policy::short_name<'b'>, policy::description<S_("b arg")>));
-
-    auto f = [&](auto token, auto expected_result) {
-        auto visitor_hit = false;
-        const auto result = m.match(token, [&](const auto& node) {
-            static_assert(std::is_same_v<std::decay_t<decltype(node)>,
-                                         std::decay_t<decltype(m)>>,
-                          "match fail");
-            visitor_hit = true;
-        });
-        BOOST_CHECK_EQUAL(result, expected_result);
-        BOOST_CHECK_EQUAL(visitor_hit, expected_result);
-    };
-
-    test::data_set(
-        f,
-        {std::tuple{parsing::token_type{parsing::prefix_type::long_, "hello"},
-                    true},
-         std::tuple{parsing::token_type{parsing::prefix_type::long_, "foo"},
-                    true},
-         std::tuple{parsing::token_type{parsing::prefix_type::short_, "b"},
-                    true},
-         std::tuple{parsing::token_type{parsing::prefix_type::short_, "g"},
-                    true}});
 }
 
 BOOST_AUTO_TEST_CASE(anonymous_triple_child_pre_parse_test)
@@ -280,21 +222,34 @@ BOOST_AUTO_TEST_CASE(anonymous_triple_child_pre_parse_test)
                       policy::description<S_("Foo arg")>,
                       policy::default_value{42}),
              counting_flag<std::size_t>(policy::short_name<'b'>,
-                                        policy::description<S_("b arg")>));
+                                        policy::description<S_("b arg")>),
+             policy::router{[](bool, int, std::size_t) {}});
 
     auto f = [&](auto args,
-                 auto tokens,
                  auto expected_args,
-                 auto expected_tokens,
-                 auto expected_result,
+                 const auto& expected_results,
                  std::string fail_message) {
         try {
-            const auto result = m.pre_parse(args, tokens);
+            auto result = m.pre_parse(parsing::pre_parse_data{args});
 
             BOOST_CHECK(fail_message.empty());
-            BOOST_CHECK_EQUAL(result, expected_result);
             BOOST_CHECK_EQUAL(args, expected_args);
-            BOOST_CHECK_EQUAL(tokens, expected_tokens);
+            BOOST_REQUIRE_EQUAL(expected_results.empty(), !result);
+
+            BOOST_CHECK(result->tokens().empty());
+            BOOST_CHECK_EQUAL(
+                result->node_type().hash_code(),
+                std::type_index{typeid(std::decay_t<decltype(m)>)}.hash_code());
+
+            BOOST_REQUIRE_EQUAL(result->sub_targets().size(),
+                                expected_results.size());
+            for (auto i = 0u; i < expected_results.size(); ++i) {
+                auto& sub_target = result->sub_targets()[i];
+                BOOST_CHECK_EQUAL(sub_target.node_type().hash_code(),
+                                  expected_results[i].type_index.hash_code());
+                BOOST_CHECK_EQUAL(sub_target.tokens(),
+                                  expected_results[i].tokens);
+            }
         } catch (parse_exception& e) {
             BOOST_CHECK_EQUAL(e.what(), fail_message);
         }
@@ -302,66 +257,64 @@ BOOST_AUTO_TEST_CASE(anonymous_triple_child_pre_parse_test)
 
     test::data_set(
         f,
-        {
-            std::tuple{
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "--hello"}},
-                parsing::token_list{},
-                std::vector<parsing::token_type>{},
-                parsing::token_list{{parsing::prefix_type::long_, "hello"}},
-                true,
-                ""},
+        std::tuple{
+            std::tuple{std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "--hello"}},
+                       std::vector<parsing::token_type>{},
+                       std::vector<pre_parse_data>{
+                           {test::get_type_index<0>(m),
+                            std::vector<parsing::token_type>{}}},
+                       ""},
             std::tuple{std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "-l"}},
-                       parsing::token_list{},
                        std::vector<parsing::token_type>{},
-                       parsing::token_list{{parsing::prefix_type::short_, "l"}},
-                       true,
+                       std::vector<pre_parse_data>{
+                           {test::get_type_index<0>(m),
+                            std::vector<parsing::token_type>{}}},
                        ""},
             std::tuple{std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "--foo"},
                            {parsing::prefix_type::none, "42"}},
-                       parsing::token_list{},
                        std::vector<parsing::token_type>{},
-                       parsing::token_list{{parsing::prefix_type::long_, "foo"},
-                                           {parsing::prefix_type::none, "42"}},
-                       true,
+                       std::vector<pre_parse_data>{
+                           {test::get_type_index<1>(m),
+                            std::vector<parsing::token_type>{
+                                {parsing::prefix_type::none, "42"}}}},
                        ""},
             std::tuple{std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "-b"}},
-                       parsing::token_list{},
                        std::vector<parsing::token_type>{},
-                       parsing::token_list{{parsing::prefix_type::short_, "b"}},
-                       true,
+                       std::vector<pre_parse_data>{
+                           {test::get_type_index<2>(m),
+                            std::vector<parsing::token_type>{}}},
                        ""},
             std::tuple{std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "-b"},
                            {parsing::prefix_type::none, "-b"},
                            {parsing::prefix_type::none, "-b"}},
-                       parsing::token_list{},
                        std::vector<parsing::token_type>{},
-                       parsing::token_list{{parsing::prefix_type::short_, "b"},
-                                           {parsing::prefix_type::short_, "b"},
-                                           {parsing::prefix_type::short_, "b"}},
-                       true,
+                       std::vector<pre_parse_data>{
+                           {test::get_type_index<2>(m),
+                            std::vector<parsing::token_type>{}},
+                           {test::get_type_index<2>(m),
+                            std::vector<parsing::token_type>{}},
+                           {test::get_type_index<2>(m),
+                            std::vector<parsing::token_type>{}}},
                        ""},
             std::tuple{std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "-f"}},
-                       parsing::token_list{},
                        std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "-f"}},
-                       parsing::token_list{},
-                       false,
+                       std::vector<pre_parse_data>{},
                        "Unknown argument: -f"},
             std::tuple{std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "-l"},
                            {parsing::prefix_type::none, "--hello"}},
-                       parsing::token_list{},
                        std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "-l"},
                            {parsing::prefix_type::none, "--hello"}},
-                       parsing::token_list{{parsing::prefix_type::short_, "l"}},
-                       false,
-                       "Repeated argument: --hello"},
+                       std::vector<pre_parse_data>{},
+                       "Argument has already been set: --hello"},
             std::tuple{std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "-b"},
                            {parsing::prefix_type::none, "--foo"},
@@ -369,15 +322,20 @@ BOOST_AUTO_TEST_CASE(anonymous_triple_child_pre_parse_test)
                            {parsing::prefix_type::none, "-b"},
                            {parsing::prefix_type::none, "-l"},
                            {parsing::prefix_type::none, "-b"}},
-                       parsing::token_list{},
                        std::vector<parsing::token_type>{},
-                       parsing::token_list{{parsing::prefix_type::short_, "b"},
-                                           {parsing::prefix_type::long_, "foo"},
-                                           {parsing::prefix_type::none, "42"},
-                                           {parsing::prefix_type::short_, "b"},
-                                           {parsing::prefix_type::short_, "l"},
-                                           {parsing::prefix_type::short_, "b"}},
-                       true,
+                       std::vector<pre_parse_data>{
+                           {test::get_type_index<2>(m),
+                            std::vector<parsing::token_type>{}},
+                           {test::get_type_index<1>(m),
+                            std::vector<parsing::token_type>{
+                                {parsing::prefix_type::none, "42"}}},
+                           {test::get_type_index<2>(m),
+                            std::vector<parsing::token_type>{}},
+                           {test::get_type_index<0>(m),
+                            std::vector<parsing::token_type>{}},
+                           {test::get_type_index<2>(m),
+                            std::vector<parsing::token_type>{}},
+                       },
                        ""},
         });
 }
@@ -397,10 +355,13 @@ BOOST_AUTO_TEST_CASE(anonymous_triple_child_parse_test)
                  result = std::tuple{f1, f2, f3};
              }));
 
-    auto f = [&](auto tokens, auto expected_result, auto fail_message) {
+    auto f = [&](auto tokens, auto expected_result, std::string fail_message) {
         result.reset();
         try {
-            m.parse(tokens);
+            auto target = m.pre_parse(parsing::pre_parse_data{tokens});
+            BOOST_REQUIRE(target);
+
+            (*target)();
             BOOST_CHECK(fail_message.empty());
             BOOST_REQUIRE(result);
             BOOST_CHECK_EQUAL(std::get<0>(*result),
@@ -415,69 +376,41 @@ BOOST_AUTO_TEST_CASE(anonymous_triple_child_parse_test)
         }
     };
 
-    test::data_set(
-        f,
-        {std::tuple{parsing::token_list{}, std::tuple{false, 42, false}, ""s},
-         std::tuple{parsing::token_list{{parsing::prefix_type::long_, "hello"}},
-                    std::tuple{true, 42, false},
-                    ""s},
-         std::tuple{parsing::token_list{{parsing::prefix_type::short_, "l"}},
-                    std::tuple{true, 42, false},
-                    ""s},
-         std::tuple{parsing::token_list{{parsing::prefix_type::long_, "foo"},
-                                        {parsing::prefix_type::none, "13"}},
-                    std::tuple{false, 13, false},
-                    ""s},
-         std::tuple{parsing::token_list{{parsing::prefix_type::short_, "b"}},
-                    std::tuple{false, 42, true},
-                    ""s},
-         std::tuple{parsing::token_list{{parsing::prefix_type::long_, "hello"},
-                                        {parsing::prefix_type::short_, "b"}},
-                    std::tuple{true, 42, true},
-                    ""s},
-         std::tuple{parsing::token_list{{parsing::prefix_type::short_, "l"},
-                                        {parsing::prefix_type::short_, "b"},
-                                        {parsing::prefix_type::long_, "foo"},
-                                        {parsing::prefix_type::none, "48"}},
-                    std::tuple{true, 48, true},
-                    ""s},
-         std::tuple{parsing::token_list{{parsing::prefix_type::long_, "hello"},
-                                        {parsing::prefix_type::short_, "l"}},
-                    std::tuple{false, 42, false},
-                    "Argument has already been set: -l"s},
-         std::tuple{
-             parsing::token_list{{parsing::prefix_type::long_, "goodbye"}},
-             std::tuple{false, 42, false},
-             "Unknown argument: --goodbye"s}});
-}
-
-BOOST_AUTO_TEST_CASE(named_single_flag_match_test)
-{
-    const auto m = mode(policy::none_name<S_("my-mode")>,
-                        flag(policy::long_name<S_("hello")>,
-                             policy::short_name<'l'>,
-                             policy::description<S_("Hello arg")>));
-
-    auto f = [&](auto token, auto expected_result) {
-        auto visitor_hit = false;
-        const auto result = m.match(token, [&](const auto& node) {
-            static_assert(std::is_same_v<std::decay_t<decltype(node)>,
-                                         std::decay_t<decltype(m)>>,
-                          "match fail");
-            visitor_hit = true;
-        });
-        BOOST_CHECK_EQUAL(result, expected_result);
-        BOOST_CHECK_EQUAL(visitor_hit, expected_result);
-    };
-
-    test::data_set(
-        f,
-        {std::tuple{parsing::token_type{parsing::prefix_type::none, "my-mode"},
-                    true},
-         std::tuple{parsing::token_type{parsing::prefix_type::long_, "hello"},
-                    false},
-         std::tuple{parsing::token_type{parsing::prefix_type::short_, "l"},
-                    false}});
+    test::data_set(f,
+                   {
+                       std::tuple{std::vector<parsing::token_type>{},
+                                  std::tuple{false, 42, false},
+                                  ""},
+                       std::tuple{std::vector<parsing::token_type>{
+                                      {parsing::prefix_type::long_, "hello"}},
+                                  std::tuple{true, 42, false},
+                                  ""},
+                       std::tuple{std::vector<parsing::token_type>{
+                                      {parsing::prefix_type::short_, "l"}},
+                                  std::tuple{true, 42, false},
+                                  ""},
+                       std::tuple{std::vector<parsing::token_type>{
+                                      {parsing::prefix_type::long_, "foo"},
+                                      {parsing::prefix_type::none, "13"}},
+                                  std::tuple{false, 13, false},
+                                  ""},
+                       std::tuple{std::vector<parsing::token_type>{
+                                      {parsing::prefix_type::short_, "b"}},
+                                  std::tuple{false, 42, true},
+                                  ""},
+                       std::tuple{std::vector<parsing::token_type>{
+                                      {parsing::prefix_type::long_, "hello"},
+                                      {parsing::prefix_type::short_, "b"}},
+                                  std::tuple{true, 42, true},
+                                  ""},
+                       std::tuple{std::vector<parsing::token_type>{
+                                      {parsing::prefix_type::short_, "l"},
+                                      {parsing::prefix_type::short_, "b"},
+                                      {parsing::prefix_type::long_, "foo"},
+                                      {parsing::prefix_type::none, "48"}},
+                                  std::tuple{true, 48, true},
+                                  ""},
+                   });
 }
 
 BOOST_AUTO_TEST_CASE(named_single_flag_parse_test)
@@ -489,10 +422,13 @@ BOOST_AUTO_TEST_CASE(named_single_flag_parse_test)
                              policy::description<S_("Hello arg")>),
                         policy::router([&](bool f1) { result = f1; }));
 
-    auto f = [&](auto tokens, auto expected_result, auto fail_message) {
+    auto f = [&](auto tokens, auto expected_result, std::string fail_message) {
         result.reset();
         try {
-            m.parse(tokens);
+            auto target = m.pre_parse(parsing::pre_parse_data{tokens});
+            BOOST_REQUIRE(target);
+
+            (*target)();
             BOOST_CHECK(fail_message.empty());
             BOOST_REQUIRE(result);
             BOOST_CHECK_EQUAL(*result, expected_result);
@@ -502,63 +438,23 @@ BOOST_AUTO_TEST_CASE(named_single_flag_parse_test)
         }
     };
 
-    test::data_set(
-        f,
-        {
-            std::tuple{
-                parsing::token_list{{parsing::prefix_type::none, "my-mode"}},
-                std::optional<bool>{false},
-                ""s},
-            std::tuple{
-                parsing::token_list{{parsing::prefix_type::none, "my-mode"},
-                                    {parsing::prefix_type::long_, "hello"}},
-                std::optional<bool>{true},
-                ""s},
-            std::tuple{
-                parsing::token_list{{parsing::prefix_type::none, "my-mode"},
-                                    {parsing::prefix_type::short_, "l"}},
-                std::optional<bool>{true},
-                ""s},
-            std::tuple{
-                parsing::token_list{{parsing::prefix_type::none, "my-mode"},
-                                    {parsing::prefix_type::long_, "goodbye"}},
-                std::optional<bool>{},
-                "Unknown argument: --goodbye"s},
-        });
-}
-
-BOOST_AUTO_TEST_CASE(named_triple_flag_match_test)
-{
-    const auto m = mode(
-        policy::none_name<S_("my-mode")>,
-        flag(policy::long_name<S_("hello")>,
-             policy::short_name<'l'>,
-             policy::description<S_("Hello arg")>),
-        flag(policy::long_name<S_("foo")>, policy::description<S_("Foo arg")>),
-        flag(policy::short_name<'b'>, policy::description<S_("b arg")>));
-
-    auto f = [&](auto token, auto expected_result) {
-        auto visitor_hit = false;
-        const auto result = m.match(token, [&](const auto& node) {
-            static_assert(std::is_same_v<std::decay_t<decltype(node)>,
-                                         std::decay_t<decltype(m)>>,
-                          "match fail");
-            visitor_hit = true;
-        });
-        BOOST_CHECK_EQUAL(result, expected_result);
-        BOOST_CHECK_EQUAL(visitor_hit, expected_result);
-    };
-
-    test::data_set(
-        f,
-        {std::tuple{parsing::token_type{parsing::prefix_type::none, "my-mode"},
-                    true},
-         std::tuple{parsing::token_type{parsing::prefix_type::long_, "hello"},
-                    false},
-         std::tuple{parsing::token_type{parsing::prefix_type::short_, "l"},
-                    false},
-         std::tuple{parsing::token_type{parsing::prefix_type::short_, "b"},
-                    false}});
+    test::data_set(f,
+                   {
+                       std::tuple{std::vector<parsing::token_type>{
+                                      {parsing::prefix_type::none, "my-mode"}},
+                                  std::optional<bool>{false},
+                                  ""},
+                       std::tuple{std::vector<parsing::token_type>{
+                                      {parsing::prefix_type::none, "my-mode"},
+                                      {parsing::prefix_type::long_, "hello"}},
+                                  std::optional<bool>{true},
+                                  ""},
+                       std::tuple{std::vector<parsing::token_type>{
+                                      {parsing::prefix_type::none, "my-mode"},
+                                      {parsing::prefix_type::short_, "l"}},
+                                  std::optional<bool>{true},
+                                  ""},
+                   });
 }
 
 BOOST_AUTO_TEST_CASE(named_triple_arg_pre_parse_test)
@@ -571,21 +467,38 @@ BOOST_AUTO_TEST_CASE(named_triple_arg_pre_parse_test)
              arg<int>(policy::long_name<S_("foo")>,
                       policy::description<S_("Foo arg")>,
                       policy::default_value{42}),
-             flag(policy::short_name<'b'>, policy::description<S_("b arg")>));
+             flag(policy::short_name<'b'>, policy::description<S_("b arg")>),
+             policy::router{[](bool, int, bool) {}});
 
     auto f = [&](auto args,
-                 auto tokens,
                  auto expected_args,
-                 auto expected_tokens,
-                 auto expected_result,
+                 const auto& expected_results,
                  std::string fail_message) {
         try {
-            const auto result = m.pre_parse(args, tokens);
+            auto result = m.pre_parse(parsing::pre_parse_data{args});
 
             BOOST_CHECK(fail_message.empty());
-            BOOST_CHECK_EQUAL(result, expected_result);
             BOOST_CHECK_EQUAL(args, expected_args);
-            BOOST_CHECK_EQUAL(tokens, expected_tokens);
+            BOOST_CHECK_EQUAL(expected_results.empty(), !result);
+
+            if (result) {
+                BOOST_CHECK(result->tokens().empty());
+                BOOST_CHECK_EQUAL(
+                    result->node_type().hash_code(),
+                    std::type_index{typeid(std::decay_t<decltype(m)>)}
+                        .hash_code());
+
+                BOOST_REQUIRE_EQUAL(result->sub_targets().size(),
+                                    expected_results.size());
+                for (auto i = 0u; i < expected_results.size(); ++i) {
+                    auto& sub_target = result->sub_targets()[i];
+                    BOOST_CHECK_EQUAL(
+                        sub_target.node_type().hash_code(),
+                        expected_results[i].type_index.hash_code());
+                    BOOST_CHECK_EQUAL(sub_target.tokens(),
+                                      expected_results[i].tokens);
+                }
+            }
         } catch (parse_exception& e) {
             BOOST_CHECK_EQUAL(e.what(), fail_message);
         }
@@ -594,93 +507,80 @@ BOOST_AUTO_TEST_CASE(named_triple_arg_pre_parse_test)
     test::data_set(
         f,
         {
-            std::tuple{
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "my-mode"},
-                    {parsing::prefix_type::none, "--hello"}},
-                parsing::token_list{},
-                std::vector<parsing::token_type>{},
-                parsing::token_list{{parsing::prefix_type::none, "my-mode"},
-                                    {parsing::prefix_type::long_, "hello"}},
-                true,
-                ""},
-            std::tuple{
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "my-mode"},
-                    {parsing::prefix_type::none, "-l"}},
-                parsing::token_list{},
-                std::vector<parsing::token_type>{},
-                parsing::token_list{{parsing::prefix_type::none, "my-mode"},
-                                    {parsing::prefix_type::short_, "l"}},
-                true,
-                ""},
-            std::tuple{
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "my-mode"},
-                    {parsing::prefix_type::none, "--foo"},
-                    {parsing::prefix_type::none, "42"}},
-                parsing::token_list{},
-                std::vector<parsing::token_type>{},
-                parsing::token_list{{parsing::prefix_type::none, "my-mode"},
-                                    {parsing::prefix_type::long_, "foo"},
-                                    {parsing::prefix_type::none, "42"}},
-                true,
-                ""},
-            std::tuple{
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "my-mode"},
-                    {parsing::prefix_type::none, "-b"}},
-                parsing::token_list{},
-                std::vector<parsing::token_type>{},
-                parsing::token_list{{parsing::prefix_type::none, "my-mode"},
-                                    {parsing::prefix_type::short_, "b"}},
-                true,
-                ""},
+            std::tuple{std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "my-mode"},
+                           {parsing::prefix_type::none, "--hello"}},
+                       std::vector<parsing::token_type>{},
+                       std::vector<pre_parse_data>{
+                           {test::get_type_index<0>(m),
+                            std::vector<parsing::token_type>{}}},
+                       ""},
+            std::tuple{std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "my-mode"},
+                           {parsing::prefix_type::none, "-l"}},
+                       std::vector<parsing::token_type>{},
+                       std::vector<pre_parse_data>{
+                           {test::get_type_index<0>(m),
+                            std::vector<parsing::token_type>{}}},
+                       ""},
+            std::tuple{std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "my-mode"},
+                           {parsing::prefix_type::none, "--foo"},
+                           {parsing::prefix_type::none, "42"}},
+                       std::vector<parsing::token_type>{},
+                       std::vector<pre_parse_data>{
+                           {test::get_type_index<1>(m),
+                            std::vector<parsing::token_type>{
+                                {parsing::prefix_type::none, "42"}}}},
+                       ""},
+            std::tuple{std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "my-mode"},
+                           {parsing::prefix_type::none, "-b"}},
+                       std::vector<parsing::token_type>{},
+                       std::vector<pre_parse_data>{
+                           {test::get_type_index<2>(m),
+                            std::vector<parsing::token_type>{}}},
+                       ""},
             std::tuple{std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "my-mode"},
                            {parsing::prefix_type::none, "-f"}},
-                       parsing::token_list{},
                        std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "my-mode"},
                            {parsing::prefix_type::none, "-f"}},
-                       parsing::token_list{},
-                       false,
+                       std::vector<pre_parse_data>{},
                        "Unknown argument: -f"},
-            std::tuple{
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "my-mode"},
-                    {parsing::prefix_type::none, "-l"},
-                    {parsing::prefix_type::none, "--hello"}},
-                parsing::token_list{},
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "--hello"}},
-                parsing::token_list{{parsing::prefix_type::none, "my-mode"},
-                                    {parsing::prefix_type::short_, "l"}},
-                false,
-                "Repeated argument: --hello"},
-            std::tuple{
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "my-mode"},
-                    {parsing::prefix_type::none, "--foo"},
-                    {parsing::prefix_type::none, "42"},
-                    {parsing::prefix_type::none, "-l"},
-                    {parsing::prefix_type::none, "-b"}},
-                parsing::token_list{},
-                std::vector<parsing::token_type>{},
-                parsing::token_list{{parsing::prefix_type::none, "my-mode"},
-                                    {parsing::prefix_type::long_, "foo"},
-                                    {parsing::prefix_type::none, "42"},
-                                    {parsing::prefix_type::short_, "l"},
-                                    {parsing::prefix_type::short_, "b"}},
-                true,
-                ""},
+            std::tuple{std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "my-mode"},
+                           {parsing::prefix_type::none, "-l"},
+                           {parsing::prefix_type::none, "--hello"}},
+                       std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "my-mode"},
+                           {parsing::prefix_type::none, "-l"},
+                           {parsing::prefix_type::none, "--hello"}},
+                       std::vector<pre_parse_data>{},
+                       "Argument has already been set: --hello"},
+            std::tuple{std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "my-mode"},
+                           {parsing::prefix_type::none, "--foo"},
+                           {parsing::prefix_type::none, "42"},
+                           {parsing::prefix_type::none, "-l"},
+                           {parsing::prefix_type::none, "-b"}},
+                       std::vector<parsing::token_type>{},
+                       std::vector<pre_parse_data>{
+                           {test::get_type_index<1>(m),
+                            std::vector<parsing::token_type>{
+                                {parsing::prefix_type::none, "42"}}},
+                           {test::get_type_index<0>(m),
+                            std::vector<parsing::token_type>{}},
+                           {test::get_type_index<2>(m),
+                            std::vector<parsing::token_type>{}},
+                       },
+                       ""},
             std::tuple{std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "-b"}},
-                       parsing::token_list{},
                        std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "-b"}},
-                       parsing::token_list{},
-                       false,
+                       std::vector<pre_parse_data>{},
                        ""},
         });
 }
@@ -701,10 +601,13 @@ BOOST_AUTO_TEST_CASE(named_triple_arg_parse_test)
                  result = std::tuple{f1, f2, f3};
              }));
 
-    auto f = [&](auto tokens, auto expected_result, auto fail_message) {
+    auto f = [&](auto tokens, auto expected_result, std::string fail_message) {
         result.reset();
         try {
-            m.parse(tokens);
+            auto target = m.pre_parse(parsing::pre_parse_data{tokens});
+            BOOST_REQUIRE(target);
+
+            (*target)();
             BOOST_CHECK(fail_message.empty());
             BOOST_REQUIRE(result);
             BOOST_CHECK_EQUAL(std::get<0>(*result),
@@ -719,58 +622,48 @@ BOOST_AUTO_TEST_CASE(named_triple_arg_parse_test)
         }
     };
 
-    test::data_set(
-        f,
-        {std::tuple{
-             parsing::token_list{{parsing::prefix_type::long_, "my-mode"}},
-             std::tuple{false, 42, false},
-             ""s},
-         std::tuple{
-             parsing::token_list{{parsing::prefix_type::long_, "my-mode"},
-                                 {parsing::prefix_type::long_, "hello"}},
-             std::tuple{true, 42, false},
-             ""s},
-         std::tuple{
-             parsing::token_list{{parsing::prefix_type::long_, "my-mode"},
-                                 {parsing::prefix_type::short_, "l"}},
-             std::tuple{true, 42, false},
-             ""s},
-         std::tuple{
-             parsing::token_list{{parsing::prefix_type::long_, "my-mode"},
-                                 {parsing::prefix_type::long_, "foo"},
-                                 {parsing::prefix_type::none, "13"}},
-             std::tuple{false, 13, false},
-             ""s},
-         std::tuple{
-             parsing::token_list{{parsing::prefix_type::long_, "my-mode"},
-                                 {parsing::prefix_type::short_, "b"}},
-             std::tuple{false, 42, true},
-             ""s},
-         std::tuple{
-             parsing::token_list{{parsing::prefix_type::long_, "my-mode"},
-                                 {parsing::prefix_type::long_, "hello"},
-                                 {parsing::prefix_type::short_, "b"}},
-             std::tuple{true, 42, true},
-             ""s},
-         std::tuple{
-             parsing::token_list{{parsing::prefix_type::long_, "my-mode"},
-                                 {parsing::prefix_type::short_, "l"},
-                                 {parsing::prefix_type::short_, "b"},
-                                 {parsing::prefix_type::long_, "foo"},
-                                 {parsing::prefix_type::none, "48"}},
-             std::tuple{true, 48, true},
-             ""s},
-         std::tuple{
-             parsing::token_list{{parsing::prefix_type::long_, "my-mode"},
-                                 {parsing::prefix_type::long_, "hello"},
-                                 {parsing::prefix_type::short_, "l"}},
-             std::tuple{false, 42, false},
-             "Argument has already been set: -l"s},
-         std::tuple{
-             parsing::token_list{{parsing::prefix_type::long_, "my-mode"},
-                                 {parsing::prefix_type::long_, "goodbye"}},
-             std::tuple{false, 42, false},
-             "Unknown argument: --goodbye"s}});
+    test::data_set(f,
+                   {
+                       std::tuple{std::vector<parsing::token_type>{
+                                      {parsing::prefix_type::none, "my-mode"}},
+                                  std::tuple{false, 42, false},
+                                  ""},
+                       std::tuple{std::vector<parsing::token_type>{
+                                      {parsing::prefix_type::none, "my-mode"},
+                                      {parsing::prefix_type::long_, "hello"}},
+                                  std::tuple{true, 42, false},
+                                  ""},
+                       std::tuple{std::vector<parsing::token_type>{
+                                      {parsing::prefix_type::none, "my-mode"},
+                                      {parsing::prefix_type::short_, "l"}},
+                                  std::tuple{true, 42, false},
+                                  ""},
+                       std::tuple{std::vector<parsing::token_type>{
+                                      {parsing::prefix_type::none, "my-mode"},
+                                      {parsing::prefix_type::long_, "foo"},
+                                      {parsing::prefix_type::none, "13"}},
+                                  std::tuple{false, 13, false},
+                                  ""},
+                       std::tuple{std::vector<parsing::token_type>{
+                                      {parsing::prefix_type::none, "my-mode"},
+                                      {parsing::prefix_type::short_, "b"}},
+                                  std::tuple{false, 42, true},
+                                  ""},
+                       std::tuple{std::vector<parsing::token_type>{
+                                      {parsing::prefix_type::none, "my-mode"},
+                                      {parsing::prefix_type::long_, "hello"},
+                                      {parsing::prefix_type::short_, "b"}},
+                                  std::tuple{true, 42, true},
+                                  ""},
+                       std::tuple{std::vector<parsing::token_type>{
+                                      {parsing::prefix_type::none, "my-mode"},
+                                      {parsing::prefix_type::short_, "l"},
+                                      {parsing::prefix_type::short_, "b"},
+                                      {parsing::prefix_type::long_, "foo"},
+                                      {parsing::prefix_type::none, "48"}},
+                                  std::tuple{true, 48, true},
+                                  ""},
+                   });
 }
 
 BOOST_AUTO_TEST_CASE(anonymous_triple_flag_single_list_pre_parse_test)
@@ -780,22 +673,35 @@ BOOST_AUTO_TEST_CASE(anonymous_triple_flag_single_list_pre_parse_test)
              policy::short_name<'l'>,
              policy::description<S_("Hello arg")>),
         flag(policy::long_name<S_("foo")>, policy::description<S_("Foo arg")>),
-        flag(policy::short_name<'b'>, policy::description<S_("b arg")>)};
-    const auto m = mode(flags);
+        flag(policy::short_name<'b'>, policy::description<S_("b arg")>),
+    };
+    const auto m = mode(flags, policy::router{[](bool, bool, bool) {}});
 
     auto f = [&](auto args,
-                 auto tokens,
                  auto expected_args,
-                 auto expected_tokens,
-                 auto expected_result,
+                 const auto& expected_results,
                  std::string fail_message) {
         try {
-            const auto result = m.pre_parse(args, tokens);
+            auto result = m.pre_parse(parsing::pre_parse_data{args});
 
             BOOST_CHECK(fail_message.empty());
-            BOOST_CHECK_EQUAL(result, expected_result);
             BOOST_CHECK_EQUAL(args, expected_args);
-            BOOST_CHECK_EQUAL(tokens, expected_tokens);
+            BOOST_REQUIRE_EQUAL(expected_results.empty(), !result);
+
+            BOOST_CHECK(result->tokens().empty());
+            BOOST_CHECK_EQUAL(
+                result->node_type().hash_code(),
+                std::type_index{typeid(std::decay_t<decltype(m)>)}.hash_code());
+
+            BOOST_REQUIRE_EQUAL(result->sub_targets().size(),
+                                expected_results.size());
+            for (auto i = 0u; i < expected_results.size(); ++i) {
+                auto& sub_target = result->sub_targets()[i];
+                BOOST_CHECK_EQUAL(sub_target.node_type().hash_code(),
+                                  expected_results[i].type_index.hash_code());
+                BOOST_CHECK_EQUAL(sub_target.tokens(),
+                                  expected_results[i].tokens);
+            }
         } catch (parse_exception& e) {
             BOOST_CHECK_EQUAL(e.what(), fail_message);
         }
@@ -804,28 +710,25 @@ BOOST_AUTO_TEST_CASE(anonymous_triple_flag_single_list_pre_parse_test)
     test::data_set(
         f,
         {
-            std::tuple{
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "--hello"}},
-                parsing::token_list{},
-                std::vector<parsing::token_type>{},
-                parsing::token_list{{parsing::prefix_type::long_, "hello"}},
-                true,
-                ""},
+            std::tuple{std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "--hello"}},
+                       std::vector<parsing::token_type>{},
+                       std::vector<pre_parse_data>{
+                           {test::get_type_index<0>(m),
+                            std::vector<parsing::token_type>{}}},
+                       ""},
             std::tuple{std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "-l"}},
-                       parsing::token_list{},
                        std::vector<parsing::token_type>{},
-                       parsing::token_list{{parsing::prefix_type::short_, "l"}},
-                       true,
+                       std::vector<pre_parse_data>{
+                           {test::get_type_index<0>(m),
+                            std::vector<parsing::token_type>{}}},
                        ""},
             std::tuple{std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "--goodbye"}},
-                       parsing::token_list{},
                        std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "--goodbye"}},
-                       parsing::token_list{},
-                       false,
+                       std::vector<pre_parse_data>{},
                        "Unknown argument: --goodbye"},
         });
 }
@@ -839,21 +742,40 @@ BOOST_AUTO_TEST_CASE(named_triple_flag_double_list_pre_parse_test)
         flag(policy::long_name<S_("foo")>, policy::description<S_("Foo arg")>)};
     const auto list2 =
         list{flag(policy::short_name<'b'>, policy::description<S_("b arg")>)};
-    const auto m = mode(policy::none_name<S_("my-mode")>, list1, list2);
+    const auto m = mode(policy::none_name<S_("my-mode")>,
+                        list1,
+                        list2,
+                        policy::router{[](bool, bool, bool) {}});
 
     auto f = [&](auto args,
-                 auto tokens,
                  auto expected_args,
-                 auto expected_tokens,
-                 auto expected_result,
+                 const auto& expected_results,
                  std::string fail_message) {
         try {
-            const auto result = m.pre_parse(args, tokens);
+            auto result = m.pre_parse(parsing::pre_parse_data{args});
 
             BOOST_CHECK(fail_message.empty());
-            BOOST_CHECK_EQUAL(result, expected_result);
             BOOST_CHECK_EQUAL(args, expected_args);
-            BOOST_CHECK_EQUAL(tokens, expected_tokens);
+            BOOST_CHECK_EQUAL(expected_results.empty(), !result);
+
+            if (result) {
+                BOOST_CHECK(result->tokens().empty());
+                BOOST_CHECK_EQUAL(
+                    result->node_type().hash_code(),
+                    std::type_index{typeid(std::decay_t<decltype(m)>)}
+                        .hash_code());
+
+                BOOST_REQUIRE_EQUAL(result->sub_targets().size(),
+                                    expected_results.size());
+                for (auto i = 0u; i < expected_results.size(); ++i) {
+                    auto& sub_target = result->sub_targets()[i];
+                    BOOST_CHECK_EQUAL(
+                        sub_target.node_type().hash_code(),
+                        expected_results[i].type_index.hash_code());
+                    BOOST_CHECK_EQUAL(sub_target.tokens(),
+                                      expected_results[i].tokens);
+                }
+            }
         } catch (parse_exception& e) {
             BOOST_CHECK_EQUAL(e.what(), fail_message);
         }
@@ -862,45 +784,37 @@ BOOST_AUTO_TEST_CASE(named_triple_flag_double_list_pre_parse_test)
     test::data_set(
         f,
         {
-            std::tuple{
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "my-mode"},
-                    {parsing::prefix_type::none, "--hello"}},
-                parsing::token_list{},
-                std::vector<parsing::token_type>{},
-                parsing::token_list{{parsing::prefix_type::none, "my-mode"},
-                                    {parsing::prefix_type::long_, "hello"}},
-                true,
-                ""},
-            std::tuple{
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "my-mode"},
-                    {parsing::prefix_type::none, "-l"}},
-                parsing::token_list{},
-                std::vector<parsing::token_type>{},
-                parsing::token_list{{parsing::prefix_type::none, "my-mode"},
-                                    {parsing::prefix_type::short_, "l"}},
-                true,
-                ""},
+            std::tuple{std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "my-mode"},
+                           {parsing::prefix_type::none, "--hello"}},
+                       std::vector<parsing::token_type>{},
+                       std::vector<pre_parse_data>{
+                           {test::get_type_index<0>(m),
+                            std::vector<parsing::token_type>{}}},
+                       ""},
+            std::tuple{std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "my-mode"},
+                           {parsing::prefix_type::none, "-l"}},
+                       std::vector<parsing::token_type>{},
+                       std::vector<pre_parse_data>{
+                           {test::get_type_index<0>(m),
+                            std::vector<parsing::token_type>{}}},
+                       ""},
             std::tuple{std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "my-mode"},
                            {parsing::prefix_type::none, "--goodbye"}},
-                       parsing::token_list{},
                        std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "my-mode"},
                            {parsing::prefix_type::none, "--goodbye"}},
-                       parsing::token_list{},
-                       false,
+                       std::vector<pre_parse_data>{},
                        "Unknown argument: --goodbye"},
             std::tuple{std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "wrong-mode"},
                            {parsing::prefix_type::none, "--hello"}},
-                       parsing::token_list{},
                        std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "wrong-mode"},
                            {parsing::prefix_type::none, "--hello"}},
-                       parsing::token_list{},
-                       false,
+                       std::vector<pre_parse_data>{},
                        ""},
         });
 }
@@ -915,21 +829,39 @@ BOOST_AUTO_TEST_CASE(nested_modes_pre_parse_test)
                                        policy::description<S_("Hello arg")>),
                                   arg<int>(policy::long_name<S_("foo")>,
                                            policy::description<S_("Foo arg")>,
-                                           policy::default_value{42}))));
+                                           policy::default_value{42}),
+                                  policy::router{[](bool, int) {}})));
 
     auto f = [&](auto args,
-                 auto tokens,
                  auto expected_args,
-                 auto expected_tokens,
-                 auto expected_result,
+                 auto expected_hash,
+                 const auto& expected_results,
                  std::string fail_message) {
         try {
-            const auto result = m.pre_parse(args, tokens);
+            auto result = m.pre_parse(parsing::pre_parse_data{args});
 
             BOOST_CHECK(fail_message.empty());
-            BOOST_CHECK_EQUAL(result, expected_result);
             BOOST_CHECK_EQUAL(args, expected_args);
-            BOOST_CHECK_EQUAL(tokens, expected_tokens);
+            BOOST_CHECK_EQUAL(!expected_results, !result);
+
+            if (result) {
+                BOOST_CHECK(result->tokens().empty());
+                BOOST_CHECK_EQUAL(result->node_type().hash_code(),
+                                  expected_hash);
+
+                if (expected_results) {
+                    BOOST_REQUIRE_EQUAL(result->sub_targets().size(),
+                                        expected_results->size());
+                    for (auto i = 0u; i < expected_results->size(); ++i) {
+                        auto& sub_target = result->sub_targets()[i];
+                        BOOST_CHECK_EQUAL(
+                            sub_target.node_type().hash_code(),
+                            (*expected_results)[i].type_index.hash_code());
+                        BOOST_CHECK_EQUAL(sub_target.tokens(),
+                                          (*expected_results)[i].tokens);
+                    }
+                }
+            }
         } catch (parse_exception& e) {
             BOOST_CHECK_EQUAL(e.what(), fail_message);
         }
@@ -941,89 +873,81 @@ BOOST_AUTO_TEST_CASE(nested_modes_pre_parse_test)
             std::tuple{
                 std::vector<parsing::token_type>{
                     {parsing::prefix_type::none, "mode1"}},
-                parsing::token_list{},
                 std::vector<parsing::token_type>{},
-                parsing::token_list{{parsing::prefix_type::none, "mode1"}},
-                true,
+                std::type_index{typeid(std::decay_t<decltype(m)>)}.hash_code(),
+                std::optional{std::vector<pre_parse_data>{}},
                 ""},
             std::tuple{std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "mode2"}},
-                       parsing::token_list{},
                        std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "mode2"}},
-                       parsing::token_list{},
-                       false,
+                       std::size_t{0},
+                       std::optional<std::vector<pre_parse_data>>{},
                        ""},
-            std::tuple{
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "mode1"},
-                    {parsing::prefix_type::none, "mode2"}},
-                parsing::token_list{},
-                std::vector<parsing::token_type>{},
-                parsing::token_list{{parsing::prefix_type::none, "mode1"},
-                                    {parsing::prefix_type::none, "mode2"}},
-                true,
-                ""},
-            std::tuple{
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "mode1"},
-                    {parsing::prefix_type::none, "mode2"},
-                    {parsing::prefix_type::none, "mode3"},
-                    {parsing::prefix_type::none, "--hello"}},
-                parsing::token_list{},
-                std::vector<parsing::token_type>{},
-                parsing::token_list{{parsing::prefix_type::none, "mode1"},
-                                    {parsing::prefix_type::none, "mode2"},
-                                    {parsing::prefix_type::none, "mode3"},
-                                    {parsing::prefix_type::long_, "hello"}},
-                true,
-                ""},
-            std::tuple{
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "mode1"},
-                    {parsing::prefix_type::none, "mode2"},
-                    {parsing::prefix_type::none, "mode3"},
-                    {parsing::prefix_type::none, "-l"}},
-                parsing::token_list{},
-                std::vector<parsing::token_type>{},
-                parsing::token_list{{parsing::prefix_type::none, "mode1"},
-                                    {parsing::prefix_type::none, "mode2"},
-                                    {parsing::prefix_type::none, "mode3"},
-                                    {parsing::prefix_type::short_, "l"}},
-                true,
-                ""},
-            std::tuple{
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "mode1"},
-                    {parsing::prefix_type::none, "mode2"},
-                    {parsing::prefix_type::none, "mode3"},
-                    {parsing::prefix_type::none, "-l"},
-                    {parsing::prefix_type::none, "--hello"}},
-                parsing::token_list{},
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "--hello"}},
-                parsing::token_list{{parsing::prefix_type::none, "mode1"},
-                                    {parsing::prefix_type::none, "mode2"},
-                                    {parsing::prefix_type::none, "mode3"},
-                                    {parsing::prefix_type::short_, "l"}},
-                false,
-                "Repeated argument: --hello"},
-            std::tuple{
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "mode1"},
-                    {parsing::prefix_type::none, "mode2"},
-                    {parsing::prefix_type::none, "mode3"},
-                    {parsing::prefix_type::none, "--foo"},
-                    {parsing::prefix_type::none, "42"}},
-                parsing::token_list{},
-                std::vector<parsing::token_type>{},
-                parsing::token_list{{parsing::prefix_type::none, "mode1"},
-                                    {parsing::prefix_type::none, "mode2"},
-                                    {parsing::prefix_type::none, "mode3"},
-                                    {parsing::prefix_type::long_, "foo"},
-                                    {parsing::prefix_type::none, "42"}},
-                true,
-                ""},
+            std::tuple{std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "mode1"},
+                           {parsing::prefix_type::none, "mode2"}},
+                       std::vector<parsing::token_type>{},
+                       test::get_type_index<0>(m).hash_code(),
+                       std::optional{std::vector<pre_parse_data>{}},
+                       ""},
+            std::tuple{std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "mode1"},
+                           {parsing::prefix_type::none, "mode9"}},
+                       std::vector<parsing::token_type>{},
+                       std::size_t{0},
+                       std::optional{std::vector<pre_parse_data>{}},
+                       "Unknown argument: mode9"},
+            std::tuple{std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "mode1"},
+                           {parsing::prefix_type::none, "mode2"},
+                           {parsing::prefix_type::none, "mode3"},
+                           {parsing::prefix_type::none, "--hello"}},
+                       std::vector<parsing::token_type>{},
+                       test::get_type_index<0, 0>(m).hash_code(),
+                       std::optional{std::vector<pre_parse_data>{
+                           {test::get_type_index<0, 0, 0>(m),
+                            std::vector<parsing::token_type>{}}}},
+                       ""},
+            std::tuple{std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "mode1"},
+                           {parsing::prefix_type::none, "mode2"},
+                           {parsing::prefix_type::none, "mode3"},
+                           {parsing::prefix_type::none, "-l"}},
+                       std::vector<parsing::token_type>{},
+                       test::get_type_index<0, 0>(m).hash_code(),
+                       std::optional{std::vector<pre_parse_data>{
+                           {test::get_type_index<0, 0, 0>(m),
+                            std::vector<parsing::token_type>{}}}},
+                       ""},
+            std::tuple{std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "mode1"},
+                           {parsing::prefix_type::none, "mode2"},
+                           {parsing::prefix_type::none, "mode3"},
+                           {parsing::prefix_type::none, "-l"},
+                           {parsing::prefix_type::none, "--hello"}},
+                       std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "mode1"},
+                           {parsing::prefix_type::none, "mode2"},
+                           {parsing::prefix_type::none, "mode3"},
+                           {parsing::prefix_type::none, "-l"},
+                           {parsing::prefix_type::none, "--hello"}},
+                       test::get_type_index<0, 0>(m).hash_code(),
+                       std::optional<std::vector<pre_parse_data>>{},
+                       "Argument has already been set: --hello"},
+            std::tuple{std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "mode1"},
+                           {parsing::prefix_type::none, "mode2"},
+                           {parsing::prefix_type::none, "mode3"},
+                           {parsing::prefix_type::none, "--foo"},
+                           {parsing::prefix_type::none, "42"}},
+                       std::vector<parsing::token_type>{},
+                       test::get_type_index<0, 0>(m).hash_code(),
+                       std::optional{std::vector<pre_parse_data>{
+                           {test::get_type_index<0, 0, 1>(m),
+                            std::vector<parsing::token_type>{
+                                {parsing::prefix_type::none, "42"}}}}},
+                       ""},
         });
 }
 
@@ -1043,10 +967,13 @@ BOOST_AUTO_TEST_CASE(nested_modes_parse_test)
                                       result = std::tuple{f1, f2};
                                   }))));
 
-    auto f = [&](auto tokens, auto expected_result, auto fail_message) {
+    auto f = [&](auto tokens, auto expected_result, std::string fail_message) {
         result.reset();
         try {
-            m.parse(tokens);
+            auto target = m.pre_parse(parsing::pre_parse_data{tokens});
+            BOOST_REQUIRE(target);
+
+            (*target)();
             BOOST_CHECK(fail_message.empty());
             BOOST_REQUIRE(result);
             BOOST_CHECK_EQUAL(std::get<0>(*result),
@@ -1059,46 +986,40 @@ BOOST_AUTO_TEST_CASE(nested_modes_parse_test)
         }
     };
 
-    test::data_set(
-        f,
-        {
-            std::tuple{
-                parsing::token_list{{parsing::prefix_type::none, "mode1"}},
-                std::tuple{false, 42},
-                "Mode requires arguments: mode1"s},
-            std::tuple{
-                parsing::token_list{{parsing::prefix_type::none, "mode1"},
-                                    {parsing::prefix_type::none, "mode2"}},
-                std::tuple{false, 42},
-                "Mode requires arguments: mode2"s},
-            std::tuple{
-                parsing::token_list{{parsing::prefix_type::none, "mode1"},
-                                    {parsing::prefix_type::none, "mode9"}},
-                std::tuple{false, 42},
-                "Unknown argument: mode9"s},
-            std::tuple{
-                parsing::token_list{{parsing::prefix_type::none, "mode1"},
-                                    {parsing::prefix_type::none, "mode2"},
-                                    {parsing::prefix_type::none, "mode3"}},
-                std::tuple{false, 42},
-                ""s},
-            std::tuple{
-                parsing::token_list{{parsing::prefix_type::none, "mode1"},
-                                    {parsing::prefix_type::none, "mode2"},
-                                    {parsing::prefix_type::none, "mode3"},
-                                    {parsing::prefix_type::long_, "hello"}},
-                std::tuple{true, 42},
-                ""s},
-            std::tuple{
-                parsing::token_list{{parsing::prefix_type::none, "mode1"},
-                                    {parsing::prefix_type::none, "mode2"},
-                                    {parsing::prefix_type::none, "mode3"},
-                                    {parsing::prefix_type::long_, "hello"},
-                                    {parsing::prefix_type::long_, "foo"},
-                                    {parsing::prefix_type::none, "13"}},
-                std::tuple{true, 13},
-                ""s},
-        });
+    test::data_set(f,
+                   {
+                       std::tuple{std::vector<parsing::token_type>{
+                                      {parsing::prefix_type::none, "mode1"}},
+                                  std::tuple{false, 42},
+                                  "Mode requires arguments: mode1"},
+                       std::tuple{std::vector<parsing::token_type>{
+                                      {parsing::prefix_type::none, "mode1"},
+                                      {parsing::prefix_type::none, "mode2"}},
+                                  std::tuple{false, 42},
+                                  "Mode requires arguments: mode2"},
+                       std::tuple{std::vector<parsing::token_type>{
+                                      {parsing::prefix_type::none, "mode1"},
+                                      {parsing::prefix_type::none, "mode2"},
+                                      {parsing::prefix_type::none, "mode3"}},
+                                  std::tuple{false, 42},
+                                  ""},
+                       std::tuple{std::vector<parsing::token_type>{
+                                      {parsing::prefix_type::none, "mode1"},
+                                      {parsing::prefix_type::none, "mode2"},
+                                      {parsing::prefix_type::none, "mode3"},
+                                      {parsing::prefix_type::long_, "hello"}},
+                                  std::tuple{true, 42},
+                                  ""},
+                       std::tuple{std::vector<parsing::token_type>{
+                                      {parsing::prefix_type::none, "mode1"},
+                                      {parsing::prefix_type::none, "mode2"},
+                                      {parsing::prefix_type::none, "mode3"},
+                                      {parsing::prefix_type::long_, "hello"},
+                                      {parsing::prefix_type::long_, "foo"},
+                                      {parsing::prefix_type::none, "13"}},
+                                  std::tuple{true, 13},
+                                  ""},
+                   });
 }
 
 BOOST_AUTO_TEST_CASE(no_missing_phase_test)
@@ -1108,10 +1029,8 @@ BOOST_AUTO_TEST_CASE(no_missing_phase_test)
         const auto m = mode(arg<int>(policy::long_name<S_("hello")>),
                             policy::router([&](int arg1) { result = arg1; }));
 
-        auto tokens = parsing::token_list{};
-        m.parse(tokens);
+        m.parse({{}, m});
         BOOST_CHECK_EQUAL(result, 0);
-        BOOST_CHECK(tokens.pending_view().empty());
     }
 
     {
@@ -1120,10 +1039,8 @@ BOOST_AUTO_TEST_CASE(no_missing_phase_test)
             mode(arg<int>(policy::long_name<S_("hello")>),
                  policy::router([&](double arg1) { result = arg1; }));
 
-        auto tokens = parsing::token_list{};
-        m.parse(tokens);
+        m.parse({{}, m});
         BOOST_CHECK_EQUAL(result, 0.0);
-        BOOST_CHECK(tokens.pending_view().empty());
     }
 
     {
@@ -1132,10 +1049,8 @@ BOOST_AUTO_TEST_CASE(no_missing_phase_test)
             positional_arg<std::vector<int>>(policy::display_name<S_("hello")>),
             policy::router([&](std::vector<int> arg1) { result = arg1; }));
 
-        auto tokens = parsing::token_list{};
-        m.parse(tokens);
+        m.parse({{}, m});
         BOOST_CHECK_EQUAL(result, std::vector<int>{});
-        BOOST_CHECK(tokens.pending_view().empty());
     }
 }
 
@@ -1284,15 +1199,16 @@ BOOST_AUTO_TEST_CASE(multi_stage_alias_group_test)
                               policy::required),
              policy::router([&](int value) { result = value; }));
 
-    auto tokens = parsing::token_list{
-        parsing::token_type{parsing::prefix_type::long_, "arg"},
-        parsing::token_type{parsing::prefix_type::none, "5"},
-        parsing::token_type{parsing::prefix_type::short_, "a"}};
+    auto tokens =
+        std::vector<parsing::token_type>{{parsing::prefix_type::long_, "arg"},
+                                         {parsing::prefix_type::none, "5"},
+                                         {parsing::prefix_type::short_, "a"}};
 
-    m.parse(tokens);
+    auto target = m.pre_parse(parsing::pre_parse_data{tokens});
+    BOOST_REQUIRE(target);
 
+    (*target)();
     BOOST_CHECK_EQUAL(result, 6);
-    BOOST_CHECK(tokens.pending_view().empty());
 }
 
 BOOST_AUTO_TEST_CASE(multi_stage_validated_alias_group_test)
@@ -1305,13 +1221,15 @@ BOOST_AUTO_TEST_CASE(multi_stage_validated_alias_group_test)
                               policy::required),
              policy::router([&](int value) { result = value; }));
 
-    auto f = [&](auto tokens, auto expected_result, auto fail_message) {
+    auto f = [&](auto tokens, auto expected_result, std::string fail_message) {
         result = 0;
         try {
-            m.parse(tokens);
+            auto target = m.pre_parse(parsing::pre_parse_data{tokens});
+            BOOST_REQUIRE(target);
+
+            (*target)();
             BOOST_CHECK(fail_message.empty());
             BOOST_CHECK_EQUAL(result, expected_result);
-            BOOST_CHECK(tokens.pending_view().empty());
         } catch (parse_exception& e) {
             BOOST_CHECK_EQUAL(e.what(), fail_message);
         }
@@ -1320,60 +1238,52 @@ BOOST_AUTO_TEST_CASE(multi_stage_validated_alias_group_test)
     test::data_set(
         f,
         {
-            std::tuple{
-                parsing::token_list{
-                    parsing::token_type{parsing::prefix_type::long_, "arg"},
-                    parsing::token_type{parsing::prefix_type::none, "1"}},
-                1,
-                ""s},
-            std::tuple{
-                parsing::token_list{
-                    parsing::token_type{parsing::prefix_type::long_, "arg"},
-                    parsing::token_type{parsing::prefix_type::none, "3"}},
-                3,
-                ""s},
-            std::tuple{
-                parsing::token_list{
-                    parsing::token_type{parsing::prefix_type::long_, "arg"},
-                    parsing::token_type{parsing::prefix_type::none, "0"}},
-                0,
-                "Minimum value not reached: Alias Group: --arg,-a"s},
-            std::tuple{
-                parsing::token_list{
-                    parsing::token_type{parsing::prefix_type::long_, "arg"},
-                    parsing::token_type{parsing::prefix_type::none, "5"}},
-                0,
-                "Maximum value exceeded: Alias Group: --arg,-a"s},
-            std::tuple{
-                parsing::token_list{
-                    parsing::token_type{parsing::prefix_type::short_, "a"}},
-                1,
-                ""s},
-            std::tuple{
-                parsing::token_list{
-                    parsing::token_type{parsing::prefix_type::short_, "a"},
-                    parsing::token_type{parsing::prefix_type::short_, "a"}},
-                2,
-                ""s},
-            std::tuple{parsing::token_list{},
+            std::tuple{std::vector<parsing::token_type>{
+                           {parsing::prefix_type::long_, "arg"},
+                           {parsing::prefix_type::none, "1"}},
+                       1,
+                       ""},
+            std::tuple{std::vector<parsing::token_type>{
+                           {parsing::prefix_type::long_, "arg"},
+                           {parsing::prefix_type::none, "3"}},
+                       3,
+                       ""},
+            std::tuple{std::vector<parsing::token_type>{
+                           {parsing::prefix_type::long_, "arg"},
+                           {parsing::prefix_type::none, "0"}},
                        0,
-                       "Missing required argument: Alias Group: --arg,-a"s},
-            std::tuple{
-                parsing::token_list{
-                    parsing::token_type{parsing::prefix_type::short_, "a"},
-                    parsing::token_type{parsing::prefix_type::short_, "a"},
-                    parsing::token_type{parsing::prefix_type::short_, "a"},
-                    parsing::token_type{parsing::prefix_type::short_, "a"}},
-                0,
-                "Maximum value exceeded: Alias Group: --arg,-a"s},
-            std::tuple{
-                parsing::token_list{
-                    parsing::token_type{parsing::prefix_type::long_, "arg"},
-                    parsing::token_type{parsing::prefix_type::none, "2"},
-                    parsing::token_type{parsing::prefix_type::short_, "a"},
-                    parsing::token_type{parsing::prefix_type::short_, "a"}},
-                0,
-                "Maximum value exceeded: Alias Group: --arg,-a"s},
+                       "Minimum value not reached: Alias Group: --arg,-a"},
+            std::tuple{std::vector<parsing::token_type>{
+                           {parsing::prefix_type::long_, "arg"},
+                           {parsing::prefix_type::none, "5"}},
+                       0,
+                       "Maximum value exceeded: Alias Group: --arg,-a"},
+            std::tuple{std::vector<parsing::token_type>{
+                           {parsing::prefix_type::short_, "a"}},
+                       1,
+                       ""},
+            std::tuple{std::vector<parsing::token_type>{
+                           {parsing::prefix_type::short_, "a"},
+                           {parsing::prefix_type::short_, "a"}},
+                       2,
+                       ""},
+            std::tuple{std::vector<parsing::token_type>{},
+                       0,
+                       "Missing required argument: Alias Group: --arg,-a"},
+            std::tuple{std::vector<parsing::token_type>{
+                           {parsing::prefix_type::short_, "a"},
+                           {parsing::prefix_type::short_, "a"},
+                           {parsing::prefix_type::short_, "a"},
+                           {parsing::prefix_type::short_, "a"}},
+                       0,
+                       "Maximum value exceeded: Alias Group: --arg,-a"},
+            std::tuple{std::vector<parsing::token_type>{
+                           {parsing::prefix_type::long_, "arg"},
+                           {parsing::prefix_type::none, "2"},
+                           {parsing::prefix_type::short_, "a"},
+                           {parsing::prefix_type::short_, "a"}},
+                       0,
+                       "Maximum value exceeded: Alias Group: --arg,-a"},
         });
 }
 
@@ -1407,9 +1317,11 @@ BOOST_AUTO_TEST_CASE(anonymous_modes_must_have_routing_test)
 using namespace arg_router;
 
 int main() {
-    auto tokens = parsing::token_list{{parsing::prefix_type::long_, "hello"}};
+    auto tokens = std::vector<parsing::token_type>{
+                    {parsing::prefix_type::long_, "hello"}};
     const auto m = mode(flag(policy::long_name<S_("hello")>));
-    m.parse(tokens);
+    auto target = m.pre_parse(parsing::pre_parse_data{tokens});
+    (*target)();
     return 0;
 }
     )",
@@ -1502,9 +1414,20 @@ public:
     {
     }
 
-    void parse(parsing::token_list& tokens) const
+    void parse(parsing::parse_target target) const
     {
-        std::get<0>(this->children()).parse(tokens, *this);
+        std::get<0>(this->children()).parse(target, *this);
+    }
+
+    template <typename Validator, bool HasTarget, typename... Parents>
+    [[nodiscard]] std::optional<parsing::parse_target> pre_parse(
+        parsing::pre_parse_data<Validator, HasTarget> pre_parse_data,
+        const Parents&... parents) const
+    {
+        return std::get<0>(this->children()).pre_parse(
+                pre_parse_data,
+                *this,
+                parents...);
     }
 };
 } // namespace
@@ -1515,56 +1438,9 @@ int main() {
                              mode(flag(policy::long_name<S_("hello")>),
                                   policy::router([&](bool) {}))));
 
-    auto tokens = parsing::token_list{{parsing::prefix_type::long_, "hello"}};
-    m.parse(tokens);
-    return 0;
-}
-    )",
-        "Anonymous modes can only exist under the root");
-}
-
-BOOST_AUTO_TEST_CASE(anonymous_child_mode_pre_parse_test)
-{
-    test::death_test_compile(
-        R"(
-#include "arg_router/flag.hpp"
-#include "arg_router/mode.hpp"
-#include "arg_router/policy/long_name.hpp"
-#include "arg_router/policy/none_name.hpp"
-#include "arg_router/policy/router.hpp"
-#include "arg_router/tree_node.hpp"
-#include "arg_router/utility/compile_time_string.hpp"
-
-using namespace arg_router;
-namespace
-{
-template <typename... Params>
-class stub_node : public tree_node<Params...>
-{
-public:
-    constexpr explicit stub_node(Params... params) :
-        tree_node<Params...>{std::move(params)...}
-    {
-    }
-
-    template <typename... Parents>
-    void pre_parse(vector<parsing::token_type>& args,
-                   parsing::token_list& tokens) const
-    {
-        (void)std::get<0>(this->children()).pre_parse(args, tokens, *this);
-    }
-};
-} // namespace
-
-int main() {
-    const auto m = stub_node(
-                        mode(policy::none_name<S_("mode")>,
-                             mode(flag(policy::long_name<S_("hello")>))));
-
-    auto args = std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "hello"}};
-    auto tokens = parsing::token_list{};
-    m.pre_parse(args, tokens);
+    auto tokens = std::vector<parsing::token_type>{
+                    {parsing::prefix_type::long_, "hello"}};
+    auto target = m.pre_parse(parsing::pre_parse_data{tokens});
     return 0;
 }
     )",
@@ -1618,9 +1494,20 @@ public:
     {
     }
 
-    void parse(parsing::token_list& tokens) const
+    void parse(parsing::parse_target target) const
     {
-        std::get<0>(this->children()).parse(tokens, *this);
+        std::get<0>(this->children()).parse(target, *this);
+    }
+
+    template <typename Validator, bool HasTarget, typename... Parents>
+    [[nodiscard]] std::optional<parsing::parse_target> pre_parse(
+        parsing::pre_parse_data<Validator, HasTarget> pre_parse_data,
+        const Parents&... parents) const
+    {
+        return std::get<0>(this->children()).pre_parse(
+                pre_parse_data,
+                *this,
+                parents...);
     }
 };
 } // namespace
@@ -1633,8 +1520,10 @@ int main() {
                                   policy::router([&](bool) {}))));
                              
 
-    auto tokens = parsing::token_list{{parsing::prefix_type::long_, "hello"}};
-    m.parse(tokens);
+    auto tokens = std::vector<parsing::token_type>{
+                    {parsing::prefix_type::long_, "hello"}};
+    auto target = m.pre_parse(parsing::pre_parse_data{tokens});
+    (*target)();
     return 0;
 }
     )",
@@ -1749,6 +1638,33 @@ int main() {
     )",
         "Mode does not support policies with pre-parse, parse, validation, "
         "or missing phases; as it delegates those to its children");
+}
+
+BOOST_AUTO_TEST_CASE(no_parent_parse_target_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/flag.hpp"
+#include "arg_router/mode.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    const auto fake_parent = flag(policy::long_name<S_("fake")>);
+    const auto m = mode(flag(policy::long_name<S_("hello")>));
+
+    auto tokens = std::vector<parsing::token_type>{
+                        {parsing::prefix_type::none, "--hello"}};
+    auto result = m.pre_parse(parsing::pre_parse_data{
+                    tokens,
+                    parsing::parse_target{fake_parent}});
+
+    return 0;
+}
+    )",
+        "Modes cannot receive pre_parse_data containing parent parse_targets");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

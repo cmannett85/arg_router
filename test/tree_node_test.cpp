@@ -2,7 +2,6 @@
 
 #include "arg_router/tree_node.hpp"
 #include "arg_router/flag.hpp"
-#include "arg_router/parsing.hpp"
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/default_value.hpp"
 #include "arg_router/policy/long_name.hpp"
@@ -21,38 +20,86 @@ using namespace std::string_view_literals;
 
 namespace
 {
+std::vector<utility::unsafe_any> expected_target_and_parents;
+
+template <typename Node, typename... Parents>
+void parse_checker(parsing::parse_target target,
+                   const Node& node,
+                   const Parents&... parents)
+{
+    BOOST_CHECK_EQUAL(std::type_index{typeid(Node)}.hash_code(),
+                      target.node_type().hash_code());
+
+    const auto target_and_parents_tuple =
+        std::tuple{std::cref(node), std::cref(parents)...};
+    utility::tuple_iterator(
+        [&](auto i, auto parent) {
+            const auto& expected_parent_cast =
+                expected_target_and_parents[i]
+                    .template get<std::decay_t<decltype(parent)>>()
+                    .get();
+            BOOST_CHECK_EQUAL(
+                reinterpret_cast<std::ptrdiff_t>(
+                    std::addressof(expected_parent_cast)),
+                reinterpret_cast<std::ptrdiff_t>(std::addressof(parent.get())));
+        },
+        target_and_parents_tuple);
+
+    expected_target_and_parents.clear();
+}
+
 template <typename... Params>
 class stub_node : public tree_node<Params...>
 {
 public:
     using value_type = bool;
 
-    using tree_node<Params...>::parse;
-
     constexpr explicit stub_node(Params... params) :
         tree_node<Params...>{std::move(params)...}
     {
     }
 
-    template <typename Fn>
-    bool match(const parsing::token_type& token, const Fn& visitor) const
+    template <typename Validator, bool HasTarget, typename... Parents>
+    std::optional<parsing::parse_target> pre_parse(
+        parsing::pre_parse_data<Validator, HasTarget> pre_parse_data,
+        const Parents&... parents) const
     {
-        if (parsing::match<stub_node>(token)) {
-            visitor(*this);
-            return true;
-        }
-
-        return false;
+        return tree_node<Params...>::pre_parse(pre_parse_data,
+                                               *this,
+                                               parents...);
     }
 
     template <typename... Parents>
-    bool pre_parse(vector<parsing::token_type>& args,
-                   parsing::token_list& tokens,
-                   const Parents&... parents) const
+    [[nodiscard]] value_type parse(parsing::parse_target target,
+                                   const Parents&... parents) const
     {
-        return tree_node<Params...>::pre_parse(args, tokens, *this, parents...);
+        parse_checker(target, *this, parents...);
+        return true;
     }
 };
+
+struct pre_parse_test_data {
+    std::vector<parsing::token_type> tokens;
+    std::vector<utility::unsafe_any> target_and_parents;
+};
+
+template <std::size_t I, std::size_t... Is, typename Root>
+pre_parse_test_data make_pre_parse_test_data(
+    const Root& root,
+    std::vector<parsing::token_type> tokens)
+{
+    auto result = pre_parse_test_data{};
+    result.tokens = std::move(tokens);
+
+    const auto refs = test::get_parents<I, Is...>(root);
+    result.target_and_parents.reserve(
+        std::tuple_size_v<std::decay_t<decltype(refs)>>);
+    utility::tuple_iterator(
+        [&](auto /*i*/, auto ref) { result.target_and_parents.push_back(ref); },
+        refs);
+
+    return result;
+}
 }  // namespace
 
 BOOST_AUTO_TEST_SUITE(tree_node_suite)
@@ -208,197 +255,147 @@ BOOST_AUTO_TEST_CASE(priority_ordered_policies_type_test)
         "parameters_type does not match");
 }
 
-BOOST_AUTO_TEST_CASE(find_test)
-{
-    auto f = [](const auto& node,
-                auto token,
-                auto expected_index,
-                auto expected_result) {
-        using node_type = std::decay_t<decltype(node)>;
-
-        auto visitor_hit = false;
-        auto visitor_checker = [&](auto i, const auto& child) {
-            using expected_child_type =
-                std::tuple_element_t<i, typename node_type::children_type>;
-
-            BOOST_CHECK_EQUAL(i, expected_index);
-            BOOST_CHECK((std::is_same_v<expected_child_type,
-                                        std::decay_t<decltype(child)>>));
-            visitor_hit = true;
-        };
-        const auto result = node.find(token, visitor_checker);
-        BOOST_CHECK_EQUAL(result, expected_result);
-        BOOST_CHECK_EQUAL(result, visitor_hit);
-    };
-
-    test::data_set(
-        f,
-        std::tuple{
-            std::tuple{
-                stub_node{stub_node{policy::long_name<S_("child1")>},
-                          stub_node{policy::long_name<S_("child2")>}},
-                parsing::token_type{parsing::prefix_type::long_, "child1"},
-                0u,
-                true},
-            std::tuple{
-                stub_node{stub_node{policy::long_name<S_("child1")>},
-                          stub_node{policy::long_name<S_("child2")>}},
-                parsing::token_type{parsing::prefix_type::long_, "child2"},
-                1u,
-                true},
-            std::tuple{stub_node{stub_node{policy::short_name<'a'>},
-                                 stub_node{policy::short_name<'b'>}},
-                       parsing::token_type{parsing::prefix_type::short_, "a"},
-                       0u,
-                       true},
-            std::tuple{stub_node{stub_node{policy::short_name<'a'>},
-                                 stub_node{policy::short_name<'b'>}},
-                       parsing::token_type{parsing::prefix_type::short_, "b"},
-                       1u,
-                       true},
-            std::tuple{
-                stub_node{stub_node{policy::long_name<S_("hello")>},
-                          stub_node{policy::short_name<'b'>}},
-                parsing::token_type{parsing::prefix_type::long_, "hello"},
-                0u,
-                true},
-            std::tuple{stub_node{stub_node{policy::long_name<S_("hello")>},
-                                 stub_node{policy::short_name<'b'>}},
-                       parsing::token_type{parsing::prefix_type::short_, "b"},
-                       1u,
-                       true},
-            std::tuple{stub_node{stub_node{policy::long_name<S_("hello")>},
-                                 stub_node{policy::short_name<'b'>}},
-                       parsing::token_type{parsing::prefix_type::short_, "g"},
-                       0u,
-                       false},
-            std::tuple{stub_node{stub_node{policy::long_name<S_("hello")>},
-                                 stub_node{policy::short_name<'b'>}},
-                       parsing::token_type{parsing::prefix_type::long_, "foo"},
-                       0u,
-                       false},
-            std::tuple{stub_node{},
-                       parsing::token_type{parsing::prefix_type::long_, "foo"},
-                       0u,
-                       false},
-        });
-}
-
 BOOST_AUTO_TEST_CASE(pre_parse_test)
 {
     auto f = [](const auto& node,
                 auto args,
-                auto tokens,
-                auto expected_args,
                 auto expected_tokens,
-                auto expected_result,
+                auto expected_sub_target_data,
+                auto expected_args,
+                auto match,
                 std::string fail_message,
                 const auto&... parents) {
         try {
-            const auto result = node.pre_parse(args, tokens, parents...);
-
+            auto result =
+                node.pre_parse(parsing::pre_parse_data{args}, parents.get()...);
             BOOST_CHECK(fail_message.empty());
-            BOOST_CHECK_EQUAL(result, expected_result);
+
+            BOOST_CHECK_EQUAL(!match, !result);
             BOOST_CHECK_EQUAL(args, expected_args);
-            BOOST_CHECK_EQUAL(tokens, expected_tokens);
+
+            if (match) {
+                // Check the sub-targets first
+                BOOST_REQUIRE_EQUAL(expected_sub_target_data.size(),
+                                    result->sub_targets().size());
+                for (auto i = 0u; i < expected_sub_target_data.size(); ++i) {
+                    auto& sub_target = result->sub_targets()[i];
+                    const auto& expected_sub_target =
+                        expected_sub_target_data[i];
+
+                    BOOST_CHECK_EQUAL(expected_sub_target.tokens,
+                                      sub_target.tokens());
+
+                    expected_target_and_parents =
+                        std::move(expected_sub_target.target_and_parents);
+                    BOOST_CHECK(sub_target);
+                    sub_target();
+                    BOOST_CHECK(!sub_target);
+                }
+
+                // Now the main target
+                BOOST_CHECK_EQUAL(expected_tokens, result->tokens());
+                expected_target_and_parents = {std::cref(node),
+                                               std::cref(parents)...};
+                BOOST_CHECK(*result);
+                (*result)();
+                BOOST_CHECK(!*result);
+            }
         } catch (parse_exception& e) {
             BOOST_CHECK_EQUAL(e.what(), fail_message);
         }
     };
 
+    const auto alias_parent = stub_node{
+        policy::router{[](auto, auto) {}},
+        stub_node{policy::long_name<S_("hello")>,
+                  policy::value_separator<'='>,
+                  policy::fixed_count<1>,
+                  policy::alias(policy::long_name<S_("foo")>)},
+        stub_node{policy::long_name<S_("foo")>, policy::fixed_count<1>}};
+
     test::data_set(
         f,
         std::tuple{
             // Basic name matching
-            std::tuple{
-                stub_node{policy::long_name<S_("hello")>},
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "--hello"}},
-                parsing::token_list{},
-                std::vector<parsing::token_type>{},
-                parsing::token_list{{parsing::prefix_type::long_, "hello"}},
-                true,
-                ""},
+            std::tuple{stub_node{policy::long_name<S_("hello")>},
+                       std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "--hello"}},
+                       std::vector<parsing::token_type>{},
+                       std::vector<pre_parse_test_data>{},
+                       std::vector<parsing::token_type>{},
+                       true,
+                       ""},
             std::tuple{stub_node{policy::short_name<'h'>},
                        std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "-h"}},
-                       parsing::token_list{},
                        std::vector<parsing::token_type>{},
-                       parsing::token_list{{parsing::prefix_type::short_, "h"}},
+                       std::vector<pre_parse_test_data>{},
+                       std::vector<parsing::token_type>{},
                        true,
                        ""},
-            std::tuple{
-                stub_node{policy::none_name<S_("hello")>},
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "hello"}},
-                parsing::token_list{},
-                std::vector<parsing::token_type>{},
-                parsing::token_list{{parsing::prefix_type::none, "hello"}},
-                true,
-                ""},
+            std::tuple{stub_node{policy::none_name<S_("hello")>},
+                       std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "hello"}},
+                       std::vector<parsing::token_type>{},
+                       std::vector<pre_parse_test_data>{},
+                       std::vector<parsing::token_type>{},
+                       true,
+                       ""},
             std::tuple{stub_node{},
                        std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "hello"}},
-                       parsing::token_list{},
+                       std::vector<parsing::token_type>{},
+                       std::vector<pre_parse_test_data>{},
                        std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "hello"}},
-                       parsing::token_list{},
-                       true,
+                       false,
                        ""},
             std::tuple{stub_node{policy::long_name<S_("hello")>},
                        std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "--foo"}},
-                       parsing::token_list{},
+                       std::vector<parsing::token_type>{},
+                       std::vector<pre_parse_test_data>{},
                        std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "--foo"}},
-                       parsing::token_list{},
                        false,
                        ""},
 
             // Policies
-            std::tuple{
-                stub_node{policy::long_name<S_("hello")>,
-                          policy::value_separator<'='>,
-                          policy::fixed_count<1>},
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "--hello=42"}},
-                parsing::token_list{},
-                std::vector<parsing::token_type>{},
-                parsing::token_list{{parsing::prefix_type::long_, "hello"},
-                                    {parsing::prefix_type::none, "42"}},
-                true,
-                ""},
+            std::tuple{stub_node{policy::long_name<S_("hello")>,
+                                 policy::value_separator<'='>,
+                                 policy::fixed_count<1>},
+                       std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "--hello=42"}},
+                       std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "42"}},
+                       std::vector<pre_parse_test_data>{},
+                       std::vector<parsing::token_type>{},
+                       true,
+                       ""},
             std::tuple{stub_node{policy::long_name<S_("hello")>,
                                  policy::value_separator<'='>,
                                  policy::fixed_count<1>},
                        std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "--hello"}},
-                       parsing::token_list{},
+                       std::vector<parsing::token_type>{},
+                       std::vector<pre_parse_test_data>{},
                        std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "--hello"}},
-                       parsing::token_list{},
                        false,
                        ""},
-            std::tuple{stub_node{policy::long_name<S_("hello")>,
-                                 policy::value_separator<'='>,
-                                 policy::fixed_count<1>,
-                                 policy::alias(policy::long_name<S_("foo")>)},
+            std::tuple{test::get_node<0>(alias_parent),
                        std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "--hello=42"}},
-                       parsing::token_list{},
                        std::vector<parsing::token_type>{},
-                       parsing::token_list{{parsing::prefix_type::long_, "foo"},
-                                           {parsing::prefix_type::none, "42"}},
+                       std::vector<pre_parse_test_data>{
+                           make_pre_parse_test_data<1>(
+                               alias_parent,
+                               {{parsing::prefix_type::none, "42"}}),
+                       },
+                       std::vector<parsing::token_type>{},
                        true,
                        "",
-                       stub_node{policy::router{[](auto, auto) {}},
-                                 stub_node{policy::long_name<S_("hello")>,
-                                           policy::value_separator<'='>,
-                                           policy::fixed_count<1>,
-                                           policy::alias(
-                                               policy::long_name<S_("foo")>)},
-                                 stub_node{policy::long_name<S_("foo")>,
-                                           policy::fixed_count<1>}}},
+                       std::cref(alias_parent)},
             std::tuple{stub_node{policy::long_name<S_("hello")>,
                                  policy::short_name<'h'>,
                                  policy::short_form_expander,
@@ -406,12 +403,12 @@ BOOST_AUTO_TEST_CASE(pre_parse_test)
                                  policy::fixed_count<1>},
                        std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "-has=42"}},
-                       parsing::token_list{},
+                       std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "42"}},
+                       std::vector<pre_parse_test_data>{},
                        std::vector<parsing::token_type>{
                            {parsing::prefix_type::short_, "a"},
                            {parsing::prefix_type::short_, "s"}},
-                       parsing::token_list{{parsing::prefix_type::short_, "h"},
-                                           {parsing::prefix_type::none, "42"}},
                        true,
                        ""},
             std::tuple{stub_node{policy::long_name<S_("hello")>,
@@ -421,65 +418,48 @@ BOOST_AUTO_TEST_CASE(pre_parse_test)
                                  policy::fixed_count<1>},
                        std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "-ash=42"}},
-                       parsing::token_list{},
+                       std::vector<parsing::token_type>{},
+                       std::vector<pre_parse_test_data>{},
                        std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "-ash=42"}},
-                       parsing::token_list{},
                        false,
                        ""},
-            std::tuple{
-                stub_node{policy::long_name<S_("hello")>,
-                          policy::fixed_count<1>},
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "--hello"},
-                    {parsing::prefix_type::none, "42"}},
-                parsing::token_list{},
-                std::vector<parsing::token_type>{},
-                parsing::token_list{{parsing::prefix_type::long_, "hello"},
-                                    {parsing::prefix_type::none, "42"}},
-                true,
-                ""},
+            std::tuple{stub_node{policy::long_name<S_("hello")>,
+                                 policy::fixed_count<1>},
+                       std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "--hello"},
+                           {parsing::prefix_type::none, "42"}},
+                       std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "42"}},
+                       std::vector<pre_parse_test_data>{},
+                       std::vector<parsing::token_type>{},
+                       true,
+                       ""},
 
             // Overflow
-            std::tuple{
-                stub_node{policy::long_name<S_("hello")>,
-                          policy::fixed_count<1>},
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "--hello"},
-                    {parsing::prefix_type::none, "42"},
-                    {parsing::prefix_type::none, "foo"}},
-                parsing::token_list{},
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "foo"}},
-                parsing::token_list{{parsing::prefix_type::long_, "hello"},
-                                    {parsing::prefix_type::none, "42"}},
-                true,
-                ""},
-            std::tuple{
-                stub_node{policy::long_name<S_("hello")>,
-                          policy::fixed_count<1>},
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "--hello"},
-                    {parsing::prefix_type::none, "42"},
-                    {parsing::prefix_type::none, "foo"}},
-                parsing::token_list{{parsing::prefix_type::long_, "goodbye"}},
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "foo"}},
-                parsing::token_list{{parsing::prefix_type::long_, "goodbye"},
-                                    {parsing::prefix_type::long_, "hello"},
-                                    {parsing::prefix_type::none, "42"}},
-                true,
-                ""},
+            std::tuple{stub_node{policy::long_name<S_("hello")>,
+                                 policy::fixed_count<1>},
+                       std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "--hello"},
+                           {parsing::prefix_type::none, "42"},
+                           {parsing::prefix_type::none, "foo"}},
+                       std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "42"}},
+                       std::vector<pre_parse_test_data>{},
+                       std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "foo"}},
+                       true,
+                       ""},
 
             // Exception
             std::tuple{stub_node{policy::long_name<S_("hello")>,
                                  policy::fixed_count<1>},
                        std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "--hello"}},
-                       parsing::token_list{},
+                       std::vector<parsing::token_type>{},
+                       std::vector<pre_parse_test_data>{},
                        std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "--hello"}},
-                       parsing::token_list{},
                        false,
                        "Minimum count not reached: --hello"},
         });
@@ -610,7 +590,7 @@ int main() {
         policy::router{[](auto...) {}},
         policy::router{[](auto...) {}}
     };
-    f.routing_phase(parsing::token_list{});
+    f.routing_phase();
     return 0;
 }
     )",

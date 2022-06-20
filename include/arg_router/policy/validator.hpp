@@ -151,7 +151,7 @@ public:
     template <typename Root>
     constexpr static void validate() noexcept
     {
-        utility::tree_recursor<validate_fn, Root>();
+        utility::tree_type_recursor<validate_fn, Root>();
     }
 };
 
@@ -260,8 +260,9 @@ struct policy_unique_from_owner_parent_to_mode_or_root {
 
             // Recurse the tree from the oldest generation, testing that no
             // other policy matches ours
-            utility::
-                tree_recursor<checker<T, path_type>, skipper, start_type>();
+            utility::tree_type_recursor<checker<T, path_type>,
+                                        skipper,
+                                        start_type>();
         }
     }
 };

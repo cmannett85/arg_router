@@ -28,7 +28,7 @@ namespace arg_router
  * - A core type, that just provides some static data (e.g.
  *   policy::long_name_t)
  * - A parsing type, that provides one or more methods that are used by the
- *   derived node to parse, check, and manipulate, the input tokens (e.g.
+ *   derived node to generate, check, and manipulate the input tokens (e.g.
  *   policy::min_max_count_t)
  * - A tag type, that provides no data, just it's own presence which can be
  *   detected by other parts of the library
@@ -49,30 +49,33 @@ namespace arg_router
  * know about other node types and vice-versa (which also leads to horrible
  * spaghetti code).
  * 
- * To prevent this, validation is done separately by a special policy called
- * policy::validation::validator that can only be derived from by the root node
- * (root_t).  As the root is the last to be instantiated (the leaves are created
- * first), it has all the information needed to check the entire tree, @em and
- * because nothing depends on the validator it can know about all the other
- * nodes without causing dependency loops.
+ * To prevent this, _inter-node_ validation is done separately by a special
+ * policy called policy::validation::validator that can only be derived from by
+ * the root node (root_t).  As the root is the last to be instantiated (the
+ * leaves are created first), it has all the information needed to check the
+ * entire tree, @em and because nothing depends on the validator it can know
+ * about all the other nodes without causing dependency loops.
  * 
  * @section node_relationships_parsing Parsing
  * Parsing starts at the root node, and follows these basic steps:
- * -# Pre-parse the input tokens to create a parsing::token_list.  This is more
- *    complicated than it sounds because the input arguments have to be ran
- *    through the parse tree in order to determine how many 'value' tokens
- *    belong to each node - this is required for correct categorisation of input
- *    tokens.  This stage is also where collapsed short-form flags are expanded
- * -# Find the 'target' node.  This is a node that carries a policy::router
- *    which will be invoked with the parsed tokens.  It could be a top-level
- *    node (e.g a <TT>--version</TT> flag_t), but more likely a mode-like
- *    (e.g. mode_t) node which could be nested in a mode subtree
- * -# Then the remaing tokens (if any) are parsed by the children of the
- *    target, building up a tuple of results
- * -# The target's policy::router is then called with the results (again, if
- *    any)
+ * -# Push the tokens down the parse tree for the pre-parsing phase.  Each node
+ *    will inspect the leading token to see if it can be handled by the node,
+ *    if so the correct number of tokens are pre-processed (e.g. short form
+ *    expansion) and stored in a parsing::parse_target and returned to the root
+ *    or parent mode.
+ * -# The parsing::parse_target initiates the parsing using the node that
+ *    created it and the pre-processed tokens (if any).  A validation phase is
+ *    ran on the result if present (e.g. policy::min_max_value)
+ * -# If the target node is top-level, then the target's policy::router is then
+ *    called by the node with the parse result.  If not, the parent mode
+ *    collects the results for all the parsing::parse_target instances it
+ *    collected
+ * -# If applicable, any nodes under the parent mode that did not have an
+ *    associated parsing::parse_target, have the missing phase ran on them
+ *    (e.g. policy::default_value)
  * 
- * The parsing within a node is split up into 'phases' which different policies
- * implement different parts of.
+ * As you have probably gathered from the above, the pre-processing and parsing
+ * within a node is split up into 'phases' which different policies implement
+ * different parts of.
  */
 }

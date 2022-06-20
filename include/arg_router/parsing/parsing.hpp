@@ -19,7 +19,7 @@ enum class pre_parse_action : std::uint8_t {
     /** Same as skip_node, but any changes to the given tokens should be made
      * permanent as long as no later policy returns skip_node
      */
-    skip_node_but_use_tokens
+    skip_node_but_use_sub_targets
 };
 
 /** Policy-level pre-parse phase result type. */

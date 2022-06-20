@@ -128,108 +128,41 @@ public:
     {
     }
 
-    /** Called during initial token processing to handle the value tokens.
-     *
-     * This is only used if the node doesn't have a policy that implements a
-     * <TT>maximum_count()</TT> method, which means that all tokens in @a args
-     * will be transferred to @a result with a prefix type of 
-     * parsing::prefix_type::none.
-     * @param args Command line arguments, remove the tokens that would be
-     * handled by this node
-     * @param result The token_list result, add tokens removed from @a args into
-     * this
-     * @return void
-     */
-    constexpr static void process_value_tokens(span<const char*>& args,
-                                               parsing::token_list& result)
-    {
-        result.reserve(result.pending_view().size() + args.size());
-        for (auto arg : args) {
-            result.emplace_pending(parsing::prefix_type::none, arg);
-        }
-        args = {};
-    }
-
-    /** Always returns true as positional arguments do not have a token to
-     * match, @em unless the maximum count has been reached (if present).
-     *
-     * @a visitor needs to be equivalent to:
-     * @code
-     * [](const auto& node) { ... }
-     * @endcode
-     * <TT>node</TT> will be a reference to this node.
-     * @tparam Fn Visitor type
-     * @param token Command line token to match
-     * @param visitor Visitor instance
-     * @param result Current result from parent (if any), used to determine if
-     * the maximum number of results has been reached
-     * @return Match result, always true
-     */
-    template <typename Fn>
-    constexpr bool match([[maybe_unused]] const parsing::token_type& token,
-                         const Fn& visitor,
-                         const std::optional<T>& result = {}) const
-    {
-        if constexpr (traits::has_push_back_method_v<T>) {
-            if (result &&
-                (std::size(*result) >= parent_type::maximum_count())) {
-                return false;
-            }
-        } else {
-            // If we're here then we must have a fixed size of 1
-            if (result) {
-                return false;
-            }
-        }
-
-        visitor(*this);
-        return true;
-    }
-
-    template <typename... Parents>
-    [[nodiscard]] bool pre_parse(vector<parsing::token_type>& args,
-                                 parsing::token_list& tokens,
-                                 const Parents&... parents) const
+    template <typename Validator, bool HasTarget, typename... Parents>
+    [[nodiscard]] std::optional<parsing::parse_target> pre_parse(
+        parsing::pre_parse_data<Validator, HasTarget> pre_parse_data,
+        const Parents&... parents) const
 
     {
-        return parent_type::pre_parse(args, tokens, *this, parents...);
+        return parent_type::pre_parse(pre_parse_data, *this, parents...);
     }
 
     /** Parse function.
-     * 
-     * This will consume up to maximum_count() (if available) or all of the
-     * tokens.
+     *
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
-     * @param tokens Token list
+     * @param target Parse target
      * @param parents Parents instances pack
      * @return Parsed result
      * @exception parse_exception Thrown if parsing failed
      */
     template <typename... Parents>
-    value_type parse(parsing::token_list& tokens,
+    value_type parse(parsing::parse_target target,
                      const Parents&... parents) const
     {
-        const auto tokens_to_consume =
-            std::min(tokens.pending_view().size(),
-                     positional_arg_t::maximum_count());
-        const auto view = tokens.pending_view().subspan(0, tokens_to_consume);
-
         auto result = value_type{};
         if constexpr (traits::has_push_back_method_v<value_type>) {
-            for (auto token : view) {
+            for (auto token : target.tokens()) {
                 result.push_back(
                     parent_type::template parse<value_type>(token.name,
                                                             *this,
                                                             parents...));
             }
-        } else if (!view.empty()) {
-            result = parent_type::template parse<value_type>(view.front().name,
-                                                             *this,
-                                                             parents...);
+        } else if (!target.tokens().empty()) {
+            result = parent_type::template parse<value_type>(
+                target.tokens().front().name,
+                *this,
+                parents...);
         }
-
-        // Pop the tokens, we don't need them anymore
-        tokens.mark_as_processed(view.size());
 
         // Validation
         utility::tuple_type_iterator<policies_type>([&](auto i) {

@@ -16,7 +16,7 @@ constexpr auto version = "v1.0.0"sv;
 /* A ridiculous description policy implementation that appends a smiley face to
  * the user supplied description.
  *
- * Although contrived this demonstrates the static data type of policy, where as
+ * Although contrived this demonstrates the static data form of policy, where as
  * long as the policy provides a common method name then it can be used by the
  * system.
  */
@@ -134,52 +134,32 @@ public:
     {
     }
 
-    /* As a positional arg doesn't have a label token we have no name to match
-     * against, but by using the triple arg overload of match(..) we gain
-     * access to the result the mode has created so we can see if it has been 
-     * set already.
-     */
-    template <typename Fn>
-    constexpr bool match([[maybe_unused]] const ar::parsing::token_type& token,
-                         const Fn& visitor,
-                         const std::optional<T>& result) const
-    {
-        //  If the value has already been set, then we've already been used!
-        if (result) {
-            return false;
-        }
-
-        visitor(*this);
-        return true;
-    }
-
     /* Forward the request onto the parent's definition.  As there is no
      * polymorphism in the library, we have to create this stub so the
      * <TT>*this</TT> expression evaluates to the correct type
      */
-    template <typename... Parents>
-    [[nodiscard]] bool pre_parse(ar::span<const char*>& args,
-                                 ar::parsing::token_list& tokens,
-                                 const Parents&... parents) const
+    template <typename Validator, bool HasTarget, typename... Parents>
+    [[nodiscard]] std::optional<ar::parsing::parse_target> pre_parse(
+        ar::parsing::pre_parse_data<Validator, HasTarget> pre_parse_data,
+        const Parents&... parents) const
 
     {
-        return parent_type::pre_parse(args, tokens, *this, parents...);
+        return parent_type::pre_parse(pre_parse_data, *this, parents...);
     }
 
     template <typename... Parents>
-    value_type parse(ar::parsing::token_list& tokens,
+    value_type parse(ar::parsing::parse_target target,
                      const Parents&... parents) const
     {
-        // The fixed count guarantees there is a single token
-        auto view = tokens.pending_view();
-        auto result = parent_type::template parse<value_type>(view.front().name,
-                                                              *this,
-                                                              parents...);
+        // The fixed count of 1 guarantees there is a single token.  Pass it
+        // onto the parent type which will use a custom parse if one is
+        // available, otherwise it will use the global parser
+        auto result = parent_type::template parse<value_type>(
+            target.tokens().front().name,
+            *this,
+            parents...);
 
-        // Pop the value
-        tokens.mark_as_processed();
-
-        // Validation
+        // Run the result through the validation policies
         ar::utility::tuple_type_iterator<policies_type>([&](auto i) {
             using policy_type = std::tuple_element_t<i, policies_type>;
             if constexpr (arp::has_validation_phase_method_v<policy_type,
@@ -270,7 +250,9 @@ int main(int argc, char* argv[])
                                        arp::display_name<S_("Value")>,
                                        smiley_description<S_("Value to read")>,
                                        is_even<int>{}),
-            arp::router{[](int) {}}))
+            arp::router{[](int value) {
+                std::cout << "Value: " << value << std::endl;
+            }}))
         .parse(argc, argv);
 
     return EXIT_SUCCESS;

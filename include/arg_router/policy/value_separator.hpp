@@ -3,8 +3,10 @@
 #pragma once
 
 #include "arg_router/algorithm.hpp"
-#include "arg_router/parsing.hpp"
+#include "arg_router/parsing/parse_target.hpp"
+#include "arg_router/parsing/parsing.hpp"
 #include "arg_router/policy/policy.hpp"
+#include "arg_router/utility/compile_time_optional.hpp"
 
 namespace arg_router
 {
@@ -46,23 +48,29 @@ public:
     }
 
     /** Splits the label token from the value using the separator.
-     *  
+     * 
+     * @tparam ProcessedTarget @a processed_target payload type
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
      * @param tokens Currently processed tokens
-     * @param processed_tokens Processed tokens performed by previous pre-parse
-     * phases calls on other nodes
+     * @param processed_target Previously processed parse_target of parent
+     * node, or empty is there is no non-root parent
+     * @param target Pre-parse generated targets
      * @param parents Parent node instances
      * @return True if the owning node's label token matches the label part of
      * the first token, false otherwise.  No exception is stored in the return
      * value
      */
-    template <typename... Parents>
+    template <typename ProcessedTarget, typename... Parents>
     [[nodiscard]] parsing::pre_parse_result pre_parse_phase(
         parsing::dynamic_token_adapter& tokens,
-        [[maybe_unused]] parsing::token_list::pending_view_type
-            processed_tokens,
+        [[maybe_unused]] utility::compile_time_optional<ProcessedTarget>
+            processed_target,
+        [[maybe_unused]] parsing::parse_target& target,
         [[maybe_unused]] const Parents&... parents) const
     {
+        static_assert((sizeof...(Parents) >= 1),
+                      "At least one parent needed for value_separator_t");
+
         using owner_type = boost::mp11::mp_first<std::tuple<Parents...>>;
 
         static_assert(traits::has_minimum_count_method_v<owner_type> &&

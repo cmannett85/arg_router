@@ -70,6 +70,27 @@ int main() {
         "All root children must have routers, unless they have no value");
 }
 
+BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/flag.hpp"
+#include "arg_router/policy/alias.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/root.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    const auto m = root(policy::alias(policy::long_name<S_("foo")>),
+                        flag(policy::long_name<S_("hello")>));
+    return 0;
+}
+    )",
+        "Root does not support policies with any parsing phases");
+}
+
 BOOST_AUTO_TEST_CASE(parse_phase_test)
 {
     test::death_test_compile(
@@ -88,7 +109,7 @@ int main() {
     return 0;
 }
     )",
-        "Root only supports a pre-parse phase");
+        "Root does not support policies with any parsing phases");
 }
 
 BOOST_AUTO_TEST_CASE(validation_phase_test)
@@ -109,7 +130,7 @@ int main() {
     return 0;
 }
     )",
-        "Root only supports a pre-parse phase");
+        "Root does not support policies with any parsing phases");
 }
 
 BOOST_AUTO_TEST_CASE(routing_phase_test)
@@ -130,7 +151,7 @@ int main() {
     return 0;
 }
     )",
-        "Root only supports a pre-parse phase");
+        "Root does not support policies with any parsing phases");
 }
 
 BOOST_AUTO_TEST_CASE(missing_phase_test)
@@ -151,7 +172,7 @@ int main() {
     return 0;
 }
     )",
-        "Root only supports a pre-parse phase");
+        "Root does not support policies with any parsing phases");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

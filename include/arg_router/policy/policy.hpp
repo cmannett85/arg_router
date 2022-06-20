@@ -2,7 +2,9 @@
 
 #pragma once
 
-#include "arg_router/dynamic_token_adapter.hpp"
+#include "arg_router/parsing/dynamic_token_adapter.hpp"
+#include "arg_router/parsing/parse_target.hpp"
+#include "arg_router/utility/compile_time_optional.hpp"
 
 #include <boost/mp11/algorithm.hpp>
 #include <boost/mp11/bind.hpp>
@@ -64,7 +66,8 @@ struct has_pre_parse_phase_method {
     using type = decltype(  //
         std::declval<const U&>().template pre_parse_phase<>(
             std::declval<parsing::dynamic_token_adapter&>(),
-            std::declval<parsing::token_list::pending_view_type>()));
+            std::declval<utility::compile_time_optional<void>>(),
+            std::declval<parsing::parse_target&>()));
 
     constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
 };
@@ -144,9 +147,7 @@ struct has_routing_phase_method {
     static_assert(policy::is_policy_v<T>, "T must be a policy");
 
     template <typename U>
-    using type = decltype(  //
-        std::declval<const U&>().template routing_phase<>(
-            std::declval<const parsing::token_list&>()));
+    using type = decltype(std::declval<const U&>().template routing_phase<>());
 
     constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
 };
@@ -224,16 +225,19 @@ class nearest_mode_like
             std::tuple_size_v<typename Parent::policies_type>;
     };
 
-    using parent_index = boost::mp11::mp_find_if<ParentsTuple, policy_finder>;
-
 public:
+    /** Index of mode, or equal to the size of @a ParentsTuple if one was not
+     * found.
+     */
+    using index = boost::mp11::mp_find_if<ParentsTuple, policy_finder>;
+
     /** The discovered mode-like type, or void if one was not found. */
-    using type = boost::mp11::mp_eval_if_c<parent_index::value ==
+    using type = boost::mp11::mp_eval_if_c<index::value ==
                                                std::tuple_size_v<ParentsTuple>,
                                            void,
                                            boost::mp11::mp_at,
                                            ParentsTuple,
-                                           parent_index>;
+                                           index>;
 };
 }  // namespace policy
 }  // namespace arg_router

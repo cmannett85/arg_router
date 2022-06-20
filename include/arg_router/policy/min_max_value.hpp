@@ -4,7 +4,7 @@
 
 #include "arg_router/config.hpp"
 #include "arg_router/exception.hpp"
-#include "arg_router/parsing.hpp"
+#include "arg_router/parsing/parsing.hpp"
 #include "arg_router/policy/policy.hpp"
 
 #include <limits>
@@ -46,32 +46,6 @@ public:
         max_(std::move(max)),  //
         comp_{std::move(compare)}
     {
-    }
-
-    /** Returns the minimum value.
-     *
-     * @return Value, a reference to it if the object is larger than a
-     * cache line
-     */
-    [[nodiscard]] constexpr auto minimum_value() const noexcept
-        -> std::conditional_t<config::l1_cache_size() >= sizeof(value_type),
-                              value_type,
-                              const value_type&>
-    {
-        return min_;
-    }
-
-    /** Returns the maximum value.
-     *
-     * @return Value, a reference to it if the object is larger than a
-     * cache line
-     */
-    [[nodiscard]] constexpr auto maximum_value() const noexcept
-        -> std::conditional_t<config::l1_cache_size() >= sizeof(value_type),
-                              value_type,
-                              const value_type&>
-    {
-        return max_;
     }
 
     /** Comparator.

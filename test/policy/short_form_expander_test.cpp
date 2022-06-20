@@ -22,6 +22,13 @@ public:
         tree_node<Policies...>{std::move(policies)...}
     {
     }
+
+    template <typename... Parents>
+    [[nodiscard]] value_type parse(parsing::parse_target,
+                                   const Parents&...) const
+    {
+        return true;
+    }
 };
 }  // namespace
 
@@ -43,16 +50,22 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                 auto expected_args,
                 const auto&... parents) {
         const auto policy = policy::short_form_expander;
+        auto node = stub_node{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
-        auto processed_tokens = parsing::token_list{};
+        auto processed_target = utility::compile_time_optional{};
+        auto target = parsing::parse_target{node};
 
-        const auto match =
-            policy.pre_parse_phase(adapter,
-                                   processed_tokens.pending_view(),
-                                   parents...);
+        const auto match = policy.pre_parse_phase(adapter,
+                                                  processed_target,
+                                                  target,
+                                                  parents...);
         BOOST_CHECK_EQUAL(result, expected_result);
         BOOST_CHECK_EQUAL(match, parsing::pre_parse_action::valid_node);
         BOOST_CHECK_EQUAL(args, expected_args);
+
+        BOOST_CHECK(target);
+        BOOST_CHECK(target.tokens().empty());
+        BOOST_CHECK(target.sub_targets().empty());
     };
 
     test::data_set(f,
@@ -138,21 +151,33 @@ public:
         tree_node<Policies...>{std::move(policies)...}
     {
     }
+
+    template <typename... Parents>
+    void pre_parse_phase(
+        vector<parsing::token_type>& result,
+        [[maybe_unused]] const Parents&... parents) const
+    {
+        using this_policy =
+            std::tuple_element_t<0, typename stub_node::policies_type>;
+
+        auto args = vector<parsing::token_type>{};
+        auto adapter = parsing::dynamic_token_adapter{result, args};
+        auto processed_target = utility::compile_time_optional{};
+        auto target = parsing::parse_target{*this, parents...};
+        (void)this->this_policy::pre_parse_phase(adapter,
+                                                 processed_target,
+                                                 target,
+                                                 *this,
+                                                 parents...);
+    }
 };
 }  // namespace
 
 int main() {
-    const auto owner = stub_node{};
-    const auto policy = policy::short_form_expander;
-
-    auto result = vector<parsing::token_type>{};
-    auto args = vector<parsing::token_type>{};
-    auto adapter = parsing::dynamic_token_adapter{result, args};
-    auto processed_tokens = parsing::token_list{};
-
-    const auto match = policy.pre_parse_phase(adapter,
-                                              processed_tokens.pending_view(),
-                                              owner);
+    const auto node = stub_node{policy::short_form_expander};
+    auto tokens = vector<parsing::token_type>{
+                    {parsing::prefix_type::long_, "hello"}};
+    node.pre_parse_phase(tokens);
     return 0;
 }
     )",
