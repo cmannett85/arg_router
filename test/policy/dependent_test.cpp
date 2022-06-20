@@ -30,15 +30,11 @@ public:
         parsing::parse_target& target,
         const Parents&... parents) const
     {
-        auto match =
-            parsing::pre_parse_result{parsing::pre_parse_action::skip_node};
+        auto match = parsing::pre_parse_result{parsing::pre_parse_action::skip_node};
         utility::tuple_type_iterator<typename stub_node::policies_type>(  //
             [&](auto i) {
-                using this_policy =
-                    std::tuple_element_t<i, typename stub_node::policies_type>;
-                if constexpr (traits::is_specialisation_of_v<
-                                  this_policy,
-                                  policy::dependent_t>) {
+                using this_policy = std::tuple_element_t<i, typename stub_node::policies_type>;
+                if constexpr (traits::is_specialisation_of_v<this_policy, policy::dependent_t>) {
                     match = this->this_policy::pre_parse_phase(tokens,
                                                                processed_target,
                                                                target,
@@ -50,24 +46,21 @@ public:
     }
 
     template <typename... Parents>
-    [[nodiscard]] value_type parse(parsing::parse_target,
-                                   const Parents&...) const
+    [[nodiscard]] value_type parse(parsing::parse_target, const Parents&...) const
     {
         return true;
     }
 };
 
 template <typename SubTargetsTuple>
-void add_sub_targets(parsing::parse_target& target,
-                     const SubTargetsTuple& sub_targets_tuple)
+void add_sub_targets(parsing::parse_target& target, const SubTargetsTuple& sub_targets_tuple)
 {
     utility::tuple_iterator(
         [&](auto /*i*/, const auto& sub_target_tuple) {
             std::apply(
                 [&](auto&& sub_target, auto&&... sub_target_parents) {
                     target.add_sub_target(
-                        parsing::parse_target{sub_target.get(),
-                                              (sub_target_parents.get())...});
+                        parsing::parse_target{sub_target.get(), (sub_target_parents.get())...});
                 },
                 sub_target_tuple);
         },
@@ -81,121 +74,113 @@ BOOST_AUTO_TEST_SUITE(dependent_suite)
 
 BOOST_AUTO_TEST_CASE(is_policy_test)
 {
-    static_assert(policy::is_policy_v<policy::dependent_t<>>,
-                  "Policy test has failed");
+    static_assert(policy::is_policy_v<policy::dependent_t<>>, "Policy test has failed");
 }
 
 BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
 {
-    const auto root = stub_node{
-        policy::long_name<S_("test_root")>,
-        stub_node{policy::long_name<S_("test1")>,
-                  stub_node{policy::long_name<S_("flag1")>,
-                            policy::dependent(policy::long_name<S_("flag2")>)},
-                  stub_node{policy::long_name<S_("flag2")>},
-                  stub_node{policy::long_name<S_("flag3")>},
-                  policy::router{[](bool, bool, bool) {}}},
-        stub_node{policy::long_name<S_("test2")>,
-                  stub_node{policy::long_name<S_("one_of")>,
+    const auto root =
+        stub_node{policy::long_name<S_("test_root")>,
+                  stub_node{policy::long_name<S_("test1")>,
                             stub_node{policy::long_name<S_("flag1")>,
-                                      policy::dependent(
-                                          policy::long_name<S_("flag2")>)},
-                            stub_node{policy::long_name<S_("flag3")>}},
-                  stub_node{policy::long_name<S_("flag2")>},
-                  policy::router{[](bool, bool, bool) {}}},
-        stub_node{policy::long_name<S_("test4")>,
-                  stub_node{policy::long_name<S_("flag1")>,
-                            policy::dependent(policy::long_name<S_("flag2")>),
-                            policy::dependent(policy::long_name<S_("flag3")>)},
-                  stub_node{policy::long_name<S_("flag2")>},
-                  stub_node{policy::long_name<S_("flag3")>},
-                  policy::router{[](bool, bool, bool) {}}},
-        stub_node{policy::long_name<S_("test5")>,
-                  stub_node{policy::long_name<S_("flag1")>,
-                            policy::dependent(policy::long_name<S_("flag2")>)},
-                  stub_node{policy::long_name<S_("flag2")>,
-                            policy::dependent(policy::long_name<S_("flag3")>)},
-                  stub_node{policy::long_name<S_("flag3")>},
-                  policy::router{[](bool, bool, bool) {}}}};
+                                      policy::dependent(policy::long_name<S_("flag2")>)},
+                            stub_node{policy::long_name<S_("flag2")>},
+                            stub_node{policy::long_name<S_("flag3")>},
+                            policy::router{[](bool, bool, bool) {}}},
+                  stub_node{policy::long_name<S_("test2")>,
+                            stub_node{policy::long_name<S_("one_of")>,
+                                      stub_node{policy::long_name<S_("flag1")>,
+                                                policy::dependent(policy::long_name<S_("flag2")>)},
+                                      stub_node{policy::long_name<S_("flag3")>}},
+                            stub_node{policy::long_name<S_("flag2")>},
+                            policy::router{[](bool, bool, bool) {}}},
+                  stub_node{policy::long_name<S_("test4")>,
+                            stub_node{policy::long_name<S_("flag1")>,
+                                      policy::dependent(policy::long_name<S_("flag2")>),
+                                      policy::dependent(policy::long_name<S_("flag3")>)},
+                            stub_node{policy::long_name<S_("flag2")>},
+                            stub_node{policy::long_name<S_("flag3")>},
+                            policy::router{[](bool, bool, bool) {}}},
+                  stub_node{policy::long_name<S_("test5")>,
+                            stub_node{policy::long_name<S_("flag1")>,
+                                      policy::dependent(policy::long_name<S_("flag2")>)},
+                            stub_node{policy::long_name<S_("flag2")>,
+                                      policy::dependent(policy::long_name<S_("flag3")>)},
+                            stub_node{policy::long_name<S_("flag3")>},
+                            policy::router{[](bool, bool, bool) {}}}};
 
-    auto f = [&](const auto& sub_targets_tuple,
-                 const auto& parents_tuple,
-                 std::string fail_message) {
-        auto result = std::vector<parsing::token_type>{};
-        auto args = std::vector<parsing::token_type>{};
-        auto adapter = parsing::dynamic_token_adapter{result, args};
+    auto f =
+        [&](const auto& sub_targets_tuple, const auto& parents_tuple, std::string fail_message) {
+            auto result = std::vector<parsing::token_type>{};
+            auto args = std::vector<parsing::token_type>{};
+            auto adapter = parsing::dynamic_token_adapter{result, args};
 
-        try {
-            const auto match = std::apply(
-                [&](auto&& node, auto&&... parents) {
-                    auto target =
-                        parsing::parse_target{node.get(), (parents.get())...};
-                    auto processed_target = utility::compile_time_optional{
-                        parsing::parse_target{parents.get()...}};
-                    add_sub_targets(*processed_target, sub_targets_tuple);
+            try {
+                const auto match = std::apply(
+                    [&](auto&& node, auto&&... parents) {
+                        auto target = parsing::parse_target{node.get(), (parents.get())...};
+                        auto processed_target =
+                            utility::compile_time_optional{parsing::parse_target{parents.get()...}};
+                        add_sub_targets(*processed_target, sub_targets_tuple);
 
-                    const auto result =
-                        node.get().pre_parse_phase(adapter,
-                                                   processed_target,
-                                                   target,
-                                                   node.get(),
-                                                   (parents.get())...,
-                                                   root);
-                    BOOST_CHECK(target);
-                    return result;
-                },
-                parents_tuple);
+                        const auto result = node.get().pre_parse_phase(adapter,
+                                                                       processed_target,
+                                                                       target,
+                                                                       node.get(),
+                                                                       (parents.get())...,
+                                                                       root);
+                        BOOST_CHECK(target);
+                        return result;
+                    },
+                    parents_tuple);
 
-            // No-op if no exception
-            match.throw_exception();
+                // No-op if no exception
+                match.throw_exception();
 
-            BOOST_CHECK_EQUAL(match, parsing::pre_parse_action::valid_node);
-            BOOST_CHECK(fail_message.empty());
-            BOOST_CHECK(result.empty());
-            BOOST_CHECK(args.empty());
-        } catch (parse_exception& e) {
-            BOOST_CHECK_EQUAL(e.what(), fail_message);
-        }
-    };
+                BOOST_CHECK_EQUAL(match, parsing::pre_parse_action::valid_node);
+                BOOST_CHECK(fail_message.empty());
+                BOOST_CHECK(result.empty());
+                BOOST_CHECK(args.empty());
+            } catch (parse_exception& e) {
+                BOOST_CHECK_EQUAL(e.what(), fail_message);
+            }
+        };
 
-    test::data_set(
-        f,
-        std::tuple{
-            std::tuple{std::tuple{
-                           test::get_parents<0, 1>(root),
-                           test::get_parents<0, 2>(root),
-                       },
-                       test::get_parents<0, 0>(root),
-                       ""},
-            std::tuple{
-                std::make_tuple(test::get_parents<0, 2>(root)),
-                test::get_parents<0, 0>(root),
-                "Dependent argument missing (needs to be before the requiring "
-                "token on the command line): --flag2"},
-            std::tuple{std::tuple{
-                           test::get_parents<1, 0, 1>(root),
-                           test::get_parents<1, 1>(root),
-                       },
-                       test::get_parents<1, 0, 0>(root),
-                       ""},
-            std::tuple{std::tuple{
-                           test::get_parents<2, 1>(root),
-                           test::get_parents<2, 2>(root),
-                       },
-                       test::get_parents<2, 0>(root),
-                       ""},
-            std::tuple{
-                std::make_tuple(test::get_parents<2, 1>(root)),
-                test::get_parents<2, 0>(root),
-                "Dependent argument missing (needs to be before the requiring "
-                "token on the command line): --flag3"},
-            std::tuple{std::tuple{
-                           test::get_parents<3, 1>(root),
-                           test::get_parents<3, 2>(root),
-                       },
-                       test::get_parents<3, 0>(root),
-                       ""},
-        });
+    test::data_set(f,
+                   std::tuple{
+                       std::tuple{std::tuple{
+                                      test::get_parents<0, 1>(root),
+                                      test::get_parents<0, 2>(root),
+                                  },
+                                  test::get_parents<0, 0>(root),
+                                  ""},
+                       std::tuple{std::make_tuple(test::get_parents<0, 2>(root)),
+                                  test::get_parents<0, 0>(root),
+                                  "Dependent argument missing (needs to be before the requiring "
+                                  "token on the command line): --flag2"},
+                       std::tuple{std::tuple{
+                                      test::get_parents<1, 0, 1>(root),
+                                      test::get_parents<1, 1>(root),
+                                  },
+                                  test::get_parents<1, 0, 0>(root),
+                                  ""},
+                       std::tuple{std::tuple{
+                                      test::get_parents<2, 1>(root),
+                                      test::get_parents<2, 2>(root),
+                                  },
+                                  test::get_parents<2, 0>(root),
+                                  ""},
+                       std::tuple{std::make_tuple(test::get_parents<2, 1>(root)),
+                                  test::get_parents<2, 0>(root),
+                                  "Dependent argument missing (needs to be before the requiring "
+                                  "token on the command line): --flag3"},
+                       std::tuple{std::tuple{
+                                      test::get_parents<3, 1>(root),
+                                      test::get_parents<3, 2>(root),
+                                  },
+                                  test::get_parents<3, 0>(root),
+                                  ""},
+                   });
 }
 
 BOOST_AUTO_TEST_SUITE(death_suite)

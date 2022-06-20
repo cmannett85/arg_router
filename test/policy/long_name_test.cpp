@@ -13,8 +13,7 @@ BOOST_AUTO_TEST_SUITE(long_name_suite)
 
 BOOST_AUTO_TEST_CASE(is_policy_test)
 {
-    static_assert(policy::is_policy_v<policy::long_name_t<S_("hello")>>,
-                  "Policy test has failed");
+    static_assert(policy::is_policy_v<policy::long_name_t<S_("hello")>>, "Policy test has failed");
 }
 
 BOOST_AUTO_TEST_CASE(constructor_and_get_test)

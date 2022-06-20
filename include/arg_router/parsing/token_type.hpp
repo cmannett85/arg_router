@@ -31,8 +31,7 @@ enum class prefix_type : std::uint8_t {
     }
 }
 
-/** Pair-like structure carrying the token's prefix type and the token itself
- * (stripped of prefix).
+/** Pair-like structure carrying the token's prefix type and the token itself (stripped of prefix).
  */
 struct token_type {
     /** Long form name constructor.
@@ -40,18 +39,14 @@ struct token_type {
      * @param p Prefix type
      * @param n Token name, stripped of prefix (if any)
      */
-    constexpr token_type(prefix_type p, std::string_view n) noexcept :
-        prefix{p}, name{n}
-    {
-    }
+    constexpr token_type(prefix_type p, std::string_view n) noexcept : prefix{p}, name{n} {}
 
     /** Equality operator.
      *
      * @param other Instance to compare against
      * @return True if equal
      */
-    [[nodiscard]] constexpr bool operator==(
-        const token_type& other) const noexcept
+    [[nodiscard]] constexpr bool operator==(const token_type& other) const noexcept
     {
         return prefix == other.prefix && name == other.name;
     }
@@ -61,8 +56,7 @@ struct token_type {
      * @param other Instance to compare against
      * @return True if not equal
      */
-    [[nodiscard]] constexpr bool operator!=(
-        const token_type& other) const noexcept
+    [[nodiscard]] constexpr bool operator!=(const token_type& other) const noexcept
     {
         return !(*this == other);
     }
@@ -71,8 +65,8 @@ struct token_type {
     std::string_view name;  ///< Token name, stripped of prefix (if any)
 };
 
-/** Creates a string representation of @a token, it effectively recreates the
- * original token on the command line.
+/** Creates a string representation of @a token, it effectively recreates the original token on the
+ * command line.
  * 
  * @param token Token to convert
  * @return String representation of @a token
@@ -100,8 +94,8 @@ struct token_type {
     return str;
 }
 
-/** Analyse @a token and return a pair consisting of the prefix type and
- * @a token stripped of the token.
+/** Analyse @a token and return a pair consisting of the prefix type and @a token stripped of the
+ * token.
  *
  * @param token Token to analyse
  * @return Token type

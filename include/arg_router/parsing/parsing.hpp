@@ -16,8 +16,8 @@ enum class pre_parse_action : std::uint8_t {
     skip_node,
     /** This policy is applicable to the tokens */
     valid_node,
-    /** Same as skip_node, but any changes to the given tokens should be made
-     * permanent as long as no later policy returns skip_node
+    /** Same as skip_node, but any changes to the given tokens should be made permanent as long as
+     * no later policy returns skip_node
      */
     skip_node_but_use_sub_targets
 };
@@ -25,8 +25,7 @@ enum class pre_parse_action : std::uint8_t {
 /** Policy-level pre-parse phase result type. */
 using pre_parse_result = utility::result<pre_parse_action, parse_exception>;
 
-/** Matches @a token to @a T by comparing the token against the long, short, or
- * none name traits.
+/** Matches @a token to @a T by comparing the token against the long, short, or none name traits.
  *
  * @tparam T Type providing the long, short, or none name methods
  * @param token The token to match against
@@ -38,20 +37,17 @@ template <typename T>
     using namespace std::string_literals;
 
     if constexpr (traits::has_long_name_method_v<T>) {
-        if ((token.prefix == prefix_type::long_) &&
-            (token.name == T::long_name())) {
+        if ((token.prefix == prefix_type::long_) && (token.name == T::long_name())) {
             return true;
         }
     }
     if constexpr (traits::has_short_name_method_v<T>) {
-        if ((token.prefix == prefix_type::short_) &&
-            (token.name == T::short_name())) {
+        if ((token.prefix == prefix_type::short_) && (token.name == T::short_name())) {
             return true;
         }
     }
     if constexpr (traits::has_none_name_method_v<T>) {
-        if ((token.prefix == prefix_type::none) &&
-            (token.name == T::none_name())) {
+        if ((token.prefix == prefix_type::none) && (token.name == T::none_name())) {
             return true;
         }
     }
@@ -59,11 +55,10 @@ template <typename T>
     return false;
 }
 
-/** Returns the token_type of @a Node, the long form name is preferred if
- * @a Node has both short and long form names.
+/** Returns the token_type of @a Node, the long form name is preferred if @a Node has both short and
+ * long form names.
  *
- * @note If @a Node does not have a display, none, long, or short name; it is a
- * compliation failure
+ * @note If @a Node does not have a display, none, long, or short name; it is a compliation failure
  * @tparam Node Node type
  * @return token_type
  */
@@ -79,8 +74,7 @@ template <typename Node>
     } else if constexpr (traits::has_none_name_method_v<Node>) {
         return {prefix_type::none, Node::none_name()};
     } else {
-        static_assert(traits::always_false_v<Node>,
-                      "Node does not have a name");
+        static_assert(traits::always_false_v<Node>, "Node does not have a name");
     }
 }
 }  // namespace parsing

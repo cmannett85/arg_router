@@ -10,18 +10,16 @@ namespace utility
 {
 /** Compile-time equivalent of <TT>std::optional</TT>.
  *
- * <TT>std::optional</TT> can be used in compile-time expressions, but not when
- * used as a argument, this class can do that but comes with severe runtime
- * limitations due to it.
+ * <TT>std::optional</TT> can be used in compile-time expressions, but not when used as a argument,
+ * this class can do that but comes with severe runtime limitations due to it.
  * 
- * An empty optional cannot be created and then populated later, nor cleared,
- * as that state is a part of its template parameters (a <TT>void</TT> type is
- * an empty compile_time_optional).
+ * An empty optional cannot be created and then populated later, nor cleared, as that state is a
+ * part of its template parameters (a <TT>void</TT> type is an empty compile_time_optional).
  * 
- * Like <TT>std::optional</TT> references cannot be stored internally, but it
- * can use a <TT>std::reference_wrapper</TT>.  Unlike <TT>std::optional</TT>
- * this type has a specialisation that makes the <TT>std::reference_wrapper</TT>
- * access transparent (i.e. you don't need to dereference twice).
+ * Like <TT>std::optional</TT> references cannot be stored internally, but it can use a
+ * <TT>std::reference_wrapper</TT>.  Unlike <TT>std::optional</TT> this type has a specialisation
+ * that makes the <TT>std::reference_wrapper</TT> access transparent (i.e. you don't need to
+ * dereference twice).
  * 
  * @note The <TT>std::reference_wrapper</TT> specialisation is not constexpr
  * 
@@ -41,10 +39,7 @@ public:
      *
      * @param val Value to copy into the optional
      */
-    constexpr compile_time_optional(value_type val) noexcept :
-        val_(std::move(val))
-    {
-    }
+    constexpr compile_time_optional(value_type val) noexcept : val_(std::move(val)) {}
 
     /** Implicit bool conversion operator.
      *

@@ -11,8 +11,7 @@ namespace policy
 {
 /** Represents the long name of an argument.
  *
- * @note Long names must be greater than one character and cannot contain any
- * whitespace characters
+ * @note Long names must be greater than one character and cannot contain any whitespace characters
  * @tparam S compile_time_string
  */
 template <typename S>
@@ -26,14 +25,10 @@ public:
      *
      * @return Long name
      */
-    [[nodiscard]] constexpr static std::string_view long_name() noexcept
-    {
-        return S::get();
-    }
+    [[nodiscard]] constexpr static std::string_view long_name() noexcept { return S::get(); }
 
 private:
-    static_assert(long_name().size() > 1,
-                  "Long names must be longer than one character");
+    static_assert(long_name().size() > 1, "Long names must be longer than one character");
     static_assert(algorithm::is_alnum(long_name()[0]),
                   "Long name must not start with a non-alphanumeric character");
     static_assert(!algorithm::contains_whitespace(long_name()),

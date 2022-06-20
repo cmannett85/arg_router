@@ -19,10 +19,8 @@ BOOST_AUTO_TEST_SUITE(counting_flag_suite)
 
 BOOST_AUTO_TEST_CASE(is_tree_node_test)
 {
-    static_assert(
-        is_tree_node_v<
-            counting_flag_t<std::size_t, policy::long_name_t<S_("hello")>>>,
-        "Tree node test has failed");
+    static_assert(is_tree_node_v<counting_flag_t<std::size_t, policy::long_name_t<S_("hello")>>>,
+                  "Tree node test has failed");
 }
 
 BOOST_AUTO_TEST_CASE(parse_test)
@@ -74,49 +72,40 @@ BOOST_AUTO_TEST_CASE(merge_test)
 
 BOOST_AUTO_TEST_CASE(help_test)
 {
-    auto f = [](const auto& node,
-                auto expected_label,
-                auto expected_description) {
+    auto f = [](const auto& node, auto expected_label, auto expected_description) {
         using node_type = std::decay_t<decltype(node)>;
 
         using help_data = typename node_type::template help_data_type<false>;
-        using flattened_help_data =
-            typename node_type::template help_data_type<true>;
+        using flattened_help_data = typename node_type::template help_data_type<true>;
 
-        static_assert(std::is_same_v<typename help_data::label,
-                                     typename flattened_help_data::label>);
         static_assert(
-            std::is_same_v<typename help_data::description,
-                           typename flattened_help_data::description>);
+            std::is_same_v<typename help_data::label, typename flattened_help_data::label>);
+        static_assert(std::is_same_v<typename help_data::description,
+                                     typename flattened_help_data::description>);
         static_assert(std::tuple_size_v<typename help_data::children> == 0);
-        static_assert(
-            std::tuple_size_v<typename flattened_help_data::children> == 0);
+        static_assert(std::tuple_size_v<typename flattened_help_data::children> == 0);
 
         BOOST_CHECK_EQUAL(help_data::label::get(), expected_label);
         BOOST_CHECK_EQUAL(help_data::description::get(), expected_description);
     };
 
-    test::data_set(
-        f,
-        std::tuple{
-            std::tuple{
-                counting_flag<int>(policy::short_name<'h'>,
-                                   policy::long_name<S_("hello")>,
-                                   policy::description<S_("A counting flag!")>),
-                "--hello,-h",
-                "A counting flag!"},
-            std::tuple{
-                counting_flag<int>(policy::long_name<S_("hello")>,
-                                   policy::description<S_("A counting flag!")>),
-                "--hello",
-                "A counting flag!"},
-            std::tuple{
-                counting_flag<int>(policy::short_name<'h'>,
-                                   policy::description<S_("A counting flag!")>),
-                "-h",
-                "A counting flag!"},
-            std::tuple{counting_flag<int>(policy::short_name<'h'>), "-h", ""},
-        });
+    test::data_set(f,
+                   std::tuple{
+                       std::tuple{counting_flag<int>(policy::short_name<'h'>,
+                                                     policy::long_name<S_("hello")>,
+                                                     policy::description<S_("A counting flag!")>),
+                                  "--hello,-h",
+                                  "A counting flag!"},
+                       std::tuple{counting_flag<int>(policy::long_name<S_("hello")>,
+                                                     policy::description<S_("A counting flag!")>),
+                                  "--hello",
+                                  "A counting flag!"},
+                       std::tuple{counting_flag<int>(policy::short_name<'h'>,
+                                                     policy::description<S_("A counting flag!")>),
+                                  "-h",
+                                  "A counting flag!"},
+                       std::tuple{counting_flag<int>(policy::short_name<'h'>), "-h", ""},
+                   });
 }
 
 BOOST_AUTO_TEST_SUITE(death_suite)

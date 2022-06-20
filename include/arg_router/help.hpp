@@ -26,17 +26,14 @@ class help_t :
                      std::decay_t<decltype(policy::min_count<0>)>,
                      std::decay_t<Policies>...>
 {
-    static_assert(
-        policy::is_all_policies_v<std::tuple<std::decay_t<Policies>...>>,
-        "Help must only contain policies (not other nodes)");
+    static_assert(policy::is_all_policies_v<std::tuple<std::decay_t<Policies>...>>,
+                  "Help must only contain policies (not other nodes)");
 
-    static_assert(traits::has_long_name_method_v<help_t> ||
-                      traits::has_short_name_method_v<help_t>,
+    static_assert(traits::has_long_name_method_v<help_t> || traits::has_short_name_method_v<help_t>,
                   "Help must have a long and/or short name policy");
     static_assert(!traits::has_display_name_method_v<help_t>,
                   "Help must not have a display name policy");
-    static_assert(!traits::has_none_name_method_v<help_t>,
-                  "Help must not have a none name policy");
+    static_assert(!traits::has_none_name_method_v<help_t>, "Help must not have a none name policy");
 
     using parent_type = tree_node<policy::no_result_value<>,
                                   std::decay_t<decltype(policy::min_count<0>)>,
@@ -52,24 +49,22 @@ public:
      * This may seem surprising but of course help is a flag-like type.
      */
     template <bool Flatten>
-    using help_data_type =
-        typename parent_type::template default_leaf_help_data_type<Flatten>;
+    using help_data_type = typename parent_type::template default_leaf_help_data_type<Flatten>;
 
     /** Generates the help string.
      *
-     * Recurses through the parse tree, starting at @a Node, at compile time to
-     * build a string representation of it.  The program name, version, and
-     * info are always generated if the policies are available.
+     * Recurses through the parse tree, starting at @a Node, at compile time to build a string
+     * representation of it.  The program name, version, and info are always generated if the
+     * policies are available.
      * @tparam Node The node type to begin help output generation from
-     * @tparam Flatten True to display all nested help data, defaults to true
-     * if policy::flatten_help is present in the policies list
+     * @tparam Flatten True to display all nested help data, defaults to true if
+     * policy::flatten_help is present in the policies list
      * @param stream Output stream to write the output to
      * @return void
      */
     template <typename Node,
-              bool Flatten = algorithm::has_specialisation_v<
-                  policy::flatten_help_t,
-                  typename parent_type::policies_type>>
+              bool Flatten = algorithm::has_specialisation_v<policy::flatten_help_t,
+                                                             typename parent_type::policies_type>>
     static void generate_help(std::ostream& stream)
     {
         static_assert(traits::has_help_data_type_v<Node>,
@@ -78,48 +73,37 @@ public:
         using help_data_type = typename Node::template help_data_type<Flatten>;
 
         [[maybe_unused]] constexpr auto name_index =
-            algorithm::find_specialisation_v<
-                policy::program_name_t,
-                typename parent_type::policies_type>;
+            algorithm::find_specialisation_v<policy::program_name_t,
+                                             typename parent_type::policies_type>;
         [[maybe_unused]] constexpr auto version_index =
-            algorithm::find_specialisation_v<
-                policy::program_version_t,
-                typename parent_type::policies_type>;
+            algorithm::find_specialisation_v<policy::program_version_t,
+                                             typename parent_type::policies_type>;
         [[maybe_unused]] constexpr auto intro_index =
-            algorithm::find_specialisation_v<
-                policy::program_intro_t,
-                typename parent_type::policies_type>;
+            algorithm::find_specialisation_v<policy::program_intro_t,
+                                             typename parent_type::policies_type>;
 
         // Generate the preamble
-        if constexpr (name_index !=
-                      std::tuple_size_v<typename parent_type::policies_type>) {
-            stream << std::tuple_element_t<
-                name_index,
-                typename parent_type::policies_type>::program_name();
-            if constexpr (version_index !=
-                          std::tuple_size_v<
-                              typename parent_type::policies_type>) {
-                stream << " "
-                       << std::tuple_element_t<
-                              version_index,
-                              typename parent_type::policies_type>::
-                              program_version();
+        if constexpr (name_index != std::tuple_size_v<typename parent_type::policies_type>) {
+            stream << std::tuple_element_t<name_index,
+                                           typename parent_type::policies_type>::program_name();
+            if constexpr (version_index != std::tuple_size_v<typename parent_type::policies_type>) {
+                stream
+                    << " "
+                    << std::tuple_element_t<version_index,
+                                            typename parent_type::policies_type>::program_version();
             }
             stream << "\n"
                    << "\n";
         }
-        if constexpr (intro_index !=
-                      std::tuple_size_v<typename parent_type::policies_type>) {
-            stream << std::tuple_element_t<
-                          intro_index,
-                          typename parent_type::policies_type>::program_intro()
+        if constexpr (intro_index != std::tuple_size_v<typename parent_type::policies_type>) {
+            stream << std::tuple_element_t<intro_index,
+                                           typename parent_type::policies_type>::program_intro()
                    << "\n"
                    << "\n";
         }
 
         // Calculate description offset
-        constexpr auto desc_column =
-            description_column_start<0, help_data_type>(0);
+        constexpr auto desc_column = description_column_start<0, help_data_type>(0);
 
         // Generate the args output
         generate_help<desc_column, 0, help_data_type>(stream);
@@ -130,9 +114,7 @@ public:
      * @param policies Policy instances
      */
     constexpr explicit help_t(Policies... policies) noexcept :
-        parent_type{policy::no_result_value<>{},
-                    policy::min_count<0>,
-                    std::move(policies)...}
+        parent_type{policy::no_result_value<>{}, policy::min_count<0>, std::move(policies)...}
     {
     }
 
@@ -142,18 +124,17 @@ public:
         const Parents&... parents) const
 
     {
-        static_assert((sizeof...(Parents) >= 1),
-                      "At least one parent needed for help");
+        static_assert((sizeof...(Parents) >= 1), "At least one parent needed for help");
 
         return parent_type::pre_parse(pre_parse_data, *this, parents...);
     }
 
     /** Parse function.
      * 
-     * Unless a routing policy is specified, then when parsed the help output is
-     * sent to <TT>std::cout</TT> and <TT>std::exit(EXIT_SUCCESS)</TT> is
-     * called. If a routing policy is called the generated help output is passed
-     * to it for further processing and the parse call returns.
+     * Unless a routing policy is specified, then when parsed the help output is sent to
+     * <TT>std::cout</TT> and <TT>std::exit(EXIT_SUCCESS)</TT> is called. If a routing policy is
+     * called the generated help output is passed to it for further processing and the parse call
+     * returns.
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
      * @param target Parse target
      * @param parents Parents instances pack
@@ -170,18 +151,17 @@ public:
             using root_type = std::decay_t<decltype(root)>;
             using node_type = std::decay_t<decltype(target_node)>;
 
-            // If the user has specified a help target then enable flattening
-            // otherwise the output is a bit useless...
-            constexpr auto flatten = algorithm::has_specialisation_v<
-                                         policy::flatten_help_t,
-                                         typename parent_type::policies_type> ||
-                                     !std::is_same_v<root_type, node_type>;
+            // If the user has specified a help target then enable flattening otherwise the output
+            // is a bit useless...
+            constexpr auto flatten =
+                algorithm::has_specialisation_v<policy::flatten_help_t,
+                                                typename parent_type::policies_type> ||
+                !std::is_same_v<root_type, node_type>;
 
-            // If there is a routing policy then delegate to it, otherwise print
-            // the help output to std::cout and exit
+            // If there is a routing policy then delegate to it, otherwise print the help output to
+            // std::cout and exit
             using routing_policy =
-                typename parent_type::template phase_finder_t<
-                    policy::has_routing_phase_method>;
+                typename parent_type::template phase_finder_t<policy::has_routing_phase_method>;
             if constexpr (std::is_void_v<routing_policy>) {
                 generate_help<node_type, flatten>(std::cout);
                 std::exit(EXIT_SUCCESS);
@@ -196,11 +176,10 @@ public:
 
 private:
     static_assert(
-        !parent_type::template any_phases_v<
-            bool,  // Type doesn't matter, as long as it isn't void
-            policy::has_parse_phase_method,
-            policy::has_validation_phase_method,
-            policy::has_missing_phase_method>,
+        !parent_type::template any_phases_v<bool,  // Type doesn't matter, as long as it isn't void
+                                            policy::has_parse_phase_method,
+                                            policy::has_validation_phase_method,
+                                            policy::has_missing_phase_method>,
         "Help only supports policies with pre-parse and routing phases");
 
     template <typename Node, typename TargetFn>
@@ -213,10 +192,9 @@ private:
             return;
         }
 
-        // Help tokens aren't pre-parsed by the target nodes (as they would fail
-        // if missing any required value tokens), so we have just use the prefix
-        // to generate a token_type from them, as they all of a prefix_type of
-        // none
+        // Help tokens aren't pre-parsed by the target nodes (as they would fail if missing any
+        // required value tokens), so we have just use the prefix to generate a token_type from
+        // them, as they all of a prefix_type of none
         const auto token = parsing::get_token_type(tokens.front().name);
 
         auto result = false;
@@ -247,17 +225,14 @@ private:
     [[nodiscard]] constexpr static std::size_t description_column_start(
         std::size_t current_max) noexcept
     {
-        constexpr auto this_row_start = (Depth * indent_spaces) +
-                                        HelpData::label::u8_num_code_points() +
-                                        indent_spaces;
+        constexpr auto this_row_start =
+            (Depth * indent_spaces) + HelpData::label::u8_num_code_points() + indent_spaces;
         current_max = std::max(current_max, this_row_start);
 
         utility::tuple_type_iterator<typename HelpData::children>([&](auto i) {
-            using child_type =
-                std::tuple_element_t<i, typename HelpData::children>;
+            using child_type = std::tuple_element_t<i, typename HelpData::children>;
 
-            current_max =
-                description_column_start<Depth + 1, child_type>(current_max);
+            current_max = description_column_start<Depth + 1, child_type>(current_max);
         });
 
         return current_max;
@@ -268,12 +243,10 @@ private:
     {
         if constexpr (!HelpData::label::empty()) {
             constexpr auto indent = indent_size<Depth>();
-            stream << utility::create_sequence_cts_t<indent, ' '>::get()
-                   << HelpData::label::get();
+            stream << utility::create_sequence_cts_t<indent, ' '>::get() << HelpData::label::get();
 
             if constexpr (!HelpData::description::empty()) {
-                constexpr auto gap =
-                    DescStart - indent - HelpData::label::u8_num_code_points();
+                constexpr auto gap = DescStart - indent - HelpData::label::u8_num_code_points();
                 stream << utility::create_sequence_cts_t<gap, ' '>::get()
                        << HelpData::description::get();
             }
@@ -282,8 +255,7 @@ private:
         }
 
         utility::tuple_type_iterator<typename HelpData::children>([&](auto i) {
-            using child_type =
-                std::tuple_element_t<i, typename HelpData::children>;
+            using child_type = std::tuple_element_t<i, typename HelpData::children>;
 
             generate_help<DescStart, Depth + 1, child_type>(stream);
         });

@@ -8,8 +8,8 @@ namespace arg_router
 {
 namespace policy
 {
-/** Indicates that a node or derived policy's owning node does not create a
- * return value when parsed.
+/** Indicates that a node or derived policy's owning node does not create a return value when
+ * parsed.
  * 
  * Policies or nodes can derive from this.
  */

@@ -35,9 +35,7 @@ BOOST_AUTO_TEST_CASE(numeric_parse_test)
                        std::tuple{"+3.14", 3.14f, ""},
                        std::tuple{"-3.14", -3.14f, ""},
                        std::tuple{"hello", 42, "Failed to parse: hello"},
-                       std::tuple{"23742949",
-                                  std::uint8_t{0},
-                                  "Failed to parse: 23742949"},
+                       std::tuple{"23742949", std::uint8_t{0}, "Failed to parse: 23742949"},
                    });
 }
 
@@ -45,9 +43,8 @@ BOOST_AUTO_TEST_CASE(string_view_parse_test)
 {
     auto f = [](auto input, auto expected) {
         const auto result = parser<std::string_view>::parse(input);
-        static_assert(
-            std::is_same_v<std::decay_t<decltype(result)>, std::string_view>,
-            "Parse result unexpected type");
+        static_assert(std::is_same_v<std::decay_t<decltype(result)>, std::string_view>,
+                      "Parse result unexpected type");
         BOOST_CHECK_EQUAL(result, expected);
     };
 
@@ -98,8 +95,7 @@ BOOST_AUTO_TEST_CASE(container_parse_test)
 
         try {
             const auto result = parser<T>::parse(input);
-            static_assert(std::is_same_v<std::decay_t<decltype(result)>,
-                                         typename T::value_type>,
+            static_assert(std::is_same_v<std::decay_t<decltype(result)>, typename T::value_type>,
                           "Parse result unexpected type");
             BOOST_CHECK(fail_message.empty());
             BOOST_CHECK_EQUAL(result, expected);
@@ -115,9 +111,7 @@ BOOST_AUTO_TEST_CASE(container_parse_test)
                        std::tuple{"3.14", 3.14f, ""},
                        std::tuple{"hello", "hello"sv, ""},
                        std::tuple{"hello", false, "Failed to parse: hello"},
-                       std::tuple{"23742949",
-                                  std::uint8_t{0},
-                                  "Failed to parse: 23742949"},
+                       std::tuple{"23742949", std::uint8_t{0}, "Failed to parse: 23742949"},
                    });
 }
 

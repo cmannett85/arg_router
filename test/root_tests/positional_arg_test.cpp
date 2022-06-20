@@ -29,13 +29,11 @@ BOOST_AUTO_TEST_CASE(single_positional_arg_parse_test)
                       policy::description<S_("Third description")>,
                       policy::required,
                       policy::min_count<2>),
-                  policy::router{[&](bool flag1,
-                                     bool b,
-                                     int arg1,
-                                     std::vector<std::string_view> pos_args) {
-                      result = decltype(result){flag1, b, arg1, pos_args};
-                      router_hit = true;
-                  }}),
+                  policy::router{
+                      [&](bool flag1, bool b, int arg1, std::vector<std::string_view> pos_args) {
+                          result = decltype(result){flag1, b, arg1, pos_args};
+                          router_hit = true;
+                      }}),
              policy::validation::default_validator);
 
     auto f = [&](auto args, auto expected, std::string fail_message) {
@@ -60,93 +58,53 @@ BOOST_AUTO_TEST_CASE(single_positional_arg_parse_test)
         f,
         {
             std::tuple{std::vector{"foo", "one", "two"},
-                       std::tuple{false,
-                                  false,
-                                  42,
-                                  std::vector<std::string_view>{"one", "two"}},
+                       std::tuple{false, false, 42, std::vector<std::string_view>{"one", "two"}},
                        ""},
-            std::tuple{
-                std::vector{"foo", "--one", "two"},
-                std::tuple{false,
-                           false,
-                           42,
-                           std::vector<std::string_view>{"--one", "two"}},
-                ""},
-            std::tuple{
-                std::vector{"foo", "one", "--two"},
-                std::tuple{false,
-                           false,
-                           42,
-                           std::vector<std::string_view>{"one", "--two"}},
-                ""},
+            std::tuple{std::vector{"foo", "--one", "two"},
+                       std::tuple{false, false, 42, std::vector<std::string_view>{"--one", "two"}},
+                       ""},
+            std::tuple{std::vector{"foo", "one", "--two"},
+                       std::tuple{false, false, 42, std::vector<std::string_view>{"one", "--two"}},
+                       ""},
             std::tuple{std::vector{"foo", "--flag1", "one", "two"},
-                       std::tuple{true,
-                                  false,
-                                  42,
-                                  std::vector<std::string_view>{"one", "two"}},
+                       std::tuple{true, false, 42, std::vector<std::string_view>{"one", "two"}},
                        ""},
             std::tuple{std::vector{"foo", "-a", "one", "two"},
-                       std::tuple{true,
-                                  false,
-                                  42,
-                                  std::vector<std::string_view>{"one", "two"}},
+                       std::tuple{true, false, 42, std::vector<std::string_view>{"one", "two"}},
                        ""},
             std::tuple{std::vector{"foo", "--flag1", "-b", "one", "two"},
-                       std::tuple{true,
-                                  true,
-                                  42,
-                                  std::vector<std::string_view>{"one", "two"}},
+                       std::tuple{true, true, 42, std::vector<std::string_view>{"one", "two"}},
                        ""},
             std::tuple{std::vector{"foo", "--arg1", "14", "one", "two"},
-                       std::tuple{false,
-                                  false,
-                                  14,
-                                  std::vector<std::string_view>{"one", "two"}},
+                       std::tuple{false, false, 14, std::vector<std::string_view>{"one", "two"}},
                        ""},
-            std::tuple{
-                std::vector{"foo", "--arg1", "14", "--flag1", "one", "two"},
-                std::tuple{true,
-                           false,
-                           14,
-                           std::vector<std::string_view>{"one", "two"}},
-                ""},
-            std::tuple{
-                std::vector{"foo", "--arg1", "14", "--flag1", "one", "-two"},
-                std::tuple{true,
-                           false,
-                           14,
-                           std::vector<std::string_view>{"one", "-two"}},
-                ""},
-            std::tuple{
-                std::vector{"foo", "-ab", "--one", "two"},
-                std::tuple{true,
-                           true,
-                           42,
-                           std::vector<std::string_view>{"--one", "two"}},
-                ""},
-            std::tuple{
-                std::vector{"foo", "--flag1", "hello"},
-                std::tuple{true, false, 42, std::vector<std::string_view>{}},
-                "Minimum count not reached: pos_args"},
-            std::tuple{
-                std::vector{"foo", "--flag1", "--arg1", "9", "hello"},
-                std::tuple{true, false, 9, std::vector<std::string_view>{}},
-                "Minimum count not reached: pos_args"},
-            std::tuple{
-                std::vector{"foo", "--flag1"},
-                std::tuple{true, false, 42, std::vector<std::string_view>{}},
-                "Missing required argument: pos_args"},
+            std::tuple{std::vector{"foo", "--arg1", "14", "--flag1", "one", "two"},
+                       std::tuple{true, false, 14, std::vector<std::string_view>{"one", "two"}},
+                       ""},
+            std::tuple{std::vector{"foo", "--arg1", "14", "--flag1", "one", "-two"},
+                       std::tuple{true, false, 14, std::vector<std::string_view>{"one", "-two"}},
+                       ""},
+            std::tuple{std::vector{"foo", "-ab", "--one", "two"},
+                       std::tuple{true, true, 42, std::vector<std::string_view>{"--one", "two"}},
+                       ""},
+            std::tuple{std::vector{"foo", "--flag1", "hello"},
+                       std::tuple{true, false, 42, std::vector<std::string_view>{}},
+                       "Minimum count not reached: pos_args"},
+            std::tuple{std::vector{"foo", "--flag1", "--arg1", "9", "hello"},
+                       std::tuple{true, false, 9, std::vector<std::string_view>{}},
+                       "Minimum count not reached: pos_args"},
+            std::tuple{std::vector{"foo", "--flag1"},
+                       std::tuple{true, false, 42, std::vector<std::string_view>{}},
+                       "Missing required argument: pos_args"},
         });
 }
 
 BOOST_AUTO_TEST_CASE(two_positional_arg_parse_test)
 {
     auto router_hit = false;
-    auto result = std::
-        tuple<bool, int, std::vector<std::string_view>, std::vector<double>>{};
+    auto result = std::tuple<bool, int, std::vector<std::string_view>, std::vector<double>>{};
     const auto r = root(
-        mode(flag(policy::long_name<S_("flag1")>,
-                  policy::description<S_("First description")>),
+        mode(flag(policy::long_name<S_("flag1")>, policy::description<S_("First description")>),
              arg<int>(policy::long_name<S_("arg1")>,
                       policy::default_value(42),
                       policy::description<S_("Second description")>),
@@ -154,9 +112,8 @@ BOOST_AUTO_TEST_CASE(two_positional_arg_parse_test)
                  policy::display_name<S_("pos_args1")>,
                  policy::description<S_("Third description")>,
                  policy::fixed_count<2>),
-             positional_arg<std::vector<double>>(
-                 policy::display_name<S_("pos_args2")>,
-                 policy::description<S_("Fourth description")>),
+             positional_arg<std::vector<double>>(policy::display_name<S_("pos_args2")>,
+                                                 policy::description<S_("Fourth description")>),
              policy::router{[&](bool flag1,
                                 int arg1,
                                 std::vector<std::string_view> pos_args1,
@@ -205,18 +162,13 @@ BOOST_AUTO_TEST_CASE(two_positional_arg_parse_test)
                                   std::vector<std::string_view>{"one", "two"},
                                   std::vector<double>{3.14, 443.34}},
                        ""},
-            std::tuple{std::vector{"foo", "one", "two", "three"},
-                       std::tuple{false,
-                                  42,
-                                  std::vector<std::string_view>{},
-                                  std::vector<double>{}},
-                       "Failed to parse: three"},
+            std::tuple{
+                std::vector{"foo", "one", "two", "three"},
+                std::tuple{false, 42, std::vector<std::string_view>{}, std::vector<double>{}},
+                "Failed to parse: three"},
             std::tuple{
                 std::vector{"foo", "one", "--flag1", "two", "--arg1", "5"},
-                std::tuple{false,
-                           42,
-                           std::vector<std::string_view>{},
-                           std::vector<double>{}},
+                std::tuple{false, 42, std::vector<std::string_view>{}, std::vector<double>{}},
                 "Failed to parse: two"},
         });
 }

@@ -4,78 +4,68 @@ namespace arg_router
 {
 /** @page architecture Architectural Overview
  * @tableofcontents
+ *
+ * In arg_router core functionality is defined by the parse tree, which consists of tree_node
+ * instances that define the parse tree structure (i.e. a parse entry point and token grouping), and
+ * policies that define the reusable behaviours of nodes.
  * 
- * In arg_router core functionality is defined by the parse tree, which
- * consists of tree_node instances that define the parse tree structure (i.e. a
- * parse entry point and token grouping), and policies that define the
- * reusable behaviours of nodes.
- * 
- * @note In order to reduce ambiguity, the term @em token is used for referring
- * to words or symbols passed to the command line by the user; which could be
- * long or short form options (e.g. <TT>-f</TT>, <TT>--flag</TT>) or the values
- * for those options. The term @em argument is used exclusively for a token that
- * expects another word to follow it e.g. arg_t.
+ * @note In order to reduce ambiguity, the term @em token is used for referring to words or symbols
+ * passed to the command line by the user; which could be long or short form options (e.g.
+ * <TT>-f</TT>, <TT>--flag</TT>) or the values for those options. The term @em argument is used
+ * exclusively for a token that expects another word to follow it e.g. arg_t.
  * 
  * @section node_relationships Node Relationships
  * @image html node_relationships.svg height=400px
  *
  * @subsection node_relationships_policies Policies
- * Policies are common sets of behaviours which can be re-used between nodes,
- * but more importantly for us, can be used by a library user to 'build' a
- * custom tree_node by assembling a collection of policies.
+ * Policies are common sets of behaviours which can be re-used between nodes, but more importantly
+ * for us, can be used by a library user to 'build' a custom tree_node by assembling a collection of
+ * policies.
  * 
  * Policies come in three basic flavours:
- * - A core type, that just provides some static data (e.g.
- *   policy::long_name_t)
- * - A parsing type, that provides one or more methods that are used by the
- *   derived node to generate, check, and manipulate the input tokens (e.g.
- *   policy::min_max_count_t)
- * - A tag type, that provides no data, just it's own presence which can be
- *   detected by other parts of the library
+ * - A core type, that just provides some static data (e.g. policy::long_name_t)
+ * - A parsing type, that provides one or more methods that are used by the derived node to
+ *   generate, check, and manipulate the input tokens (e.g. policy::min_max_count_t)
+ * - A tag type, that provides no data, just it's own presence which can be detected by other parts
+ *   of the library
  * 
  * @subsection node_relationships_nodes Nodes
- * Nodes are implemented by deriving from tree_node, passing one or more
- * policies and/or children to it's constructor.  Nodes can contain other nodes
- * (i.e. children) and in doing so form a tree structure - our parse tree!
+ * Nodes are implemented by deriving from tree_node, passing one or more policies and/or children to
+ * it's constructor.  Nodes can contain other nodes (i.e. children) and in doing so form a tree
+ * structure - our parse tree!
  * 
- * As you may have noticed from the above diagram, tree_node is clever, it can
- * work out which constructor args are policies and which are nodes by itself
- * so you can pass them in any order you like.
+ * As you may have noticed from the above diagram, tree_node is clever, it can work out which
+ * constructor args are policies and which are nodes by itself so you can pass them in any order you
+ * like.
  * 
  * @subsection node_relationships_validation Validation
- * Although the nodes can do a lot of compile-time error checking themselves
- * from analysing their children and policies, they can't check everything -
- * mainly because you can easily get into dependency loops by nodes needing to
- * know about other node types and vice-versa (which also leads to horrible
- * spaghetti code).
+ * Although the nodes can do a lot of compile-time error checking themselves from analysing their
+ * children and policies, they can't check everything - mainly because you can easily get into
+ * dependency loops by nodes needing to know about other node types and vice-versa (which also leads
+ * to horrible spaghetti code).
  * 
- * To prevent this, _inter-node_ validation is done separately by a special
- * policy called policy::validation::validator that can only be derived from by
- * the root node (root_t).  As the root is the last to be instantiated (the
- * leaves are created first), it has all the information needed to check the
- * entire tree, @em and because nothing depends on the validator it can know
+ * To prevent this, _inter-node_ validation is done separately by a special policy called
+ * policy::validation::validator that can only be derived from by the root node (root_t).  As the
+ * root is the last to be instantiated (the leaves are created first), it has all the information
+ * needed to check the entire tree, @em and because nothing depends on the validator it can know
  * about all the other nodes without causing dependency loops.
  * 
  * @section node_relationships_parsing Parsing
  * Parsing starts at the root node, and follows these basic steps:
- * -# Push the tokens down the parse tree for the pre-parsing phase.  Each node
- *    will inspect the leading token to see if it can be handled by the node,
- *    if so the correct number of tokens are pre-processed (e.g. short form
- *    expansion) and stored in a parsing::parse_target and returned to the root
- *    or parent mode.
- * -# The parsing::parse_target initiates the parsing using the node that
- *    created it and the pre-processed tokens (if any).  A validation phase is
- *    ran on the result if present (e.g. policy::min_max_value)
- * -# If the target node is top-level, then the target's policy::router is then
- *    called by the node with the parse result.  If not, the parent mode
- *    collects the results for all the parsing::parse_target instances it
- *    collected
- * -# If applicable, any nodes under the parent mode that did not have an
- *    associated parsing::parse_target, have the missing phase ran on them
- *    (e.g. policy::default_value)
+ * -# Push the tokens down the parse tree for the pre-parsing phase.  Each node will inspect the
+ *    leading token to see if it can be handled by the node, if so the correct number of tokens are
+ *    pre-processed (e.g. short form expansion) and stored in a parsing::parse_target and returned
+ *    to the root or parent mode.
+ * -# The parsing::parse_target initiates the parsing using the node that created it and the
+ *    pre-processed tokens (if any).  A validation phase is ran on the result if present (e.g.
+ *    policy::min_max_value)
+ * -# If the target node is top-level, then the target's policy::router is then called by the node
+ *    with the parse result.  If not, the parent mode collects the results for all the
+ *    parsing::parse_target instances it collected
+ * -# If applicable, any nodes under the parent mode that did not have an associated
+ *    parsing::parse_target, have the missing phase ran on them (e.g. policy::default_value)
  * 
- * As you have probably gathered from the above, the pre-processing and parsing
- * within a node is split up into 'phases' which different policies implement
- * different parts of.
+ * As you have probably gathered from the above, the pre-processing and parsing within a node is
+ * split up into 'phases' which different policies implement different parts of.
  */
 }

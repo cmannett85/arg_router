@@ -18,18 +18,14 @@ public:
      *
      * @param message Error message
      */
-    explicit parse_exception(const string& message) :
-        std::invalid_argument{message}
-    {
-    }
+    explicit parse_exception(const string& message) : std::invalid_argument{message} {}
 
     /** Token constructor.
      *
      * @param message Error message
      * @param token Token that caused the error
      */
-    explicit parse_exception(const string& message,
-                             const parsing::token_type& token) :
+    explicit parse_exception(const string& message, const parsing::token_type& token) :
         std::invalid_argument{message + ": " + parsing::to_string(token)}
     {
     }
@@ -39,8 +35,7 @@ public:
      * @param message Error message
      * @param tokens Tokens that caused the error
      */
-    explicit parse_exception(const string& message,
-                             const vector<parsing::token_type>& tokens) :
+    explicit parse_exception(const string& message, const vector<parsing::token_type>& tokens) :
         std::invalid_argument{message + ": " + parsing::to_string(tokens)}
     {
     }

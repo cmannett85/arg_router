@@ -11,23 +11,19 @@ namespace arg_router
 {
 namespace utility
 {
-/** Type erasure type similar to <TT>std::any</TT> but has no type checking
- * safety features.
+/** Type erasure type similar to <TT>std::any</TT> but has no type checking safety features.
  *
- * @tparam SmallObjectOptimisationSize Size in bytes of the small object
- * optimisation limit.  Holding objects larger will incur heap allocation.
- * Defaults to word size
+ * @tparam SmallObjectOptimisationSize Size in bytes of the small object optimisation limit.
+ * Holding objects larger will incur heap allocation. Defaults to word size
  */
 template <std::size_t SmallObjectOptimisationSize = sizeof(std::size_t)>
 class unsafe_any_t
 {
     using ptr_type = void*;
-    using aligned_storage_type =
-        std::aligned_storage_t<SmallObjectOptimisationSize>;
+    using aligned_storage_type = std::aligned_storage_t<SmallObjectOptimisationSize>;
 
     template <typename T>
-    static constexpr bool use_internal_storage = (sizeof(T) <=
-                                                  sizeof(aligned_storage_type));
+    static constexpr bool use_internal_storage = (sizeof(T) <= sizeof(aligned_storage_type));
 
 public:
     /** Default constructor.
@@ -38,16 +34,14 @@ public:
 
     /** Constructs an unsafe_any_t from @a value.
      *
-     * This constructor only takes part in overload resolution if @a T fits
-     * inside the internal storage.
+     * This constructor only takes part in overload resolution if @a T fits inside the internal
+     * storage.
      * @tparam T Type to construct from
-     * @param value Value to initialise from, will move construct if an rvalue
-     * is passed in
+     * @param value Value to initialise from, will move construct if an rvalue is passed in
      */
     template <typename T,
-              typename = std::enable_if_t<
-                  use_internal_storage<T> &&
-                  !std::is_same_v<std::decay_t<T>, unsafe_any_t>>>
+              typename = std::enable_if_t<use_internal_storage<T> &&
+                                          !std::is_same_v<std::decay_t<T>, unsafe_any_t>>>
     unsafe_any_t(T&& value) noexcept
     {
         using value_type = std::decay_t<T>;
@@ -66,20 +60,17 @@ public:
 
     /** Constructs an unsafe_any_t from @a value.
      *
-     * This constructor only takes part in overload resolution if @a T does not
-     * fit inside the internal storage.
+     * This constructor only takes part in overload resolution if @a T does not fit inside the
+     * internal storage.
      * @tparam T Type to construct from
-     * @tparam Allocator Allocator type, only used when not using internal
-     * storage
-     * @param value Value to initialise from, will move construct if an rvalue
-     * is passed in
+     * @tparam Allocator Allocator type, only used when not using internal storage
+     * @param value Value to initialise from, will move construct if an rvalue is passed in
      * @param alloc Allocator instance
      */
     template <typename T,
               typename Allocator = config::allocator<std::decay_t<T>>,
-              typename = std::enable_if_t<
-                  !use_internal_storage<T> &&
-                  !std::is_same_v<std::decay_t<T>, unsafe_any_t>>>
+              typename = std::enable_if_t<!use_internal_storage<T> &&
+                                          !std::is_same_v<std::decay_t<T>, unsafe_any_t>>>
     unsafe_any_t(T&& value, Allocator alloc = Allocator{})
     {
         using value_type = std::decay_t<T>;
@@ -91,17 +82,15 @@ public:
         copier_ = [](const storage_type& storage) -> unsafe_any_t {
             return *reinterpret_cast<const value_type*>(storage.ptr);
         };
-        destroyer_ =
-            [alloc = std::move(alloc)](storage_type& storage) mutable noexcept {
-                alloc.deallocate(reinterpret_cast<value_type*>(storage.ptr), 1);
-                storage.ptr = nullptr;
-            };
+        destroyer_ = [alloc = std::move(alloc)](storage_type& storage) mutable noexcept {
+            alloc.deallocate(reinterpret_cast<value_type*>(storage.ptr), 1);
+            storage.ptr = nullptr;
+        };
     }
 
     /** Move constructor.
      *
-     * @note @a other is left in an empty state (i.e. has_value() returns
-     * false).
+     * @note @a other is left in an empty state (i.e. has_value() returns false).
      * @param other Instance to move from
      */
     unsafe_any_t(unsafe_any_t&& other) noexcept { swap(*this, other); }
@@ -165,13 +154,12 @@ public:
      *
      * Undefined behaviour if @a T is not the held type.
      * @tparam T Type to return
-     * @return A reference to held object if it is larger than
-     * <TT>std::size_t</TT> and copy constructible, otherwise it returns a copy
+     * @return A reference to held object if it is larger than <TT>std::size_t</TT> and copy
+     * constructible, otherwise it returns a copy
      */
     template <typename T>
     [[nodiscard]] auto get() const noexcept
-        -> std::conditional_t<(sizeof(T) <= sizeof(std::size_t)) &&
-                                  std::is_copy_constructible_v<T>,
+        -> std::conditional_t<(sizeof(T) <= sizeof(std::size_t)) && std::is_copy_constructible_v<T>,
                               std::decay_t<T>,
                               const std::decay_t<T>&>
     {
@@ -211,8 +199,7 @@ private:
     std::function<void(storage_type&)> destroyer_;
 };
 
-/** Typedef for an unsafe_any_t with internal storage big enough to fit a
- * <TT>std::string_view</TT>.
+/** Typedef for an unsafe_any_t with internal storage big enough to fit a <TT>std::string_view</TT>.
  */
 using unsafe_any = unsafe_any_t<sizeof(std::string_view)>;
 }  // namespace utility

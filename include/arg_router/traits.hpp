@@ -17,8 +17,7 @@
 namespace std
 {
 template <typename... T>
-struct tuple_size<boost::mp11::mp_list<T...>> :
-    std::integral_constant<std::size_t, sizeof...(T)> {
+struct tuple_size<boost::mp11::mp_list<T...>> : std::integral_constant<std::size_t, sizeof...(T)> {
 };
 
 template <std::size_t I, typename... T>
@@ -68,8 +67,7 @@ using get_value_type = typename T::value_type;
  */
 template <typename T>
 struct has_value_type {
-    constexpr static bool value =
-        boost::mp11::mp_valid<get_value_type, T>::value;
+    constexpr static bool value = boost::mp11::mp_valid<get_value_type, T>::value;
 };
 
 /** Helper variable for has_value_type.
@@ -90,8 +88,7 @@ struct is_tuple_like : std::false_type {
 };
 
 template <typename T>
-struct is_tuple_like<T, std::void_t<typename std::tuple_size<T>::type>> :
-    std::true_type {
+struct is_tuple_like<T, std::void_t<typename std::tuple_size<T>::type>> : std::true_type {
 };
 
 /** Helper variable for is_tuple_like.
@@ -175,8 +172,7 @@ struct is_same_when_despecialised<T<Args...>, U> : is_specialisation_of<U, T> {
  * @tparam U Second type to compare
  */
 template <typename T, typename U>
-constexpr bool is_same_when_despecialised_v =
-    is_same_when_despecialised<T, U>::value;
+constexpr bool is_same_when_despecialised_v = is_same_when_despecialised<T, U>::value;
 
 /** CTAD wraper for std::integral_constant.
  *
@@ -218,9 +214,8 @@ class unpack_and_derive<T<Params...>> : public Params...
 {
     // When are we going to get language-level tuple unpacking!?
     template <std::size_t... I>
-    constexpr explicit unpack_and_derive(
-        T<Params...> params,
-        std::integer_sequence<std::size_t, I...>) noexcept :
+    constexpr explicit unpack_and_derive(T<Params...> params,
+                                         std::integer_sequence<std::size_t, I...>) noexcept :
         Params{std::get<I>(std::move(params))}...
     {
     }
@@ -228,16 +223,13 @@ class unpack_and_derive<T<Params...>> : public Params...
     // This empty tuple overload is just to prevent an
     // -Werror=unused-but-set-parameter on the params parameter
     template <std::size_t... I>
-    constexpr explicit unpack_and_derive(
-        T<Params...>,
-        std::integer_sequence<std::size_t>) noexcept
+    constexpr explicit unpack_and_derive(T<Params...>, std::integer_sequence<std::size_t>) noexcept
     {
     }
 
 public:
     constexpr explicit unpack_and_derive(T<Params...> params) noexcept :
-        unpack_and_derive{std::move(params),
-                          std::make_index_sequence<sizeof...(Params)>{}}
+        unpack_and_derive{std::move(params), std::make_index_sequence<sizeof...(Params)>{}}
     {
     }
 };
@@ -261,8 +253,7 @@ struct supports_static_cast_conversion {
  * @tparam To Type to convert to
  */
 template <typename From, typename To>
-constexpr bool supports_static_cast_conversion_v =
-    supports_static_cast_conversion<From, To>::value;
+constexpr bool supports_static_cast_conversion_v = supports_static_cast_conversion<From, To>::value;
 
 /** Determine if a type has a <TT>long_name()</TT> static method.
  *
@@ -376,8 +367,7 @@ struct has_value_separator_method {
  * @tparam T Type to query
  */
 template <typename T>
-constexpr bool has_value_separator_method_v =
-    has_value_separator_method<T>::value;
+constexpr bool has_value_separator_method_v = has_value_separator_method<T>::value;
 
 /** Determine if a type has a <TT>maximum_count()</TT> static method.
  *
@@ -424,8 +414,7 @@ constexpr bool has_minimum_count_method_v = has_minimum_count_method<T>::value;
 template <typename T>
 struct has_push_back_method {
     template <typename U>
-    using type = decltype(std::declval<U&>().push_back(
-        std::declval<typename U::value_type>()));
+    using type = decltype(std::declval<U&>().push_back(std::declval<typename U::value_type>()));
 
     constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
 };
@@ -464,8 +453,7 @@ constexpr bool has_help_data_type_v = has_help_data_type<T>::value;
 template <typename T>
 struct has_generate_help_method {
     template <typename U>
-    using type = decltype(U::template generate_help<U, false>(
-        std::declval<std::ostream&>()));
+    using type = decltype(U::template generate_help<U, false>(std::declval<std::ostream&>()));
 
     constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
 };
@@ -487,8 +475,7 @@ struct has_parse_method {
 
     template <typename U>
     using type = decltype(  //
-        std::declval<const U&>().template parse<>(
-            std::declval<parsing::parse_target>()));
+        std::declval<const U&>().template parse<>(std::declval<parsing::parse_target>()));
 
     constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
 };
@@ -506,15 +493,13 @@ constexpr static bool has_parse_method_v = has_parse_method<T>::value;
  * The first tuple element type is the return type.
  *
  * From https://stackoverflow.com/a/27867127/498437.
- * @note The specialisations are not complete, there are no volatile or
- * ref-qualified versions. Does @b NOT work with overloaded or templated
- * function/methods (obviously)
+ * @note The specialisations are not complete, there are no volatile or ref-qualified versions. Does
+ * @b NOT work with overloaded or templated function/methods (obviously)
  * 
  * @tparam T Type to query
  */
 template <typename T>
-struct arg_extractor /** @cond */ :
-    arg_extractor<decltype(&T::operator())> /** @endcond */ {
+struct arg_extractor /** @cond */ : arg_extractor<decltype(&T::operator())> /** @endcond */ {
 };
 
 template <typename R, typename... Args>

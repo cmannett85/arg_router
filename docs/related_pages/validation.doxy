@@ -5,34 +5,28 @@ namespace arg_router
 /** @page validation Validation
  * @tableofcontents
  * 
- * As noted in the Architectural Overview, the node's perform as much validation
- * of their configuration as possible, but that @em typically does not include
- * validation of the @em relationships with other nodes and policies.
+ * As noted in the Architectural Overview, the node's perform as much validation of their
+ * configuration as possible, but that @em typically does not include validation of the
+ * @em relationships with other nodes and policies.
  * 
- * To achieve that we use a validator policy that attaches to the root node and
- * checks the entire parse tree upon construction (which is always after all
- * child nodes and policies).
+ * To achieve that we use a validator policy that attaches to the root node and checks the entire
+ * parse tree upon construction (which is always after all child nodes and policies).
  * 
  * @section validation_validator Validator
- * The validator that ships with arg_router is policy::validation::validator.
- * It's a complicated bit of machinery but from a user's point of view, it is
- * just a list of @em rules that apply to each policy and tree_node derived
- * type.  Each rule has a predicate that is used to match against the validated
- * policy or node type, and a collection of @em conditions that all have to be
- * met by the validated type in order for a <TT>static_assert</TT> @b not to
- * fire.
+ * The validator that ships with arg_router is policy::validation::validator. It's a complicated bit
+ * of machinery but from a user's point of view, it is just a list of @em rules that apply to each
+ * policy and tree_node derived type.  Each rule has a predicate that is used to match against the
+ * validated policy or node type, and a collection of @em conditions that all have to be met by the
+ * validated type in order for a <TT>static_assert</TT> @b not to fire.
  * 
- * The rules, defined by policy::validation::rule and
- * policy::validation::rule_q, are a template parameter pack of
- * policy::validation::validator and so can be modified without having to
- * write your own validator from scratch.  The standard configured validator
- * i.e. a validator with the rules defined for all the arg_router types, is
- * policy::validation::default_validator.
+ * The rules, defined by policy::validation::rule and policy::validation::rule_q, are a template
+ * parameter pack of policy::validation::validator and so can be modified without having to write
+ * your own validator from scratch.  The standard configured validator i.e. a validator with the
+ * rules defined for all the arg_router types, is policy::validation::default_validator.
  * 
  * @section validation_rules Rules
- * As noted above, each rule starts with a predicate that 'selects' that rule
- * as applying to the validated type.  Let's look at an example from 
- * policy::validation::default_validator:
+ * As noted above, each rule starts with a predicate that 'selects' that rule as applying to the
+ * validated type.  Let's look at an example from policy::validation::default_validator:
  * @code
  * rule_q<common_rules::despecialised_any_of_rule<flag_t>,
            must_not_have_policies<policy::multi_stage_value,
@@ -41,13 +35,11 @@ namespace arg_router
                                   policy::validation::validator>>
  * @endcode
  *
- * policy::validation::common_rules::despecialised_any_of_rule is a quoted
- * metafunction that evaluates to true if the validated type matches one of the
- * despecialised types in its argument list.  In this case we're just checking
- * that it matches flag_t.
+ * policy::validation::common_rules::despecialised_any_of_rule is a quoted metafunction that
+ * evaluates to true if the validated type matches one of the despecialised types in its argument 
+ * list.  In this case we're just checking that it matches flag_t.
  * 
- * As the name suggests, policy::validation::must_not_have_policies checks that
- * the validated type does not use any of the policies listed in its template
- * parameters.
+ * As the name suggests, policy::validation::must_not_have_policies checks that the validated type
+ * does not use any of the policies listed in its template parameters.
  */
 }

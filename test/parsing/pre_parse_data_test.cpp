@@ -22,8 +22,7 @@ public:
     }
 
     template <typename... Parents>
-    [[nodiscard]] value_type parse(parsing::parse_target,
-                                   const Parents&...) const
+    [[nodiscard]] value_type parse(parsing::parse_target, const Parents&...) const
     {
         return true;
     }
@@ -36,9 +35,8 @@ BOOST_AUTO_TEST_SUITE(pre_parse_data_suite)
 
 BOOST_AUTO_TEST_CASE(no_target_constructor_test)
 {
-    auto args =
-        std::vector<parsing::token_type>{{parsing::prefix_type::none, "-f"},
-                                         {parsing::prefix_type::none, "42"}};
+    auto args = std::vector<parsing::token_type>{{parsing::prefix_type::none, "-f"},
+                                                 {parsing::prefix_type::none, "42"}};
     const auto false_validator = [](const auto&...) { return false; };
 
     {
@@ -68,11 +66,9 @@ BOOST_AUTO_TEST_CASE(no_target_constructor_test)
 
 BOOST_AUTO_TEST_CASE(target_constructor_test)
 {
-    auto args =
-        std::vector<parsing::token_type>{{parsing::prefix_type::none, "-f"},
-                                         {parsing::prefix_type::none, "42"}};
-    auto target_tokens =
-        std::vector<parsing::token_type>{{parsing::prefix_type::none, "hello"}};
+    auto args = std::vector<parsing::token_type>{{parsing::prefix_type::none, "-f"},
+                                                 {parsing::prefix_type::none, "42"}};
+    auto target_tokens = std::vector<parsing::token_type>{{parsing::prefix_type::none, "hello"}};
     auto node = stub_node{};
     const auto target = parsing::parse_target{target_tokens, node};
     const auto false_validator = [](const auto&...) { return false; };

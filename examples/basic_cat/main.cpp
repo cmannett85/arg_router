@@ -52,8 +52,8 @@ void set_theme(theme_t theme)
     }
 }
 
-// This is almost certainly wrong for unicode stuff, and it's definitely
-// inefficient, but it's only an example
+// This is almost certainly wrong for unicode stuff, and it's definitely inefficient, but it's only
+// an example
 std::string m_notation(std::string input)
 {
     auto result = ""s;

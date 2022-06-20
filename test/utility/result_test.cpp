@@ -89,8 +89,7 @@ BOOST_AUTO_TEST_CASE(movable_value_test)
 BOOST_AUTO_TEST_CASE(exception_test)
 {
     auto f = [](std::string message) {
-        auto r = utility::result<bool, std::runtime_error>{
-            std::runtime_error{message}};
+        auto r = utility::result<bool, std::runtime_error>{std::runtime_error{message}};
         BOOST_CHECK(!r.has_result());
         BOOST_CHECK(r.has_error());
         BOOST_CHECK_EQUAL(static_cast<bool>(r), false);
@@ -99,15 +98,13 @@ BOOST_AUTO_TEST_CASE(exception_test)
         const auto r_ptr = r.get_if();
         BOOST_CHECK(!r_ptr);
 
-        BOOST_CHECK_EXCEPTION(
-            r.extract(),
-            std::runtime_error,
-            [&](const auto& e) { return e.what() == message; });
+        BOOST_CHECK_EXCEPTION(r.extract(), std::runtime_error, [&](const auto& e) {
+            return e.what() == message;
+        });
 
-        BOOST_CHECK_EXCEPTION(
-            r.throw_exception(),
-            std::runtime_error,
-            [&](const auto& e) { return e.what() == message; });
+        BOOST_CHECK_EXCEPTION(r.throw_exception(), std::runtime_error, [&](const auto& e) {
+            return e.what() == message;
+        });
     };
 
     test::data_set(f,                     //
@@ -136,12 +133,8 @@ BOOST_AUTO_TEST_CASE(equality_test)
                        std::tuple{result_type{false}, result_type{false}, true},
 
                        // Mixed result/exceptions
-                       std::tuple{result_type{true},
-                                  result_type{std::runtime_error{"foo"}},
-                                  false},
-                       std::tuple{result_type{std::runtime_error{"foo"}},
-                                  result_type{true},
-                                  false},
+                       std::tuple{result_type{true}, result_type{std::runtime_error{"foo"}}, false},
+                       std::tuple{result_type{std::runtime_error{"foo"}}, result_type{true}, false},
 
                        // Exceptions
                        std::tuple{result_type{std::runtime_error{"foo"}},

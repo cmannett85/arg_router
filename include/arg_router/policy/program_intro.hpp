@@ -26,14 +26,10 @@ public:
      *
      * @return Program name
      */
-    [[nodiscard]] constexpr static std::string_view program_intro() noexcept
-    {
-        return S::get();
-    }
+    [[nodiscard]] constexpr static std::string_view program_intro() noexcept { return S::get(); }
 
 private:
-    static_assert(program_intro().size() > 1,
-                  "Program intro must be longer than one character");
+    static_assert(program_intro().size() > 1, "Program intro must be longer than one character");
 };
 
 /** Constant variable helper.

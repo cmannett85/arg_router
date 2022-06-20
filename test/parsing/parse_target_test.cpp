@@ -13,24 +13,17 @@ namespace
 std::vector<utility::unsafe_any> expected_target_and_parents;
 
 template <typename Node, typename... Parents>
-void parse_checker(parsing::parse_target target,
-                   const Node& node,
-                   const Parents&... parents)
+void parse_checker(parsing::parse_target target, const Node& node, const Parents&... parents)
 {
-    BOOST_CHECK_EQUAL(std::type_index{typeid(Node)}.hash_code(),
-                      target.node_type().hash_code());
+    BOOST_CHECK_EQUAL(std::type_index{typeid(Node)}.hash_code(), target.node_type().hash_code());
 
-    const auto target_and_parents_tuple =
-        std::tuple{std::cref(node), std::cref(parents)...};
+    const auto target_and_parents_tuple = std::tuple{std::cref(node), std::cref(parents)...};
     utility::tuple_iterator(
         [&](auto i, auto parent) {
             const auto& expected_parent_cast =
-                expected_target_and_parents[i]
-                    .template get<std::decay_t<decltype(parent)>>()
-                    .get();
+                expected_target_and_parents[i].template get<std::decay_t<decltype(parent)>>().get();
             BOOST_CHECK_EQUAL(
-                reinterpret_cast<std::ptrdiff_t>(
-                    std::addressof(expected_parent_cast)),
+                reinterpret_cast<std::ptrdiff_t>(std::addressof(expected_parent_cast)),
                 reinterpret_cast<std::ptrdiff_t>(std::addressof(parent.get())));
         },
         target_and_parents_tuple);
@@ -50,8 +43,7 @@ public:
     }
 
     template <typename... Parents>
-    [[nodiscard]] value_type parse(parsing::parse_target target,
-                                   const Parents&... parents) const
+    [[nodiscard]] value_type parse(parsing::parse_target target, const Parents&... parents) const
     {
         parse_checker(target, *this, parents...);
         return true;
@@ -65,9 +57,7 @@ std::vector<utility::unsafe_any> make_pre_parse_test_data(const Root& root)
 
     const auto refs = test::get_parents<I, Is...>(root);
     result.reserve(std::tuple_size_v<std::decay_t<decltype(refs)>>);
-    utility::tuple_iterator(
-        [&](auto /*i*/, auto ref) { result.push_back(ref); },
-        refs);
+    utility::tuple_iterator([&](auto /*i*/, auto ref) { result.push_back(ref); }, refs);
 
     return result;
 }
@@ -89,21 +79,19 @@ BOOST_AUTO_TEST_CASE(accessors_test)
         BOOST_CHECK_EQUAL(expected_index, target.node_type().hash_code());
     };
 
-    test::data_set(f,
-                   {
-                       std::tuple{std::vector<parsing::token_type>{}},
-                       std::tuple{std::vector<parsing::token_type>{
-                           {parsing::prefix_type::none, "hello"}}},
-                       std::tuple{std::vector<parsing::token_type>{
-                           {parsing::prefix_type::none, "hello"},
-                           {parsing::prefix_type::none, "goodbye"}}},
-                   });
+    test::data_set(
+        f,
+        {
+            std::tuple{std::vector<parsing::token_type>{}},
+            std::tuple{std::vector<parsing::token_type>{{parsing::prefix_type::none, "hello"}}},
+            std::tuple{std::vector<parsing::token_type>{{parsing::prefix_type::none, "hello"},
+                                                        {parsing::prefix_type::none, "goodbye"}}},
+        });
 }
 
 BOOST_AUTO_TEST_CASE(function_test)
 {
-    auto tokens =
-        std::vector<parsing::token_type>{{parsing::prefix_type::none, "hello"}};
+    auto tokens = std::vector<parsing::token_type>{{parsing::prefix_type::none, "hello"}};
     auto root = stub_node{stub_node{},            //
                           stub_node{stub_node{},  //
                                     stub_node{}}};

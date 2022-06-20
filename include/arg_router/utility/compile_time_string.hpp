@@ -37,10 +37,7 @@ public:
      *
      * @return String size
      */
-    [[nodiscard]] constexpr static std::size_t size() noexcept
-    {
-        return sizeof...(Cs);
-    }
+    [[nodiscard]] constexpr static std::size_t size() noexcept { return sizeof...(Cs); }
 
     /** True if string is empty.
      *
@@ -101,8 +98,7 @@ public:
      */
     template <char... OtherCs>
     [[nodiscard]] constexpr auto operator+(
-        [[maybe_unused]] const compile_time_string<OtherCs...>& other)
-        const noexcept
+        [[maybe_unused]] const compile_time_string<OtherCs...>& other) const noexcept
     {
         return append_t<compile_time_string<OtherCs...>>{};
     }
@@ -111,8 +107,7 @@ private:
     constexpr static auto sv_ = std::array<char, sizeof...(Cs)>{Cs...};
 };
 
-/** Provides a compile time string that is a repeating sequence of @a C @a N
- * characters long.
+/** Provides a compile time string that is a repeating sequence of @a C @a N characters long.
  *
  * @tparam N Number of times to repeat @a C
  * @tparam C Character to repeat
@@ -120,8 +115,7 @@ private:
 template <std::size_t N, char C>
 class create_sequence_cts
 {
-    using seq =
-        boost::mp11::mp_repeat_c<std::tuple<traits::integral_constant<C>>, N>;
+    using seq = boost::mp11::mp_repeat_c<std::tuple<traits::integral_constant<C>>, N>;
 
     template <typename T>
     struct converter {
@@ -144,8 +138,7 @@ public:
 template <std::size_t N, char C>
 using create_sequence_cts_t = typename create_sequence_cts<N, C>::type;
 
-/** Converts the char integral constant array-like type @a T to a compile time
- * string.
+/** Converts the char integral constant array-like type @a T to a compile time string.
  *
  * @tparam T Char integral constant array-like type
  */
@@ -171,8 +164,7 @@ using convert_to_cts_t = typename convert_to_cts<T>::type;
 template <auto Value>
 struct convert_integral_to_cts {
 private:
-    static_assert(std::is_integral_v<decltype(Value)>,
-                  "Value must be an integral");
+    static_assert(std::is_integral_v<decltype(Value)>, "Value must be an integral");
 
     template <typename Str, auto NewValue>
     [[nodiscard]] constexpr static auto build() noexcept
@@ -182,8 +174,7 @@ private:
         constexpr auto digit = NewValue / power10;
         [[maybe_unused]] constexpr auto next_value = NewValue % power10;
 
-        using digit_str =
-            typename Str::template append_t<compile_time_string<'0' + digit>>;
+        using digit_str = typename Str::template append_t<compile_time_string<'0' + digit>>;
 
         if constexpr (num_digits != 1) {
             return build<digit_str, next_value>();
@@ -192,14 +183,12 @@ private:
         }
     }
 
-    using digit_str =
-        decltype(build<compile_time_string<>, math::abs(Value)>());
+    using digit_str = decltype(build<compile_time_string<>, math::abs(Value)>());
 
 public:
-    using type = std::conditional_t<
-        (Value < 0),
-        compile_time_string<'-'>::template append_t<digit_str>,
-        digit_str>;
+    using type = std::conditional_t<(Value < 0),
+                                    compile_time_string<'-'>::template append_t<digit_str>,
+                                    digit_str>;
 };
 
 /** Helper alias for convert_integral_to_cts.
@@ -222,9 +211,8 @@ template <int N>
     return i < str.size() ? str[i] : '\0';
 }
 
-// Required so that the extra nulls S_ adds can be removed before defining the
-// compile_time_string.  Otherwise any compiler warnings you hit are just walls
-// of null template args...
+// Required so that the extra nulls S_ adds can be removed before defining the compile_time_string.
+// Otherwise any compiler warnings you hit are just walls of null template args...
 template <char... Cs>
 struct builder {
     struct is_null_char {
@@ -233,8 +221,7 @@ struct builder {
     };
 
     using strip_null =
-        boost::mp11::mp_remove_if_q<boost::mp11::mp_list_c<char, Cs...>,
-                                    is_null_char>;
+        boost::mp11::mp_remove_if_q<boost::mp11::mp_list_c<char, Cs...>, is_null_char>;
 
     template <char... StrippedCs>
     [[nodiscard]] constexpr static auto list_to_string(
@@ -246,23 +233,20 @@ struct builder {
     using type = decltype(list_to_string(strip_null{}));
 };
 
-#define AR_STR_CHAR(z, n, tok) \
-    BOOST_PP_COMMA_IF(n) arg_router::utility::cts_detail::get(tok, n)
+#define AR_STR_CHAR(z, n, tok) BOOST_PP_COMMA_IF(n) arg_router::utility::cts_detail::get(tok, n)
 
-#define AR_STR_N(n, tok)                               \
-    typename arg_router::utility::cts_detail::builder< \
-        BOOST_PP_REPEAT(n, AR_STR_CHAR, tok)>::type
+#define AR_STR_N(n, tok) \
+    typename arg_router::utility::cts_detail::builder<BOOST_PP_REPEAT(n, AR_STR_CHAR, tok)>::type
 }  // namespace cts_detail
 }  // namespace utility
 }  // namespace arg_router
 
-/** Macro that represents the type of a compile-time string, useful for policies
- * that require a compile string.
+/** Macro that represents the type of a compile-time string, useful for policies that require a
+ * compile string.
  *
- * There is no requirement to use this, it just makes definitions easier to
- * read.
- * @note The size limit is set by using the AR_MAX_CTS_SIZE define (defaults to
- * 128).  Increasing this will not increase the size of your program, but will
- * increase build time as the preprocessor and compiler have to do more work
+ * There is no requirement to use this, it just makes definitions easier to read.
+ * @note The size limit is set by using the AR_MAX_CTS_SIZE define (defaults to 128).  Increasing
+ * this will not increase the size of your program, but will increase build time as the preprocessor
+ * and compiler have to do more work
  */
 #define S_(tok) AR_STR_N(AR_MAX_CTS_SIZE, tok)

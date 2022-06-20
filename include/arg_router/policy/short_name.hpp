@@ -11,8 +11,8 @@ namespace policy
 {
 /** Represents the short name of an argument.
  * 
- * Although this type only accepts a single character, the parser expects it
- * (or the short name group it is a part of) to be preceded by the short prefix.
+ * Although this type only accepts a single character, the parser expects it (or the short name
+ * group it is a part of) to be preceded by the short prefix.
  * @tparam S Integral constant that can be implicitly converted to a char
  */
 template <typename S>
@@ -20,8 +20,7 @@ class short_name_t
 {
     static_assert(std::is_convertible_v<S, char>,
                   "Short name type must be implicitly convertible to char");
-    static_assert(algorithm::is_alnum(S::value),
-                  "Short name character must be alphanumeric");
+    static_assert(algorithm::is_alnum(S::value), "Short name character must be alphanumeric");
 
     constexpr static auto value = S::value;
 

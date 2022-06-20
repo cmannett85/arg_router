@@ -24,8 +24,7 @@ public:
     }
 
     template <typename... Parents>
-    [[nodiscard]] value_type parse(parsing::parse_target,
-                                   const Parents&...) const
+    [[nodiscard]] value_type parse(parsing::parse_target, const Parents&...) const
     {
         return true;
     }
@@ -38,10 +37,8 @@ BOOST_AUTO_TEST_SUITE(value_separator_suite)
 
 BOOST_AUTO_TEST_CASE(is_policy_test)
 {
-    static_assert(
-        policy::is_policy_v<
-            policy::value_separator_t<traits::integral_constant<'='>>>,
-        "Policy test has failed");
+    static_assert(policy::is_policy_v<policy::value_separator_t<traits::integral_constant<'='>>>,
+                  "Policy test has failed");
 }
 
 BOOST_AUTO_TEST_CASE(constructor_and_get_test)
@@ -67,10 +64,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
         auto processed_target = utility::compile_time_optional{};
         auto target = parsing::parse_target{node};
 
-        const auto match = policy.pre_parse_phase(adapter,
-                                                  processed_target,
-                                                  target,
-                                                  parents...);
+        const auto match = policy.pre_parse_phase(adapter, processed_target, target, parents...);
         BOOST_CHECK_EQUAL(result, expected_result);
         BOOST_CHECK_EQUAL(match, expected_match);
         BOOST_CHECK_EQUAL(args, expected_args);
@@ -82,87 +76,61 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
 
     test::data_set(
         f,
-        std::tuple{std::tuple{std::vector<parsing::token_type>{},
-                              std::vector<parsing::token_type>{
-                                  {parsing::prefix_type::none, "--hello=42"}},
-                              std::vector<parsing::token_type>{
-                                  {parsing::prefix_type::none, "--hello"},
-                                  {parsing::prefix_type::none, "42"}},
-                              parsing::pre_parse_action::valid_node,
-                              std::vector<parsing::token_type>{},
-                              stub_node{policy::long_name<S_("hello")>,
-                                        policy::fixed_count<1>}},
-                   std::tuple{std::vector<parsing::token_type>{},
-                              std::vector<parsing::token_type>{
-                                  {parsing::prefix_type::none, "--hello=42"},
-                                  {parsing::prefix_type::none, "foo"}},
-                              std::vector<parsing::token_type>{
-                                  {parsing::prefix_type::none, "--hello"},
-                                  {parsing::prefix_type::none, "42"}},
-                              parsing::pre_parse_action::valid_node,
-                              std::vector<parsing::token_type>{
-                                  {parsing::prefix_type::none, "foo"}},
-                              stub_node{policy::long_name<S_("hello")>,
-                                        policy::fixed_count<1>}},
-                   std::tuple{std::vector<parsing::token_type>{
-                                  {parsing::prefix_type::long_, "hello=42"}},
-                              std::vector<parsing::token_type>{},
-                              std::vector<parsing::token_type>{
-                                  {parsing::prefix_type::long_, "hello"},
-                                  {parsing::prefix_type::none, "42"}},
-                              parsing::pre_parse_action::valid_node,
-                              std::vector<parsing::token_type>{},
-                              stub_node{policy::long_name<S_("hello")>,
-                                        policy::fixed_count<1>}},
-                   std::tuple{std::vector<parsing::token_type>{
-                                  {parsing::prefix_type::long_, "hello=42"}},
-                              std::vector<parsing::token_type>{
-                                  {parsing::prefix_type::none, "foo"}},
-                              std::vector<parsing::token_type>{
-                                  {parsing::prefix_type::long_, "hello"},
-                                  {parsing::prefix_type::none, "42"}},
-                              parsing::pre_parse_action::valid_node,
-                              std::vector<parsing::token_type>{
-                                  {parsing::prefix_type::none, "foo"}},
-                              stub_node{policy::long_name<S_("hello")>,
-                                        policy::fixed_count<1>}},
-                   std::tuple{std::vector<parsing::token_type>{},
-                              std::vector<parsing::token_type>{
-                                  {parsing::prefix_type::none, "-d=42"}},
-                              std::vector<parsing::token_type>{
-                                  {parsing::prefix_type::none, "-d"},
-                                  {parsing::prefix_type::none, "42"}},
-                              parsing::pre_parse_action::valid_node,
-                              std::vector<parsing::token_type>{},
-                              stub_node{policy::long_name<S_("hello")>,
-                                        policy::fixed_count<1>}},
-                   std::tuple{std::vector<parsing::token_type>{
-                                  {parsing::prefix_type::short_, "h"}},
-                              std::vector<parsing::token_type>{},
-                              std::vector<parsing::token_type>{
-                                  {parsing::prefix_type::short_, "h"}},
-                              parsing::pre_parse_action::skip_node,
-                              std::vector<parsing::token_type>{},
-                              stub_node{policy::long_name<S_("hello")>,
-                                        policy::fixed_count<1>}},
-                   std::tuple{std::vector<parsing::token_type>{},
-                              std::vector<parsing::token_type>{
-                                  {parsing::prefix_type::none, "--hello"}},
-                              std::vector<parsing::token_type>{},
-                              parsing::pre_parse_action::skip_node,
-                              std::vector<parsing::token_type>{
-                                  {parsing::prefix_type::none, "--hello"}},
-                              stub_node{policy::long_name<S_("hello")>,
-                                        policy::fixed_count<1>}},
-                   std::tuple{std::vector<parsing::token_type>{},
-                              std::vector<parsing::token_type>{
-                                  {parsing::prefix_type::none, "--hello="}},
-                              std::vector<parsing::token_type>{},
-                              parsing::pre_parse_action::skip_node,
-                              std::vector<parsing::token_type>{
-                                  {parsing::prefix_type::none, "--hello="}},
-                              stub_node{policy::long_name<S_("hello")>,
-                                        policy::fixed_count<1>}}});
+        std::tuple{
+            std::tuple{std::vector<parsing::token_type>{},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello=42"}},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"},
+                                                        {parsing::prefix_type::none, "42"}},
+                       parsing::pre_parse_action::valid_node,
+                       std::vector<parsing::token_type>{},
+                       stub_node{policy::long_name<S_("hello")>, policy::fixed_count<1>}},
+            std::tuple{std::vector<parsing::token_type>{},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello=42"},
+                                                        {parsing::prefix_type::none, "foo"}},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"},
+                                                        {parsing::prefix_type::none, "42"}},
+                       parsing::pre_parse_action::valid_node,
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "foo"}},
+                       stub_node{policy::long_name<S_("hello")>, policy::fixed_count<1>}},
+            std::tuple{std::vector<parsing::token_type>{{parsing::prefix_type::long_, "hello=42"}},
+                       std::vector<parsing::token_type>{},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::long_, "hello"},
+                                                        {parsing::prefix_type::none, "42"}},
+                       parsing::pre_parse_action::valid_node,
+                       std::vector<parsing::token_type>{},
+                       stub_node{policy::long_name<S_("hello")>, policy::fixed_count<1>}},
+            std::tuple{std::vector<parsing::token_type>{{parsing::prefix_type::long_, "hello=42"}},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "foo"}},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::long_, "hello"},
+                                                        {parsing::prefix_type::none, "42"}},
+                       parsing::pre_parse_action::valid_node,
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "foo"}},
+                       stub_node{policy::long_name<S_("hello")>, policy::fixed_count<1>}},
+            std::tuple{std::vector<parsing::token_type>{},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "-d=42"}},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "-d"},
+                                                        {parsing::prefix_type::none, "42"}},
+                       parsing::pre_parse_action::valid_node,
+                       std::vector<parsing::token_type>{},
+                       stub_node{policy::long_name<S_("hello")>, policy::fixed_count<1>}},
+            std::tuple{std::vector<parsing::token_type>{{parsing::prefix_type::short_, "h"}},
+                       std::vector<parsing::token_type>{},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::short_, "h"}},
+                       parsing::pre_parse_action::skip_node,
+                       std::vector<parsing::token_type>{},
+                       stub_node{policy::long_name<S_("hello")>, policy::fixed_count<1>}},
+            std::tuple{std::vector<parsing::token_type>{},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"}},
+                       std::vector<parsing::token_type>{},
+                       parsing::pre_parse_action::skip_node,
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"}},
+                       stub_node{policy::long_name<S_("hello")>, policy::fixed_count<1>}},
+            std::tuple{std::vector<parsing::token_type>{},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello="}},
+                       std::vector<parsing::token_type>{},
+                       parsing::pre_parse_action::skip_node,
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello="}},
+                       stub_node{policy::long_name<S_("hello")>, policy::fixed_count<1>}}});
 }
 
 BOOST_AUTO_TEST_SUITE(death_suite)

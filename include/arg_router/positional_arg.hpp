@@ -14,9 +14,8 @@ class add_missing_min_max_policy
 {
     template <typename Policy>
     struct has_min_max_t {
-        constexpr static bool value =
-            traits::has_minimum_count_method_v<Policy> &&
-            traits::has_maximum_count_method_v<Policy>;
+        constexpr static bool value = traits::has_minimum_count_method_v<Policy> &&
+                                      traits::has_maximum_count_method_v<Policy>;
     };
 
     using policies_tuple = std::tuple<std::decay_t<Policies>...>;
@@ -30,36 +29,31 @@ public:
     using type = std::conditional_t<
         has_min_max,
         boost::mp11::mp_rename<policies_tuple, tree_node>,
-        boost::mp11::mp_rename<
-            boost::mp11::mp_push_front<policies_tuple, unbounded_policy_type>,
-            tree_node>>;
+        boost::mp11::mp_rename<boost::mp11::mp_push_front<policies_tuple, unbounded_policy_type>,
+                               tree_node>>;
 };
 }  // namespace detail
 
-/** Represents a positional argument on the command line that has potentially
- * multiple values that need parsing.
+/** Represents a positional argument on the command line that has potentially multiple values that
+ * need parsing.
  *
- * If no policy implementing <TT>minimum_count()</TT> and
- * <TT>maximum_count()</TT> methods is used (e.g. policy::min_max_count_t), then
- * an unbounded policy::min_max_count_t is prepended to the policies internally.
+ * If no policy implementing <TT>minimum_count()</TT> and <TT>maximum_count()</TT> methods is used
+ * (e.g. policy::min_max_count_t), then an unbounded policy::min_max_count_t is prepended to the
+ * policies internally.
  * @tparam T Argument value type, must have a <TT>push_back(..)</TT> method
  * @tparam Policies Pack of policies that define its behaviour
  */
 template <typename T, typename... Policies>
-class positional_arg_t :
-    public detail::add_missing_min_max_policy<Policies...>::type
+class positional_arg_t : public detail::add_missing_min_max_policy<Policies...>::type
 {
-    static_assert(
-        policy::is_all_policies_v<std::tuple<std::decay_t<Policies>...>>,
-        "Positional args must only contain policies (not other nodes)");
+    static_assert(policy::is_all_policies_v<std::tuple<std::decay_t<Policies>...>>,
+                  "Positional args must only contain policies (not other nodes)");
 
-    using parent_type =
-        typename detail::add_missing_min_max_policy<Policies...>::type;
+    using parent_type = typename detail::add_missing_min_max_policy<Policies...>::type;
 
     template <std::size_t N>
     constexpr static bool has_fixed_count = []() {
-        return (parent_type::minimum_count() == N) &&
-               (parent_type::maximum_count() == N);
+        return (parent_type::minimum_count() == N) && (parent_type::maximum_count() == N);
     }();
 
     static_assert(!has_fixed_count<0>, "Cannot have a fixed count of zero");
@@ -88,21 +82,17 @@ public:
         [[nodiscard]] constexpr static auto label_generator() noexcept
         {
             constexpr auto name_index =
-                boost::mp11::mp_find_if<policies_type,
-                                        traits::has_display_name_method>::value;
-            constexpr auto name =
-                std::tuple_element_t<name_index, policies_type>::display_name();
+                boost::mp11::mp_find_if<policies_type, traits::has_display_name_method>::value;
+            constexpr auto name = std::tuple_element_t<name_index, policies_type>::display_name();
 
             return S_("<"){} + S_(name){} + S_("> "){} +
-                   parent_type::template default_leaf_help_data_type<
-                       Flatten>::count_suffix();
+                   parent_type::template default_leaf_help_data_type<Flatten>::count_suffix();
         }
 
     public:
         using label = std::decay_t<decltype(label_generator())>;
         using description =
-            typename parent_type::template default_leaf_help_data_type<
-                Flatten>::description;
+            typename parent_type::template default_leaf_help_data_type<Flatten>::description;
         using children = std::tuple<>;
     };
 
@@ -110,20 +100,16 @@ public:
      *
      * @param policies Policy instances
      */
-    template <auto has_min_max =
-                  detail::add_missing_min_max_policy<Policies...>::has_min_max>
-    constexpr explicit positional_arg_t(
-        Policies... policies,
-        std::enable_if_t<has_min_max>* = nullptr) noexcept :
+    template <auto has_min_max = detail::add_missing_min_max_policy<Policies...>::has_min_max>
+    constexpr explicit positional_arg_t(Policies... policies,
+                                        std::enable_if_t<has_min_max>* = nullptr) noexcept :
         parent_type{std::move(policies)...}
     {
     }
 
-    template <auto has_min_max =
-                  detail::add_missing_min_max_policy<Policies...>::has_min_max>
-    constexpr explicit positional_arg_t(
-        Policies... policies,
-        std::enable_if_t<!has_min_max>* = nullptr) noexcept :
+    template <auto has_min_max = detail::add_missing_min_max_policy<Policies...>::has_min_max>
+    constexpr explicit positional_arg_t(Policies... policies,
+                                        std::enable_if_t<!has_min_max>* = nullptr) noexcept :
         parent_type{policy::min_count<0>, std::move(policies)...}
     {
     }
@@ -146,29 +132,24 @@ public:
      * @exception parse_exception Thrown if parsing failed
      */
     template <typename... Parents>
-    value_type parse(parsing::parse_target target,
-                     const Parents&... parents) const
+    value_type parse(parsing::parse_target target, const Parents&... parents) const
     {
         auto result = value_type{};
         if constexpr (traits::has_push_back_method_v<value_type>) {
             for (auto token : target.tokens()) {
                 result.push_back(
-                    parent_type::template parse<value_type>(token.name,
-                                                            *this,
-                                                            parents...));
+                    parent_type::template parse<value_type>(token.name, *this, parents...));
             }
         } else if (!target.tokens().empty()) {
-            result = parent_type::template parse<value_type>(
-                target.tokens().front().name,
-                *this,
-                parents...);
+            result = parent_type::template parse<value_type>(target.tokens().front().name,
+                                                             *this,
+                                                             parents...);
         }
 
         // Validation
         utility::tuple_type_iterator<policies_type>([&](auto i) {
             using policy_type = std::tuple_element_t<i, policies_type>;
-            if constexpr (policy::has_validation_phase_method_v<policy_type,
-                                                                value_type>) {
+            if constexpr (policy::has_validation_phase_method_v<policy_type, value_type>) {
                 this->policy_type::validation_phase(result, *this, parents...);
             }
         });
@@ -179,18 +160,16 @@ public:
     }
 
 private:
-    static_assert(
-        !parent_type::template any_phases_v<value_type,
-                                            policy::has_routing_phase_method>,
-        "Positional arg does not support policies with routing phases "
-        "(e.g. router)");
+    static_assert(!parent_type::template any_phases_v<value_type, policy::has_routing_phase_method>,
+                  "Positional arg does not support policies with routing phases "
+                  "(e.g. router)");
 };
 
 /** Constructs an positional_arg_t with the given policies and value type.
  *
- * This is necessary due to CTAD being required for all template parameters or
- * none, and unfortunately in our case we need @a T to be explicitly set by the
- * user whilst @a Policies should be deduced.
+ * This is necessary due to CTAD being required for all template parameters or none, and
+ * unfortunately in our case we need @a T to be explicitly set by the user whilst @a Policies
+ * should be deduced.
  * @tparam T Argument value type, must have a <TT>push_back(..)</TT> method
  * @tparam Policies Pack of policies that define its behaviour
  * @param policies Pack of policy instances
@@ -199,7 +178,6 @@ private:
 template <typename T, typename... Policies>
 [[nodiscard]] constexpr auto positional_arg(Policies... policies) noexcept
 {
-    return positional_arg_t<T, std::decay_t<Policies>...>{
-        std::move(policies)...};
+    return positional_arg_t<T, std::decay_t<Policies>...>{std::move(policies)...};
 }
 }  // namespace arg_router

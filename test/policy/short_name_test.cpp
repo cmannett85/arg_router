@@ -12,8 +12,7 @@ BOOST_AUTO_TEST_SUITE(short_name_suite)
 
 BOOST_AUTO_TEST_CASE(is_policy_test)
 {
-    static_assert(policy::is_policy_v<
-                      policy::short_name_t<traits::integral_constant<'a'>>>,
+    static_assert(policy::is_policy_v<policy::short_name_t<traits::integral_constant<'a'>>>,
                   "Policy test has failed");
 }
 

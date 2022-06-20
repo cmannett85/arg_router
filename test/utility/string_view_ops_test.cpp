@@ -15,9 +15,9 @@ BOOST_AUTO_TEST_CASE(concatenation_operator)
 {
     auto f = [](auto lhs, auto rhs, auto expected) {
         const auto result = lhs + rhs;
-        static_assert(std::is_same_v<std::decay_t<decltype(result)>,
-                                     std::decay_t<decltype(expected)>>,
-                      "Result is incorrect type");
+        static_assert(
+            std::is_same_v<std::decay_t<decltype(result)>, std::decay_t<decltype(expected)>>,
+            "Result is incorrect type");
         BOOST_CHECK_EQUAL(result, expected);
     };
 

@@ -18,8 +18,8 @@ namespace test
  * @code
  * test::get_node<3, 2, 1>(root)
  * @endcode
- * Will access the child at index 3 of @a root, then it's child at index 2, then
- * return it's child at index 1.
+ * Will access the child at index 3 of @a root, then it's child at index 2, then return it's child
+ * at index 1.
  * @tparam I First index
  * @tparam Is Optional nested indices
  * @tparam Root Starting node type
@@ -38,8 +38,7 @@ constexpr auto& get_node(Root& root) noexcept
     }
 }
 
-/** Returns the <TT>std::type_index</TT> using the descending child indices,
- * starting from @a root.
+/** Returns the <TT>std::type_index</TT> using the descending child indices, starting from @a root.
  *
  * @tparam I First index
  * @tparam Is Optional nested indices
@@ -54,17 +53,16 @@ std::type_index get_type_index(const Root& root) noexcept
     return typeid(std::decay_t<decltype(child)>);
 }
 
-/** Generates a tuple of <TT>std::reference_wrapper<TT>s containing a node and
- * all of its parents in ascending ancestry.
+/** Generates a tuple of <TT>std::reference_wrapper<TT>s containing a node and all of its parents in
+ * ascending ancestry.
  *
  * For example:
  * @code
  * test::get_parents<3, 2, 1>(root)
  * @endcode
- * The template values are the indices of each successive child tuple starting
- * from @a root.  So here the child at index 3 of @a root, then it's child at
- * index 2, and then it's child at index 1; the tree instances are returned
- * in reverse order.
+ * The template values are the indices of each successive child tuple starting from @a root.  So
+ * here the child at index 3 of @a root, then it's child at index 2, and then it's child at index 1;
+ * the tree instances are returned in reverse order.
  * @tparam I First index
  * @tparam Is Optional nested indices
  * @tparam Root Starting node type
@@ -79,23 +77,20 @@ constexpr auto get_parents(const Root& root) noexcept
     if constexpr (sizeof...(Is) > 0) {
         // All this because you can't resize a tuple in std...
         using index_tuple = boost::mp11::mp_pop_back<
-            std::tuple<traits::integral_constant<I>,
-                       traits::integral_constant<Is>...>>;
+            std::tuple<traits::integral_constant<I>, traits::integral_constant<Is>...>>;
         return std::apply(
-            [&](auto... NewIs) {
-                return std::tuple_cat(result, get_parents<NewIs...>(root));
-            },
+            [&](auto... NewIs) { return std::tuple_cat(result, get_parents<NewIs...>(root)); },
             index_tuple{});
     } else {
         return std::tuple_cat(result, std::tuple{std::cref(root)});
     }
 }
 
-/** Loops through the list of argument sets in @a args and executes the test
- * function object @a f with them.
+/** Loops through the list of argument sets in @a args and executes the test function object @a f
+ * with them.
  *
- * @a f should contain standard Boost Test checking macros, so the test can fail
- * inside it.  No return value of @a f is read.
+ * @a f should contain standard Boost Test checking macros, so the test can fail inside it.  No
+ * return value of @a f is read.
  *
  * @code
  * const auto args = { std::make_tuple(1, 2, 3),
@@ -138,8 +133,7 @@ void data_set(F&& f, std::initializer_list<std::tuple<Args...>> args)
 
 /** Overload for for passing a tuple of tuples.
  *
- * This allows the passing of types as test arguments, useful for testing
- * template parameters.
+ * This allows the passing of types as test arguments, useful for testing template parameters.
  *
  * @code
  * using data_set = std::tuple<
@@ -189,12 +183,11 @@ constexpr void data_set(F&& f, std::tuple<Args...>&& tuple)
 
 /** Compiles @a code and returns the result.
  *
- * There is a dedicated CMake target for death tests, this function replaces
- * the content of the target's only source file with @a code (which is why it
- * must contain <TT>main()</TT> function) and attempts to build it.
+ * There is a dedicated CMake target for death tests, this function replaces the content of the
+ * target's only source file with @a code (which is why it must contain <TT>main()</TT> function)
+ * and attempts to build it.
  * 
- * This function contains all the necessary <TT>BOOST_CHECK_...</TT> calls for
- * testing.
+ * This function contains all the necessary <TT>BOOST_CHECK_...</TT> calls for testing.
  * @param code Code to compile, must contain a <TT>main()</TT>
  * @param expected_error Error string to search for in output
  */

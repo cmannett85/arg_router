@@ -33,14 +33,14 @@ public:
     using typename parent_type::children_type;
 
 private:
-    static_assert(!parent_type::template any_phases_v<
-                      bool,  // Type doesn't matter, as long as it isn't void
-                      policy::has_pre_parse_phase_method,
-                      policy::has_parse_phase_method,
-                      policy::has_validation_phase_method,
-                      policy::has_routing_phase_method,
-                      policy::has_missing_phase_method>,
-                  "Root does not support policies with any parsing phases");
+    static_assert(
+        !parent_type::template any_phases_v<bool,  // Type doesn't matter, as long as it isn't void
+                                            policy::has_pre_parse_phase_method,
+                                            policy::has_parse_phase_method,
+                                            policy::has_validation_phase_method,
+                                            policy::has_routing_phase_method,
+                                            policy::has_missing_phase_method>,
+        "Root does not support policies with any parsing phases");
 
     static_assert(!traits::has_long_name_method_v<parent_type> &&
                       !traits::has_short_name_method_v<parent_type> &&
@@ -50,39 +50,32 @@ private:
                   "Root cannot have name or description policies");
 
     constexpr static auto validator_index =
-        algorithm::find_specialisation_v<policy::validation::validator,
-                                         policies_type>;
+        algorithm::find_specialisation_v<policy::validation::validator, policies_type>;
     static_assert(validator_index != std::tuple_size_v<policies_type>,
                   "Root must have a validator policy, use "
                   "policy::validation::default_validator unless you have "
                   "created a custom one");
 
-    static_assert(std::tuple_size_v<children_type> >= 1,
-                  "Root must have at least one child");
+    static_assert(std::tuple_size_v<children_type> >= 1, "Root must have at least one child");
 
     template <typename Child>
     struct router_checker {
-        constexpr static bool has_router =
-            !std::is_void_v<typename Child::template phase_finder_t<
-                policy::has_routing_phase_method>>;
+        constexpr static bool has_router = !std::is_void_v<
+            typename Child::template phase_finder_t<policy::has_routing_phase_method>>;
 
-        constexpr static bool value =
-            policy::has_no_result_value_v<Child> || has_router;
+        constexpr static bool value = policy::has_no_result_value_v<Child> || has_router;
     };
-    static_assert(
-        boost::mp11::mp_all_of<children_type, router_checker>::value,
-        "All root children must have routers, unless they have no value");
+    static_assert(boost::mp11::mp_all_of<children_type, router_checker>::value,
+                  "All root children must have routers, unless they have no value");
 
     // Find the help node
     constexpr static auto help_index =
-        boost::mp11::mp_find_if<children_type,
-                                traits::has_generate_help_method>::value;
+        boost::mp11::mp_find_if<children_type, traits::has_generate_help_method>::value;
 
 public:
     /** Validator type. */
-    // Initially I wanted the default_validator to be used if one isn't user
-    // specified, but you get into a circular dependency as the validator needs
-    // the root first
+    // Initially I wanted the default_validator to be used if one isn't user specified, but you get
+    // into a circular dependency as the validator needs the root first
     using validator_type = std::tuple_element_t<validator_index, policies_type>;
 
     /** Help data type. */
@@ -92,8 +85,7 @@ public:
     public:
         using label = S_("");
         using description = S_("");
-        using children =
-            typename tree_node<std::decay_t<Params>...>::template  //
+        using children = typename tree_node<std::decay_t<Params>...>::template  //
             default_leaf_help_data_type<Flatten>::all_children_help;
     };
 
@@ -101,8 +93,7 @@ public:
      *
      * @param params Policy and child instances
      */
-    constexpr explicit root_t(Params... params) noexcept :
-        parent_type{std::move(params)...}
+    constexpr explicit root_t(Params... params) noexcept : parent_type{std::move(params)...}
     {
         validator_type::template validate<std::decay_t<decltype(*this)>>();
     }
@@ -123,19 +114,16 @@ public:
         }
 
         // Take a copy of the front token for the error messages
-        const auto front_token =
-            args.empty() ?  //
-                parsing::token_type{parsing::prefix_type::none, ""} :
-                args.front();
+        const auto front_token = args.empty() ?  //
+                                     parsing::token_type{parsing::prefix_type::none, ""} :
+                                     args.front();
 
         // Find a matching child
         auto match = std::optional<parsing::parse_target>{};
         utility::tuple_iterator(
             [&](auto /*i*/, const auto& child) {
                 // Skip any remaining children if one has been found
-                if (!match &&
-                    (match = child.pre_parse(parsing::pre_parse_data{args},
-                                             *this))) {
+                if (!match && (match = child.pre_parse(parsing::pre_parse_data{args}, *this))) {
                     if (!args.empty()) {
                         throw parse_exception{"Unhandled arguments", args};
                     }
@@ -159,8 +147,7 @@ public:
     void help(std::ostream& stream) const
     {
         if constexpr (help_index < std::tuple_size_v<children_type>) {
-            std::get<help_index>(this->children())
-                .template generate_help<root_t>(stream);
+            std::get<help_index>(this->children()).template generate_help<root_t>(stream);
         }
     }
 
