@@ -23,80 +23,12 @@ BOOST_AUTO_TEST_CASE(is_tree_node_test)
         "Tree node test has failed");
 }
 
-BOOST_AUTO_TEST_CASE(match_test)
-{
-    auto f = [](const auto& test_node,
-                auto token,
-                const auto& current_result,
-                bool expected_result) {
-        using test_node_type = std::decay_t<decltype(test_node)>;
-
-        const auto result = test_node.match(
-            token,
-            [&](const auto& node) {
-                using node_type = std::decay_t<decltype(node)>;
-                static_assert(std::is_same_v<node_type, test_node_type>,
-                              "match fail");
-            },
-            current_result);
-        BOOST_CHECK_EQUAL(result, expected_result);
-    };
-
-    test::data_set(
-        f,
-        std::tuple{
-            std::tuple{positional_arg<std::vector<int>>(
-                           policy::display_name<S_("hello")>),
-                       parsing::token_type{parsing::prefix_type::none, "1"},
-                       std::optional<std::vector<int>>{},
-                       true},
-            std::tuple{positional_arg<std::vector<int>>(
-                           policy::display_name<S_("goodbye")>,
-                           policy::max_count<3>),
-                       parsing::token_type{parsing::prefix_type::none, "1"},
-                       std::optional<std::vector<int>>{},
-                       true},
-            std::tuple{positional_arg<std::vector<int>>(
-                           policy::display_name<S_("goodbye")>,
-                           policy::max_count<3>),
-                       parsing::token_type{parsing::prefix_type::none, "1"},
-                       std::optional{std::vector{42}},
-                       true},
-            std::tuple{positional_arg<int>(policy::display_name<S_("goodbye")>,
-                                           policy::fixed_count<1>),
-                       parsing::token_type{parsing::prefix_type::none, "1"},
-                       std::optional<int>{},
-                       true},
-            std::tuple{positional_arg<std::vector<int>>(
-                           policy::display_name<S_("goodbye")>,
-                           policy::max_count<3>),
-                       parsing::token_type{parsing::prefix_type::none, "1"},
-                       std::optional{std::vector{42, 43, 44}},
-                       false},
-            std::tuple{positional_arg<std::vector<int>>(
-                           policy::display_name<S_("goodbye")>,
-                           policy::max_count<3>),
-                       parsing::token_type{parsing::prefix_type::none, "1"},
-                       std::optional{std::vector{42, 43, 44, 45}},
-                       false},
-        });
-}
-
 BOOST_AUTO_TEST_CASE(parse_test)
 {
-    auto f = [](const auto& test_node,
-                auto tokens,
-                auto expected_tokens,
-                auto expected_result,
-                auto fail_message) {
-        try {
-            const auto result = test_node.parse(tokens);
-            BOOST_CHECK(fail_message.empty());
-            BOOST_CHECK_EQUAL(result, expected_result);
-            BOOST_CHECK_EQUAL(tokens.pending_view(), expected_tokens);
-        } catch (parse_exception& e) {
-            BOOST_CHECK_EQUAL(e.what(), fail_message);
-        }
+    auto f = [](const auto& node, auto tokens, auto expected_result) {
+        auto target = parsing::parse_target{std::move(tokens), node};
+        const auto result = node.parse(std::move(target));
+        BOOST_CHECK_EQUAL(result, expected_result);
     };
 
     test::data_set(
@@ -104,43 +36,37 @@ BOOST_AUTO_TEST_CASE(parse_test)
         std::tuple{
             std::tuple{positional_arg<int>(policy::display_name<S_("node")>,
                                            policy::fixed_count<1>),
-                       parsing::token_list{{parsing::prefix_type::none, "13"}},
-                       parsing::token_list{},
-                       13,
-                       ""s},
+                       std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "13"}},
+                       13},
             std::tuple{positional_arg<std::vector<int>>(
                            policy::display_name<S_("node")>),
-                       parsing::token_list{{parsing::prefix_type::none, "1"},
-                                           {parsing::prefix_type::none, "2"},
-                                           {parsing::prefix_type::none, "3"}},
-                       parsing::token_list{},
-                       std::vector{1, 2, 3},
-                       ""s},
+                       std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "1"},
+                           {parsing::prefix_type::none, "2"},
+                           {parsing::prefix_type::none, "3"}},
+                       std::vector{1, 2, 3}},
             std::tuple{positional_arg<std::vector<int>>(
                            policy::display_name<S_("node")>,
                            policy::min_count<2>),
-                       parsing::token_list{{parsing::prefix_type::none, "1"},
-                                           {parsing::prefix_type::none, "2"}},
-                       parsing::token_list{},
-                       std::vector{1, 2},
-                       ""s},
+                       std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "1"},
+                           {parsing::prefix_type::none, "2"}},
+                       std::vector{1, 2}},
             std::tuple{positional_arg<std::vector<int>>(
                            policy::display_name<S_("node")>,
                            policy::max_count<2>),
-                       parsing::token_list{{parsing::prefix_type::none, "1"},
-                                           {parsing::prefix_type::none, "2"}},
-                       parsing::token_list{},
-                       std::vector{1, 2},
-                       ""s},
+                       std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "1"},
+                           {parsing::prefix_type::none, "2"}},
+                       std::vector{1, 2}},
             std::tuple{positional_arg<std::vector<int>>(
                            policy::display_name<S_("node")>,
                            policy::max_count<2>),
-                       parsing::token_list{{parsing::prefix_type::none, "1"},
-                                           {parsing::prefix_type::none, "2"},
-                                           {parsing::prefix_type::none, "3"}},
-                       parsing::token_list{{parsing::prefix_type::none, "3"}},
-                       std::vector{1, 2},
-                       ""s},
+                       std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "1"},
+                           {parsing::prefix_type::none, "2"}},
+                       std::vector{1, 2}},
         });
 }
 

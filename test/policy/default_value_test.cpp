@@ -56,36 +56,6 @@ BOOST_AUTO_TEST_CASE(is_policy_test)
                   "Policy test has failed");
 }
 
-BOOST_AUTO_TEST_CASE(constructor_and_get_test)
-{
-    auto f = [](auto input, auto is_ref) {
-        using T = std::decay_t<decltype(input)>;
-
-        const auto dv = policy::default_value<T>{input};
-        BOOST_CHECK((std::is_same_v<typename decltype(dv)::value_type, T>));
-
-        const auto result = dv.get_default_value();
-        BOOST_CHECK(input == result);
-
-        using result_type = decltype(std::declval<policy::default_value<T>>()
-                                         .get_default_value());
-        if (is_ref) {
-            BOOST_CHECK((std::is_same_v<result_type, const T&>));
-        } else {
-            BOOST_CHECK((std::is_same_v<result_type, T>));
-        }
-    };
-
-    test::data_set(f,
-                   std::tuple{
-                       std::tuple{42, false},
-                       std::tuple{3.14, false},
-                       std::tuple{"hello"sv, false},
-                       // Should be bigger than any 'normal' L1 cache
-                       std::tuple{std::array<char, 256>{}, true},
-                   });
-}
-
 BOOST_AUTO_TEST_CASE(missing_phase_test)
 {
     const auto root = stub_node{stub_node{policy::default_value{42}},

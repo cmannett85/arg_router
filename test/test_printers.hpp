@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "arg_router/parsing.hpp"
+#include "arg_router/parsing/parsing.hpp"
 
 #include <boost/test/unit_test.hpp>
 
@@ -23,24 +23,13 @@ inline std::ostream& operator<<(std::ostream& stream, const token_type& token)
     return stream << to_string(token);
 }
 
-inline std::ostream& operator<<(std::ostream& stream, const token_list& list)
-{
-    return stream << to_string(list);
-}
-
-inline std::ostream& operator<<(std::ostream& stream,
-                                const token_list::pending_view_type& view)
-{
-    return stream << to_string(view);
-}
-
 inline std::ostream& operator<<(std::ostream& stream, pre_parse_action action)
 {
     switch (action) {
     case pre_parse_action::skip_node: return stream << "skip_node";
     case pre_parse_action::valid_node: return stream << "valid_node";
-    case pre_parse_action::skip_node_but_use_tokens:
-        return stream << "skip_node_but_use_tokens";
+    case pre_parse_action::skip_node_but_use_sub_targets:
+        return stream << "skip_node_but_use_sub_targets";
     default: return stream << "<Unknown>";
     }
 }

@@ -1,6 +1,6 @@
 /* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
 
-#include "arg_router/dynamic_token_adapter.hpp"
+#include "arg_router/parsing/dynamic_token_adapter.hpp"
 
 #include "test_helpers.hpp"
 #include "test_printers.hpp"

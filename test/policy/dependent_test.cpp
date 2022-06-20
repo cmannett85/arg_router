@@ -23,10 +23,11 @@ public:
     {
     }
 
-    template <typename... Parents>
+    template <typename ProcessedTarget, typename... Parents>
     [[nodiscard]] parsing::pre_parse_result pre_parse_phase(
         parsing::dynamic_token_adapter& tokens,
-        parsing::token_list::pending_view_type processed_tokens,
+        utility::compile_time_optional<ProcessedTarget> processed_target,
+        parsing::parse_target& target,
         const Parents&... parents) const
     {
         auto match =
@@ -39,45 +40,38 @@ public:
                                   this_policy,
                                   policy::dependent_t>) {
                     match = this->this_policy::pre_parse_phase(tokens,
-                                                               processed_tokens,
+                                                               processed_target,
+                                                               target,
                                                                parents...);
                 }
             });
 
         return match;
     }
+
+    template <typename... Parents>
+    [[nodiscard]] value_type parse(parsing::parse_target,
+                                   const Parents&...) const
+    {
+        return true;
+    }
 };
 
-template <std::size_t I, std::size_t... Is, typename T>
-const auto& get_node(const T& parent)
+template <typename SubTargetsTuple>
+void add_sub_targets(parsing::parse_target& target,
+                     const SubTargetsTuple& sub_targets_tuple)
 {
-    const auto& child = std::get<I>(parent.children());
-
-    if constexpr (sizeof...(Is) > 0) {
-        return get_node<Is...>(child);
-    } else {
-        return child;
-    }
-}
-
-template <std::size_t I, std::size_t... Is, typename T>
-auto get_parents(const T& parent)
-{
-    auto result = std::tuple{std::ref(get_node<I, Is...>(parent))};
-
-    if constexpr (sizeof...(Is) > 0) {
-        // All this because you can't resize a tuple in std...
-        using index_tuple = boost::mp11::mp_pop_back<
-            std::tuple<traits::integral_constant<I>,
-                       traits::integral_constant<Is>...>>;
-        return std::apply(
-            [&](auto... NewIs) {
-                return std::tuple_cat(result, get_parents<NewIs...>(parent));
-            },
-            index_tuple{});
-    } else {
-        return result;
-    }
+    utility::tuple_iterator(
+        [&](auto /*i*/, const auto& sub_target_tuple) {
+            std::apply(
+                [&](auto&& sub_target, auto&&... sub_target_parents) {
+                    target.add_sub_target(
+                        parsing::parse_target{sub_target.get(),
+                                              (sub_target_parents.get())...});
+                },
+                sub_target_tuple);
+        },
+        sub_targets_tuple);
 }
 }  // namespace
 
@@ -109,14 +103,6 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                             stub_node{policy::long_name<S_("flag3")>}},
                   stub_node{policy::long_name<S_("flag2")>},
                   policy::router{[](bool, bool, bool) {}}},
-        stub_node{policy::long_name<S_("test3")>,
-                  stub_node{policy::long_name<S_("one_of")>,
-                            stub_node{policy::long_name<S_("flag1")>,
-                                      policy::dependent(
-                                          policy::long_name<S_("flag2")>)},
-                            stub_node{policy::long_name<S_("flag2")>}},
-                  stub_node{policy::long_name<S_("flag3")>},
-                  policy::router{[](bool, bool, bool) {}}},
         stub_node{policy::long_name<S_("test4")>,
                   stub_node{policy::long_name<S_("flag1")>,
                             policy::dependent(policy::long_name<S_("flag2")>),
@@ -132,22 +118,31 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                   stub_node{policy::long_name<S_("flag3")>},
                   policy::router{[](bool, bool, bool) {}}}};
 
-    auto f = [&](const auto& tokens,
+    auto f = [&](const auto& sub_targets_tuple,
                  const auto& parents_tuple,
-                 const std::string fail_message) {
+                 std::string fail_message) {
         auto result = std::vector<parsing::token_type>{};
         auto args = std::vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
 
         try {
             const auto match = std::apply(
-                [&](auto&&... parents) {
-                    return std::get<0>(parents_tuple)
-                        .get()
-                        .pre_parse_phase(adapter,
-                                         tokens.pending_view(),
-                                         (parents.get())...,
-                                         root);
+                [&](auto&& node, auto&&... parents) {
+                    auto target =
+                        parsing::parse_target{node.get(), (parents.get())...};
+                    auto processed_target = utility::compile_time_optional{
+                        parsing::parse_target{parents.get()...}};
+                    add_sub_targets(*processed_target, sub_targets_tuple);
+
+                    const auto result =
+                        node.get().pre_parse_phase(adapter,
+                                                   processed_target,
+                                                   target,
+                                                   node.get(),
+                                                   (parents.get())...,
+                                                   root);
+                    BOOST_CHECK(target);
+                    return result;
                 },
                 parents_tuple);
 
@@ -166,46 +161,40 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
     test::data_set(
         f,
         std::tuple{
+            std::tuple{std::tuple{
+                           test::get_parents<0, 1>(root),
+                           test::get_parents<0, 2>(root),
+                       },
+                       test::get_parents<0, 0>(root),
+                       ""},
             std::tuple{
-                parsing::token_list{{parsing::prefix_type::long_, "flag2"},
-                                    {parsing::prefix_type::long_, "flag3"}},
-                get_parents<0, 0>(root),
-                ""},
-            std::tuple{
-                parsing::token_list{{parsing::prefix_type::long_, "flag3"},
-                                    {parsing::prefix_type::long_, "flag2"}},
-                get_parents<0, 0>(root),
-                ""},
-            std::tuple{
-                parsing::token_list{{parsing::prefix_type::long_, "flag3"}},
-                get_parents<0, 0>(root),
+                std::make_tuple(test::get_parents<0, 2>(root)),
+                test::get_parents<0, 0>(root),
                 "Dependent argument missing (needs to be before the requiring "
                 "token on the command line): --flag2"},
+            std::tuple{std::tuple{
+                           test::get_parents<1, 0, 1>(root),
+                           test::get_parents<1, 1>(root),
+                       },
+                       test::get_parents<1, 0, 0>(root),
+                       ""},
+            std::tuple{std::tuple{
+                           test::get_parents<2, 1>(root),
+                           test::get_parents<2, 2>(root),
+                       },
+                       test::get_parents<2, 0>(root),
+                       ""},
             std::tuple{
-                parsing::token_list{{parsing::prefix_type::long_, "flag2"},
-                                    {parsing::prefix_type::long_, "flag3"}},
-                get_parents<0, 0>(root),
-                ""},
-            std::tuple{
-                parsing::token_list{{parsing::prefix_type::long_, "flag2"},
-                                    {parsing::prefix_type::long_, "flag3"}},
-                get_parents<1, 0, 0>(root),
-                ""},
-            std::tuple{
-                parsing::token_list{{parsing::prefix_type::long_, "flag2"},
-                                    {parsing::prefix_type::long_, "flag3"}},
-                get_parents<2, 0, 0>(root),
-                ""},
-            std::tuple{
-                parsing::token_list{{parsing::prefix_type::long_, "flag2"},
-                                    {parsing::prefix_type::long_, "flag3"}},
-                get_parents<3, 0>(root),
-                ""},
-            std::tuple{
-                parsing::token_list{{parsing::prefix_type::long_, "flag2"},
-                                    {parsing::prefix_type::long_, "flag3"}},
-                get_parents<4, 0>(root),
-                ""},
+                std::make_tuple(test::get_parents<2, 1>(root)),
+                test::get_parents<2, 0>(root),
+                "Dependent argument missing (needs to be before the requiring "
+                "token on the command line): --flag3"},
+            std::tuple{std::tuple{
+                           test::get_parents<3, 1>(root),
+                           test::get_parents<3, 2>(root),
+                       },
+                       test::get_parents<3, 0>(root),
+                       ""},
         });
 }
 
@@ -280,26 +269,26 @@ template <typename... Policies>
 class stub_node : public tree_node<Policies...>
 {
 public:
-    using value_type = bool;
-
     constexpr explicit stub_node(Policies... policies) :
         tree_node<Policies...>{std::move(policies)...}
     {
     }
 
     template <typename... Parents>
-    void pre_parse_phase(parsing::token_list& tokens,
-                         const Parents&... parents) const
+    void pre_parse_phase(
+        vector<parsing::token_type>& result,
+        [[maybe_unused]] const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<0, typename stub_node::policies_type>;
-        
-        auto result = std::vector<parsing::token_type>{};
+
         auto args = vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
-
+        auto target = parsing::parse_target{*this, parents...};
+        auto processed_target = utility::compile_time_optional{};
         (void)this->this_policy::pre_parse_phase(adapter,
-                                                 tokens.pending_view(),
+                                                 processed_target,
+                                                 target,
                                                  *this,
                                                  parents...);
     }
@@ -310,8 +299,9 @@ int main() {
     const auto root = stub_node{
         policy::dependent(policy::long_name<S_("flag2")>)};
 
-    auto tokens = parsing::token_list{{parsing::prefix_type::long_, "flag2"},
-                                      {parsing::prefix_type::long_, "flag3"}};
+    auto tokens = vector<parsing::token_type>{
+                    {parsing::prefix_type::long_, "flag2"},
+                    {parsing::prefix_type::long_, "flag3"}};
     root.pre_parse_phase(tokens);
     return 0;
 }
@@ -335,26 +325,27 @@ template <typename... Policies>
 class stub_node : public tree_node<Policies...>
 {
 public:
-    using value_type = bool;
-
     constexpr explicit stub_node(Policies... policies) :
         tree_node<Policies...>{std::move(policies)...}
     {
     }
 
     template <typename... Parents>
-    void pre_parse_phase(parsing::token_list& tokens,
-                         const Parents&... parents) const
+    void pre_parse_phase(
+        vector<parsing::token_type>& result,
+        [[maybe_unused]] const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<1, typename stub_node::policies_type>;
-        
-        auto result = std::vector<parsing::token_type>{};
+
         auto args = vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
-
+        auto target = parsing::parse_target{*this, parents...};
+        auto processed_target = utility::compile_time_optional{
+                                    parsing::parse_target{parents...}};
         (void)this->this_policy::pre_parse_phase(adapter,
-                                                 tokens.pending_view(),
+                                                 processed_target,
+                                                 target,
                                                  *this,
                                                  parents...);
     }
@@ -369,8 +360,9 @@ int main() {
               stub_node{policy::long_name<S_("flag2")>},
               stub_node{policy::long_name<S_("flag3")>}};
 
-    auto tokens = parsing::token_list{{parsing::prefix_type::long_, "flag2"},
-                                      {parsing::prefix_type::long_, "flag3"}};
+    auto tokens = vector<parsing::token_type>{
+                    {parsing::prefix_type::long_, "flag2"},
+                    {parsing::prefix_type::long_, "flag3"}};
     const auto& owner = std::get<0>(root.children());
 
     owner.pre_parse_phase(tokens, root);
@@ -378,6 +370,70 @@ int main() {
 }
     )",
         "Cannot find parent mode");
+}
+
+BOOST_AUTO_TEST_CASE(processed_target_cannot_be_empty_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/dependent.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/router.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+namespace
+{
+template <typename... Policies>
+class stub_node : public tree_node<Policies...>
+{
+public:
+    constexpr explicit stub_node(Policies... policies) :
+        tree_node<Policies...>{std::move(policies)...}
+    {
+    }
+
+    template <typename... Parents>
+    void pre_parse_phase(
+        vector<parsing::token_type>& result,
+        [[maybe_unused]] const Parents&... parents) const
+    {
+        using this_policy =
+            std::tuple_element_t<1, typename stub_node::policies_type>;
+
+        auto args = vector<parsing::token_type>{};
+        auto adapter = parsing::dynamic_token_adapter{result, args};
+        auto target = parsing::parse_target{*this, parents...};
+        auto processed_target = utility::compile_time_optional{};
+        (void)this->this_policy::pre_parse_phase(adapter,
+                                                 processed_target,
+                                                 target,
+                                                 *this,
+                                                 parents...);
+    }
+};
+}  // namespace
+
+int main() {
+    const auto root =
+        stub_node{policy::long_name<S_("mode")>,
+                  stub_node{policy::long_name<S_("flag1")>,
+                            policy::dependent(policy::long_name<S_("flag2")>)},
+                  stub_node{policy::long_name<S_("flag2")>},
+                  stub_node{policy::long_name<S_("flag3")>},
+                  policy::router{[](bool, bool, bool) {}}};
+
+    auto tokens = vector<parsing::token_type>{
+                    {parsing::prefix_type::long_, "flag2"},
+                    {parsing::prefix_type::long_, "flag3"}};
+    const auto& owner = std::get<0>(root.children());
+
+    owner.pre_parse_phase(tokens, root);
+    return 0;
+}
+    )",
+        "processed_target cannot be empty");
 }
 
 BOOST_AUTO_TEST_CASE(cyclic_dependency_test)
@@ -397,26 +453,27 @@ template <typename... Policies>
 class stub_node : public tree_node<Policies...>
 {
 public:
-    using value_type = bool;
-
     constexpr explicit stub_node(Policies... policies) :
         tree_node<Policies...>{std::move(policies)...}
     {
     }
 
     template <typename... Parents>
-    void pre_parse_phase(parsing::token_list& tokens,
-                         const Parents&... parents) const
+    void pre_parse_phase(
+        vector<parsing::token_type>& result,
+        [[maybe_unused]] const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<1, typename stub_node::policies_type>;
-        
-        auto result = std::vector<parsing::token_type>{};
+
         auto args = vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
-
+        auto target = parsing::parse_target{*this, parents...};
+        auto processed_target = utility::compile_time_optional{
+                                    parsing::parse_target{parents...}};
         (void)this->this_policy::pre_parse_phase(adapter,
-                                                 tokens.pending_view(),
+                                                 processed_target,
+                                                 target,
                                                  *this,
                                                  parents...);
     }
@@ -434,8 +491,9 @@ int main() {
                             policy::dependent(policy::long_name<S_("flag1")>)},
                   policy::router{[](bool, bool, bool) {}}};
 
-    auto tokens = parsing::token_list{{parsing::prefix_type::long_, "flag2"},
-                                      {parsing::prefix_type::long_, "flag3"}};
+    auto tokens = vector<parsing::token_type>{
+                    {parsing::prefix_type::long_, "flag2"},
+                    {parsing::prefix_type::long_, "flag3"}};
     const auto& owner = std::get<0>(root.children());
 
     owner.pre_parse_phase(tokens, root);
@@ -462,26 +520,27 @@ template <typename... Policies>
 class stub_node : public tree_node<Policies...>
 {
 public:
-    using value_type = bool;
-
     constexpr explicit stub_node(Policies... policies) :
         tree_node<Policies...>{std::move(policies)...}
     {
     }
 
     template <typename... Parents>
-    void pre_parse_phase(parsing::token_list& tokens,
-                         const Parents&... parents) const
+    void pre_parse_phase(
+        vector<parsing::token_type>& result,
+        [[maybe_unused]] const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<1, typename stub_node::policies_type>;
-        
-        auto result = std::vector<parsing::token_type>{};
+
         auto args = vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
-
+        auto target = parsing::parse_target{*this, parents...};
+        auto processed_target = utility::compile_time_optional{
+                                    parsing::parse_target{parents...}};
         (void)this->this_policy::pre_parse_phase(adapter,
-                                                 tokens.pending_view(),
+                                                 processed_target,
+                                                 target,
                                                  *this,
                                                  parents...);
     }
@@ -497,8 +556,9 @@ int main() {
                   stub_node{policy::long_name<S_("flag3")>},
                   policy::router{[](bool, bool, bool) {}}};
 
-    auto tokens = parsing::token_list{{parsing::prefix_type::long_, "flag2"},
-                                      {parsing::prefix_type::long_, "flag3"}};
+    auto tokens = vector<parsing::token_type>{
+                    {parsing::prefix_type::long_, "flag2"},
+                    {parsing::prefix_type::long_, "flag3"}};
     const auto& owner = std::get<0>(root.children());
 
     owner.pre_parse_phase(tokens, root);
@@ -525,26 +585,27 @@ template <typename... Policies>
 class stub_node : public tree_node<Policies...>
 {
 public:
-    using value_type = bool;
-
     constexpr explicit stub_node(Policies... policies) :
         tree_node<Policies...>{std::move(policies)...}
     {
     }
 
     template <typename... Parents>
-    void pre_parse_phase(parsing::token_list& tokens,
-                         const Parents&... parents) const
+    void pre_parse_phase(
+        vector<parsing::token_type>& result,
+        [[maybe_unused]] const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<1, typename stub_node::policies_type>;
-        
-        auto result = std::vector<parsing::token_type>{};
+
         auto args = vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
-
+        auto target = parsing::parse_target{*this, parents...};
+        auto processed_target = utility::compile_time_optional{
+                                    parsing::parse_target{parents...}};
         (void)this->this_policy::pre_parse_phase(adapter,
-                                                 tokens.pending_view(),
+                                                 processed_target,
+                                                 target,
                                                  *this,
                                                  parents...);
     }
@@ -561,8 +622,9 @@ int main() {
                   stub_node{policy::long_name<S_("flag3")>},
                   policy::router{[](bool, bool, bool) {}}};
 
-    auto tokens = parsing::token_list{{parsing::prefix_type::long_, "flag2"},
-                                      {parsing::prefix_type::long_, "flag3"}};
+    auto tokens = vector<parsing::token_type>{
+                    {parsing::prefix_type::long_, "flag2"},
+                    {parsing::prefix_type::long_, "flag3"}};
     const auto& owner = std::get<0>(root.children());
 
     owner.pre_parse_phase(tokens, root);
@@ -590,26 +652,27 @@ template <typename... Policies>
 class stub_node : public tree_node<Policies...>
 {
 public:
-    using value_type = bool;
-
     constexpr explicit stub_node(Policies... policies) :
         tree_node<Policies...>{std::move(policies)...}
     {
     }
 
     template <typename... Parents>
-    void pre_parse_phase(parsing::token_list& tokens,
-                         const Parents&... parents) const
+    void pre_parse_phase(
+        vector<parsing::token_type>& result,
+        [[maybe_unused]] const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<1, typename stub_node::policies_type>;
-        
-        auto result = std::vector<parsing::token_type>{};
+
         auto args = vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
-
+        auto target = parsing::parse_target{*this, parents...};
+        auto processed_target = utility::compile_time_optional{
+                                    parsing::parse_target{parents...}};
         (void)this->this_policy::pre_parse_phase(adapter,
-                                                 tokens.pending_view(),
+                                                 processed_target,
+                                                 target,
                                                  *this,
                                                  parents...);
     }
@@ -627,8 +690,9 @@ int main() {
                   stub_node{policy::long_name<S_("flag3")>},
                   policy::router{[](bool, bool, bool) {}}};
 
-    auto tokens = parsing::token_list{{parsing::prefix_type::long_, "flag2"},
-                                      {parsing::prefix_type::long_, "flag3"}};
+    auto tokens = vector<parsing::token_type>{
+                    {parsing::prefix_type::long_, "flag2"},
+                    {parsing::prefix_type::long_, "flag3"}};
     const auto& owner = std::get<0>(root.children());
 
     owner.pre_parse_phase(tokens, root);

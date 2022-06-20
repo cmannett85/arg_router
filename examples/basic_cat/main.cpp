@@ -95,7 +95,7 @@ void cat(bool show_ends,
 
         auto line_number = 0;
         for (auto line = ""s; std::getline(stream, line);) {
-            if (++line_number == max_lines) {
+            if (line_number++ == max_lines) {
                 break;
             }
 

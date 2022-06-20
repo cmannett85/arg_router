@@ -18,12 +18,15 @@ set(TEST_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/dependency/alias_group_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/dependency/one_of_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/flag_test.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/global_parser_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/help_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/list_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/math_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/mode_test.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/parsing_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/parsing/dynamic_token_adapter_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/parsing/global_parser_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/parsing/parse_target_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/parsing/parsing_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/parsing/pre_parse_data_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/policy/custom_parser_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/policy/alias_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/policy/default_value_test.cpp
@@ -40,19 +43,19 @@ set(TEST_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/policy/validator_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/policy/value_separator_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/positional_arg_test.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/dynamic_token_adapter_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/root_tests/death_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/root_tests/positional_arg_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/root_tests/top_level_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/root_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/test_helpers.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/token_list_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/traits_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/tree_node_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/compile_time_string_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/utility/compile_time_optional_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/result_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/string_view_ops_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/tree_recursor_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/utility/unsafe_any_test.cpp
 )
 
 # Format just the unit test files

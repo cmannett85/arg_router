@@ -2,9 +2,11 @@
 
 #pragma once
 
-#include "arg_router/parsing.hpp"
+#include "arg_router/parsing/parse_target.hpp"
+#include "arg_router/parsing/parsing.hpp"
 #include "arg_router/policy/policy.hpp"
 #include "arg_router/traits.hpp"
+#include "arg_router/utility/compile_time_optional.hpp"
 #include "arg_router/utility/tree_recursor.hpp"
 
 namespace arg_router
@@ -35,58 +37,62 @@ public:
     }
 
     /** Scans the processed tokens to find all the dependent node names.
-     *  
+     *
+     * @tparam ProcessedTarget @a processed_target payload type
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
      * @param tokens Currently processed tokens
-     * @param processed_tokens Processed tokens performed by previous pre-parse
-     * phases calls on other nodes
+     * @param processed_target Previously processed parse_target of parent
+     * node, or empty is there is no non-root parent
+     * @param target Pre-parse generated target
      * @param parents Parent node instances
      * @return Either true if successful, or a parse_exception if a dependent
      * argument is missing
      */
-    template <typename... Parents>
+    template <typename ProcessedTarget, typename... Parents>
     [[nodiscard]] parsing::pre_parse_result pre_parse_phase(
         [[maybe_unused]] parsing::dynamic_token_adapter& tokens,
-        parsing::token_list::pending_view_type processed_tokens,
+        utility::compile_time_optional<ProcessedTarget> processed_target,
+        [[maybe_unused]] parsing::parse_target& target,
         [[maybe_unused]] const Parents&... parents) const
     {
         // Find the owning mode
         using mode_type = typename nearest_mode<Parents...>::type;
         static_assert(!std::is_void_v<mode_type>, "Cannot find parent mode");
+        static_assert(!processed_target.empty,
+                      "processed_target cannot be empty");
 
         // Find all the depends targets
-        using targets =
+        using node_targets =
             typename depends_targets<depends_policies_type, mode_type>::type;
-        static_assert(cyclic_dependency_checker<targets, mode_type>::value,
+        static_assert(cyclic_dependency_checker<node_targets, mode_type>::value,
                       "Cyclic dependency detected");
 
         auto result =
             parsing::pre_parse_result{parsing::pre_parse_action::valid_node};
-        utility::tuple_type_iterator<targets>([&](auto i) {
-            using target = std::tuple_element_t<i, targets>;
+        utility::tuple_type_iterator<node_targets>([&](auto i) {
+            using node_target = std::tuple_element_t<i, node_targets>;
 
-            const auto finder = [&](parsing::token_type token) {
-                return std::find(processed_tokens.begin(),
-                                 processed_tokens.end(),
-                                 token) != processed_tokens.end();
-            };
-
-            auto found = false;
-            if constexpr (traits::has_long_name_method_v<target>) {
-                found = finder({parsing::prefix_type::long_,  //
-                                target::long_name()});
-            }
-            if constexpr (traits::has_short_name_method_v<target>) {
-                found = !found && finder({parsing::prefix_type::short_,
-                                          target::short_name()});
+            // Skip if already failed
+            if (!result) {
+                return;
             }
 
-            if (!found && !result.has_error()) {
-                result = parse_exception{
-                    "Dependent argument missing (needs to be before the "
-                    "requiring token on the command line)",
-                    parsing::node_token_type<target>()};
+            // Try to find the matching node in the target, if it's not found
+            // then look in all the sub-targets
+            const auto target_index = std::type_index{typeid(node_target)};
+            if (processed_target->node_type() == target_index) {
+                return;
+            } else {
+                for (const auto& sub_target : processed_target->sub_targets()) {
+                    if (sub_target.node_type() == target_index) {
+                        return;
+                    }
+                }
             }
+            result = parse_exception{
+                "Dependent argument missing (needs to be before the "
+                "requiring token on the command line)",
+                parsing::node_token_type<node_target>()};
         });
 
         return result;
@@ -133,7 +139,7 @@ private:
         };
 
         using type = boost::mp11::mp_remove_if<
-            utility::tree_type_recursor_t<visitor, ModeType>,
+            utility::tree_type_recursor_collector_t<visitor, ModeType>,
             std::is_void>;
 
         static_assert(std::tuple_size_v<type> ==

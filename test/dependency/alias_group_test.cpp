@@ -31,27 +31,36 @@ public:
     {
     }
 
-    template <typename... Parents>
-    bool pre_parse(std::vector<parsing::token_type>& args,
-                   parsing::token_list& tokens,
-                   const Parents&...) const
+    template <typename Validator, bool HasTarget, typename... Parents>
+    std::optional<parsing::parse_target> pre_parse(
+        parsing::pre_parse_data<Validator, HasTarget> pre_parse_data,
+        const Parents&... parents) const
     {
-        BOOST_CHECK_EQUAL(args, expected_args);
-        BOOST_CHECK_EQUAL(tokens, expected_tokens);
-
         if (return_value) {
-            args = new_args;
-            tokens = new_tokens;
+            return parsing::parse_target{std::move(pre_parse_data.args()),
+                                         *this,
+                                         parents...};
         }
 
-        return return_value;
+        return {};
     }
 
-    std::vector<parsing::token_type> expected_args;
-    std::vector<parsing::token_type> new_args;
-    parsing::token_list expected_tokens;
-    parsing::token_list new_tokens;
+    template <typename... Parents>
+    [[nodiscard]] value_type parse(parsing::parse_target,
+                                   const Parents&... parents) const
+    {
+        static_assert(sizeof...(parents) == 1);
+        const auto& parent =
+            std::get<0>(std::tuple{std::cref(parents)...}).get();
+        const auto addr =
+            reinterpret_cast<std::ptrdiff_t>(std::addressof(parent));
+        BOOST_CHECK_EQUAL(addr, parent_addr);
+
+        return true;
+    }
+
     bool return_value;
+    std::ptrdiff_t parent_addr;
 };
 }  // namespace
 
@@ -113,82 +122,41 @@ BOOST_AUTO_TEST_CASE(display_name_test)
     }
 }
 
-BOOST_AUTO_TEST_CASE(match_test)
-{
-    auto f = [](const auto& node, auto token, auto expected_child_index) {
-        using parent_type = std::decay_t<decltype(node)>;
-        using children_type = typename parent_type::children_type;
-        constexpr auto valid_child_index =
-            expected_child_index < std::tuple_size_v<children_type>;
-
-        auto visitor = [&](const auto& child) {
-            using child_type = std::decay_t<decltype(child)>;
-
-            if constexpr (valid_child_index) {
-                using expected_child_type =
-                    std::tuple_element_t<expected_child_index.value,
-                                         children_type>;
-                BOOST_CHECK((std::is_same_v<child_type, expected_child_type>));
-            } else {
-                BOOST_CHECK_MESSAGE(false,
-                                    "visitor should not have been called");
-            }
-        };
-        const auto result = node.match(token, visitor);
-        BOOST_CHECK_EQUAL(result, valid_child_index);
-    };
-
-    test::data_set(
-        f,
-        std::tuple{
-            std::tuple{
-                ard::alias_group(arg<double>(policy::long_name<S_("arg1")>),
-                                 arg<double>(policy::long_name<S_("arg2")>),
-                                 policy::required),
-                parsing::token_type{parsing::prefix_type::long_, "arg1"},
-                traits::integral_constant<std::size_t{0}>{}},
-            std::tuple{
-                ard::alias_group(arg<double>(policy::long_name<S_("arg1")>),
-                                 arg<double>(policy::long_name<S_("arg2")>),
-                                 policy::required),
-                parsing::token_type{parsing::prefix_type::long_, "arg2"},
-                traits::integral_constant<std::size_t{1}>{}},
-            std::tuple{
-                ard::alias_group(arg<double>(policy::long_name<S_("arg1")>),
-                                 arg<double>(policy::long_name<S_("arg2")>),
-                                 policy::required),
-                parsing::token_type{parsing::prefix_type::long_, "arg3"},
-                traits::integral_constant<std::size_t{42}>{}},
-        });
-}
-
 BOOST_AUTO_TEST_CASE(pre_parse_test)
 {
     auto f = [](auto node,
                 auto child_index,
                 auto expected_args,
-                auto new_args,
-                auto expected_tokens,
-                auto new_tokens,
                 auto expected_result) {
+        auto fake_parent = stub_node{policy::long_name<S_("parent")>};
+
         auto& expected_child = std::get<child_index>(node.children());
-        expected_child.expected_args = expected_args;
-        expected_child.new_args = new_args;
-        expected_child.expected_tokens = expected_tokens;
-        expected_child.new_tokens = new_tokens;
         expected_child.return_value = expected_result;
 
         auto& not_expected_child =
             std::get<(child_index == 0 ? 1 : 0)>(node.children());
-        not_expected_child.expected_args = expected_args;
-        not_expected_child.expected_tokens = expected_tokens;
         not_expected_child.return_value = false;
 
-        const auto result = node.pre_parse(expected_args, expected_tokens);
+        auto expected_args_copy = expected_args;
+        auto result =
+            node.pre_parse(parsing::pre_parse_data{expected_args_copy},
+                           fake_parent);
+        BOOST_CHECK_EQUAL(!result, !expected_result);
 
-        BOOST_CHECK_EQUAL(result, expected_result);
-        BOOST_CHECK_EQUAL(new_tokens, expected_tokens);
-        BOOST_CHECK_EQUAL(expected_args, new_args);
+        if (result) {
+            BOOST_CHECK(expected_args_copy.empty());
+            BOOST_CHECK_EQUAL(expected_args, result->tokens());
+
+            const auto index =
+                std::type_index{typeid(std::decay_t<decltype(expected_child)>)}
+                    .hash_code();
+            BOOST_CHECK_EQUAL(result->node_type().hash_code(), index);
+
+            expected_child.parent_addr =
+                reinterpret_cast<std::ptrdiff_t>(std::addressof(fake_parent));
+            const auto parse_result = (*result)();
+            BOOST_CHECK(parse_result.template get<bool>());
+        }
     };
 
     test::data_set(
@@ -200,10 +168,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_test)
                                  policy::required),
                 traits::integral_constant<0>{},
                 std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "--arg1"}},
-                std::vector<parsing::token_type>{},
-                parsing::token_list{},
-                parsing::token_list{{parsing::prefix_type::long_, "arg1"}},
+                    {parsing::prefix_type::none, "hello1"}},
                 true},
             std::tuple{
                 ard::alias_group(stub_node{policy::long_name<S_("arg1")>},
@@ -211,10 +176,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_test)
                                  policy::required),
                 traits::integral_constant<1>{},
                 std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "--arg2"}},
-                std::vector<parsing::token_type>{},
-                parsing::token_list{},
-                parsing::token_list{{parsing::prefix_type::long_, "arg2"}},
+                    {parsing::prefix_type::none, "hello2"}},
                 true},
             std::tuple{
                 ard::alias_group(stub_node{policy::long_name<S_("arg1")>},
@@ -222,11 +184,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_test)
                                  policy::required),
                 traits::integral_constant<0>{},
                 std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "bad"}},
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "bad"}},
-                parsing::token_list{},
-                parsing::token_list{},
+                    {parsing::prefix_type::none, "hello3"}},
                 false},
         });
 }
@@ -509,7 +467,7 @@ int main() {
 }
     )",
         "basic_one_of_t does not support policies with pre-parse, parse, "
-        "validation, or routing phases; as it delegates those to its children");
+        "or routing phases; as it delegates those to its children");
 }
 
 BOOST_AUTO_TEST_CASE(parse_phase_test)
@@ -537,7 +495,7 @@ int main() {
 }
     )",
         "basic_one_of_t does not support policies with pre-parse, parse, "
-        "validation, or routing phases; as it delegates those to its children");
+        "or routing phases; as it delegates those to its children");
 }
 
 BOOST_AUTO_TEST_CASE(router_phase_test)
@@ -564,7 +522,7 @@ int main() {
 }
     )",
         "basic_one_of_t does not support policies with pre-parse, parse, "
-        "validation, or routing phases; as it delegates those to its children");
+        "or routing phases; as it delegates those to its children");
 }
 
 BOOST_AUTO_TEST_CASE(must_have_same_value_type_test)

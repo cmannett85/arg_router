@@ -36,12 +36,15 @@ namespace arg_router
  * detected by nodes at compile-time (see @ref policy namespace's
  * <TT>has_*_method</TT> traits types).
  *
- * All policies that provide a phase method where multiple policies can provide
- * an implementation (i.e. @em not parse, routing, or missing phases) should
- * hold a `priority` static member that provides the order policies should be
+ * All policies that provide a phase method where multiple policies held by a
+ * node can provide an implementation (i.e. @em not parse, routing, or missing
+ * phases - only one policy can provide those for a node) should hold a
+ * `priority` static member that provides the order policies should be
  * called in (when applicable).  The lower the number, the lower the priority.
  * Policies in the library vary from 0 to 1000, where 0 means that the priority
- * is irrelevant.  If no priority is specified, 0 is assumed.
+ * is irrelevant.  If no priority is specified, 0 is assumed.  This allows the
+ * user to specify the policies in any order, but they'll always be evaluated
+ * in the same order.
  * 
  * @subsubsection policies_basic_parsing_phase_pre Pre-Parse Phase
  * As the name suggests this is a phase that performs some kind of input
@@ -57,7 +60,7 @@ namespace arg_router
  * you're wondering what does the maximum checking, that's an example of the
  * policy also being a static data provider - it provides the compile-time
  * maximum count to the positional_arg_t node which only consumes up to that
- * amount when parsing.
+ * amount when pre-parsing.
  * 
  * @subsubsection policies_basic_parsing_phase_parse Parse Phase
  * This is the phase that takes the token and converts to it a value type that
@@ -112,6 +115,6 @@ namespace arg_router
  * that their methods become available to the public interface of the nodes,
  * policies themselves do not have a base class (the old diamond inheritance
  * problems).  So in order to 'mark' a type as a policy so it can be detected
- * as such by arg_router, it needs to specialise itself into policy::is_policy.
+ * as such by arg_router, policy::is_policy needs specialising.
  */
 }

@@ -18,92 +18,62 @@ namespace arg_router
  * Splitting out other tree_node derived types has a further complexity due
  * to @ref list, which will need flattening first.
  * 
- * @section nodes_find Find
- * One of the key pieces of functionality tree_node provides is the ability for
- * it to find a child node using a parsing::token_type.  This forms the core of
- * how nodes are matched up against the user's command line tokens.
+ * @section nodes_pre_parse Pre-Parse
+ * Every node needs pre-parse functionality because it is what the parent uses
+ * to determine if a set of tokens are for a particular child node.  For a leaf
+ * node, the method performs these operations:
+ * -# The entire set of unprocessed tokens and the parents of a node are passed
+ *    in
+ * -# A copy of the tokens and a temporary target are passed to each of the
+ *    pre-parse phase supporting policies in priority order.  Which then
+ *    performs their operations on the input tokens.  If the policies are
+ *    adamant that the leading token(s) is not for this node, it will exit
+ *    early - but not if an error occurs! Errors are saved for later
+ * -# If all passes, then the last check is for the name (if it has one)
+ * -# At this stage we know that the leading token(s) is for this node, so any
+ *    error that was created by the policies can now be thrown
+ * -# If no error occured then we can move the processed tokens, the ones the
+ *    policies have determined are for this node (usually using
+ *    policy::min_max_count_t), into the parsing::parse_target and return it
  * 
- * tree_node::find uses a generic visitor <TT>Callable</TT> so that a matching
- * node's type can be accessed by the caller.  An optional results tuple can be
- * provided too, this is so mode-like types (e.g. mode_t) can provide the
- * current result of that child node during the search.  This is useful for some
- * nodes that need iteratively 'filling' during parsing e.g. positional_arg_t
- * which will match against any token (positional arguments are 'greedy') until
- * it's maximum count is reached (if any, normally provided by
- * policy::min_max_count_t).
- * 
- * The find method works by iterating over the child tuple and calling each
- * node's match method, which takes the queried token and a visitor
- * <TT>Callable</TT> that accepts a const reference to the child node (e.g
- * flag_t::match), and an optional result arg as described above (e.g.
- * positional_arg_t::match).
- * 
- * @subsection nodes_match Match
- * The match method is one of two methods every tree_node derived type must
- * implement in order for compilation to succeed.  It just needs to check that
- * the input token_type (and optional result) is correct for the node, call the
- * visitor with itself if it is correct, and return whether or not a match
- * occurred.
- * 
- * You don't need to provide a defaulted result type when implementing,
- * tree_node::find detects the arity of the target node's match method and the
- * size of the requests result tuple (defaults to empty) and passes the result
- * type accordingly.  In other words only if the requestor provided a results
- * tuple and your node's match method has a third argument, will you be passed
- * a result value.
- * 
- * For most node types the implementation involves checking that the input
- * token_type matches one of the node's names (typically implemented by
- * policy::long_name_t, policy::short_name_t, or policy::none_name_t).  As this
- * is a common use case, there is a convenience function that does the checking
- * for you: parsing::default_match.
+ * A mode-like node implements this method very differently, because its job is
+ * to collect the parsing::parse_target results of all of its children rather
+ * than directly processing the tokens itself.
  * 
  * @section nodes_parse Parse
  * Every tree_node derived type also needs to provide a parse function, which
- * as the name suggests, processes some tokens from the parsing::token_list in
- * order to produce a value that represents the tokens in some way.
+ * as the name suggests, processes the tokens (if any) in the given
+ * parsing::parse_target in order to produce a value that represents the tokens
+ * in some way.
  * 
- * For more detail, let's look at what a typical node like arg_t does:
- * -# Check there are at least two tokens still to be processed, one for the
- *    arg's name and one for the value
- * -# Call parsing::token_list::mark_as_processed to mark the arg name as
- *    processed i.e. consume it from token pending list
- * -# Call the pre-parse phase methods on the policies that support it
- * -# Parse the value token using tree_node::parse
- * -# Mark the value token as processed
- * -# Call the valdation phase methods on the policies that support it
+ * It's important to note that the parse method is not called directly, the
+ * parsing::parse_target returned from the pre-parse is a type erasing function
+ * object type.  When it is created it creates a closure around the target node
+ * and its parents, so when it is executed it calls the target node's parse
+ * method passing itself and the parents into it.
+ * 
+ * Let's look at what a typical node like arg_t does:
+ * -# Take the first token from the parsing::parse_target, this is guaranteed to
+ *    be there because arg_t has a policy::fixed_count of 1.  Then parse it
+ *    using a parse-phase implementing policy if present, otherwise the global parser
+ * -# Pass the result to any validation-phase implementing policies
  * -# If there is a routing phase policy, that call it with the parsed result
  * -# Return the parsed value to the caller
  * 
  * There are two exits for the node, if the node is top-level then once parsing
- * is complete we can exit to the library user's code with it, as it's the only
- * value expected to be parsed from the command line.  However, often the node
- * is the child of a mode-like type (e.g. mode_t) which is building up a results
- * tuple from the parsed tokens, in that case we return the value to the mode.
+ * is complete we can exit to the library user's code with the result via the
+ * routing policy, as it's the only value expected to be parsed from the command
+ * line. However, often the node is the child of a mode-like type (e.g. mode_t)
+ * which is building up a results tuple from the parsed tokens, in that case we
+ * return the value to the mode.
  * 
  * It's important to note that every node needs this method, even if they don't 
  * parse a value off the command line e.g. flag_t which does this:
- * -# Call parsing::token_list::mark_as_processed to mark the flag name as
- *    processed i.e. consume it from token pending list
- * -# Call the pre-parse phase methods on the policies that support it
- * -# If there is a routing phase policy, that call it with the parsed result
- * -# Return the parsed value to the caller
+ * -# Create a <TT>true</TT> result
+ * -# If there is a routing phase policy, that call it with the result
+ * -# Return the result to the caller
  * 
- * In this case the 'parsed result' is an implicit <TT>true</TT> boolean value
- * as the presence of a flag indicates a positive value.
- *
- * @section nodes_process_value_tokens process_value_tokens(..)
- * This is an optional static method with the signature:
- * @code
- * static void process_value_tokens(span<const char*>& args, parsing::token_list& result)
- * @endcode
- * It is used by the input token processing phase if the owning node does *not*
- * have a policy that implements <TT>maximum_count()</TT> and this method is
- * present.  This phase needs to work out how many 'value' tokens belong to each
- * node so it can categorise them correctly, typically this is provided by a
- * <TT>maximum_count()</TT>-implementing policy or nothing (i.e. no value
- * tokens), but some nodes (e.g. @ref positional_arg_t) _may_ not have this
- * policy but still consume value tokens - this method provides this
- * functionality.
+ * I.e. there is no parsing as the presence of a flag indicates a positive
+ * value.
  */
 }

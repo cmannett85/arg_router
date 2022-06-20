@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "arg_router/parsing.hpp"
 #include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/tree_node.hpp"
 
@@ -55,71 +54,32 @@ public:
     {
     }
 
-    /** Returns true and calls @a visitor if @a token matches the name of this
-     * node.
-     * 
-     * @a visitor needs to be equivalent to:
-     * @code
-     * [](const auto& node) { ... }
-     * @endcode
-     * <TT>node</TT> will be a reference to this node.
-     * @tparam Fn Visitor type
-     * @param token Command line token to match
-     * @param visitor Visitor instance
-     * @return Match result
-     */
-    template <typename Fn>
-    constexpr bool match(const parsing::token_type& token,
-                         const Fn& visitor) const
-    {
-        if (parsing::match<arg_t>(token)) {
-            visitor(*this);
-            return true;
-        }
-
-        return false;
-    }
-
-    template <typename... Parents>
-    [[nodiscard]] bool pre_parse(vector<parsing::token_type>& args,
-                                 parsing::token_list& tokens,
-                                 const Parents&... parents) const
+    template <typename Validator, bool HasTarget, typename... Parents>
+    [[nodiscard]] std::optional<parsing::parse_target> pre_parse(
+        parsing::pre_parse_data<Validator, HasTarget> pre_parse_data,
+        const Parents&... parents) const
 
     {
-        return parent_type::pre_parse(args, tokens, *this, parents...);
+        return parent_type::pre_parse(pre_parse_data, *this, parents...);
     }
 
     /** Parse function.
      * 
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
-     * @param tokens Token list
+     * @param target Parse target
      * @param parents Parents instances pack
      * @return Parsed result
      * @exception parse_exception Thrown if parsing failed
      */
     template <typename... Parents>
-    value_type parse(parsing::token_list& tokens,
+    value_type parse(parsing::parse_target target,
                      const Parents&... parents) const
     {
-        // Check we have enough tokens to even do a value parse
-        if (tokens.pending_view().size() <= parent_type::minimum_count()) {
-            // The match operation guarantees that the node name token is
-            // present
-            throw parse_exception{"Missing argument",
-                                  tokens.pending_view().front()};
-        }
-
-        // Remove this node's name
-        tokens.mark_as_processed();
-
         // Parse the value token
         auto result = parent_type::template parse<value_type>(
-            tokens.pending_view().front().name,
+            target.tokens().front().name,
             *this,
             parents...);
-
-        // Pop the token, we don't need it anymore
-        tokens.mark_as_processed();
 
         // Validation
         utility::tuple_type_iterator<policies_type>([&](auto i) {
@@ -134,7 +94,7 @@ public:
         using routing_policy = typename parent_type::template phase_finder_t<
             policy::has_routing_phase_method>;
         if constexpr (!std::is_void_v<routing_policy>) {
-            this->routing_policy::routing_phase(tokens, std::move(result));
+            this->routing_policy::routing_phase(std::move(result));
         }
 
         return result;

@@ -48,45 +48,6 @@ BOOST_AUTO_TEST_CASE(is_tree_node_test)
                   "Tree node test has failed");
 }
 
-BOOST_AUTO_TEST_CASE(match_test)
-{
-    auto f = [](const auto& test_node,
-                const parsing::token_type& token,
-                bool expected_result) {
-        using test_node_type = std::decay_t<decltype(test_node)>;
-
-        const auto result = test_node.match(token, [&](const auto& node) {
-            using node_type = std::decay_t<decltype(node)>;
-            static_assert(std::is_same_v<node_type, test_node_type>,
-                          "match fail");
-        });
-        BOOST_CHECK_EQUAL(result, expected_result);
-    };
-
-    test::data_set(
-        f,
-        std::tuple{
-            std::tuple{
-                help(policy::long_name<S_("hello")>),
-                parsing::token_type{parsing::prefix_type::long_, "hello"},
-                true},
-            std::tuple{help(policy::short_name<'h'>),
-                       parsing::token_type{parsing::prefix_type::short_, "h"},
-                       true},
-            std::tuple{
-                help(policy::long_name<S_("hello")>, policy::short_name<'h'>),
-                parsing::token_type{parsing::prefix_type::short_, "h"},
-                true},
-            std::tuple{
-                help(policy::long_name<S_("hello")>, policy::short_name<'h'>),
-                parsing::token_type{parsing::prefix_type::long_, "hello"},
-                true},
-            std::tuple{
-                help(policy::long_name<S_("goodbye")>),
-                parsing::token_type{parsing::prefix_type::long_, "hello"},
-                false}});
-}
-
 BOOST_AUTO_TEST_CASE(generate_help_test)
 {
     auto f =
@@ -348,8 +309,10 @@ BOOST_AUTO_TEST_CASE(parse_test)
 
         try {
             const auto& help_node = std::get<help_index>(root.children());
+            auto target =
+                help_node.pre_parse(parsing::pre_parse_data{tokens}, root);
 
-            help_node.parse(tokens, root);
+            help_node.parse(std::move(*target), root);
             BOOST_CHECK(fail_message.empty());
             BOOST_CHECK_EQUAL(output, expected_output);
         } catch (parse_exception& e) {
@@ -377,7 +340,8 @@ BOOST_AUTO_TEST_CASE(parse_test)
                          policy::router{
                              [&](auto stream) { output = stream.str(); }})},
                 traits::integral_constant<3>{},
-                parsing::token_list{{parsing::prefix_type::long_, "help"}},
+                std::vector<parsing::token_type>{
+                    {parsing::prefix_type::none, "--help"}},
                 ""s,
                 R"(foo v3.14
 
@@ -405,7 +369,8 @@ My foo is good for you
                          policy::router{
                              [&](auto stream) { output = stream.str(); }})},
                 traits::integral_constant<3>{},
-                parsing::token_list{{parsing::prefix_type::short_, "h"}},
+                std::vector<parsing::token_type>{
+                    {parsing::prefix_type::none, "-h"}},
                 ""s,
                 R"(foo v3.14
 
@@ -439,8 +404,9 @@ My foo is good for you
                               policy::short_name<'c'>,
                               policy::description<S_("Flag3 description")>))},
                 traits::integral_constant<0>{},
-                parsing::token_list{{parsing::prefix_type::short_, "h"},
-                                    {parsing::prefix_type::none, "mode1"}},
+                std::vector<parsing::token_type>{
+                    {parsing::prefix_type::none, "-h"},
+                    {parsing::prefix_type::none, "mode1"}},
                 ""s,
                 R"(foo v3.14
 
@@ -474,8 +440,9 @@ mode1             Mode1 description
                               policy::short_name<'c'>,
                               policy::description<S_("Flag3 description")>))},
                 traits::integral_constant<0>{},
-                parsing::token_list{{parsing::prefix_type::short_, "h"},
-                                    {parsing::prefix_type::none, "mode2"}},
+                std::vector<parsing::token_type>{
+                    {parsing::prefix_type::none, "-h"},
+                    {parsing::prefix_type::none, "mode2"}},
                 ""s,
                 R"(foo v3.14
 
@@ -501,8 +468,9 @@ mode2
                          policy::router{
                              [&](auto stream) { output = stream.str(); }})},
                 traits::integral_constant<3>{},
-                parsing::token_list{{parsing::prefix_type::long_, "help"},
-                                    {parsing::prefix_type::short_, "b"}},
+                std::vector<parsing::token_type>{
+                    {parsing::prefix_type::none, "--help"},
+                    {parsing::prefix_type::none, "-b"}},
                 ""s,
                 R"(foo v3.14
 
@@ -533,9 +501,10 @@ My foo is good for you
                               policy::short_name<'c'>,
                               policy::description<S_("Flag3 description")>))},
                 traits::integral_constant<0>{},
-                parsing::token_list{{parsing::prefix_type::short_, "h"},
-                                    {parsing::prefix_type::none, "mode1"},
-                                    {parsing::prefix_type::long_, "flag2"}},
+                std::vector<parsing::token_type>{
+                    {parsing::prefix_type::none, "-h"},
+                    {parsing::prefix_type::none, "mode1"},
+                    {parsing::prefix_type::none, "--flag2"}},
                 ""s,
                 R"(foo v3.14
 
@@ -560,8 +529,9 @@ My foo is good for you
                          policy::router{
                              [&](auto stream) { output = stream.str(); }})},
                 traits::integral_constant<3>{},
-                parsing::token_list{{parsing::prefix_type::long_, "help"},
-                                    {parsing::prefix_type::long_, "foo"}},
+                std::vector<parsing::token_type>{
+                    {parsing::prefix_type::none, "--help"},
+                    {parsing::prefix_type::none, "--foo"}},
                 "Unknown argument: --foo"s,
                 ""s},
             std::tuple{
@@ -587,9 +557,10 @@ My foo is good for you
                               policy::short_name<'c'>,
                               policy::description<S_("Flag3 description")>))},
                 traits::integral_constant<0>{},
-                parsing::token_list{{parsing::prefix_type::short_, "h"},
-                                    {parsing::prefix_type::none, "mode1"},
-                                    {parsing::prefix_type::long_, "foo"}},
+                std::vector<parsing::token_type>{
+                    {parsing::prefix_type::none, "-h"},
+                    {parsing::prefix_type::none, "mode1"},
+                    {parsing::prefix_type::none, "--foo"}},
                 "Unknown argument: --foo"s,
                 ""s},
         });
@@ -733,12 +704,13 @@ struct mock_root {};
 
 int main() {
     const auto m = help(policy::long_name<S_("help")>);
-    auto tokens = parsing::token_list{};
-    const auto result = m.parse(tokens);
+
+    auto tokens = vector<parsing::token_type>{};
+    const auto result = m.pre_parse(parsing::pre_parse_data{tokens});
     return 0;
 }
     )",
-        "Help must have at least one parent");
+        "At least one parent needed for help");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

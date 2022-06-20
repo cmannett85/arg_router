@@ -63,23 +63,6 @@ BOOST_AUTO_TEST_CASE(has_validation_phase_test)
         "Phase method test has failed");
 }
 
-BOOST_AUTO_TEST_CASE(constructor_test)
-{
-    auto f = [](auto min, auto max) {
-        const auto p = policy::min_max_value{min, max};
-        BOOST_CHECK_EQUAL(min, p.minimum_value());
-        BOOST_CHECK_EQUAL(max, p.maximum_value());
-    };
-
-    test::data_set(
-        f,
-        std::tuple{std::tuple{0, 3},
-                   std::tuple{1, 3},
-                   std::tuple{2.1, 10.4},
-                   std::tuple{std::vector{1, 2, 3}, std::vector{4, 5, 6}},
-                   std::tuple{std::vector{1, 2}, std::vector{4, 5, 6}}});
-}
-
 BOOST_AUTO_TEST_CASE(validation_phase_test)
 {
     auto f =

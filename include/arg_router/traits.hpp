@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "arg_router/token_type.hpp"
+#include "arg_router/parsing/parse_target.hpp"
 
 #include <boost/mp11/algorithm.hpp>
 #include <boost/mp11/bind.hpp>
@@ -417,28 +417,6 @@ struct has_minimum_count_method {
 template <typename T>
 constexpr bool has_minimum_count_method_v = has_minimum_count_method<T>::value;
 
-/** Determine if a type has a <TT>process_value_tokens</TT> static method.
- *
- * @tparam T Type to query
- */
-template <typename T>
-struct has_process_value_tokens_method {
-    template <typename U>
-    using type =
-        decltype(U::process_value_tokens(std::declval<span<const char*>&>(),
-                                         std::declval<parsing::token_list&>()));
-
-    constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
-};
-
-/** Helper variable for has_process_value_tokens_method.
- *
- * @tparam T Type to query
- */
-template <typename T>
-constexpr bool has_process_value_tokens_method_v =
-    has_process_value_tokens_method<T>::value;
-
 /** Determine if a type has a <TT>push_back(typename T::value_type)</TT> method.
  *
  * @tparam T Type to query
@@ -499,39 +477,87 @@ struct has_generate_help_method {
 template <typename T>
 constexpr bool has_generate_help_method_v = has_generate_help_method<T>::value;
 
-/** Evaluates to the number of arguments the Callable @a T has.
+/** Determine if a node has a <TT>parse</TT> method.
+ *
+ * @tparam T Node type to query
+ */
+template <typename T>
+struct has_parse_method {
+    static_assert(is_tree_node_v<T>, "T must be node");
+
+    template <typename U>
+    using type = decltype(  //
+        std::declval<const U&>().template parse<>(
+            std::declval<parsing::parse_target>()));
+
+    constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
+};
+
+/** Helper variable for has_parse_method.
+ *
+ * @tparam T Node type to query
+ */
+template <typename T>
+constexpr static bool has_parse_method_v = has_parse_method<T>::value;
+
+/** Evaluates to a <TT>std::tuple</TT> of the return and argument types the
+ * <TT>Callable</TT> @a T has.
+ * 
+ * The first tuple element type is the return type.
  *
  * From https://stackoverflow.com/a/27867127/498437.
  * @note The specialisations are not complete, there are no volatile or
- * ref-qualified versions
+ * ref-qualified versions. Does @b NOT work with overloaded or templated
+ * function/methods (obviously)
+ * 
  * @tparam T Type to query
  */
 template <typename T>
-struct arity /** @cond */ : arity<decltype(&T::operator())> /** @endcond */ {
+struct arg_extractor /** @cond */ :
+    arg_extractor<decltype(&T::operator())> /** @endcond */ {
 };
 
 template <typename R, typename... Args>
-struct arity<R (*)(Args...)> : integral_constant<sizeof...(Args)> {
+struct arg_extractor<R (*)(Args...)> {
+    using type = std::tuple<R, Args...>;
 };
 template <typename R, typename C, typename... Args>
-struct arity<R (C::*)(Args...)> : integral_constant<sizeof...(Args)> {
+struct arg_extractor<R (C::*)(Args...)> {
+    using type = std::tuple<R, Args...>;
 };
 template <typename R, typename C, typename... Args>
-struct arity<R (C::*)(Args...) const> : integral_constant<sizeof...(Args)> {
+struct arg_extractor<R (C::*)(Args...) const> {
+    using type = std::tuple<R, Args...>;
 };
 template <typename R, typename C, typename... Args>
-struct arity<R (C::*)(Args...) noexcept> : integral_constant<sizeof...(Args)> {
+struct arg_extractor<R (C::*)(Args...) noexcept> {
+    using type = std::tuple<R, Args...>;
 };
 template <typename R, typename C, typename... Args>
-struct arity<R (C::*)(Args...) const noexcept> :
-    integral_constant<sizeof...(Args)> {
+struct arg_extractor<R (C::*)(Args...) const noexcept> {
+    using type = std::tuple<R, Args...>;
 };
 
-/** Helper variable for <TT>arity</TT>.
+/** Helper alias for arg_extractor.
  *
  * @tparam T Type to query
  */
 template <typename T>
-constexpr std::size_t arity_v = arity<T>::value;
+using arg_extractor_t = typename arg_extractor<T>::type;
+
+/** Evaluates to the number of arguments the <TT>Callable</TT> @a T has.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+constexpr std::size_t arity_v = std::tuple_size_v<arg_extractor_t<T>> - 1;
+
+/** Evaluates to the argument type at index @a I in <TT>Callable</TT> @a T.
+ *
+ * @tparam T Type to query
+ * @tparam I Argument index
+ */
+template <typename T, std::size_t I>
+using arg_type_at_index = std::tuple_element_t<I + 1, arg_extractor_t<T>>;
 }  // namespace traits
 }  // namespace arg_router

@@ -2,8 +2,8 @@
 
 #pragma once
 
+#include "arg_router/parsing/token_type.hpp"
 #include "arg_router/policy/policy.hpp"
-#include "arg_router/token_type.hpp"
 
 #include <functional>
 #include <string_view>

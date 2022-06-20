@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "arg_router/parsing.hpp"
 #include "arg_router/policy/flatten_help.hpp"
 #include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/policy/no_result_value.hpp"
@@ -137,38 +136,16 @@ public:
     {
     }
 
-    /** Returns true and calls @a visitor if @a token matches the name of this
-     * node.
-     * 
-     * @a visitor needs to be equivalent to:
-     * @code
-     * [](const auto& node) { ... }
-     * @endcode
-     * <TT>node</TT> will be a reference to this node.
-     * @tparam Fn Visitor type
-     * @param token Command line token to match
-     * @param visitor Visitor instance
-     * @return Match result
-     */
-    template <typename Fn>
-    constexpr bool match(const parsing::token_type& token,
-                         const Fn& visitor) const
-    {
-        if (parsing::match<help_t>(token)) {
-            visitor(*this);
-            return true;
-        }
-
-        return false;
-    }
-
-    template <typename... Parents>
-    [[nodiscard]] bool pre_parse(vector<parsing::token_type>& args,
-                                 parsing::token_list& tokens,
-                                 const Parents&... parents) const
+    template <typename Validator, bool HasTarget, typename... Parents>
+    [[nodiscard]] std::optional<parsing::parse_target> pre_parse(
+        parsing::pre_parse_data<Validator, HasTarget> pre_parse_data,
+        const Parents&... parents) const
 
     {
-        return parent_type::pre_parse(args, tokens, *this, parents...);
+        static_assert((sizeof...(Parents) >= 1),
+                      "At least one parent needed for help");
+
+        return parent_type::pre_parse(pre_parse_data, *this, parents...);
     }
 
     /** Parse function.
@@ -178,24 +155,18 @@ public:
      * called. If a routing policy is called the generated help output is passed
      * to it for further processing and the parse call returns.
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
-     * @param tokens Token list
+     * @param target Parse target
      * @param parents Parents instances pack
      * @exception parese_exception Thrown if the requested mode cannot be found
      */
     template <typename... Parents>
-    void parse(parsing::token_list& tokens, const Parents&... parents) const
+    void parse(parsing::parse_target target, const Parents&... parents) const
     {
-        static_assert(sizeof...(Parents) > 0,
-                      "Help must have at least one parent");
-
-        // Remove this node's name
-        tokens.mark_as_processed();
-
         const auto& root = std::get<sizeof...(Parents) - 1>(  //
                                std::tuple{std::cref(parents)...})
                                .get();
 
-        find_help_target(tokens, root, [&](const auto& target_node) {
+        find_help_target(target.tokens(), root, [&](const auto& target_node) {
             using root_type = std::decay_t<decltype(root)>;
             using node_type = std::decay_t<decltype(target_node)>;
 
@@ -218,7 +189,7 @@ public:
                 auto stream = std::ostringstream{};
                 generate_help<node_type, flatten>(stream);
 
-                this->routing_policy::routing_phase(tokens, std::move(stream));
+                this->routing_policy::routing_phase(std::move(stream));
             }
         });
     }
@@ -233,21 +204,34 @@ private:
         "Help only supports policies with pre-parse and routing phases");
 
     template <typename Node, typename TargetFn>
-    static void find_help_target(parsing::token_list& tokens,
+    static void find_help_target(std::vector<parsing::token_type>& tokens,
                                  const Node& node,
                                  const TargetFn& fn)
     {
-        if (tokens.pending_view().empty()) {
+        if (tokens.empty()) {
             fn(node);
             return;
         }
 
-        const auto token = tokens.pending_view().front();
-        const auto result =
-            node.find(token, [&](auto /*i*/, const auto& child) {
-                tokens.mark_as_processed();
-                find_help_target(tokens, child, fn);
-            });
+        // Help tokens aren't pre-parsed by the target nodes (as they would fail
+        // if missing any required value tokens), so we have just use the prefix
+        // to generate a token_type from them, as they all of a prefix_type of
+        // none
+        const auto token = parsing::get_token_type(tokens.front().name);
+
+        auto result = false;
+        utility::tuple_iterator(
+            [&](auto /*i*/, const auto& child) {
+                using child_type = std::decay_t<decltype(child)>;
+
+                if (!result && parsing::match<child_type>(token)) {
+                    result = true;
+                    tokens.erase(tokens.begin());
+                    find_help_target(tokens, child, fn);
+                }
+            },
+            node.children());
+
         if (!result) {
             throw parse_exception{"Unknown argument", token};
         }
