@@ -14,11 +14,10 @@ BOOST_AUTO_TEST_SUITE(dynamic_token_adapter_suite)
 BOOST_AUTO_TEST_CASE(iterator_ops_test)
 {
     auto processed = std::vector<parsing::token_type>{};
-    auto unprocessed = std::vector<parsing::token_type>{
-        {parsing::prefix_type::none, "--hello"},
-        {parsing::prefix_type::none, "42"},
-        {parsing::prefix_type::none, "-f"},
-        {parsing::prefix_type::none, "goodbye"}};
+    auto unprocessed = std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"},
+                                                        {parsing::prefix_type::none, "42"},
+                                                        {parsing::prefix_type::none, "-f"},
+                                                        {parsing::prefix_type::none, "goodbye"}};
 
     auto adapter = parsing::dynamic_token_adapter{processed, unprocessed};
     BOOST_CHECK(processed.empty());
@@ -27,9 +26,7 @@ BOOST_AUTO_TEST_CASE(iterator_ops_test)
     auto it = adapter.begin();
     BOOST_CHECK(processed.empty());
     BOOST_CHECK_EQUAL(unprocessed.size(), 4);
-    BOOST_CHECK_EQUAL(
-        *it,
-        (parsing::token_type{parsing::prefix_type::none, "--hello"}));
+    BOOST_CHECK_EQUAL(*it, (parsing::token_type{parsing::prefix_type::none, "--hello"}));
     BOOST_CHECK_EQUAL(it->prefix, parsing::prefix_type::none);
     BOOST_CHECK_EQUAL(it->name, "--hello");
     BOOST_CHECK(it != adapter.end());
@@ -37,8 +34,7 @@ BOOST_AUTO_TEST_CASE(iterator_ops_test)
     ++it;
     BOOST_CHECK(processed.empty());
     BOOST_CHECK_EQUAL(unprocessed.size(), 4);
-    BOOST_CHECK_EQUAL(*it,
-                      (parsing::token_type{parsing::prefix_type::none, "42"}));
+    BOOST_CHECK_EQUAL(*it, (parsing::token_type{parsing::prefix_type::none, "42"}));
     BOOST_CHECK(it != adapter.end());
 
     BOOST_CHECK(adapter.begin() < it);
@@ -49,69 +45,45 @@ BOOST_AUTO_TEST_CASE(iterator_ops_test)
     BOOST_CHECK(it >= it);
 
     it.set({parsing::prefix_type::long_, "test"});
-    BOOST_CHECK_EQUAL(
-        *it,
-        (parsing::token_type{parsing::prefix_type::long_, "test"}));
+    BOOST_CHECK_EQUAL(*it, (parsing::token_type{parsing::prefix_type::long_, "test"}));
     BOOST_CHECK_EQUAL(processed,
-                      (std::vector<parsing::token_type>{
-                          {parsing::prefix_type::none, "--hello"},
-                          {parsing::prefix_type::long_, "test"}}));
+                      (std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"},
+                                                        {parsing::prefix_type::long_, "test"}}));
     BOOST_CHECK_EQUAL(unprocessed,
-                      (std::vector<parsing::token_type>{
-                          {parsing::prefix_type::none, "-f"},
-                          {parsing::prefix_type::none, "goodbye"}}));
+                      (std::vector<parsing::token_type>{{parsing::prefix_type::none, "-f"},
+                                                        {parsing::prefix_type::none, "goodbye"}}));
 
     it += 2;
-    BOOST_CHECK_EQUAL(
-        *it,
-        (parsing::token_type{parsing::prefix_type::none, "goodbye"}));
+    BOOST_CHECK_EQUAL(*it, (parsing::token_type{parsing::prefix_type::none, "goodbye"}));
     {
         auto it2 = it - 2;
-        BOOST_CHECK_EQUAL(
-            *it2,
-            (parsing::token_type{parsing::prefix_type::long_, "test"}));
+        BOOST_CHECK_EQUAL(*it2, (parsing::token_type{parsing::prefix_type::long_, "test"}));
     }
 
     it -= 2;
-    BOOST_CHECK_EQUAL(
-        *it,
-        (parsing::token_type{parsing::prefix_type::long_, "test"}));
+    BOOST_CHECK_EQUAL(*it, (parsing::token_type{parsing::prefix_type::long_, "test"}));
     {
         auto it2 = it + 2;
-        BOOST_CHECK_EQUAL(
-            *it2,
-            (parsing::token_type{parsing::prefix_type::none, "goodbye"}));
+        BOOST_CHECK_EQUAL(*it2, (parsing::token_type{parsing::prefix_type::none, "goodbye"}));
     }
 
     ++it;
-    BOOST_CHECK_EQUAL(*it,
-                      (parsing::token_type{parsing::prefix_type::none, "-f"}));
+    BOOST_CHECK_EQUAL(*it, (parsing::token_type{parsing::prefix_type::none, "-f"}));
     --it;
-    BOOST_CHECK_EQUAL(
-        *it,
-        (parsing::token_type{parsing::prefix_type::long_, "test"}));
+    BOOST_CHECK_EQUAL(*it, (parsing::token_type{parsing::prefix_type::long_, "test"}));
 
     // Increments/decrements
     {
         auto it2 = it++;
-        BOOST_CHECK_EQUAL(
-            *it,
-            (parsing::token_type{parsing::prefix_type::none, "-f"}));
-        BOOST_CHECK_EQUAL(
-            *it2,
-            (parsing::token_type{parsing::prefix_type::long_, "test"}));
+        BOOST_CHECK_EQUAL(*it, (parsing::token_type{parsing::prefix_type::none, "-f"}));
+        BOOST_CHECK_EQUAL(*it2, (parsing::token_type{parsing::prefix_type::long_, "test"}));
 
         it2 = it--;
-        BOOST_CHECK_EQUAL(
-            *it,
-            (parsing::token_type{parsing::prefix_type::long_, "test"}));
-        BOOST_CHECK_EQUAL(
-            *it2,
-            (parsing::token_type{parsing::prefix_type::none, "-f"}));
+        BOOST_CHECK_EQUAL(*it, (parsing::token_type{parsing::prefix_type::long_, "test"}));
+        BOOST_CHECK_EQUAL(*it2, (parsing::token_type{parsing::prefix_type::none, "-f"}));
     }
 
-    BOOST_CHECK_EQUAL(it[3],
-                      (parsing::token_type{parsing::prefix_type::none, "-f"}));
+    BOOST_CHECK_EQUAL(it[3], (parsing::token_type{parsing::prefix_type::none, "-f"}));
 
     it += 5;
     BOOST_CHECK(it == adapter.end());
@@ -124,12 +96,10 @@ BOOST_AUTO_TEST_CASE(iterator_ops_test)
 
 BOOST_AUTO_TEST_CASE(partial_start_test)
 {
-    auto processed = std::vector<parsing::token_type>{
-        {parsing::prefix_type::none, "--hello"},
-        {parsing::prefix_type::none, "42"}};
-    auto unprocessed = std::vector<parsing::token_type>{
-        {parsing::prefix_type::none, "-f"},
-        {parsing::prefix_type::none, "goodbye"}};
+    auto processed = std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"},
+                                                      {parsing::prefix_type::none, "42"}};
+    auto unprocessed = std::vector<parsing::token_type>{{parsing::prefix_type::none, "-f"},
+                                                        {parsing::prefix_type::none, "goodbye"}};
 
     auto adapter = parsing::dynamic_token_adapter{processed, unprocessed};
     BOOST_CHECK_EQUAL(processed.size(), 2);
@@ -143,13 +113,11 @@ BOOST_AUTO_TEST_CASE(partial_start_test)
     it += 2;
     it.set({parsing::prefix_type::long_, "test"});
     BOOST_CHECK_EQUAL(processed,
-                      (std::vector<parsing::token_type>{
-                          {parsing::prefix_type::none, "--hello"},
-                          {parsing::prefix_type::none, "42"},
-                          {parsing::prefix_type::long_, "test"}}));
+                      (std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"},
+                                                        {parsing::prefix_type::none, "42"},
+                                                        {parsing::prefix_type::long_, "test"}}));
     BOOST_CHECK_EQUAL(unprocessed,
-                      (std::vector<parsing::token_type>{
-                          {parsing::prefix_type::none, "goodbye"}}));
+                      (std::vector<parsing::token_type>{{parsing::prefix_type::none, "goodbye"}}));
     BOOST_CHECK(it != adapter.end());
     BOOST_CHECK((it + 2) == adapter.end());
 }
@@ -157,11 +125,10 @@ BOOST_AUTO_TEST_CASE(partial_start_test)
 BOOST_AUTO_TEST_CASE(end_iterator_test)
 {
     auto processed = std::vector<parsing::token_type>{};
-    auto unprocessed = std::vector<parsing::token_type>{
-        {parsing::prefix_type::none, "--hello"},
-        {parsing::prefix_type::none, "42"},
-        {parsing::prefix_type::none, "-f"},
-        {parsing::prefix_type::none, "goodbye"}};
+    auto unprocessed = std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"},
+                                                        {parsing::prefix_type::none, "42"},
+                                                        {parsing::prefix_type::none, "-f"},
+                                                        {parsing::prefix_type::none, "goodbye"}};
 
     auto adapter = parsing::dynamic_token_adapter{processed, unprocessed};
 
@@ -190,11 +157,10 @@ BOOST_AUTO_TEST_CASE(end_iterator_test)
 BOOST_AUTO_TEST_CASE(loop_test)
 {
     auto processed = std::vector<parsing::token_type>{};
-    auto unprocessed = std::vector<parsing::token_type>{
-        {parsing::prefix_type::none, "--hello"},
-        {parsing::prefix_type::none, "42"},
-        {parsing::prefix_type::none, "-f"},
-        {parsing::prefix_type::none, "goodbye"}};
+    auto unprocessed = std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"},
+                                                        {parsing::prefix_type::none, "42"},
+                                                        {parsing::prefix_type::none, "-f"},
+                                                        {parsing::prefix_type::none, "goodbye"}};
 
     auto adapter = parsing::dynamic_token_adapter{processed, unprocessed};
 
@@ -209,40 +175,33 @@ BOOST_AUTO_TEST_CASE(loop_test)
 BOOST_AUTO_TEST_CASE(insertion_test)
 {
     auto processed = std::vector<parsing::token_type>{};
-    auto unprocessed = std::vector<parsing::token_type>{
-        {parsing::prefix_type::none, "--hello"},
-        {parsing::prefix_type::none, "42"},
-        {parsing::prefix_type::none, "-f"},
-        {parsing::prefix_type::none, "goodbye"}};
+    auto unprocessed = std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"},
+                                                        {parsing::prefix_type::none, "42"},
+                                                        {parsing::prefix_type::none, "-f"},
+                                                        {parsing::prefix_type::none, "goodbye"}};
 
     auto adapter = parsing::dynamic_token_adapter{processed, unprocessed};
     auto it = adapter.begin() + 2;
 
-    auto result = adapter.insert(
-        it,
-        (parsing::token_type{parsing::prefix_type::long_, "foo"}));
+    auto result = adapter.insert(it, (parsing::token_type{parsing::prefix_type::long_, "foo"}));
     BOOST_CHECK(it == result);
     BOOST_CHECK_EQUAL(processed,
-                      (std::vector<parsing::token_type>{
-                          {parsing::prefix_type::none, "--hello"},
-                          {parsing::prefix_type::none, "42"},
-                          {parsing::prefix_type::long_, "foo"}}));
+                      (std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"},
+                                                        {parsing::prefix_type::none, "42"},
+                                                        {parsing::prefix_type::long_, "foo"}}));
     BOOST_CHECK_EQUAL(unprocessed,
-                      (std::vector<parsing::token_type>{
-                          {parsing::prefix_type::none, "-f"},
-                          {parsing::prefix_type::none, "goodbye"}}));
+                      (std::vector<parsing::token_type>{{parsing::prefix_type::none, "-f"},
+                                                        {parsing::prefix_type::none, "goodbye"}}));
 
     it = adapter.end();
-    adapter.insert(it,
-                   (parsing::token_type{parsing::prefix_type::long_, "bar"}));
+    adapter.insert(it, (parsing::token_type{parsing::prefix_type::long_, "bar"}));
     BOOST_CHECK_EQUAL(processed,
-                      (std::vector<parsing::token_type>{
-                          {parsing::prefix_type::none, "--hello"},
-                          {parsing::prefix_type::none, "42"},
-                          {parsing::prefix_type::long_, "foo"},
-                          {parsing::prefix_type::none, "-f"},
-                          {parsing::prefix_type::none, "goodbye"},
-                          {parsing::prefix_type::long_, "bar"}}));
+                      (std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"},
+                                                        {parsing::prefix_type::none, "42"},
+                                                        {parsing::prefix_type::long_, "foo"},
+                                                        {parsing::prefix_type::none, "-f"},
+                                                        {parsing::prefix_type::none, "goodbye"},
+                                                        {parsing::prefix_type::long_, "bar"}}));
     BOOST_CHECK(unprocessed.empty());
 }
 
@@ -259,76 +218,67 @@ BOOST_AUTO_TEST_CASE(transfer_test)
         BOOST_CHECK_EQUAL(unprocessed, expected_unprocessed);
     };
 
-    test::data_set(f,
-                   {
-                       std::tuple{
-                           std::vector<parsing::token_type>{},
-                           std::vector<parsing::token_type>{
-                               {parsing::prefix_type::none, "--hello"},
-                               {parsing::prefix_type::none, "42"},
-                               {parsing::prefix_type::none, "-f"},
-                               {parsing::prefix_type::none, "goodbye"}},
-                           1,
-                           std::vector<parsing::token_type>{
-                               {parsing::prefix_type::none, "--hello"},
-                               {parsing::prefix_type::none, "42"}},
-                           std::vector<parsing::token_type>{
-                               {parsing::prefix_type::none, "-f"},
-                               {parsing::prefix_type::none, "goodbye"}},
-                       },
-                       std::tuple{
-                           std::vector<parsing::token_type>{},
-                           std::vector<parsing::token_type>{
-                               {parsing::prefix_type::none, "--hello"},
-                               {parsing::prefix_type::none, "42"},
-                               {parsing::prefix_type::none, "-f"},
-                               {parsing::prefix_type::none, "goodbye"}},
-                           4,
-                           std::vector<parsing::token_type>{
-                               {parsing::prefix_type::none, "--hello"},
-                               {parsing::prefix_type::none, "42"},
-                               {parsing::prefix_type::none, "-f"},
-                               {parsing::prefix_type::none, "goodbye"}},
-                           std::vector<parsing::token_type>{},
-                       },
-                       std::tuple{
-                           std::vector<parsing::token_type>{},
-                           std::vector<parsing::token_type>{
-                               {parsing::prefix_type::none, "--hello"},
-                               {parsing::prefix_type::none, "42"},
-                               {parsing::prefix_type::none, "-f"},
-                               {parsing::prefix_type::none, "goodbye"}},
-                           4000,
-                           std::vector<parsing::token_type>{
-                               {parsing::prefix_type::none, "--hello"},
-                               {parsing::prefix_type::none, "42"},
-                               {parsing::prefix_type::none, "-f"},
-                               {parsing::prefix_type::none, "goodbye"}},
-                           std::vector<parsing::token_type>{},
-                       },
-                       std::tuple{
-                           std::vector<parsing::token_type>{},
-                           std::vector<parsing::token_type>{},
-                           4000,
-                           std::vector<parsing::token_type>{},
-                           std::vector<parsing::token_type>{},
-                       },
-                       std::tuple{
-                           std::vector<parsing::token_type>{},
-                           std::vector<parsing::token_type>{
-                               {parsing::prefix_type::none, "--hello"},
-                               {parsing::prefix_type::none, "42"},
-                               {parsing::prefix_type::none, "-f"},
-                               {parsing::prefix_type::none, "goodbye"}},
-                           0,
-                           std::vector<parsing::token_type>{
-                               {parsing::prefix_type::none, "--hello"}},
-                           std::vector<parsing::token_type>{
-                               {parsing::prefix_type::none, "42"},
-                               {parsing::prefix_type::none, "-f"},
-                               {parsing::prefix_type::none, "goodbye"}},
-                       },
-                   });
+    test::data_set(
+        f,
+        {
+            std::tuple{
+                std::vector<parsing::token_type>{},
+                std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"},
+                                                 {parsing::prefix_type::none, "42"},
+                                                 {parsing::prefix_type::none, "-f"},
+                                                 {parsing::prefix_type::none, "goodbye"}},
+                1,
+                std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"},
+                                                 {parsing::prefix_type::none, "42"}},
+                std::vector<parsing::token_type>{{parsing::prefix_type::none, "-f"},
+                                                 {parsing::prefix_type::none, "goodbye"}},
+            },
+            std::tuple{
+                std::vector<parsing::token_type>{},
+                std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"},
+                                                 {parsing::prefix_type::none, "42"},
+                                                 {parsing::prefix_type::none, "-f"},
+                                                 {parsing::prefix_type::none, "goodbye"}},
+                4,
+                std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"},
+                                                 {parsing::prefix_type::none, "42"},
+                                                 {parsing::prefix_type::none, "-f"},
+                                                 {parsing::prefix_type::none, "goodbye"}},
+                std::vector<parsing::token_type>{},
+            },
+            std::tuple{
+                std::vector<parsing::token_type>{},
+                std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"},
+                                                 {parsing::prefix_type::none, "42"},
+                                                 {parsing::prefix_type::none, "-f"},
+                                                 {parsing::prefix_type::none, "goodbye"}},
+                4000,
+                std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"},
+                                                 {parsing::prefix_type::none, "42"},
+                                                 {parsing::prefix_type::none, "-f"},
+                                                 {parsing::prefix_type::none, "goodbye"}},
+                std::vector<parsing::token_type>{},
+            },
+            std::tuple{
+                std::vector<parsing::token_type>{},
+                std::vector<parsing::token_type>{},
+                4000,
+                std::vector<parsing::token_type>{},
+                std::vector<parsing::token_type>{},
+            },
+            std::tuple{
+                std::vector<parsing::token_type>{},
+                std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"},
+                                                 {parsing::prefix_type::none, "42"},
+                                                 {parsing::prefix_type::none, "-f"},
+                                                 {parsing::prefix_type::none, "goodbye"}},
+                0,
+                std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"}},
+                std::vector<parsing::token_type>{{parsing::prefix_type::none, "42"},
+                                                 {parsing::prefix_type::none, "-f"},
+                                                 {parsing::prefix_type::none, "goodbye"}},
+            },
+        });
 }
 
 BOOST_AUTO_TEST_SUITE_END()

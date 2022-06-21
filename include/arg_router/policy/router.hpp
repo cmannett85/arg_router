@@ -30,9 +30,8 @@ public:
 
     /** Executes the result of the parsed command line arguments.
      * 
-     * @tparam Args Argument types, must be implicitly convertible to the types
-     * in callable_args_type, in the order and number specified by 
-     * callable_args
+     * @tparam Args Argument types, must be implicitly convertible to the types in
+     * callable_args_type, in the order and number specified by callable_args
      * @param args Argument values
      */
     template <typename... Args>

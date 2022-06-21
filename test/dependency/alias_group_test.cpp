@@ -37,23 +37,18 @@ public:
         const Parents&... parents) const
     {
         if (return_value) {
-            return parsing::parse_target{std::move(pre_parse_data.args()),
-                                         *this,
-                                         parents...};
+            return parsing::parse_target{std::move(pre_parse_data.args()), *this, parents...};
         }
 
         return {};
     }
 
     template <typename... Parents>
-    [[nodiscard]] value_type parse(parsing::parse_target,
-                                   const Parents&... parents) const
+    [[nodiscard]] value_type parse(parsing::parse_target, const Parents&... parents) const
     {
         static_assert(sizeof...(parents) == 1);
-        const auto& parent =
-            std::get<0>(std::tuple{std::cref(parents)...}).get();
-        const auto addr =
-            reinterpret_cast<std::ptrdiff_t>(std::addressof(parent));
+        const auto& parent = std::get<0>(std::tuple{std::cref(parents)...}).get();
+        const auto addr = reinterpret_cast<std::ptrdiff_t>(std::addressof(parent));
         BOOST_CHECK_EQUAL(addr, parent_addr);
 
         return true;
@@ -70,52 +65,44 @@ BOOST_AUTO_TEST_SUITE(alias_group_suite)
 
 BOOST_AUTO_TEST_CASE(is_tree_node_test)
 {
-    static_assert(
-        is_tree_node_v<
-            ard::alias_group_t<arg_t<double, policy::long_name_t<S_("arg1")>>,
-                               arg_t<double, policy::long_name_t<S_("arg2")>>,
-                               policy::default_value<int>>>,
-        "Tree node test has failed");
+    static_assert(is_tree_node_v<ard::alias_group_t<arg_t<double, policy::long_name_t<S_("arg1")>>,
+                                                    arg_t<double, policy::long_name_t<S_("arg2")>>,
+                                                    policy::default_value<int>>>,
+                  "Tree node test has failed");
 }
 
 BOOST_AUTO_TEST_CASE(value_type_test)
 {
     {
-        using ag_type =
-            ard::alias_group_t<arg_t<double, policy::long_name_t<S_("arg1")>>,
-                               arg_t<double, policy::long_name_t<S_("arg2")>>,
-                               policy::default_value<int>>;
-        static_assert(std::is_same_v<typename ag_type::value_type, double>,
-                      "value_type test fail");
+        using ag_type = ard::alias_group_t<arg_t<double, policy::long_name_t<S_("arg1")>>,
+                                           arg_t<double, policy::long_name_t<S_("arg2")>>,
+                                           policy::default_value<int>>;
+        static_assert(std::is_same_v<typename ag_type::value_type, double>, "value_type test fail");
     }
 
     {
-        using ag_type = ard::alias_group_t<
-            arg_t<double, policy::long_name_t<S_("arg1")>>,
-            arg_t<double,
-                  policy::long_name_t<S_("arg2")>,
-                  policy::alias_t<policy::long_name_t<S_("arg1")>>>,
-            policy::default_value<int>>;
-        static_assert(std::is_same_v<typename ag_type::value_type, double>,
-                      "value_type test fail");
+        using ag_type = ard::alias_group_t<arg_t<double, policy::long_name_t<S_("arg1")>>,
+                                           arg_t<double,
+                                                 policy::long_name_t<S_("arg2")>,
+                                                 policy::alias_t<policy::long_name_t<S_("arg1")>>>,
+                                           policy::default_value<int>>;
+        static_assert(std::is_same_v<typename ag_type::value_type, double>, "value_type test fail");
     }
 }
 
 BOOST_AUTO_TEST_CASE(display_name_test)
 {
     {
-        const auto ag =
-            ard::alias_group(arg<double>(policy::long_name<S_("arg1")>),
-                             arg<double>(policy::long_name<S_("arg2")>),
-                             policy::required);
+        const auto ag = ard::alias_group(arg<double>(policy::long_name<S_("arg1")>),
+                                         arg<double>(policy::long_name<S_("arg2")>),
+                                         policy::required);
         BOOST_CHECK_EQUAL(ag.display_name(), "Alias Group: --arg1,--arg2");
     }
 
     {
         const auto ag = ard::alias_group(
             arg<bool>(policy::long_name<S_("arg1")>),
-            arg<bool>(policy::long_name<S_("arg2")>,
-                      policy::alias(policy::long_name<S_("arg1")>)),
+            arg<bool>(policy::long_name<S_("arg2")>, policy::alias(policy::long_name<S_("arg1")>)),
             flag(policy::short_name<'f'>),
             policy::required);
         BOOST_CHECK_EQUAL(ag.display_name(), "Alias Group: --arg1,--arg2,-f");
@@ -124,23 +111,17 @@ BOOST_AUTO_TEST_CASE(display_name_test)
 
 BOOST_AUTO_TEST_CASE(pre_parse_test)
 {
-    auto f = [](auto node,
-                auto child_index,
-                auto expected_args,
-                auto expected_result) {
+    auto f = [](auto node, auto child_index, auto expected_args, auto expected_result) {
         auto fake_parent = stub_node{policy::long_name<S_("parent")>};
 
         auto& expected_child = std::get<child_index>(node.children());
         expected_child.return_value = expected_result;
 
-        auto& not_expected_child =
-            std::get<(child_index == 0 ? 1 : 0)>(node.children());
+        auto& not_expected_child = std::get<(child_index == 0 ? 1 : 0)>(node.children());
         not_expected_child.return_value = false;
 
         auto expected_args_copy = expected_args;
-        auto result =
-            node.pre_parse(parsing::pre_parse_data{expected_args_copy},
-                           fake_parent);
+        auto result = node.pre_parse(parsing::pre_parse_data{expected_args_copy}, fake_parent);
         BOOST_CHECK_EQUAL(!result, !expected_result);
 
         if (result) {
@@ -148,8 +129,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_test)
             BOOST_CHECK_EQUAL(expected_args, result->tokens());
 
             const auto index =
-                std::type_index{typeid(std::decay_t<decltype(expected_child)>)}
-                    .hash_code();
+                std::type_index{typeid(std::decay_t<decltype(expected_child)>)}.hash_code();
             BOOST_CHECK_EQUAL(result->node_type().hash_code(), index);
 
             expected_child.parent_addr =
@@ -162,30 +142,24 @@ BOOST_AUTO_TEST_CASE(pre_parse_test)
     test::data_set(
         f,
         std::tuple{
-            std::tuple{
-                ard::alias_group(stub_node{policy::long_name<S_("arg1")>},
-                                 stub_node{policy::long_name<S_("arg2")>},
-                                 policy::required),
-                traits::integral_constant<0>{},
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "hello1"}},
-                true},
-            std::tuple{
-                ard::alias_group(stub_node{policy::long_name<S_("arg1")>},
-                                 stub_node{policy::long_name<S_("arg2")>},
-                                 policy::required),
-                traits::integral_constant<1>{},
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "hello2"}},
-                true},
-            std::tuple{
-                ard::alias_group(stub_node{policy::long_name<S_("arg1")>},
-                                 stub_node{policy::long_name<S_("arg2")>},
-                                 policy::required),
-                traits::integral_constant<0>{},
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "hello3"}},
-                false},
+            std::tuple{ard::alias_group(stub_node{policy::long_name<S_("arg1")>},
+                                        stub_node{policy::long_name<S_("arg2")>},
+                                        policy::required),
+                       traits::integral_constant<0>{},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "hello1"}},
+                       true},
+            std::tuple{ard::alias_group(stub_node{policy::long_name<S_("arg1")>},
+                                        stub_node{policy::long_name<S_("arg2")>},
+                                        policy::required),
+                       traits::integral_constant<1>{},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "hello2"}},
+                       true},
+            std::tuple{ard::alias_group(stub_node{policy::long_name<S_("arg1")>},
+                                        stub_node{policy::long_name<S_("arg2")>},
+                                        policy::required),
+                       traits::integral_constant<0>{},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "hello3"}},
+                       false},
         });
 }
 
@@ -195,67 +169,57 @@ BOOST_AUTO_TEST_CASE(help_test)
         using node_type = std::decay_t<decltype(node)>;
 
         using help_data = typename node_type::template help_data_type<false>;
-        using flattened_help_data =
-            typename node_type::template help_data_type<true>;
+        using flattened_help_data = typename node_type::template help_data_type<true>;
 
+        static_assert(std::is_same_v<typename help_data::label, S_("Alias Group:")>);
         static_assert(
-            std::is_same_v<typename help_data::label, S_("Alias Group:")>);
-        static_assert(std::is_same_v<typename help_data::label,
-                                     typename flattened_help_data::label>);
+            std::is_same_v<typename help_data::label, typename flattened_help_data::label>);
 
         static_assert(std::is_same_v<typename help_data::description, S_("")>);
-        static_assert(
-            std::is_same_v<typename help_data::description,
-                           typename flattened_help_data::description>);
+        static_assert(std::is_same_v<typename help_data::description,
+                                     typename flattened_help_data::description>);
 
         BOOST_REQUIRE_EQUAL(expected_child_strings.size(),
                             std::tuple_size_v<typename help_data::children>);
 
         utility::tuple_type_iterator<typename help_data::children>([&](auto i) {
-            using child_type =
-                std::tuple_element_t<i, typename help_data::children>;
+            using child_type = std::tuple_element_t<i, typename help_data::children>;
 
-            BOOST_CHECK_EQUAL(child_type::label::get(),
-                              expected_child_strings[i].first);
-            BOOST_CHECK_EQUAL(child_type::description::get(),
-                              expected_child_strings[i].second);
+            BOOST_CHECK_EQUAL(child_type::label::get(), expected_child_strings[i].first);
+            BOOST_CHECK_EQUAL(child_type::description::get(), expected_child_strings[i].second);
         });
     };
 
-    test::data_set(
-        f,
-        std::tuple{
-            std::tuple{
-                ard::alias_group(arg<double>(policy::long_name<S_("arg1")>),
-                                 arg<double>(policy::long_name<S_("arg2")>),
-                                 policy::required),
-                std::vector{
-                    std::pair{"┌ --arg1 <Value>", ""},
-                    std::pair{"└ --arg2 <Value>", ""},
-                }},
-            std::tuple{
-                ard::alias_group(arg<double>(policy::long_name<S_("arg1")>),
-                                 arg<double>(policy::short_name<'b'>,
-                                             policy::description<S_("A desc")>),
-                                 policy::required),
-                std::vector{
-                    std::pair{"┌ --arg1 <Value>", ""},
-                    std::pair{"└ -b <Value>", "A desc"},
-                }},
-            std::tuple{
-                ard::alias_group(arg<bool>(policy::long_name<S_("arg1")>),
-                                 flag(policy::long_name<S_("flag")>,
-                                      policy::short_name<'f'>,
-                                      policy::description<S_("Hello")>),
-                                 arg<bool>(policy::short_name<'b'>,
-                                           policy::description<S_("A desc")>),
-                                 policy::required),
-                std::vector{
-                    std::pair{"┌ --arg1 <Value>", ""},
-                    std::pair{"├ --flag,-f", "Hello"},
-                    std::pair{"└ -b <Value>", "A desc"},
-                }},
-        });
+    test::data_set(f,
+                   std::tuple{
+                       std::tuple{ard::alias_group(arg<double>(policy::long_name<S_("arg1")>),
+                                                   arg<double>(policy::long_name<S_("arg2")>),
+                                                   policy::required),
+                                  std::vector{
+                                      std::pair{"┌ --arg1 <Value>", ""},
+                                      std::pair{"└ --arg2 <Value>", ""},
+                                  }},
+                       std::tuple{ard::alias_group(arg<double>(policy::long_name<S_("arg1")>),
+                                                   arg<double>(policy::short_name<'b'>,
+                                                               policy::description<S_("A desc")>),
+                                                   policy::required),
+                                  std::vector{
+                                      std::pair{"┌ --arg1 <Value>", ""},
+                                      std::pair{"└ -b <Value>", "A desc"},
+                                  }},
+                       std::tuple{ard::alias_group(arg<bool>(policy::long_name<S_("arg1")>),
+                                                   flag(policy::long_name<S_("flag")>,
+                                                        policy::short_name<'f'>,
+                                                        policy::description<S_("Hello")>),
+                                                   arg<bool>(policy::short_name<'b'>,
+                                                             policy::description<S_("A desc")>),
+                                                   policy::required),
+                                  std::vector{
+                                      std::pair{"┌ --arg1 <Value>", ""},
+                                      std::pair{"├ --flag,-f", "Hello"},
+                                      std::pair{"└ -b <Value>", "A desc"},
+                                  }},
+                   });
 }
 
 BOOST_AUTO_TEST_SUITE(death_suite)

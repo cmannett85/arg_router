@@ -12,6 +12,7 @@ BreakBeforeBraces: Linux
 BreakBeforeTernaryOperators: false
 BreakConstructorInitializers: AfterColon
 BreakInheritanceList: AfterColon
+ColumnLimit: 100
 ConstructorInitializerAllOnOneLineOrOnePerLine: false
 IndentCaseLabels: false
 IndentPPDirectives: AfterHash

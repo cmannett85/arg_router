@@ -4,8 +4,7 @@
 function(create_clangformat_target)
     set(single_value_args NAME FORMAT_FILE)
     set(multi_value_args SOURCES DEPENDS)
-    cmake_parse_arguments(ARGS "" "${single_value_args}"
-                          "${multi_value_args}" ${ARGN})
+    cmake_parse_arguments(ARGS "" "${single_value_args}" "${multi_value_args}" ${ARGN})
 
     add_custom_target(${ARGS_NAME}
         COMMAND clang-format --style=file --Werror -i ${ARGS_SOURCES}

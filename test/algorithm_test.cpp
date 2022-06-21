@@ -27,8 +27,7 @@ BOOST_AUTO_TEST_CASE(is_alnum_test)
             static_assert(expected == result, "is_alnum_test failed");
         },
         boost::mp11::mp_rename<  //
-            boost::mp11::mp_iota<
-                traits::integral_constant<std::numeric_limits<char>::max()>>,
+            boost::mp11::mp_iota<traits::integral_constant<std::numeric_limits<char>::max()>>,
             std::tuple>{});
 }
 
@@ -36,16 +35,14 @@ BOOST_AUTO_TEST_CASE(is_whitespace_test)
 {
     utility::tuple_iterator(
         [](auto, auto i) {
-            constexpr auto expected = (i == ' ') || (i == '\f') ||
-                                      (i == '\n') || (i == '\r') ||
+            constexpr auto expected = (i == ' ') || (i == '\f') || (i == '\n') || (i == '\r') ||
                                       (i == '\t') || (i == '\v');
 
             constexpr auto result = algorithm::is_whitespace(i);
             static_assert(expected == result, "is_whitespace failed");
         },
         boost::mp11::mp_rename<  //
-            boost::mp11::mp_iota<
-                traits::integral_constant<std::numeric_limits<char>::max()>>,
+            boost::mp11::mp_iota<traits::integral_constant<std::numeric_limits<char>::max()>>,
             std::tuple>{});
 }
 
@@ -55,9 +52,9 @@ BOOST_AUTO_TEST_CASE(contains_whitespace_test)
     // our strings, which means we can't use it as above because you can't
     // initialise a constexpr value from a function parameter.  So we'll have
     // to use the preprocessor to generate the code instead
-#define CONTAINS_SEQ                                                    \
-    ("he llo")("hello ")(" hello")("hell\to")("hel\nlo")("he     llo")( \
-        "h\fello")("h\rello")("h\vello")
+#define CONTAINS_SEQ                                                                          \
+    ("he llo")("hello ")(" hello")("hell\to")("hel\nlo")("he     llo")("h\fello")("h\rello")( \
+        "h\vello")
 
 #define NOT_CONTAINS_SEQ ("")("hello")
 
@@ -77,198 +74,142 @@ BOOST_AUTO_TEST_CASE(contains_whitespace_test)
 
 BOOST_AUTO_TEST_CASE(find_specialisation_test)
 {
+    BOOST_CHECK_EQUAL((algorithm::find_specialisation<
+                          std::vector,
+                          std::tuple<int, std::string, double, std::vector<int>, float>>::value),
+                      3);
     BOOST_CHECK_EQUAL(
         (algorithm::find_specialisation<
             std::vector,
-            std::tuple<int, std::string, double, std::vector<int>, float>>::
-             value),
-        3);
+            std::tuple<int, std::vector<double>, double, std::vector<int>, float>>::value),
+        1);
     BOOST_CHECK_EQUAL(
         (algorithm::find_specialisation<std::vector,
-                                        std::tuple<int,
-                                                   std::vector<double>,
-                                                   double,
-                                                   std::vector<int>,
-                                                   float>>::value),
-        1);
-    BOOST_CHECK_EQUAL((algorithm::find_specialisation<
-                          std::vector,
-                          std::tuple<int, std::string, double, float>>::value),
-                      4);
-    BOOST_CHECK_EQUAL(
-        (algorithm::find_specialisation<std::vector, std::tuple<>>::value),
-        0);
+                                        std::tuple<int, std::string, double, float>>::value),
+        4);
+    BOOST_CHECK_EQUAL((algorithm::find_specialisation<std::vector, std::tuple<>>::value), 0);
 }
 
 BOOST_AUTO_TEST_CASE(find_specialisation_v_test)
 {
-    BOOST_CHECK_EQUAL(
-        (algorithm::find_specialisation_v<
-            std::vector,
-            std::tuple<int, std::string, double, std::vector<int>, float>>),
-        3);
-    BOOST_CHECK_EQUAL(
-        (algorithm::find_specialisation_v<std::vector,
-                                          std::tuple<int,
-                                                     std::vector<double>,
-                                                     double,
-                                                     std::vector<int>,
-                                                     float>>),
-        1);
     BOOST_CHECK_EQUAL((algorithm::find_specialisation_v<
                           std::vector,
-                          std::tuple<int, std::string, double, float>>),
-                      4);
+                          std::tuple<int, std::string, double, std::vector<int>, float>>),
+                      3);
+    BOOST_CHECK_EQUAL((algorithm::find_specialisation_v<
+                          std::vector,
+                          std::tuple<int, std::vector<double>, double, std::vector<int>, float>>),
+                      1);
     BOOST_CHECK_EQUAL(
-        (algorithm::find_specialisation_v<std::vector, std::tuple<>>),
-        0);
+        (algorithm::find_specialisation_v<std::vector,
+                                          std::tuple<int, std::string, double, float>>),
+        4);
+    BOOST_CHECK_EQUAL((algorithm::find_specialisation_v<std::vector, std::tuple<>>), 0);
 }
 
 BOOST_AUTO_TEST_CASE(count_specialisation_test)
 {
+    BOOST_CHECK_EQUAL((algorithm::count_specialisation<
+                          std::vector,
+                          std::tuple<int, std::string, double, std::vector<int>, float>>::value),
+                      1);
     BOOST_CHECK_EQUAL(
         (algorithm::count_specialisation<
             std::vector,
-            std::tuple<int, std::string, double, std::vector<int>, float>>::
-             value),
-        1);
+            std::tuple<int, std::vector<double>, double, std::vector<int>, float>>::value),
+        2);
     BOOST_CHECK_EQUAL(
         (algorithm::count_specialisation<std::vector,
-                                         std::tuple<int,
-                                                    std::vector<double>,
-                                                    double,
-                                                    std::vector<int>,
-                                                    float>>::value),
-        2);
-    BOOST_CHECK_EQUAL((algorithm::count_specialisation<
-                          std::vector,
-                          std::tuple<int, std::string, double, float>>::value),
-                      0);
-    BOOST_CHECK_EQUAL(
-        (algorithm::count_specialisation<std::vector, std::tuple<>>::value),
+                                         std::tuple<int, std::string, double, float>>::value),
         0);
+    BOOST_CHECK_EQUAL((algorithm::count_specialisation<std::vector, std::tuple<>>::value), 0);
 }
 
 BOOST_AUTO_TEST_CASE(count_specialisation_v_test)
 {
-    BOOST_CHECK_EQUAL(
-        (algorithm::count_specialisation_v<
-            std::vector,
-            std::tuple<int, std::string, double, std::vector<int>, float>>),
-        1);
-    BOOST_CHECK_EQUAL(
-        (algorithm::count_specialisation_v<std::vector,
-                                           std::tuple<int,
-                                                      std::vector<double>,
-                                                      double,
-                                                      std::vector<int>,
-                                                      float>>),
-        2);
     BOOST_CHECK_EQUAL((algorithm::count_specialisation_v<
                           std::vector,
-                          std::tuple<int, std::string, double, float>>),
-                      0);
+                          std::tuple<int, std::string, double, std::vector<int>, float>>),
+                      1);
+    BOOST_CHECK_EQUAL((algorithm::count_specialisation_v<
+                          std::vector,
+                          std::tuple<int, std::vector<double>, double, std::vector<int>, float>>),
+                      2);
     BOOST_CHECK_EQUAL(
-        (algorithm::count_specialisation_v<std::vector, std::tuple<>>),
+        (algorithm::count_specialisation_v<std::vector,
+                                           std::tuple<int, std::string, double, float>>),
         0);
+    BOOST_CHECK_EQUAL((algorithm::count_specialisation_v<std::vector, std::tuple<>>), 0);
 }
 
 BOOST_AUTO_TEST_CASE(count_despecialised_test)
 {
+    BOOST_CHECK_EQUAL((algorithm::count_despecialised<
+                          std::vector<double>,
+                          std::tuple<int, std::string, double, std::vector<int>, float>>::value),
+                      1);
     BOOST_CHECK_EQUAL(
         (algorithm::count_despecialised<
             std::vector<double>,
-            std::tuple<int, std::string, double, std::vector<int>, float>>::
-             value),
-        1);
+            std::tuple<int, std::vector<double>, double, std::vector<int>, float>>::value),
+        2);
     BOOST_CHECK_EQUAL(
         (algorithm::count_despecialised<std::vector<double>,
-                                        std::tuple<int,
-                                                   std::vector<double>,
-                                                   double,
-                                                   std::vector<int>,
-                                                   float>>::value),
-        2);
-    BOOST_CHECK_EQUAL((algorithm::count_despecialised<
-                          std::vector<double>,
-                          std::tuple<int, std::string, double, float>>::value),
-                      0);
-    BOOST_CHECK_EQUAL((algorithm::count_despecialised<std::vector<double>,
-                                                      std::tuple<>>::value),
+                                        std::tuple<int, std::string, double, float>>::value),
+        0);
+    BOOST_CHECK_EQUAL((algorithm::count_despecialised<std::vector<double>, std::tuple<>>::value),
                       0);
 }
 
 BOOST_AUTO_TEST_CASE(count_despecialised_v_test)
 {
-    BOOST_CHECK_EQUAL(
-        (algorithm::count_despecialised_v<
-            std::vector<double>,
-            std::tuple<int, std::string, double, std::vector<int>, float>>),
-        1);
-    BOOST_CHECK_EQUAL(
-        (algorithm::count_despecialised_v<std::vector<double>,
-                                          std::tuple<int,
-                                                     std::vector<double>,
-                                                     double,
-                                                     std::vector<int>,
-                                                     float>>),
-        2);
     BOOST_CHECK_EQUAL((algorithm::count_despecialised_v<
                           std::vector<double>,
-                          std::tuple<int, std::string, double, float>>),
-                      0);
+                          std::tuple<int, std::string, double, std::vector<int>, float>>),
+                      1);
+    BOOST_CHECK_EQUAL((algorithm::count_despecialised_v<
+                          std::vector<double>,
+                          std::tuple<int, std::vector<double>, double, std::vector<int>, float>>),
+                      2);
     BOOST_CHECK_EQUAL(
-        (algorithm::count_despecialised_v<std::vector<double>, std::tuple<>>),
+        (algorithm::count_despecialised_v<std::vector<double>,
+                                          std::tuple<int, std::string, double, float>>),
         0);
+    BOOST_CHECK_EQUAL((algorithm::count_despecialised_v<std::vector<double>, std::tuple<>>), 0);
 }
 
 BOOST_AUTO_TEST_CASE(has_specialisation_test)
 {
+    BOOST_CHECK_EQUAL((algorithm::has_specialisation<
+                          std::vector,
+                          std::tuple<int, std::string, double, std::vector<int>, float>>::value),
+                      true);
     BOOST_CHECK_EQUAL(
         (algorithm::has_specialisation<
             std::vector,
-            std::tuple<int, std::string, double, std::vector<int>, float>>::
-             value),
+            std::tuple<int, std::vector<double>, double, std::vector<int>, float>>::value),
         true);
     BOOST_CHECK_EQUAL(
         (algorithm::has_specialisation<std::vector,
-                                       std::tuple<int,
-                                                  std::vector<double>,
-                                                  double,
-                                                  std::vector<int>,
-                                                  float>>::value),
-        true);
-    BOOST_CHECK_EQUAL((algorithm::has_specialisation<
-                          std::vector,
-                          std::tuple<int, std::string, double, float>>::value),
-                      false);
-    BOOST_CHECK_EQUAL(
-        (algorithm::has_specialisation<std::vector, std::tuple<>>::value),
+                                       std::tuple<int, std::string, double, float>>::value),
         false);
+    BOOST_CHECK_EQUAL((algorithm::has_specialisation<std::vector, std::tuple<>>::value), false);
 }
 
 BOOST_AUTO_TEST_CASE(has_specialisation_v_test)
 {
-    BOOST_CHECK_EQUAL(
-        (algorithm::has_specialisation_v<
-            std::vector,
-            std::tuple<int, std::string, double, std::vector<int>, float>>),
-        true);
-    BOOST_CHECK_EQUAL(
-        (algorithm::has_specialisation_v<std::vector,
-                                         std::tuple<int,
-                                                    std::vector<double>,
-                                                    double,
-                                                    std::vector<int>,
-                                                    float>>),
-        true);
     BOOST_CHECK_EQUAL((algorithm::has_specialisation_v<
                           std::vector,
-                          std::tuple<int, std::string, double, float>>),
-                      false);
+                          std::tuple<int, std::string, double, std::vector<int>, float>>),
+                      true);
+    BOOST_CHECK_EQUAL((algorithm::has_specialisation_v<
+                          std::vector,
+                          std::tuple<int, std::vector<double>, double, std::vector<int>, float>>),
+                      true);
     BOOST_CHECK_EQUAL(
-        (algorithm::has_specialisation_v<std::vector, std::tuple<>>),
+        (algorithm::has_specialisation_v<std::vector, std::tuple<int, std::string, double, float>>),
         false);
+    BOOST_CHECK_EQUAL((algorithm::has_specialisation_v<std::vector, std::tuple<>>), false);
 }
 
 BOOST_AUTO_TEST_CASE(zip_test)
@@ -283,15 +224,13 @@ BOOST_AUTO_TEST_CASE(zip_test)
     };
 
     using data_set = std::tuple<
-        std::tuple<
-            std::tuple<std::integral_constant<std::size_t, 0>,
-                       std::integral_constant<std::size_t, 1>,
-                       std::integral_constant<std::size_t, 2>>,
-            std::tuple<float, int, std::string_view>,
-            std::tuple<std::pair<std::integral_constant<std::size_t, 0>, float>,
-                       std::pair<std::integral_constant<std::size_t, 1>, int>,
-                       std::pair<std::integral_constant<std::size_t, 2>,
-                                 std::string_view>>>,
+        std::tuple<std::tuple<std::integral_constant<std::size_t, 0>,
+                              std::integral_constant<std::size_t, 1>,
+                              std::integral_constant<std::size_t, 2>>,
+                   std::tuple<float, int, std::string_view>,
+                   std::tuple<std::pair<std::integral_constant<std::size_t, 0>, float>,
+                              std::pair<std::integral_constant<std::size_t, 1>, int>,
+                              std::pair<std::integral_constant<std::size_t, 2>, std::string_view>>>,
         std::tuple<
             std::tuple<float, int, std::string_view>,
             std::tuple<std::integral_constant<std::size_t, 0>,
@@ -299,8 +238,7 @@ BOOST_AUTO_TEST_CASE(zip_test)
                        std::integral_constant<std::size_t, 2>>,
             std::tuple<std::pair<float, std::integral_constant<std::size_t, 0>>,
                        std::pair<int, std::integral_constant<std::size_t, 1>>,
-                       std::pair<std::string_view,
-                                 std::integral_constant<std::size_t, 2>>>>>;
+                       std::pair<std::string_view, std::integral_constant<std::size_t, 2>>>>>;
 
     test::data_set(f, data_set{});
 }
@@ -321,24 +259,20 @@ BOOST_AUTO_TEST_CASE(unzip_test)
     };
 
     using data_set = std::tuple<
-        std::tuple<
-            std::tuple<std::pair<std::integral_constant<std::size_t, 0>, float>,
-                       std::pair<std::integral_constant<std::size_t, 1>, int>,
-                       std::pair<std::integral_constant<std::size_t, 2>,
-                                 std::string_view>>,
-            std::tuple<std::integral_constant<std::size_t, 0>,
-                       std::integral_constant<std::size_t, 1>,
-                       std::integral_constant<std::size_t, 2>>,
-            std::tuple<float, int, std::string_view>>,
-        std::tuple<
-            std::tuple<std::pair<float, std::integral_constant<std::size_t, 0>>,
-                       std::pair<int, std::integral_constant<std::size_t, 1>>,
-                       std::pair<std::string_view,
-                                 std::integral_constant<std::size_t, 2>>>,
-            std::tuple<float, int, std::string_view>,
-            std::tuple<std::integral_constant<std::size_t, 0>,
-                       std::integral_constant<std::size_t, 1>,
-                       std::integral_constant<std::size_t, 2>>>>;
+        std::tuple<std::tuple<std::pair<std::integral_constant<std::size_t, 0>, float>,
+                              std::pair<std::integral_constant<std::size_t, 1>, int>,
+                              std::pair<std::integral_constant<std::size_t, 2>, std::string_view>>,
+                   std::tuple<std::integral_constant<std::size_t, 0>,
+                              std::integral_constant<std::size_t, 1>,
+                              std::integral_constant<std::size_t, 2>>,
+                   std::tuple<float, int, std::string_view>>,
+        std::tuple<std::tuple<std::pair<float, std::integral_constant<std::size_t, 0>>,
+                              std::pair<int, std::integral_constant<std::size_t, 1>>,
+                              std::pair<std::string_view, std::integral_constant<std::size_t, 2>>>,
+                   std::tuple<float, int, std::string_view>,
+                   std::tuple<std::integral_constant<std::size_t, 0>,
+                              std::integral_constant<std::size_t, 1>,
+                              std::integral_constant<std::size_t, 2>>>>;
 
     test::data_set(f, data_set{});
 }

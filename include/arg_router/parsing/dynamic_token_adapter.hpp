@@ -8,19 +8,16 @@ namespace arg_router
 {
 namespace parsing
 {
-/** An adaptor over the processed and unprocessed tokens.  This is used during
- * the pre-parse phase.
+/** An adaptor over the processed and unprocessed tokens.  This is used during the pre-parse phase.
  * 
- * If an iterator element is read from that is beyond the end of the processed
- * token container, then one is returned from the equivalent position in the
- * unprocessed token container (as if the two containers were concatenated).
- * Using iterator::set(value_type) will update the element pointed at by the
- * iterator, if the iterator is passed the end of the processed tokens container
- * then elements from the unprocessed container are transferred into it
- * verbatim.
+ * If an iterator element is read from that is beyond the end of the processed token container, then
+ * one is returned from the equivalent position in the unprocessed token container (as if the two
+ * containers were concatenated). Using iterator::set(value_type) will update the element pointed at
+ * by the iterator, if the iterator is passed the end of the processed tokens container then
+ * elements from the unprocessed container are transferred into it verbatim.
  * 
- * This allows the pre-parse phase implementing policies to not concern
- * themselves with managing the processed/unprocessed containers.
+ * This allows the pre-parse phase implementing policies to not concern themselves with managing the
+ * processed/unprocessed containers.
  */
 class dynamic_token_adapter
 {
@@ -61,10 +58,7 @@ public:
          * @param offset Decrement offset (can be negative)
          * @return Reference to this
          */
-        iterator& operator-=(difference_type offset) noexcept
-        {
-            return (*this += -offset);
-        }
+        iterator& operator-=(difference_type offset) noexcept { return (*this += -offset); }
 
         /** Increment operator.
          *
@@ -72,8 +66,7 @@ public:
          * @param offset
          * @return Iterator
          */
-        [[nodiscard]] friend iterator operator+(iterator it,
-                                                difference_type offset) noexcept
+        [[nodiscard]] friend iterator operator+(iterator it, difference_type offset) noexcept
         {
             return it += offset;
         }
@@ -84,8 +77,7 @@ public:
          * @param offset
          * @return Iterator
          */
-        [[nodiscard]] friend iterator operator-(iterator it,
-                                                difference_type offset) noexcept
+        [[nodiscard]] friend iterator operator-(iterator it, difference_type offset) noexcept
         {
             return it -= offset;
         }
@@ -96,8 +88,7 @@ public:
          * @param offset
          * @return Iterator
          */
-        [[nodiscard]] friend iterator operator+(difference_type offset,
-                                                iterator it) noexcept
+        [[nodiscard]] friend iterator operator+(difference_type offset, iterator it) noexcept
         {
             return it += offset;
         }
@@ -108,8 +99,7 @@ public:
          * @param offset
          * @return Iterator
          */
-        [[nodiscard]] friend iterator operator-(difference_type offset,
-                                                iterator it) noexcept
+        [[nodiscard]] friend iterator operator-(difference_type offset, iterator it) noexcept
         {
             return it -= offset;
         }
@@ -122,8 +112,7 @@ public:
          * @param rhs Second instance
          * @return Iterator
          */
-        [[nodiscard]] friend iterator operator-(iterator lhs,
-                                                iterator rhs) noexcept
+        [[nodiscard]] friend iterator operator-(iterator lhs, iterator rhs) noexcept
         {
             return {lhs.owner_, lhs.i_ - rhs.i_};
         }
@@ -161,8 +150,7 @@ public:
          * @return True if the index represented by @a lhs is less than or
          * equal to @a rhs
          */
-        [[nodiscard]] friend bool operator<=(iterator lhs,
-                                             iterator rhs) noexcept
+        [[nodiscard]] friend bool operator<=(iterator lhs, iterator rhs) noexcept
         {
             return !(lhs > rhs);
         }
@@ -175,8 +163,7 @@ public:
          * @return True if the index represented by @a lhs is greater than or
          * equal to @a rhs
          */
-        [[nodiscard]] friend bool operator>=(iterator lhs,
-                                             iterator rhs) noexcept
+        [[nodiscard]] friend bool operator>=(iterator lhs, iterator rhs) noexcept
         {
             return !(lhs < rhs);
         }
@@ -235,10 +222,7 @@ public:
          * @note Undefined if iterator is out of bounds
          * @return Pointer to element
          */
-        [[nodiscard]] pointer operator->() const noexcept
-        {
-            return &(*(*this));
-        }
+        [[nodiscard]] pointer operator->() const noexcept { return &(*(*this)); }
 
         /** Offset and deference operator.
          *
@@ -246,8 +230,7 @@ public:
          * @param offset Offset
          * @return Reference to element
          */
-        [[nodiscard]] reference operator[](
-            difference_type offset) const noexcept
+        [[nodiscard]] reference operator[](difference_type offset) const noexcept
         {
             return *(*this + offset);
         }
@@ -281,10 +264,7 @@ public:
          * @param other Instance to compare against
          * @return True if not equal
          */
-        [[nodiscard]] bool operator!=(iterator other) const noexcept
-        {
-            return !(*this == other);
-        }
+        [[nodiscard]] bool operator!=(iterator other) const noexcept { return !(*this == other); }
 
         /** Updates the element with @a value.
          *
@@ -307,26 +287,16 @@ public:
 
         iterator() : owner_{nullptr}, i_{0} {}
 
-        iterator(dynamic_token_adapter* owner, difference_type i) :
-            owner_{owner}, i_{i}
-        {
-        }
+        iterator(dynamic_token_adapter* owner, difference_type i) : owner_{owner}, i_{i} {}
 
         [[nodiscard]] bool is_end() const noexcept
         {
-            return !owner_ ||
-                   (i_ >= static_cast<difference_type>(owner_->size()));
+            return !owner_ || (i_ >= static_cast<difference_type>(owner_->size()));
         }
 
-        [[nodiscard]] vector<token_type>& processed() const
-        {
-            return *(owner_->processed_);
-        }
+        [[nodiscard]] vector<token_type>& processed() const { return *(owner_->processed_); }
 
-        [[nodiscard]] vector<token_type>& unprocessed() const
-        {
-            return *(owner_->unprocessed_);
-        }
+        [[nodiscard]] vector<token_type>& unprocessed() const { return *(owner_->unprocessed_); }
 
         dynamic_token_adapter* owner_;
         difference_type i_;
@@ -337,48 +307,40 @@ public:
      * @param processed Processed tokens container
      * @param unprocessed Unprocessed tokens container
      */
-    dynamic_token_adapter(vector<token_type>& processed,
-                          vector<token_type>& unprocessed) :
-        processed_{&processed},
-        unprocessed_{&unprocessed}
+    dynamic_token_adapter(vector<token_type>& processed, vector<token_type>& unprocessed) :
+        processed_{&processed}, unprocessed_{&unprocessed}
     {
-        // Perform a reserve for all the tokens.  There is a resonable chance
-        // that more processed than unprocessed tokens will be needed (due to
-        // short-form expansion, value separation, etc.), but this should still
-        // dramatically reduce the number of allocations needed
+        // Perform a reserve for all the tokens.  There is a resonable chance that more processed
+        // than unprocessed tokens will be needed (due to short-form expansion, value separation,
+        // etc.), but this should still dramatically reduce the number of allocations needed
         unprocessed_->reserve(size());
     }
 
     /** Equality operator.
      *
-     * @note The underlying containers' addresses are used in the comparison, so
-     * two separate but identical instances will return not equal
+     * @note The underlying containers' addresses are used in the comparison, so two separate but
+     * identical instances will return not equal
      * @param other Instance to compare against
      * @return True if equal
      */
     [[nodiscard]] bool operator==(dynamic_token_adapter other) const
     {
-        return (processed_ == other.processed_) &&
-               (unprocessed_ == other.unprocessed_);
+        return (processed_ == other.processed_) && (unprocessed_ == other.unprocessed_);
     }
 
     /** Inequality operator.
      *
-     * @note The underlying containers' addresses are used in the comparison, so
-     * two separate but identical instances will return not equal
+     * @note The underlying containers' addresses are used in the comparison, so two separate but
+     * identical instances will return not equal
      * @param other Instance to compare against
      * @return True if not equal
      */
-    [[nodiscard]] bool operator!=(dynamic_token_adapter other) const
-    {
-        return !(*this == other);
-    }
+    [[nodiscard]] bool operator!=(dynamic_token_adapter other) const { return !(*this == other); }
 
     /** Returns an iterator to the beginning of the processed container.
      *
-     * If the processed container is empty, this will initialise it by moving
-     * an entry from the front of the raw command line token container into it,
-     * using prefix_type::none.
+     * If the processed container is empty, this will initialise it by moving an entry from the
+     * front of the raw command line token container into it, using prefix_type::none.
      * @return Begin iterator
      */
     [[nodiscard]] iterator begin() { return {this, 0}; }
@@ -409,16 +371,15 @@ public:
 
     /** Inserts @a token at position @a it.
      *
-     * @note No checking is performed that the iterator was created from the
-     * same adapter
+     * @note No checking is performed that the iterator was created from the same adapter
      * @param it Position to insert at
      * @param value Value to insert
      * @return Iterator to inserted value
      */
     iterator insert(iterator it, value_type value)
     {
-        // Only transfer up to the element before the target position, otherwise
-        // we transfer that and then insert the new value, which isn't expected
+        // Only transfer up to the element before the target position, otherwise we transfer that
+        // and then insert the new value, which isn't expected
         transfer(it - 1);
         auto processed_it = it.is_end() ? processed_->end() :  //
                                           processed_->begin() + it.i_;
@@ -437,8 +398,8 @@ public:
     template <typename Iter>
     iterator insert(iterator it, Iter first, Iter last)
     {
-        // Only transfer up to the element before the target position, otherwise
-        // we transfer that and then insert the new value, which isn't expected
+        // Only transfer up to the element before the target position, otherwise we transfer that
+        // and then insert the new value, which isn't expected
         transfer(it - 1);
         auto processed_it = it.is_end() ? processed_->end() :  //
                                           processed_->begin() + it.i_;
@@ -447,11 +408,10 @@ public:
         return {this, it.i_};
     }
 
-    /** Transfer elements from the raw command line token container to processed
-     * one up to and including the one represented by @a it.
+    /** Transfer elements from the raw command line token container to processed one up to and
+     * including the one represented by @a it.
      *
-     * If @a it is before or within the processed container, then this is a
-     * no-op.
+     * If @a it is before or within the processed container, then this is a no-op.
      * @param it Iterator, and the preceding elements too, to transfer
      */
     void transfer(iterator it)
@@ -461,17 +421,13 @@ public:
             it.i_ = size() - 1;
         }
 
-        if ((it.i_ < 0) || (it.i_ < static_cast<iterator::difference_type>(
-                                        processed_->size()))) {
+        if ((it.i_ < 0) || (it.i_ < static_cast<iterator::difference_type>(processed_->size()))) {
             return;
         }
 
         const auto count = (it.i_ + 1) - processed_->size();
-        processed_->insert(processed_->end(),
-                           unprocessed_->begin(),
-                           unprocessed_->begin() + count);
-        unprocessed_->erase(unprocessed_->begin(),
-                            unprocessed_->begin() + count);
+        processed_->insert(processed_->end(), unprocessed_->begin(), unprocessed_->begin() + count);
+        unprocessed_->erase(unprocessed_->begin(), unprocessed_->begin() + count);
     }
 
 private:

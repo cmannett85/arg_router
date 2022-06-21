@@ -15,13 +15,11 @@ namespace parsing
 {
 /** A parse target i.e. a target node optionally with tokens for parsing.
  *
- * This type is the result of a pre-parse phase, and is used to trigger a parse
- * of the given tokens (optional) on the target node.  Sub-targets can also be
- * attached allowing a node to trigger the parse of other nodes e.g. mode-like
- * types.
+ * This type is the result of a pre-parse phase, and is used to trigger a parse of the given tokens
+ * (optional) on the target node.  Sub-targets can also be attached allowing a node to trigger the
+ * parse of other nodes e.g. mode-like types.
  * 
- * The target can only be invoked once, invoking a second or more time is a
- * no-op.
+ * The target can only be invoked once, invoking a second or more time is a no-op.
  */
 class parse_target
 {
@@ -36,16 +34,12 @@ public:
      * @param parents Parents of @a node
      */
     template <typename Node, typename... Parents>
-    parse_target(vector<token_type> tokens,
-                 const Node& node,
-                 const Parents&... parents) noexcept :
-        node_type_{typeid(Node)},
-        tokens_(std::move(tokens))
+    parse_target(vector<token_type> tokens, const Node& node, const Parents&... parents) noexcept :
+        node_type_{typeid(Node)}, tokens_(std::move(tokens))
     {
         static_assert(is_tree_node_v<Node>, "Target must be a tree_node");
 
-        parse_ = [&node,
-                  &parents...](parse_target target) -> utility::unsafe_any {
+        parse_ = [&node, &parents...](parse_target target) -> utility::unsafe_any {
             constexpr bool no_parse_value =
                 std::is_void_v<decltype(node.parse(target, parents...))>;
 
@@ -82,56 +76,38 @@ public:
      *
      * @return Tokens reference
      */
-    [[nodiscard]] const vector<token_type>& tokens() const noexcept
-    {
-        return tokens_;
-    }
+    [[nodiscard]] const vector<token_type>& tokens() const noexcept { return tokens_; }
 
     /** The sub-targets associated with this target.
      *
      * @return Sub-targets reference
      */
-    [[nodiscard]] vector<parse_target>& sub_targets() noexcept
-    {
-        return sub_targets_;
-    }
+    [[nodiscard]] vector<parse_target>& sub_targets() noexcept { return sub_targets_; }
 
     /** Const overload.
      *
      * @return Sub-targets reference
      */
-    [[nodiscard]] const vector<parse_target>& sub_targets() const noexcept
-    {
-        return sub_targets_;
-    }
+    [[nodiscard]] const vector<parse_target>& sub_targets() const noexcept { return sub_targets_; }
 
     /** Bool conversion operator.
      *
      * @return True if target is invocable (i.e. trigger a parse)
      */
-    [[nodiscard]] operator bool() const noexcept
-    {
-        return static_cast<bool>(parse_);
-    }
+    [[nodiscard]] operator bool() const noexcept { return static_cast<bool>(parse_); }
 
     /** Returns the <TT>std::type_index</TT> for the target node.
      *
      * @return Target node <TT>std::type_index</TT>
      */
-    [[nodiscard]] std::type_index node_type() const noexcept
-    {
-        return node_type_;
-    }
+    [[nodiscard]] std::type_index node_type() const noexcept { return node_type_; }
 
     /** Append a sub-target.
      *
      * The tokens of @a target are appended to this target.
      * @param target Sub-target
      */
-    void add_sub_target(parse_target target)
-    {
-        sub_targets_.push_back(std::move(target));
-    }
+    void add_sub_target(parse_target target) { sub_targets_.push_back(std::move(target)); }
 
     /** Set the tokens for this node.
      *

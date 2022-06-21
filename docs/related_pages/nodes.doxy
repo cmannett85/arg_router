@@ -9,71 +9,63 @@ namespace arg_router
  * 
  * @section nodes_parameter_organising Parameter Organising
  * The first task tree_node has to do is organise the constructor parameters.
- * - Policies are used to derive from, and are therefore used in the inheritance
- *   declaration
- * - tree_node derived types are children and are moved into an internal
- *   tuple to hold them
+ * - Policies are used to derive from, and are therefore used in the inheritance declaration
+ * - tree_node derived types are children and are moved into an internal tuple to hold them
  * - Anything else causes a <TT>static_assert</TT> failure
  * 
- * Splitting out other tree_node derived types has a further complexity due
- * to @ref list, which will need flattening first.
+ * Splitting out other tree_node derived types has a further complexity due to @ref list, which will
+ * need flattening first.
  * 
  * @section nodes_pre_parse Pre-Parse
- * Every node needs pre-parse functionality because it is what the parent uses
- * to determine if a set of tokens are for a particular child node.  For a leaf
- * node, the method performs these operations:
- * -# The entire set of unprocessed tokens and the parents of a node are passed
- *    in
- * -# A copy of the tokens and a temporary target are passed to each of the
- *    pre-parse phase supporting policies in priority order.  Which then
- *    performs their operations on the input tokens.  If the policies are
- *    adamant that the leading token(s) is not for this node, it will exit
- *    early - but not if an error occurs! Errors are saved for later
+ * Every node needs pre-parse functionality because it is what the parent uses to determine if a set
+ * of tokens are for a particular child node.  For a leaf node, the method performs these
+ * operations:
+ * -# The entire set of unprocessed tokens and the parents of a node are passed in
+ * -# A copy of the tokens and a temporary target are passed to each of the pre-parse phase
+ *    supporting policies in priority order.  Which then performs their operations on the input
+ *    tokens.  If the policies are adamant that the leading token(s) is not for this node, it will
+ *    exit early - but not if an error occurs! Errors are saved for later
  * -# If all passes, then the last check is for the name (if it has one)
- * -# At this stage we know that the leading token(s) is for this node, so any
- *    error that was created by the policies can now be thrown
- * -# If no error occured then we can move the processed tokens, the ones the
- *    policies have determined are for this node (usually using
- *    policy::min_max_count_t), into the parsing::parse_target and return it
+ * -# At this stage we know that the leading token(s) is for this node, so any error that was
+ *    created by the policies can now be thrown
+ * -# If no error occured then we can move the processed tokens, the ones the policies have
+ *    determined are for this node (usually using policy::min_max_count_t), into the
+ *    parsing::parse_target and return it
  * 
- * A mode-like node implements this method very differently, because its job is
- * to collect the parsing::parse_target results of all of its children rather
- * than directly processing the tokens itself.
+ * A mode-like node implements this method very differently, because its job is to collect the
+ * parsing::parse_target results of all of its children rather than directly processing the tokens
+ * itself.
  * 
  * @section nodes_parse Parse
- * Every tree_node derived type also needs to provide a parse function, which
- * as the name suggests, processes the tokens (if any) in the given
- * parsing::parse_target in order to produce a value that represents the tokens
- * in some way.
+ * Every tree_node derived type also needs to provide a parse function, which as the name suggests,
+ * processes the tokens (if any) in the given parsing::parse_target in order to produce a value that
+ * represents the tokens in some way.
  * 
- * It's important to note that the parse method is not called directly, the
- * parsing::parse_target returned from the pre-parse is a type erasing function
- * object type.  When it is created it creates a closure around the target node
- * and its parents, so when it is executed it calls the target node's parse
- * method passing itself and the parents into it.
+ * It's important to note that the parse method is not called directly, the parsing::parse_target
+ * returned from the pre-parse is a type erasing function object type.  When it is created it
+ * creates a closure around the target node and its parents, so when it is executed it calls the
+ * target node's parse method passing itself and the parents into it.
  * 
  * Let's look at what a typical node like arg_t does:
- * -# Take the first token from the parsing::parse_target, this is guaranteed to
- *    be there because arg_t has a policy::fixed_count of 1.  Then parse it
- *    using a parse-phase implementing policy if present, otherwise the global parser
+ * -# Take the first token from the parsing::parse_target, this is guaranteed to be there because
+ *    arg_t has a policy::fixed_count of 1.  Then parse it using a parse-phase implementing policy
+ *    if present, otherwise the global parser
  * -# Pass the result to any validation-phase implementing policies
  * -# If there is a routing phase policy, that call it with the parsed result
  * -# Return the parsed value to the caller
  * 
- * There are two exits for the node, if the node is top-level then once parsing
- * is complete we can exit to the library user's code with the result via the
- * routing policy, as it's the only value expected to be parsed from the command
- * line. However, often the node is the child of a mode-like type (e.g. mode_t)
- * which is building up a results tuple from the parsed tokens, in that case we
+ * There are two exits for the node, if the node is top-level then once parsing is complete we can
+ * exit to the library user's code with the result via the routing policy, as it's the only value
+ * expected to be parsed from the command line. However, often the node is the child of a mode-like
+ * type (e.g. mode_t) which is building up a results tuple from the parsed tokens, in that case we
  * return the value to the mode.
  * 
- * It's important to note that every node needs this method, even if they don't 
- * parse a value off the command line e.g. flag_t which does this:
+ * It's important to note that every node needs this method, even if they don't parse a value off
+ * the command line e.g. flag_t which does this:
  * -# Create a <TT>true</TT> result
  * -# If there is a routing phase policy, that call it with the result
  * -# Return the result to the caller
  * 
- * I.e. there is no parsing as the presence of a flag indicates a positive
- * value.
+ * I.e. there is no parsing as the presence of a flag indicates a positive value.
  */
 }

@@ -22,20 +22,14 @@ public:
     }
 
     template <typename InputValueType, typename... Parents>
-    bool validation_phase(const InputValueType& value,
-                          const Parents&... parents) const
+    bool validation_phase(const InputValueType& value, const Parents&... parents) const
     {
         auto hit = false;
         utility::tuple_type_iterator<typename stub_node::policies_type>(  //
             [&](auto i) {
-                using this_policy =
-                    std::tuple_element_t<i, typename stub_node::policies_type>;
-                if constexpr (policy::has_validation_phase_method_v<
-                                  this_policy,
-                                  InputValueType> &&
-                              traits::is_specialisation_of_v<
-                                  this_policy,
-                                  policy::min_max_value>) {
+                using this_policy = std::tuple_element_t<i, typename stub_node::policies_type>;
+                if constexpr (policy::has_validation_phase_method_v<this_policy, InputValueType> &&
+                              traits::is_specialisation_of_v<this_policy, policy::min_max_value>) {
                     this->this_policy::validation_phase(value, parents...);
                     hit = true;
                 }
@@ -52,100 +46,83 @@ BOOST_AUTO_TEST_SUITE(min_max_value_suite)
 
 BOOST_AUTO_TEST_CASE(is_policy_test)
 {
-    static_assert(policy::is_policy_v<policy::min_max_value<int>>,
-                  "Policy test has failed");
+    static_assert(policy::is_policy_v<policy::min_max_value<int>>, "Policy test has failed");
 }
 
 BOOST_AUTO_TEST_CASE(has_validation_phase_test)
 {
-    static_assert(
-        policy::has_validation_phase_method_v<policy::min_max_value<int>, int>,
-        "Phase method test has failed");
+    static_assert(policy::has_validation_phase_method_v<policy::min_max_value<int>, int>,
+                  "Phase method test has failed");
 }
 
 BOOST_AUTO_TEST_CASE(validation_phase_test)
 {
-    auto f =
-        [](auto node, auto value, auto expected_hit, std::string fail_message) {
-            try {
-                const auto hit = node.validation_phase(value, node);
-                BOOST_CHECK(fail_message.empty());
-                BOOST_CHECK_EQUAL(hit, expected_hit);
-            } catch (parse_exception& e) {
-                BOOST_CHECK_EQUAL(e.what(), fail_message);
-            }
-        };
+    auto f = [](auto node, auto value, auto expected_hit, std::string fail_message) {
+        try {
+            const auto hit = node.validation_phase(value, node);
+            BOOST_CHECK(fail_message.empty());
+            BOOST_CHECK_EQUAL(hit, expected_hit);
+        } catch (parse_exception& e) {
+            BOOST_CHECK_EQUAL(e.what(), fail_message);
+        }
+    };
 
     test::data_set(
         f,
         std::tuple{
-            std::tuple{stub_node{policy::min_max_value{1, 4},
-                                 policy::long_name<S_("node")>},
+            std::tuple{stub_node{policy::min_max_value{1, 4}, policy::long_name<S_("node")>},
                        2,
                        true,
                        ""},
-            std::tuple{stub_node{policy::min_max_value{1, 4},
-                                 policy::long_name<S_("node")>},
+            std::tuple{stub_node{policy::min_max_value{1, 4}, policy::long_name<S_("node")>},
                        1,
                        true,
                        ""},
-            std::tuple{stub_node{policy::min_max_value{1, 4},
-                                 policy::long_name<S_("node")>},
+            std::tuple{stub_node{policy::min_max_value{1, 4}, policy::long_name<S_("node")>},
                        4,
                        true,
                        ""},
-            std::tuple{stub_node{policy::min_max_value{1, 4},
-                                 policy::long_name<S_("node")>},
+            std::tuple{stub_node{policy::min_max_value{1, 4}, policy::long_name<S_("node")>},
                        0,
                        true,
                        "Minimum value not reached: --node"},
-            std::tuple{stub_node{policy::min_max_value{1, 4},
-                                 policy::long_name<S_("node")>},
+            std::tuple{stub_node{policy::min_max_value{1, 4}, policy::long_name<S_("node")>},
                        -5,
                        true,
                        "Minimum value not reached: --node"},
-            std::tuple{stub_node{policy::min_max_value{1, 4},
-                                 policy::long_name<S_("node")>},
+            std::tuple{stub_node{policy::min_max_value{1, 4}, policy::long_name<S_("node")>},
                        6,
                        true,
                        "Maximum value exceeded: --node"},
 
-            std::tuple{stub_node{policy::min_max_value{std::vector{5, 6},
-                                                       std::vector{1, 3, 4, 2},
-                                                       [](auto&& a, auto&& b) {
-                                                           return a.size() <
-                                                                  b.size();
-                                                       }},
+            std::tuple{stub_node{policy::min_max_value{
+                                     std::vector{5, 6},
+                                     std::vector{1, 3, 4, 2},
+                                     [](auto&& a, auto&& b) { return a.size() < b.size(); }},
                                  policy::long_name<S_("node")>},
                        std::vector{3, 4, 5},
                        true,
                        ""},
-            std::tuple{stub_node{policy::min_max_value{std::vector{5, 6},
-                                                       std::vector{1, 3, 4, 2},
-                                                       [](auto&& a, auto&& b) {
-                                                           return a.size() <
-                                                                  b.size();
-                                                       }},
+            std::tuple{stub_node{policy::min_max_value{
+                                     std::vector{5, 6},
+                                     std::vector{1, 3, 4, 2},
+                                     [](auto&& a, auto&& b) { return a.size() < b.size(); }},
                                  policy::long_name<S_("node")>},
                        std::vector<int>{},
                        true,
                        "Minimum value not reached: --node"},
-            std::tuple{stub_node{policy::min_max_value{std::vector{5, 6},
-                                                       std::vector{1, 3, 4, 2},
-                                                       [](auto&& a, auto&& b) {
-                                                           return a.size() <
-                                                                  b.size();
-                                                       }},
+            std::tuple{stub_node{policy::min_max_value{
+                                     std::vector{5, 6},
+                                     std::vector{1, 3, 4, 2},
+                                     [](auto&& a, auto&& b) { return a.size() < b.size(); }},
                                  policy::long_name<S_("node")>},
                        std::vector{5},
                        true,
                        "Minimum value not reached: --node"},
-            std::tuple{stub_node{policy::min_max_value{std::vector{5, 6},
-                                                       std::vector{1, 3, 4, 2},
-                                                       [](auto&& a, auto&& b) {
-                                                           return a.size() <
-                                                                  b.size();
-                                                       }},
+            std::tuple{stub_node{policy::min_max_value{
+                                     std::vector{5, 6},
+                                     std::vector{1, 3, 4, 2},
+                                     [](auto&& a, auto&& b) { return a.size() < b.size(); }},
                                  policy::long_name<S_("node")>},
                        std::vector{1, 2, 3, 4, 5},
                        true,

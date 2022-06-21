@@ -23,10 +23,7 @@ public:
      *
      * @return Description
      */
-    [[nodiscard]] constexpr static std::string_view description() noexcept
-    {
-        return S::get();
-    }
+    [[nodiscard]] constexpr static std::string_view description() noexcept { return S::get(); }
 
 private:
     static_assert(!description().empty(), "Descriptions must not be empty");

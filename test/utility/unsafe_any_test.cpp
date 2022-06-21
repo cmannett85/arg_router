@@ -20,8 +20,7 @@ BOOST_AUTO_TEST_CASE(internal_storage_test)
             BOOST_CHECK(any.has_value());
 
             decltype(auto) any_value = any.get<value_type>();
-            static_assert(std::is_same_v<decltype(any_value), decltype(value)>,
-                          "Type mismatch");
+            static_assert(std::is_same_v<decltype(any_value), decltype(value)>, "Type mismatch");
             BOOST_CHECK_EQUAL(any_value, value);
         }
 
@@ -31,18 +30,15 @@ BOOST_AUTO_TEST_CASE(internal_storage_test)
 
             decltype(auto) any_value = any.get<value_type>();
             static_assert(
-                std::is_same_v<decltype(any_value),
-                               std::add_lvalue_reference_t<decltype(value)>>,
+                std::is_same_v<decltype(any_value), std::add_lvalue_reference_t<decltype(value)>>,
                 "Type mismatch");
             BOOST_CHECK_EQUAL(any_value, value);
         }
     };
 
-    test::data_set(f,
-                   std::tuple{std::tuple{42},
-                              std::tuple{3.14},
-                              std::tuple{42u},
-                              std::tuple{std::size_t{42}}});
+    test::data_set(
+        f,
+        std::tuple{std::tuple{42}, std::tuple{3.14}, std::tuple{42u}, std::tuple{std::size_t{42}}});
 }
 
 BOOST_AUTO_TEST_CASE(pod_external_storage_test)
@@ -55,8 +51,7 @@ BOOST_AUTO_TEST_CASE(pod_external_storage_test)
         BOOST_CHECK(any.has_value());
 
         decltype(auto) any_value = any.get<value_type>();
-        static_assert(std::is_same_v<decltype(any_value), const value_type&>,
-                      "Type mismatch");
+        static_assert(std::is_same_v<decltype(any_value), const value_type&>, "Type mismatch");
         BOOST_CHECK(any_value == value);
     }
 
@@ -65,8 +60,7 @@ BOOST_AUTO_TEST_CASE(pod_external_storage_test)
         BOOST_CHECK(any.has_value());
 
         decltype(auto) any_value = any.get<value_type>();
-        static_assert(std::is_same_v<decltype(any_value), value_type&>,
-                      "Type mismatch");
+        static_assert(std::is_same_v<decltype(any_value), value_type&>, "Type mismatch");
         BOOST_CHECK(any_value == value);
     }
 }
@@ -80,8 +74,7 @@ BOOST_AUTO_TEST_CASE(non_pod_external_storage_test)
         BOOST_CHECK(any.has_value());
 
         decltype(auto) any_value = any.get<std::string>();
-        static_assert(std::is_same_v<decltype(any_value), const std::string&>,
-                      "Type mismatch");
+        static_assert(std::is_same_v<decltype(any_value), const std::string&>, "Type mismatch");
         BOOST_CHECK_EQUAL(any_value, value);
     }
 
@@ -90,8 +83,7 @@ BOOST_AUTO_TEST_CASE(non_pod_external_storage_test)
         BOOST_CHECK(any.has_value());
 
         decltype(auto) any_value = any.get<std::string>();
-        static_assert(std::is_same_v<decltype(any_value), std::string&>,
-                      "Type mismatch");
+        static_assert(std::is_same_v<decltype(any_value), std::string&>, "Type mismatch");
         BOOST_CHECK_EQUAL(any_value, value);
     }
 }
@@ -122,8 +114,7 @@ BOOST_AUTO_TEST_CASE(copy_construction_test)
     const auto any4 = any2;
     BOOST_REQUIRE(any4.has_value());
     decltype(auto) any4_value = any4.get<const char*>();
-    static_assert(std::is_same_v<decltype(any4_value), const char*>,
-                  "Type mismatch");
+    static_assert(std::is_same_v<decltype(any4_value), const char*>, "Type mismatch");
 }
 
 BOOST_AUTO_TEST_CASE(move_construction_test)

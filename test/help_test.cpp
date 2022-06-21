@@ -23,10 +23,7 @@ template <typename... Params>
 class mock_root : public tree_node<Params...>
 {
 public:
-    constexpr explicit mock_root(Params... params) :
-        tree_node<Params...>{std::move(params)...}
-    {
-    }
+    constexpr explicit mock_root(Params... params) : tree_node<Params...>{std::move(params)...} {}
 
     template <bool Flatten>
     class help_data_type
@@ -50,37 +47,32 @@ BOOST_AUTO_TEST_CASE(is_tree_node_test)
 
 BOOST_AUTO_TEST_CASE(generate_help_test)
 {
-    auto f =
-        [](const auto& root, auto help_index, const auto& expected_result) {
-            using root_type = std::decay_t<decltype(root)>;
-            using help_type =
-                std::tuple_element_t<help_index,  //
-                                     typename root_type::children_type>;
+    auto f = [](const auto& root, auto help_index, const auto& expected_result) {
+        using root_type = std::decay_t<decltype(root)>;
+        using help_type = std::tuple_element_t<help_index,  //
+                                               typename root_type::children_type>;
 
-            auto stream = std::stringstream{};
-            help_type::template generate_help<root_type>(stream);
-            BOOST_CHECK_EQUAL(stream.str(), expected_result);
-        };
+        auto stream = std::stringstream{};
+        help_type::template generate_help<root_type>(stream);
+        BOOST_CHECK_EQUAL(stream.str(), expected_result);
+    };
 
     test::data_set(
         f,
         std::tuple{
             std::tuple{
-                mock_root{
-                    flag(policy::long_name<S_("flag1")>,
-                         policy::short_name<'a'>,
-                         policy::description<S_("Flag1 description")>),
-                    flag(policy::long_name<S_("flag2")>),
-                    flag(policy::short_name<'b'>,
-                         policy::description<S_("b description")>),
-                    arg<int>(policy::long_name<S_("arg1")>,
-                             policy::value_separator<'='>),
-                    help(policy::long_name<S_("help")>,
-                         policy::short_name<'h'>,
-                         policy::description<S_("Help output")>,
-                         policy::program_name<S_("foo")>,
-                         policy::program_version<S_("v3.14")>,
-                         policy::program_intro<S_("My foo is good for you")>)},
+                mock_root{flag(policy::long_name<S_("flag1")>,
+                               policy::short_name<'a'>,
+                               policy::description<S_("Flag1 description")>),
+                          flag(policy::long_name<S_("flag2")>),
+                          flag(policy::short_name<'b'>, policy::description<S_("b description")>),
+                          arg<int>(policy::long_name<S_("arg1")>, policy::value_separator<'='>),
+                          help(policy::long_name<S_("help")>,
+                               policy::short_name<'h'>,
+                               policy::description<S_("Help output")>,
+                               policy::program_name<S_("foo")>,
+                               policy::program_version<S_("v3.14")>,
+                               policy::program_intro<S_("My foo is good for you")>)},
                 traits::integral_constant<4>{},
                 R"(foo v3.14
 
@@ -93,20 +85,18 @@ My foo is good for you
     --help,-h         Help output
 )"s},
             std::tuple{
-                mock_root{
-                    flag(policy::long_name<S_("flag1")>,
-                         policy::short_name<'a'>,
-                         policy::description<S_("Flag1 description")>),
-                    flag(policy::long_name<S_("flag2")>),
-                    flag(policy::short_name<'b'>,
-                         policy::description<S_("b description")>),
-                    arg<int>(policy::long_name<S_("arg1")>),
-                    help(policy::long_name<S_("help")>,
-                         policy::short_name<'h'>,
-                         policy::description<S_("Help output")>,
-                         policy::program_name<S_("foo")>,
-                         policy::program_version<S_("v3.14")>,
-                         policy::program_intro<S_("My foo is good for you")>)},
+                mock_root{flag(policy::long_name<S_("flag1")>,
+                               policy::short_name<'a'>,
+                               policy::description<S_("Flag1 description")>),
+                          flag(policy::long_name<S_("flag2")>),
+                          flag(policy::short_name<'b'>, policy::description<S_("b description")>),
+                          arg<int>(policy::long_name<S_("arg1")>),
+                          help(policy::long_name<S_("help")>,
+                               policy::short_name<'h'>,
+                               policy::description<S_("Help output")>,
+                               policy::program_name<S_("foo")>,
+                               policy::program_version<S_("v3.14")>,
+                               policy::program_intro<S_("My foo is good for you")>)},
                 traits::integral_constant<4>{},
                 R"(foo v3.14
 
@@ -118,25 +108,23 @@ My foo is good for you
     --arg1 <Value>
     --help,-h         Help output
 )"s},
-            std::tuple{
-                mock_root{
-                    help(policy::long_name<S_("help")>,
-                         policy::short_name<'h'>,
-                         policy::description<S_("Help output")>,
-                         policy::program_name<S_("foo")>,
-                         policy::program_version<S_("v3.14")>,
-                         policy::program_intro<S_("My foo is good for you")>),
-                    mode(flag(policy::long_name<S_("flag1")>,
-                              policy::short_name<'a'>,
-                              policy::description<S_("Flag1 description")>),
-                         flag(policy::long_name<S_("flag2")>),
-                         arg<int>(policy::long_name<S_("arg1")>,
-                                  policy::value_separator<'='>,
-                                  policy::description<S_("Arg1 description")>),
-                         flag(policy::short_name<'b'>,
-                              policy::description<S_("b description")>))},
-                traits::integral_constant<0>{},
-                R"(foo v3.14
+            std::tuple{mock_root{help(policy::long_name<S_("help")>,
+                                      policy::short_name<'h'>,
+                                      policy::description<S_("Help output")>,
+                                      policy::program_name<S_("foo")>,
+                                      policy::program_version<S_("v3.14")>,
+                                      policy::program_intro<S_("My foo is good for you")>),
+                                 mode(flag(policy::long_name<S_("flag1")>,
+                                           policy::short_name<'a'>,
+                                           policy::description<S_("Flag1 description")>),
+                                      flag(policy::long_name<S_("flag2")>),
+                                      arg<int>(policy::long_name<S_("arg1")>,
+                                               policy::value_separator<'='>,
+                                               policy::description<S_("Arg1 description")>),
+                                      flag(policy::short_name<'b'>,
+                                           policy::description<S_("b description")>))},
+                       traits::integral_constant<0>{},
+                       R"(foo v3.14
 
 My foo is good for you
 
@@ -146,23 +134,21 @@ My foo is good for you
         --arg1=<Value>    Arg1 description
         -b                b description
 )"s},
-            std::tuple{
-                mock_root{
-                    help(policy::long_name<S_("help")>,
-                         policy::short_name<'h'>,
-                         policy::description<S_("Help output")>,
-                         policy::program_name<S_("foo")>,
-                         policy::program_version<S_("v3.14")>,
-                         policy::program_intro<S_("My foo is good for you")>,
-                         policy::flatten_help),
-                    mode(flag(policy::long_name<S_("flag1")>,
-                              policy::short_name<'a'>,
-                              policy::description<S_("Flag1 description")>),
-                         flag(policy::long_name<S_("flag2")>),
-                         flag(policy::short_name<'b'>,
-                              policy::description<S_("b description")>))},
-                traits::integral_constant<0>{},
-                R"(foo v3.14
+            std::tuple{mock_root{help(policy::long_name<S_("help")>,
+                                      policy::short_name<'h'>,
+                                      policy::description<S_("Help output")>,
+                                      policy::program_name<S_("foo")>,
+                                      policy::program_version<S_("v3.14")>,
+                                      policy::program_intro<S_("My foo is good for you")>,
+                                      policy::flatten_help),
+                                 mode(flag(policy::long_name<S_("flag1")>,
+                                           policy::short_name<'a'>,
+                                           policy::description<S_("Flag1 description")>),
+                                      flag(policy::long_name<S_("flag2")>),
+                                      flag(policy::short_name<'b'>,
+                                           policy::description<S_("b description")>))},
+                       traits::integral_constant<0>{},
+                       R"(foo v3.14
 
 My foo is good for you
 
@@ -171,28 +157,26 @@ My foo is good for you
         --flag2
         -b            b description
 )"s},
-            std::tuple{
-                mock_root{
-                    help(policy::long_name<S_("help")>,
-                         policy::short_name<'h'>,
-                         policy::description<S_("Help output")>,
-                         policy::program_name<S_("foo")>,
-                         policy::program_version<S_("v3.14")>,
-                         policy::program_intro<S_("My foo is good for you")>),
-                    mode(policy::none_name<S_("mode1")>,
-                         policy::description<S_("Mode1 description")>,
-                         flag(policy::long_name<S_("flag1")>,
-                              policy::short_name<'a'>,
-                              policy::description<S_("Flag1 description")>),
-                         flag(policy::long_name<S_("flag2")>),
-                         flag(policy::short_name<'b'>,
-                              policy::description<S_("b description")>)),
-                    mode(policy::none_name<S_("mode2")>,
-                         flag(policy::long_name<S_("flag3")>,
-                              policy::short_name<'c'>,
-                              policy::description<S_("Flag3 description")>))},
-                traits::integral_constant<0>{},
-                R"(foo v3.14
+            std::tuple{mock_root{help(policy::long_name<S_("help")>,
+                                      policy::short_name<'h'>,
+                                      policy::description<S_("Help output")>,
+                                      policy::program_name<S_("foo")>,
+                                      policy::program_version<S_("v3.14")>,
+                                      policy::program_intro<S_("My foo is good for you")>),
+                                 mode(policy::none_name<S_("mode1")>,
+                                      policy::description<S_("Mode1 description")>,
+                                      flag(policy::long_name<S_("flag1")>,
+                                           policy::short_name<'a'>,
+                                           policy::description<S_("Flag1 description")>),
+                                      flag(policy::long_name<S_("flag2")>),
+                                      flag(policy::short_name<'b'>,
+                                           policy::description<S_("b description")>)),
+                                 mode(policy::none_name<S_("mode2")>,
+                                      flag(policy::long_name<S_("flag3")>,
+                                           policy::short_name<'c'>,
+                                           policy::description<S_("Flag3 description")>))},
+                       traits::integral_constant<0>{},
+                       R"(foo v3.14
 
 My foo is good for you
 
@@ -200,29 +184,27 @@ My foo is good for you
     mode1        Mode1 description
     mode2
 )"s},
-            std::tuple{
-                mock_root{
-                    help(policy::long_name<S_("help")>,
-                         policy::short_name<'h'>,
-                         policy::description<S_("Help output")>,
-                         policy::program_name<S_("foo")>,
-                         policy::program_version<S_("v3.14")>,
-                         policy::program_intro<S_("My foo is good for you")>,
-                         policy::flatten_help),
-                    mode(policy::none_name<S_("mode1")>,
-                         policy::description<S_("Mode1 description")>,
-                         flag(policy::long_name<S_("flag1")>,
-                              policy::short_name<'a'>,
-                              policy::description<S_("Flag1 description")>),
-                         flag(policy::long_name<S_("flag2")>),
-                         flag(policy::short_name<'b'>,
-                              policy::description<S_("b description")>)),
-                    mode(policy::none_name<S_("mode2")>,
-                         flag(policy::long_name<S_("flag3")>,
-                              policy::short_name<'c'>,
-                              policy::description<S_("Flag3 description")>))},
-                traits::integral_constant<0>{},
-                R"(foo v3.14
+            std::tuple{mock_root{help(policy::long_name<S_("help")>,
+                                      policy::short_name<'h'>,
+                                      policy::description<S_("Help output")>,
+                                      policy::program_name<S_("foo")>,
+                                      policy::program_version<S_("v3.14")>,
+                                      policy::program_intro<S_("My foo is good for you")>,
+                                      policy::flatten_help),
+                                 mode(policy::none_name<S_("mode1")>,
+                                      policy::description<S_("Mode1 description")>,
+                                      flag(policy::long_name<S_("flag1")>,
+                                           policy::short_name<'a'>,
+                                           policy::description<S_("Flag1 description")>),
+                                      flag(policy::long_name<S_("flag2")>),
+                                      flag(policy::short_name<'b'>,
+                                           policy::description<S_("b description")>)),
+                                 mode(policy::none_name<S_("mode2")>,
+                                      flag(policy::long_name<S_("flag3")>,
+                                           policy::short_name<'c'>,
+                                           policy::description<S_("Flag3 description")>))},
+                       traits::integral_constant<0>{},
+                       R"(foo v3.14
 
 My foo is good for you
 
@@ -234,64 +216,58 @@ My foo is good for you
     mode2
         --flag3,-c    Flag3 description
 )"s},
-            std::tuple{
-                mock_root{
-                    flag(policy::long_name<S_("flag1")>,
-                         policy::short_name<'a'>,
-                         policy::description<S_("Flag1 description")>),
-                    help(policy::long_name<S_("help")>,
-                         policy::short_name<'h'>,
-                         policy::description<S_("Help output")>,
-                         policy::program_name<S_("foo")>,
-                         policy::program_intro<S_("My foo is good for you")>)},
-                traits::integral_constant<1>{},
-                R"(foo
+            std::tuple{mock_root{flag(policy::long_name<S_("flag1")>,
+                                      policy::short_name<'a'>,
+                                      policy::description<S_("Flag1 description")>),
+                                 help(policy::long_name<S_("help")>,
+                                      policy::short_name<'h'>,
+                                      policy::description<S_("Help output")>,
+                                      policy::program_name<S_("foo")>,
+                                      policy::program_intro<S_("My foo is good for you")>)},
+                       traits::integral_constant<1>{},
+                       R"(foo
 
 My foo is good for you
 
     --flag1,-a    Flag1 description
     --help,-h     Help output
 )"s},
-            std::tuple{
-                mock_root{
-                    flag(policy::long_name<S_("flag1")>,
-                         policy::short_name<'a'>,
-                         policy::description<S_("Flag1 description")>),
-                    help(policy::long_name<S_("help")>,
-                         policy::short_name<'h'>,
-                         policy::description<S_("Help output")>,
-                         policy::program_version<S_("v3.14")>,
-                         policy::program_intro<S_("My foo is good for you")>)},
-                traits::integral_constant<1>{},
-                R"(My foo is good for you
+            std::tuple{mock_root{flag(policy::long_name<S_("flag1")>,
+                                      policy::short_name<'a'>,
+                                      policy::description<S_("Flag1 description")>),
+                                 help(policy::long_name<S_("help")>,
+                                      policy::short_name<'h'>,
+                                      policy::description<S_("Help output")>,
+                                      policy::program_version<S_("v3.14")>,
+                                      policy::program_intro<S_("My foo is good for you")>)},
+                       traits::integral_constant<1>{},
+                       R"(My foo is good for you
 
     --flag1,-a    Flag1 description
     --help,-h     Help output
 )"s},
-            std::tuple{
-                mock_root{flag(policy::long_name<S_("flag1")>,
-                               policy::short_name<'a'>,
-                               policy::description<S_("Flag1 description")>),
-                          help(policy::long_name<S_("help")>,
-                               policy::short_name<'h'>,
-                               policy::description<S_("Help output")>,
-                               policy::program_name<S_("foo")>,
-                               policy::program_version<S_("v3.14")>)},
-                traits::integral_constant<1>{},
-                R"(foo v3.14
+            std::tuple{mock_root{flag(policy::long_name<S_("flag1")>,
+                                      policy::short_name<'a'>,
+                                      policy::description<S_("Flag1 description")>),
+                                 help(policy::long_name<S_("help")>,
+                                      policy::short_name<'h'>,
+                                      policy::description<S_("Help output")>,
+                                      policy::program_name<S_("foo")>,
+                                      policy::program_version<S_("v3.14")>)},
+                       traits::integral_constant<1>{},
+                       R"(foo v3.14
 
     --flag1,-a    Flag1 description
     --help,-h     Help output
 )"s},
-            std::tuple{
-                mock_root{flag(policy::long_name<S_("flag1")>,
-                               policy::short_name<'a'>,
-                               policy::description<S_("Flag1 description")>),
-                          help(policy::long_name<S_("help")>,
-                               policy::short_name<'h'>,
-                               policy::description<S_("Help output")>)},
-                traits::integral_constant<1>{},
-                R"(    --flag1,-a    Flag1 description
+            std::tuple{mock_root{flag(policy::long_name<S_("flag1")>,
+                                      policy::short_name<'a'>,
+                                      policy::description<S_("Flag1 description")>),
+                                 help(policy::long_name<S_("help")>,
+                                      policy::short_name<'h'>,
+                                      policy::description<S_("Help output")>)},
+                       traits::integral_constant<1>{},
+                       R"(    --flag1,-a    Flag1 description
     --help,-h     Help output
 )"s},
         });
@@ -309,8 +285,7 @@ BOOST_AUTO_TEST_CASE(parse_test)
 
         try {
             const auto& help_node = std::get<help_index>(root.children());
-            auto target =
-                help_node.pre_parse(parsing::pre_parse_data{tokens}, root);
+            auto target = help_node.pre_parse(parsing::pre_parse_data{tokens}, root);
 
             help_node.parse(std::move(*target), root);
             BOOST_CHECK(fail_message.empty());
@@ -324,24 +299,20 @@ BOOST_AUTO_TEST_CASE(parse_test)
         f,
         std::tuple{
             std::tuple{
-                mock_root{
-                    flag(policy::long_name<S_("flag1")>,
-                         policy::short_name<'a'>,
-                         policy::description<S_("Flag1 description")>),
-                    flag(policy::long_name<S_("flag2")>),
-                    flag(policy::short_name<'b'>,
-                         policy::description<S_("b description")>),
-                    help(policy::long_name<S_("help")>,
-                         policy::short_name<'h'>,
-                         policy::description<S_("Help output")>,
-                         policy::program_name<S_("foo")>,
-                         policy::program_version<S_("v3.14")>,
-                         policy::program_intro<S_("My foo is good for you")>,
-                         policy::router{
-                             [&](auto stream) { output = stream.str(); }})},
+                mock_root{flag(policy::long_name<S_("flag1")>,
+                               policy::short_name<'a'>,
+                               policy::description<S_("Flag1 description")>),
+                          flag(policy::long_name<S_("flag2")>),
+                          flag(policy::short_name<'b'>, policy::description<S_("b description")>),
+                          help(policy::long_name<S_("help")>,
+                               policy::short_name<'h'>,
+                               policy::description<S_("Help output")>,
+                               policy::program_name<S_("foo")>,
+                               policy::program_version<S_("v3.14")>,
+                               policy::program_intro<S_("My foo is good for you")>,
+                               policy::router{[&](auto stream) { output = stream.str(); }})},
                 traits::integral_constant<3>{},
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "--help"}},
+                std::vector<parsing::token_type>{{parsing::prefix_type::none, "--help"}},
                 ""s,
                 R"(foo v3.14
 
@@ -353,24 +324,20 @@ My foo is good for you
     --help,-h     Help output
 )"s},
             std::tuple{
-                mock_root{
-                    flag(policy::long_name<S_("flag1")>,
-                         policy::short_name<'a'>,
-                         policy::description<S_("Flag1 description")>),
-                    flag(policy::long_name<S_("flag2")>),
-                    flag(policy::short_name<'b'>,
-                         policy::description<S_("b description")>),
-                    help(policy::long_name<S_("help")>,
-                         policy::short_name<'h'>,
-                         policy::description<S_("Help output")>,
-                         policy::program_name<S_("foo")>,
-                         policy::program_version<S_("v3.14")>,
-                         policy::program_intro<S_("My foo is good for you")>,
-                         policy::router{
-                             [&](auto stream) { output = stream.str(); }})},
+                mock_root{flag(policy::long_name<S_("flag1")>,
+                               policy::short_name<'a'>,
+                               policy::description<S_("Flag1 description")>),
+                          flag(policy::long_name<S_("flag2")>),
+                          flag(policy::short_name<'b'>, policy::description<S_("b description")>),
+                          help(policy::long_name<S_("help")>,
+                               policy::short_name<'h'>,
+                               policy::description<S_("Help output")>,
+                               policy::program_name<S_("foo")>,
+                               policy::program_version<S_("v3.14")>,
+                               policy::program_intro<S_("My foo is good for you")>,
+                               policy::router{[&](auto stream) { output = stream.str(); }})},
                 traits::integral_constant<3>{},
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "-h"}},
+                std::vector<parsing::token_type>{{parsing::prefix_type::none, "-h"}},
                 ""s,
                 R"(foo v3.14
 
@@ -381,34 +348,30 @@ My foo is good for you
     -b            b description
     --help,-h     Help output
 )"s},
-            std::tuple{
-                mock_root{
-                    help(policy::long_name<S_("help")>,
-                         policy::short_name<'h'>,
-                         policy::description<S_("Help output")>,
-                         policy::program_name<S_("foo")>,
-                         policy::program_version<S_("v3.14")>,
-                         policy::program_intro<S_("My foo is good for you")>,
-                         policy::router{
-                             [&](auto stream) { output = stream.str(); }}),
-                    mode(policy::none_name<S_("mode1")>,
-                         policy::description<S_("Mode1 description")>,
-                         flag(policy::long_name<S_("flag1")>,
-                              policy::short_name<'a'>,
-                              policy::description<S_("Flag1 description")>),
-                         flag(policy::long_name<S_("flag2")>),
-                         flag(policy::short_name<'b'>,
-                              policy::description<S_("b description")>)),
-                    mode(policy::none_name<S_("mode2")>,
-                         flag(policy::long_name<S_("flag3")>,
-                              policy::short_name<'c'>,
-                              policy::description<S_("Flag3 description")>))},
-                traits::integral_constant<0>{},
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "-h"},
-                    {parsing::prefix_type::none, "mode1"}},
-                ""s,
-                R"(foo v3.14
+            std::tuple{mock_root{help(policy::long_name<S_("help")>,
+                                      policy::short_name<'h'>,
+                                      policy::description<S_("Help output")>,
+                                      policy::program_name<S_("foo")>,
+                                      policy::program_version<S_("v3.14")>,
+                                      policy::program_intro<S_("My foo is good for you")>,
+                                      policy::router{[&](auto stream) { output = stream.str(); }}),
+                                 mode(policy::none_name<S_("mode1")>,
+                                      policy::description<S_("Mode1 description")>,
+                                      flag(policy::long_name<S_("flag1")>,
+                                           policy::short_name<'a'>,
+                                           policy::description<S_("Flag1 description")>),
+                                      flag(policy::long_name<S_("flag2")>),
+                                      flag(policy::short_name<'b'>,
+                                           policy::description<S_("b description")>)),
+                                 mode(policy::none_name<S_("mode2")>,
+                                      flag(policy::long_name<S_("flag3")>,
+                                           policy::short_name<'c'>,
+                                           policy::description<S_("Flag3 description")>))},
+                       traits::integral_constant<0>{},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "-h"},
+                                                        {parsing::prefix_type::none, "mode1"}},
+                       ""s,
+                       R"(foo v3.14
 
 My foo is good for you
 
@@ -417,34 +380,30 @@ mode1             Mode1 description
     --flag2
     -b            b description
 )"s},
-            std::tuple{
-                mock_root{
-                    help(policy::long_name<S_("help")>,
-                         policy::short_name<'h'>,
-                         policy::description<S_("Help output")>,
-                         policy::program_name<S_("foo")>,
-                         policy::program_version<S_("v3.14")>,
-                         policy::program_intro<S_("My foo is good for you")>,
-                         policy::router{
-                             [&](auto stream) { output = stream.str(); }}),
-                    mode(policy::none_name<S_("mode1")>,
-                         policy::description<S_("Mode1 description")>,
-                         flag(policy::long_name<S_("flag1")>,
-                              policy::short_name<'a'>,
-                              policy::description<S_("Flag1 description")>),
-                         flag(policy::long_name<S_("flag2")>),
-                         flag(policy::short_name<'b'>,
-                              policy::description<S_("b description")>)),
-                    mode(policy::none_name<S_("mode2")>,
-                         flag(policy::long_name<S_("flag3")>,
-                              policy::short_name<'c'>,
-                              policy::description<S_("Flag3 description")>))},
-                traits::integral_constant<0>{},
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "-h"},
-                    {parsing::prefix_type::none, "mode2"}},
-                ""s,
-                R"(foo v3.14
+            std::tuple{mock_root{help(policy::long_name<S_("help")>,
+                                      policy::short_name<'h'>,
+                                      policy::description<S_("Help output")>,
+                                      policy::program_name<S_("foo")>,
+                                      policy::program_version<S_("v3.14")>,
+                                      policy::program_intro<S_("My foo is good for you")>,
+                                      policy::router{[&](auto stream) { output = stream.str(); }}),
+                                 mode(policy::none_name<S_("mode1")>,
+                                      policy::description<S_("Mode1 description")>,
+                                      flag(policy::long_name<S_("flag1")>,
+                                           policy::short_name<'a'>,
+                                           policy::description<S_("Flag1 description")>),
+                                      flag(policy::long_name<S_("flag2")>),
+                                      flag(policy::short_name<'b'>,
+                                           policy::description<S_("b description")>)),
+                                 mode(policy::none_name<S_("mode2")>,
+                                      flag(policy::long_name<S_("flag3")>,
+                                           policy::short_name<'c'>,
+                                           policy::description<S_("Flag3 description")>))},
+                       traits::integral_constant<0>{},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "-h"},
+                                                        {parsing::prefix_type::none, "mode2"}},
+                       ""s,
+                       R"(foo v3.14
 
 My foo is good for you
 
@@ -452,25 +411,21 @@ mode2
     --flag3,-c    Flag3 description
 )"s},
             std::tuple{
-                mock_root{
-                    flag(policy::long_name<S_("flag1")>,
-                         policy::short_name<'a'>,
-                         policy::description<S_("Flag1 description")>),
-                    flag(policy::long_name<S_("flag2")>),
-                    flag(policy::short_name<'b'>,
-                         policy::description<S_("b description")>),
-                    help(policy::long_name<S_("help")>,
-                         policy::short_name<'h'>,
-                         policy::description<S_("Help output")>,
-                         policy::program_name<S_("foo")>,
-                         policy::program_version<S_("v3.14")>,
-                         policy::program_intro<S_("My foo is good for you")>,
-                         policy::router{
-                             [&](auto stream) { output = stream.str(); }})},
+                mock_root{flag(policy::long_name<S_("flag1")>,
+                               policy::short_name<'a'>,
+                               policy::description<S_("Flag1 description")>),
+                          flag(policy::long_name<S_("flag2")>),
+                          flag(policy::short_name<'b'>, policy::description<S_("b description")>),
+                          help(policy::long_name<S_("help")>,
+                               policy::short_name<'h'>,
+                               policy::description<S_("Help output")>,
+                               policy::program_name<S_("foo")>,
+                               policy::program_version<S_("v3.14")>,
+                               policy::program_intro<S_("My foo is good for you")>,
+                               policy::router{[&](auto stream) { output = stream.str(); }})},
                 traits::integral_constant<3>{},
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "--help"},
-                    {parsing::prefix_type::none, "-b"}},
+                std::vector<parsing::token_type>{{parsing::prefix_type::none, "--help"},
+                                                 {parsing::prefix_type::none, "-b"}},
                 ""s,
                 R"(foo v3.14
 
@@ -478,91 +433,79 @@ My foo is good for you
 
 -b    b description
 )"s},
-            std::tuple{
-                mock_root{
-                    help(policy::long_name<S_("help")>,
-                         policy::short_name<'h'>,
-                         policy::description<S_("Help output")>,
-                         policy::program_name<S_("foo")>,
-                         policy::program_version<S_("v3.14")>,
-                         policy::program_intro<S_("My foo is good for you")>,
-                         policy::router{
-                             [&](auto stream) { output = stream.str(); }}),
-                    mode(policy::none_name<S_("mode1")>,
-                         policy::description<S_("Mode1 description")>,
-                         flag(policy::long_name<S_("flag1")>,
-                              policy::short_name<'a'>,
-                              policy::description<S_("Flag1 description")>),
-                         flag(policy::long_name<S_("flag2")>),
-                         flag(policy::short_name<'b'>,
-                              policy::description<S_("b description")>)),
-                    mode(policy::none_name<S_("mode2")>,
-                         flag(policy::long_name<S_("flag3")>,
-                              policy::short_name<'c'>,
-                              policy::description<S_("Flag3 description")>))},
-                traits::integral_constant<0>{},
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "-h"},
-                    {parsing::prefix_type::none, "mode1"},
-                    {parsing::prefix_type::none, "--flag2"}},
-                ""s,
-                R"(foo v3.14
+            std::tuple{mock_root{help(policy::long_name<S_("help")>,
+                                      policy::short_name<'h'>,
+                                      policy::description<S_("Help output")>,
+                                      policy::program_name<S_("foo")>,
+                                      policy::program_version<S_("v3.14")>,
+                                      policy::program_intro<S_("My foo is good for you")>,
+                                      policy::router{[&](auto stream) { output = stream.str(); }}),
+                                 mode(policy::none_name<S_("mode1")>,
+                                      policy::description<S_("Mode1 description")>,
+                                      flag(policy::long_name<S_("flag1")>,
+                                           policy::short_name<'a'>,
+                                           policy::description<S_("Flag1 description")>),
+                                      flag(policy::long_name<S_("flag2")>),
+                                      flag(policy::short_name<'b'>,
+                                           policy::description<S_("b description")>)),
+                                 mode(policy::none_name<S_("mode2")>,
+                                      flag(policy::long_name<S_("flag3")>,
+                                           policy::short_name<'c'>,
+                                           policy::description<S_("Flag3 description")>))},
+                       traits::integral_constant<0>{},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "-h"},
+                                                        {parsing::prefix_type::none, "mode1"},
+                                                        {parsing::prefix_type::none, "--flag2"}},
+                       ""s,
+                       R"(foo v3.14
 
 My foo is good for you
 
 --flag2
 )"s},
             std::tuple{
-                mock_root{
-                    flag(policy::long_name<S_("flag1")>,
-                         policy::short_name<'a'>,
-                         policy::description<S_("Flag1 description")>),
-                    flag(policy::long_name<S_("flag2")>),
-                    flag(policy::short_name<'b'>,
-                         policy::description<S_("b description")>),
-                    help(policy::long_name<S_("help")>,
-                         policy::short_name<'h'>,
-                         policy::description<S_("Help output")>,
-                         policy::program_name<S_("foo")>,
-                         policy::program_version<S_("v3.14")>,
-                         policy::program_intro<S_("My foo is good for you")>,
-                         policy::router{
-                             [&](auto stream) { output = stream.str(); }})},
+                mock_root{flag(policy::long_name<S_("flag1")>,
+                               policy::short_name<'a'>,
+                               policy::description<S_("Flag1 description")>),
+                          flag(policy::long_name<S_("flag2")>),
+                          flag(policy::short_name<'b'>, policy::description<S_("b description")>),
+                          help(policy::long_name<S_("help")>,
+                               policy::short_name<'h'>,
+                               policy::description<S_("Help output")>,
+                               policy::program_name<S_("foo")>,
+                               policy::program_version<S_("v3.14")>,
+                               policy::program_intro<S_("My foo is good for you")>,
+                               policy::router{[&](auto stream) { output = stream.str(); }})},
                 traits::integral_constant<3>{},
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "--help"},
-                    {parsing::prefix_type::none, "--foo"}},
+                std::vector<parsing::token_type>{{parsing::prefix_type::none, "--help"},
+                                                 {parsing::prefix_type::none, "--foo"}},
                 "Unknown argument: --foo"s,
                 ""s},
-            std::tuple{
-                mock_root{
-                    help(policy::long_name<S_("help")>,
-                         policy::short_name<'h'>,
-                         policy::description<S_("Help output")>,
-                         policy::program_name<S_("foo")>,
-                         policy::program_version<S_("v3.14")>,
-                         policy::program_intro<S_("My foo is good for you")>,
-                         policy::router{
-                             [&](auto stream) { output = stream.str(); }}),
-                    mode(policy::none_name<S_("mode1")>,
-                         policy::description<S_("Mode1 description")>,
-                         flag(policy::long_name<S_("flag1")>,
-                              policy::short_name<'a'>,
-                              policy::description<S_("Flag1 description")>),
-                         flag(policy::long_name<S_("flag2")>),
-                         flag(policy::short_name<'b'>,
-                              policy::description<S_("b description")>)),
-                    mode(policy::none_name<S_("mode2")>,
-                         flag(policy::long_name<S_("flag3")>,
-                              policy::short_name<'c'>,
-                              policy::description<S_("Flag3 description")>))},
-                traits::integral_constant<0>{},
-                std::vector<parsing::token_type>{
-                    {parsing::prefix_type::none, "-h"},
-                    {parsing::prefix_type::none, "mode1"},
-                    {parsing::prefix_type::none, "--foo"}},
-                "Unknown argument: --foo"s,
-                ""s},
+            std::tuple{mock_root{help(policy::long_name<S_("help")>,
+                                      policy::short_name<'h'>,
+                                      policy::description<S_("Help output")>,
+                                      policy::program_name<S_("foo")>,
+                                      policy::program_version<S_("v3.14")>,
+                                      policy::program_intro<S_("My foo is good for you")>,
+                                      policy::router{[&](auto stream) { output = stream.str(); }}),
+                                 mode(policy::none_name<S_("mode1")>,
+                                      policy::description<S_("Mode1 description")>,
+                                      flag(policy::long_name<S_("flag1")>,
+                                           policy::short_name<'a'>,
+                                           policy::description<S_("Flag1 description")>),
+                                      flag(policy::long_name<S_("flag2")>),
+                                      flag(policy::short_name<'b'>,
+                                           policy::description<S_("b description")>)),
+                                 mode(policy::none_name<S_("mode2")>,
+                                      flag(policy::long_name<S_("flag3")>,
+                                           policy::short_name<'c'>,
+                                           policy::description<S_("Flag3 description")>))},
+                       traits::integral_constant<0>{},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "-h"},
+                                                        {parsing::prefix_type::none, "mode1"},
+                                                        {parsing::prefix_type::none, "--foo"}},
+                       "Unknown argument: --foo"s,
+                       ""s},
         });
 }
 

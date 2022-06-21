@@ -106,9 +106,8 @@ def date_checker(args):
                 data = f.readlines()
                 m = find_copyright(data)
                 if not m:
-                    # Shouldn't get here as it _should_ have already been
-                    # checked as a part of the build process, but you never
-                    # know...
+                    # Shouldn't get here as it _should_ have already been checked as a part of the
+                    # build process, but you never know...
                     print('Failed to find copyright notice in: ' + file)
                     sys.exit(1)
 

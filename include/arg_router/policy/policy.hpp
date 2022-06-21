@@ -15,17 +15,15 @@ namespace arg_router
 {
 /** Policy namespace.
  *
- * arg_router uses policies to compose behaviours on command line argument
- * types.
+ * arg_router uses policies to compose behaviours on command line argument types.
  */
 namespace policy
 {
 /** Evaluates to true if @a T is a policy.
  *
- * Unfortunately due to the way that policies form an is-a relationship with
- * their owners, we can't tag a type as a policy via inheritance.  So all
- * policies must create a specialisation of this and manually mark themselves as
- * a policy.
+ * Unfortunately due to the way that policies form an is-a relationship with their owners, we can't
+ * tag a type as a policy via inheritance.  So all policies must create a specialisation of this and
+ * manually mark themselves as a policy.
  * @tparam T Type to test
  */
 template <typename T, typename... Args>
@@ -77,8 +75,7 @@ struct has_pre_parse_phase_method {
  * @tparam T Policy type to query
  */
 template <typename T>
-constexpr static bool has_pre_parse_phase_method_v =
-    has_pre_parse_phase_method<T>::value;
+constexpr static bool has_pre_parse_phase_method_v = has_pre_parse_phase_method<T>::value;
 
 /** Determine if a policy has a <TT>parse_phase</TT> method.
  *
@@ -91,8 +88,7 @@ struct has_parse_phase_method {
 
     template <typename U>
     using type = decltype(  //
-        std::declval<const U&>().template parse_phase<ValueType>(
-            std::declval<std::string_view>()));
+        std::declval<const U&>().template parse_phase<ValueType>(std::declval<std::string_view>()));
 
     constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
 };
@@ -103,8 +99,7 @@ struct has_parse_phase_method {
  * @tparam ValueType Parsed type
  */
 template <typename T, typename ValueType>
-constexpr static bool has_parse_phase_method_v =
-    has_parse_phase_method<T, ValueType>::value;
+constexpr static bool has_parse_phase_method_v = has_parse_phase_method<T, ValueType>::value;
 
 /** Determine if a policy has a <TT>validation_phase</TT> method.
  *
@@ -122,11 +117,10 @@ struct has_validation_phase_method {
 
     template <typename U>
     using type2 = decltype(  //
-        std::declval<const U&>().validation_phase(
-            std::declval<const ValueType&>()));
+        std::declval<const U&>().validation_phase(std::declval<const ValueType&>()));
 
-    constexpr static bool value = boost::mp11::mp_valid<type1, T>::value ||
-                                  boost::mp11::mp_valid<type2, T>::value;
+    constexpr static bool value =
+        boost::mp11::mp_valid<type1, T>::value || boost::mp11::mp_valid<type2, T>::value;
 };
 
 /** Helper variable for has_validation_phase_method.
@@ -157,8 +151,7 @@ struct has_routing_phase_method {
  * @tparam T Policy type to query
  */
 template <typename T>
-constexpr static bool has_routing_phase_method_v =
-    has_routing_phase_method<T>::value;
+constexpr static bool has_routing_phase_method_v = has_routing_phase_method<T>::value;
 
 /** Determine if a policy has a <TT>missing_phase</TT> method.
  *
@@ -182,8 +175,7 @@ struct has_missing_phase_method {
  * @tparam ValueType Parsed type
  */
 template <typename T, typename ValueType>
-constexpr static bool has_missing_phase_method_v =
-    has_missing_phase_method<T, ValueType>::value;
+constexpr static bool has_missing_phase_method_v = has_missing_phase_method<T, ValueType>::value;
 
 /** Determine if a policy has a <TT>priority</TT> member.
  *
@@ -206,8 +198,7 @@ struct has_priority {
 template <typename T>
 constexpr static bool has_priority_v = has_priority<T>::value;
 
-/** Searches up through @a ParentsTuple and returns the first mode-like type
- * hit.
+/** Searches up through @a ParentsTuple and returns the first mode-like type hit.
  *
  * A 'mode-like' type is one defined as owning a routing phase policy.
  * @tparam ParentsTuple Parent node type list in ascending ancestry order
@@ -220,20 +211,17 @@ class nearest_mode_like
         constexpr static bool value =
             boost::mp11::mp_find_if_q<
                 typename Parent::policies_type,
-                boost::mp11::mp_bind<has_routing_phase_method,
-                                     boost::mp11::_1>>::value !=
+                boost::mp11::mp_bind<has_routing_phase_method, boost::mp11::_1>>::value !=
             std::tuple_size_v<typename Parent::policies_type>;
     };
 
 public:
-    /** Index of mode, or equal to the size of @a ParentsTuple if one was not
-     * found.
+    /** Index of mode, or equal to the size of @a ParentsTuple if one was not found.
      */
     using index = boost::mp11::mp_find_if<ParentsTuple, policy_finder>;
 
     /** The discovered mode-like type, or void if one was not found. */
-    using type = boost::mp11::mp_eval_if_c<index::value ==
-                                               std::tuple_size_v<ParentsTuple>,
+    using type = boost::mp11::mp_eval_if_c<index::value == std::tuple_size_v<ParentsTuple>,
                                            void,
                                            boost::mp11::mp_at,
                                            ParentsTuple,

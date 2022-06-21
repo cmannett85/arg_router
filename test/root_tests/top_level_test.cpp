@@ -13,8 +13,7 @@ using namespace std::string_view_literals;
 
 namespace
 {
-using default_validator_type =
-    std::decay_t<decltype(policy::validation::default_validator)>;
+using default_validator_type = std::decay_t<decltype(policy::validation::default_validator)>;
 
 struct A {
     explicit A(int v = 0) : value{v} {}
@@ -29,10 +28,7 @@ struct B {
 
 template <>
 struct arg_router::parser<B> {
-    static B parse(std::string_view token)
-    {
-        return B{parser<double>::parse(token)};
-    }
+    static B parse(std::string_view token) { return B{parser<double>::parse(token)}; }
 };
 
 BOOST_AUTO_TEST_SUITE(root_suite)
@@ -42,21 +38,19 @@ BOOST_AUTO_TEST_SUITE(top_level_suite)
 BOOST_AUTO_TEST_CASE(is_tree_node_test)
 {
     static_assert(
-        is_tree_node_v<root_t<flag_t<policy::long_name_t<S_("hello")>,
-                                     policy::router<std::function<void(bool)>>>,
-                              default_validator_type>>,
+        is_tree_node_v<root_t<
+            flag_t<policy::long_name_t<S_("hello")>, policy::router<std::function<void(bool)>>>,
+            default_validator_type>>,
         "Tree node test has failed");
 }
 
 BOOST_AUTO_TEST_CASE(validator_type_test)
 {
-    static_assert(
-        std::is_same_v<
-            typename root_t<flag_t<policy::long_name_t<S_("hello")>,
-                                   policy::router<std::function<void(bool)>>>,
-                            default_validator_type>::validator_type,
-            default_validator_type>,
-        "Tree node test has failed");
+    static_assert(std::is_same_v<typename root_t<flag_t<policy::long_name_t<S_("hello")>,
+                                                        policy::router<std::function<void(bool)>>>,
+                                                 default_validator_type>::validator_type,
+                                 default_validator_type>,
+                  "Tree node test has failed");
 }
 
 BOOST_AUTO_TEST_CASE(constructor_validation_test)
@@ -84,10 +78,9 @@ BOOST_AUTO_TEST_CASE(unknown_argument_parse_test)
                         policy::validation::default_validator);
 
     auto args = std::vector{"foo", "--foo"};
-    BOOST_CHECK_EXCEPTION(
-        r.parse(args.size(), const_cast<char**>(args.data())),
-        parse_exception,
-        [](const auto& e) { return e.what() == "Unknown argument: --foo"s; });
+    BOOST_CHECK_EXCEPTION(r.parse(args.size(), const_cast<char**>(args.data())),
+                          parse_exception,
+                          [](const auto& e) { return e.what() == "Unknown argument: --foo"s; });
     BOOST_CHECK(!router_hit);
 }
 
@@ -102,9 +95,7 @@ BOOST_AUTO_TEST_CASE(unhandled_parse_test)
     auto args = std::vector{"foo", "--hello", "--foo"};
     BOOST_CHECK_EXCEPTION(r.parse(args.size(), const_cast<char**>(args.data())),
                           parse_exception,
-                          [](const auto& e) {
-                              return e.what() == "Unhandled arguments: --foo"s;
-                          });
+                          [](const auto& e) { return e.what() == "Unhandled arguments: --foo"s; });
     BOOST_CHECK(!router_hit);
 }
 
@@ -163,29 +154,25 @@ BOOST_AUTO_TEST_CASE(single_arg_separator_parse_test)
         }
     };
 
-    test::data_set(f,
-                   {
-                       std::tuple{std::vector{"foo", "--hello=42"}, 42, ""},
-                       std::tuple{std::vector{"foo", "--hello", "42"},
-                                  0,
-                                  "Unknown argument: --hello"},
-                       std::tuple{std::vector{"foo", "--hello="},
-                                  0,
-                                  "Unknown argument: --hello="},
-                   });
+    test::data_set(
+        f,
+        {
+            std::tuple{std::vector{"foo", "--hello=42"}, 42, ""},
+            std::tuple{std::vector{"foo", "--hello", "42"}, 0, "Unknown argument: --hello"},
+            std::tuple{std::vector{"foo", "--hello="}, 0, "Unknown argument: --hello="},
+        });
 }
 
 BOOST_AUTO_TEST_CASE(single_string_arg_parse_test)
 {
     auto result = std::optional<std::string_view>{};
-    const auto r =
-        root(arg<std::string_view>(policy::long_name<S_("hello")>,
-                                   policy::description<S_("Hello description")>,
-                                   policy::router{[&](std::string_view value) {
-                                       BOOST_CHECK(!result);
-                                       result = value;
-                                   }}),
-             policy::validation::default_validator);
+    const auto r = root(arg<std::string_view>(policy::long_name<S_("hello")>,
+                                              policy::description<S_("Hello description")>,
+                                              policy::router{[&](std::string_view value) {
+                                                  BOOST_CHECK(!result);
+                                                  result = value;
+                                              }}),
+                        policy::validation::default_validator);
 
     auto f = [&](auto args, auto expected) {
         result.reset();
@@ -195,14 +182,13 @@ BOOST_AUTO_TEST_CASE(single_string_arg_parse_test)
         BOOST_CHECK_EQUAL(*result, expected);
     };
 
-    test::data_set(
-        f,
-        {
-            std::tuple{std::vector{"foo", "--hello", "hello"}, "hello"sv},
-            std::tuple{std::vector{"foo", "--hello", "-h"}, "-h"sv},
-            std::tuple{std::vector{"foo", "--hello", "-hello"}, "-hello"sv},
-            std::tuple{std::vector{"foo", "--hello", "--hello"}, "--hello"sv},
-        });
+    test::data_set(f,
+                   {
+                       std::tuple{std::vector{"foo", "--hello", "hello"}, "hello"sv},
+                       std::tuple{std::vector{"foo", "--hello", "-h"}, "-h"sv},
+                       std::tuple{std::vector{"foo", "--hello", "-hello"}, "-hello"sv},
+                       std::tuple{std::vector{"foo", "--hello", "--hello"}, "--hello"sv},
+                   });
 }
 
 BOOST_AUTO_TEST_CASE(triple_flag_parse_test)
@@ -230,12 +216,9 @@ BOOST_AUTO_TEST_CASE(triple_flag_parse_test)
 
     test::data_set(f,
                    {
-                       std::tuple{std::vector{"foo", "--flag1"},
-                                  std::array{true, false, false}},
-                       std::tuple{std::vector{"foo", "--flag2"},
-                                  std::array{false, true, false}},
-                       std::tuple{std::vector{"foo", "-t"},
-                                  std::array{false, false, true}},
+                       std::tuple{std::vector{"foo", "--flag1"}, std::array{true, false, false}},
+                       std::tuple{std::vector{"foo", "--flag2"}, std::array{false, true, false}},
+                       std::tuple{std::vector{"foo", "-t"}, std::array{false, false, true}},
                    });
 }
 
@@ -244,26 +227,25 @@ BOOST_AUTO_TEST_CASE(triple_arg_parse_test)
     auto result = std::tuple<int, double, std::string_view>{};
     auto hit = std::array<bool, 3>{};
 
-    const auto r =
-        root(arg<int>(policy::long_name<S_("flag1")>,
-                      policy::description<S_("First description")>,
-                      policy::router{[&](auto value) {
-                          std::get<0>(result) = value;
-                          hit[0] = true;
-                      }}),
-             arg<double>(policy::long_name<S_("flag2")>,
-                         policy::description<S_("Second description")>,
-                         policy::router{[&](auto value) {
-                             std::get<1>(result) = value;
-                             hit[1] = true;
-                         }}),
-             arg<std::string_view>(policy::short_name<'t'>,
-                                   policy::description<S_("Third description")>,
-                                   policy::router{[&](auto value) {
-                                       std::get<2>(result) = value;
-                                       hit[2] = true;
-                                   }}),
-             policy::validation::default_validator);
+    const auto r = root(arg<int>(policy::long_name<S_("flag1")>,
+                                 policy::description<S_("First description")>,
+                                 policy::router{[&](auto value) {
+                                     std::get<0>(result) = value;
+                                     hit[0] = true;
+                                 }}),
+                        arg<double>(policy::long_name<S_("flag2")>,
+                                    policy::description<S_("Second description")>,
+                                    policy::router{[&](auto value) {
+                                        std::get<1>(result) = value;
+                                        hit[1] = true;
+                                    }}),
+                        arg<std::string_view>(policy::short_name<'t'>,
+                                              policy::description<S_("Third description")>,
+                                              policy::router{[&](auto value) {
+                                                  std::get<2>(result) = value;
+                                                  hit[2] = true;
+                                              }}),
+                        policy::validation::default_validator);
 
     auto f = [&](auto args, auto expected_hit, auto expected_value) {
         result = decltype(result){};
@@ -298,24 +280,22 @@ BOOST_AUTO_TEST_CASE(custom_parser_test)
     auto result = std::tuple<A, B, B>{};
     auto parser_hit = false;
 
-    const auto r = root(
-        arg<A>(policy::long_name<S_("arg1")>,
-               policy::description<S_("First description")>,
-               policy::custom_parser<A>{[](auto token) -> A {
-                   return A{parser<int>::parse(token)};
-               }},
-               policy::router{[&](auto arg1) { std::get<0>(result) = arg1; }}),
-        arg<B>(policy::long_name<S_("arg2")>,
-               policy::description<S_("Second description")>,
-               policy::custom_parser<B>{[&](auto token) -> B {
-                   parser_hit = true;
-                   return B{parser<double>::parse(token)};
-               }},
-               policy::router{[&](auto arg2) { std::get<1>(result) = arg2; }}),
-        arg<B>(policy::long_name<S_("arg3")>,
-               policy::description<S_("Third description")>,
-               policy::router{[&](auto arg3) { std::get<2>(result) = arg3; }}),
-        policy::validation::default_validator);
+    const auto r = root(arg<A>(policy::long_name<S_("arg1")>,
+                               policy::description<S_("First description")>,
+                               policy::custom_parser<A>{
+                                   [](auto token) -> A { return A{parser<int>::parse(token)}; }},
+                               policy::router{[&](auto arg1) { std::get<0>(result) = arg1; }}),
+                        arg<B>(policy::long_name<S_("arg2")>,
+                               policy::description<S_("Second description")>,
+                               policy::custom_parser<B>{[&](auto token) -> B {
+                                   parser_hit = true;
+                                   return B{parser<double>::parse(token)};
+                               }},
+                               policy::router{[&](auto arg2) { std::get<1>(result) = arg2; }}),
+                        arg<B>(policy::long_name<S_("arg3")>,
+                               policy::description<S_("Third description")>,
+                               policy::router{[&](auto arg3) { std::get<2>(result) = arg3; }}),
+                        policy::validation::default_validator);
 
     auto f = [&](auto args, auto expected_hit, auto expected_value) {
         result = decltype(result){A{}, B{}, B{}};
@@ -324,26 +304,18 @@ BOOST_AUTO_TEST_CASE(custom_parser_test)
         r.parse(args.size(), const_cast<char**>(args.data()));
         BOOST_CHECK_EQUAL(parser_hit, expected_hit);
 
-        BOOST_CHECK_EQUAL(std::get<0>(result).value,
-                          std::get<0>(expected_value).value);
-        BOOST_CHECK_EQUAL(std::get<1>(result).value,
-                          std::get<1>(expected_value).value);
-        BOOST_CHECK_EQUAL(std::get<2>(result).value,
-                          std::get<2>(expected_value).value);
+        BOOST_CHECK_EQUAL(std::get<0>(result).value, std::get<0>(expected_value).value);
+        BOOST_CHECK_EQUAL(std::get<1>(result).value, std::get<1>(expected_value).value);
+        BOOST_CHECK_EQUAL(std::get<2>(result).value, std::get<2>(expected_value).value);
     };
 
-    test::data_set(f,
-                   {
-                       std::tuple{std::vector{"foo", "--arg1", "42"},
-                                  false,
-                                  std::tuple{A{42}, B{}, B{}}},
-                       std::tuple{std::vector{"foo", "--arg2", "3.14"},
-                                  true,
-                                  std::tuple{A{}, B{3.14}, B{}}},
-                       std::tuple{std::vector{"foo", "--arg3", "3.3"},
-                                  false,
-                                  std::tuple{A{}, B{}, B{3.3}}},
-                   });
+    test::data_set(
+        f,
+        {
+            std::tuple{std::vector{"foo", "--arg1", "42"}, false, std::tuple{A{42}, B{}, B{}}},
+            std::tuple{std::vector{"foo", "--arg2", "3.14"}, true, std::tuple{A{}, B{3.14}, B{}}},
+            std::tuple{std::vector{"foo", "--arg3", "3.3"}, false, std::tuple{A{}, B{}, B{3.3}}},
+        });
 }
 
 BOOST_AUTO_TEST_CASE(help_test)
@@ -360,34 +332,31 @@ BOOST_AUTO_TEST_CASE(help_test)
                                  policy::short_name<'a'>,
                                  policy::description<S_("Flag1 description")>,
                                  policy::router{[](bool) {}}),
-                            flag(policy::long_name<S_("flag2")>,
-                                 policy::router{[](bool) {}}),
+                            flag(policy::long_name<S_("flag2")>, policy::router{[](bool) {}}),
                             flag(policy::short_name<'b'>,
                                  policy::description<S_("b description")>,
                                  policy::router{[](bool) {}}),
                             policy::validation::default_validator),
                        ""s},
-            std::tuple{
-                root(flag(policy::long_name<S_("flag1")>,
-                          policy::short_name<'a'>,
-                          policy::description<S_("Flag1 description")>,
-                          policy::router{[](bool) {}}),
-                     flag(policy::long_name<S_("flag2")>,
-                          policy::router{[](bool) {}}),
-                     flag(policy::short_name<'b'>,
-                          policy::description<S_("b description")>,
-                          policy::router{[](bool) {}}),
-                     arg<int>(policy::long_name<S_("arg1")>,
-                              policy::value_separator<'='>,
-                              policy::router{[](int) {}}),
-                     help(policy::long_name<S_("help")>,
-                          policy::short_name<'h'>,
-                          policy::description<S_("Help output")>,
-                          policy::program_name<S_("foo")>,
-                          policy::program_version<S_("v3.14")>,
-                          policy::program_intro<S_("My foo is good for you")>),
-                     policy::validation::default_validator),
-                R"(foo v3.14
+            std::tuple{root(flag(policy::long_name<S_("flag1")>,
+                                 policy::short_name<'a'>,
+                                 policy::description<S_("Flag1 description")>,
+                                 policy::router{[](bool) {}}),
+                            flag(policy::long_name<S_("flag2")>, policy::router{[](bool) {}}),
+                            flag(policy::short_name<'b'>,
+                                 policy::description<S_("b description")>,
+                                 policy::router{[](bool) {}}),
+                            arg<int>(policy::long_name<S_("arg1")>,
+                                     policy::value_separator<'='>,
+                                     policy::router{[](int) {}}),
+                            help(policy::long_name<S_("help")>,
+                                 policy::short_name<'h'>,
+                                 policy::description<S_("Help output")>,
+                                 policy::program_name<S_("foo")>,
+                                 policy::program_version<S_("v3.14")>,
+                                 policy::program_intro<S_("My foo is good for you")>),
+                            policy::validation::default_validator),
+                       R"(foo v3.14
 
 My foo is good for you
 
@@ -410,8 +379,7 @@ My foo is good for you
                           flag(policy::long_name<S_("flag2")>),
                           arg<int>(policy::long_name<S_("arg1")>,
                                    policy::description<S_("Arg1 description")>),
-                          flag(policy::short_name<'b'>,
-                               policy::description<S_("b description")>),
+                          flag(policy::short_name<'b'>, policy::description<S_("b description")>),
                           policy::router{[](bool, bool, bool) {}}),
                      policy::validation::default_validator),
                 R"(foo v3.14

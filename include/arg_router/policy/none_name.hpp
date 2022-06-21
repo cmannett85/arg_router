@@ -9,8 +9,8 @@ namespace arg_router
 {
 namespace policy
 {
-/** Represents the name of an argument that does not use any token prefix
- * (i.e. parsing::prefix_type == none).
+/** Represents the name of an argument that does not use any token prefix (i.e.
+ * parsing::prefix_type == none).
  *
  * The only node that uses this in the library is mode_t.
  * @note Display names must not be empty
@@ -27,14 +27,10 @@ public:
      *
      * @return None name
      */
-    [[nodiscard]] constexpr static std::string_view none_name() noexcept
-    {
-        return S::get();
-    }
+    [[nodiscard]] constexpr static std::string_view none_name() noexcept { return S::get(); }
 
 private:
-    static_assert(none_name().size() > 1,
-                  "None names must be longer than one character");
+    static_assert(none_name().size() > 1, "None names must be longer than one character");
     static_assert(algorithm::is_alnum(none_name()[0]),
                   "None name must not start with a non-alphanumeric character");
     static_assert(!algorithm::contains_whitespace(none_name()),

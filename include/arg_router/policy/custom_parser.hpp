@@ -30,15 +30,11 @@ public:
      *
      * @param p Custom parser
      */
-    constexpr explicit custom_parser(parser_type p) noexcept :
-        parser_{std::move(p)}
-    {
-    }
+    constexpr explicit custom_parser(parser_type p) noexcept : parser_{std::move(p)} {}
 
     /** Parse @a str to produce an equivalent instance of value_type.
      *
-     * @tparam ValueType Parsed value type, must be implicity convertible from
-     * value_type
+     * @tparam ValueType Parsed value type, must be implicity convertible from value_type
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
      * @param token Token to parse
      * @param parents Parents instances pack
@@ -46,9 +42,8 @@ public:
      * @exception parse_exception Thrown if parsing failed
      */
     template <typename ValueType, typename... Parents>
-    [[nodiscard]] constexpr ValueType parse_phase(
-        std::string_view token,
-        [[maybe_unused]] const Parents&... parents) const
+    [[nodiscard]] constexpr ValueType parse_phase(std::string_view token,
+                                                  [[maybe_unused]] const Parents&... parents) const
     {
         return parser_(token);
     }

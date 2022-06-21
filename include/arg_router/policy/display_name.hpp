@@ -11,11 +11,11 @@ namespace policy
 {
 /** Represents the display name of an argument.
  *
- * A display name is a label given to an argument that appears in the help and
- * error output, but is not used in the token parsing.
+ * A display name is a label given to an argument that appears in the help and error output, but is
+ * not used in the token parsing.
  * 
- * In the default validator, this policy is not allowed to be used with
- * long_name and short_name - as we shouldn't be trying to confuse the user...
+ * In the default validator, this policy is not allowed to be used with long_name and short_name -
+ * as we shouldn't be trying to confuse the user...
  * @note Display names must not be empty
  * @tparam S compile_time_string
  */
@@ -30,10 +30,7 @@ public:
      *
      * @return Display name
      */
-    [[nodiscard]] constexpr static std::string_view display_name() noexcept
-    {
-        return S::get();
-    }
+    [[nodiscard]] constexpr static std::string_view display_name() noexcept { return S::get(); }
 
 private:
     static_assert(!display_name().empty(), "Display name must not be empty");

@@ -42,8 +42,7 @@ BOOST_AUTO_TEST_CASE(parse_test)
                  const auto&... parents) {
         router_hit = false;
 
-        auto target =
-            parsing::parse_target{std::move(tokens), node, parents...};
+        auto target = parsing::parse_target{std::move(tokens), node, parents...};
         const auto result = node.parse(std::move(target), parents...);
         BOOST_CHECK_EQUAL(result, expected_result);
         BOOST_CHECK_EQUAL(router_hit, expected_router_hit);
@@ -51,41 +50,34 @@ BOOST_AUTO_TEST_CASE(parse_test)
 
     test::data_set(
         f,
-        std::tuple{std::tuple{arg<int>(policy::long_name<S_("test")>),
-                              std::vector<parsing::token_type>{
-                                  {parsing::prefix_type::none, "42"}},
-                              42,
-                              false},
-                   std::tuple{arg<int>(policy::long_name<S_("test")>,
-                                       policy::router{[&](int result) {
-                                           BOOST_CHECK_EQUAL(result, 42);
-                                           router_hit = true;
-                                       }}),
-                              std::vector<parsing::token_type>{
-                                  {parsing::prefix_type::none, "42"}},
-                              42,
-                              true}});
+        std::tuple{
+            std::tuple{arg<int>(policy::long_name<S_("test")>),
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "42"}},
+                       42,
+                       false},
+            std::tuple{arg<int>(policy::long_name<S_("test")>, policy::router{[&](int result) {
+                                    BOOST_CHECK_EQUAL(result, 42);
+                                    router_hit = true;
+                                }}),
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "42"}},
+                       42,
+                       true}});
 }
 
 BOOST_AUTO_TEST_CASE(help_test)
 {
-    auto f = [](const auto& node,
-                auto expected_label,
-                auto expected_description) {
+    auto f = [](const auto& node, auto expected_label, auto expected_description) {
         using node_type = std::decay_t<decltype(node)>;
 
         using help_data = typename node_type::template help_data_type<false>;
-        using flattened_help_data =
-            typename node_type::template help_data_type<true>;
+        using flattened_help_data = typename node_type::template help_data_type<true>;
 
-        static_assert(std::is_same_v<typename help_data::label,
-                                     typename flattened_help_data::label>);
         static_assert(
-            std::is_same_v<typename help_data::description,
-                           typename flattened_help_data::description>);
+            std::is_same_v<typename help_data::label, typename flattened_help_data::label>);
+        static_assert(std::is_same_v<typename help_data::description,
+                                     typename flattened_help_data::description>);
         static_assert(std::tuple_size_v<typename help_data::children> == 0);
-        static_assert(
-            std::tuple_size_v<typename flattened_help_data::children> == 0);
+        static_assert(std::tuple_size_v<typename flattened_help_data::children> == 0);
 
         BOOST_CHECK_EQUAL(help_data::label::get(), expected_label);
         BOOST_CHECK_EQUAL(help_data::description::get(), expected_description);
@@ -99,12 +91,10 @@ BOOST_AUTO_TEST_CASE(help_test)
                                 policy::description<S_("An arg!")>),
                        "--hello,-h <Value>",
                        "An arg!"},
-            std::tuple{arg<int>(policy::long_name<S_("hello")>,
-                                policy::description<S_("An arg!")>),
+            std::tuple{arg<int>(policy::long_name<S_("hello")>, policy::description<S_("An arg!")>),
                        "--hello <Value>",
                        "An arg!"},
-            std::tuple{arg<int>(policy::short_name<'h'>,
-                                policy::description<S_("An arg!")>),
+            std::tuple{arg<int>(policy::short_name<'h'>, policy::description<S_("An arg!")>),
                        "-h <Value>",
                        "An arg!"},
             std::tuple{arg<int>(policy::short_name<'h'>), "-h <Value>", ""},

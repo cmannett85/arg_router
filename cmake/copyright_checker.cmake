@@ -6,8 +6,7 @@ find_package (Python3 REQUIRED COMPONENTS Interpreter)
 function(create_copyright_checker_target)
     set(single_value_args NAME SCRIPT)
     set(multi_value_args SOURCES DEPENDENCIES)
-    cmake_parse_arguments(ARGS "" "${single_value_args}"
-                          "${multi_value_args}" ${ARGN})
+    cmake_parse_arguments(ARGS "" "${single_value_args}" "${multi_value_args}" ${ARGN})
 
     add_custom_target(${ARGS_NAME}
         COMMAND ${Python3_EXECUTABLE} ${ARGS_SCRIPT} presence ${CMAKE_CURRENT_SOURCE_DIR}

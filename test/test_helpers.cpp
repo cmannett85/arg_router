@@ -27,16 +27,14 @@ const auto repo_env = "AR_REPO_PATH"sv;
 std::string_view get_project_repo()
 {
     const auto path = std::getenv(repo_env.data());
-    BOOST_REQUIRE_MESSAGE(
-        path,
-        "env var AR_REPO_PATH not set, set to the absolute repository path");
+    BOOST_REQUIRE_MESSAGE(path,
+                          "env var AR_REPO_PATH not set, set to the absolute repository path");
 
     return path;
 }
 }  // namespace
 
-void test::death_test_compile(std::string_view code,
-                              std::string_view expected_error)
+void test::death_test_compile(std::string_view code, std::string_view expected_error)
 {
     // Create source file
     const auto file_path = get_project_repo() / main_file_suffix;
@@ -44,8 +42,7 @@ void test::death_test_compile(std::string_view code,
 
     if (!fs::exists(parent_path)) {
         auto ec = std::error_code{};
-        BOOST_REQUIRE_MESSAGE(fs::create_directory(file_path.parent_path(), ec),
-                              ec.message());
+        BOOST_REQUIRE_MESSAGE(fs::create_directory(file_path.parent_path(), ec), ec.message());
     }
     {
         auto stream = std::ofstream{file_path};

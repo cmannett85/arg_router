@@ -26,16 +26,10 @@ public:
         auto result = std::optional<ValueType>{};
         utility::tuple_type_iterator<typename stub_node::policies_type>(  //
             [&](auto i) {
-                using this_policy =
-                    std::tuple_element_t<i, typename stub_node::policies_type>;
-                if constexpr (policy::has_missing_phase_method_v<this_policy,
-                                                                 ValueType> &&
-                              traits::is_specialisation_of_v<
-                                  this_policy,
-                                  policy::required_t>) {
-                    result =
-                        this->this_policy::template missing_phase<ValueType>(
-                            parents...);
+                using this_policy = std::tuple_element_t<i, typename stub_node::policies_type>;
+                if constexpr (policy::has_missing_phase_method_v<this_policy, ValueType> &&
+                              traits::is_specialisation_of_v<this_policy, policy::required_t>) {
+                    result = this->this_policy::template missing_phase<ValueType>(parents...);
                 }
             });
 
@@ -50,15 +44,13 @@ BOOST_AUTO_TEST_SUITE(required_suite)
 
 BOOST_AUTO_TEST_CASE(is_policy_test)
 {
-    static_assert(policy::is_policy_v<policy::required_t<>>,
-                  "Policy test has failed");
+    static_assert(policy::is_policy_v<policy::required_t<>>, "Policy test has failed");
 }
 
 BOOST_AUTO_TEST_CASE(missing_phase_test)
 {
     const auto root =
-        stub_node{stub_node{policy::long_name<S_("test")>, policy::required},
-                  stub_node{}};
+        stub_node{stub_node{policy::long_name<S_("test")>, policy::required}, stub_node{}};
 
     auto f = [&](const auto& owner, std::string fail_message) {
         try {
@@ -69,10 +61,10 @@ BOOST_AUTO_TEST_CASE(missing_phase_test)
         }
     };
 
-    test::data_set(f,
-                   std::tuple{std::tuple{std::get<0>(root.children()),
-                                         "Missing required argument: --test"},
-                              std::tuple{std::get<1>(root.children()), ""}});
+    test::data_set(
+        f,
+        std::tuple{std::tuple{std::get<0>(root.children()), "Missing required argument: --test"},
+                   std::tuple{std::get<1>(root.children()), ""}});
 }
 
 BOOST_AUTO_TEST_SUITE(death_suite)

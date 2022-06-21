@@ -61,13 +61,11 @@ template <typename CharT,
  * @return std::string of @a lhs and @a rhs concatenated together
  */
 template <typename CharT, typename Traits = std::char_traits<CharT>>
-[[nodiscard]] constexpr std::
-    basic_string<CharT, Traits, config::allocator<CharT>>
-    operator+(std::basic_string_view<CharT, Traits> lhs,
-              std::basic_string_view<CharT, Traits> rhs)
+[[nodiscard]] constexpr std::basic_string<CharT, Traits, config::allocator<CharT>> operator+(
+    std::basic_string_view<CharT, Traits> lhs,
+    std::basic_string_view<CharT, Traits> rhs)
 {
-    return std::basic_string<CharT, Traits, config::allocator<CharT>>(lhs) +
-           rhs;
+    return std::basic_string<CharT, Traits, config::allocator<CharT>>(lhs) + rhs;
 }
 }  // namespace string_view_ops
 }  // namespace utility

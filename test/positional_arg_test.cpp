@@ -18,8 +18,7 @@ BOOST_AUTO_TEST_CASE(is_tree_node_test)
 {
     static_assert(
         is_tree_node_v<
-            arg_router::positional_arg_t<std::vector<int>,
-                                         policy::display_name_t<S_("hello")>>>,
+            arg_router::positional_arg_t<std::vector<int>, policy::display_name_t<S_("hello")>>>,
         "Tree node test has failed");
 }
 
@@ -34,61 +33,47 @@ BOOST_AUTO_TEST_CASE(parse_test)
     test::data_set(
         f,
         std::tuple{
-            std::tuple{positional_arg<int>(policy::display_name<S_("node")>,
-                                           policy::fixed_count<1>),
-                       std::vector<parsing::token_type>{
-                           {parsing::prefix_type::none, "13"}},
-                       13},
-            std::tuple{positional_arg<std::vector<int>>(
-                           policy::display_name<S_("node")>),
-                       std::vector<parsing::token_type>{
-                           {parsing::prefix_type::none, "1"},
-                           {parsing::prefix_type::none, "2"},
-                           {parsing::prefix_type::none, "3"}},
+            std::tuple{
+                positional_arg<int>(policy::display_name<S_("node")>, policy::fixed_count<1>),
+                std::vector<parsing::token_type>{{parsing::prefix_type::none, "13"}},
+                13},
+            std::tuple{positional_arg<std::vector<int>>(policy::display_name<S_("node")>),
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "1"},
+                                                        {parsing::prefix_type::none, "2"},
+                                                        {parsing::prefix_type::none, "3"}},
                        std::vector{1, 2, 3}},
-            std::tuple{positional_arg<std::vector<int>>(
-                           policy::display_name<S_("node")>,
-                           policy::min_count<2>),
-                       std::vector<parsing::token_type>{
-                           {parsing::prefix_type::none, "1"},
-                           {parsing::prefix_type::none, "2"}},
+            std::tuple{positional_arg<std::vector<int>>(policy::display_name<S_("node")>,
+                                                        policy::min_count<2>),
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "1"},
+                                                        {parsing::prefix_type::none, "2"}},
                        std::vector{1, 2}},
-            std::tuple{positional_arg<std::vector<int>>(
-                           policy::display_name<S_("node")>,
-                           policy::max_count<2>),
-                       std::vector<parsing::token_type>{
-                           {parsing::prefix_type::none, "1"},
-                           {parsing::prefix_type::none, "2"}},
+            std::tuple{positional_arg<std::vector<int>>(policy::display_name<S_("node")>,
+                                                        policy::max_count<2>),
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "1"},
+                                                        {parsing::prefix_type::none, "2"}},
                        std::vector{1, 2}},
-            std::tuple{positional_arg<std::vector<int>>(
-                           policy::display_name<S_("node")>,
-                           policy::max_count<2>),
-                       std::vector<parsing::token_type>{
-                           {parsing::prefix_type::none, "1"},
-                           {parsing::prefix_type::none, "2"}},
+            std::tuple{positional_arg<std::vector<int>>(policy::display_name<S_("node")>,
+                                                        policy::max_count<2>),
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "1"},
+                                                        {parsing::prefix_type::none, "2"}},
                        std::vector{1, 2}},
         });
 }
 
 BOOST_AUTO_TEST_CASE(help_test)
 {
-    auto f = [](const auto& node,
-                auto expected_label,
-                auto expected_description) {
+    auto f = [](const auto& node, auto expected_label, auto expected_description) {
         using node_type = std::decay_t<decltype(node)>;
 
         using help_data = typename node_type::template help_data_type<false>;
-        using flattened_help_data =
-            typename node_type::template help_data_type<true>;
+        using flattened_help_data = typename node_type::template help_data_type<true>;
 
-        static_assert(std::is_same_v<typename help_data::label,
-                                     typename flattened_help_data::label>);
         static_assert(
-            std::is_same_v<typename help_data::description,
-                           typename flattened_help_data::description>);
+            std::is_same_v<typename help_data::label, typename flattened_help_data::label>);
+        static_assert(std::is_same_v<typename help_data::description,
+                                     typename flattened_help_data::description>);
         static_assert(std::tuple_size_v<typename help_data::children> == 0);
-        static_assert(
-            std::tuple_size_v<typename flattened_help_data::children> == 0);
+        static_assert(std::tuple_size_v<typename flattened_help_data::children> == 0);
 
         BOOST_CHECK_EQUAL(help_data::label::get(), expected_label);
         BOOST_CHECK_EQUAL(help_data::description::get(), expected_description);
@@ -97,38 +82,34 @@ BOOST_AUTO_TEST_CASE(help_test)
     test::data_set(
         f,
         std::tuple{
-            std::tuple{positional_arg<std::vector<int>>(
-                           policy::display_name<S_("pos-arg")>,
-                           policy::description<S_("A positional arg!")>),
-                       "<pos-arg> [0,N]",
-                       "A positional arg!"},
-            std::tuple{positional_arg<std::vector<int>>(
-                           policy::display_name<S_("pos-arg")>,
-                           policy::description<S_("A positional arg!")>),
-                       "<pos-arg> [0,N]",
-                       "A positional arg!"},
-            std::tuple{positional_arg<std::vector<int>>(
-                           policy::display_name<S_("pos-arg")>,
-                           policy::description<S_("A positional arg!")>),
-                       "<pos-arg> [0,N]",
-                       "A positional arg!"},
-            std::tuple{positional_arg<std::vector<int>>(
-                           policy::display_name<S_("pos-arg")>),
+            std::tuple{
+                positional_arg<std::vector<int>>(policy::display_name<S_("pos-arg")>,
+                                                 policy::description<S_("A positional arg!")>),
+                "<pos-arg> [0,N]",
+                "A positional arg!"},
+            std::tuple{
+                positional_arg<std::vector<int>>(policy::display_name<S_("pos-arg")>,
+                                                 policy::description<S_("A positional arg!")>),
+                "<pos-arg> [0,N]",
+                "A positional arg!"},
+            std::tuple{
+                positional_arg<std::vector<int>>(policy::display_name<S_("pos-arg")>,
+                                                 policy::description<S_("A positional arg!")>),
+                "<pos-arg> [0,N]",
+                "A positional arg!"},
+            std::tuple{positional_arg<std::vector<int>>(policy::display_name<S_("pos-arg")>),
                        "<pos-arg> [0,N]",
                        ""},
-            std::tuple{positional_arg<std::vector<int>>(
-                           policy::display_name<S_("pos-arg")>,
-                           policy::min_max_count<1, 3>),
+            std::tuple{positional_arg<std::vector<int>>(policy::display_name<S_("pos-arg")>,
+                                                        policy::min_max_count<1, 3>),
                        "<pos-arg> [1,3]",
                        ""},
-            std::tuple{positional_arg<std::vector<int>>(
-                           policy::display_name<S_("pos-arg")>,
-                           policy::min_count<3>),
+            std::tuple{positional_arg<std::vector<int>>(policy::display_name<S_("pos-arg")>,
+                                                        policy::min_count<3>),
                        "<pos-arg> [3,N]",
                        ""},
-            std::tuple{positional_arg<std::vector<int>>(
-                           policy::display_name<S_("pos-arg")>,
-                           policy::max_count<3>),
+            std::tuple{positional_arg<std::vector<int>>(policy::display_name<S_("pos-arg")>,
+                                                        policy::max_count<3>),
                        "<pos-arg> [0,3]",
                        ""},
         });

@@ -30,18 +30,17 @@ namespace utility
  * @return Void
  */
 template <typename F, typename Tuple>
-constexpr std::enable_if_t<traits::is_tuple_like_v<std::decay_t<Tuple>>>
-tuple_iterator(F&& f, Tuple&& tuple)
+constexpr std::enable_if_t<traits::is_tuple_like_v<std::decay_t<Tuple>>> tuple_iterator(
+    F&& f,
+    Tuple&& tuple)
 {
     constexpr auto N = std::tuple_size_v<std::decay_t<Tuple>>;
-    boost::mp11::mp_for_each<boost::mp11::mp_iota_c<N>>(
-        [&](auto i) { f(i, std::get<i>(tuple)); });
+    boost::mp11::mp_for_each<boost::mp11::mp_iota_c<N>>([&](auto i) { f(i, std::get<i>(tuple)); });
 }
 
 /** Iterates over @a pack and calls @a f on each instance within it.
  *
- * Forwards @a pack into a tuple and uses it to call
- * tuple_iterator(F&&, Tuple&&).
+ * Forwards @a pack into a tuple and uses it to call tuple_iterator(F&&, Tuple&&).
  * @tparam F Callable type
  * @tparam T Pack types
  * @param f Callable instance
@@ -74,8 +73,7 @@ constexpr void tuple_iterator(F&& f, T&&... pack)
  * @return Void
  */
 template <typename Tuple, typename F>
-constexpr std::enable_if_t<traits::is_tuple_like_v<std::decay_t<Tuple>>>
-tuple_type_iterator(F&& f)
+constexpr std::enable_if_t<traits::is_tuple_like_v<std::decay_t<Tuple>>> tuple_type_iterator(F&& f)
 {
     constexpr auto N = std::tuple_size_v<std::decay_t<Tuple>>;
     boost::mp11::mp_for_each<boost::mp11::mp_iota_c<N>>([&](auto i) { f(i); });

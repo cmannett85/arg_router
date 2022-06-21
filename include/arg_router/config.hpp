@@ -7,8 +7,7 @@
 
 namespace arg_router
 {
-/** Namespace for library basic types and constants i.e. compile-time
- * configuration.
+/** Namespace for library basic types and constants i.e. compile-time configuration.
  */
 namespace config
 {
@@ -23,8 +22,7 @@ static_assert(short_prefix.size() == 1, "Short prefix must be one character");
 static_assert(long_prefix.size() >= short_prefix.size(),
               "Long prefix must be longer or the same as short prefix");
 
-static_assert(short_prefix != long_prefix,
-              "Short and long prefixes cannot be the same");
+static_assert(short_prefix != long_prefix, "Short and long prefixes cannot be the same");
 
 /** Allocator for all STL types.
  *

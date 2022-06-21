@@ -15,8 +15,7 @@ namespace policy
 {
 /** Provides inclusive minimum and maximum values for an parsed value.
  *
- * By default <TT>operator\<</TT> is used for comparisons, but can be
- * overridden.
+ * By default <TT>operator\<</TT> is used for comparisons, but can be overridden.
  * @tparam ValueType Minimum and maximum value type
  * @tparam LessThanCompare Less than comparator type
  */
@@ -31,17 +30,16 @@ public:
 
     /** Constructor.
      * 
-     * Unlike min_max_count_t. value_type is not guaranteed to be compile-time
-     * constructible, and so to avoid runtime overhead, @em no compile-time or
-     * runtime checking is done on the validity of @a min and @a max.
+     * Unlike min_max_count_t. value_type is not guaranteed to be compile-time constructible, and so
+     * to avoid runtime overhead, @em no compile-time or runtime checking is done on the validity of
+     * @a min and @a max.
      * @param min Minimum value
      * @param max Maximum value
      * @param compare Comparator instance
      */
-    constexpr min_max_value(
-        value_type min,
-        value_type max,
-        less_than_compare compare = less_than_compare{}) noexcept :
+    constexpr min_max_value(value_type min,
+                            value_type max,
+                            less_than_compare compare = less_than_compare{}) noexcept :
         min_(std::move(min)),
         max_(std::move(max)),  //
         comp_{std::move(compare)}
@@ -52,15 +50,11 @@ public:
      *
      * @return Compare function object
      */
-    [[nodiscard]] constexpr const less_than_compare& comp() const noexcept
-    {
-        return comp_;
-    }
+    [[nodiscard]] constexpr const less_than_compare& comp() const noexcept { return comp_; }
 
     /** Checks that @a value is between the minimum and maximum values.
      *
-     * @tparam InputValueType Parsed value type, must be implicitly
-     * constructible from value_type
+     * @tparam InputValueType Parsed value type, must be implicitly constructible from value_type
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
      * @param value Parsed input value to check
      * @param parents Parents instances pack
@@ -69,8 +63,7 @@ public:
     void validation_phase(const InputValueType& value,
                           [[maybe_unused]] const Parents&... parents) const
     {
-        static_assert(sizeof...(Parents) >= 1,
-                      "Min/max value requires at least 1 parent");
+        static_assert(sizeof...(Parents) >= 1, "Min/max value requires at least 1 parent");
 
         using node_type = boost::mp11::mp_first<std::tuple<Parents...>>;
 
@@ -78,8 +71,7 @@ public:
             throw parse_exception{"Minimum value not reached",
                                   parsing::node_token_type<node_type>()};
         } else if (comp_(max_, value)) {
-            throw parse_exception{"Maximum value exceeded",
-                                  parsing::node_token_type<node_type>()};
+            throw parse_exception{"Maximum value exceeded", parsing::node_token_type<node_type>()};
         }
     }
 

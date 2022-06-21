@@ -9,9 +9,8 @@
 
 namespace arg_router
 {
-/** This is arg and flag container, that when used a child in another tree_node
- * is 'flattened' i.e. the children of the list become the direct children of
- * the parent.
+/** This is arg and flag container, that when used a child in another tree_node is 'flattened' i.e.
+ * the children of the list become the direct children of the parent.
  *
  * This is used to easily copy groups of args and flags into multiple modes.
  * @tparam Params Child types
@@ -30,10 +29,7 @@ public:
      *
      * @param children Child instances
      */
-    constexpr explicit list(Children... children) noexcept :
-        children_{std::move(children)...}
-    {
-    }
+    constexpr explicit list(Children... children) noexcept : children_{std::move(children)...} {}
 
     /** Returns a reference to the children.
      *
@@ -45,10 +41,7 @@ public:
      *
      * @return Children
      */
-    [[nodiscard]] const children_type& children() const noexcept
-    {
-        return children_;
-    }
+    [[nodiscard]] const children_type& children() const noexcept { return children_; }
 
 private:
     children_type children_;
@@ -66,8 +59,7 @@ template <typename Result, typename ListChildren, std::size_t... I>
     ListChildren list_children,
     std::integer_sequence<std::size_t, I...>) noexcept
 {
-    return list_expander_impl(std::move(result),
-                              std::move(std::get<I>(list_children))...);
+    return list_expander_impl(std::move(result), std::move(std::get<I>(list_children))...);
 }
 
 // Recursion end condition
@@ -78,22 +70,18 @@ template <typename Result>
 }
 
 template <typename Result, typename Next, typename... Others>
-[[nodiscard]] constexpr auto list_expander_impl(Result result,
-                                                Next next,
-                                                Others... others) noexcept
+[[nodiscard]] constexpr auto list_expander_impl(Result result, Next next, Others... others) noexcept
 {
     if constexpr (traits::is_specialisation_of_v<std::decay_t<Next>, list>) {
         return list_expander_impl(
             list_expander_unpacker(
                 std::move(result),
                 next.children(),
-                std::make_index_sequence<
-                    std::tuple_size_v<typename Next::children_type>>{}),
+                std::make_index_sequence<std::tuple_size_v<typename Next::children_type>>{}),
             std::move(others)...);
     } else {
-        return list_expander_impl(
-            algorithm::tuple_push_back(std::move(result), std::move(next)),
-            std::move(others)...);
+        return list_expander_impl(algorithm::tuple_push_back(std::move(result), std::move(next)),
+                                  std::move(others)...);
     }
 }
 }  // namespace detail
@@ -117,14 +105,11 @@ template <typename... Params>
  * @return Flattened tuple of nodes
  */
 template <typename... Params>
-[[nodiscard]] constexpr auto list_expander(
-    std::tuple<Params...> params) noexcept
+[[nodiscard]] constexpr auto list_expander(std::tuple<Params...> params) noexcept
 {
     return std::apply(
         [](auto&... args) {
-            return detail::list_expander_impl(
-                std::tuple{},
-                std::forward<decltype(args)>(args)...);
+            return detail::list_expander_impl(std::tuple{}, std::forward<decltype(args)>(args)...);
         },
         params);
 }

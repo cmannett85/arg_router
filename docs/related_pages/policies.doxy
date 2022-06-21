@@ -6,115 +6,102 @@ namespace arg_router
  * @tableofcontents
  *
  * @section policies_basic Basic Categories
- * Policies fall into three basic categories, although in principle a policy
- * could fall into more than one.
+ * Policies fall into three basic categories, although in principle a policy could fall into more
+ * than one.
  * 
  * @subsection policies_basic_static_data Static Data Provider
- * Many policies just provide some user-set compile-time data to the system
- * using a commonly named method that can be detected at compile-time.
+ * Many policies just provide some user-set compile-time data to the system using a commonly named
+ * method that can be detected at compile-time.
  * 
- * policy::long_name_t is a simple example of this, the user provides a string
- * which is then exposed by the static method <TT>long_name()</TT>.
- * <TT>long_name()</TT> is a 'common' method i.e. one that is known by the
- * library so any policy that has that method can be used to provide long
- * names to nodes.  Look in the @ref traits namespace for the
- * <TT>has_*_method</TT> traits types for all the common methods.
+ * policy::long_name_t is a simple example of this, the user provides a string which is then exposed
+ * by the static method <TT>long_name()</TT>. <TT>long_name()</TT> is a 'common' method i.e. one
+ * that is known by the library so any policy that has that method can be used to provide long
+ * names to nodes.  Look in the @ref traits namespace for the <TT>has_*_method</TT> traits types for
+ * all the common methods.
  * 
  * @subsection policies_basic_tag_type Tag Type
- * Some policies are tag types, just their presence indicates that @em something
- * needs to be done.  What that @em something is depends on the @em thing
- * doing the detecting.
+ * Some policies are tag types, just their presence indicates that @em something needs to be done.
+ * What that @em something is depends on the @em thing doing the detecting.
  * 
- * An example of this is policy::no_result_value.  This is used by mode_t (and
- * others) to detect children whose parsing process does @b not result in a
- * value that can be passed to the owned policy::router.
+ * An example of this is policy::no_result_value.  This is used by mode_t (and others) to detect
+ * children whose parsing process does @b not result in a value that can be passed to the owned
+ * policy::router.
  * 
  * @subsection policies_basic_parsing_phase Parsing Phase Provider
- * Most of the policies do more than the above though, they take an active part
- * in the parsing.  Parsing a token is a multi-stage process for most nodes and
- * policies facilitate this by supporting a series of common methods that are
- * detected by nodes at compile-time (see @ref policy namespace's
- * <TT>has_*_method</TT> traits types).
+ * Most of the policies do more than the above though, they take an active part in the parsing.
+ * Parsing a token is a multi-stage process for most nodes and policies facilitate this by
+ * supporting a series of common methods that are detected by nodes at compile-time (see
+ * @ref policy namespace's <TT>has_*_method</TT> traits types).
  *
- * All policies that provide a phase method where multiple policies held by a
- * node can provide an implementation (i.e. @em not parse, routing, or missing
- * phases - only one policy can provide those for a node) should hold a
- * `priority` static member that provides the order policies should be
- * called in (when applicable).  The lower the number, the lower the priority.
- * Policies in the library vary from 0 to 1000, where 0 means that the priority
- * is irrelevant.  If no priority is specified, 0 is assumed.  This allows the
- * user to specify the policies in any order, but they'll always be evaluated
- * in the same order.
+ * All policies that provide a phase method where multiple policies held by a node can provide an
+ * implementation (i.e. @em not parse, routing, or missing phases - only one policy can provide
+ * those for a node) should hold a `priority` static member that provides the order policies should
+ * be called in (when applicable).  The lower the number, the lower the priority. Policies in the
+ * library vary from 0 to 1000, where 0 means that the priority is irrelevant.  If no priority is
+ * specified, 0 is assumed.  This allows the user to specify the policies in any order, but they'll
+ * always be evaluated in the same order.
  * 
  * @subsubsection policies_basic_parsing_phase_pre Pre-Parse Phase
- * As the name suggests this is a phase that performs some kind of input
- * checking or manipulation before parsing occurs.  policy::alias_t is a
- * complex example of this, it copies the current token's value (i.e. the
- * alias' value) and then creates new tokens for all the aliased arguments using
- * that value.  In other words it creates new tokens and values as if the user
- * had passed them in, ready for a later parsing process to consume.
+ * As the name suggests this is a phase that performs some kind of input checking or manipulation
+ * before parsing occurs.  policy::alias_t is a complex example of this, it copies the current
+ * token's value (i.e. the alias' value) and then creates new tokens for all the aliased arguments
+ * using that value.  In other words it creates new tokens and values as if the user had passed them
+ * in, ready for a later parsing process to consume.
  * 
- * A simpler example is policy::min_max_count_t, which simply checks that there
- * enough tokens remaining in pending list to satisfy the minimum.  This is
- * used by positional_arg_t to validate the input before starting parsing.  If
- * you're wondering what does the maximum checking, that's an example of the
- * policy also being a static data provider - it provides the compile-time
- * maximum count to the positional_arg_t node which only consumes up to that
- * amount when pre-parsing.
+ * A simpler example is policy::min_max_count_t, which simply checks that there enough tokens
+ * remaining in pending list to satisfy the minimum.  This is used by positional_arg_t to validate
+ * the input before starting parsing.  If you're wondering what does the maximum checking, that's an
+ * example of the policy also being a static data provider - it provides the compile-time maximum
+ * count to the positional_arg_t node which only consumes up to that amount when pre-parsing.
  * 
  * @subsubsection policies_basic_parsing_phase_parse Parse Phase
- * This is the phase that takes the token and converts to it a value type that
- * the user's code can consume.  There is only one parsing policy in
- * arg_router and that is policy::custom_parser, which allows a library user to
- * pass a <TT>Callable</TT> to their node which delegates the parsing to that.
+ * This is the phase that takes the token and converts to it a value type that the user's code can
+ * consume.  There is only one parsing policy in arg_router and that is policy::custom_parser, which
+ * allows a library user to pass a <TT>Callable</TT> to their node which delegates the parsing to
+ * that.
  * 
- * Typically developers want their parsers to be written for a @em type rather 
- * than a particular node, so unlike the other phases, policies implementing
- * this phase are not called directly - nodes call
- * tree_node::parse(std::string_view token, const Parents&... parents) const
- * which uses a parse phase policy if one is present, or uses one of the
- * global per-type parsers (@ref parser).  Which is why library users do not
- * need to use a policy::custom_parser on every node that expects one or more
- * value tokens.
+ * Typically developers want their parsers to be written for a @em type rather than a particular
+ * node, so unlike the other phases, policies implementing this phase are not called directly -
+ * nodes call tree_node::parse(std::string_view token, const Parents&... parents) const which uses a
+ * parse phase policy if one is present, or uses one of the global per-type parsers (@ref parser).
+ * Which is why library users do not need to use a policy::custom_parser on every node that expects
+ * one or more value tokens.
  * 
- * @note Only one policy used by a tree_node can support a parse phase.  It
- * doesn't make any sense to parse more than once.
+ * @note Only one policy used by a tree_node can support a parse phase.  It doesn't make any sense
+ * to parse more than once.
  * 
  * @subsubsection policies_basic_parsing_phase_validation Validation Phase
- * Once the value has been parsed it can be validated by other policies,
- * policy::min_max_value being an example.  It simply checks that the parsed
- * value is between two values as determined by a comparator (defaulting to
- * <TT>std::less</TT>), if it fails the check then a parse_exception is thrown.
+ * Once the value has been parsed it can be validated by other policies, policy::min_max_value being
+ * an example.  It simply checks that the parsed value is between two values as determined by a
+ * comparator (defaulting to <TT>std::less</TT>), if it fails the check then a parse_exception is
+ * thrown.
  * 
  * @subsubsection policies_basic_parsing_phase_routing Routing Phase
- * The final parse phase is the one that performs the routing of the result
- * values back to the library user.
+ * The final parse phase is the one that performs the routing of the result values back to the
+ * library user.
  * 
- * There is only one policy that does this in arg_router and that is
- * policy::router, which takes a user-provided <TT>Callable</TT> and forwards
- * the parsed values to it @em after checking that there are no more tokens
- * remaining after parsing (i.e. "unhandled tokens").
+ * There is only one policy that does this in arg_router and that is policy::router, which takes a
+ * user-provided <TT>Callable</TT> and forwards the parsed values to it @em after checking that
+ * there are no more tokens remaining after parsing (i.e. "unhandled tokens").
  * 
- * @note Only one policy used by a tree_node can support a routing phase.  The
- * library must only exit to the library user's code once when parsing is
- * complete.
+ * @note Only one policy used by a tree_node can support a routing phase.  The library must only
+ * exit to the library user's code once when parsing is complete.
  * 
  * @subsubsection policies_basic_parsing_phase_missing Missing Phase
- * Although the 'Routing Phase' is the final 'normal' phase, there is another
- * that is performed on child nodes who have not been given a token to parse
- * i.e. the token(s) they represent are not present on the command line.
+ * Although the 'Routing Phase' is the final 'normal' phase, there is another that is performed on
+ * child nodes who have not been given a token to parse i.e. the token(s) they represent are not
+ * present on the command line.
  * 
- * The two standard policies that implement this phase are policy::default_value
- * and policy::required_t.  They either return a user-defined default value or
- * throw an exception respectively.
+ * The two standard policies that implement this phase are policy::default_value and
+ * policy::required_t.  They either return a user-defined default value or throw an exception
+ * respectively.
  *
  * @note Only one policy used by a tree_node can support a missing phase.
  * 
  * @section policies_defining Defining a Policy
- * Because the parse tree nodes derive from (typically) multiple policies so
- * that their methods become available to the public interface of the nodes,
- * policies themselves do not have a base class (the old diamond inheritance
- * problems).  So in order to 'mark' a type as a policy so it can be detected
- * as such by arg_router, policy::is_policy needs specialising.
+ * Because the parse tree nodes derive from (typically) multiple policies so that their methods
+ * become available to the public interface of the nodes, policies themselves do not have a base
+ * class (the old diamond inheritance problems).  So in order to 'mark' a type as a policy so it can
+ * be detected as such by arg_router, policy::is_policy needs specialising.
  */
 }

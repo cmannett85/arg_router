@@ -7,17 +7,16 @@
 
 namespace arg_router
 {
-/** The dependency namespace carries nodes and policies that define dependency
- * relationships between other nodes.
+/** The dependency namespace carries nodes and policies that define dependency relationships between
+ * other nodes.
  */
 namespace dependency
 {
 /** Groups child nodes such that any @em one can be used on the command line.
  *
- * The value_type is a variant of all the policies' value_types that are not
- * derived from policy::no_result_value.  If that list is only a single type,
- * then it collapses into just that type (i.e. it won't be a variant containing
- * a single type).
+ * The value_type is a variant of all the policies' value_types that are not derived from
+ * policy::no_result_value.  If that list is only a single type, then it collapses into just that
+ * type (i.e. it won't be a variant containing a single type).
  * @tparam Params Policies and child node types for the mode
  */
 template <typename... Params>
@@ -30,26 +29,22 @@ class one_of_t : public detail::basic_one_of_t<S_("One of: "), Params...>
                   "one_of children must not use a multi_stage_value policy");
 
     using variant_type =
-        boost::mp11::mp_rename<typename parent_type::basic_value_type,
-                               std::variant>;
+        boost::mp11::mp_rename<typename parent_type::basic_value_type, std::variant>;
 
-    static_assert(!parent_type::template any_phases_v<
-                      variant_type,
-                      policy::has_validation_phase_method>,
-                  "one_of does not support policies with validation phases; as "
-                  "it delegates those to its children");
+    static_assert(
+        !parent_type::template any_phases_v<variant_type, policy::has_validation_phase_method>,
+        "one_of does not support policies with validation phases; as "
+        "it delegates those to its children");
 
 public:
     using typename parent_type::children_type;
     using typename parent_type::policies_type;
 
-    /** A variant of the child value_types, or just the value_type if there is
-     * only a single child.
+    /** A variant of the child value_types, or just the value_type if there is only a single child.
      */
-    using value_type =
-        std::conditional_t<(std::variant_size_v<variant_type> == 1),
-                           std::variant_alternative_t<0, variant_type>,
-                           variant_type>;
+    using value_type = std::conditional_t<(std::variant_size_v<variant_type> == 1),
+                                          std::variant_alternative_t<0, variant_type>,
+                                          variant_type>;
 
     /** Help data type. */
     template <bool Flatten>
@@ -66,13 +61,9 @@ public:
      *
      * @param params Policy and child instances
      */
-    constexpr explicit one_of_t(Params... params) noexcept :
-        parent_type{std::move(params)...}
-    {
-    }
+    constexpr explicit one_of_t(Params... params) noexcept : parent_type{std::move(params)...} {}
 
-    /** Propagates the pre-parse phase to the child, returns on a positive
-     * return from one of them
+    /** Propagates the pre-parse phase to the child, returns on a positive return from one of them.
      *
      * @tparam Validator Validator type
      * @tparam HasTarget True if @a pre_parse_data contains the parent's

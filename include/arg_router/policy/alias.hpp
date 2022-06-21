@@ -13,11 +13,9 @@ namespace arg_router
 {
 namespace policy
 {
-/** Allows the 'aliasing' of arguments, i.e. a single argument will set multiple
- * others.
+/** Allows the 'aliasing' of arguments, i.e. a single argument will set multiple others.
  *
- * @note An aliased argument cannot be routed, it's aliased arguments are set
- * instead
+ * @note An aliased argument cannot be routed, it's aliased arguments are set instead
  * @tparam AliasedPolicies Pack of policies to alias
  */
 template <typename... AliasedPolicies>
@@ -34,29 +32,26 @@ public:
      *
      * @param policies Policy instances
      */
-    constexpr explicit alias_t(
-        [[maybe_unused]] const AliasedPolicies&... policies)
-    {
-    }
+    constexpr explicit alias_t([[maybe_unused]] const AliasedPolicies&... policies) {}
 
     /** Duplicates any value tokens as aliases of other nodes.
      * 
-     * The token duplication mechanism has two approaches, depending on the
-     * owning node's fixed count:
-     *  - If the count is zero then it is flag-like so the aliased names are
-     *    just appended to the processed part of @a tokens
-     *  - If the count is greater than zero then it is argument-like and the
-     *    aliased names are appended to the processed part of @a tokens,
-     *    each followed by @em count tokens (i.e. the values)
+     * The token duplication mechanism has two approaches, depending on the owning node's fixed
+     * count:
+     *  - If the count is zero then it is flag-like so the aliased names are just appended to the
+     *    processed part of @a tokens
+     *  - If the count is greater than zero then it is argument-like and the aliased names are
+     *    appended to the processed part of @a tokens, each followed by @em count tokens (i.e. the
+     *    values)
      *  
-     * In either circumstance the original tokens are removed as they are for
-     * the alias, rather than the @em aliased.
+     * In either circumstance the original tokens are removed as they are for the alias, rather than
+     * the @em aliased.
      *
      * @tparam ProcessedTarget @a processed_target payload type
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
      * @param tokens Currently processed tokens
-     * @param processed_target Previously processed parse_target of parent
-     * node, or empty is there is no non-root parent
+     * @param processed_target Previously processed parse_target of parent node, or empty is there
+     * is no non-root parent
      * @param target Pre-parse generated target
      * @param parents Parent node instances
      * @return Either true if successful, or a parse_exception if there too
@@ -65,20 +60,17 @@ public:
     template <typename ProcessedTarget, typename... Parents>
     [[nodiscard]] parsing::pre_parse_result pre_parse_phase(
         parsing::dynamic_token_adapter& tokens,
-        [[maybe_unused]] utility::compile_time_optional<ProcessedTarget>
-            processed_target,
+        [[maybe_unused]] utility::compile_time_optional<ProcessedTarget> processed_target,
         parsing::parse_target& target,
         const Parents&... parents) const
     {
         using node_type = boost::mp11::mp_first<std::tuple<Parents...>>;
-        static_assert(
-            !node_type::template any_phases_v<
-                typename node_type::value_type,
-                policy::has_parse_phase_method,
-                policy::has_validation_phase_method,
-                policy::has_routing_phase_method>,
-            "Alias owning node cannot have policies that support parse, "
-            "validation, or routing phases");
+        static_assert(!node_type::template any_phases_v<typename node_type::value_type,
+                                                        policy::has_parse_phase_method,
+                                                        policy::has_validation_phase_method,
+                                                        policy::has_routing_phase_method>,
+                      "Alias owning node cannot have policies that support parse, "
+                      "validation, or routing phases");
 
         // Find the owning mode
         using mode_data = policy::nearest_mode_like<std::tuple<Parents...>>;
@@ -88,8 +80,7 @@ public:
         // Perform all the compile-time checking
         constexpr auto count = node_fixed_count<node_type>();
         {
-            using targets =
-                typename alias_targets<aliased_policies_type, mode_type>::type;
+            using targets = typename alias_targets<aliased_policies_type, mode_type>::type;
             static_assert(cyclic_dependency_checker<targets, mode_type>::value,
                           "Cyclic dependency detected");
 
@@ -99,21 +90,17 @@ public:
 
         // +1 because the node must be named
         if ((count + 1) > tokens.size()) {
-            return parse_exception{
-                "Too few values for alias, needs " + std::to_string(count),
-                parsing::node_token_type<node_type>()};
+            return parse_exception{"Too few values for alias, needs " + std::to_string(count),
+                                   parsing::node_token_type<node_type>()};
         }
 
-        // Because this node's job is to create sub-targets, and therefore
-        // isn't a 'real' node in itself, it needs to return
-        // skip_node_but_use_sub_targets so the owning tree node keeps the
-        // side-effects (i.e. the sub-targets) but doesn't check the label
-        // token.  We don't want label checking in the owning tree_node because
-        // we need to _replace_ the alias label token with the aliased tokens,
-        // so any label check against this node will fail.  However, we do need
-        // to do a label check _here_, otherwise this aliasing will occur
-        // everytime the pre-parse is called - even on tokens that do not belong
-        // to this aliased node!
+        // Because this node's job is to create sub-targets, and therefore isn't a 'real' node in
+        // itself, it needs to return skip_node_but_use_sub_targets so the owning tree node keeps
+        // the side-effects (i.e. the sub-targets) but doesn't check the label token.  We don't want
+        // label checking in the owning tree_node because we need to _replace_ the alias label
+        // token with the aliased tokens, so any label check against this node will fail.  However,
+        // we do need to do a label check _here_, otherwise this aliasing will occur everytime the
+        // pre-parse is called - even on tokens that do not belong to this aliased node!
         {
             auto alias_label = *tokens.begin();
             if (alias_label.prefix == parsing::prefix_type::none) {
@@ -125,18 +112,16 @@ public:
             }
         }
 
-        // Attempt a transfer so we can guarantee that the original tokens are
-        // in the processed container (this is a no-op if they already are)
+        // Attempt a transfer so we can guarantee that the original tokens are in the processed
+        // container (this is a no-op if they already are)
         tokens.transfer(tokens.begin() + count);
 
         // Now do the runtime target building
         const auto visitor = [&](const auto& current, const auto&... parents) {
-            using policies_type =
-                typename std::decay_t<decltype(current)>::policies_type;
+            using policies_type = typename std::decay_t<decltype(current)>::policies_type;
 
             using intersection =
-                boost::mp11::mp_set_intersection<aliased_policies_type,
-                                                 policies_type>;
+                boost::mp11::mp_set_intersection<aliased_policies_type, policies_type>;
 
             if constexpr ((std::tuple_size_v<intersection>) > 0) {
                 auto target_tokens = vector<parsing::token_type>{};
@@ -144,8 +129,7 @@ public:
 
                 auto value_it = tokens.begin();
                 for (auto j = 0u; j < count; ++j) {
-                    // Pre-increment the value iterator so we skip over the
-                    // label token
+                    // Pre-increment the value iterator so we skip over the label token
                     target_tokens.push_back(*(++value_it));
                 }
 
@@ -155,60 +139,55 @@ public:
             }
         };
         const auto& mode =
-            std::get<mode_data::index::value>(std::tuple{std::cref(parents)...})
-                .get();
+            std::get<mode_data::index::value>(std::tuple{std::cref(parents)...}).get();
         utility::tree_recursor(visitor, mode);
 
         // Now remove the original tokens as they refer to the aliased node
         tokens.processed().erase(tokens.processed().begin(),
                                  tokens.processed().begin() + count + 1);
 
-        // The owning node's name checker will fail us now (because we removed
-        // this node's label token), but we still want to keep the processed
-        // and unprocessed container changes for later processing
+        // The owning node's name checker will fail us now (because we removed this node's label
+        // token), but we still want to keep the processed and unprocessed container changes for
+        // later processing
         return parsing::pre_parse_action::skip_node_but_use_sub_targets;
     }
 
 private:
     template <typename T>
     struct policy_checker {
-        constexpr static auto value = traits::has_long_name_method_v<T> ||
-                                      traits::has_short_name_method_v<T>;
+        constexpr static auto value =
+            traits::has_long_name_method_v<T> || traits::has_short_name_method_v<T>;
     };
 
-    static_assert((sizeof...(AliasedPolicies) > 0),
-                  "At least one name needed for alias");
+    static_assert((sizeof...(AliasedPolicies) > 0), "At least one name needed for alias");
     static_assert(policy::is_all_policies_v<aliased_policies_type>,
                   "All parameters must be policies");
-    static_assert(
-        boost::mp11::mp_all_of<aliased_policies_type, policy_checker>::value,
-        "All parameters must provide a long and/or short form name");
+    static_assert(boost::mp11::mp_all_of<aliased_policies_type, policy_checker>::value,
+                  "All parameters must provide a long and/or short form name");
 
     template <typename NodeType>
     [[nodiscard]] constexpr static std::size_t node_fixed_count() noexcept
     {
-        static_assert(
-            traits::has_minimum_count_method_v<NodeType> &&
-                traits::has_maximum_count_method_v<NodeType>,
-            "Aliased nodes must have minimum and maximum count methods");
+        static_assert(traits::has_minimum_count_method_v<NodeType> &&
+                          traits::has_maximum_count_method_v<NodeType>,
+                      "Aliased nodes must have minimum and maximum count methods");
         static_assert(NodeType::minimum_count() == NodeType::maximum_count(),
                       "Aliased nodes must have a fixed count");
 
         return NodeType::minimum_count();
     }
 
-    // Starting from ModeType, recurse down through the tree and find all the
-    // nodes referred to in AliasPolicies
+    // Starting from ModeType, recurse down through the tree and find all the nodes referred to in
+    // AliasPolicies
     template <typename AliasPoliciesTuple, typename ModeType>
     struct alias_targets {
         template <typename Current, typename... Parents>
         struct visitor {
-            // If current is one of the AliasedPolicies and Parents is not
-            // empty, then use the first element of Parents (i.e. the owning
-            // node of the name policy).  If not, then set to void
+            // If current is one of the AliasedPolicies and Parents is not empty, then use the first
+            // element of Parents (i.e. the owning node of the name policy).  If not, then set to
+            // void
             using type = boost::mp11::mp_eval_if_c<
-                !(boost::mp11::mp_contains<AliasPoliciesTuple,
-                                           Current>::value &&
+                !(boost::mp11::mp_contains<AliasPoliciesTuple, Current>::value &&
                   (sizeof...(Parents) > 0)),
                 void,
                 boost::mp11::mp_at,
@@ -216,24 +195,21 @@ private:
                 traits::integral_constant<std::size_t{0}>>;
         };
 
-        using type = boost::mp11::mp_remove_if<
-            utility::tree_type_recursor_collector_t<visitor, ModeType>,
-            std::is_void>;
+        using type =
+            boost::mp11::mp_remove_if<utility::tree_type_recursor_collector_t<visitor, ModeType>,
+                                      std::is_void>;
 
-        static_assert(std::tuple_size_v<type> ==
-                          std::tuple_size_v<AliasPoliciesTuple>,
+        static_assert(std::tuple_size_v<type> == std::tuple_size_v<AliasPoliciesTuple>,
                       "Number of found modes must match alias policy count");
-        static_assert(
-            std::tuple_size_v<boost::mp11::mp_unique<type>> ==
-                std::tuple_size_v<type>,
-            "Node alias list must be unique, do you have short and long "
-            "names from the same node?");
+        static_assert(std::tuple_size_v<boost::mp11::mp_unique<type>> == std::tuple_size_v<type>,
+                      "Node alias list must be unique, do you have short and long "
+                      "names from the same node?");
     };
 
     template <typename AliasNodesTuple, typename ModeType>
     struct cyclic_dependency_checker {
-        // For each alias, find all of its alias, stop when there are no
-        // more or if you hit this policy - static_assert
+        // For each alias, find all of its alias, stop when there are no more or if you hit this
+        // policy - static_assert
         template <std::size_t I, typename Nodes>
         [[nodiscard]] constexpr static bool check() noexcept
         {
@@ -244,17 +220,15 @@ private:
                 if constexpr (algorithm::has_specialisation_v<
                                   alias_t,
                                   typename aliased_type::policies_type>) {
-                    if constexpr (boost::mp11::mp_contains<
-                                      typename aliased_type::policies_type,
-                                      alias_t>::value) {
+                    if constexpr (boost::mp11::mp_contains<typename aliased_type::policies_type,
+                                                           alias_t>::value) {
                         return false;
                     } else {
-                        using targets = typename alias_targets<
-                            typename aliased_type::aliased_policies_type,
-                            ModeType>::type;
+                        using targets =
+                            typename alias_targets<typename aliased_type::aliased_policies_type,
+                                                   ModeType>::type;
 
-                        return check<I + 1,
-                                     boost::mp11::mp_append<Nodes, targets>>();
+                        return check<I + 1, boost::mp11::mp_append<Nodes, targets>>();
                     }
                 }
 
@@ -271,9 +245,8 @@ private:
         utility::tuple_type_iterator<TargetsTuple>([](auto i) {
             using target_type = std::tuple_element_t<i, TargetsTuple>;
 
-            static_assert(
-                node_fixed_count<target_type>() == Count,
-                "All alias targets must have a count that matches the owner");
+            static_assert(node_fixed_count<target_type>() == Count,
+                          "All alias targets must have a count that matches the owner");
         });
     }
 };

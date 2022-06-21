@@ -10,8 +10,8 @@ namespace policy
 {
 /** Represents the program version string.
  *
- * Used by help nodes to produce their output, though in principle can be used
- * by anything that wants to.
+ * Used by help nodes to produce their output, though in principle can be used by anything that
+ * wants to.
  * @tparam S compile_time_string
  */
 template <typename S>
@@ -25,14 +25,10 @@ public:
      *
      * @return Program version
      */
-    [[nodiscard]] constexpr static std::string_view program_version() noexcept
-    {
-        return S::get();
-    }
+    [[nodiscard]] constexpr static std::string_view program_version() noexcept { return S::get(); }
 
 private:
-    static_assert(program_version().size() > 0,
-                  "Program version string must not be empty");
+    static_assert(program_version().size() > 0, "Program version string must not be empty");
 };
 
 /** Constant variable helper.

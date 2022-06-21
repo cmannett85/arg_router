@@ -2,9 +2,8 @@
 
 ### Copyright (C) 2022 by Camden Mannett.  All rights reserved.
 
-# This will be called from within the docker container if the compiler is
-# invoked by cmake and is set to one of our compiler scripts.  In that scenario
-# we just invoke directly
+# This will be called from within the docker container if the compiler is invoked by cmake and is
+# set to one of our compiler scripts.  In that scenario we just invoke directly
 if command -v docker &> /dev/null
 then
     SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )

@@ -172,8 +172,8 @@ public:
 
     /** Move the result of this instance, or throw the exception if one is held.
      *
-     * As this method moves the value out of the instance, it should
-     * not be called again unless you know the value is not move-constructible.
+     * As this method moves the value out of the instance, it should not be called again unless you
+     * know the value is not move-constructible.
      * @return Result
      * @exception ExceptionType Thrown if the instance holds an exception
      */
@@ -185,11 +185,10 @@ public:
         throw std::get<1>(data_);
     }
 
-    /** Returns the the result of this instance, or throw the exception if one
-     * is held.
+    /** Returns the the result of this instance, or throw the exception if one is held.
      *
-     * @return Result Either a copy of the result, or a const reference to it if
-     * the object is larger than a word and trivially constructible
+     * @return Result Either a copy of the result, or a const reference to it if the object is
+     * larger than a word and trivially constructible
      * @exception ExceptionType Thrown if the instance holds an exception
      */
     auto get() const

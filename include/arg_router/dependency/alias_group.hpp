@@ -11,27 +11,24 @@ namespace dependency
 {
 /** Groups child nodes so they all become aliases of a single output.
  *
- * policy::alias_t defines @em input aliases, it works by duplicating the input
- * tokens for the node for each of the aliased nodes.  An implication of this
- * is that all the aliased nodes need to have the same count and be able to
- * parse the same input tokens, and each aliased node has an entry (but not the
- * node the alias policy is attached to!) in the router arguments.
+ * policy::alias_t defines @em input aliases, it works by duplicating the input tokens for the node
+ * for each of the aliased nodes.  An implication of this is that all the aliased nodes need to have
+ * the same count and be able to parse the same input tokens, and each aliased node has an entry
+ * (but not the node the alias policy is attached to!) in the router arguments.
  * 
- * alias_group_t is almost the opposite of this; it defines output aliases where
- * each child of the group independently parses the tokens it matches to
- * (in the same way one_of_t does).  However unlike policy::alias_t, there is 
- * only a single entry in the router arguments for the whole group, as such
- * there is a compile-time check that all <TT>value_type</TT> types are the
- * same (or ignored if policy::no_result_value is used).  In other words, all
- * the children of the group represent the same output.
+ * alias_group_t is almost the opposite of this; it defines output aliases where each child of the
+ * group independently parses the tokens it matches to (in the same way one_of_t does).  However
+ * unlike policy::alias_t, there is only a single entry in the router arguments for the whole group,
+ * as such there is a compile-time check that all <TT>value_type</TT> types are the same (or ignored
+ * if policy::no_result_value is used).  In other words, all the children of the group represent the
+ * same output.
  * 
- * You can think of policy::alias_t as defining a one-to-many alias, whilst 
- * alias_group_t is a many-to-one.
+ * You can think of policy::alias_t as defining a one-to-many alias, whilst alias_group_t is a
+ * many-to-one.
  * @tparam Params Policies and child node types for the mode
  */
 template <typename... Params>
-class alias_group_t :
-    public detail::basic_one_of_t<S_("Alias Group: "), Params...>
+class alias_group_t : public detail::basic_one_of_t<S_("Alias Group: "), Params...>
 {
     using parent_type = detail::basic_one_of_t<S_("Alias Group: "), Params...>;
 
@@ -40,13 +37,10 @@ public:
     using typename parent_type::policies_type;
 
     /** The common output type of the all the children that support it. */
-    using value_type =
-        boost::mp11::mp_first<typename parent_type::basic_value_type>;
+    using value_type = boost::mp11::mp_first<typename parent_type::basic_value_type>;
 
     static_assert(
-        std::tuple_size_v<
-            boost::mp11::mp_unique<typename parent_type::basic_value_type>> ==
-            1,
+        std::tuple_size_v<boost::mp11::mp_unique<typename parent_type::basic_value_type>> == 1,
         "All children of alias_group must have the same value_type, or use "
         "policy::no_result_value");
 
@@ -54,19 +48,16 @@ private:
     template <typename Child>
     struct multi_stage_with_result_and_validation {
         static constexpr auto value =
-            policy::has_multi_stage_value_v<Child> &&
-            !policy::has_no_result_value_v<Child> &&
-            Child::template any_phases_v<value_type,
-                                         policy::has_validation_phase_method>;
+            policy::has_multi_stage_value_v<Child> && !policy::has_no_result_value_v<Child> &&
+            Child::template any_phases_v<value_type, policy::has_validation_phase_method>;
     };
 
 public:
-    // If any of the children are multi_stage_values, not no_result_value, and
-    // have a validation phase; then fail as the policy that implements needs to
-    // be moved into this node otherwise they won't be called
+    // If any of the children are multi_stage_values, not no_result_value, and have a validation
+    // phase; then fail as the policy that implements needs to be moved into this node otherwise
+    // they won't be called
     static_assert(
-        boost::mp11::mp_none_of<children_type,
-                                multi_stage_with_result_and_validation>::value,
+        boost::mp11::mp_none_of<children_type, multi_stage_with_result_and_validation>::value,
         "Multi-stage value supporting alias_group children (e.g. "
         "counting_flag) cannot have a validation phase as they won't be "
         "executed, move the implementing policies into the alias_group");
@@ -86,13 +77,11 @@ public:
      *
      * @param params Policy and child instances
      */
-    constexpr explicit alias_group_t(Params... params) noexcept :
-        parent_type{std::move(params)...}
+    constexpr explicit alias_group_t(Params... params) noexcept : parent_type{std::move(params)...}
     {
     }
 
-    /** Propagates the pre-parse phase to the child, returns on a positive
-     * return from one of them
+    /** Propagates the pre-parse phase to the child, returns on a positive return from one of them.
      *
      * @tparam Validator Validator type\
      * @tparam HasTarget True if @a pre_parse_data contains the parent's

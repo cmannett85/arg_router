@@ -29,16 +29,12 @@ public:
      *
      * @param value Default value
      */
-    constexpr explicit default_value(value_type value) noexcept :
-        value_{std::move(value)}
-    {
-    }
+    constexpr explicit default_value(value_type value) noexcept : value_{std::move(value)} {}
 
-    /** Called when the owning node's token (if any) is missing from the command
-     * line, this will return the default value.
+    /** Called when the owning node's token (if any) is missing from the command line, this will
+     * return the default value.
      * 
-     * @tparam ValueType Parsed value type, must be implicitly constructible
-     * from value_type
+     * @tparam ValueType Parsed value type, must be implicitly constructible from value_type
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
      * @param parents Parents instances pack
      * @return Default value
