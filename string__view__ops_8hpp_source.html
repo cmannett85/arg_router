@@ -104,17 +104,15 @@ $(function() {
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;}</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> CharT, <span class="keyword">typename</span> Traits = std::<span class="keywordtype">char</span>_traits&lt;CharT&gt;&gt;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;[[nodiscard]] constexpr std::</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    basic_string&lt;CharT, Traits, config::allocator&lt;CharT&gt;&gt;</div>
-<div class="line"><a name="l00066"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1utility_1_1string__view__ops.html#ade44e928d3c2f22a0b4315b676612d39">   66</a></span>&#160;    <a class="code" href="namespacearg__router_1_1utility_1_1string__view__ops.html#a700baffd30dc15233a2290787e322135">operator+</a>(std::basic_string_view&lt;CharT, Traits&gt; lhs,</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;              std::basic_string_view&lt;CharT, Traits&gt; rhs)</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;{</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keywordflow">return</span> std::basic_string&lt;CharT, Traits, config::allocator&lt;CharT&gt;&gt;(lhs) +</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;           rhs;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;}</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;}  <span class="comment">// namespace string_view_ops</span></div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;}  <span class="comment">// namespace utility</span></div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1utility_1_1string__view__ops.html#ade1de963e7cf079aaabd2e211c3f5834">   64</a></span>&#160;[[nodiscard]] constexpr std::basic_string&lt;CharT, Traits, config::allocator&lt;CharT&gt;&gt; <a class="code" href="namespacearg__router_1_1utility_1_1string__view__ops.html#a700baffd30dc15233a2290787e322135">operator+</a>(</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    std::basic_string_view&lt;CharT, Traits&gt; lhs,</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    std::basic_string_view&lt;CharT, Traits&gt; rhs)</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;{</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keywordflow">return</span> std::basic_string&lt;CharT, Traits, config::allocator&lt;CharT&gt;&gt;(lhs) + rhs;</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;}</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;}  <span class="comment">// namespace string_view_ops</span></div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;}  <span class="comment">// namespace utility</span></div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="anamespacearg__router_1_1utility_1_1string__view__ops_html_a700baffd30dc15233a2290787e322135"><div class="ttname"><a href="namespacearg__router_1_1utility_1_1string__view__ops.html#a700baffd30dc15233a2290787e322135">arg_router::utility::string_view_ops::operator+</a></div><div class="ttdeci">constexpr std::basic_string&lt; CharT, Traits, Allocator &gt; operator+(std::basic_string&lt; CharT, Traits, Allocator &gt; lhs, std::basic_string_view&lt; CharT, Traits &gt; rhs)</div><div class="ttdef"><b>Definition:</b> <a href="string__view__ops_8hpp_source.html#l00027">string_view_ops.hpp:27</a></div></div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00012">algorithm.hpp:12</a></div></div>

@@ -84,9 +84,8 @@ class arg_router::parsing::pre_parse_data&lt; Validator, bool &gt;</h3>
 <div class="line">...</div>
 <div class="line">auto target = parsing::parse_target{node, parents...};</div>
 <div class="line"><span class="keywordflow">if</span> constexpr (ppd.has_target) { <span class="comment">// In this example, this is false</span></div>
-<div class="line">    target = ppd.target();      <span class="comment">// Must be wrapped in if, as target() does</span></div>
-<div class="line">                                <span class="comment">// not exist is non-target constructed</span></div>
-<div class="line">                                <span class="comment">// version</span></div>
+<div class="line">    target = ppd.target();      <span class="comment">// Must be wrapped in if, as target() does not exist is</span></div>
+<div class="line">                                <span class="comment">// non-target constructed version</span></div>
 <div class="line">}</div>
 </div><!-- fragment --><dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
@@ -95,7 +94,7 @@ class arg_router::parsing::pre_parse_data&lt; Validator, bool &gt;</h3>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="pre__parse__data_8hpp_source.html#l00103">103</a> of file <a class="el" href="pre__parse__data_8hpp_source.html">pre_parse_data.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="pre__parse__data_8hpp_source.html#l00090">90</a> of file <a class="el" href="pre__parse__data_8hpp_source.html">pre_parse_data.hpp</a>.</p>
 </div><hr/>The documentation for this class was generated from the following file:<ul>
 <li>arg_router/parsing/<a class="el" href="pre__parse__data_8hpp_source.html">pre_parse_data.hpp</a></li>
 </ul>

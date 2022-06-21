@@ -82,12 +82,11 @@ $(function() {
 <div class="line">constexpr <span class="keyword">auto</span> version = <span class="stringliteral">&quot;v1.0.0&quot;</span>sv;</div>
 <div class="line">}</div>
 <div class="line"> </div>
-<div class="line"><span class="comment">/* A ridiculous description policy implementation that appends a smiley face to</span></div>
-<div class="line"><span class="comment"> * the user supplied description.</span></div>
+<div class="line"><span class="comment">/* A ridiculous description policy implementation that appends a smiley face to the user supplied</span></div>
+<div class="line"><span class="comment"> * description.</span></div>
 <div class="line"><span class="comment"> *</span></div>
-<div class="line"><span class="comment"> * Although contrived this demonstrates the static data form of policy, where as</span></div>
-<div class="line"><span class="comment"> * long as the policy provides a common method name then it can be used by the</span></div>
-<div class="line"><span class="comment"> * system.</span></div>
+<div class="line"><span class="comment"> * Although contrived this demonstrates the static data form of policy, where as long as the policy</span></div>
+<div class="line"><span class="comment"> * provides a common method name then it can be used by the system.</span></div>
 <div class="line"><span class="comment"> */</span></div>
 <div class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> S&gt;</div>
 <div class="line"><span class="keyword">class </span>smiley_description_t</div>
@@ -111,9 +110,7 @@ $(function() {
 <div class="line"><span class="keyword">struct </span>arp::is_policy&lt;smiley_description_t&lt;T&gt;&gt; : std::true_type {</div>
 <div class="line">};</div>
 <div class="line"> </div>
-<div class="line"><span class="comment">/* Implements a validation phase to check that the parsed value is even, throws</span></div>
-<div class="line"><span class="comment"> * if it isn&#39;t.</span></div>
-<div class="line"><span class="comment"> */</span></div>
+<div class="line"><span class="comment">// Implements a validation phase to check that the parsed value is even, throws if it isn&#39;t</span></div>
 <div class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> ValueType&gt;</div>
 <div class="line"><span class="keyword">class </span>is_even</div>
 <div class="line">{</div>
@@ -136,9 +133,7 @@ $(function() {
 <div class="line"><span class="keyword">struct </span>arp::is_policy&lt;is_even&lt;ValueType&gt;&gt; : std::true_type {</div>
 <div class="line">};</div>
 <div class="line"> </div>
-<div class="line"><span class="comment">/* This is really just a simplified positional_arg_t that only supports a single</span></div>
-<div class="line"><span class="comment"> * argument.</span></div>
-<div class="line"><span class="comment"> */</span></div>
+<div class="line"><span class="comment">// This is really just a simplified positional_arg_t that only supports a single argument</span></div>
 <div class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span>... Policies&gt;</div>
 <div class="line"><span class="keyword">class </span>single_positional_arg_t :</div>
 <div class="line">    <span class="keyword">public</span> ar::tree_node&lt;std::decay_t&lt;decltype(arp::fixed_count&lt;1&gt;)&gt;,</div>
@@ -167,8 +162,8 @@ $(function() {
 <div class="line">    <span class="comment">// You must expose the parsed type as a using declaration</span></div>
 <div class="line">    <span class="keyword">using</span> value_type = T;</div>
 <div class="line"> </div>
-<div class="line">    <span class="comment">/* This is a minor variation on the tree_node::default_leaf_help_data_type</span></div>
-<div class="line"><span class="comment">     * type, we&#39;re just wrapping the display name in chevrons.</span></div>
+<div class="line">    <span class="comment">/* This is a minor variation on the tree_node::default_leaf_help_data_type type, we&#39;re just</span></div>
+<div class="line"><span class="comment">     * wrapping the display name in chevrons.</span></div>
 <div class="line"><span class="comment">     */</span></div>
 <div class="line">    <span class="keyword">template</span> &lt;<span class="keywordtype">bool</span> Flatten&gt;</div>
 <div class="line">    <span class="keyword">class </span>help_data_type</div>
@@ -199,9 +194,9 @@ $(function() {
 <div class="line">    {</div>
 <div class="line">    }</div>
 <div class="line"> </div>
-<div class="line">    <span class="comment">/* Forward the request onto the parent&#39;s definition.  As there is no</span></div>
-<div class="line"><span class="comment">     * polymorphism in the library, we have to create this stub so the</span></div>
-<div class="line"><span class="comment">     * &lt;TT&gt;*this&lt;/TT&gt; expression evaluates to the correct type</span></div>
+<div class="line">    <span class="comment">/* Forward the request onto the parent&#39;s definition.  As there is no polymorphism in the</span></div>
+<div class="line"><span class="comment">     * library, we have to create this stub so the &lt;TT&gt;*this&lt;/TT&gt; expression evaluates to the</span></div>
+<div class="line"><span class="comment">     * correct type</span></div>
 <div class="line"><span class="comment">     */</span></div>
 <div class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Validator, <span class="keywordtype">bool</span> HasTarget, <span class="keyword">typename</span>... Parents&gt;</div>
 <div class="line">    [[nodiscard]] std::optional&lt;ar::parsing::parse_target&gt; pre_parse(</div>
@@ -216,9 +211,9 @@ $(function() {
 <div class="line">    value_type parse(ar::parsing::parse_target target,</div>
 <div class="line">                     <span class="keyword">const</span> Parents&amp;... parents)<span class="keyword"> const</span></div>
 <div class="line"><span class="keyword">    </span>{</div>
-<div class="line">        <span class="comment">// The fixed count of 1 guarantees there is a single token.  Pass it</span></div>
-<div class="line">        <span class="comment">// onto the parent type which will use a custom parse if one is</span></div>
-<div class="line">        <span class="comment">// available, otherwise it will use the global parser</span></div>
+<div class="line">        <span class="comment">// The fixed count of 1 guarantees there is a single token.  Pass it onto the parent type</span></div>
+<div class="line">        <span class="comment">// which will use a custom parse if one is available, otherwise it will use the global</span></div>
+<div class="line">        <span class="comment">// parser</span></div>
 <div class="line">        <span class="keyword">auto</span> result = parent_type::template parse&lt;value_type&gt;(</div>
 <div class="line">            target.tokens().front().name,</div>
 <div class="line">            *<span class="keyword">this</span>,</div>
@@ -255,8 +250,7 @@ $(function() {
 <div class="line">        std::move(policies)...};</div>
 <div class="line">}</div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// Take a copy of the default rules, as we&#39;re adding new types we just need to</span></div>
-<div class="line"><span class="comment">// add to them</span></div>
+<div class="line"><span class="comment">// Take a copy of the default rules, as we&#39;re adding new types we just need to add to them</span></div>
 <div class="line"><span class="keyword">using</span> original_rules =</div>
 <div class="line">    <span class="keyword">typename</span> decltype(arp::validation::default_validator)::rules_type;</div>
 <div class="line"> </div>
@@ -271,9 +265,9 @@ $(function() {
 <div class="line"> </div>
 <div class="line"><span class="comment">// is_even doesn&#39;t need it&#39;s own rule as the generic policy one suffices</span></div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// As single_positional_arg_t is just a slightly less generic version of</span></div>
-<div class="line"><span class="comment">// positional_arg_t, we can just add it to the despecialised_any_of_rule list</span></div>
-<div class="line"><span class="comment">// for positional_arg_t.  First we need to find it...</span></div>
+<div class="line"><span class="comment">// As single_positional_arg_t is just a slightly less generic version of positional_arg_t, we can</span></div>
+<div class="line"><span class="comment">// just add it to the despecialised_any_of_rule list for positional_arg_t.  First we need to find</span></div>
+<div class="line"><span class="comment">// it...</span></div>
 <div class="line">constexpr <span class="keyword">auto</span> pos_rule_index = boost::mp11::mp_find_if_q&lt;</div>
 <div class="line">    smiley_rules,</div>
 <div class="line">    boost::mp11::mp_bind&lt;</div>
@@ -324,8 +318,8 @@ $(function() {
 <div class="line">}</div>
 </div><!-- fragment --> </div><!-- contents -->
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00012">algorithm.hpp:12</a></div></div>
-<div class="ttc" id="acompile__time__string_8hpp_html_a741f251b243f90ef2b4d915e50d40bac"><div class="ttname"><a href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a></div><div class="ttdeci">#define S_(tok)</div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00268">compile_time_string.hpp:268</a></div></div>
-<div class="ttc" id="anamespacearg__router_1_1policy_html_adeab7d3692839fb3dcc864b5cc1730b7"><div class="ttname"><a href="namespacearg__router_1_1policy.html#adeab7d3692839fb3dcc864b5cc1730b7">arg_router::policy::description</a></div><div class="ttdeci">constexpr auto description</div><div class="ttdef"><b>Definition:</b> <a href="description_8hpp_source.html#l00040">description.hpp:40</a></div></div>
+<div class="ttc" id="acompile__time__string_8hpp_html_a741f251b243f90ef2b4d915e50d40bac"><div class="ttname"><a href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a></div><div class="ttdeci">#define S_(tok)</div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00252">compile_time_string.hpp:252</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1policy_html_adeab7d3692839fb3dcc864b5cc1730b7"><div class="ttname"><a href="namespacearg__router_1_1policy.html#adeab7d3692839fb3dcc864b5cc1730b7">arg_router::policy::description</a></div><div class="ttdeci">constexpr auto description</div><div class="ttdef"><b>Definition:</b> <a href="description_8hpp_source.html#l00037">description.hpp:37</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

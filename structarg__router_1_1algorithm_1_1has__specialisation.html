@@ -79,7 +79,7 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
-<tr class="memitem:ae8c9d4f0bca69019ca564eb0bd0e4353"><td class="memItemLeft" align="right" valign="top">constexpr static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structarg__router_1_1algorithm_1_1has__specialisation.html#ae8c9d4f0bca69019ca564eb0bd0e4353">value</a></td></tr>
+<tr class="memitem:ae8c9d4f0bca69019ca564eb0bd0e4353"><td class="memItemLeft" align="right" valign="top">constexpr static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structarg__router_1_1algorithm_1_1has__specialisation.html#ae8c9d4f0bca69019ca564eb0bd0e4353">value</a> = <a class="el" href="namespacearg__router_1_1algorithm.html#a6ec178bdd8a13b8cce0b4accb53bceab">find_specialisation_v</a>&lt;T, Tuple&gt; &lt; std::tuple_size_v&lt;Tuple&gt;</td></tr>
 <tr class="separator:ae8c9d4f0bca69019ca564eb0bd0e4353"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -87,10 +87,8 @@ Static Public Attributes</h2></td></tr>
 struct arg_router::algorithm::has_specialisation&lt; T, Tuple &gt;</h3>
 
 <p>Evaluates to true if <em>Tuple</em> contains a specialisation if <em>T</em>.</p>
-<div class="fragment"><div class="line">has_specialisation&lt;std::vector,</div>
-<div class="line">                   std::tuple&lt;int, std::deque&lt;int&gt;, <span class="keywordtype">double</span>&gt;&gt; <span class="comment">// false</span></div>
-<div class="line">has_specialisation&lt;std::vector,</div>
-<div class="line">                   std::tuple&lt;int, std::vector&lt;int&gt;, <span class="keywordtype">double</span>&gt;&gt; <span class="comment">// true</span></div>
+<div class="fragment"><div class="line">has_specialisation&lt;std::vector, std::tuple&lt;int, std::deque&lt;int&gt;, <span class="keywordtype">double</span>&gt;&gt; <span class="comment">// false</span></div>
+<div class="line">has_specialisation&lt;std::vector, std::tuple&lt;int, std::vector&lt;int&gt;, <span class="keywordtype">double</span>&gt;&gt; <span class="comment">// true</span></div>
 </div><!-- fragment --><dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">T</td><td>Specialisation to search for </td></tr>
@@ -99,7 +97,7 @@ struct arg_router::algorithm::has_specialisation&lt; T, Tuple &gt;</h3>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="algorithm_8hpp_source.html#l00170">170</a> of file <a class="el" href="algorithm_8hpp_source.html">algorithm.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="algorithm_8hpp_source.html#l00157">157</a> of file <a class="el" href="algorithm_8hpp_source.html">algorithm.hpp</a>.</p>
 </div><h2 class="groupheader">Member Data Documentation</h2>
 <a id="ae8c9d4f0bca69019ca564eb0bd0e4353"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae8c9d4f0bca69019ca564eb0bd0e4353">&#9670;&nbsp;</a></span>value</h2>
@@ -113,7 +111,7 @@ template&lt;template&lt; typename... &gt; typename T, typename Tuple &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr static bool <a class="el" href="structarg__router_1_1algorithm_1_1has__specialisation.html">arg_router::algorithm::has_specialisation</a>&lt; T, Tuple &gt;::value</td>
+          <td class="memname">constexpr static bool <a class="el" href="structarg__router_1_1algorithm_1_1has__specialisation.html">arg_router::algorithm::has_specialisation</a>&lt; T, Tuple &gt;::value = <a class="el" href="namespacearg__router_1_1algorithm.html#a6ec178bdd8a13b8cce0b4accb53bceab">find_specialisation_v</a>&lt;T, Tuple&gt; &lt; std::tuple_size_v&lt;Tuple&gt;</td>
         </tr>
       </table>
   </td>
@@ -122,11 +120,9 @@ template&lt;template&lt; typename... &gt; typename T, typename Tuple &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line">=</div>
-<div class="line">        find_specialisation_v&lt;T, Tuple&gt; &lt; std::tuple_size_v&lt;Tuple&gt;</div>
-</div><!-- fragment --><p>True if a specialisation of <em>T</em> is in <em>Policies</em>. </p>
+<p>True if a specialisation of <em>T</em> is in <em>Policies</em>. </p>
 
-<p class="definition">Definition at line <a class="el" href="algorithm_8hpp_source.html#l00172">172</a> of file <a class="el" href="algorithm_8hpp_source.html">algorithm.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="algorithm_8hpp_source.html#l00159">159</a> of file <a class="el" href="algorithm_8hpp_source.html">algorithm.hpp</a>.</p>
 
 </div>
 </div>

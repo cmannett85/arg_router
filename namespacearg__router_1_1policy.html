@@ -226,7 +226,7 @@ Variables</h2></td></tr>
 <tr class="memitem:a5eeeaadd8d711b8a761c57fbbc8c312c"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#a5eeeaadd8d711b8a761c57fbbc8c312c">short_name</a> = <a class="el" href="classarg__router_1_1policy_1_1short__name__t.html">short_name_t</a>&lt;<a class="el" href="namespacearg__router_1_1traits.html#ab335cfad0ef1eeed3ad34d06694b0244">traits::integral_constant</a>&lt;S&gt;&gt;{}</td></tr>
 <tr class="separator:a5eeeaadd8d711b8a761c57fbbc8c312c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a91d73d78aa19f0189ea82fcd0ac61b00"><td class="memTemplParams" colspan="2">template&lt;char S&gt; </td></tr>
-<tr class="memitem:a91d73d78aa19f0189ea82fcd0ac61b00"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#a91d73d78aa19f0189ea82fcd0ac61b00">value_separator</a></td></tr>
+<tr class="memitem:a91d73d78aa19f0189ea82fcd0ac61b00"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#a91d73d78aa19f0189ea82fcd0ac61b00">value_separator</a> = <a class="el" href="classarg__router_1_1policy_1_1value__separator__t.html">value_separator_t</a>&lt;<a class="el" href="namespacearg__router_1_1traits.html#ab335cfad0ef1eeed3ad34d06694b0244">traits::integral_constant</a>&lt;S&gt;&gt;{}</td></tr>
 <tr class="separator:a91d73d78aa19f0189ea82fcd0ac61b00"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -279,7 +279,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="required_8hpp_source.html#l00055">55</a> of file <a class="el" href="required_8hpp_source.html">required.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="required_8hpp_source.html#l00052">52</a> of file <a class="el" href="required_8hpp_source.html">required.hpp</a>.</p>
 
 </div>
 </div>
@@ -324,7 +324,7 @@ template&lt;typename... AliasedPolicies&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Alias instance </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="alias_8hpp_source.html#l00289">289</a> of file <a class="el" href="alias_8hpp_source.html">alias.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="alias_8hpp_source.html#l00262">262</a> of file <a class="el" href="alias_8hpp_source.html">alias.hpp</a>.</p>
 
 </div>
 </div>
@@ -368,7 +368,7 @@ template&lt;typename... DependsPolicies&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Alias instance </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="dependent_8hpp_source.html#l00199">199</a> of file <a class="el" href="dependent_8hpp_source.html">dependent.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dependent_8hpp_source.html#l00183">183</a> of file <a class="el" href="dependent_8hpp_source.html">dependent.hpp</a>.</p>
 
 </div>
 </div>
@@ -402,7 +402,7 @@ template&lt;typename S &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="description_8hpp_source.html#l00040">40</a> of file <a class="el" href="description_8hpp_source.html">description.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="description_8hpp_source.html#l00037">37</a> of file <a class="el" href="description_8hpp_source.html">description.hpp</a>.</p>
 
 </div>
 </div>
@@ -435,7 +435,7 @@ template&lt;typename S &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="display__name_8hpp_source.html#l00047">47</a> of file <a class="el" href="display__name_8hpp_source.html">display_name.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="display__name_8hpp_source.html#l00044">44</a> of file <a class="el" href="display__name_8hpp_source.html">display_name.hpp</a>.</p>
 
 </div>
 </div>
@@ -461,8 +461,7 @@ template&lt;std::size_t Value&gt; </div>
 </table>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">=</div>
-<div class="line">    min_max_count_t&lt;traits::integral_constant&lt;Value&gt;,</div>
-<div class="line">                    traits::integral_constant&lt;Value&gt;&gt;{}</div>
+<div class="line">    min_max_count_t&lt;traits::integral_constant&lt;Value&gt;, traits::integral_constant&lt;Value&gt;&gt;{}</div>
 </div><!-- fragment --><p>Constant variable helper for a count of fixed size.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
@@ -471,7 +470,7 @@ template&lt;std::size_t Value&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00186">186</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00165">165</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
 
 </div>
 </div>
@@ -496,7 +495,7 @@ template&lt;std::size_t Value&gt; </div>
 </div><div class="memdoc">
 <p>Constant variable helper. </p>
 
-<p class="definition">Definition at line <a class="el" href="flatten__help_8hpp_source.html#l00022">22</a> of file <a class="el" href="flatten__help_8hpp_source.html">flatten_help.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flatten__help_8hpp_source.html#l00021">21</a> of file <a class="el" href="flatten__help_8hpp_source.html">flatten_help.hpp</a>.</p>
 
 </div>
 </div>
@@ -529,7 +528,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="multi__stage__value_8hpp_source.html#l00087">87</a> of file <a class="el" href="multi__stage__value_8hpp_source.html">multi_stage_value.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="multi__stage__value_8hpp_source.html#l00080">80</a> of file <a class="el" href="multi__stage__value_8hpp_source.html">multi_stage_value.hpp</a>.</p>
 
 </div>
 </div>
@@ -595,7 +594,7 @@ template&lt;typename Tuple &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="policy_8hpp_source.html#l00055">55</a> of file <a class="el" href="policy_8hpp_source.html">policy.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="policy_8hpp_source.html#l00053">53</a> of file <a class="el" href="policy_8hpp_source.html">policy.hpp</a>.</p>
 
 </div>
 </div>
@@ -628,7 +627,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="policy_8hpp_source.html#l00040">40</a> of file <a class="el" href="policy_8hpp_source.html">policy.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="policy_8hpp_source.html#l00038">38</a> of file <a class="el" href="policy_8hpp_source.html">policy.hpp</a>.</p>
 
 </div>
 </div>
@@ -661,7 +660,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="required_8hpp_source.html#l00062">62</a> of file <a class="el" href="required_8hpp_source.html">required.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="required_8hpp_source.html#l00059">59</a> of file <a class="el" href="required_8hpp_source.html">required.hpp</a>.</p>
 
 </div>
 </div>
@@ -694,7 +693,7 @@ template&lt;typename S &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="long__name_8hpp_source.html#l00048">48</a> of file <a class="el" href="long__name_8hpp_source.html">long_name.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="long__name_8hpp_source.html#l00043">43</a> of file <a class="el" href="long__name_8hpp_source.html">long_name.hpp</a>.</p>
 
 </div>
 </div>
@@ -720,8 +719,7 @@ template&lt;std::size_t Value&gt; </div>
 </table>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">=</div>
-<div class="line">    min_max_count_t&lt;traits::integral_constant&lt;std::size_t{0}&gt;,</div>
-<div class="line">                    traits::integral_constant&lt;Value&gt;&gt;{}</div>
+<div class="line">    min_max_count_t&lt;traits::integral_constant&lt;std::size_t{0}&gt;, traits::integral_constant&lt;Value&gt;&gt;{}</div>
 </div><!-- fragment --><p>Constant variable helper for a maximum count with a minimum count of zero.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
@@ -730,7 +728,7 @@ template&lt;std::size_t Value&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00177">177</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00157">157</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
 
 </div>
 </div>
@@ -755,9 +753,9 @@ template&lt;std::size_t Value&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line">= min_max_count_t&lt;</div>
-<div class="line">    traits::integral_constant&lt;Value&gt;,</div>
-<div class="line">    traits::integral_constant&lt;std::numeric_limits&lt;std::size_t&gt;::max()&gt;&gt;{}</div>
+<b>Initial value:</b><div class="fragment"><div class="line">=</div>
+<div class="line">    min_max_count_t&lt;traits::integral_constant&lt;Value&gt;,</div>
+<div class="line">                    traits::integral_constant&lt;std::numeric_limits&lt;std::size_t&gt;::max()&gt;&gt;{}</div>
 </div><!-- fragment --><p>Constant variable helper for a minimum count with an unbounded maximum count.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
@@ -766,7 +764,7 @@ template&lt;std::size_t Value&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00168">168</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00148">148</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
 
 </div>
 </div>
@@ -792,8 +790,7 @@ template&lt;std::size_t MinValue, std::size_t MaxValue&gt; </div>
 </table>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">=</div>
-<div class="line">    min_max_count_t&lt;traits::integral_constant&lt;MinValue&gt;,</div>
-<div class="line">                    traits::integral_constant&lt;MaxValue&gt;&gt;{}</div>
+<div class="line">    min_max_count_t&lt;traits::integral_constant&lt;MinValue&gt;, traits::integral_constant&lt;MaxValue&gt;&gt;{}</div>
 </div><!-- fragment --><p>Constant variable helper.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
@@ -803,7 +800,7 @@ template&lt;std::size_t MinValue, std::size_t MaxValue&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00158">158</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00140">140</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
 
 </div>
 </div>
@@ -836,7 +833,7 @@ template&lt;typename S &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="none__name_8hpp_source.html#l00049">49</a> of file <a class="el" href="none__name_8hpp_source.html">none_name.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="none__name_8hpp_source.html#l00045">45</a> of file <a class="el" href="none__name_8hpp_source.html">none_name.hpp</a>.</p>
 
 </div>
 </div>
@@ -869,7 +866,7 @@ template&lt;typename S &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="program__intro_8hpp_source.html#l00044">44</a> of file <a class="el" href="program__intro_8hpp_source.html">program_intro.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="program__intro_8hpp_source.html#l00040">40</a> of file <a class="el" href="program__intro_8hpp_source.html">program_intro.hpp</a>.</p>
 
 </div>
 </div>
@@ -902,7 +899,7 @@ template&lt;typename S &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="program__name_8hpp_source.html#l00051">51</a> of file <a class="el" href="program__name_8hpp_source.html">program_name.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="program__name_8hpp_source.html#l00045">45</a> of file <a class="el" href="program__name_8hpp_source.html">program_name.hpp</a>.</p>
 
 </div>
 </div>
@@ -935,7 +932,7 @@ template&lt;typename S &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="program__version_8hpp_source.html#l00043">43</a> of file <a class="el" href="program__version_8hpp_source.html">program_version.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="program__version_8hpp_source.html#l00039">39</a> of file <a class="el" href="program__version_8hpp_source.html">program_version.hpp</a>.</p>
 
 </div>
 </div>
@@ -960,7 +957,7 @@ template&lt;typename S &gt; </div>
 </div><div class="memdoc">
 <p>Constant variable helper. </p>
 
-<p class="definition">Definition at line <a class="el" href="required_8hpp_source.html#l00048">48</a> of file <a class="el" href="required_8hpp_source.html">required.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="required_8hpp_source.html#l00045">45</a> of file <a class="el" href="required_8hpp_source.html">required.hpp</a>.</p>
 
 </div>
 </div>
@@ -985,7 +982,7 @@ template&lt;typename S &gt; </div>
 </div><div class="memdoc">
 <p>Constant variable helper. </p>
 
-<p class="definition">Definition at line <a class="el" href="short__form__expander_8hpp_source.html#l00109">109</a> of file <a class="el" href="short__form__expander_8hpp_source.html">short_form_expander.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="short__form__expander_8hpp_source.html#l00100">100</a> of file <a class="el" href="short__form__expander_8hpp_source.html">short_form_expander.hpp</a>.</p>
 
 </div>
 </div>
@@ -1018,7 +1015,7 @@ template&lt;char S&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="short__name_8hpp_source.html#l00047">47</a> of file <a class="el" href="short__name_8hpp_source.html">short_name.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="short__name_8hpp_source.html#l00046">46</a> of file <a class="el" href="short__name_8hpp_source.html">short_name.hpp</a>.</p>
 
 </div>
 </div>
@@ -1034,7 +1031,7 @@ template&lt;char S&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr auto arg_router::policy::value_separator</td>
+          <td class="memname">constexpr auto arg_router::policy::value_separator = <a class="el" href="classarg__router_1_1policy_1_1value__separator__t.html">value_separator_t</a>&lt;<a class="el" href="namespacearg__router_1_1traits.html#ab335cfad0ef1eeed3ad34d06694b0244">traits::integral_constant</a>&lt;S&gt;&gt;{}</td>
         </tr>
       </table>
   </td>
@@ -1043,9 +1040,7 @@ template&lt;char S&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line">=</div>
-<div class="line">    value_separator_t&lt;traits::integral_constant&lt;S&gt;&gt;{}</div>
-</div><!-- fragment --><p>Constant variable helper.</p>
+<p>Constant variable helper.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">S</td><td>Arg/value separator character </td></tr>
@@ -1053,7 +1048,7 @@ template&lt;char S&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="value__separator_8hpp_source.html#l00116">116</a> of file <a class="el" href="value__separator_8hpp_source.html">value_separator.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="value__separator_8hpp_source.html#l00109">109</a> of file <a class="el" href="value__separator_8hpp_source.html">value_separator.hpp</a>.</p>
 
 </div>
 </div>

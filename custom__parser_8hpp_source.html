@@ -93,35 +93,31 @@ $(function() {
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
 <div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1custom__parser.html#afa60af08741106e17b21c46799dc8add">   27</a></span>&#160;    <span class="keyword">using</span> <a class="code" href="classarg__router_1_1policy_1_1custom__parser.html#afa60af08741106e17b21c46799dc8add">parser_type</a> = std::function&lt;<a class="code" href="classarg__router_1_1policy_1_1custom__parser.html#ae38082173f9af152a7a97ffc62ffcdbd">value_type</a>(std::string_view)&gt;;</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
-<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1custom__parser.html#a7b6cab30c5c99f76ef3b49eb331d3d44">   33</a></span>&#160;    constexpr <span class="keyword">explicit</span> <a class="code" href="classarg__router_1_1policy_1_1custom__parser.html#a7b6cab30c5c99f76ef3b49eb331d3d44">custom_parser</a>(<a class="code" href="classarg__router_1_1policy_1_1custom__parser.html#afa60af08741106e17b21c46799dc8add">parser_type</a> p) noexcept :</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        parser_{std::move(p)}</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    {</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    }</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> ValueType, <span class="keyword">typename</span>... Parents&gt;</div>
-<div class="line"><a name="l00049"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1custom__parser.html#af43003cfe8f7482b7e5d6c348f49fd4c">   49</a></span>&#160;    [[nodiscard]] constexpr ValueType <a class="code" href="classarg__router_1_1policy_1_1custom__parser.html#af43003cfe8f7482b7e5d6c348f49fd4c">parse_phase</a>(</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        std::string_view token,</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        [[maybe_unused]] <span class="keyword">const</span> Parents&amp;... parents)<span class="keyword"> const</span></div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="keyword">    </span>{</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="keywordflow">return</span> parser_(token);</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    }</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <a class="code" href="classarg__router_1_1policy_1_1custom__parser.html#afa60af08741106e17b21c46799dc8add">parser_type</a> parser_;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;};</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Args&gt;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="keyword">struct </span>is_policy&lt;custom_parser&lt;Args...&gt;&gt; : std::true_type {</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;};</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;}  <span class="comment">// namespace policy</span></div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1custom__parser.html#a7b6cab30c5c99f76ef3b49eb331d3d44">   33</a></span>&#160;    constexpr <span class="keyword">explicit</span> <a class="code" href="classarg__router_1_1policy_1_1custom__parser.html#a7b6cab30c5c99f76ef3b49eb331d3d44">custom_parser</a>(<a class="code" href="classarg__router_1_1policy_1_1custom__parser.html#afa60af08741106e17b21c46799dc8add">parser_type</a> p) noexcept : parser_{std::move(p)} {}</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> ValueType, <span class="keyword">typename</span>... Parents&gt;</div>
+<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1custom__parser.html#af43003cfe8f7482b7e5d6c348f49fd4c">   45</a></span>&#160;    [[nodiscard]] constexpr ValueType <a class="code" href="classarg__router_1_1policy_1_1custom__parser.html#af43003cfe8f7482b7e5d6c348f49fd4c">parse_phase</a>(std::string_view token,</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;                                                  [[maybe_unused]] <span class="keyword">const</span> Parents&amp;... parents)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="keyword">    </span>{</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keywordflow">return</span> parser_(token);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    }</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <a class="code" href="classarg__router_1_1policy_1_1custom__parser.html#afa60af08741106e17b21c46799dc8add">parser_type</a> parser_;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;};</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Args&gt;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="keyword">struct </span>is_policy&lt;custom_parser&lt;Args...&gt;&gt; : std::true_type {</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;};</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;}  <span class="comment">// namespace policy</span></div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclassarg__router_1_1policy_1_1custom__parser_html_afa60af08741106e17b21c46799dc8add"><div class="ttname"><a href="classarg__router_1_1policy_1_1custom__parser.html#afa60af08741106e17b21c46799dc8add">arg_router::policy::custom_parser::parser_type</a></div><div class="ttdeci">std::function&lt; value_type(std::string_view)&gt; parser_type</div><div class="ttdef"><b>Definition:</b> <a href="custom__parser_8hpp_source.html#l00027">custom_parser.hpp:27</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1policy_1_1custom__parser_html_a7b6cab30c5c99f76ef3b49eb331d3d44"><div class="ttname"><a href="classarg__router_1_1policy_1_1custom__parser.html#a7b6cab30c5c99f76ef3b49eb331d3d44">arg_router::policy::custom_parser::custom_parser</a></div><div class="ttdeci">constexpr custom_parser(parser_type p) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="custom__parser_8hpp_source.html#l00033">custom_parser.hpp:33</a></div></div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00012">algorithm.hpp:12</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1policy_1_1custom__parser_html"><div class="ttname"><a href="classarg__router_1_1policy_1_1custom__parser.html">arg_router::policy::custom_parser</a></div><div class="ttdef"><b>Definition:</b> <a href="custom__parser_8hpp_source.html#l00020">custom_parser.hpp:20</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1policy_1_1custom__parser_html_ae38082173f9af152a7a97ffc62ffcdbd"><div class="ttname"><a href="classarg__router_1_1policy_1_1custom__parser.html#ae38082173f9af152a7a97ffc62ffcdbd">arg_router::policy::custom_parser::value_type</a></div><div class="ttdeci">T value_type</div><div class="ttdef"><b>Definition:</b> <a href="custom__parser_8hpp_source.html#l00024">custom_parser.hpp:24</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1policy_1_1custom__parser_html_af43003cfe8f7482b7e5d6c348f49fd4c"><div class="ttname"><a href="classarg__router_1_1policy_1_1custom__parser.html#af43003cfe8f7482b7e5d6c348f49fd4c">arg_router::policy::custom_parser::parse_phase</a></div><div class="ttdeci">constexpr ValueType parse_phase(std::string_view token, [[maybe_unused]] const Parents &amp;... parents) const</div><div class="ttdef"><b>Definition:</b> <a href="custom__parser_8hpp_source.html#l00049">custom_parser.hpp:49</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1policy_1_1custom__parser_html_af43003cfe8f7482b7e5d6c348f49fd4c"><div class="ttname"><a href="classarg__router_1_1policy_1_1custom__parser.html#af43003cfe8f7482b7e5d6c348f49fd4c">arg_router::policy::custom_parser::parse_phase</a></div><div class="ttdeci">constexpr ValueType parse_phase(std::string_view token, [[maybe_unused]] const Parents &amp;... parents) const</div><div class="ttdef"><b>Definition:</b> <a href="custom__parser_8hpp_source.html#l00045">custom_parser.hpp:45</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

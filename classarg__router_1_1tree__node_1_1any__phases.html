@@ -82,7 +82,7 @@ class arg_router::tree_node&lt; Params &gt;::any_phases&lt; ValueType, PolicyChe
 
 <p>Evaluates to true if any of the <em>PolicyCheckers</em> predicates pass.</p>
 <p>This is effectively a wrapper over <a class="el" href="structarg__router_1_1tree__node_1_1phase__finder.html">phase_finder</a> that loops over multiple policy checkers.</p>
-<p>Most nodes don't support certain phases, this predicate allows for static_assert testing for their presence. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
+<p>Most nodes don't support certain phases, this predicate allows for <code>static_assert</code> testing for their presence. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">ValueType</td><td>Some policy checkers require a value type template parameter, if a particular policy doesn't need it then it is not used </td></tr>
     <tr><td class="paramname">PolicyCheckers</td><td>Parameter pack type of policy predicates, use <code>policy::has_*_phase_method</code> </td></tr>
@@ -90,7 +90,7 @@ class arg_router::tree_node&lt; Params &gt;::any_phases&lt; ValueType, PolicyChe
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00126">126</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00109">109</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 </div><hr/>The documentation for this class was generated from the following file:<ul>
 <li>arg_router/<a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a></li>
 </ul>

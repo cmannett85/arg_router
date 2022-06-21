@@ -88,30 +88,26 @@ $(function() {
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1program__intro__t.html#a982cce44fb624d73eeb6cb56c789348a">   23</a></span>&#160;    <span class="keyword">using</span> <a class="code" href="classarg__router_1_1policy_1_1program__intro__t.html#a982cce44fb624d73eeb6cb56c789348a">string_type</a> = S;</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
-<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1program__intro__t.html#a355a324681463a66346b2f7b2fc3b4b8">   29</a></span>&#160;    [[nodiscard]] constexpr <span class="keyword">static</span> std::string_view <a class="code" href="classarg__router_1_1policy_1_1program__intro__t.html#a355a324681463a66346b2f7b2fc3b4b8">program_intro</a>() noexcept</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    {</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <span class="keywordflow">return</span> S::get();</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    }</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    static_assert(<a class="code" href="classarg__router_1_1policy_1_1program__intro__t.html#a355a324681463a66346b2f7b2fc3b4b8">program_intro</a>().size() &gt; 1,</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                  <span class="stringliteral">&quot;Program intro must be longer than one character&quot;</span>);</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;};</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> S&gt;</div>
-<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1policy.html#ae4c0515ad6d58ea37fe121ee3f4a9861">   44</a></span>&#160;constexpr <span class="keyword">auto</span> <a class="code" href="namespacearg__router_1_1policy.html#ae4c0515ad6d58ea37fe121ee3f4a9861">program_intro</a> = <a class="code" href="classarg__router_1_1policy_1_1program__intro__t.html">program_intro_t&lt;S&gt;</a>{};</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> S&gt;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="keyword">struct </span>is_policy&lt;program_intro_t&lt;S&gt;&gt; : std::true_type {</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;};</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;}  <span class="comment">// namespace policy</span></div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1program__intro__t.html#a355a324681463a66346b2f7b2fc3b4b8">   29</a></span>&#160;    [[nodiscard]] constexpr <span class="keyword">static</span> std::string_view <a class="code" href="classarg__router_1_1policy_1_1program__intro__t.html#a355a324681463a66346b2f7b2fc3b4b8">program_intro</a>() noexcept { <span class="keywordflow">return</span> S::get(); }</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    static_assert(<a class="code" href="classarg__router_1_1policy_1_1program__intro__t.html#a355a324681463a66346b2f7b2fc3b4b8">program_intro</a>().size() &gt; 1, <span class="stringliteral">&quot;Program intro must be longer than one character&quot;</span>);</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;};</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> S&gt;</div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1policy.html#ae4c0515ad6d58ea37fe121ee3f4a9861">   40</a></span>&#160;constexpr <span class="keyword">auto</span> <a class="code" href="namespacearg__router_1_1policy.html#ae4c0515ad6d58ea37fe121ee3f4a9861">program_intro</a> = <a class="code" href="classarg__router_1_1policy_1_1program__intro__t.html">program_intro_t&lt;S&gt;</a>{};</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> S&gt;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="keyword">struct </span>is_policy&lt;program_intro_t&lt;S&gt;&gt; : std::true_type {</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;};</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;}  <span class="comment">// namespace policy</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclassarg__router_1_1policy_1_1program__intro__t_html_a982cce44fb624d73eeb6cb56c789348a"><div class="ttname"><a href="classarg__router_1_1policy_1_1program__intro__t.html#a982cce44fb624d73eeb6cb56c789348a">arg_router::policy::program_intro_t::string_type</a></div><div class="ttdeci">S string_type</div><div class="ttdef"><b>Definition:</b> <a href="program__intro_8hpp_source.html#l00023">program_intro.hpp:23</a></div></div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00012">algorithm.hpp:12</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1policy_1_1program__intro__t_html_a355a324681463a66346b2f7b2fc3b4b8"><div class="ttname"><a href="classarg__router_1_1policy_1_1program__intro__t.html#a355a324681463a66346b2f7b2fc3b4b8">arg_router::policy::program_intro_t::program_intro</a></div><div class="ttdeci">constexpr static std::string_view program_intro() noexcept</div><div class="ttdef"><b>Definition:</b> <a href="program__intro_8hpp_source.html#l00029">program_intro.hpp:29</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1policy_1_1program__intro__t_html"><div class="ttname"><a href="classarg__router_1_1policy_1_1program__intro__t.html">arg_router::policy::program_intro_t</a></div><div class="ttdef"><b>Definition:</b> <a href="program__intro_8hpp_source.html#l00019">program_intro.hpp:19</a></div></div>
-<div class="ttc" id="anamespacearg__router_1_1policy_html_ae4c0515ad6d58ea37fe121ee3f4a9861"><div class="ttname"><a href="namespacearg__router_1_1policy.html#ae4c0515ad6d58ea37fe121ee3f4a9861">arg_router::policy::program_intro</a></div><div class="ttdeci">constexpr auto program_intro</div><div class="ttdef"><b>Definition:</b> <a href="program__intro_8hpp_source.html#l00044">program_intro.hpp:44</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1policy_html_ae4c0515ad6d58ea37fe121ee3f4a9861"><div class="ttname"><a href="namespacearg__router_1_1policy.html#ae4c0515ad6d58ea37fe121ee3f4a9861">arg_router::policy::program_intro</a></div><div class="ttdeci">constexpr auto program_intro</div><div class="ttdef"><b>Definition:</b> <a href="program__intro_8hpp_source.html#l00040">program_intro.hpp:40</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">
