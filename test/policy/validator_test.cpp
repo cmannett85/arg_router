@@ -177,20 +177,43 @@ BOOST_AUTO_TEST_CASE(at_least_one_of_policies_test)
                policy::short_name_t<traits::integral_constant<'s'>>>>();
 }
 
-BOOST_AUTO_TEST_CASE(positional_args_must_be_at_end_test)
+BOOST_AUTO_TEST_CASE(node_types_must_be_at_end_test)
 {
-    policy::validation::positional_args_must_be_at_end<arg_router::positional_arg_t>::check<
+    policy::validation::node_types_must_be_at_end<arg_router::positional_arg_t>::check<
         arg_router::mode_t<
             flag_t<policy::long_name_t<S_("test1")>>,
             arg_t<int, policy::long_name_t<S_("test2")>>,
             positional_arg_t<std::vector<int>, policy::display_name_t<S_("test3")>>>>();
 
-    policy::validation::positional_args_must_be_at_end<arg_router::positional_arg_t>::check<
+    policy::validation::node_types_must_be_at_end<arg_router::positional_arg_t>::check<
         arg_router::mode_t<
             flag_t<policy::long_name_t<S_("test1")>>,
             arg_t<int, policy::long_name_t<S_("test2")>>,
             positional_arg_t<std::vector<int>, policy::display_name_t<S_("test3")>>,
             positional_arg_t<std::vector<int>, policy::display_name_t<S_("test4")>>>>();
+}
+
+BOOST_AUTO_TEST_CASE(anonymous_mode_must_be_at_end_test)
+{
+    policy::validation::anonymous_mode_must_be_at_end<arg_router::mode_t>::check<
+        root_t<flag_t<policy::long_name_t<S_("test1")>, policy::router<std::less<>>>,
+               arg_t<int, policy::long_name_t<S_("test2")>, policy::router<std::less<>>>,
+               std::decay_t<decltype(policy::validation::default_validator)>>>();
+
+    policy::validation::anonymous_mode_must_be_at_end<arg_router::mode_t>::check<
+        root_t<flag_t<policy::long_name_t<S_("test1")>, policy::router<std::less<>>>,
+               arg_t<int, policy::long_name_t<S_("test2")>, policy::router<std::less<>>>,
+               arg_router::mode_t<  //
+                   flag_t<policy::long_name_t<S_("test3")>>>,
+               std::decay_t<decltype(policy::validation::default_validator)>>>();
+
+    policy::validation::anonymous_mode_must_be_at_end<arg_router::mode_t>::check<
+        root_t<flag_t<policy::long_name_t<S_("test1")>, policy::router<std::less<>>>,
+               arg_router::mode_t<  //
+                   policy::none_name_t<S_("mode1")>,
+                   flag_t<policy::long_name_t<S_("test3")>>>,
+               arg_t<int, policy::long_name_t<S_("test2")>, policy::router<std::less<>>>,
+               std::decay_t<decltype(policy::validation::default_validator)>>>();
 }
 
 BOOST_AUTO_TEST_CASE(positional_args_must_have_fixed_count_if_not_at_end_test)
@@ -546,7 +569,7 @@ int main() {
         "T must have at least one of the policies");
 }
 
-BOOST_AUTO_TEST_CASE(positional_args_not_at_end_test)
+BOOST_AUTO_TEST_CASE(node_types_must_be_at_end_test)
 {
     test::death_test_compile(
         R"(
@@ -556,7 +579,7 @@ BOOST_AUTO_TEST_CASE(positional_args_not_at_end_test)
 using namespace arg_router;
 
 int main() {
-    policy::validation::positional_args_must_be_at_end<positional_arg_t>::check<
+    policy::validation::node_types_must_be_at_end<positional_arg_t>::check<
         arg_router::mode_t<
             flag_t<policy::long_name_t<S_("test1")>>,
             positional_arg_t<std::vector<int>,
@@ -565,8 +588,29 @@ int main() {
     return 0;
 }
     )",
-        "Positional args must all appear at the end of nodes/policy list for a "
-        "node");
+        "Node types must all appear at the end of child list for a node");
+}
+
+BOOST_AUTO_TEST_CASE(anonymous_mode_must_be_at_end_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/validator.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    policy::validation::anonymous_mode_must_be_at_end<arg_router::mode_t>::check<
+        root_t<flag_t<policy::long_name_t<S_("test1")>, policy::router<std::less<>>>,
+               arg_router::mode_t<  //
+                   flag_t<policy::long_name_t<S_("test3")>>>,
+               arg_t<int, policy::long_name_t<S_("test2")>, policy::router<std::less<>>>,
+               std::decay_t<decltype(policy::validation::default_validator)>>>();
+    return 0;
+}
+    )",
+        "Node types must all appear at the end of child list for a node");
 }
 
 BOOST_AUTO_TEST_CASE(positional_args_at_beginning_test)
@@ -579,7 +623,7 @@ BOOST_AUTO_TEST_CASE(positional_args_at_beginning_test)
 using namespace arg_router;
 
 int main() {
-    policy::validation::positional_args_must_be_at_end<positional_arg_t>::check<
+    policy::validation::node_types_must_be_at_end<positional_arg_t>::check<
         arg_router::mode_t<
             positional_arg_t<std::vector<int>,
                              policy::display_name_t<S_("test3")>>,
@@ -588,8 +632,7 @@ int main() {
     return 0;
 }
     )",
-        "Positional args must all appear at the end of nodes/policy list for a "
-        "node");
+        "Node types must all appear at the end of child list for a node");
 }
 
 BOOST_AUTO_TEST_CASE(positional_args_must_have_fixed_count_if_not_at_end_no_counts_test)
