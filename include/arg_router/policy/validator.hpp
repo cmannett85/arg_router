@@ -455,46 +455,77 @@ struct at_least_one_of_policies {
     }
 };
 
-/** A rule condition that checks that positional arg @a T is at the end of the non-positional args
- * in a node's child list.
+/** A rule condition that checks that node @a T is at the end of a node's child list (multiple nodes
+ * of type @a T are allowed at the end).
  * 
- * The above is a long-winded way of saying that positional args must be at the end of a child list
- * for a node, no policies or other node types may appear after.
- * 
- * @tparam PositionalArgTypes Pack of types that are considered positional args
+ * @tparam NodeTypes Pack of types that must appear at the end
  */
-template <template <typename...> typename... PositionalArgTypes>
-struct positional_args_must_be_at_end {
-    static_assert(sizeof...(PositionalArgTypes), "Must be at least one positional arg type");
+template <template <typename...> typename... NodeTypes>
+struct node_types_must_be_at_end {
+    static_assert(sizeof...(NodeTypes), "Must be at least one node type");
 
     template <typename T>
-    using is_positonal_arg =
-        boost::mp11::mp_any_of<std::tuple<traits::is_specialisation_of<T, PositionalArgTypes>...>,
+    using is_target_node =
+        boost::mp11::mp_any_of<std::tuple<traits::is_specialisation_of<T, NodeTypes>...>,
                                boost::mp11::mp_to_bool>;
 
     template <typename T, typename...>
     constexpr static void check() noexcept
     {
-        // Find the first index of a positional arg, then for each element type after, check that it
-        // is also a positional arg
+        // Find the first index of a target node, then for each element type after, check that it
+        // is also the same type of node
 
         // Remap the child types to a tuple of booleans, where true means that they are
-        // specialisations of one of the given positional arg types
+        // specialisations of one of the given node types
         using children_type = typename T::children_type;
-        using is_pos_arg_map = boost::mp11::mp_transform_q<
+        using is_target_node_map = boost::mp11::mp_transform_q<
             boost::mp11::mp_bind<boost::mp11::mp_to_bool,
-                                 boost::mp11::mp_bind<is_positonal_arg, boost::mp11::_1>>,
+                                 boost::mp11::mp_bind<is_target_node, boost::mp11::_1>>,
 
             children_type>;
 
-        constexpr auto first_pos_arg =
-            boost::mp11::mp_find<is_pos_arg_map, boost::mp11::mp_true>::value;
-        if constexpr (first_pos_arg != std::tuple_size_v<is_pos_arg_map>) {
-            using drop_before_first_pos_arg = boost::mp11::mp_drop_c<is_pos_arg_map, first_pos_arg>;
-            static_assert(
-                boost::mp11::mp_all_of<drop_before_first_pos_arg, boost::mp11::mp_to_bool>::value,
-                "Positional args must all appear at the end of "
-                "nodes/policy list for a node");
+        constexpr auto first_node_index =
+            boost::mp11::mp_find<is_target_node_map, boost::mp11::mp_true>::value;
+        if constexpr (first_node_index != std::tuple_size_v<is_target_node_map>) {
+            using drop_before_first = boost::mp11::mp_drop_c<is_target_node_map, first_node_index>;
+            static_assert(boost::mp11::mp_all_of<drop_before_first, boost::mp11::mp_to_bool>::value,
+                          "Node types must all appear at the end of child list for a node");
+        }
+    }
+};
+
+/** A rule condition that checks if there are more than one child of @a T that is a mode, only one
+ * can be anonymous.
+ * 
+ * @tparam ModeTypes Pack of types that are considered modes
+ */
+template <template <typename...> typename... ModeTypes>
+struct anonymous_mode_must_be_at_end {
+    static_assert(sizeof...(ModeTypes), "Must be at least one mode type");
+
+    template <typename T>
+    using is_mode =
+        boost::mp11::mp_any_of<std::tuple<traits::is_specialisation_of<T, ModeTypes>...>,
+                               boost::mp11::mp_to_bool>;
+
+    template <typename T>
+    struct is_anonymous_mode {
+        constexpr static auto value = []() {
+            if constexpr (is_mode<T>::value) {
+                return T::is_anonymous;
+            }
+            return false;
+        }();
+    };
+
+    template <typename T, typename...>
+    constexpr static void check() noexcept
+    {
+        constexpr auto has_anonymous_mode_child =
+            boost::mp11::mp_any_of<typename T::children_type, is_anonymous_mode>::value;
+
+        if constexpr (has_anonymous_mode_child) {
+            node_types_must_be_at_end<ModeTypes...>::template check<T>();
         }
     }
 };
@@ -539,8 +570,7 @@ struct positional_args_must_have_fixed_count_if_not_at_end {
             using needs_fixed_count = boost::mp11::mp_take_c<pos_args, num_pos_args - 1>;
             using has_fixed_count = boost::mp11::mp_all_of<needs_fixed_count, fixed_count_checker>;
             static_assert(has_fixed_count::value,
-                          "Positional args not at the end of the list must "
-                          "have a fixed count");
+                          "Positional args not at the end of the list must have a fixed count");
         }
     }
 };
@@ -642,7 +672,7 @@ inline constexpr auto default_validator = validator<
     rule_q<common_rules::despecialised_any_of_rule<mode_t>,
            must_not_have_policies<policy::multi_stage_value,  //
                                   policy::required_t>,
-           positional_args_must_be_at_end<positional_arg_t>,
+           node_types_must_be_at_end<positional_arg_t>,
            positional_args_must_have_fixed_count_if_not_at_end<positional_arg_t>,
            parent_types<parent_index_pair_type<0, root_t>, parent_index_pair_type<0, mode_t>>>,
     // Help
@@ -658,7 +688,8 @@ inline constexpr auto default_validator = validator<
            must_not_have_policies<policy::multi_stage_value, policy::no_result_value>,
            child_must_not_have_policy<policy::required_t>,
            child_must_not_have_policy<policy::alias_t>,
-           single_anonymous_mode<arg_router::mode_t>>>{};
+           single_anonymous_mode<arg_router::mode_t>,
+           anonymous_mode_must_be_at_end<arg_router::mode_t>>>{};
 }  // namespace validation
 }  // namespace policy
 }  // namespace arg_router
