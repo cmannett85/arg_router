@@ -540,7 +540,7 @@ struct positional_args_must_have_fixed_count_if_not_at_end {
     static_assert(sizeof...(PositionalArgTypes), "Must be at least one positional arg type");
 
     template <typename T>
-    using is_positonal_arg =
+    using is_positional_arg =
         boost::mp11::mp_any_of<std::tuple<traits::is_specialisation_of<T, PositionalArgTypes>...>,
                                boost::mp11::mp_to_bool>;
 
@@ -563,7 +563,7 @@ struct positional_args_must_have_fixed_count_if_not_at_end {
     constexpr static void check() noexcept
     {
         using children_type = typename T::children_type;
-        using pos_args = boost::mp11::mp_filter<is_positonal_arg, children_type>;
+        using pos_args = boost::mp11::mp_filter<is_positional_arg, children_type>;
 
         constexpr auto num_pos_args = std::tuple_size_v<pos_args>;
         if constexpr (num_pos_args > 0) {
@@ -571,6 +571,25 @@ struct positional_args_must_have_fixed_count_if_not_at_end {
             using has_fixed_count = boost::mp11::mp_all_of<needs_fixed_count, fixed_count_checker>;
             static_assert(has_fixed_count::value,
                           "Positional args not at the end of the list must have a fixed count");
+        }
+    }
+};
+
+/** A rule condition that checks if node @a T is required and supports a minimum count, then it has
+ * a minimum count of at least 1.
+ * 
+ * This is specifically to improve help output generation.  For multiple arg nodes (e.g.
+ * positional_arg_t) being required raises the effective minimum count to 1, but won't change the
+ * help output to reflect it as that is set by the minimum count value.
+ */
+struct must_have_at_least_min_count_of_1_if_required {
+    template <typename T, typename...>
+    constexpr static void check() noexcept
+    {
+        if constexpr (policy::is_required_v<T> && traits::has_minimum_count_method_v<T>) {
+            static_assert(
+                T::minimum_count() >= 1,
+                "T must have a minimum count of at least 1 if required (it improves help output)");
         }
     }
 };
@@ -653,7 +672,8 @@ inline constexpr auto default_validator = validator<
            must_not_have_policies<policy::alias_t,
                                   policy::multi_stage_value,
                                   policy::no_result_value,
-                                  policy::validation::validator>>,
+                                  policy::validation::validator>,
+           must_have_at_least_min_count_of_1_if_required>,
     // one_of
     rule_q<common_rules::despecialised_any_of_rule<dependency::one_of_t>,
            must_not_have_policies<policy::no_result_value,
