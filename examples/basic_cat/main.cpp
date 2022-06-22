@@ -165,55 +165,46 @@ int main(int argc, char* argv[])
                      arp::description<S_("Display $ at end of each line")>,
                      arp::short_name<'E'>),
             ar::flag(arp::long_name<S_("show-nonprinting")>,
-                     arp::description<S_(
-                         "Use ^ and M- notation, except for LFD and TAB")>,
+                     arp::description<S_("Use ^ and M- notation, except for LFD and TAB")>,
                      arp::short_name<'n'>),
             ar::arg<int>(arp::long_name<S_("max-lines")>,
                          arp::description<S_("Maximum lines to output")>,
                          arp::value_separator<'='>,
                          arp::default_value{-1}),
-            ar::arg<std::optional<std::size_t>>(
-                arp::long_name<S_("max-line-length")>,
-                arp::description<S_("Maximum line length")>,
-                arp::value_separator<'='>,
-                arp::default_value{std::optional<std::size_t>{}}),
-            ard::one_of(
-                arp::default_value{"..."},
-                ar::flag(
-                    arp::dependent(arp::long_name<S_("max-line-length")>),
-                    arp::long_name<S_("skip-line")>,
-                    arp::short_name<'s'>,
-                    arp::description<S_("Skips line output if max line length "
-                                        "reached")>),
-                ar::arg<std::string_view>(
-                    arp::dependent(arp::long_name<S_("max-line-length")>),
-                    arp::long_name<S_("line-suffix")>,
-                    arp::description<S_(
-                        "Shortens line length to maximum with the "
-                        "given suffix if max line length reached")>,
-                    arp::value_separator<'='>)),
-            ar::arg<theme_t>(
-                arp::long_name<S_("theme")>,
-                arp::description<S_("Set the output colour theme")>,
-                arp::value_separator<'='>,
-                arp::default_value{theme_t::none},
-                arp::custom_parser<theme_t>{[](std::string_view arg) {
-                    return theme_from_string(arg);
-                }}),
+            ar::arg<std::optional<std::size_t>>(arp::long_name<S_("max-line-length")>,
+                                                arp::description<S_("Maximum line length")>,
+                                                arp::value_separator<'='>,
+                                                arp::default_value{std::optional<std::size_t>{}}),
+            ard::one_of(arp::default_value{"..."},
+                        ar::flag(arp::dependent(arp::long_name<S_("max-line-length")>),
+                                 arp::long_name<S_("skip-line")>,
+                                 arp::short_name<'s'>,
+                                 arp::description<S_("Skips line output if max line length "
+                                                     "reached")>),
+                        ar::arg<std::string_view>(
+                            arp::dependent(arp::long_name<S_("max-line-length")>),
+                            arp::long_name<S_("line-suffix")>,
+                            arp::description<S_("Shortens line length to maximum with the "
+                                                "given suffix if max line length reached")>,
+                            arp::value_separator<'='>)),
+            ar::arg<theme_t>(arp::long_name<S_("theme")>,
+                             arp::description<S_("Set the output colour theme")>,
+                             arp::value_separator<'='>,
+                             arp::default_value{theme_t::none},
+                             arp::custom_parser<theme_t>{
+                                 [](std::string_view arg) { return theme_from_string(arg); }}),
             ard::alias_group(
                 arp::default_value{verbosity_level_t::info},
                 ar::counting_flag<verbosity_level_t>(
                     arp::short_name<'v'>,
-                    arp::description<S_(
-                        "Verbosity level, number of 'v's sets level")>),
-                ar::arg<verbosity_level_t>(
-                    arp::long_name<S_("verbose")>,
-                    arp::description<S_("Verbosity level")>,
-                    arp::value_separator<'='>),
-                arp::min_max_value{verbosity_level_t::error,
-                                   verbosity_level_t::debug}),
+                    arp::description<S_("Verbosity level, number of 'v's sets level")>),
+                ar::arg<verbosity_level_t>(arp::long_name<S_("verbose")>,
+                                           arp::description<S_("Verbosity level")>,
+                                           arp::value_separator<'='>),
+                arp::min_max_value{verbosity_level_t::error, verbosity_level_t::debug}),
             ar::positional_arg<std::vector<std::string_view>>(
                 arp::required,
+                arp::min_count<1>,
                 arp::display_name<S_("FILES")>,
                 arp::description<S_("Files to read")>),
             arp::router{

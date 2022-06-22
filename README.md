@@ -49,6 +49,7 @@ ar::root(
             arp::default_value{-1}),
         ar::positional_arg<std::vector<std::string_view>>(
             arp::required,
+            arp::min_count<1>,
             arp::display_name<S_("FILES")>,
             arp::description<S_("Files to read")>),
         arp::router{[](bool show_ends,
@@ -292,7 +293,7 @@ Following the destination path are the source paths, we need at least one so we 
 
 Only the last `positional_arg` may be of variable length.  A runtime error will only occur if there are no unbounded variable length `postional_arg`s and there are more arguments than the maximum or less than the minimum.
 
-It should be noted that setting a non-zero minimum count (`min_count`, `fixed_count`, or `min_max_count`) does _not_ imply a requirement, the minimum count check only applies when there is at least one argument for the node to process.  So as with an `arg`, you should use a `required` policy to explicitly state that at least one argument needs to be present, or a `default_value` policy - otherwise a default initialised value will be used instead.  In the `SRC` argument above just marking it as `required` is sufficient for count behaviour as we only require a minimum count of one, however explicitly stating that improves the help output.
+It should be noted that setting a non-zero minimum count (`min_count`, `fixed_count`, or `min_max_count`) does _not_ imply a requirement, the minimum count check only applies when there is at least one argument for the node to process.  So as with an `arg`, you should use a `required` policy to explicitly state that at least one argument needs to be present, or a `default_value` policy - otherwise a default initialised value will be used instead.  For `positional_arg` nodes that are marked as `required`, it is a compile-time error to have a minimum count policy value of 0.
 
 ## Modes
 As noted in [Basics](#basics), `mode`s allow you to group command line components under an initial token on the command line.  A common example of this developers will be aware of is `git`, for example in our parlance `git clean -ffxd`; `clean` would be the mode and `ffxd` would be be the flags that are available under that mode.

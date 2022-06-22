@@ -252,6 +252,32 @@ BOOST_AUTO_TEST_CASE(positional_args_must_have_fixed_count_if_not_at_end_test)
             positional_arg_t<std::vector<int>, policy::display_name_t<S_("test5")>>>>();
 }
 
+BOOST_AUTO_TEST_CASE(must_have_at_least_min_count_of_1_if_required_test)
+{
+    policy::validation::must_have_at_least_min_count_of_1_if_required::check<
+        positional_arg_t<std::vector<int>, policy::display_name_t<S_("test1")>>>();
+
+    policy::validation::must_have_at_least_min_count_of_1_if_required::check<
+        positional_arg_t<int,
+                         policy::display_name_t<S_("test1")>,
+                         policy::min_max_count_t<traits::integral_constant<std::size_t{1}>,
+                                                 traits::integral_constant<std::size_t{1}>>>>();
+
+    policy::validation::must_have_at_least_min_count_of_1_if_required::check<
+        positional_arg_t<int,
+                         policy::required_t<>,
+                         policy::display_name_t<S_("test1")>,
+                         policy::min_max_count_t<traits::integral_constant<std::size_t{1}>,
+                                                 traits::integral_constant<std::size_t{1}>>>>();
+
+    policy::validation::must_have_at_least_min_count_of_1_if_required::check<
+        positional_arg_t<std::vector<int>,
+                         policy::required_t<>,
+                         policy::display_name_t<S_("test1")>,
+                         policy::min_max_count_t<traits::integral_constant<std::size_t{2}>,
+                                                 traits::integral_constant<std::size_t{100}>>>>();
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE(death_suite)
@@ -768,6 +794,26 @@ int main() {
 }
     )",
         "Positional args not at the end of the list must have a fixed count");
+}
+
+BOOST_AUTO_TEST_CASE(must_have_at_least_min_count_of_1_if_required_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/validator.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    policy::validation::must_have_at_least_min_count_of_1_if_required::check<
+        positional_arg_t<std::vector<int>,
+        policy::required_t<>,
+        policy::display_name_t<S_("test1")>>>();
+    return 0;
+}
+    )",
+        "T must have a minimum count of at least 1 if required (it improves help output)");
 }
 
 BOOST_AUTO_TEST_SUITE_END()
