@@ -14,6 +14,7 @@ var searchData=
   ['mode_188',['mode',['../namespacearg__router.html#ad143ff2b625031722784ae817ee2ce94',1,'arg_router']]],
   ['mode_5ft_189',['mode_t',['../classarg__router_1_1mode__t.html',1,'arg_router::mode_t&lt; Params &gt;'],['../classarg__router_1_1mode__t.html#a259cbb18c97ac2a574681ccd23422194',1,'arg_router::mode_t::mode_t()']]],
   ['multi_5fstage_5fvalue_190',['multi_stage_value',['../classarg__router_1_1policy_1_1multi__stage__value.html',1,'arg_router::policy::multi_stage_value&lt; ResultType, ValueType &gt;'],['../classarg__router_1_1policy_1_1multi__stage__value.html#a0019ba50043a49c3d4b9486a6c3227ba',1,'arg_router::policy::multi_stage_value::multi_stage_value()']]],
-  ['must_5fhave_5fpolicies_191',['must_have_policies',['../structarg__router_1_1policy_1_1validation_1_1must__have__policies.html',1,'arg_router::policy::validation']]],
-  ['must_5fnot_5fhave_5fpolicies_192',['must_not_have_policies',['../structarg__router_1_1policy_1_1validation_1_1must__not__have__policies.html',1,'arg_router::policy::validation']]]
+  ['must_5fhave_5fat_5fleast_5fmin_5fcount_5fof_5f1_5fif_5frequired_191',['must_have_at_least_min_count_of_1_if_required',['../structarg__router_1_1policy_1_1validation_1_1must__have__at__least__min__count__of__1__if__required.html',1,'arg_router::policy::validation']]],
+  ['must_5fhave_5fpolicies_192',['must_have_policies',['../structarg__router_1_1policy_1_1validation_1_1must__have__policies.html',1,'arg_router::policy::validation']]],
+  ['must_5fnot_5fhave_5fpolicies_193',['must_not_have_policies',['../structarg__router_1_1policy_1_1validation_1_1must__not__have__policies.html',1,'arg_router::policy::validation']]]
 ];

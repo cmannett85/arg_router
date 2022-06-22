@@ -235,55 +235,46 @@ $(function() {
 <div class="line">                     arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Display $ at end of each line&quot;</span>)&gt;,</div>
 <div class="line">                     arp::short_name&lt;&#39;E&#39;&gt;),</div>
 <div class="line">            ar::flag(arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;show-nonprinting&quot;</span>)&gt;,</div>
-<div class="line">                     arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(</div>
-<div class="line">                         <span class="stringliteral">&quot;Use ^ and M- notation, except for LFD and TAB&quot;</span>)&gt;,</div>
+<div class="line">                     arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Use ^ and M- notation, except for LFD and TAB&quot;</span>)&gt;,</div>
 <div class="line">                     arp::short_name&lt;&#39;n&#39;&gt;),</div>
 <div class="line">            ar::arg&lt;int&gt;(arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;max-lines&quot;</span>)&gt;,</div>
 <div class="line">                         arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Maximum lines to output&quot;</span>)&gt;,</div>
 <div class="line">                         arp::value_separator&lt;&#39;=&#39;&gt;,</div>
 <div class="line">                         arp::default_value{-1}),</div>
-<div class="line">            ar::arg&lt;std::optional&lt;std::size_t&gt;&gt;(</div>
-<div class="line">                arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;max-line-length&quot;</span>)&gt;,</div>
-<div class="line">                arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Maximum line length&quot;</span>)&gt;,</div>
-<div class="line">                arp::value_separator&lt;&#39;=&#39;&gt;,</div>
-<div class="line">                arp::default_value{std::optional&lt;std::size_t&gt;{}}),</div>
-<div class="line">            ard::one_of(</div>
-<div class="line">                arp::default_value{<span class="stringliteral">&quot;...&quot;</span>},</div>
-<div class="line">                ar::flag(</div>
-<div class="line">                    arp::dependent(arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;max-line-length&quot;</span>)&gt;),</div>
-<div class="line">                    arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;skip-line&quot;</span>)&gt;,</div>
-<div class="line">                    arp::short_name&lt;&#39;s&#39;&gt;,</div>
-<div class="line">                    arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Skips line output if max line length &quot;</span></div>
-<div class="line">                                        <span class="stringliteral">&quot;reached&quot;</span>)&gt;),</div>
-<div class="line">                ar::arg&lt;std::string_view&gt;(</div>
-<div class="line">                    arp::dependent(arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;max-line-length&quot;</span>)&gt;),</div>
-<div class="line">                    arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;line-suffix&quot;</span>)&gt;,</div>
-<div class="line">                    arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(</div>
-<div class="line">                        <span class="stringliteral">&quot;Shortens line length to maximum with the &quot;</span></div>
-<div class="line">                        <span class="stringliteral">&quot;given suffix if max line length reached&quot;</span>)&gt;,</div>
-<div class="line">                    arp::value_separator&lt;&#39;=&#39;&gt;)),</div>
-<div class="line">            ar::arg&lt;theme_t&gt;(</div>
-<div class="line">                arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;theme&quot;</span>)&gt;,</div>
-<div class="line">                arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Set the output colour theme&quot;</span>)&gt;,</div>
-<div class="line">                arp::value_separator&lt;&#39;=&#39;&gt;,</div>
-<div class="line">                arp::default_value{theme_t::none},</div>
-<div class="line">                arp::custom_parser&lt;theme_t&gt;{[](std::string_view <a class="code" href="namespacearg__router.html#a29537daeb3ba7d1b8749d3e1e9d83f1b">arg</a>) {</div>
-<div class="line">                    <span class="keywordflow">return</span> theme_from_string(arg);</div>
-<div class="line">                }}),</div>
+<div class="line">            ar::arg&lt;std::optional&lt;std::size_t&gt;&gt;(arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;max-line-length&quot;</span>)&gt;,</div>
+<div class="line">                                                arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Maximum line length&quot;</span>)&gt;,</div>
+<div class="line">                                                arp::value_separator&lt;&#39;=&#39;&gt;,</div>
+<div class="line">                                                arp::default_value{std::optional&lt;std::size_t&gt;{}}),</div>
+<div class="line">            ard::one_of(arp::default_value{<span class="stringliteral">&quot;...&quot;</span>},</div>
+<div class="line">                        ar::flag(arp::dependent(arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;max-line-length&quot;</span>)&gt;),</div>
+<div class="line">                                 arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;skip-line&quot;</span>)&gt;,</div>
+<div class="line">                                 arp::short_name&lt;&#39;s&#39;&gt;,</div>
+<div class="line">                                 arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Skips line output if max line length &quot;</span></div>
+<div class="line">                                                     <span class="stringliteral">&quot;reached&quot;</span>)&gt;),</div>
+<div class="line">                        ar::arg&lt;std::string_view&gt;(</div>
+<div class="line">                            arp::dependent(arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;max-line-length&quot;</span>)&gt;),</div>
+<div class="line">                            arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;line-suffix&quot;</span>)&gt;,</div>
+<div class="line">                            arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Shortens line length to maximum with the &quot;</span></div>
+<div class="line">                                                <span class="stringliteral">&quot;given suffix if max line length reached&quot;</span>)&gt;,</div>
+<div class="line">                            arp::value_separator&lt;&#39;=&#39;&gt;)),</div>
+<div class="line">            ar::arg&lt;theme_t&gt;(arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;theme&quot;</span>)&gt;,</div>
+<div class="line">                             arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Set the output colour theme&quot;</span>)&gt;,</div>
+<div class="line">                             arp::value_separator&lt;&#39;=&#39;&gt;,</div>
+<div class="line">                             arp::default_value{theme_t::none},</div>
+<div class="line">                             arp::custom_parser&lt;theme_t&gt;{</div>
+<div class="line">                                 [](std::string_view <a class="code" href="namespacearg__router.html#a29537daeb3ba7d1b8749d3e1e9d83f1b">arg</a>) { <span class="keywordflow">return</span> theme_from_string(arg); }}),</div>
 <div class="line">            ard::alias_group(</div>
 <div class="line">                arp::default_value{verbosity_level_t::info},</div>
 <div class="line">                ar::counting_flag&lt;verbosity_level_t&gt;(</div>
 <div class="line">                    arp::short_name&lt;&#39;v&#39;&gt;,</div>
-<div class="line">                    arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(</div>
-<div class="line">                        <span class="stringliteral">&quot;Verbosity level, number of &#39;v&#39;s sets level&quot;</span>)&gt;),</div>
-<div class="line">                ar::arg&lt;verbosity_level_t&gt;(</div>
-<div class="line">                    arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;verbose&quot;</span>)&gt;,</div>
-<div class="line">                    arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Verbosity level&quot;</span>)&gt;,</div>
-<div class="line">                    arp::value_separator&lt;&#39;=&#39;&gt;),</div>
-<div class="line">                arp::min_max_value{verbosity_level_t::error,</div>
-<div class="line">                                   verbosity_level_t::debug}),</div>
+<div class="line">                    arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Verbosity level, number of &#39;v&#39;s sets level&quot;</span>)&gt;),</div>
+<div class="line">                ar::arg&lt;verbosity_level_t&gt;(arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;verbose&quot;</span>)&gt;,</div>
+<div class="line">                                           arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Verbosity level&quot;</span>)&gt;,</div>
+<div class="line">                                           arp::value_separator&lt;&#39;=&#39;&gt;),</div>
+<div class="line">                arp::min_max_value{verbosity_level_t::error, verbosity_level_t::debug}),</div>
 <div class="line">            ar::positional_arg&lt;std::vector&lt;std::string_view&gt;&gt;(</div>
 <div class="line">                arp::required,</div>
+<div class="line">                arp::min_count&lt;1&gt;,</div>
 <div class="line">                arp::display_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;FILES&quot;</span>)&gt;,</div>
 <div class="line">                arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Files to read&quot;</span>)&gt;),</div>
 <div class="line">            arp::router{</div>
