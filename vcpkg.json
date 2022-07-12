@@ -4,6 +4,7 @@
   "dependencies": [
     "boost-lexical-cast",
     "boost-mp11",
+    "boost-preprocessor",
     "boost-process",
     "boost-test",
     "span-lite"

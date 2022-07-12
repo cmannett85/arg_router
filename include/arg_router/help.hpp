@@ -9,6 +9,8 @@
 #include "arg_router/policy/program_name.hpp"
 #include "arg_router/policy/program_version.hpp"
 #include "arg_router/tree_node.hpp"
+#include "arg_router/utility/terminal.hpp"
+#include "arg_router/utility/utf8.hpp"
 
 #include <iostream>
 #include <sstream>
@@ -105,8 +107,18 @@ public:
         // Calculate description offset
         constexpr auto desc_column = description_column_start<0, help_data_type>(0);
 
+        // Get the current number of console columns, so we can wrap the description nicely.  If
+        // the call fails (it returns zero), or the description field start column plus a fixed
+        // offset exceeds the column count, then don't attempt to wrap
+        const auto columns = utility::terminal::columns();
+        constexpr auto desc_column_offset = std::size_t{8};  // Completely arbitrary
+
         // Generate the args output
-        generate_help<desc_column, 0, help_data_type>(stream);
+        generate_help<desc_column, 0, help_data_type>(
+            stream,
+            columns >= (desc_column + desc_column_offset) ?
+                columns :
+                std::numeric_limits<std::size_t>::max());
     }
 
     /** Constructor.
@@ -225,8 +237,9 @@ private:
     [[nodiscard]] constexpr static std::size_t description_column_start(
         std::size_t current_max) noexcept
     {
-        constexpr auto this_row_start =
-            (Depth * indent_spaces) + HelpData::label::u8_num_code_points() + indent_spaces;
+        constexpr auto this_row_start = (Depth * indent_spaces) +
+                                        utility::utf8::terminal_width(HelpData::label::get()) +
+                                        indent_spaces;
         current_max = std::max(current_max, this_row_start);
 
         utility::tuple_type_iterator<typename HelpData::children>([&](auto i) {
@@ -239,16 +252,30 @@ private:
     }
 
     template <std::size_t DescStart, std::size_t Depth, typename HelpData>
-    static void generate_help(std::ostream& stream)
+    static void generate_help(std::ostream& stream, std::size_t columns)
     {
         if constexpr (!HelpData::label::empty()) {
             constexpr auto indent = indent_size<Depth>();
             stream << utility::create_sequence_cts_t<indent, ' '>::get() << HelpData::label::get();
 
             if constexpr (!HelpData::description::empty()) {
-                constexpr auto gap = DescStart - indent - HelpData::label::u8_num_code_points();
-                stream << utility::create_sequence_cts_t<gap, ' '>::get()
-                       << HelpData::description::get();
+                constexpr auto gap =
+                    DescStart - indent - utility::utf8::terminal_width(HelpData::label::get());
+
+                // Spacing between the end of the args label and start of description
+                stream << utility::create_sequence_cts_t<gap, ' '>::get();
+
+                // Print the description, breaking if a word will exceed the terminal width
+                for (auto it = utility::utf8::line_iterator{HelpData::description::get(),
+                                                            columns - DescStart};
+                     it != utility::utf8::line_iterator{};) {
+                    stream << *it;
+
+                    // If there's more data to follow, then add the offset
+                    if (++it != utility::utf8::line_iterator{}) {
+                        stream << '\n' << utility::create_sequence_cts_t<DescStart, ' '>::get();
+                    }
+                }
             }
 
             stream << "\n";
@@ -257,7 +284,7 @@ private:
         utility::tuple_type_iterator<typename HelpData::children>([&](auto i) {
             using child_type = std::tuple_element_t<i, typename HelpData::children>;
 
-            generate_help<DescStart, Depth + 1, child_type>(stream);
+            generate_help<DescStart, Depth + 1, child_type>(stream, columns);
         });
     }
 };

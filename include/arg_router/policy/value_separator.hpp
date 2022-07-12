@@ -2,11 +2,12 @@
 
 #pragma once
 
-#include "arg_router/algorithm.hpp"
 #include "arg_router/parsing/parse_target.hpp"
 #include "arg_router/parsing/parsing.hpp"
 #include "arg_router/policy/policy.hpp"
 #include "arg_router/utility/compile_time_optional.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+#include "arg_router/utility/utf8.hpp"
 
 namespace arg_router
 {
@@ -16,17 +17,17 @@ namespace policy
  *
  * Your terminal will separate tokens using whitespace by default, but often a different character
  * is used e.g. <TT>--arg=42</TT> - this policy specifies that character.
- * @tparam S Integral constant that can be implicitly converted to a char
+ * @tparam S UTF-8 code point
  */
 template <typename S>
 class value_separator_t
 {
-    static_assert(std::is_convertible_v<S, char>,
-                  "Value separator type must be implicitly convertible to char");
-    static_assert(!algorithm::is_whitespace(S::value),
+    static_assert(utility::utf8::num_code_points(S::get()) == 1,
+                  "Value must only be 1 UTF-8 code point");
+    static_assert(utility::utf8::code_point_size(S::get()) == S::get().size(),
+                  "Value is malformed UTF-8, S is smaller than the header requires");
+    static_assert(!utility::utf8::is_whitespace(S::get()),
                   "Value separator character must not be whitespace");
-
-    constexpr static auto value = S::value;
 
 public:
     /** String type. */
@@ -39,10 +40,7 @@ public:
      *
      * @return Separator character
      */
-    [[nodiscard]] constexpr static std::string_view value_separator() noexcept
-    {
-        return std::string_view{&value, 1};
-    }
+    [[nodiscard]] constexpr static std::string_view value_separator() noexcept { return S::get(); }
 
     /** Splits the label token from the value using the separator.
      * 
@@ -85,7 +83,7 @@ public:
             return parsing::pre_parse_action::skip_node;
         }
 
-        const auto value_arg = first_token.name.substr(separator_index + 1);
+        const auto value_arg = first_token.name.substr(separator_index + S::get().size());
         if (value_arg.empty()) {
             return parsing::pre_parse_action::skip_node;
         }
@@ -106,7 +104,14 @@ public:
  * @tparam S Arg/value separator character
  */
 template <char S>
-constexpr auto value_separator = value_separator_t<traits::integral_constant<S>>{};
+constexpr auto value_separator = value_separator_t<S_(S)>{};
+
+/** Constant variable helper that supports UTF-8 code points.
+ *
+ * @tparam S UTF-8 code point
+ */
+template <typename S>
+constexpr auto value_separator_utf8 = value_separator_t<S>{};
 
 template <typename S>
 struct is_policy<value_separator_t<S>> : std::true_type {

@@ -273,6 +273,85 @@ My foo is good for you
         });
 }
 
+BOOST_AUTO_TEST_CASE(generate_help_terminal_width_test)
+{
+    auto f = [](const auto& root, auto help_index, auto term_width, const auto& expected_result) {
+        utility::terminal::test_columns_value = term_width;
+
+        using root_type = std::decay_t<decltype(root)>;
+        using help_type = std::tuple_element_t<help_index,  //
+                                               typename root_type::children_type>;
+
+        auto stream = std::stringstream{};
+        help_type::template generate_help<root_type>(stream);
+        BOOST_CHECK_EQUAL(stream.str(), expected_result);
+    };
+
+    // Save the default value...
+    const auto default_test_columns_value = utility::terminal::test_columns_value;
+
+    test::data_set(
+        f,
+        std::tuple{
+            std::tuple{
+                mock_root{flag(policy::long_name<S_("flag1")>,
+                               policy::short_name<'a'>,
+                               policy::description<S_("Flag1 description")>),
+                          flag(policy::long_name<S_("flag2")>),
+                          flag(policy::short_name<'b'>, policy::description<S_("b description")>),
+                          arg<int>(policy::long_name<S_("arg1")>, policy::value_separator<'='>),
+                          help(policy::long_name<S_("help")>,
+                               policy::short_name<'h'>,
+                               policy::description<S_("Help output")>,
+                               policy::program_name<S_("foo")>,
+                               policy::program_version<S_("v3.14")>,
+                               policy::program_intro<S_("My foo is good for you")>)},
+                traits::integral_constant<4>{},
+                32,
+                R"(foo v3.14
+
+My foo is good for you
+
+    --flag1,-a        Flag1 
+                      descriptio
+                      n
+    --flag2
+    -b                b 
+                      descriptio
+                      n
+    --arg1=<Value>
+    --help,-h         Help 
+                      output
+)"s},
+            std::tuple{
+                mock_root{flag(policy::long_name<S_("flag1")>,
+                               policy::short_name<'a'>,
+                               policy::description<S_("aaa aaaaaaa aaa aaaaaaa aaaaaaaaaaa")>),
+                          flag(policy::long_name<S_("flag2")>),
+                          help(policy::long_name<S_("help")>,
+                               policy::short_name<'h'>,
+                               policy::description<S_("bbbbbbbbbbbbbbbbbbbbbbbb")>,
+                               policy::program_name<S_("foo")>,
+                               policy::program_version<S_("v3.14")>,
+                               policy::program_intro<S_("My foo is good for you")>)},
+                traits::integral_constant<2>{},
+                40,
+                R"(foo v3.14
+
+My foo is good for you
+
+    --flag1,-a    aaa aaaaaaa aaa 
+                  aaaaaaa aaaaaaaaaaa
+    --flag2
+    --help,-h     bbbbbbbbbbbbbbbbbbbbbb
+                  bb
+)"s},
+        });
+
+    // ... And then reinstate so we don't break later tests
+    utility::terminal::test_columns_value = default_test_columns_value;
+}
+
 BOOST_AUTO_TEST_CASE(parse_test)
 {
     auto output = ""s;

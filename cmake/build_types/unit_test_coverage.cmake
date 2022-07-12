@@ -11,6 +11,7 @@ add_dependencies(arg_router_test_coverage clangformat_test arg_router)
 
 target_compile_features(arg_router_test_coverage PUBLIC cxx_std_17)
 set_target_properties(arg_router_test_coverage PROPERTIES CXX_EXTENSIONS OFF)
+target_compile_definitions(arg_router_test_coverage PRIVATE UNIT_TEST_BUILD)
 
 configure_test_build(arg_router_test_coverage --coverage)
 

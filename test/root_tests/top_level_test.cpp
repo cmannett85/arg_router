@@ -102,12 +102,12 @@ BOOST_AUTO_TEST_CASE(unhandled_parse_test)
 BOOST_AUTO_TEST_CASE(single_flag_parse_test)
 {
     auto router_hit = false;
-    const auto r = root(flag(policy::long_name<S_("hello")>,
-                             policy::description<S_("Hello description")>,
+    const auto r = root(flag(policy::long_name<S_("こんにちは")>,
+                             policy::description<S_("こんにちは description")>,
                              policy::router{[&](bool) { router_hit = true; }}),
                         policy::validation::default_validator);
 
-    auto args = std::vector{"foo", "--hello"};
+    auto args = std::vector{"foo", "--こんにちは"};
     r.parse(args.size(), const_cast<char**>(args.data()));
     BOOST_CHECK(router_hit);
 }

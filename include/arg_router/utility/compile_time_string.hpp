@@ -54,23 +54,6 @@ public:
         return {sv_.data(), sv_.size()};
     }
 
-    /** Number of UTF-8 code points in the string.
-     *
-     * @note This is strictly a UTF-8 parser, it ignores the current locale
-     * @return Code points
-     */
-    [[nodiscard]] constexpr static std::size_t u8_num_code_points() noexcept
-    {
-        constexpr auto str = get();
-
-        auto result = std::size_t{0};
-        for (auto c : str) {
-            result += (c & 0xC0) != 0x80;
-        }
-
-        return result;
-    }
-
     /** Appends @a T to this string type.
      *
      * @tparam T String to append
@@ -211,6 +194,11 @@ template <int N>
     return i < str.size() ? str[i] : '\0';
 }
 
+[[nodiscard]] constexpr char get(char c, std::size_t i) noexcept
+{
+    return i < 1 ? c : '\0';
+}
+
 // Required so that the extra nulls S_ adds can be removed before defining the compile_time_string.
 // Otherwise any compiler warnings you hit are just walls of null template args...
 template <char... Cs>
@@ -248,5 +236,7 @@ struct builder {
  * @note The size limit is set by using the AR_MAX_CTS_SIZE define (defaults to 128).  Increasing
  * this will not increase the size of your program, but will increase build time as the preprocessor
  * and compiler have to do more work
+ * 
+ * @param tok Can be a string literal, a <TT>std::string_view</TT>, or a single char
  */
 #define S_(tok) AR_STR_N(AR_MAX_CTS_SIZE, tok)

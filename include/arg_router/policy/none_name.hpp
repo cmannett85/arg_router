@@ -4,6 +4,7 @@
 
 #include "arg_router/algorithm.hpp"
 #include "arg_router/policy/policy.hpp"
+#include "arg_router/utility/utf8.hpp"
 
 namespace arg_router
 {
@@ -30,10 +31,9 @@ public:
     [[nodiscard]] constexpr static std::string_view none_name() noexcept { return S::get(); }
 
 private:
-    static_assert(none_name().size() > 1, "None names must be longer than one character");
-    static_assert(algorithm::is_alnum(none_name()[0]),
-                  "None name must not start with a non-alphanumeric character");
-    static_assert(!algorithm::contains_whitespace(none_name()),
+    static_assert(utility::utf8::num_code_points(none_name()) > 1,
+                  "None names must be longer than one character");
+    static_assert(!utility::utf8::contains_whitespace(none_name()),
                   "None names cannot contain whitespace");
 };
 

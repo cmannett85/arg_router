@@ -7,6 +7,7 @@
 #include "arg_router/policy/policy.hpp"
 #include "arg_router/traits.hpp"
 #include "arg_router/utility/compile_time_optional.hpp"
+#include "arg_router/utility/utf8.hpp"
 
 namespace arg_router
 {
@@ -54,8 +55,8 @@ public:
         static_assert(traits::has_short_name_method_v<owner_type>,
                       "Short-form expansion support requires a short name policy");
 
-        static_assert(owner_type::short_name().size() == 1,
-                      "Short name must be a single character");
+        static_assert(utility::utf8::num_code_points(owner_type::short_name()) == 1,
+                      "Short name must only be 1 UTF-8 code point");
 
         auto first = tokens.begin();
         auto first_token = *first;
@@ -83,14 +84,17 @@ public:
         // independently
         tokens.unprocessed().reserve(tokens.unprocessed().size() + first_token.name.size() - 1);
         auto it = tokens.unprocessed().begin();
-        for (auto i = 1u; i < first_token.name.size(); ++i) {
-            tokens.unprocessed().insert(
-                it++,
-                {parsing::prefix_type::short_, std::string_view{&(first_token.name[i]), 1}});
+
+        // Skip past the first code point as we'll re-use the existing short form token for that
+        for (auto cp_it = ++utility::utf8::code_point_iterator{first_token.name};
+             cp_it != utility::utf8::code_point_iterator{};
+             ++cp_it) {
+            tokens.unprocessed().insert(it++, {parsing::prefix_type::short_, *cp_it});
         }
 
-        // Shrink the first to a single character
-        first.set({parsing::prefix_type::short_, first_token.name.substr(0, 1)});
+        // Shrink the first to a single code point
+        const auto first_token_size = utility::utf8::code_point_size(first_token.name);
+        first.set({parsing::prefix_type::short_, first_token.name.substr(0, first_token_size)});
 
         return parsing::pre_parse_action::valid_node;
     }

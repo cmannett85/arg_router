@@ -25,11 +25,10 @@ BOOST_AUTO_TEST_CASE(constructor_test)
 {
     const auto l = list{flag(policy::short_name<'a'>), flag(policy::short_name<'b'>)};
     static_assert(
-        std::is_same_v<std::decay_t<decltype(l.children())>,
-                       std::tuple<flag_t<policy::short_form_expander_t<>,
-                                         policy::short_name_t<traits::integral_constant<'a'>>>,
-                                  flag_t<policy::short_form_expander_t<>,
-                                         policy::short_name_t<traits::integral_constant<'b'>>>>>,
+        std::is_same_v<
+            std::decay_t<decltype(l.children())>,
+            std::tuple<flag_t<policy::short_form_expander_t<>, policy::short_name_t<S_('a')>>,
+                       flag_t<policy::short_form_expander_t<>, policy::short_name_t<S_('b')>>>>,
         "Constructor test failed");
 
     BOOST_CHECK_EQUAL(std::get<0>(l.children()).short_name(), "a");
@@ -42,15 +41,12 @@ BOOST_AUTO_TEST_CASE(list_expander_test)
                       list{flag(policy::short_name<'b'>), flag(policy::short_name<'c'>)},
                       flag(policy::short_name<'d'>));
     static_assert(
-        std::is_same_v<std::decay_t<decltype(result)>,
-                       std::tuple<flag_t<policy::short_form_expander_t<>,
-                                         policy::short_name_t<traits::integral_constant<'a'>>>,
-                                  flag_t<policy::short_form_expander_t<>,
-                                         policy::short_name_t<traits::integral_constant<'b'>>>,
-                                  flag_t<policy::short_form_expander_t<>,
-                                         policy::short_name_t<traits::integral_constant<'c'>>>,
-                                  flag_t<policy::short_form_expander_t<>,
-                                         policy::short_name_t<traits::integral_constant<'d'>>>>>,
+        std::is_same_v<
+            std::decay_t<decltype(result)>,
+            std::tuple<flag_t<policy::short_form_expander_t<>, policy::short_name_t<S_('a')>>,
+                       flag_t<policy::short_form_expander_t<>, policy::short_name_t<S_('b')>>,
+                       flag_t<policy::short_form_expander_t<>, policy::short_name_t<S_('c')>>,
+                       flag_t<policy::short_form_expander_t<>, policy::short_name_t<S_('d')>>>>,
         "list_expander test failed");
 }
 

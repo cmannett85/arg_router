@@ -14,51 +14,6 @@ namespace arg_router
 /** Namespace for generic algorithms. */
 namespace algorithm
 {
-/** Returns true if @a value is an alphanumeric character.
- *
- * A constexpr equivalent to <TT>std::isalnum</TT>.
- * @param value Character to test
- * @return True if alphanumeric
- */
-[[nodiscard]] inline constexpr bool is_alnum(char value) noexcept
-{
-    constexpr auto num_range = std::pair{'0', '9'};
-    constexpr auto uc_range = std::pair{'A', 'Z'};
-    constexpr auto lc_range = std::pair{'a', 'z'};
-
-    return (value >= num_range.first && value <= num_range.second) ||
-           (value >= uc_range.first && value <= uc_range.second) ||
-           (value >= lc_range.first && value <= lc_range.second);
-}
-
-/** Returns true if @a value is a whitespace character.
- * 
- * A constexpr equivalent to <TT>std::isspace</TT>.
- * @param value Character to test
- * @return True if whitespace
- */
-[[nodiscard]] inline constexpr bool is_whitespace(char value) noexcept
-{
-    constexpr auto whitespace = std::string_view{" \f\n\r\t\v"};
-    return whitespace.find(value) != std::string_view::npos;
-}
-
-/** Returns true if @a str contains whitespace.
- *
- * @param str String to test
- * @return True if contains whitespace
- */
-[[nodiscard]] inline constexpr bool contains_whitespace(std::string_view str) noexcept
-{
-    for (auto c : str) {
-        if (is_whitespace(c)) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
 /** Evaluates to the index of the specialisation of @a T in @a Tuple.
  *
  * If @a Tuple does not contain a specialisation of @a T then the value is of the size of @a Tuple.

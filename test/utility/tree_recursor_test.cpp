@@ -29,7 +29,7 @@ struct test_Fn {
                                              policy::long_name_t<S_("test")>,
                                              policy::router<std::function<void(bool)>>>,
                                       flag_t<policy::description_t<S_("test2")>,
-                                             policy::short_name_t<traits::integral_constant<'a'>>,
+                                             policy::short_name_t<S_('a')>,
                                              policy::router<std::function<void(bool)>>>>>>);
         } else if constexpr (std::is_same_v<Current, policy::description_t<S_("test1")>>) {
             static_assert(
@@ -43,7 +43,7 @@ struct test_Fn {
                                              policy::long_name_t<S_("test")>,
                                              policy::router<std::function<void(bool)>>>,
                                       flag_t<policy::description_t<S_("test2")>,
-                                             policy::short_name_t<traits::integral_constant<'a'>>,
+                                             policy::short_name_t<S_('a')>,
                                              policy::router<std::function<void(bool)>>>>>>);
         } else if constexpr (std::is_same_v<Current, policy::long_name_t<S_("test")>>) {
             static_assert(
@@ -57,36 +57,35 @@ struct test_Fn {
                                              policy::long_name_t<S_("test")>,
                                              policy::router<std::function<void(bool)>>>,
                                       flag_t<policy::description_t<S_("test2")>,
-                                             policy::short_name_t<traits::integral_constant<'a'>>,
+                                             policy::short_name_t<S_('a')>,
                                              policy::router<std::function<void(bool)>>>>>>);
         } else if constexpr (std::is_same_v<Current, policy::description_t<S_("test2")>>) {
             static_assert(
                 std::is_same_v<
                     parents_type,
                     std::tuple<flag_t<policy::description_t<S_("test2")>,
-                                      policy::short_name_t<traits::integral_constant<'a'>>,
+                                      policy::short_name_t<S_('a')>,
                                       policy::router<std::function<void(bool)>>>,
                                root_t<std::decay_t<decltype(policy::validation::default_validator)>,
                                       flag_t<policy::description_t<S_("test1")>,
                                              policy::long_name_t<S_("test")>,
                                              policy::router<std::function<void(bool)>>>,
                                       flag_t<policy::description_t<S_("test2")>,
-                                             policy::short_name_t<traits::integral_constant<'a'>>,
+                                             policy::short_name_t<S_('a')>,
                                              policy::router<std::function<void(bool)>>>>>>);
-        } else if constexpr (std::is_same_v<Current,
-                                            policy::short_name_t<traits::integral_constant<'a'>>>) {
+        } else if constexpr (std::is_same_v<Current, policy::short_name_t<S_('a')>>) {
             static_assert(
                 std::is_same_v<
                     parents_type,
                     std::tuple<flag_t<policy::description_t<S_("test2")>,
-                                      policy::short_name_t<traits::integral_constant<'a'>>,
+                                      policy::short_name_t<S_('a')>,
                                       policy::router<std::function<void(bool)>>>,
                                root_t<std::decay_t<decltype(policy::validation::default_validator)>,
                                       flag_t<policy::description_t<S_("test1")>,
                                              policy::long_name_t<S_("test")>,
                                              policy::router<std::function<void(bool)>>>,
                                       flag_t<policy::description_t<S_("test2")>,
-                                             policy::short_name_t<traits::integral_constant<'a'>>,
+                                             policy::short_name_t<S_('a')>,
                                              policy::router<std::function<void(bool)>>>>>>);
         } else if constexpr (std::is_same_v<Current,
                                             flag_t<policy::description_t<S_("test1")>,
@@ -100,13 +99,12 @@ struct test_Fn {
                                              policy::long_name_t<S_("test")>,
                                              policy::router<std::function<void(bool)>>>,
                                       flag_t<policy::description_t<S_("test2")>,
-                                             policy::short_name_t<traits::integral_constant<'a'>>,
+                                             policy::short_name_t<S_('a')>,
                                              policy::router<std::function<void(bool)>>>>>>);
-        } else if constexpr (std::is_same_v<
-                                 Current,
-                                 flag_t<policy::description_t<S_("test2")>,
-                                        policy::short_name_t<traits::integral_constant<'a'>>,
-                                        policy::router<std::function<void(bool)>>>>) {
+        } else if constexpr (std::is_same_v<Current,
+                                            flag_t<policy::description_t<S_("test2")>,
+                                                   policy::short_name_t<S_('a')>,
+                                                   policy::router<std::function<void(bool)>>>>) {
             static_assert(
                 std::is_same_v<
                     parents_type,
@@ -115,7 +113,7 @@ struct test_Fn {
                                              policy::long_name_t<S_("test")>,
                                              policy::router<std::function<void(bool)>>>,
                                       flag_t<policy::description_t<S_("test2")>,
-                                             policy::short_name_t<traits::integral_constant<'a'>>,
+                                             policy::short_name_t<S_('a')>,
                                              policy::router<std::function<void(bool)>>>>>>);
         } else if constexpr (std::is_same_v<
                                  Current,
@@ -125,7 +123,7 @@ struct test_Fn {
                                             policy::long_name_t<S_("test")>,
                                             policy::router<std::function<void(bool)>>>,
                                      flag_t<policy::description_t<S_("test2")>,
-                                            policy::short_name_t<traits::integral_constant<'a'>>,
+                                            policy::short_name_t<S_('a')>,
                                             policy::router<std::function<void(bool)>>>>>) {
             static_assert(std::is_same_v<parents_type, std::tuple<>>);
         }
@@ -163,7 +161,7 @@ BOOST_AUTO_TEST_CASE(tree_recursor_test)
                                policy::long_name_t<S_("test")>,
                                policy::router<std::function<void(bool)>>>,
                         flag_t<policy::description_t<S_("test2")>,
-                               policy::short_name_t<traits::integral_constant<'a'>>,
+                               policy::short_name_t<S_('a')>,
                                policy::router<std::function<void(bool)>>>>;
 
     utility::tree_type_recursor<test_Fn, Root>();
@@ -171,14 +169,14 @@ BOOST_AUTO_TEST_CASE(tree_recursor_test)
 
 BOOST_AUTO_TEST_CASE(tree_recursor_skip_test)
 {
-    using Root = root_t<std::decay_t<decltype(policy::validation::default_validator)>,
-                        flag_t<policy::description_t<S_("test1")>,
-                               policy::long_name_t<S_("test")>,
-                               policy::router<std::function<void(bool)>>>,
-                        arg_router::mode_t<  //
-                            flag_t<policy::description_t<S_("test2")>,
-                                   policy::short_name_t<traits::integral_constant<'a'>>>,
-                            policy::router<std::function<void(bool)>>>>;
+    using Root =
+        root_t<std::decay_t<decltype(policy::validation::default_validator)>,
+               flag_t<policy::description_t<S_("test1")>,
+                      policy::long_name_t<S_("test")>,
+                      policy::router<std::function<void(bool)>>>,
+               arg_router::mode_t<  //
+                   flag_t<policy::description_t<S_("test2")>, policy::short_name_t<S_('a')>>,
+                   policy::router<std::function<void(bool)>>>>;
 
     utility::tree_type_recursor<skip_test_fn, skip_Fn, Root>();
 }
@@ -245,14 +243,14 @@ BOOST_AUTO_TEST_CASE(tree_recursor_instance_test)
 
 BOOST_AUTO_TEST_CASE(tree_type_recursor_collector_test)
 {
-    using Root = root_t<std::decay_t<decltype(policy::validation::default_validator)>,
-                        flag_t<policy::description_t<S_("test1")>,
-                               policy::long_name_t<S_("test")>,
-                               policy::router<std::function<void(bool)>>>,
-                        arg_router::mode_t<  //
-                            flag_t<policy::description_t<S_("test2")>,
-                                   policy::short_name_t<traits::integral_constant<'a'>>>,
-                            policy::router<std::function<void(bool)>>>>;
+    using Root =
+        root_t<std::decay_t<decltype(policy::validation::default_validator)>,
+               flag_t<policy::description_t<S_("test1")>,
+                      policy::long_name_t<S_("test")>,
+                      policy::router<std::function<void(bool)>>>,
+               arg_router::mode_t<  //
+                   flag_t<policy::description_t<S_("test2")>, policy::short_name_t<S_('a')>>,
+                   policy::router<std::function<void(bool)>>>>;
 
     using result_type = utility::tree_type_recursor_collector_t<tree_type_visitor, Root>;
 
@@ -271,25 +269,23 @@ BOOST_AUTO_TEST_CASE(tree_type_recursor_collector_test)
                                             Root>>,
                   "Test failed");
     static_assert(
-        std::is_same_v<std::tuple_element_t<9, result_type>,
-                       std::tuple<policy::short_name_t<traits::integral_constant<'a'>>,
-                                  flag_t<policy::description_t<S_("test2")>,
-                                         policy::short_name_t<traits::integral_constant<'a'>>>,
-                                  arg_router::mode_t<
-                                      flag_t<policy::description_t<S_("test2")>,
-                                             policy::short_name_t<traits::integral_constant<'a'>>>,
-                                      policy::router<std::function<void(bool)>>>,
-                                  Root>>,
+        std::is_same_v<
+            std::tuple_element_t<9, result_type>,
+            std::tuple<policy::short_name_t<S_('a')>,
+                       flag_t<policy::description_t<S_("test2")>, policy::short_name_t<S_('a')>>,
+                       arg_router::mode_t<flag_t<policy::description_t<S_("test2")>,
+                                                 policy::short_name_t<S_('a')>>,
+                                          policy::router<std::function<void(bool)>>>,
+                       Root>>,
         "Test failed");
-    static_assert(
-        std::is_same_v<std::tuple_element_t<12, result_type>,
-                       std::tuple<policy::router<std::function<void(bool)>>,
-                                  arg_router::mode_t<  //
-                                      flag_t<policy::description_t<S_("test2")>,
-                                             policy::short_name_t<traits::integral_constant<'a'>>>,
-                                      policy::router<std::function<void(bool)>>>,
-                                  Root>>,
-        "Test failed");
+    static_assert(std::is_same_v<std::tuple_element_t<12, result_type>,
+                                 std::tuple<policy::router<std::function<void(bool)>>,
+                                            arg_router::mode_t<  //
+                                                flag_t<policy::description_t<S_("test2")>,
+                                                       policy::short_name_t<S_('a')>>,
+                                                policy::router<std::function<void(bool)>>>,
+                                            Root>>,
+                  "Test failed");
     static_assert(std::is_same_v<                             //
                       std::tuple_element_t<15, result_type>,  //
                       std::tuple<Root>>,

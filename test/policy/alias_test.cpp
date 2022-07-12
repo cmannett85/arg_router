@@ -156,7 +156,15 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                                       policy::alias(policy::long_name<S_("flag3")>)},
                             stub_node{policy::long_name<S_("flag2")>}},
                   stub_node{policy::long_name<S_("flag3")>, policy::fixed_count<0>},
-                  policy::router{[](bool, bool) {}}}};
+                  policy::router{[](bool, bool) {}}},
+        stub_node{policy::long_name<S_("test7")>,
+                  stub_node{policy::long_name<S_("flag1")>,
+                            policy::fixed_count<0>,
+                            policy::alias(policy::long_name<S_("パラメータ一")>)},
+                  stub_node{policy::long_name<S_("パラメータ一")>, policy::fixed_count<0>},
+                  stub_node{policy::long_name<S_("flag3")>},
+                  policy::router{[](bool, bool, bool) {}}},
+    };
 
     auto f = [&](auto args, auto expected_target_data, auto expected_args, auto parents_tuple) {
         auto result = vector<parsing::token_type>{};
@@ -240,6 +248,10 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                        std::vector{make_pre_parse_test_data<5, 1>(root, {})},
                        std::vector<parsing::token_type>{},
                        test::get_parents<5, 0, 0>(root)},
+            std::tuple{std::vector<parsing::token_type>{{parsing::prefix_type::none, "--flag1"}},
+                       std::vector{make_pre_parse_test_data<6, 1>(root, {})},
+                       std::vector<parsing::token_type>{},
+                       test::get_parents<6, 0>(root)},
         });
 }
 

@@ -56,6 +56,7 @@ set(TEST_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/string_view_ops_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/tree_recursor_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/unsafe_any_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/utility/utf8_test.cpp
 )
 
 # Format just the unit test files
@@ -72,6 +73,7 @@ add_dependencies(arg_router_test clangformat_test arg_router)
 
 target_compile_features(arg_router_test PUBLIC cxx_std_17)
 set_target_properties(arg_router_test PROPERTIES CXX_EXTENSIONS OFF)
+target_compile_definitions(arg_router_test PRIVATE UNIT_TEST_BUILD)
 
 function(configure_test_build TARGET)
     # Clang can run in different command line argument modes to mimic gcc or cl.exe,
@@ -102,5 +104,7 @@ target_link_libraries(arg_router_test
     PUBLIC Boost::filesystem
     PUBLIC Threads::Threads
 )
+
+target_compile_definitions(arg_router_test PRIVATE UNIT_TEST_BUILD)
 
 add_test(NAME arg_router_test COMMAND arg_router_test -l message)
