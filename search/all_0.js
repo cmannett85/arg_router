@@ -38,7 +38,9 @@ var searchData=
   ['parsing_35',['parsing',['../namespacearg__router_1_1parsing.html',1,'arg_router']]],
   ['policy_36',['policy',['../namespacearg__router_1_1policy.html',1,'arg_router']]],
   ['string_5fview_5fops_37',['string_view_ops',['../namespacearg__router_1_1utility_1_1string__view__ops.html',1,'arg_router::utility']]],
-  ['traits_38',['traits',['../namespacearg__router_1_1traits.html',1,'arg_router']]],
-  ['utility_39',['utility',['../namespacearg__router_1_1utility.html',1,'arg_router']]],
-  ['validation_40',['validation',['../namespacearg__router_1_1policy_1_1validation.html',1,'arg_router::policy']]]
+  ['terminal_38',['terminal',['../namespacearg__router_1_1utility_1_1terminal.html',1,'arg_router::utility']]],
+  ['traits_39',['traits',['../namespacearg__router_1_1traits.html',1,'arg_router']]],
+  ['utf8_40',['utf8',['../namespacearg__router_1_1utility_1_1utf8.html',1,'arg_router::utility']]],
+  ['utility_41',['utility',['../namespacearg__router_1_1utility.html',1,'arg_router']]],
+  ['validation_42',['validation',['../namespacearg__router_1_1policy_1_1validation.html',1,'arg_router::policy']]]
 ];

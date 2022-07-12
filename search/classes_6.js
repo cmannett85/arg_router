@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['list_416',['list',['../classarg__router_1_1list.html',1,'arg_router']]],
-  ['long_5fname_5ft_417',['long_name_t',['../classarg__router_1_1policy_1_1long__name__t.html',1,'arg_router::policy']]]
+  ['line_5fiterator_438',['line_iterator',['../classarg__router_1_1utility_1_1utf8_1_1line__iterator.html',1,'arg_router::utility::utf8']]],
+  ['list_439',['list',['../classarg__router_1_1list.html',1,'arg_router']]],
+  ['long_5fname_5ft_440',['long_name_t',['../classarg__router_1_1policy_1_1long__name__t.html',1,'arg_router::policy']]]
 ];

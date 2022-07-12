@@ -100,12 +100,6 @@ Typedefs</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a7ce67881359a0ca577e618477f6ba929"><td class="memItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1algorithm.html#a7ce67881359a0ca577e618477f6ba929">is_alnum</a> (char value) noexcept</td></tr>
-<tr class="separator:a7ce67881359a0ca577e618477f6ba929"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a008daa275a6ca8a9f8735b393200ea5b"><td class="memItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1algorithm.html#a008daa275a6ca8a9f8735b393200ea5b">is_whitespace</a> (char value) noexcept</td></tr>
-<tr class="separator:a008daa275a6ca8a9f8735b393200ea5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a70084cd917a2ea889b9d77aa97f7301a"><td class="memItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1algorithm.html#a70084cd917a2ea889b9d77aa97f7301a">contains_whitespace</a> (std::string_view str) noexcept</td></tr>
-<tr class="separator:a70084cd917a2ea889b9d77aa97f7301a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afee764743bed099238c6c61bc6a0eb3e"><td class="memTemplParams" colspan="2">template&lt;template&lt; typename... &gt; typename Fn, typename U &gt; </td></tr>
 <tr class="memitem:afee764743bed099238c6c61bc6a0eb3e"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1algorithm.html#afee764743bed099238c6c61bc6a0eb3e">tuple_filter_and_construct</a> (U &amp;&amp;input) noexcept</td></tr>
 <tr class="separator:afee764743bed099238c6c61bc6a0eb3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -153,119 +147,11 @@ template&lt;typename First , typename Second &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="algorithm_8hpp_source.html#l00202">202</a> of file <a class="el" href="algorithm_8hpp_source.html">algorithm.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="algorithm_8hpp_source.html#l00157">157</a> of file <a class="el" href="algorithm_8hpp_source.html">algorithm.hpp</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a70084cd917a2ea889b9d77aa97f7301a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a70084cd917a2ea889b9d77aa97f7301a">&#9670;&nbsp;</a></span>contains_whitespace()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">constexpr bool arg_router::algorithm::contains_whitespace </td>
-          <td>(</td>
-          <td class="paramtype">std::string_view&#160;</td>
-          <td class="paramname"><em>str</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Returns true if <em>str</em> contains whitespace.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">str</td><td>String to test </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>True if contains whitespace </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="algorithm_8hpp_source.html#l00051">51</a> of file <a class="el" href="algorithm_8hpp_source.html">algorithm.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a7ce67881359a0ca577e618477f6ba929"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7ce67881359a0ca577e618477f6ba929">&#9670;&nbsp;</a></span>is_alnum()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">constexpr bool arg_router::algorithm::is_alnum </td>
-          <td>(</td>
-          <td class="paramtype">char&#160;</td>
-          <td class="paramname"><em>value</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Returns true if <em>value</em> is an alphanumeric character.</p>
-<p>A constexpr equivalent to <code>std::isalnum</code>. </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">value</td><td>Character to test </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>True if alphanumeric </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="algorithm_8hpp_source.html#l00023">23</a> of file <a class="el" href="algorithm_8hpp_source.html">algorithm.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a008daa275a6ca8a9f8735b393200ea5b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a008daa275a6ca8a9f8735b393200ea5b">&#9670;&nbsp;</a></span>is_whitespace()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">constexpr bool arg_router::algorithm::is_whitespace </td>
-          <td>(</td>
-          <td class="paramtype">char&#160;</td>
-          <td class="paramname"><em>value</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Returns true if <em>value</em> is a whitespace character.</p>
-<p>A constexpr equivalent to <code>std::isspace</code>. </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">value</td><td>Character to test </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>True if whitespace </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="algorithm_8hpp_source.html#l00040">40</a> of file <a class="el" href="algorithm_8hpp_source.html">algorithm.hpp</a>.</p>
-
-</div>
-</div>
 <a id="afee764743bed099238c6c61bc6a0eb3e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afee764743bed099238c6c61bc6a0eb3e">&#9670;&nbsp;</a></span>tuple_filter_and_construct()</h2>
 
@@ -307,7 +193,7 @@ template&lt;template&lt; typename... &gt; typename Fn, typename U &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Result tuple </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="algorithm_8hpp_source.html#l00237">237</a> of file <a class="el" href="algorithm_8hpp_source.html">algorithm.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="algorithm_8hpp_source.html#l00192">192</a> of file <a class="el" href="algorithm_8hpp_source.html">algorithm.hpp</a>.</p>
 
 </div>
 </div>
@@ -363,7 +249,7 @@ template&lt;typename Tuple , typename Insert , std::size_t... I&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A Tuple with <em>insert</em> appended </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="algorithm_8hpp_source.html#l00285">285</a> of file <a class="el" href="algorithm_8hpp_source.html">algorithm.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="algorithm_8hpp_source.html#l00240">240</a> of file <a class="el" href="algorithm_8hpp_source.html">algorithm.hpp</a>.</p>
 
 </div>
 </div>
@@ -398,7 +284,7 @@ template&lt;typename T , typename Tuple &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="algorithm_8hpp_source.html#l00144">144</a> of file <a class="el" href="algorithm_8hpp_source.html">algorithm.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="algorithm_8hpp_source.html#l00099">99</a> of file <a class="el" href="algorithm_8hpp_source.html">algorithm.hpp</a>.</p>
 
 </div>
 </div>
@@ -432,7 +318,7 @@ template&lt;template&lt; typename... &gt; typename T, typename Tuple &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="algorithm_8hpp_source.html#l00120">120</a> of file <a class="el" href="algorithm_8hpp_source.html">algorithm.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="algorithm_8hpp_source.html#l00075">75</a> of file <a class="el" href="algorithm_8hpp_source.html">algorithm.hpp</a>.</p>
 
 </div>
 </div>
@@ -466,7 +352,7 @@ template&lt;template&lt; typename... &gt; typename T, typename Tuple &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="algorithm_8hpp_source.html#l00091">91</a> of file <a class="el" href="algorithm_8hpp_source.html">algorithm.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="algorithm_8hpp_source.html#l00046">46</a> of file <a class="el" href="algorithm_8hpp_source.html">algorithm.hpp</a>.</p>
 
 </div>
 </div>
@@ -500,7 +386,7 @@ template&lt;template&lt; typename... &gt; typename T, typename Tuple &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="algorithm_8hpp_source.html#l00168">168</a> of file <a class="el" href="algorithm_8hpp_source.html">algorithm.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="algorithm_8hpp_source.html#l00123">123</a> of file <a class="el" href="algorithm_8hpp_source.html">algorithm.hpp</a>.</p>
 
 </div>
 </div>

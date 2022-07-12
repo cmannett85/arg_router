@@ -107,169 +107,160 @@ $(function() {
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="keywordflow">return</span> {sv_.data(), sv_.size()};</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    }</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
-<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="classarg__router_1_1utility_1_1compile__time__string.html#ace73bb377776c8528a3e4ae4dbdebab8">   62</a></span>&#160;    [[nodiscard]] constexpr <span class="keyword">static</span> std::size_t <a class="code" href="classarg__router_1_1utility_1_1compile__time__string.html#ace73bb377776c8528a3e4ae4dbdebab8">u8_num_code_points</a>() noexcept</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    {</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        constexpr <span class="keyword">auto</span> str = <a class="code" href="classarg__router_1_1utility_1_1compile__time__string.html#a850e76a6f8f7cb1805a4303773532cbf">get</a>();</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <span class="keyword">auto</span> <a class="code" href="classarg__router_1_1utility_1_1result.html">result</a> = std::size_t{0};</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">auto</span> c : str) {</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;            <a class="code" href="classarg__router_1_1utility_1_1result.html">result</a> += (c &amp; 0xC0) != 0x80;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        }</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classarg__router_1_1utility_1_1result.html">result</a>;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    }</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00079"></a><span class="lineno"><a class="line" href="structarg__router_1_1utility_1_1compile__time__string_1_1append.html">   79</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structarg__router_1_1utility_1_1compile__time__string_1_1append.html">append</a>;</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    <span class="keyword">template</span> &lt;<span class="keywordtype">char</span>... OtherCs&gt;</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="keyword">struct </span><a class="code" href="structarg__router_1_1utility_1_1compile__time__string_1_1append.html">append</a>&lt;<a class="code" href="classarg__router_1_1utility_1_1compile__time__string.html">compile_time_string</a>&lt;OtherCs...&gt;&gt; {</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        <span class="keyword">using</span> type = <a class="code" href="classarg__router_1_1utility_1_1compile__time__string.html">compile_time_string</a>&lt;Cs..., OtherCs...&gt;;</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    };</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00091"></a><span class="lineno"><a class="line" href="classarg__router_1_1utility_1_1compile__time__string.html#a8926d469bcbbcd6b3183afbee37d1f19">   91</a></span>&#160;    <span class="keyword">using</span> <a class="code" href="classarg__router_1_1utility_1_1compile__time__string.html#a8926d469bcbbcd6b3183afbee37d1f19">append_t</a> = <span class="keyword">typename</span> <a class="code" href="structarg__router_1_1utility_1_1compile__time__string_1_1append.html">append&lt;T&gt;::type</a>;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="structarg__router_1_1utility_1_1compile__time__string_1_1append.html">   62</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structarg__router_1_1utility_1_1compile__time__string_1_1append.html">append</a>;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="keyword">template</span> &lt;<span class="keywordtype">char</span>... OtherCs&gt;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keyword">struct </span><a class="code" href="structarg__router_1_1utility_1_1compile__time__string_1_1append.html">append</a>&lt;<a class="code" href="classarg__router_1_1utility_1_1compile__time__string.html">compile_time_string</a>&lt;OtherCs...&gt;&gt; {</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <span class="keyword">using</span> type = <a class="code" href="classarg__router_1_1utility_1_1compile__time__string.html">compile_time_string</a>&lt;Cs..., OtherCs...&gt;;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    };</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00074"></a><span class="lineno"><a class="line" href="classarg__router_1_1utility_1_1compile__time__string.html#a8926d469bcbbcd6b3183afbee37d1f19">   74</a></span>&#160;    <span class="keyword">using</span> <a class="code" href="classarg__router_1_1utility_1_1compile__time__string.html#a8926d469bcbbcd6b3183afbee37d1f19">append_t</a> = <span class="keyword">typename</span> <a class="code" href="structarg__router_1_1utility_1_1compile__time__string_1_1append.html">append&lt;T&gt;::type</a>;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="keyword">template</span> &lt;<span class="keywordtype">char</span>... OtherCs&gt;</div>
+<div class="line"><a name="l00083"></a><span class="lineno"><a class="line" href="classarg__router_1_1utility_1_1compile__time__string.html#a570765bcf0ec38e350a1118478212209">   83</a></span>&#160;    [[nodiscard]] constexpr <span class="keyword">auto</span> <a class="code" href="classarg__router_1_1utility_1_1compile__time__string.html#a570765bcf0ec38e350a1118478212209">operator+</a>(</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        [[maybe_unused]] <span class="keyword">const</span> <a class="code" href="classarg__router_1_1utility_1_1compile__time__string.html">compile_time_string&lt;OtherCs...&gt;</a>&amp; other) <span class="keyword">const</span> noexcept</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    {</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classarg__router_1_1utility_1_1compile__time__string.html#a8926d469bcbbcd6b3183afbee37d1f19">append_t</a>&lt;<a class="code" href="classarg__router_1_1utility_1_1compile__time__string.html">compile_time_string</a>&lt;OtherCs...&gt;&gt;{};</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    }</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    constexpr <span class="keyword">static</span> <span class="keyword">auto</span> sv_ = std::array&lt;char, <span class="keyword">sizeof</span>...(Cs)&gt;{Cs...};</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;};</div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    <span class="keyword">template</span> &lt;<span class="keywordtype">char</span>... OtherCs&gt;</div>
-<div class="line"><a name="l00100"></a><span class="lineno"><a class="line" href="classarg__router_1_1utility_1_1compile__time__string.html#a570765bcf0ec38e350a1118478212209">  100</a></span>&#160;    [[nodiscard]] constexpr <span class="keyword">auto</span> <a class="code" href="classarg__router_1_1utility_1_1compile__time__string.html#a570765bcf0ec38e350a1118478212209">operator+</a>(</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        [[maybe_unused]] <span class="keyword">const</span> <a class="code" href="classarg__router_1_1utility_1_1compile__time__string.html">compile_time_string&lt;OtherCs...&gt;</a>&amp; other) <span class="keyword">const</span> noexcept</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    {</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classarg__router_1_1utility_1_1compile__time__string.html#a8926d469bcbbcd6b3183afbee37d1f19">append_t</a>&lt;<a class="code" href="classarg__router_1_1utility_1_1compile__time__string.html">compile_time_string</a>&lt;OtherCs...&gt;&gt;{};</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    }</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    constexpr <span class="keyword">static</span> <span class="keyword">auto</span> sv_ = std::array&lt;char, <span class="keyword">sizeof</span>...(Cs)&gt;{Cs...};</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;};</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160; </div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;<span class="keyword">template</span> &lt;std::<span class="keywordtype">size_t</span> N, <span class="keywordtype">char</span> C&gt;</div>
-<div class="line"><a name="l00116"></a><span class="lineno"><a class="line" href="classarg__router_1_1utility_1_1create__sequence__cts.html">  116</a></span>&#160;<span class="keyword">class </span><a class="code" href="classarg__router_1_1utility_1_1create__sequence__cts.html">create_sequence_cts</a></div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;{</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    <span class="keyword">using</span> seq = boost::mp11::mp_repeat_c&lt;std::tuple&lt;traits::integral_constant&lt;C&gt;&gt;, N&gt;;</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160; </div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <span class="keyword">struct </span>converter {</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    };</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;<span class="keyword">template</span> &lt;std::<span class="keywordtype">size_t</span> N, <span class="keywordtype">char</span> C&gt;</div>
+<div class="line"><a name="l00099"></a><span class="lineno"><a class="line" href="classarg__router_1_1utility_1_1create__sequence__cts.html">   99</a></span>&#160;<span class="keyword">class </span><a class="code" href="classarg__router_1_1utility_1_1create__sequence__cts.html">create_sequence_cts</a></div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;{</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="keyword">using</span> seq = boost::mp11::mp_repeat_c&lt;std::tuple&lt;traits::integral_constant&lt;C&gt;&gt;, N&gt;;</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160; </div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    <span class="keyword">struct </span>converter {</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    };</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Cs&gt;</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    <span class="keyword">struct </span>converter&lt;std::tuple&lt;Cs...&gt;&gt; {</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        <span class="keyword">using</span> type = <a class="code" href="classarg__router_1_1utility_1_1compile__time__string.html">compile_time_string</a>&lt;Cs::value...&gt;;</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    };</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160; </div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    <span class="keyword">using</span> type = <span class="keyword">typename</span> converter&lt;seq&gt;::type;</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;};</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160; </div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;<span class="keyword">template</span> &lt;std::<span class="keywordtype">size_t</span> N, <span class="keywordtype">char</span> C&gt;</div>
+<div class="line"><a name="l00122"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1utility.html#a1969b9a6d6dab3984d8f2a2119c08937">  122</a></span>&#160;<span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1utility.html#a1969b9a6d6dab3984d8f2a2119c08937">create_sequence_cts_t</a> = <span class="keyword">typename</span> create_sequence_cts&lt;N, C&gt;::type;</div>
 <div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160; </div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Cs&gt;</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    <span class="keyword">struct </span>converter&lt;std::tuple&lt;Cs...&gt;&gt; {</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;        <span class="keyword">using</span> type = <a class="code" href="classarg__router_1_1utility_1_1compile__time__string.html">compile_time_string</a>&lt;Cs::value...&gt;;</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    };</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    <span class="keyword">using</span> type = <span class="keyword">typename</span> converter&lt;seq&gt;::type;</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;};</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160; </div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;<span class="keyword">template</span> &lt;std::<span class="keywordtype">size_t</span> N, <span class="keywordtype">char</span> C&gt;</div>
-<div class="line"><a name="l00139"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1utility.html#a1969b9a6d6dab3984d8f2a2119c08937">  139</a></span>&#160;<span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1utility.html#a1969b9a6d6dab3984d8f2a2119c08937">create_sequence_cts_t</a> = <span class="keyword">typename</span> create_sequence_cts&lt;N, C&gt;::type;</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160; </div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00146"></a><span class="lineno"><a class="line" href="structarg__router_1_1utility_1_1convert__to__cts.html">  146</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structarg__router_1_1utility_1_1convert__to__cts.html">convert_to_cts</a>;</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160; </div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>...&gt; <span class="keyword">typename</span> Array, <span class="keyword">typename</span>... Cs&gt;</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;<span class="keyword">struct </span><a class="code" href="structarg__router_1_1utility_1_1convert__to__cts.html">convert_to_cts</a>&lt;Array&lt;Cs...&gt;&gt; {</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;    <span class="keyword">using</span> type = <a class="code" href="classarg__router_1_1utility_1_1compile__time__string.html">utility::compile_time_string</a>&lt;Cs::value...&gt;;</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;};</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160; </div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00158"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1utility.html#ac1a030095dca0eefcac3295e612ffbbc">  158</a></span>&#160;<span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1utility.html#ac1a030095dca0eefcac3295e612ffbbc">convert_to_cts_t</a> = <span class="keyword">typename</span> <a class="code" href="structarg__router_1_1utility_1_1convert__to__cts.html">convert_to_cts&lt;T&gt;::type</a>;</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00129"></a><span class="lineno"><a class="line" href="structarg__router_1_1utility_1_1convert__to__cts.html">  129</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structarg__router_1_1utility_1_1convert__to__cts.html">convert_to_cts</a>;</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160; </div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>...&gt; <span class="keyword">typename</span> Array, <span class="keyword">typename</span>... Cs&gt;</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;<span class="keyword">struct </span><a class="code" href="structarg__router_1_1utility_1_1convert__to__cts.html">convert_to_cts</a>&lt;Array&lt;Cs...&gt;&gt; {</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    <span class="keyword">using</span> type = <a class="code" href="classarg__router_1_1utility_1_1compile__time__string.html">utility::compile_time_string</a>&lt;Cs::value...&gt;;</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;};</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160; </div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00141"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1utility.html#ac1a030095dca0eefcac3295e612ffbbc">  141</a></span>&#160;<span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1utility.html#ac1a030095dca0eefcac3295e612ffbbc">convert_to_cts_t</a> = <span class="keyword">typename</span> <a class="code" href="structarg__router_1_1utility_1_1convert__to__cts.html">convert_to_cts&lt;T&gt;::type</a>;</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160; </div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;<span class="keyword">template</span> &lt;auto Value&gt;</div>
+<div class="line"><a name="l00148"></a><span class="lineno"><a class="line" href="structarg__router_1_1utility_1_1convert__integral__to__cts.html">  148</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structarg__router_1_1utility_1_1convert__integral__to__cts.html">convert_integral_to_cts</a> {</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;    static_assert(std::is_integral_v&lt;decltype(Value)&gt;, <span class="stringliteral">&quot;Value must be an integral&quot;</span>);</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160; </div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Str, auto NewValue&gt;</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;    [[nodiscard]] constexpr <span class="keyword">static</span> <span class="keyword">auto</span> build() noexcept</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;    {</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;        constexpr <span class="keyword">auto</span> num_digits = <a class="code" href="namespacearg__router_1_1math.html#a7685a22f45fc1767d3f0ab8db5a85bd6">math::num_digits</a>(NewValue);</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;        constexpr <span class="keyword">auto</span> power10 = math::pow&lt;10&gt;(num_digits - 1);</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;        constexpr <span class="keyword">auto</span> digit = NewValue / power10;</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;        [[maybe_unused]] constexpr <span class="keyword">auto</span> next_value = NewValue % power10;</div>
 <div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160; </div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;<span class="keyword">template</span> &lt;auto Value&gt;</div>
-<div class="line"><a name="l00165"></a><span class="lineno"><a class="line" href="structarg__router_1_1utility_1_1convert__integral__to__cts.html">  165</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structarg__router_1_1utility_1_1convert__integral__to__cts.html">convert_integral_to_cts</a> {</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;    static_assert(std::is_integral_v&lt;decltype(Value)&gt;, <span class="stringliteral">&quot;Value must be an integral&quot;</span>);</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;        <span class="keyword">using</span> digit_str = <span class="keyword">typename</span> Str::template append_t&lt;compile_time_string&lt;&#39;0&#39; + digit&gt;&gt;;</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160; </div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;        <span class="keywordflow">if</span> constexpr (num_digits != 1) {</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;            <span class="keywordflow">return</span> build&lt;digit_str, next_value&gt;();</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;            <span class="keywordflow">return</span> digit_str{};</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;        }</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;    }</div>
 <div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160; </div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Str, auto NewValue&gt;</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;    [[nodiscard]] constexpr <span class="keyword">static</span> <span class="keyword">auto</span> build() noexcept</div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;    {</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;        constexpr <span class="keyword">auto</span> num_digits = <a class="code" href="namespacearg__router_1_1math.html#a7685a22f45fc1767d3f0ab8db5a85bd6">math::num_digits</a>(NewValue);</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;        constexpr <span class="keyword">auto</span> power10 = math::pow&lt;10&gt;(num_digits - 1);</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;        constexpr <span class="keyword">auto</span> digit = NewValue / power10;</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;        [[maybe_unused]] constexpr <span class="keyword">auto</span> next_value = NewValue % power10;</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;    <span class="keyword">using</span> digit_str = decltype(build&lt;<a class="code" href="classarg__router_1_1utility_1_1compile__time__string.html">compile_time_string&lt;&gt;</a>, <a class="code" href="namespacearg__router_1_1math.html#aed9a63d0b46e824c24e3cdf7e40af70f">math::abs</a>(Value)&gt;());</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160; </div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    <span class="keyword">using</span> type = std::conditional_t&lt;(Value &lt; 0),</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;                                    <a class="code" href="classarg__router_1_1utility_1_1compile__time__string.html">compile_time_string&lt;'-'&gt;::template</a> append_t&lt;digit_str&gt;,</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;                                    digit_str&gt;;</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;};</div>
 <div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160; </div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;        <span class="keyword">using</span> digit_str = <span class="keyword">typename</span> Str::template append_t&lt;compile_time_string&lt;&#39;0&#39; + digit&gt;&gt;;</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160; </div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;        <span class="keywordflow">if</span> constexpr (num_digits != 1) {</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;            <span class="keywordflow">return</span> build&lt;digit_str, next_value&gt;();</div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;        } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;            <span class="keywordflow">return</span> digit_str{};</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;        }</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;    }</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160; </div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;    <span class="keyword">using</span> digit_str = decltype(build&lt;<a class="code" href="classarg__router_1_1utility_1_1compile__time__string.html">compile_time_string&lt;&gt;</a>, <a class="code" href="namespacearg__router_1_1math.html#aed9a63d0b46e824c24e3cdf7e40af70f">math::abs</a>(Value)&gt;());</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160; </div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;    <span class="keyword">using</span> type = std::conditional_t&lt;(Value &lt; 0),</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;                                    <a class="code" href="classarg__router_1_1utility_1_1compile__time__string.html">compile_time_string&lt;'-'&gt;::template</a> append_t&lt;digit_str&gt;,</div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;                                    digit_str&gt;;</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;};</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160; </div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;<span class="keyword">template</span> &lt;auto Value&gt;</div>
-<div class="line"><a name="l00199"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1utility.html#a432ca5a24df3c55882c383f01f597c24">  199</a></span>&#160;<span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1utility.html#a432ca5a24df3c55882c383f01f597c24">convert_integral_to_cts_t</a> = <span class="keyword">typename</span> convert_integral_to_cts&lt;Value&gt;::type;</div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160; </div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;<span class="keyword">namespace </span>cts_detail</div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;{</div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;<span class="keyword">template</span> &lt;<span class="keywordtype">int</span> N&gt;</div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;[[nodiscard]] constexpr <span class="keywordtype">char</span> get(<span class="keyword">const</span> <span class="keywordtype">char</span> (&amp;str)[N], std::size_t i) noexcept</div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;{</div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;    <span class="keywordflow">return</span> i &lt; N ? str[i] : <span class="charliteral">&#39;\0&#39;</span>;</div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;}</div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160; </div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;[[nodiscard]] constexpr <span class="keywordtype">char</span> get(std::string_view str, std::size_t i) noexcept</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;{</div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;    <span class="keywordflow">return</span> i &lt; str.size() ? str[i] : <span class="charliteral">&#39;\0&#39;</span>;</div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;}</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;<span class="keyword">template</span> &lt;auto Value&gt;</div>
+<div class="line"><a name="l00182"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1utility.html#a432ca5a24df3c55882c383f01f597c24">  182</a></span>&#160;<span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1utility.html#a432ca5a24df3c55882c383f01f597c24">convert_integral_to_cts_t</a> = <span class="keyword">typename</span> convert_integral_to_cts&lt;Value&gt;::type;</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160; </div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;<span class="keyword">namespace </span>cts_detail</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;{</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;<span class="keyword">template</span> &lt;<span class="keywordtype">int</span> N&gt;</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;[[nodiscard]] constexpr <span class="keywordtype">char</span> get(<span class="keyword">const</span> <span class="keywordtype">char</span> (&amp;str)[N], std::size_t i) noexcept</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;{</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;    <span class="keywordflow">return</span> i &lt; N ? str[i] : <span class="charliteral">&#39;\0&#39;</span>;</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;}</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160; </div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;[[nodiscard]] constexpr <span class="keywordtype">char</span> get(std::string_view str, std::size_t i) noexcept</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;{</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;    <span class="keywordflow">return</span> i &lt; str.size() ? str[i] : <span class="charliteral">&#39;\0&#39;</span>;</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;}</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160; </div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;[[nodiscard]] constexpr <span class="keywordtype">char</span> get(<span class="keywordtype">char</span> c, std::size_t i) noexcept</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;{</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;    <span class="keywordflow">return</span> i &lt; 1 ? c : <span class="charliteral">&#39;\0&#39;</span>;</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;}</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160; </div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;<span class="comment">// Required so that the extra nulls S_ adds can be removed before defining the compile_time_string.</span></div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;<span class="comment">// Otherwise any compiler warnings you hit are just walls of null template args...</span></div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;<span class="keyword">template</span> &lt;<span class="keywordtype">char</span>... Cs&gt;</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;<span class="keyword">struct </span>builder {</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;    <span class="keyword">struct </span>is_null_char {</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;        <span class="keyword">using</span> fn = std::is_same&lt;std::integral_constant&lt;char, &#39;\0&#39;&gt;, T&gt;;</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;    };</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160; </div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;    <span class="keyword">using</span> strip_null =</div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;        boost::mp11::mp_remove_if_q&lt;boost::mp11::mp_list_c&lt;char, Cs...&gt;, is_null_char&gt;;</div>
 <div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160; </div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;<span class="comment">// Required so that the extra nulls S_ adds can be removed before defining the compile_time_string.</span></div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;<span class="comment">// Otherwise any compiler warnings you hit are just walls of null template args...</span></div>
-<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;<span class="keyword">template</span> &lt;<span class="keywordtype">char</span>... Cs&gt;</div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;<span class="keyword">struct </span>builder {</div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;    <span class="keyword">struct </span>is_null_char {</div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;        <span class="keyword">using</span> fn = std::is_same&lt;std::integral_constant&lt;char, &#39;\0&#39;&gt;, T&gt;;</div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;    };</div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160; </div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;    <span class="keyword">using</span> strip_null =</div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;        boost::mp11::mp_remove_if_q&lt;boost::mp11::mp_list_c&lt;char, Cs...&gt;, is_null_char&gt;;</div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;    <span class="keyword">template</span> &lt;<span class="keywordtype">char</span>... StrippedCs&gt;</div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;    [[nodiscard]] constexpr <span class="keyword">static</span> <span class="keyword">auto</span> list_to_string(</div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;        boost::mp11::mp_list_c&lt;char, StrippedCs...&gt;) noexcept</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;    {</div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classarg__router_1_1utility_1_1compile__time__string.html">compile_time_string</a>&lt;StrippedCs...&gt;{};</div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;    }</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160; </div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;    <span class="keyword">using</span> type = decltype(list_to_string(strip_null{}));</div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;};</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160; </div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;<span class="preprocessor">#define AR_STR_CHAR(z, n, tok) BOOST_PP_COMMA_IF(n) arg_router::utility::cts_detail::get(tok, n)</span></div>
 <div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160; </div>
-<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;    <span class="keyword">template</span> &lt;<span class="keywordtype">char</span>... StrippedCs&gt;</div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;    [[nodiscard]] constexpr <span class="keyword">static</span> <span class="keyword">auto</span> list_to_string(</div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;        boost::mp11::mp_list_c&lt;char, StrippedCs...&gt;) noexcept</div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;    {</div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classarg__router_1_1utility_1_1compile__time__string.html">compile_time_string</a>&lt;StrippedCs...&gt;{};</div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;    }</div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160; </div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;    <span class="keyword">using</span> type = decltype(list_to_string(strip_null{}));</div>
-<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;};</div>
-<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160; </div>
-<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;<span class="preprocessor">#define AR_STR_CHAR(z, n, tok) BOOST_PP_COMMA_IF(n) arg_router::utility::cts_detail::get(tok, n)</span></div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160; </div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;<span class="preprocessor">#define AR_STR_N(n, tok) \</span></div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;<span class="preprocessor">    typename arg_router::utility::cts_detail::builder&lt;BOOST_PP_REPEAT(n, AR_STR_CHAR, tok)&gt;::type</span></div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;}  <span class="comment">// namespace cts_detail</span></div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;}  <span class="comment">// namespace utility</span></div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160; </div>
-<div class="line"><a name="l00252"></a><span class="lineno"><a class="line" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">  252</a></span>&#160;<span class="preprocessor">#define S_(tok) AR_STR_N(AR_MAX_CTS_SIZE, tok)</span></div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;<span class="preprocessor">#define AR_STR_N(n, tok) \</span></div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;<span class="preprocessor">    typename arg_router::utility::cts_detail::builder&lt;BOOST_PP_REPEAT(n, AR_STR_CHAR, tok)&gt;::type</span></div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;}  <span class="comment">// namespace cts_detail</span></div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;}  <span class="comment">// namespace utility</span></div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160; </div>
+<div class="line"><a name="l00242"></a><span class="lineno"><a class="line" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">  242</a></span>&#160;<span class="preprocessor">#define S_(tok) AR_STR_N(AR_MAX_CTS_SIZE, tok)</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="anamespacearg__router_1_1utility_html_a1969b9a6d6dab3984d8f2a2119c08937"><div class="ttname"><a href="namespacearg__router_1_1utility.html#a1969b9a6d6dab3984d8f2a2119c08937">arg_router::utility::create_sequence_cts_t</a></div><div class="ttdeci">typename create_sequence_cts&lt; N, C &gt;::type create_sequence_cts_t</div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00139">compile_time_string.hpp:139</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1utility_1_1result_html"><div class="ttname"><a href="classarg__router_1_1utility_1_1result.html">arg_router::utility::result</a></div><div class="ttdef"><b>Definition:</b> <a href="result_8hpp_source.html#l00019">result.hpp:19</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1utility_html_a1969b9a6d6dab3984d8f2a2119c08937"><div class="ttname"><a href="namespacearg__router_1_1utility.html#a1969b9a6d6dab3984d8f2a2119c08937">arg_router::utility::create_sequence_cts_t</a></div><div class="ttdeci">typename create_sequence_cts&lt; N, C &gt;::type create_sequence_cts_t</div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00122">compile_time_string.hpp:122</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1math_html_a7685a22f45fc1767d3f0ab8db5a85bd6"><div class="ttname"><a href="namespacearg__router_1_1math.html#a7685a22f45fc1767d3f0ab8db5a85bd6">arg_router::math::num_digits</a></div><div class="ttdeci">constexpr T num_digits(T value) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="math_8hpp_source.html#l00032">math.hpp:32</a></div></div>
-<div class="ttc" id="anamespacearg__router_1_1utility_html_ac1a030095dca0eefcac3295e612ffbbc"><div class="ttname"><a href="namespacearg__router_1_1utility.html#ac1a030095dca0eefcac3295e612ffbbc">arg_router::utility::convert_to_cts_t</a></div><div class="ttdeci">typename convert_to_cts&lt; T &gt;::type convert_to_cts_t</div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00158">compile_time_string.hpp:158</a></div></div>
-<div class="ttc" id="astructarg__router_1_1utility_1_1convert__to__cts_html"><div class="ttname"><a href="structarg__router_1_1utility_1_1convert__to__cts.html">arg_router::utility::convert_to_cts</a></div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00146">compile_time_string.hpp:146</a></div></div>
-<div class="ttc" id="astructarg__router_1_1utility_1_1convert__integral__to__cts_html"><div class="ttname"><a href="structarg__router_1_1utility_1_1convert__integral__to__cts.html">arg_router::utility::convert_integral_to_cts</a></div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00165">compile_time_string.hpp:165</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1utility_html_ac1a030095dca0eefcac3295e612ffbbc"><div class="ttname"><a href="namespacearg__router_1_1utility.html#ac1a030095dca0eefcac3295e612ffbbc">arg_router::utility::convert_to_cts_t</a></div><div class="ttdeci">typename convert_to_cts&lt; T &gt;::type convert_to_cts_t</div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00141">compile_time_string.hpp:141</a></div></div>
+<div class="ttc" id="astructarg__router_1_1utility_1_1convert__to__cts_html"><div class="ttname"><a href="structarg__router_1_1utility_1_1convert__to__cts.html">arg_router::utility::convert_to_cts</a></div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00129">compile_time_string.hpp:129</a></div></div>
+<div class="ttc" id="astructarg__router_1_1utility_1_1convert__integral__to__cts_html"><div class="ttname"><a href="structarg__router_1_1utility_1_1convert__integral__to__cts.html">arg_router::utility::convert_integral_to_cts</a></div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00148">compile_time_string.hpp:148</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1utility_1_1compile__time__string_html"><div class="ttname"><a href="classarg__router_1_1utility_1_1compile__time__string.html">arg_router::utility::compile_time_string</a></div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00023">compile_time_string.hpp:23</a></div></div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00012">algorithm.hpp:12</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1utility_1_1compile__time__string_html_ace73bb377776c8528a3e4ae4dbdebab8"><div class="ttname"><a href="classarg__router_1_1utility_1_1compile__time__string.html#ace73bb377776c8528a3e4ae4dbdebab8">arg_router::utility::compile_time_string::u8_num_code_points</a></div><div class="ttdeci">constexpr static std::size_t u8_num_code_points() noexcept</div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00062">compile_time_string.hpp:62</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1utility_1_1compile__time__string_html_aa2b5e86e8607d066dbd711b10be24884"><div class="ttname"><a href="classarg__router_1_1utility_1_1compile__time__string.html#aa2b5e86e8607d066dbd711b10be24884">arg_router::utility::compile_time_string::empty</a></div><div class="ttdeci">constexpr static bool empty() noexcept</div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00046">compile_time_string.hpp:46</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1utility_1_1create__sequence__cts_html"><div class="ttname"><a href="classarg__router_1_1utility_1_1create__sequence__cts.html">arg_router::utility::create_sequence_cts</a></div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00116">compile_time_string.hpp:116</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1utility_1_1create__sequence__cts_html"><div class="ttname"><a href="classarg__router_1_1utility_1_1create__sequence__cts.html">arg_router::utility::create_sequence_cts</a></div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00099">compile_time_string.hpp:99</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1utility_1_1compile__time__string_html_a1e1bf14403a841ebb9363ed7cf317e1a"><div class="ttname"><a href="classarg__router_1_1utility_1_1compile__time__string.html#a1e1bf14403a841ebb9363ed7cf317e1a">arg_router::utility::compile_time_string::array_type</a></div><div class="ttdeci">std::tuple&lt; traits::integral_constant&lt; Cs &gt;... &gt; array_type</div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00034">compile_time_string.hpp:34</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1utility_1_1compile__time__string_html_aaf51f6eff60ad5691490147c6bcff72f"><div class="ttname"><a href="classarg__router_1_1utility_1_1compile__time__string.html#aaf51f6eff60ad5691490147c6bcff72f">arg_router::utility::compile_time_string::size</a></div><div class="ttdeci">constexpr static std::size_t size() noexcept</div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00040">compile_time_string.hpp:40</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1utility_1_1compile__time__string_html_a850e76a6f8f7cb1805a4303773532cbf"><div class="ttname"><a href="classarg__router_1_1utility_1_1compile__time__string.html#a850e76a6f8f7cb1805a4303773532cbf">arg_router::utility::compile_time_string::get</a></div><div class="ttdeci">constexpr static std::string_view get() noexcept</div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00052">compile_time_string.hpp:52</a></div></div>
-<div class="ttc" id="anamespacearg__router_1_1utility_html_a432ca5a24df3c55882c383f01f597c24"><div class="ttname"><a href="namespacearg__router_1_1utility.html#a432ca5a24df3c55882c383f01f597c24">arg_router::utility::convert_integral_to_cts_t</a></div><div class="ttdeci">typename convert_integral_to_cts&lt; Value &gt;::type convert_integral_to_cts_t</div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00199">compile_time_string.hpp:199</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1utility_1_1compile__time__string_html_a570765bcf0ec38e350a1118478212209"><div class="ttname"><a href="classarg__router_1_1utility_1_1compile__time__string.html#a570765bcf0ec38e350a1118478212209">arg_router::utility::compile_time_string::operator+</a></div><div class="ttdeci">constexpr auto operator+([[maybe_unused]] const compile_time_string&lt; OtherCs... &gt; &amp;other) const noexcept</div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00100">compile_time_string.hpp:100</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1utility_1_1compile__time__string_html_a8926d469bcbbcd6b3183afbee37d1f19"><div class="ttname"><a href="classarg__router_1_1utility_1_1compile__time__string.html#a8926d469bcbbcd6b3183afbee37d1f19">arg_router::utility::compile_time_string::append_t</a></div><div class="ttdeci">typename append&lt; T &gt;::type append_t</div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00091">compile_time_string.hpp:91</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1utility_html_a432ca5a24df3c55882c383f01f597c24"><div class="ttname"><a href="namespacearg__router_1_1utility.html#a432ca5a24df3c55882c383f01f597c24">arg_router::utility::convert_integral_to_cts_t</a></div><div class="ttdeci">typename convert_integral_to_cts&lt; Value &gt;::type convert_integral_to_cts_t</div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00182">compile_time_string.hpp:182</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1utility_1_1compile__time__string_html_a570765bcf0ec38e350a1118478212209"><div class="ttname"><a href="classarg__router_1_1utility_1_1compile__time__string.html#a570765bcf0ec38e350a1118478212209">arg_router::utility::compile_time_string::operator+</a></div><div class="ttdeci">constexpr auto operator+([[maybe_unused]] const compile_time_string&lt; OtherCs... &gt; &amp;other) const noexcept</div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00083">compile_time_string.hpp:83</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1utility_1_1compile__time__string_html_a8926d469bcbbcd6b3183afbee37d1f19"><div class="ttname"><a href="classarg__router_1_1utility_1_1compile__time__string.html#a8926d469bcbbcd6b3183afbee37d1f19">arg_router::utility::compile_time_string::append_t</a></div><div class="ttdeci">typename append&lt; T &gt;::type append_t</div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00074">compile_time_string.hpp:74</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1math_html_aed9a63d0b46e824c24e3cdf7e40af70f"><div class="ttname"><a href="namespacearg__router_1_1math.html#aed9a63d0b46e824c24e3cdf7e40af70f">arg_router::math::abs</a></div><div class="ttdeci">constexpr T abs(T value) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="math_8hpp_source.html#l00019">math.hpp:19</a></div></div>
-<div class="ttc" id="astructarg__router_1_1utility_1_1compile__time__string_1_1append_html"><div class="ttname"><a href="structarg__router_1_1utility_1_1compile__time__string_1_1append.html">arg_router::utility::compile_time_string::append</a></div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00079">compile_time_string.hpp:79</a></div></div>
+<div class="ttc" id="astructarg__router_1_1utility_1_1compile__time__string_1_1append_html"><div class="ttname"><a href="structarg__router_1_1utility_1_1compile__time__string_1_1append.html">arg_router::utility::compile_time_string::append</a></div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00062">compile_time_string.hpp:62</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

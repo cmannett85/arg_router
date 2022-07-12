@@ -107,8 +107,6 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:aa2b5e86e8607d066dbd711b10be24884"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a850e76a6f8f7cb1805a4303773532cbf"><td class="memItemLeft" align="right" valign="top">constexpr static std::string_view&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1utility_1_1compile__time__string.html#a850e76a6f8f7cb1805a4303773532cbf">get</a> () noexcept</td></tr>
 <tr class="separator:a850e76a6f8f7cb1805a4303773532cbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ace73bb377776c8528a3e4ae4dbdebab8"><td class="memItemLeft" align="right" valign="top">constexpr static std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1utility_1_1compile__time__string.html#ace73bb377776c8528a3e4ae4dbdebab8">u8_num_code_points</a> () noexcept</td></tr>
-<tr class="separator:ace73bb377776c8528a3e4ae4dbdebab8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;char... Cs&gt;<br />
@@ -147,7 +145,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="compile__time__string_8hpp_source.html#l00091">91</a> of file <a class="el" href="compile__time__string_8hpp_source.html">compile_time_string.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="compile__time__string_8hpp_source.html#l00074">74</a> of file <a class="el" href="compile__time__string_8hpp_source.html">compile_time_string.hpp</a>.</p>
 
 </div>
 </div>
@@ -275,7 +273,7 @@ template&lt;char... OtherCs&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>New instance </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="compile__time__string_8hpp_source.html#l00100">100</a> of file <a class="el" href="compile__time__string_8hpp_source.html">compile_time_string.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="compile__time__string_8hpp_source.html#l00083">83</a> of file <a class="el" href="compile__time__string_8hpp_source.html">compile_time_string.hpp</a>.</p>
 
 </div>
 </div>
@@ -307,38 +305,6 @@ template&lt;char... Cs&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>String size </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="compile__time__string_8hpp_source.html#l00040">40</a> of file <a class="el" href="compile__time__string_8hpp_source.html">compile_time_string.hpp</a>.</p>
-
-</div>
-</div>
-<a id="ace73bb377776c8528a3e4ae4dbdebab8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ace73bb377776c8528a3e4ae4dbdebab8">&#9670;&nbsp;</a></span>u8_num_code_points()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;char... Cs&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">constexpr static std::size_t <a class="el" href="classarg__router_1_1utility_1_1compile__time__string.html">arg_router::utility::compile_time_string</a>&lt; Cs &gt;::u8_num_code_points </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Number of UTF-8 code points in the string.</p>
-<dl class="section note"><dt>Note</dt><dd>This is strictly a UTF-8 parser, it ignores the current locale </dd></dl>
-<dl class="section return"><dt>Returns</dt><dd>Code points </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="compile__time__string_8hpp_source.html#l00062">62</a> of file <a class="el" href="compile__time__string_8hpp_source.html">compile_time_string.hpp</a>.</p>
 
 </div>
 </div>

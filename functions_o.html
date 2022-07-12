@@ -82,6 +82,8 @@ $(function() {
 , <a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a58f0334ec34a75363d5b65376ae19cef">arg_router::parsing::dynamic_token_adapter</a>
 , <a class="el" href="structarg__router_1_1parsing_1_1token__type.html#abf4845bc42ea4d490a61bddcc778253b">arg_router::parsing::token_type</a>
 , <a class="el" href="classarg__router_1_1utility_1_1result.html#a1784faa3d7f4db5bf57f23b2fbe13e9a">arg_router::utility::result&lt; ResultType, ExceptionType &gt;</a>
+, <a class="el" href="classarg__router_1_1utility_1_1utf8_1_1code__point__iterator.html#af6839774f499e1c797d0ba022e63715a">arg_router::utility::utf8::code_point_iterator</a>
+, <a class="el" href="classarg__router_1_1utility_1_1utf8_1_1line__iterator.html#ae89ed94e9e7afcdf2a75c2e52b4f29e5">arg_router::utility::utf8::line_iterator</a>
 </li>
 <li>operator()()
 : <a class="el" href="classarg__router_1_1parsing_1_1parse__target.html#a23945e17045ff40019266d6be1d34271">arg_router::parsing::parse_target</a>
@@ -89,6 +91,8 @@ $(function() {
 <li>operator*()
 : <a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter_1_1iterator.html#a905b9f31ba076e066e42ecba264a34dd">arg_router::parsing::dynamic_token_adapter::iterator</a>
 , <a class="el" href="classarg__router_1_1utility_1_1compile__time__optional.html#a75e93be68d4e9eea885ee9e50c6c2e52">arg_router::utility::compile_time_optional&lt; T &gt;</a>
+, <a class="el" href="classarg__router_1_1utility_1_1utf8_1_1code__point__iterator.html#af3ea8cd9934e0704215fa23dc777e39a">arg_router::utility::utf8::code_point_iterator</a>
+, <a class="el" href="classarg__router_1_1utility_1_1utf8_1_1line__iterator.html#a0ffd1198f56158ac6fbb121d2cd02987">arg_router::utility::utf8::line_iterator</a>
 </li>
 <li>operator+
 : <a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter_1_1iterator.html#ad7592a35eb52845f386e31e755e322e4">arg_router::parsing::dynamic_token_adapter::iterator</a>
@@ -96,12 +100,14 @@ $(function() {
 </li>
 <li>operator++()
 : <a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter_1_1iterator.html#afdc21b754de28f8816f48509da770234">arg_router::parsing::dynamic_token_adapter::iterator</a>
+, <a class="el" href="classarg__router_1_1utility_1_1utf8_1_1code__point__iterator.html#a5a4e2727b8a62650fecc958e4be8dec9">arg_router::utility::utf8::code_point_iterator</a>
+, <a class="el" href="classarg__router_1_1utility_1_1utf8_1_1line__iterator.html#a701b0ad629d6a2b6eed88a45f08769b5">arg_router::utility::utf8::line_iterator</a>
 </li>
 <li>operator+=()
 : <a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter_1_1iterator.html#a2379ca19c34013b0b67cc8aefdc1aa7e">arg_router::parsing::dynamic_token_adapter::iterator</a>
 </li>
 <li>operator-
-: <a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter_1_1iterator.html#af10a083099e33b45445bb2ea722ac737">arg_router::parsing::dynamic_token_adapter::iterator</a>
+: <a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter_1_1iterator.html#a12def13bdcea553fb1615ffcba30becf">arg_router::parsing::dynamic_token_adapter::iterator</a>
 </li>
 <li>operator--()
 : <a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter_1_1iterator.html#a4ebff3b84006547ff3150d1be28c4653">arg_router::parsing::dynamic_token_adapter::iterator</a>
@@ -115,6 +121,7 @@ $(function() {
 </li>
 <li>operator&lt;
 : <a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter_1_1iterator.html#a5e35247dda077b3c0ba05f6fcab1e731">arg_router::parsing::dynamic_token_adapter::iterator</a>
+, <a class="el" href="structarg__router_1_1utility_1_1utf8_1_1code__point__range.html#aa1ecb8c802430e5ed5de32d7e6981fcc">arg_router::utility::utf8::code_point_range</a>
 </li>
 <li>operator&lt;=
 : <a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter_1_1iterator.html#a15065cb1638464989b5fc326964475fb">arg_router::parsing::dynamic_token_adapter::iterator</a>
@@ -126,7 +133,9 @@ $(function() {
 : <a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter_1_1iterator.html#a1c18b282679ca83cdfb002df7bef1c3b">arg_router::parsing::dynamic_token_adapter::iterator</a>
 , <a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a77108b6fcf10bd62f56f579903f60119">arg_router::parsing::dynamic_token_adapter</a>
 , <a class="el" href="structarg__router_1_1parsing_1_1token__type.html#a52130985c6ce890b9e91e671a2e9746a">arg_router::parsing::token_type</a>
-, <a class="el" href="classarg__router_1_1utility_1_1result.html#a18c344f3be4964ec4a368f33c145dacc">arg_router::utility::result&lt; ResultType, ExceptionType &gt;</a>
+, <a class="el" href="classarg__router_1_1utility_1_1result.html#a8bcfcc9a0cb4dd4da9e82983380edb12">arg_router::utility::result&lt; ResultType, ExceptionType &gt;</a>
+, <a class="el" href="classarg__router_1_1utility_1_1utf8_1_1code__point__iterator.html#a3d68c6fa32c802d9451a98642e37c5b5">arg_router::utility::utf8::code_point_iterator</a>
+, <a class="el" href="classarg__router_1_1utility_1_1utf8_1_1line__iterator.html#a4b8b7ae45f92cdfb69dbc1907193a576">arg_router::utility::utf8::line_iterator</a>
 </li>
 <li>operator&gt;
 : <a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter_1_1iterator.html#adea1719dc62d8e9bcc2ba057d2490d7e">arg_router::parsing::dynamic_token_adapter::iterator</a>
