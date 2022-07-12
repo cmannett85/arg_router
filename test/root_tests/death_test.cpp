@@ -18,8 +18,7 @@ BOOST_AUTO_TEST_CASE(must_have_validator_policy_test)
 int main() {
     arg_router::root_t<
         arg_router::flag_t<
-            arg_router::policy::short_name_t<
-                arg_router::traits::integral_constant<'a'>>,
+            arg_router::policy::short_name_t<S_('a')>,
             arg_router::policy::long_name_t<S_("test")>,
             arg_router::policy::router<std::less<>>>>();
     return 0;

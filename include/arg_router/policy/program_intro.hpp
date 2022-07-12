@@ -4,6 +4,7 @@
 
 #include "arg_router/algorithm.hpp"
 #include "arg_router/policy/policy.hpp"
+#include "arg_router/utility/utf8.hpp"
 
 namespace arg_router
 {
@@ -29,7 +30,8 @@ public:
     [[nodiscard]] constexpr static std::string_view program_intro() noexcept { return S::get(); }
 
 private:
-    static_assert(program_intro().size() > 1, "Program intro must be longer than one character");
+    static_assert(utility::utf8::num_code_points(program_intro()) > 1,
+                  "Program intro must be longer than one character");
 };
 
 /** Constant variable helper.

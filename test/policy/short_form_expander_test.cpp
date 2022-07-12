@@ -106,6 +106,23 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "-h"},
                                                         {parsing::prefix_type::none, "-f"}},
                        stub_node{policy::short_name<'h'>}},
+            std::tuple{
+                std::vector<parsing::token_type>{},
+                std::vector<parsing::token_type>{{parsing::prefix_type::none, "-こんにちは"}},
+                std::vector<parsing::token_type>{{parsing::prefix_type::short_, "こ"}},
+                std::vector<parsing::token_type>{{parsing::prefix_type::short_, "ん"},
+                                                 {parsing::prefix_type::short_, "に"},
+                                                 {parsing::prefix_type::short_, "ち"},
+                                                 {parsing::prefix_type::short_, "は"}},
+                stub_node{policy::short_name_utf8<S_("こ")>}},
+            std::tuple{std::vector<parsing::token_type>{},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "-hello"}},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::short_, "h"}},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::short_, "e"},
+                                                        {parsing::prefix_type::short_, "l"},
+                                                        {parsing::prefix_type::short_, "l"},
+                                                        {parsing::prefix_type::short_, "o"}},
+                       stub_node{policy::short_name_utf8<S_("h")>}},
         });
 }
 

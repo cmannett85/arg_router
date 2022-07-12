@@ -2,8 +2,9 @@
 
 #pragma once
 
-#include "arg_router/algorithm.hpp"
 #include "arg_router/policy/policy.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+#include "arg_router/utility/utf8.hpp"
 
 namespace arg_router
 {
@@ -13,17 +14,11 @@ namespace policy
  * 
  * Although this type only accepts a single character, the parser expects it (or the short name
  * group it is a part of) to be preceded by the short prefix.
- * @tparam S Integral constant that can be implicitly converted to a char
+ * @tparam S UTF-8 code point
  */
 template <typename S>
 class short_name_t
 {
-    static_assert(std::is_convertible_v<S, char>,
-                  "Short name type must be implicitly convertible to char");
-    static_assert(algorithm::is_alnum(S::value), "Short name character must be alphanumeric");
-
-    constexpr static auto value = S::value;
-
 public:
     /** String type. */
     using string_type = S;
@@ -32,10 +27,17 @@ public:
      *
      * @return Short name
      */
-    [[nodiscard]] constexpr static std::string_view short_name() noexcept
-    {
-        return std::string_view{&value, 1};
-    }
+    [[nodiscard]] constexpr static std::string_view short_name() noexcept { return S::get(); }
+
+private:
+    using full_name_type = S_(config::short_prefix)::append_t<S>;
+
+    static_assert(utility::utf8::num_code_points(short_name()) == 1,
+                  "Value must only be 1 UTF-8 code point");
+    static_assert(utility::utf8::code_point_size(short_name()) == short_name().size(),
+                  "Value is malformed UTF-8, S is smaller than the header requires");
+    static_assert(full_name_type::get() != config::long_prefix,
+                  "Short name with short prefix cannot match the long prefix");
 };
 
 /** Constant variable helper.
@@ -43,7 +45,14 @@ public:
  * @tparam S Short name character
  */
 template <char S>
-constexpr auto short_name = short_name_t<traits::integral_constant<S>>{};
+constexpr auto short_name = short_name_t<S_(S)>{};
+
+/** Constant variable helper that supports UTF-8 code points.
+ *
+ * @tparam S UTF-8 code point
+ */
+template <typename S>
+constexpr auto short_name_utf8 = short_name_t<S>{};
 
 template <typename S>
 struct is_policy<short_name_t<S>> : std::true_type {

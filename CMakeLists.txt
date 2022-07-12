@@ -84,9 +84,15 @@ set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/compile_time_string.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/compile_time_optional.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/string_view_ops.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/terminal.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/tree_recursor.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/tuple_iterator.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/unsafe_any.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/utf8.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/utf8_tables/code_point.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/utf8_tables/double_width.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/utf8_tables/whitespace.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/utf8_tables/zero_width.hpp
 )
 
 set(FOR_IDE
@@ -107,6 +113,7 @@ set(FOR_IDE
     ${CMAKE_CURRENT_SOURCE_DIR}/scripts/ci/docker/gcc-9.sh
     ${CMAKE_CURRENT_SOURCE_DIR}/scripts/ci/docker/README.md
     ${CMAKE_CURRENT_SOURCE_DIR}/scripts/copyright_checker.py
+    ${CMAKE_CURRENT_SOURCE_DIR}/scripts/unicode_table_generators.py
     ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg.json
 )
 

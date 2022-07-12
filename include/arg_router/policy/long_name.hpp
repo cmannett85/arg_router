@@ -4,6 +4,7 @@
 
 #include "arg_router/algorithm.hpp"
 #include "arg_router/policy/policy.hpp"
+#include "arg_router/utility/utf8.hpp"
 
 namespace arg_router
 {
@@ -28,10 +29,9 @@ public:
     [[nodiscard]] constexpr static std::string_view long_name() noexcept { return S::get(); }
 
 private:
-    static_assert(long_name().size() > 1, "Long names must be longer than one character");
-    static_assert(algorithm::is_alnum(long_name()[0]),
-                  "Long name must not start with a non-alphanumeric character");
-    static_assert(!algorithm::contains_whitespace(long_name()),
+    static_assert(utility::utf8::num_code_points(long_name()) > 1,
+                  "Long names must be longer than one character");
+    static_assert(!utility::utf8::contains_whitespace(long_name()),
                   "Long names cannot contain whitespace");
 };
 

@@ -4,8 +4,6 @@
 
 #include "test_helpers.hpp"
 
-#include <boost/preprocessor/seq/for_each.hpp>
-
 #include <string>
 #include <vector>
 
@@ -13,64 +11,6 @@ using namespace arg_router;
 using namespace std::string_view_literals;
 
 BOOST_AUTO_TEST_SUITE(algorithm_suite)
-
-BOOST_AUTO_TEST_CASE(is_alnum_test)
-{
-    utility::tuple_iterator(
-        [](auto, auto i) {
-            constexpr auto valid = std::string_view{"abcdefghijklmnopqrstuvwxyz"
-                                                    "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                                                    "0123456789"};
-            constexpr auto expected = valid.find(i) != std::string_view::npos;
-
-            constexpr auto result = algorithm::is_alnum(i);
-            static_assert(expected == result, "is_alnum_test failed");
-        },
-        boost::mp11::mp_rename<  //
-            boost::mp11::mp_iota<traits::integral_constant<std::numeric_limits<char>::max()>>,
-            std::tuple>{});
-}
-
-BOOST_AUTO_TEST_CASE(is_whitespace_test)
-{
-    utility::tuple_iterator(
-        [](auto, auto i) {
-            constexpr auto expected = (i == ' ') || (i == '\f') || (i == '\n') || (i == '\r') ||
-                                      (i == '\t') || (i == '\v');
-
-            constexpr auto result = algorithm::is_whitespace(i);
-            static_assert(expected == result, "is_whitespace failed");
-        },
-        boost::mp11::mp_rename<  //
-            boost::mp11::mp_iota<traits::integral_constant<std::numeric_limits<char>::max()>>,
-            std::tuple>{});
-}
-
-BOOST_AUTO_TEST_CASE(contains_whitespace_test)
-{
-    // Although std::string_view is constexpr, it's type is the same between
-    // our strings, which means we can't use it as above because you can't
-    // initialise a constexpr value from a function parameter.  So we'll have
-    // to use the preprocessor to generate the code instead
-#define CONTAINS_SEQ                                                                          \
-    ("he llo")("hello ")(" hello")("hell\to")("hel\nlo")("he     llo")("h\fello")("h\rello")( \
-        "h\vello")
-
-#define NOT_CONTAINS_SEQ ("")("hello")
-
-#define MACRO(r, expected, elem)                                         \
-    {                                                                    \
-        constexpr auto result = algorithm::contains_whitespace(elem);    \
-        static_assert(expected == result, "contains_whitespace failed"); \
-    }
-
-    BOOST_PP_SEQ_FOR_EACH(MACRO, true, CONTAINS_SEQ);
-    BOOST_PP_SEQ_FOR_EACH(MACRO, false, NOT_CONTAINS_SEQ);
-
-#undef CONTAINS_SEQ
-#undef NOT_CONTAINS_SEQ
-#undef MACRO
-}
 
 BOOST_AUTO_TEST_CASE(find_specialisation_test)
 {

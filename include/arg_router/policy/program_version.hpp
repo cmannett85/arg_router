@@ -3,6 +3,7 @@
 #pragma once
 
 #include "arg_router/policy/policy.hpp"
+#include "arg_router/utility/utf8.hpp"
 
 namespace arg_router
 {
@@ -28,7 +29,8 @@ public:
     [[nodiscard]] constexpr static std::string_view program_version() noexcept { return S::get(); }
 
 private:
-    static_assert(program_version().size() > 0, "Program version string must not be empty");
+    static_assert(utility::utf8::num_code_points(program_version()) > 1,
+                  "Program version string must be longer than one character");
 };
 
 /** Constant variable helper.

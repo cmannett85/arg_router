@@ -27,17 +27,17 @@ BOOST_AUTO_TEST_CASE(constructor_and_get_test)
 
 BOOST_AUTO_TEST_SUITE(death_suite)
 
-BOOST_AUTO_TEST_CASE(alphanumeric_test)
+BOOST_AUTO_TEST_CASE(short_name_cannot_start_with_argument_prefix_test)
 {
     test::death_test_compile(
         R"(
 #include "arg_router/policy/short_name.hpp"
 int main() {
-    const auto ln = arg_router::policy::short_name<'.'>;
+    const auto ln = arg_router::policy::short_name<'-'>;
     return 0;
 }
     )",
-        "Short name character must be alphanumeric");
+        "Short name with short prefix cannot match the long prefix");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

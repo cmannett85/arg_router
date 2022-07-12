@@ -130,7 +130,34 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                        std::vector<parsing::token_type>{},
                        parsing::pre_parse_action::skip_node,
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello="}},
-                       stub_node{policy::long_name<S_("hello")>, policy::fixed_count<1>}}});
+                       stub_node{policy::long_name<S_("hello")>, policy::fixed_count<1>}},
+            std::tuple{
+                std::vector<parsing::token_type>{},
+                std::vector<parsing::token_type>{{parsing::prefix_type::none, "--こんにちは=42"}},
+                std::vector<parsing::token_type>{{parsing::prefix_type::none, "--こんにちは"},
+                                                 {parsing::prefix_type::none, "42"}},
+                parsing::pre_parse_action::valid_node,
+                std::vector<parsing::token_type>{},
+                stub_node{policy::long_name<S_("こんにちは")>, policy::fixed_count<1>}},
+            std::tuple{
+                std::vector<parsing::token_type>{},
+                std::vector<parsing::token_type>{
+                    {parsing::prefix_type::none, "--hello=よんじゅうに"}},
+                std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"},
+                                                 {parsing::prefix_type::none, "よんじゅうに"}},
+                parsing::pre_parse_action::valid_node,
+                std::vector<parsing::token_type>{},
+                stub_node{policy::long_name<S_("hello")>, policy::fixed_count<1>}},
+            std::tuple{
+                std::vector<parsing::token_type>{},
+                std::vector<parsing::token_type>{
+                    {parsing::prefix_type::none, "--こんにちは=よんじゅうに"}},
+                std::vector<parsing::token_type>{{parsing::prefix_type::none, "--こんにちは"},
+                                                 {parsing::prefix_type::none, "よんじゅうに"}},
+                parsing::pre_parse_action::valid_node,
+                std::vector<parsing::token_type>{},
+                stub_node{policy::long_name<S_("こんにちは")>, policy::fixed_count<1>}},
+        });
 }
 
 BOOST_AUTO_TEST_SUITE(death_suite)

@@ -23,8 +23,7 @@ BOOST_AUTO_TEST_CASE(despecialised_unique_in_owner_test)
 {
     policy::validation::despecialised_unique_in_owner::check<
         policy::long_name_t<S_("test")>,
-        flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
-               policy::long_name_t<S_("test")>>>();
+        flag_t<policy::short_name_t<S_('a')>, policy::long_name_t<S_("test")>>>();
 
     policy::validation::despecialised_unique_in_owner::check<policy::long_name_t<S_("test")>>();
 }
@@ -36,22 +35,19 @@ BOOST_AUTO_TEST_CASE(policy_unique_from_owner_parent_to_mode_or_root_test)
 
     policy::validation::policy_unique_from_owner_parent_to_mode_or_root<arg_router::mode_t>::check<
         policy::long_name_t<S_("test")>,
-        flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
-               policy::long_name_t<S_("test")>>>();
+        flag_t<policy::short_name_t<S_('a')>, policy::long_name_t<S_("test")>>>();
 
     policy::validation::policy_unique_from_owner_parent_to_mode_or_root<arg_router::mode_t>::check<
         policy::long_name_t<S_("test1")>,
-        flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
-               policy::long_name_t<S_("test1")>>,
+        flag_t<policy::short_name_t<S_('a')>, policy::long_name_t<S_("test1")>>,
         arg_router::mode_t<policy::none_name_t<S_("mode1")>,
-                           flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
-                                  policy::long_name_t<S_("test1")>>>,
-        root_t<arg_router::mode_t<policy::none_name_t<S_("mode1")>,
-                                  flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
-                                         policy::long_name_t<S_("test1")>>>,
-               arg_router::mode_t<policy::none_name_t<S_("mode2")>,
-                                  flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
-                                         policy::long_name_t<S_("test1")>>>,
+                           flag_t<policy::short_name_t<S_('a')>, policy::long_name_t<S_("test1")>>>,
+        root_t<arg_router::mode_t<
+                   policy::none_name_t<S_("mode1")>,
+                   flag_t<policy::short_name_t<S_('a')>, policy::long_name_t<S_("test1")>>>,
+               arg_router::mode_t<
+                   policy::none_name_t<S_("mode2")>,
+                   flag_t<policy::short_name_t<S_('a')>, policy::long_name_t<S_("test1")>>>,
                std::decay_t<decltype(policy::validation::default_validator)>>>();
 }
 
@@ -59,19 +55,19 @@ BOOST_AUTO_TEST_CASE(parent_types_test)
 {
     policy::validation::parent_types<policy::validation::parent_index_pair_type<0, flag_t>>::check<
         policy::router<std::less<>>,
-        flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+        flag_t<policy::short_name_t<S_('a')>,
                policy::long_name_t<S_("test")>,
                policy::router<std::less<>>>>();
 
     policy::validation::parent_types<policy::validation::parent_index_pair_type<1, root_t>>::check<
         policy::router<std::less<>>,
-        flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+        flag_t<policy::short_name_t<S_('a')>,
                policy::long_name_t<S_("test1")>,
                policy::router<std::less<>>>,
-        root_t<flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+        root_t<flag_t<policy::short_name_t<S_('a')>,
                       policy::long_name_t<S_("test1")>,
                       policy::router<std::less<>>>,
-               flag_t<policy::short_name_t<traits::integral_constant<'b'>>,
+               flag_t<policy::short_name_t<S_('b')>,
                       policy::long_name_t<S_("test2")>,
                       policy::router<std::less<>>>>>();
 
@@ -79,13 +75,13 @@ BOOST_AUTO_TEST_CASE(parent_types_test)
         policy::validation::parent_index_pair_type<0, arg_router::mode_t>,
         policy::validation::parent_index_pair_type<1, root_t>>::
         check<policy::router<std::less<>>,
-              flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+              flag_t<policy::short_name_t<S_('a')>,
                      policy::long_name_t<S_("test1")>,
                      policy::router<std::less<>>>,
-              root_t<flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+              root_t<flag_t<policy::short_name_t<S_('a')>,
                             policy::long_name_t<S_("test1")>,
                             policy::router<std::less<>>>,
-                     flag_t<policy::short_name_t<traits::integral_constant<'b'>>,
+                     flag_t<policy::short_name_t<S_('b')>,
                             policy::long_name_t<S_("test2")>,
                             policy::router<std::less<>>>>>();
 }
@@ -93,11 +89,10 @@ BOOST_AUTO_TEST_CASE(parent_types_test)
 BOOST_AUTO_TEST_CASE(must_have_policies_test)
 {
     policy::validation::must_have_policies<policy::long_name_t>::check<
-        flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
-               policy::long_name_t<S_("test")>>>();
+        flag_t<policy::short_name_t<S_('a')>, policy::long_name_t<S_("test")>>>();
 
     policy::validation::must_have_policies<policy::long_name_t, policy::description_t>::check<
-        flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+        flag_t<policy::short_name_t<S_('a')>,
                policy::description_t<S_("desc")>,
                policy::long_name_t<S_("test")>>>();
 }
@@ -105,21 +100,19 @@ BOOST_AUTO_TEST_CASE(must_have_policies_test)
 BOOST_AUTO_TEST_CASE(must_not_have_policies_test)
 {
     policy::validation::must_not_have_policies<policy::required_t>::check<
-        flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
-               policy::long_name_t<S_("test")>>>();
+        flag_t<policy::short_name_t<S_('a')>, policy::long_name_t<S_("test")>>>();
 
     policy::validation::must_not_have_policies<policy::required_t, policy::description_t>::check<
-        flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
-               policy::long_name_t<S_("test")>>>();
+        flag_t<policy::short_name_t<S_('a')>, policy::long_name_t<S_("test")>>>();
 }
 
 BOOST_AUTO_TEST_CASE(child_must_have_policy_test)
 {
     policy::validation::child_must_have_policy<policy::router>::check<
-        root_t<flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+        root_t<flag_t<policy::short_name_t<S_('a')>,
                       policy::long_name_t<S_("test1")>,
                       policy::router<std::less<>>>,
-               flag_t<policy::short_name_t<traits::integral_constant<'b'>>,
+               flag_t<policy::short_name_t<S_('b')>,
                       policy::long_name_t<S_("test2")>,
                       policy::router<std::less<>>>,
                std::decay_t<decltype(policy::validation::default_validator)>>>();
@@ -129,39 +122,32 @@ BOOST_AUTO_TEST_CASE(policy_parent_must_not_have_policy_test)
 {
     policy::validation::policy_parent_must_not_have_policy<policy::display_name_t>::check<
         policy::display_name_t<S_("hello")>,
-        flag_t<policy::long_name_t<S_("hello")>,
-               policy::short_name_t<traits::integral_constant<'a'>>>>();
+        flag_t<policy::long_name_t<S_("hello")>, policy::short_name_t<S_('a')>>>();
 }
 
 BOOST_AUTO_TEST_CASE(single_anonymous_mode_test)
 {
-    policy::validation::single_anonymous_mode<arg_router::mode_t>::check<
-        root_t<arg_router::mode_t<policy::none_name_t<S_("mode1")>,
-                                  flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
-                                         policy::long_name_t<S_("test1")>>>,
-               arg_router::mode_t<policy::none_name_t<S_("mode2")>,
-                                  flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
-                                         policy::long_name_t<S_("test1")>>>,
-               std::decay_t<decltype(policy::validation::default_validator)>>>();
+    policy::validation::single_anonymous_mode<arg_router::mode_t>::check<root_t<
+        arg_router::mode_t<policy::none_name_t<S_("mode1")>,
+                           flag_t<policy::short_name_t<S_('a')>, policy::long_name_t<S_("test1")>>>,
+        arg_router::mode_t<policy::none_name_t<S_("mode2")>,
+                           flag_t<policy::short_name_t<S_('a')>, policy::long_name_t<S_("test1")>>>,
+        std::decay_t<decltype(policy::validation::default_validator)>>>();
 
-    policy::validation::single_anonymous_mode<arg_router::mode_t>::check<
-        root_t<arg_router::mode_t<policy::none_name_t<S_("mode1")>,
-                                  flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
-                                         policy::long_name_t<S_("test1")>>>,
-               arg_router::mode_t<flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
-                                         policy::long_name_t<S_("test1")>>>,
-               std::decay_t<decltype(policy::validation::default_validator)>>>();
+    policy::validation::single_anonymous_mode<arg_router::mode_t>::check<root_t<
+        arg_router::mode_t<policy::none_name_t<S_("mode1")>,
+                           flag_t<policy::short_name_t<S_('a')>, policy::long_name_t<S_("test1")>>>,
+        arg_router::mode_t<flag_t<policy::short_name_t<S_('a')>, policy::long_name_t<S_("test1")>>>,
+        std::decay_t<decltype(policy::validation::default_validator)>>>();
 
-    policy::validation::single_anonymous_mode<arg_router::mode_t>::check<
-        root_t<arg_router::mode_t<policy::none_name_t<S_("mode1")>,
-                                  flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
-                                         policy::long_name_t<S_("test1")>>>,
-               std::decay_t<decltype(policy::validation::default_validator)>>>();
+    policy::validation::single_anonymous_mode<arg_router::mode_t>::check<root_t<
+        arg_router::mode_t<policy::none_name_t<S_("mode1")>,
+                           flag_t<policy::short_name_t<S_('a')>, policy::long_name_t<S_("test1")>>>,
+        std::decay_t<decltype(policy::validation::default_validator)>>>();
 
-    policy::validation::single_anonymous_mode<arg_router::mode_t>::check<
-        root_t<arg_router::mode_t<flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
-                                         policy::long_name_t<S_("test1")>>>,
-               std::decay_t<decltype(policy::validation::default_validator)>>>();
+    policy::validation::single_anonymous_mode<arg_router::mode_t>::check<root_t<
+        arg_router::mode_t<flag_t<policy::short_name_t<S_('a')>, policy::long_name_t<S_("test1")>>>,
+        std::decay_t<decltype(policy::validation::default_validator)>>>();
 }
 
 BOOST_AUTO_TEST_CASE(at_least_one_of_policies_test)
@@ -170,11 +156,10 @@ BOOST_AUTO_TEST_CASE(at_least_one_of_policies_test)
         flag_t<policy::long_name_t<S_("hello")>>>();
 
     policy::validation::at_least_one_of_policies<policy::long_name_t, policy::short_name_t>::check<
-        flag_t<policy::short_name_t<traits::integral_constant<'a'>>>>();
+        flag_t<policy::short_name_t<S_('a')>>>();
 
     policy::validation::at_least_one_of_policies<policy::long_name_t, policy::short_name_t>::check<
-        flag_t<policy::long_name_t<S_("long")>,
-               policy::short_name_t<traits::integral_constant<'s'>>>>();
+        flag_t<policy::long_name_t<S_("long")>, policy::short_name_t<S_('s')>>>();
 }
 
 BOOST_AUTO_TEST_CASE(node_types_must_be_at_end_test)
@@ -293,8 +278,7 @@ int main() {
     arg_router::policy::validation::despecialised_unique_in_owner::check<
         arg_router::policy::long_name_t<S_("test1")>,
         arg_router::flag_t<
-            arg_router::policy::short_name_t<
-                arg_router::traits::integral_constant<'a'>>,
+            arg_router::policy::short_name_t<S_('a')>,
             arg_router::policy::long_name_t<S_("test1")>,
             arg_router::policy::long_name_t<S_("test2")>>>();
     return 0;
@@ -319,12 +303,12 @@ int main() {
                 policy::long_name_t<S_("test")>,
                 flag_t<
                     policy::short_name_t<
-                        traits::integral_constant<'a'>>,
+                        S_('a')>,
                     policy::long_name_t<S_("test")>>,
                 root_t<
                     flag_t<
                         policy::short_name_t<
-                            traits::integral_constant<'a'>>,
+                            S_('a')>,
                         policy::long_name_t<S_("test")>,
                         policy::router<std::less<>>>,
                     flag_t<
@@ -353,7 +337,7 @@ int main() {
         root_t<
             flag_t<
                 policy::short_name_t<
-                    traits::integral_constant<'a'>>,
+                    S_('a')>,
                 policy::long_name_t<S_("test")>>,
             policy::router<std::less<>>,
             std::decay_t<decltype(policy::validation::default_validator)>>>();
@@ -374,13 +358,13 @@ int main() {
             policy::validation::parent_index_pair_type<1, arg_router::mode_t>
             >::check<
             policy::router<std::less<>>,
-            flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+            flag_t<policy::short_name_t<S_('a')>,
                    policy::long_name_t<S_("test1")>,
                    policy::router<std::less<>>>,
-            root_t<flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+            root_t<flag_t<policy::short_name_t<S_('a')>,
                           policy::long_name_t<S_("test1")>,
                           policy::router<std::less<>>>,
-                   flag_t<policy::short_name_t<traits::integral_constant<'b'>>,
+                   flag_t<policy::short_name_t<S_('b')>,
                           policy::long_name_t<S_("test2")>,
                           policy::router<std::less<>>>>>();
     return 0;
@@ -400,7 +384,7 @@ using namespace arg_router;
 
 int main() {
     policy::validation::must_have_policies<policy::required_t>::check<
-        flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+        flag_t<policy::short_name_t<S_('a')>,
                policy::long_name_t<S_("test")>>>();
     return 0;
 }
@@ -420,7 +404,7 @@ using namespace arg_router;
 int main() {
     policy::validation::must_have_policies<
         policy::required_t, policy::short_name_t>::check<
-            flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+            flag_t<policy::short_name_t<S_('a')>,
                    policy::long_name_t<S_("test")>>>();
     return 0;
 }
@@ -439,7 +423,7 @@ using namespace arg_router;
 
 int main() {
     policy::validation::must_not_have_policies<policy::required_t>::check<
-        flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+        flag_t<policy::short_name_t<S_('a')>,
                policy::long_name_t<S_("test")>,
                policy::required_t<>>>();
     return 0;
@@ -460,7 +444,7 @@ using namespace arg_router;
 int main() {
     policy::validation::must_not_have_policies<
         policy::required_t, policy::long_name_t>::check<
-            flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+            flag_t<policy::short_name_t<S_('a')>,
                    policy::long_name_t<S_("test")>,
                    policy::required_t<>>>();
     return 0;
@@ -480,10 +464,10 @@ using namespace arg_router;
 
 int main() {
     policy::validation::child_must_have_policy<policy::long_name_t>::check<
-        root_t<flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+        root_t<flag_t<policy::short_name_t<S_('a')>,
                       policy::long_name_t<S_("test1")>,
                       policy::router<std::less<>>>,
-               flag_t<policy::short_name_t<traits::integral_constant<'b'>>,
+               flag_t<policy::short_name_t<S_('b')>,
                       policy::router<std::less<>>>,
                std::decay_t<decltype(policy::validation::default_validator)>>>();
     return 0;
@@ -506,7 +490,7 @@ int main() {
         policy_parent_must_not_have_policy<policy::long_name_t>::check<
             double,
             flag_t<policy::display_name_t<S_("hello")>,
-                   policy::short_name_t<traits::integral_constant<'a'>>>>();
+                   policy::short_name_t<S_('a')>>>();
 }
     )",
         "T must be a policy");
@@ -562,10 +546,10 @@ using namespace arg_router;
 int main() {
     policy::validation::single_anonymous_mode<arg_router::mode_t>::check<root_t<
         arg_router::mode_t<
-            flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+            flag_t<policy::short_name_t<S_('a')>,
                    policy::long_name_t<S_("test1")>>>,
         arg_router::mode_t<
-            flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
+            flag_t<policy::short_name_t<S_('a')>,
                    policy::long_name_t<S_("test1")>>>,
         std::decay_t<decltype(policy::validation::default_validator)>>>();
 }

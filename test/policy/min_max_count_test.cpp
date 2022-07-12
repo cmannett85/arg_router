@@ -171,6 +171,18 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "hello"}},
                        "",
                        stub_node{policy::display_name<S_("node1")>, policy::max_count<2>}},
+            std::tuple{policy::fixed_count<1>,
+                       std::vector<parsing::token_type>{},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "--node1"},
+                                                        {parsing::prefix_type::none, "霊"},
+                                                        {parsing::prefix_type::none, "foo"},
+                                                        {parsing::prefix_type::none, "hello"}},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "--node1"},
+                                                        {parsing::prefix_type::none, "霊"}},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "foo"},
+                                                        {parsing::prefix_type::none, "hello"}},
+                       "",
+                       stub_node{policy::long_name<S_("node1")>, policy::fixed_count<1>}},
         });
 }
 

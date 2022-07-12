@@ -69,20 +69,6 @@ int main() {
         "Long names cannot contain whitespace");
 }
 
-BOOST_AUTO_TEST_CASE(first_char_cannot_be_non_alphanumeric_test)
-{
-    test::death_test_compile(
-        R"(
-#include "arg_router/policy/long_name.hpp"
-#include "arg_router/utility/compile_time_string.hpp"
-int main() {
-    const auto ln = arg_router::policy::long_name<S_("--foo")>;
-    return 0;
-}
-    )",
-        "Long name must not start with a non-alphanumeric character");
-}
-
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
