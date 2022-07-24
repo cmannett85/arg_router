@@ -136,8 +136,8 @@ $(function() {
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        <span class="comment">// that</span></div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">auto</span> gc_it = ++<a class="code" href="classarg__router_1_1utility_1_1utf8_1_1iterator.html">utility::utf8::iterator</a>{first_token.name};</div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;             gc_it != <a class="code" href="classarg__router_1_1utility_1_1utf8_1_1iterator.html">utility::utf8::iterator</a>{};</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;             ++gc_it) {</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;            tokens.<a class="code" href="classarg__router_1_1parsing_1_1dynamic__token__adapter.html#ae036fca9a690d8ab819c3c3813e37709">unprocessed</a>().insert(it++, {<a class="code" href="namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3a16466420ab71d5feae928666169b405c">parsing::prefix_type::short_</a>, *gc_it});</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;             ++gc_it, ++it) {</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;            it = tokens.<a class="code" href="classarg__router_1_1parsing_1_1dynamic__token__adapter.html#ae036fca9a690d8ab819c3c3813e37709">unprocessed</a>().insert(it, {<a class="code" href="namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3a16466420ab71d5feae928666169b405c">parsing::prefix_type::short_</a>, *gc_it});</div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        }</div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        <span class="comment">// Shrink the first to a single grapheme cluster</span></div>

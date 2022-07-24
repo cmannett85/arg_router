@@ -516,7 +516,6 @@ $(function() {
 </div><!-- fragment --><p>I mentioned in the blurb at the top that <code><a class="el" href="namespacearg__router.html">arg_router</a></code> is <em>quite</em> Unicode compliant which doesn't exactly inspire confidence... There are three limitations to current support:</p>
 <ol type="1">
 <li>Only UTF-8 support. If you want other encodings (e.g. UTF-16 on Windows), then you'll need to convert the input tokens to UTF-8 before calling <code>parse(..)</code>. The compile-time strings used in the parse tree <em>must</em> be UTF-8 because that's the only encoding supported by <code><a class="el" href="namespacearg__router.html">arg_router</a></code>'s string checkers and line-break algorithm. Likewise the help output generated will be UTF-8, so you'll need to capture the output (by attaching a <code>policy::router</code>) and then convert before printing</li>
-<li>1 code point is assumed to be 1 grapheme cluster. This is fine for the <em>vast</em> majority of characters but not all more esoteric accenting, keypad and flag emojis are the common ones (will be fixed in #133)</li>
 <li>The line-break algorithm only works with whitespace, otherwise it may split mid word or mid multi-code point grapheme clusters (will be fixed in #135)</li>
 </ol>
 <p>Normally an application will link to ICU for its Unicode needs, but unfortunately we can't do that here as ICU is not <code>constexpr</code> and therefore cannot be used for our compile-time needs - so we need to roll our own.</p>
