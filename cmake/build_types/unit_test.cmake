@@ -96,6 +96,7 @@ function(configure_test_build TARGET)
 endfunction()
 
 configure_test_build(arg_router_test)
+add_clangtidy_to_target(arg_router_test)
 
 target_include_directories(arg_router_test
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include

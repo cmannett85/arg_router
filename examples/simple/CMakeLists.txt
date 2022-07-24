@@ -14,6 +14,7 @@ target_compile_features(example_simple PUBLIC cxx_std_17)
 set_target_properties(example_simple PROPERTIES CXX_EXTENSIONS OFF)
 
 configure_test_build(example_simple)
+add_clangtidy_to_target(example_simple)
 
 target_include_directories(example_simple
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../../include

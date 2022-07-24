@@ -3,7 +3,8 @@
 cmake_minimum_required(VERSION 3.15)
 
 # Options
-option(DOCS_ONLY "Only build the documentation")
+option(DOCS_ONLY "Only build the documentation" OFF)
+option(ENABLE_CLANG_TIDY "Enable clang-tidy warnings" ON)
 
 # Use the libraries brought in from vcpkg rather than the system ones
 if(NOT DOCS_ONLY)
@@ -11,6 +12,8 @@ if(NOT DOCS_ONLY)
         ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake
     )
 endif()
+
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/clang-tidy.cmake)
 
 project(arg_router
         VERSION 0.0.1

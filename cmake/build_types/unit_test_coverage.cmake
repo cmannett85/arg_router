@@ -14,6 +14,7 @@ set_target_properties(arg_router_test_coverage PROPERTIES CXX_EXTENSIONS OFF)
 target_compile_definitions(arg_router_test_coverage PRIVATE UNIT_TEST_BUILD)
 
 configure_test_build(arg_router_test_coverage --coverage)
+add_clangtidy_to_target(arg_router_test_coverage)
 
 target_include_directories(arg_router_test_coverage
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include
