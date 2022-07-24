@@ -40,6 +40,11 @@ public:
     {
     }
 
-    virtual ~parse_exception() override = default;
+    parse_exception(const parse_exception&) = default;
+    parse_exception& operator=(const parse_exception&) = default;
+    parse_exception(parse_exception&&) = default;
+    parse_exception& operator=(parse_exception&&) = default;
+
+    ~parse_exception() override = default;
 };
 }  // namespace arg_router

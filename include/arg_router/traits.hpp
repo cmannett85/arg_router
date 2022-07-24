@@ -27,10 +27,7 @@ struct tuple_element<I, boost::mp11::mp_list<T...>> {
 }  // namespace std
 
 /** Namespace for all arg_router types and functions. */
-namespace arg_router
-{
-/** Types and functions relating to the properties of types. */
-namespace traits
+namespace arg_router::traits
 {
 /** Regardless of @a T, always evaluates to false.
  *
@@ -153,7 +150,7 @@ constexpr bool is_specialisation_of_v = is_specialisation_of<T, U>::value;
  * is_same_when_despecialised<std::vector<int>, std::vector<int>>::value         // True
  * is_same_when_despecialised<std::vector<int>, std::deque<int>>::value          // False
  * @endcode
- * 
+ *
  * If any param is not a specialised type, then it evaluates to false.
  * @tparam T First type to compare
  * @tparam U Second type to compare
@@ -214,8 +211,9 @@ class unpack_and_derive<T<Params...>> : public Params...
 {
     // When are we going to get language-level tuple unpacking!?
     template <std::size_t... I>
-    constexpr explicit unpack_and_derive(T<Params...> params,
-                                         std::integer_sequence<std::size_t, I...>) noexcept :
+    constexpr explicit unpack_and_derive(
+        T<Params...> params,
+        [[maybe_unused]] std::integer_sequence<std::size_t, I...> Is) noexcept :
         Params{std::get<I>(std::move(params))}...
     {
     }
@@ -223,7 +221,9 @@ class unpack_and_derive<T<Params...>> : public Params...
     // This empty tuple overload is just to prevent an
     // -Werror=unused-but-set-parameter on the params parameter
     template <std::size_t... I>
-    constexpr explicit unpack_and_derive(T<Params...>, std::integer_sequence<std::size_t>) noexcept
+    constexpr explicit unpack_and_derive(
+        [[maybe_unused]] T<Params...> t,
+        [[maybe_unused]] std::integer_sequence<std::size_t> Is) noexcept
     {
     }
 
@@ -489,13 +489,13 @@ constexpr static bool has_parse_method_v = has_parse_method<T>::value;
 
 /** Evaluates to a <TT>std::tuple</TT> of the return and argument types the
  * <TT>Callable</TT> @a T has.
- * 
+ *
  * The first tuple element type is the return type.
  *
  * From https://stackoverflow.com/a/27867127/498437.
  * @note The specialisations are not complete, there are no volatile or ref-qualified versions. Does
  * @b NOT work with overloaded or templated function/methods (obviously)
- * 
+ *
  * @tparam T Type to query
  */
 template <typename T>
@@ -544,5 +544,4 @@ constexpr std::size_t arity_v = std::tuple_size_v<arg_extractor_t<T>> - 1;
  */
 template <typename T, std::size_t I>
 using arg_type_at_index = std::tuple_element_t<I + 1, arg_extractor_t<T>>;
-}  // namespace traits
-}  // namespace arg_router
+}  // namespace arg_router::traits

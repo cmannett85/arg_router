@@ -4,9 +4,7 @@
 
 #include "arg_router/policy/policy.hpp"
 
-namespace arg_router
-{
-namespace policy
+namespace arg_router::policy
 {
 /** Used to set a help node to display all command line options in one large tree.
  *
@@ -23,5 +21,4 @@ constexpr auto flatten_help = flatten_help_t<>{};
 template <>
 struct is_policy<flatten_help_t<>> : std::true_type {
 };
-}  // namespace policy
-}  // namespace arg_router
+}  // namespace arg_router::policy

@@ -6,11 +6,9 @@
 
 #include <boost/mp11/algorithm.hpp>
 
-namespace arg_router
-{
 /** Namespace for utility types and functions.
  */
-namespace utility
+namespace arg_router::utility
 {
 /** Iterates over @a tuple and calls @a f on each element.
  *
@@ -78,5 +76,4 @@ constexpr std::enable_if_t<traits::is_tuple_like_v<std::decay_t<Tuple>>> tuple_t
     constexpr auto N = std::tuple_size_v<std::decay_t<Tuple>>;
     boost::mp11::mp_for_each<boost::mp11::mp_iota_c<N>>([&](auto i) { f(i); });
 }
-}  // namespace utility
-}  // namespace arg_router
+}  // namespace arg_router::utility

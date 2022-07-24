@@ -9,13 +9,11 @@
 #include "arg_router/utility/compile_time_optional.hpp"
 #include "arg_router/utility/utf8.hpp"
 
-namespace arg_router
-{
-namespace policy
+namespace arg_router::policy
 {
 /** Policy implementing a pre-parse phase that expands a collapsed short-form raw token into
  * multiple parsing::token_type instances.
- * 
+ *
  * This is provided for node implementers, so this behaviour can be re-used amongst flag-like
  * nodes - library users should not use it (you will likely break your node's parsing behaviour if
  * it has a short name policy).
@@ -28,7 +26,7 @@ public:
     constexpr static auto priority = std::size_t{900};
 
     /** Performs the expansion in the pre-parse phase.
-     *  
+     *
      * Checks if the token's first character matches the owning node's short name.  If there isn't a
      * match or the owner does not have short name policy then it just returns false.  Otherwise all
      * the characters in the token are converted into short form tokens, added to @a tokens.
@@ -55,8 +53,8 @@ public:
         static_assert(traits::has_short_name_method_v<owner_type>,
                       "Short-form expansion support requires a short name policy");
 
-        static_assert(utility::utf8::num_code_points(owner_type::short_name()) == 1,
-                      "Short name must only be 1 UTF-8 code point");
+        static_assert(utility::utf8::count(owner_type::short_name()) == 1,
+                      "Short name must only be 1 character");
 
         auto first = tokens.begin();
         auto first_token = *first;
@@ -85,16 +83,16 @@ public:
         tokens.unprocessed().reserve(tokens.unprocessed().size() + first_token.name.size() - 1);
         auto it = tokens.unprocessed().begin();
 
-        // Skip past the first code point as we'll re-use the existing short form token for that
-        for (auto cp_it = ++utility::utf8::code_point_iterator{first_token.name};
-             cp_it != utility::utf8::code_point_iterator{};
-             ++cp_it) {
-            tokens.unprocessed().insert(it++, {parsing::prefix_type::short_, *cp_it});
+        // Skip past the first grapheme cluster as we'll re-use the existing short form token for
+        // that
+        for (auto gc_it = ++utility::utf8::iterator{first_token.name};
+             gc_it != utility::utf8::iterator{};
+             ++gc_it) {
+            tokens.unprocessed().insert(it++, {parsing::prefix_type::short_, *gc_it});
         }
 
-        // Shrink the first to a single code point
-        const auto first_token_size = utility::utf8::code_point_size(first_token.name);
-        first.set({parsing::prefix_type::short_, first_token.name.substr(0, first_token_size)});
+        // Shrink the first to a single grapheme cluster
+        first.set({parsing::prefix_type::short_, *utility::utf8::iterator{first_token.name}});
 
         return parsing::pre_parse_action::valid_node;
     }
@@ -106,5 +104,4 @@ constexpr auto short_form_expander = short_form_expander_t<>{};
 template <>
 struct is_policy<short_form_expander_t<>> : std::true_type {
 };
-}  // namespace policy
-}  // namespace arg_router
+}  // namespace arg_router::policy

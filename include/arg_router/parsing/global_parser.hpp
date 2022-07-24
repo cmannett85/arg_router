@@ -86,7 +86,8 @@ struct parser<bool> {
 
         if (match(true_tokens)) {
             return true;
-        } else if (match(false_tokens)) {
+        }
+        if (match(false_tokens)) {
             return false;
         }
 

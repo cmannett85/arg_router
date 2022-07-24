@@ -162,6 +162,19 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
 
 BOOST_AUTO_TEST_SUITE(death_suite)
 
+BOOST_AUTO_TEST_CASE(must_be_one_character_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/value_separator.hpp"
+int main() {
+    const auto ln = arg_router::policy::value_separator_utf8<S_("")>;
+    return 0;
+}
+    )",
+        "Value separator must only be one character");
+}
+
 BOOST_AUTO_TEST_CASE(whitespace_test)
 {
     test::death_test_compile(

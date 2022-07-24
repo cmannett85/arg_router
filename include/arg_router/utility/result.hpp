@@ -6,12 +6,10 @@
 
 #include <variant>
 
-namespace arg_router
-{
-namespace utility
+namespace arg_router::utility
 {
 /** Result or exception wrapper.
- *  
+ *
  * @tparam ValueType Result type
  * @tparam ExceptionType Exception type
  */
@@ -31,49 +29,39 @@ public:
      *
      * @param value Result value
      */
+    // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
     constexpr result(result_type value) noexcept : data_{std::move(value)} {}
 
     /** Exception constructor.
      *
      * @param ex Exception
      */
+    // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
     constexpr result(ExceptionType ex) noexcept : data_{std::move(ex)} {}
 
     /** True if this instance holds a result.
      *
      * @return True if result
      */
-    [[nodiscard]] constexpr bool has_result() const noexcept
-    {
-        return data_.index() == 0;
-    }
+    [[nodiscard]] constexpr bool has_result() const noexcept { return data_.index() == 0; }
 
     /** True if this instance holds an exception.
      *
      * @return True if exception
      */
-    [[nodiscard]] constexpr bool has_error() const noexcept
-    {
-        return !has_result();
-    }
+    [[nodiscard]] constexpr bool has_error() const noexcept { return !has_result(); }
 
     /** True if this instance holds a result.
      *
      * @return True if result
      */
-    [[nodiscard]] constexpr operator bool() const noexcept
-    {
-        return has_result();
-    }
+    [[nodiscard]] explicit constexpr operator bool() const noexcept { return has_result(); }
 
     /** True if this instance holds an exception.
      *
      * @return True if exception
      */
-    [[nodiscard]] constexpr bool operator!() const noexcept
-    {
-        return has_error();
-    }
+    [[nodiscard]] constexpr bool operator!() const noexcept { return has_error(); }
 
     /** Equality operator
      *
@@ -104,9 +92,8 @@ public:
      * @param rhs Value instance to compare against
      * @return True if the same value, false if either carry exceptions
      */
-    [[nodiscard]] friend constexpr bool operator==(
-        const result& lhs,
-        const result_type& rhs) noexcept
+    [[nodiscard]] friend constexpr bool operator==(const result& lhs,
+                                                   const result_type& rhs) noexcept
     {
         if (lhs.has_error()) {
             return false;
@@ -120,9 +107,8 @@ public:
      * @param rhs Value instance to compare against
      * @return True if not the same value, false if either carry exceptions
      */
-    [[nodiscard]] friend constexpr bool operator!=(
-        const result& lhs,
-        const result_type& rhs) noexcept
+    [[nodiscard]] friend constexpr bool operator!=(const result& lhs,
+                                                   const result_type& rhs) noexcept
     {
         return !(lhs == rhs);
     }
@@ -191,11 +177,10 @@ public:
      * larger than a word and trivially constructible
      * @exception ExceptionType Thrown if the instance holds an exception
      */
-    auto get() const
-        -> std::conditional_t<(sizeof(std::size_t) >= sizeof(result_type)) &&
-                                  std::is_copy_constructible_v<result_type>,
-                              result_type,
-                              const result_type&>
+    auto get() const -> std::conditional_t<(sizeof(std::size_t) >= sizeof(result_type)) &&
+                                               std::is_copy_constructible_v<result_type>,
+                                           result_type,
+                                           const result_type&>
     {
         if (has_result()) {
             return std::get<0>(data_);
@@ -217,5 +202,4 @@ public:
 private:
     std::variant<result_type, exception_type> data_;
 };
-}  // namespace utility
-}  // namespace arg_router
+}  // namespace arg_router::utility

@@ -4,14 +4,13 @@
 
 #include "type_traits"
 
-namespace arg_router
-{
 /** Mathematical functions and types. */
-namespace math
+namespace arg_router::math
 {
 /** Returns the absolute value of the integer @a value.
  *
  * This only exists because <TT>std::abs(T)</TT> is not constexpr.
+ * @tparam T Integral type
  * @param value Input
  * @return Absolute value
  */
@@ -25,6 +24,7 @@ template <typename T>
 /** Returns the number of digits in @a value.
  *
  * Basicaly <TT>log10(value)+1</TT> but constexpr.
+ * @tparam T Integral type
  * @param value Input
  * @return Number of digits.
  */
@@ -33,9 +33,11 @@ template <typename T>
 {
     static_assert(std::is_integral_v<T>, "T must be an integral");
 
+    constexpr auto base = T{10};
+
     value = abs(value);
     auto i = T{1};
-    while (value /= 10) {
+    while (value /= base) {
         ++i;
     }
 
@@ -46,6 +48,7 @@ template <typename T>
  *
  * This only exists because <TT>std::power(T)</TT> is not constexpr.
  * @tparam Base Power base
+ * @tparam T Integral type
  * @param exp Exponent
  * @return @a Base raised to the power @a exp
  */
@@ -57,5 +60,4 @@ template <auto Base, typename T>
 
     return exp <= T{0} ? T{1} : Base * pow<Base>(exp - T{1});
 }
-}  // namespace math
-}  // namespace arg_router
+}  // namespace arg_router::math

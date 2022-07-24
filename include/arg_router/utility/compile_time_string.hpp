@@ -15,9 +15,7 @@
 /** @file
  */
 
-namespace arg_router
-{
-namespace utility
+namespace arg_router::utility
 {
 template <char... Cs>
 class compile_time_string;
@@ -134,7 +132,7 @@ struct convert_to_cts<Array<Cs...>> {
 };
 
 /** Helper alias
- *  
+ *
  * @tparam T Char integral constant array-like type
  */
 template <typename T>
@@ -175,7 +173,7 @@ public:
 };
 
 /** Helper alias for convert_integral_to_cts.
- * 
+ *
  * @tparam Value Integral to convert
  */
 template <auto Value>
@@ -184,6 +182,7 @@ using convert_integral_to_cts_t = typename convert_integral_to_cts<Value>::type;
 namespace cts_detail
 {
 template <int N>
+// NOLINTNEXTLINE(*-avoid-c-arrays)
 [[nodiscard]] constexpr char get(const char (&str)[N], std::size_t i) noexcept
 {
     return i < N ? str[i] : '\0';
@@ -213,7 +212,7 @@ struct builder {
 
     template <char... StrippedCs>
     [[nodiscard]] constexpr static auto list_to_string(
-        boost::mp11::mp_list_c<char, StrippedCs...>) noexcept
+        [[maybe_unused]] boost::mp11::mp_list_c<char, StrippedCs...> chars) noexcept
     {
         return compile_time_string<StrippedCs...>{};
     }
@@ -226,8 +225,7 @@ struct builder {
 #define AR_STR_N(n, tok) \
     typename arg_router::utility::cts_detail::builder<BOOST_PP_REPEAT(n, AR_STR_CHAR, tok)>::type
 }  // namespace cts_detail
-}  // namespace utility
-}  // namespace arg_router
+}  // namespace arg_router::utility
 
 /** Macro that represents the type of a compile-time string, useful for policies that require a
  * compile string.
@@ -236,7 +234,7 @@ struct builder {
  * @note The size limit is set by using the AR_MAX_CTS_SIZE define (defaults to 128).  Increasing
  * this will not increase the size of your program, but will increase build time as the preprocessor
  * and compiler have to do more work
- * 
+ *
  * @param tok Can be a string literal, a <TT>std::string_view</TT>, or a single char
  */
 #define S_(tok) AR_STR_N(AR_MAX_CTS_SIZE, tok)

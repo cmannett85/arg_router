@@ -8,9 +8,7 @@
 
 #include <optional>
 
-namespace arg_router
-{
-namespace policy
+namespace arg_router::policy
 {
 /** Used to a mark a command line argument type as required i.e. it is a parse error if the token is
  * missing.
@@ -23,7 +21,7 @@ public:
     constexpr static auto priority = std::size_t{450};
 
     /** Throw an error.
-     * 
+     *
      * @tparam ValueType Parsed value type, not used in this method
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
      * @param parents Parents instances pack, not used in this method
@@ -61,5 +59,4 @@ constexpr bool is_required_v = is_required<T>::value;
 template <>
 struct is_policy<required_t<>> : std::true_type {
 };
-}  // namespace policy
-}  // namespace arg_router
+}  // namespace arg_router::policy

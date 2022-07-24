@@ -7,9 +7,7 @@
 
 #include <optional>
 
-namespace arg_router
-{
-namespace policy
+namespace arg_router::policy
 {
 /** Provides a default value for non-required arguments.
  *
@@ -33,7 +31,7 @@ public:
 
     /** Called when the owning node's token (if any) is missing from the command line, this will
      * return the default value.
-     * 
+     *
      * @tparam ValueType Parsed value type, must be implicitly constructible from value_type
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
      * @param parents Parents instances pack
@@ -53,5 +51,4 @@ private:
 template <typename T>
 struct is_policy<default_value<T>> : std::true_type {
 };
-}  // namespace policy
-}  // namespace arg_router
+}  // namespace arg_router::policy

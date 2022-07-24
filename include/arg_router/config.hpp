@@ -5,11 +5,12 @@
 #include <cstddef>
 #include <string_view>
 
-namespace arg_router
-{
-/** Namespace for library basic types and constants i.e. compile-time configuration.
+/** Build configuration-defined constants.
+ *
+ * There are a few core parts of arg_router that are configurable as compile defines, all are
+ * available as CMake cache variables too (minus the "AR_" prefix).
  */
-namespace config
+namespace arg_router::config
 {
 /** Long form argument prefix. */
 constexpr auto long_prefix = std::string_view{AR_LONG_PREFIX};
@@ -30,5 +31,4 @@ static_assert(short_prefix != long_prefix, "Short and long prefixes cannot be th
  */
 template <typename T>
 using allocator = AR_ALLOCATOR<T>;
-}  // namespace config
-}  // namespace arg_router
+}  // namespace arg_router::config

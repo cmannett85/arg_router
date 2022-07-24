@@ -97,7 +97,7 @@ public:
     /** Evaluates to true if any of the @a PolicyCheckers predicates pass.
      *
      * This is effectively a wrapper over phase_finder that loops over multiple policy checkers.
-     * 
+     *
      * Most nodes don't support certain phases, this predicate allows for <TT>static_assert</TT>
      * testing for their presence.
      * @tparam ValueType Some policy checkers require a value type template parameter, if a
@@ -275,7 +275,7 @@ protected:
                 constexpr auto max_count = []() {
                     if constexpr (traits::has_maximum_count_method_v<tree_node>) {
                         if constexpr (tree_node::maximum_count() ==
-                                      policy::min_count<0>.maximum_count()) {
+                                      decltype(policy::min_count<0>)::maximum_count()) {
                             return S_("N"){};
                         } else {
                             return utility::convert_integral_to_cts_t<tree_node::maximum_count()>{};
@@ -328,11 +328,11 @@ protected:
      *
      * This implementation simply iterates over the pre-parse phase implementing policies, and uses
      * the results to update @a args and generate a parse_target.
-     * 
+     *
      * The @a validator is called just before @a args is updated, and allows the caller to run a
      * custom verification the on the @a node and @a parents. If the validator returns true then the
      * result is kept, otherwise an empty result is returned from this method.
-     * 
+     *
      * @note The implementation does not prepend <TT>*this</TT> into @a parents, so derived types
      * are expected to reimplement this so @ node is the correct type (remember there are no virtual
      * methods in this library)

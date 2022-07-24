@@ -33,9 +33,11 @@ theme_t theme_from_string(std::string_view arg)
 {
     if (arg == "none") {
         return theme_t::none;
-    } else if (arg == "classic") {
+    }
+    if (arg == "classic") {
         return theme_t::classic;
-    } else if (arg == "solarized") {
+    }
+    if (arg == "solarized") {
         return theme_t::solarized;
     }
 
@@ -54,7 +56,7 @@ void set_theme(theme_t theme)
 
 // This is almost certainly wrong for unicode stuff, and it's definitely inefficient, but it's only
 // an example
-std::string m_notation(std::string input)
+std::string m_notation(std::string&& input)
 {
     auto result = ""s;
     result.reserve(input.size() * 2);
@@ -80,7 +82,7 @@ void cat(bool show_ends,
          int max_lines,
          std::optional<std::size_t> max_line_length,
          std::variant<bool, std::string_view> max_line_handling,
-         std::vector<std::string_view> files)
+         std::vector<std::string_view>&& files)
 {
     if (max_lines == no_line_limit) {
         max_lines = std::numeric_limits<int>::max();
@@ -103,10 +105,10 @@ void cat(bool show_ends,
                 if (max_line_handling.index() == 0) {
                     // Skip the line
                     continue;
-                } else {
-                    const auto suffix = std::get<1>(max_line_handling);
-                    line = line.substr(0, *max_line_length) + suffix;
                 }
+
+                const auto suffix = std::get<1>(max_line_handling);
+                line = line.substr(0, *max_line_length) + suffix;
             }
 
             if (show_non_printing) {
@@ -129,11 +131,14 @@ struct ar::parser<verbosity_level_t> {
     {
         if (arg == "error") {
             return verbosity_level_t::error;
-        } else if (arg == "warning") {
+        }
+        if (arg == "warning") {
             return verbosity_level_t::warning;
-        } else if (arg == "info") {
+        }
+        if (arg == "info") {
             return verbosity_level_t::info;
-        } else if (arg == "debug") {
+        }
+        if (arg == "debug") {
             return verbosity_level_t::debug;
         }
 
@@ -207,24 +212,23 @@ int main(int argc, char* argv[])
                 arp::min_count<1>,
                 arp::display_name<S_("FILES")>,
                 arp::description<S_("Files to read")>),
-            arp::router{
-                [](bool show_ends,
-                   bool show_non_printing,
-                   int max_lines,
-                   std::optional<std::size_t> max_line_length,
-                   std::variant<bool, std::string_view> max_line_handling,
-                   theme_t theme,
-                   verbosity_level_t /*verbosity_level*/,
-                   std::vector<std::string_view> files) {
-                    set_theme(theme);
-                    cat(show_ends,
-                        show_non_printing,
-                        max_lines,
-                        max_line_length,
-                        max_line_handling,
-                        std::move(files));
-                    set_theme(theme_t::none);
-                }}))
+            arp::router{[](bool show_ends,
+                           bool show_non_printing,
+                           int max_lines,
+                           std::optional<std::size_t> max_line_length,
+                           std::variant<bool, std::string_view> max_line_handling,
+                           theme_t theme,
+                           verbosity_level_t /*verbosity_level*/,
+                           std::vector<std::string_view> files) {
+                set_theme(theme);
+                cat(show_ends,
+                    show_non_printing,
+                    max_lines,
+                    max_line_length,
+                    max_line_handling,
+                    std::move(files));
+                set_theme(theme_t::none);
+            }}))
         .parse(argc, argv);
 
     return EXIT_SUCCESS;

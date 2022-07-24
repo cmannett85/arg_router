@@ -27,6 +27,19 @@ BOOST_AUTO_TEST_CASE(constructor_and_get_test)
 
 BOOST_AUTO_TEST_SUITE(death_suite)
 
+BOOST_AUTO_TEST_CASE(short_name_must_be_one_character_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/policy/short_name.hpp"
+int main() {
+    const auto ln = arg_router::policy::short_name_utf8<S_("")>;
+    return 0;
+}
+    )",
+        "Short name must only be one character");
+}
+
 BOOST_AUTO_TEST_CASE(short_name_cannot_start_with_argument_prefix_test)
 {
     test::death_test_compile(

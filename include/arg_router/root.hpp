@@ -10,14 +10,11 @@
 
 namespace arg_router
 {
-namespace policy
-{
-namespace validation
+namespace policy::validation
 {
 template <typename... Rules>
 class validator;
-}
-}  // namespace policy
+}  // namespace policy::validation
 
 /** The root of the parse tree.
  *
@@ -134,9 +131,8 @@ public:
         if (!match) {
             if (front_token.name.empty()) {
                 throw parse_exception{"No arguments passed"};
-            } else {
-                throw parse_exception{"Unknown argument", front_token};
             }
+            throw parse_exception{"Unknown argument", front_token};
         }
     }
 
@@ -157,7 +153,7 @@ public:
      */
     [[nodiscard]] string help() const
     {
-        auto stream = stringstream{};
+        auto stream = ostringstream{};
         help(stream);
 
         return stream.str();

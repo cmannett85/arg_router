@@ -7,16 +7,14 @@
 #include <functional>
 #include <optional>
 
-namespace arg_router
-{
-namespace policy
+namespace arg_router::policy
 {
 /** Indicates how a node's parsed value should be merged in some way with the parent's result value.
  *
  * Node's should derive from this when they appear multiple times non-contiguously in the command
  * line.  The parent mode-like type will merge, in a user defined way, the values returned by each
  * into a single result that will be passed to the routing phase.
- * 
+ *
  * An example of this is the counting_flag, it parses a bool but that needs to be added to a total
  * count maintained by the parent.  This is achieved by having the node's <TT>value_type</TT> set to
  * std::size_t, the parse return type a bool, and this type's merge function increment the total
@@ -78,5 +76,4 @@ public:
  */
 template <typename T>
 constexpr bool has_multi_stage_value_v = has_multi_stage_value<T>::value;
-}  // namespace policy
-}  // namespace arg_router
+}  // namespace arg_router::policy

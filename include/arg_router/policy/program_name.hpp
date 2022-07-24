@@ -2,13 +2,10 @@
 
 #pragma once
 
-#include "arg_router/algorithm.hpp"
 #include "arg_router/policy/policy.hpp"
 #include "arg_router/utility/utf8.hpp"
 
-namespace arg_router
-{
-namespace policy
+namespace arg_router::policy
 {
 /** Represents the program name.
  *
@@ -31,7 +28,7 @@ public:
     [[nodiscard]] constexpr static std::string_view program_name() noexcept { return S::get(); }
 
 private:
-    static_assert(utility::utf8::num_code_points(program_name()) > 1,
+    static_assert(utility::utf8::count(program_name()) > 1,
                   "Program names must be longer than one character");
     static_assert(!utility::utf8::contains_whitespace(program_name()),
                   "Program names cannot contain whitespace");
@@ -47,5 +44,4 @@ constexpr auto program_name = program_name_t<S>{};
 template <typename S>
 struct is_policy<program_name_t<S>> : std::true_type {
 };
-}  // namespace policy
-}  // namespace arg_router
+}  // namespace arg_router::policy

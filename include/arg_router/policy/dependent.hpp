@@ -9,9 +9,7 @@
 #include "arg_router/utility/compile_time_optional.hpp"
 #include "arg_router/utility/tree_recursor.hpp"
 
-namespace arg_router
-{
-namespace policy
+namespace arg_router::policy
 {
 /** Causes the owning node to be 'dependent' on others, i.e. that other node must also appear on the
  * command line.
@@ -75,13 +73,14 @@ public:
             const auto target_index = std::type_index{typeid(node_target)};
             if (processed_target->node_type() == target_index) {
                 return;
-            } else {
-                for (const auto& sub_target : processed_target->sub_targets()) {
-                    if (sub_target.node_type() == target_index) {
-                        return;
-                    }
+            }
+
+            for (const auto& sub_target : processed_target->sub_targets()) {
+                if (sub_target.node_type() == target_index) {
+                    return;
                 }
             }
+
             result = parse_exception{"Dependent argument missing (needs to be before the "
                                      "requiring token on the command line)",
                                      parsing::node_token_type<node_target>()};
@@ -188,5 +187,4 @@ template <typename... DependsPolicies>
 template <typename... DependsPolicies>
 struct is_policy<dependent_t<DependsPolicies...>> : std::true_type {
 };
-}  // namespace policy
-}  // namespace arg_router
+}  // namespace arg_router::policy

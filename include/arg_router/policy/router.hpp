@@ -7,9 +7,7 @@
 
 #include <utility>
 
-namespace arg_router
-{
-namespace policy
+namespace arg_router::policy
 {
 /** Provides a Callable that is executed on a successful parse.
  *
@@ -29,7 +27,7 @@ public:
     constexpr explicit router(Fn f) noexcept : f_{std::move(f)} {}
 
     /** Executes the result of the parsed command line arguments.
-     * 
+     *
      * @tparam Args Argument types, must be implicitly convertible to the types in
      * callable_args_type, in the order and number specified by callable_args
      * @param args Argument values
@@ -47,5 +45,4 @@ private:
 template <typename Fn>
 struct is_policy<router<Fn>> : std::true_type {
 };
-}  // namespace policy
-}  // namespace arg_router
+}  // namespace arg_router::policy

@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "arg_router/utility/utf8_tables/code_point.hpp"
+#include "arg_router/utility/utf8/code_point.hpp"
 
 #include <array>
 
@@ -13,11 +13,13 @@ namespace utility
 namespace utf8
 {
 /** Whitespace code points.
- * 
+ *
+ * Each entry is an inclusive range of code points.
+ *
  * This table is generated using scripts/unicode_table_generators.py from
  * http://www.unicode.org/Public/UNIDATA/PropList.txt v14.0.0.
  */
-constexpr auto whitespace_table = std::array<code_point_range, 10>{{
+constexpr auto whitespace_table = std::array<code_point::range, 10>{{
     {0x9, 0xD},
     {0x20, 0x20},
     {0x85, 0x85},

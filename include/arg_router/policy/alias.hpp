@@ -9,9 +9,7 @@
 #include "arg_router/utility/tree_recursor.hpp"
 #include "arg_router/utility/tuple_iterator.hpp"
 
-namespace arg_router
-{
-namespace policy
+namespace arg_router::policy
 {
 /** Allows the 'aliasing' of arguments, i.e. a single argument will set multiple others.
  *
@@ -35,7 +33,7 @@ public:
     constexpr explicit alias_t([[maybe_unused]] const AliasedPolicies&... policies) {}
 
     /** Duplicates any value tokens as aliases of other nodes.
-     * 
+     *
      * The token duplication mechanism has two approaches, depending on the owning node's fixed
      * count:
      *  - If the count is zero then it is flag-like so the aliased names are just appended to the
@@ -43,7 +41,7 @@ public:
      *  - If the count is greater than zero then it is argument-like and the aliased names are
      *    appended to the processed part of @a tokens, each followed by @em count tokens (i.e. the
      *    values)
-     *  
+     *
      * In either circumstance the original tokens are removed as they are for the alias, rather than
      * the @em aliased.
      *
@@ -267,5 +265,4 @@ template <typename... AliasedPolicies>
 template <typename... AliasedPolicies>
 struct is_policy<alias_t<AliasedPolicies...>> : std::true_type {
 };
-}  // namespace policy
-}  // namespace arg_router
+}  // namespace arg_router::policy

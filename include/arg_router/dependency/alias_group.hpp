@@ -5,9 +5,10 @@
 #include "arg_router/dependency/detail.hpp"
 #include "arg_router/policy/multi_stage_value.hpp"
 
-namespace arg_router
-{
-namespace dependency
+/** The dependency namespace carries nodes and policies that define dependency relationships between
+ * other nodes.
+ */
+namespace arg_router::dependency
 {
 /** Groups child nodes so they all become aliases of a single output.
  *
@@ -15,14 +16,14 @@ namespace dependency
  * for each of the aliased nodes.  An implication of this is that all the aliased nodes need to have
  * the same count and be able to parse the same input tokens, and each aliased node has an entry
  * (but not the node the alias policy is attached to!) in the router arguments.
- * 
+ *
  * alias_group_t is almost the opposite of this; it defines output aliases where each child of the
  * group independently parses the tokens it matches to (in the same way one_of_t does).  However
  * unlike policy::alias_t, there is only a single entry in the router arguments for the whole group,
  * as such there is a compile-time check that all <TT>value_type</TT> types are the same (or ignored
  * if policy::no_result_value is used).  In other words, all the children of the group represent the
  * same output.
- * 
+ *
  * You can think of policy::alias_t as defining a one-to-many alias, whilst alias_group_t is a
  * many-to-one.
  * @tparam Params Policies and child node types for the mode
@@ -124,5 +125,4 @@ template <typename... Params>
 {
     return alias_group_t{std::move(params)...};
 }
-}  // namespace dependency
-}  // namespace arg_router
+}  // namespace arg_router::dependency

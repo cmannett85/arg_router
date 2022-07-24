@@ -25,9 +25,7 @@
 #include "arg_router/root.hpp"
 #include "arg_router/utility/tree_recursor.hpp"
 
-namespace arg_router
-{
-namespace policy
+namespace arg_router::policy
 {
 // We have to do this forward declaration and specialisation otherwise the rule key check below
 // fails when the validator itself is tested
@@ -35,7 +33,7 @@ namespace validation
 {
 template <typename... Rules>
 class validator;
-}
+}  // namespace validation
 
 template <typename... Rules>
 struct is_policy<validation::validator<Rules...>> : std::true_type {
@@ -48,7 +46,7 @@ namespace validation
 /** Defines a validator rule.
  *
  * See validator for how it is to be used.
- * 
+ *
  * A condition is defined as:
  * @code
  * struct my_condition {
@@ -73,7 +71,7 @@ template <template <typename...> typename T, typename... Conditions>
 using rule = std::tuple<boost::mp11::mp_quote<T>, Conditions...>;
 
 /** Quoted metafunction rule overload.
- * 
+ *
  * This is the only way to use template params when defining a rule.  The resulting type of @a T
  * should have the form:
  * @code
@@ -85,7 +83,7 @@ using rule = std::tuple<boost::mp11::mp_quote<T>, Conditions...>;
  *     };
  * };
  * @endcode
- * 
+ *
  * @tparam T A quoted metafunction type with a nested template <TT>fn</TT> that has a static bool
  * member <TT>value</TT> that evaluates to true if the tested
  * @tparam Conditions A pack of conditions that all must be satisfied for compilation to be
@@ -95,10 +93,10 @@ template <typename T, typename... Conditions>
 using rule_q = std::tuple<T, Conditions...>;
 
 /** A policy that provides validation checking against a parse tree root.
- * 
+ *
  * The rules are checked in order, so where there is overlap (i.e. a policy or tree_node could be
  * valid in multiple entries) be sure to list the more specific rule first.
- * 
+ *
  * @tparam Rules A pack of rule types
  */
 template <typename... Rules>
@@ -188,9 +186,9 @@ struct despecialised_unique_in_owner {
     }
 };
 
-/** A rule condition that checks a policy is unique up to the nearest mode or root - but skips the 
+/** A rule condition that checks a policy is unique up to the nearest mode or root - but skips the
  * owner.
- * 
+ *
  * @tparam ModeTypes Pack of types that are considered modes
  */
 template <template <typename...> typename... ModeTypes>
@@ -405,7 +403,7 @@ struct policy_parent_must_not_have_policy {
 
 /** A rule condition that checks if there are more than one child of @a T that is a mode, only one
  * can be anonymous.
- * 
+ *
  * @tparam ModeTypes Pack of types that are considered modes
  */
 template <template <typename...> typename... ModeTypes>
@@ -457,7 +455,7 @@ struct at_least_one_of_policies {
 
 /** A rule condition that checks that node @a T is at the end of a node's child list (multiple nodes
  * of type @a T are allowed at the end).
- * 
+ *
  * @tparam NodeTypes Pack of types that must appear at the end
  */
 template <template <typename...> typename... NodeTypes>
@@ -496,7 +494,7 @@ struct node_types_must_be_at_end {
 
 /** A rule condition that checks if there are more than one child of @a T that is a mode, only one
  * can be anonymous.
- * 
+ *
  * @tparam ModeTypes Pack of types that are considered modes
  */
 template <template <typename...> typename... ModeTypes>
@@ -532,7 +530,7 @@ struct anonymous_mode_must_be_at_end {
 
 /** A rule condition that checks that positional arg @a T has a fixed argument count if not at the
  * end of the positional arg list.
- * 
+ *
  * @tparam PositionalArgTypes Pack of types that are considered positional args
  */
 template <template <typename...> typename... PositionalArgTypes>
@@ -577,7 +575,7 @@ struct positional_args_must_have_fixed_count_if_not_at_end {
 
 /** A rule condition that checks if node @a T is required and supports a minimum count, then it has
  * a minimum count of at least 1.
- * 
+ *
  * This is specifically to improve help output generation.  For multiple arg nodes (e.g.
  * positional_arg_t) being required raises the effective minimum count to 1, but won't change the
  * help output to reflect it as that is set by the minimum count value.
@@ -711,5 +709,4 @@ inline constexpr auto default_validator = validator<
            single_anonymous_mode<arg_router::mode_t>,
            anonymous_mode_must_be_at_end<arg_router::mode_t>>>{};
 }  // namespace validation
-}  // namespace policy
-}  // namespace arg_router
+}  // namespace arg_router::policy

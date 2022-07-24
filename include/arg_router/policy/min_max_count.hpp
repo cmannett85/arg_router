@@ -10,9 +10,7 @@
 
 #include <limits>
 
-namespace arg_router
-{
-namespace policy
+namespace arg_router::policy
 {
 /** Exposes the number of tokens the owning node will consume.
  *
@@ -49,13 +47,13 @@ public:
     [[nodiscard]] constexpr static std::size_t maximum_count() noexcept { return MaxType::value; }
 
     /** Copies an appropriate amount of tokens from @a args to @a result.
-     * 
+     *
      * This policy performs label and bulk value token processing.  If the owning node is named,
      * then the first token is expected to match, if not then false is returned immediately.
-     * 
+     *
      * Then up to maximum_count() @result the @arg tokens are processed.  If the maximum available
      * is less than minimum_count(), a parse error will occur.
-     * 
+     *
      * @tparam ProcessedTarget @a processed_target payload type
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
      * @param tokens Currently processed tokens
@@ -168,5 +166,4 @@ constexpr auto fixed_count =
 template <typename MinType, typename MaxType>
 struct is_policy<min_max_count_t<MinType, MaxType>> : std::true_type {
 };
-}  // namespace policy
-}  // namespace arg_router
+}  // namespace arg_router::policy

@@ -11,13 +11,11 @@
 
 #include <type_traits>
 
-namespace arg_router
-{
 /** Policy namespace.
  *
  * arg_router uses policies to compose behaviours on command line argument types.
  */
-namespace policy
+namespace arg_router::policy
 {
 /** Evaluates to true if @a T is a policy.
  *
@@ -227,5 +225,4 @@ public:
                                            ParentsTuple,
                                            index>;
 };
-}  // namespace policy
-}  // namespace arg_router
+}  // namespace arg_router::policy

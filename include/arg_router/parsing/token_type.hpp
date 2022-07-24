@@ -4,10 +4,7 @@
 
 #include "arg_router/utility/string_view_ops.hpp"
 
-namespace arg_router
-{
-/** Namespace containing types and functions to aid parsing. */
-namespace parsing
+namespace arg_router::parsing
 {
 /** Enum for the prefix type on a token. */
 enum class prefix_type : std::uint8_t {
@@ -67,7 +64,7 @@ struct token_type {
 
 /** Creates a string representation of @a token, it effectively recreates the original token on the
  * command line.
- * 
+ *
  * @param token Token to convert
  * @return String representation of @a token
  */
@@ -78,13 +75,13 @@ struct token_type {
 }
 
 /** Creates a string representation of @a view.
- * 
+ *
  * @param view Processed tokens to convert
  * @return String representation of @a view
  */
 [[nodiscard]] inline string to_string(const vector<token_type>& view)
 {
-    auto str = string{""};
+    auto str = string{};
     for (auto i = 0u; i < view.size(); ++i) {
         str += to_string(view[i]);
         if (i != (view.size() - 1)) {
@@ -107,12 +104,11 @@ struct token_type {
     if (token.substr(0, long_prefix.size()) == long_prefix) {
         token.remove_prefix(long_prefix.size());
         return {prefix_type::long_, token};
-    } else if (token.substr(0, short_prefix.size()) == short_prefix) {
+    }
+    if (token.substr(0, short_prefix.size()) == short_prefix) {
         token.remove_prefix(short_prefix.size());
         return {prefix_type::short_, token};
-    } else {
-        return {prefix_type::none, token};
     }
+    return {prefix_type::none, token};
 }
-}  // namespace parsing
-}  // namespace arg_router
+}  // namespace arg_router::parsing

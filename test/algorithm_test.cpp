@@ -3,6 +3,7 @@
 #include "arg_router/algorithm.hpp"
 
 #include "test_helpers.hpp"
+#include "test_printers.hpp"
 
 #include <string>
 #include <vector>

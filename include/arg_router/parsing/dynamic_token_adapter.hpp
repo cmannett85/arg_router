@@ -4,18 +4,16 @@
 
 #include "arg_router/parsing/token_type.hpp"
 
-namespace arg_router
-{
-namespace parsing
+namespace arg_router::parsing
 {
 /** An adaptor over the processed and unprocessed tokens.  This is used during the pre-parse phase.
- * 
+ *
  * If an iterator element is read from that is beyond the end of the processed token container, then
  * one is returned from the equivalent position in the unprocessed token container (as if the two
  * containers were concatenated). Using iterator::set(value_type) will update the element pointed at
  * by the iterator, if the iterator is passed the end of the processed tokens container then
  * elements from the unprocessed container are transferred into it verbatim.
- * 
+ *
  * This allows the pre-parse phase implementing policies to not concern themselves with managing the
  * processed/unprocessed containers.
  */
@@ -250,7 +248,8 @@ public:
             // Both end() iterators
             if (is_this_end && is_other_end) {
                 return true;
-            } else if (is_this_end || is_other_end) {
+            }
+            if (is_this_end || is_other_end) {
                 return false;
             }
 
@@ -349,25 +348,25 @@ public:
      *
      * @return End iterator
      */
-    [[nodiscard]] iterator end() { return {}; }
+    [[nodiscard]] static iterator end() { return {}; }
 
     /** Returns the count of all tokens, processed and unprocessed.
      *
      * @return Number of components
      */
-    size_type size() const { return processed_->size() + unprocessed_->size(); }
+    [[nodiscard]] size_type size() const { return processed_->size() + unprocessed_->size(); }
 
     /** The underlying processed container.
      *
      * @return Processed container reference
      */
-    vector<value_type>& processed() { return *processed_; }
+    [[nodiscard]] vector<value_type>& processed() { return *processed_; }
 
     /** The underlying unprocessed container.
      *
      * @return Unprocessed container reference
      */
-    vector<value_type>& unprocessed() { return *unprocessed_; }
+    [[nodiscard]] vector<value_type>& unprocessed() { return *unprocessed_; }
 
     /** Inserts @a token at position @a it.
      *
@@ -434,5 +433,4 @@ private:
     vector<token_type>* processed_;
     vector<token_type>* unprocessed_;
 };
-}  // namespace parsing
-}  // namespace arg_router
+}  // namespace arg_router::parsing
