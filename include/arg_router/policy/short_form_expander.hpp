@@ -87,8 +87,8 @@ public:
         // that
         for (auto gc_it = ++utility::utf8::iterator{first_token.name};
              gc_it != utility::utf8::iterator{};
-             ++gc_it) {
-            tokens.unprocessed().insert(it++, {parsing::prefix_type::short_, *gc_it});
+             ++gc_it, ++it) {
+            it = tokens.unprocessed().insert(it, {parsing::prefix_type::short_, *gc_it});
         }
 
         // Shrink the first to a single grapheme cluster

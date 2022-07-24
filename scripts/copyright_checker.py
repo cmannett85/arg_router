@@ -71,7 +71,7 @@ def presence_checker(args):
                 continue
 
             data = None
-            with open(file, 'r') as f:
+            with open(file, 'r', encoding='utf-8') as f:
                 data = f.readlines()
 
             if not find_copyright(data):

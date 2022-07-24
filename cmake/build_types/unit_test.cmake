@@ -80,15 +80,16 @@ target_compile_definitions(arg_router_test PRIVATE UNIT_TEST_BUILD)
 function(configure_test_build TARGET)
     # Clang can run in different command line argument modes to mimic gcc or cl.exe,
     # so we have to test for a 'frontent variant' too
-    set(EXTRA_FLAGS -Werror -Wall -Wextra -ftemplate-backtrace-limit=0 ${ARGN})
-    set(EXTRA_DEFINES "")
     if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" OR CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
-        set(EXTRA_FLAGS /W4)
+        set(EXTRA_FLAGS /W4 /Z7 /MP ${ARGN})
         set(EXTRA_DEFINES NOMINMAX BOOST_USE_WINDOWS_H WIN32_LEAN_AND_MEAN _CRT_SECURE_NO_WARNINGS)
 
         # /MT by default as it simplifies the running of the unit tests
         set_property(TARGET ${TARGET} PROPERTY
                      MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+    else()
+        set(EXTRA_FLAGS -Werror -Wall -Wextra -ftemplate-backtrace-limit=0 ${ARGN})
+        set(EXTRA_DEFINES "")
     endif()
     target_compile_options(${TARGET} PRIVATE ${EXTRA_FLAGS})
     target_compile_definitions(${TARGET} PRIVATE ${EXTRA_DEFINES})

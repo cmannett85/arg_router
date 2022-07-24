@@ -537,8 +537,7 @@ $ ./example_just_cats --кіт
 I mentioned in the blurb at the top that `arg_router` is _quite_ Unicode compliant which doesn't exactly inspire confidence...  There are three limitations to current support:
 
 1. Only UTF-8 support.  If you want other encodings (e.g. UTF-16 on Windows), then you'll need to convert the input tokens to UTF-8 before calling `parse(..)`.  The compile-time strings used in the parse tree _must_ be UTF-8 because that's the only encoding supported by `arg_router`'s string checkers and line-break algorithm.  Likewise the help output generated will be UTF-8, so you'll need to capture the output (by attaching a `policy::router`) and then convert before printing
-2. 1 code point is assumed to be 1 grapheme cluster.  This is fine for the _vast_ majority of characters but not all; more esoteric accenting, keypad and flag emojis are the common ones (will be fixed in #133)
-3. The line-break algorithm only works with whitespace, otherwise it may split mid word or mid multi-code point grapheme clusters (will be fixed in #135)
+2. The line-break algorithm only works with whitespace, otherwise it may split mid word or mid multi-code point grapheme clusters (will be fixed in #135)
 
 Normally an application will link to ICU for its Unicode needs, but unfortunately we can't do that here as ICU is not `constexpr` and therefore cannot be used for our compile-time needs - so we need to roll our own.
 

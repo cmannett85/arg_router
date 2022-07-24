@@ -1,4 +1,4 @@
-# This workflow runs a barrage of tests in order to valid a PR
+# This workflow runs a barrage of tests in order to validate a PR
 name: Pull Request Checker
 
 on:
@@ -128,6 +128,37 @@ jobs:
       run: |
         cd ${{ env.BUILD_DIR }}/test
         ./arg_router_test -l test_suite
+ 
+  windows_compiler_tests:
+    runs-on: windows-2022
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - name: Bootstrap vcpkg to build the NuGet client
+      run: |
+        ./vcpkg/bootstrap-vcpkg.bat -disableMetrics
+
+    - name: Configure NuGet client
+      run: |
+        [array] $output = ./vcpkg/vcpkg.exe fetch nuget
+        & $output[-1] sources add -source ${{ env.NUGET_SOURCE_URL }} -storepasswordincleartext -name "vcpkg-cache" -username "cmannett85" -password "${{ secrets.GITHUB_TOKEN }}"
+        & $output[-1] setapikey "${{ secrets.GITHUB_TOKEN }}" -source ${{ env.NUGET_SOURCE_URL }}
+
+    - name: Build
+      run: |
+        & "C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Auxiliary/Build/vcvarsall.bat" x64
+        mkdir ${{ env.BUILD_DIR }}
+        cd ${{ env.BUILD_DIR }}
+        cmake -G "Visual Studio 17 2022" -A x64 -T "ClangCl" -DVCPKG_TARGET_TRIPLET:STRING="x64-windows-static" -DCMAKE_CXX_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe" -DCMAKE_C_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe" -DCMAKE_RC_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/llvm-rc.exe" ..
+        cmake --build . --target arg_router_test -- /v:n
+
+    - name: Run unit tests
+      run: |
+        cd ${{ env.BUILD_DIR }}/test/Debug
+        ./arg_router_test.exe -l test_suite
 
   # Makes sure there are no errors when generating the documentation
   documentation:
