@@ -4,5 +4,5 @@ InlayHints:
   Enabled: Yes
   ParameterNames: No
   DeducedTypes: Yes
-  Diagnostics:
-    UnusedIncludes: None
+Diagnostics:
+  UnusedIncludes: None

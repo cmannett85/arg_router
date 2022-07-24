@@ -13,9 +13,21 @@ env:
   AR_REPO_PATH: ${{ github.workspace }}
 
 jobs:
+  # Discard packages older than 90 days
+  purge_old_packages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: MobileheadHolding/github-action-purge-packages@master
+        with:
+          days-old: 90
+          version-regex: .*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   # Builds the unit tests and executes them
   unit_tests:
     runs-on: ubuntu-latest
+    needs: purge_old_packages
 
     steps:
     - uses: actions/checkout@v2
@@ -89,6 +101,7 @@ jobs:
   # matrix as the invocations are different between the platforms
   linux_compiler_tests:
     runs-on: ubuntu-latest
+    needs: purge_old_packages
 
     strategy:
       matrix:
@@ -131,6 +144,7 @@ jobs:
  
   windows_compiler_tests:
     runs-on: windows-2022
+    needs: purge_old_packages
 
     steps:
     - uses: actions/checkout@v2

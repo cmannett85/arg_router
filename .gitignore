@@ -16,3 +16,4 @@ build/
 .vs/
 target/
 CMakeSettings.json
+.cache/
