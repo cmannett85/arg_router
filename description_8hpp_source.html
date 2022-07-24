@@ -79,33 +79,30 @@ $(function() {
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;string_view&gt;</span></div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacearg__router.html">arg_router</a></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacearg__router_1_1policy.html">arg_router::policy</a></div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;{</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">namespace </span>policy</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;{</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> S&gt;</div>
-<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1description__t.html">   19</a></span>&#160;<span class="keyword">class </span><a class="code" href="classarg__router_1_1policy_1_1description__t.html">description_t</a></div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;{</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1description__t.html#aa39629c6d444bebb06149be2038dd11c">   26</a></span>&#160;    [[nodiscard]] constexpr <span class="keyword">static</span> std::string_view <a class="code" href="classarg__router_1_1policy_1_1description__t.html#aa39629c6d444bebb06149be2038dd11c">description</a>() noexcept { <span class="keywordflow">return</span> S::get(); }</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    static_assert(!<a class="code" href="classarg__router_1_1policy_1_1description__t.html#aa39629c6d444bebb06149be2038dd11c">description</a>().empty(), <span class="stringliteral">&quot;Descriptions must not be empty&quot;</span>);</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;};</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> S&gt;</div>
-<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1policy.html#adeab7d3692839fb3dcc864b5cc1730b7">   37</a></span>&#160;constexpr <span class="keyword">auto</span> <a class="code" href="namespacearg__router_1_1policy.html#adeab7d3692839fb3dcc864b5cc1730b7">description</a> = <a class="code" href="classarg__router_1_1policy_1_1description__t.html">description_t&lt;S&gt;</a>{};</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keyword">struct </span>is_policy&lt;description_t&lt;T&gt;&gt; : std::true_type {</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;};</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;}  <span class="comment">// namespace policy</span></div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> S&gt;</div>
+<div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1description__t.html">   17</a></span>&#160;<span class="keyword">class </span><a class="code" href="classarg__router_1_1policy_1_1description__t.html">description_t</a></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;{</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1description__t.html#aa39629c6d444bebb06149be2038dd11c">   24</a></span>&#160;    [[nodiscard]] constexpr <span class="keyword">static</span> std::string_view <a class="code" href="classarg__router_1_1policy_1_1description__t.html#aa39629c6d444bebb06149be2038dd11c">description</a>() noexcept { <span class="keywordflow">return</span> S::get(); }</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    static_assert(!<a class="code" href="classarg__router_1_1policy_1_1description__t.html#aa39629c6d444bebb06149be2038dd11c">description</a>().empty(), <span class="stringliteral">&quot;Descriptions must not be empty&quot;</span>);</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;};</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> S&gt;</div>
+<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1policy.html#adeab7d3692839fb3dcc864b5cc1730b7">   35</a></span>&#160;constexpr <span class="keyword">auto</span> <a class="code" href="namespacearg__router_1_1policy.html#adeab7d3692839fb3dcc864b5cc1730b7">description</a> = <a class="code" href="classarg__router_1_1policy_1_1description__t.html">description_t&lt;S&gt;</a>{};</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="keyword">struct </span>is_policy&lt;description_t&lt;T&gt;&gt; : std::true_type {</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;};</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;}  <span class="comment">// namespace arg_router::policy</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00012">algorithm.hpp:12</a></div></div>
-<div class="ttc" id="anamespacearg__router_1_1policy_html_adeab7d3692839fb3dcc864b5cc1730b7"><div class="ttname"><a href="namespacearg__router_1_1policy.html#adeab7d3692839fb3dcc864b5cc1730b7">arg_router::policy::description</a></div><div class="ttdeci">constexpr auto description</div><div class="ttdef"><b>Definition:</b> <a href="description_8hpp_source.html#l00037">description.hpp:37</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1policy_1_1description__t_html"><div class="ttname"><a href="classarg__router_1_1policy_1_1description__t.html">arg_router::policy::description_t</a></div><div class="ttdef"><b>Definition:</b> <a href="description_8hpp_source.html#l00019">description.hpp:19</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1policy_1_1description__t_html_aa39629c6d444bebb06149be2038dd11c"><div class="ttname"><a href="classarg__router_1_1policy_1_1description__t.html#aa39629c6d444bebb06149be2038dd11c">arg_router::policy::description_t::description</a></div><div class="ttdeci">constexpr static std::string_view description() noexcept</div><div class="ttdef"><b>Definition:</b> <a href="description_8hpp_source.html#l00026">description.hpp:26</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1policy_html"><div class="ttname"><a href="namespacearg__router_1_1policy.html">arg_router::policy</a></div><div class="ttdef"><b>Definition:</b> <a href="alias_8hpp_source.html#l00012">alias.hpp:12</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1policy_html_adeab7d3692839fb3dcc864b5cc1730b7"><div class="ttname"><a href="namespacearg__router_1_1policy.html#adeab7d3692839fb3dcc864b5cc1730b7">arg_router::policy::description</a></div><div class="ttdeci">constexpr auto description</div><div class="ttdef"><b>Definition:</b> <a href="description_8hpp_source.html#l00035">description.hpp:35</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1policy_1_1description__t_html"><div class="ttname"><a href="classarg__router_1_1policy_1_1description__t.html">arg_router::policy::description_t</a></div><div class="ttdef"><b>Definition:</b> <a href="description_8hpp_source.html#l00017">description.hpp:17</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1policy_1_1description__t_html_aa39629c6d444bebb06149be2038dd11c"><div class="ttname"><a href="classarg__router_1_1policy_1_1description__t.html#aa39629c6d444bebb06149be2038dd11c">arg_router::policy::description_t::description</a></div><div class="ttdeci">constexpr static std::string_view description() noexcept</div><div class="ttdef"><b>Definition:</b> <a href="description_8hpp_source.html#l00024">description.hpp:24</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

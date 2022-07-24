@@ -1,8 +1,10 @@
 var searchData=
 [
-  ['reference_748',['reference',['../classarg__router_1_1parsing_1_1dynamic__token__adapter_1_1iterator.html#a59a9c444115318f7bf74250e78b7af41',1,'arg_router::parsing::dynamic_token_adapter::iterator::reference()'],['../classarg__router_1_1utility_1_1utf8_1_1code__point__iterator.html#ae8722a8be2832b7c998b6607481c2078',1,'arg_router::utility::utf8::code_point_iterator::reference()'],['../classarg__router_1_1utility_1_1utf8_1_1line__iterator.html#a8b033de0e77dc342ae19be7bf716ee4f',1,'arg_router::utility::utf8::line_iterator::reference()']]],
-  ['result_5ftype_749',['result_type',['../classarg__router_1_1utility_1_1result.html#ad3c5c0950c273a75a0908889e13d5d55',1,'arg_router::utility::result']]],
-  ['rule_750',['rule',['../namespacearg__router_1_1policy_1_1validation.html#a9526b062af79c0a8922ccbc564ab6788',1,'arg_router::policy::validation']]],
-  ['rule_5fq_751',['rule_q',['../namespacearg__router_1_1policy_1_1validation.html#a410fa61e93ec809d3b66448f7d0c8789',1,'arg_router::policy::validation']]],
-  ['rules_5ftype_752',['rules_type',['../classarg__router_1_1policy_1_1validation_1_1validator.html#adca5b43d5f0fd325ab37e188fbb6b338',1,'arg_router::policy::validation::validator']]]
+  ['parameters_5ftype_765',['parameters_type',['../classarg__router_1_1tree__node.html#a5a12205635e06b3b4ace0d8101419bcd',1,'arg_router::tree_node']]],
+  ['parser_5ftype_766',['parser_type',['../classarg__router_1_1policy_1_1custom__parser.html#afa60af08741106e17b21c46799dc8add',1,'arg_router::policy::custom_parser']]],
+  ['phase_5ffinder_5ft_767',['phase_finder_t',['../classarg__router_1_1tree__node.html#a86e94be4e7ea24708d9b6e7240393ea1',1,'arg_router::tree_node']]],
+  ['pointer_768',['pointer',['../classarg__router_1_1parsing_1_1dynamic__token__adapter_1_1iterator.html#abcfdd4f0b6eb6e2af4b1425e16921ba6',1,'arg_router::parsing::dynamic_token_adapter::iterator::pointer()'],['../classarg__router_1_1utility_1_1utf8_1_1code__point_1_1iterator.html#a4e24799327c7974b5ac9ba0ff9cb6d39',1,'arg_router::utility::utf8::code_point::iterator::pointer()'],['../classarg__router_1_1utility_1_1utf8_1_1iterator.html#af543b2d0a085195ef3347994dea556a4',1,'arg_router::utility::utf8::iterator::pointer()'],['../classarg__router_1_1utility_1_1utf8_1_1line__iterator.html#aa09475c8c4f8b5d21fe173af6e651e99',1,'arg_router::utility::utf8::line_iterator::pointer()']]],
+  ['policies_5ftype_769',['policies_type',['../classarg__router_1_1tree__node.html#aec3a4f4e8c0b7d0b7a5d911b18fb9bc3',1,'arg_router::tree_node']]],
+  ['pre_5fparse_5fresult_770',['pre_parse_result',['../namespacearg__router_1_1parsing.html#a915cb96b9e236101aa9efd660a82f950',1,'arg_router::parsing']]],
+  ['priority_5fordered_5fpolicies_5ftype_771',['priority_ordered_policies_type',['../classarg__router_1_1tree__node.html#a4de37c3f0f065a96f2313d75dc154b1c',1,'arg_router::tree_node']]]
 ];

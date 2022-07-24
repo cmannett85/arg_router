@@ -71,6 +71,7 @@ $(function() {
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="classarg__router_1_1parsing_1_1dynamic__token__adapter-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">arg_router::parsing::dynamic_token_adapter Class Reference</div>  </div>
@@ -101,8 +102,6 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a58f0334ec34a75363d5b65376ae19cef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a04b621b16771796e5ab0156db3b2d2f3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter_1_1iterator.html">iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a04b621b16771796e5ab0156db3b2d2f3">begin</a> ()</td></tr>
 <tr class="separator:a04b621b16771796e5ab0156db3b2d2f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2869a46bcc1f314f7123696b6914da5e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter_1_1iterator.html">iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a2869a46bcc1f314f7123696b6914da5e">end</a> ()</td></tr>
-<tr class="separator:a2869a46bcc1f314f7123696b6914da5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a759f4a04ebac95bb5689d53c6dfdb8c7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a7b9a365f63d4882fd6045738ebe89f10">size_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a759f4a04ebac95bb5689d53c6dfdb8c7">size</a> () const</td></tr>
 <tr class="separator:a759f4a04ebac95bb5689d53c6dfdb8c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7e726c0166294b5d51866f08a9afd7fb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacearg__router.html#a3d789cf2175008b4124de867a13a2edf">vector</a>&lt; <a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a791c7666ecab57d4f2e9792aee7a7c46">value_type</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a7e726c0166294b5d51866f08a9afd7fb">processed</a> ()</td></tr>
@@ -116,13 +115,18 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:af812e6d9acacbaf22e122fc430f5449a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5cbd580b497180a7b8334a87ae83d277"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a5cbd580b497180a7b8334a87ae83d277">transfer</a> (<a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter_1_1iterator.html">iterator</a> it)</td></tr>
 <tr class="separator:a5cbd580b497180a7b8334a87ae83d277"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:a3f60734205cd69693f487b1e4709664e"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter_1_1iterator.html">iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a3f60734205cd69693f487b1e4709664e">end</a> ()</td></tr>
+<tr class="separator:a3f60734205cd69693f487b1e4709664e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>An adaptor over the processed and unprocessed tokens. This is used during the pre-parse phase.</p>
 <p>If an iterator element is read from that is beyond the end of the processed token container, then one is returned from the equivalent position in the unprocessed token container (as if the two containers were concatenated). Using <a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter_1_1iterator.html#a7d1dc07855a743b9735543ec056db6ca">iterator::set(value_type)</a> will update the element pointed at by the iterator, if the iterator is passed the end of the processed tokens container then elements from the unprocessed container are transferred into it verbatim.</p>
 <p>This allows the pre-parse phase implementing policies to not concern themselves with managing the processed/unprocessed containers. </p>
 
-<p class="definition">Definition at line <a class="el" href="dynamic__token__adapter_8hpp_source.html#l00022">22</a> of file <a class="el" href="dynamic__token__adapter_8hpp_source.html">dynamic_token_adapter.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dynamic__token__adapter_8hpp_source.html#l00020">20</a> of file <a class="el" href="dynamic__token__adapter_8hpp_source.html">dynamic_token_adapter.hpp</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="a7b9a365f63d4882fd6045738ebe89f10"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7b9a365f63d4882fd6045738ebe89f10">&#9670;&nbsp;</a></span>size_type</h2>
@@ -137,7 +141,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Size type. </p>
 
-<p class="definition">Definition at line <a class="el" href="dynamic__token__adapter_8hpp_source.html#l00028">28</a> of file <a class="el" href="dynamic__token__adapter_8hpp_source.html">dynamic_token_adapter.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dynamic__token__adapter_8hpp_source.html#l00026">26</a> of file <a class="el" href="dynamic__token__adapter_8hpp_source.html">dynamic_token_adapter.hpp</a>.</p>
 
 </div>
 </div>
@@ -154,7 +158,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Value type. </p>
 
-<p class="definition">Definition at line <a class="el" href="dynamic__token__adapter_8hpp_source.html#l00026">26</a> of file <a class="el" href="dynamic__token__adapter_8hpp_source.html">dynamic_token_adapter.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dynamic__token__adapter_8hpp_source.html#l00024">24</a> of file <a class="el" href="dynamic__token__adapter_8hpp_source.html">dynamic_token_adapter.hpp</a>.</p>
 
 </div>
 </div>
@@ -201,7 +205,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dynamic__token__adapter_8hpp_source.html#l00310">310</a> of file <a class="el" href="dynamic__token__adapter_8hpp_source.html">dynamic_token_adapter.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dynamic__token__adapter_8hpp_source.html#l00309">309</a> of file <a class="el" href="dynamic__token__adapter_8hpp_source.html">dynamic_token_adapter.hpp</a>.</p>
 
 </div>
 </div>
@@ -231,12 +235,12 @@ Public Member Functions</h2></td></tr>
 <p>Returns an iterator to the beginning of the processed container.</p>
 <p>If the processed container is empty, this will initialise it by moving an entry from the front of the raw command line token container into it, using <a class="el" href="namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3a334c4a4c42fdb79d7ebc3e73b517e6f8" title="Short prefix.">prefix_type::none</a>. </p><dl class="section return"><dt>Returns</dt><dd>Begin iterator </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="dynamic__token__adapter_8hpp_source.html#l00346">346</a> of file <a class="el" href="dynamic__token__adapter_8hpp_source.html">dynamic_token_adapter.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dynamic__token__adapter_8hpp_source.html#l00345">345</a> of file <a class="el" href="dynamic__token__adapter_8hpp_source.html">dynamic_token_adapter.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a2869a46bcc1f314f7123696b6914da5e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2869a46bcc1f314f7123696b6914da5e">&#9670;&nbsp;</a></span>end()</h2>
+<a id="a3f60734205cd69693f487b1e4709664e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3f60734205cd69693f487b1e4709664e">&#9670;&nbsp;</a></span>end()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -245,7 +249,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter_1_1iterator.html">iterator</a> arg_router::parsing::dynamic_token_adapter::end </td>
+          <td class="memname">static <a class="el" href="classarg__router_1_1parsing_1_1dynamic__token__adapter_1_1iterator.html">iterator</a> arg_router::parsing::dynamic_token_adapter::end </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -253,14 +257,14 @@ Public Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 <p>Returns a one-past-the-end iterator.</p>
 <dl class="section return"><dt>Returns</dt><dd>End iterator </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="dynamic__token__adapter_8hpp_source.html#l00352">352</a> of file <a class="el" href="dynamic__token__adapter_8hpp_source.html">dynamic_token_adapter.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dynamic__token__adapter_8hpp_source.html#l00351">351</a> of file <a class="el" href="dynamic__token__adapter_8hpp_source.html">dynamic_token_adapter.hpp</a>.</p>
 
 </div>
 </div>
@@ -316,7 +320,7 @@ template&lt;typename Iter &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Iterator to first of the range inserted </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="dynamic__token__adapter_8hpp_source.html#l00399">399</a> of file <a class="el" href="dynamic__token__adapter_8hpp_source.html">dynamic_token_adapter.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dynamic__token__adapter_8hpp_source.html#l00398">398</a> of file <a class="el" href="dynamic__token__adapter_8hpp_source.html">dynamic_token_adapter.hpp</a>.</p>
 
 </div>
 </div>
@@ -364,7 +368,7 @@ template&lt;typename Iter &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Iterator to inserted value </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="dynamic__token__adapter_8hpp_source.html#l00379">379</a> of file <a class="el" href="dynamic__token__adapter_8hpp_source.html">dynamic_token_adapter.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dynamic__token__adapter_8hpp_source.html#l00378">378</a> of file <a class="el" href="dynamic__token__adapter_8hpp_source.html">dynamic_token_adapter.hpp</a>.</p>
 
 </div>
 </div>
@@ -401,7 +405,7 @@ template&lt;typename Iter &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if not equal </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="dynamic__token__adapter_8hpp_source.html#l00338">338</a> of file <a class="el" href="dynamic__token__adapter_8hpp_source.html">dynamic_token_adapter.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dynamic__token__adapter_8hpp_source.html#l00337">337</a> of file <a class="el" href="dynamic__token__adapter_8hpp_source.html">dynamic_token_adapter.hpp</a>.</p>
 
 </div>
 </div>
@@ -438,7 +442,7 @@ template&lt;typename Iter &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if equal </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="dynamic__token__adapter_8hpp_source.html#l00326">326</a> of file <a class="el" href="dynamic__token__adapter_8hpp_source.html">dynamic_token_adapter.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dynamic__token__adapter_8hpp_source.html#l00325">325</a> of file <a class="el" href="dynamic__token__adapter_8hpp_source.html">dynamic_token_adapter.hpp</a>.</p>
 
 </div>
 </div>
@@ -467,7 +471,7 @@ template&lt;typename Iter &gt; </div>
 <p>The underlying processed container.</p>
 <dl class="section return"><dt>Returns</dt><dd>Processed container reference </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="dynamic__token__adapter_8hpp_source.html#l00364">364</a> of file <a class="el" href="dynamic__token__adapter_8hpp_source.html">dynamic_token_adapter.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dynamic__token__adapter_8hpp_source.html#l00363">363</a> of file <a class="el" href="dynamic__token__adapter_8hpp_source.html">dynamic_token_adapter.hpp</a>.</p>
 
 </div>
 </div>
@@ -496,7 +500,7 @@ template&lt;typename Iter &gt; </div>
 <p>Returns the count of all tokens, processed and unprocessed.</p>
 <dl class="section return"><dt>Returns</dt><dd>Number of components </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="dynamic__token__adapter_8hpp_source.html#l00358">358</a> of file <a class="el" href="dynamic__token__adapter_8hpp_source.html">dynamic_token_adapter.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dynamic__token__adapter_8hpp_source.html#l00357">357</a> of file <a class="el" href="dynamic__token__adapter_8hpp_source.html">dynamic_token_adapter.hpp</a>.</p>
 
 </div>
 </div>
@@ -531,7 +535,7 @@ template&lt;typename Iter &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dynamic__token__adapter_8hpp_source.html#l00417">417</a> of file <a class="el" href="dynamic__token__adapter_8hpp_source.html">dynamic_token_adapter.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dynamic__token__adapter_8hpp_source.html#l00416">416</a> of file <a class="el" href="dynamic__token__adapter_8hpp_source.html">dynamic_token_adapter.hpp</a>.</p>
 
 </div>
 </div>
@@ -560,7 +564,7 @@ template&lt;typename Iter &gt; </div>
 <p>The underlying unprocessed container.</p>
 <dl class="section return"><dt>Returns</dt><dd>Unprocessed container reference </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="dynamic__token__adapter_8hpp_source.html#l00370">370</a> of file <a class="el" href="dynamic__token__adapter_8hpp_source.html">dynamic_token_adapter.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dynamic__token__adapter_8hpp_source.html#l00369">369</a> of file <a class="el" href="dynamic__token__adapter_8hpp_source.html">dynamic_token_adapter.hpp</a>.</p>
 
 </div>
 </div>

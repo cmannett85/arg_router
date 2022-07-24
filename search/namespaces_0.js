@@ -1,17 +1,19 @@
 var searchData=
 [
-  ['algorithm_500',['algorithm',['../namespacearg__router_1_1algorithm.html',1,'arg_router']]],
-  ['arg_5frouter_501',['arg_router',['../namespacearg__router.html',1,'']]],
-  ['common_5frules_502',['common_rules',['../namespacearg__router_1_1policy_1_1validation_1_1common__rules.html',1,'arg_router::policy::validation']]],
-  ['config_503',['config',['../namespacearg__router_1_1config.html',1,'arg_router']]],
-  ['dependency_504',['dependency',['../namespacearg__router_1_1dependency.html',1,'arg_router']]],
-  ['math_505',['math',['../namespacearg__router_1_1math.html',1,'arg_router']]],
-  ['parsing_506',['parsing',['../namespacearg__router_1_1parsing.html',1,'arg_router']]],
-  ['policy_507',['policy',['../namespacearg__router_1_1policy.html',1,'arg_router']]],
-  ['string_5fview_5fops_508',['string_view_ops',['../namespacearg__router_1_1utility_1_1string__view__ops.html',1,'arg_router::utility']]],
-  ['terminal_509',['terminal',['../namespacearg__router_1_1utility_1_1terminal.html',1,'arg_router::utility']]],
-  ['traits_510',['traits',['../namespacearg__router_1_1traits.html',1,'arg_router']]],
-  ['utf8_511',['utf8',['../namespacearg__router_1_1utility_1_1utf8.html',1,'arg_router::utility']]],
-  ['utility_512',['utility',['../namespacearg__router_1_1utility.html',1,'arg_router']]],
-  ['validation_513',['validation',['../namespacearg__router_1_1policy_1_1validation.html',1,'arg_router::policy']]]
+  ['algorithm_511',['algorithm',['../namespacearg__router_1_1algorithm.html',1,'arg_router']]],
+  ['arg_5frouter_512',['arg_router',['../namespacearg__router.html',1,'']]],
+  ['code_5fpoint_513',['code_point',['../namespacearg__router_1_1utility_1_1utf8_1_1code__point.html',1,'arg_router::utility::utf8']]],
+  ['common_5frules_514',['common_rules',['../namespacearg__router_1_1policy_1_1validation_1_1common__rules.html',1,'arg_router::policy::validation']]],
+  ['config_515',['config',['../namespacearg__router_1_1config.html',1,'arg_router']]],
+  ['dependency_516',['dependency',['../namespacearg__router_1_1dependency.html',1,'arg_router']]],
+  ['math_517',['math',['../namespacearg__router_1_1math.html',1,'arg_router']]],
+  ['no_5fbreak_5frules_518',['no_break_rules',['../namespacearg__router_1_1utility_1_1utf8_1_1no__break__rules.html',1,'arg_router::utility::utf8']]],
+  ['parsing_519',['parsing',['../namespacearg__router_1_1parsing.html',1,'arg_router']]],
+  ['policy_520',['policy',['../namespacearg__router_1_1policy.html',1,'arg_router']]],
+  ['string_5fview_5fops_521',['string_view_ops',['../namespacearg__router_1_1utility_1_1string__view__ops.html',1,'arg_router::utility']]],
+  ['terminal_522',['terminal',['../namespacearg__router_1_1utility_1_1terminal.html',1,'arg_router::utility']]],
+  ['traits_523',['traits',['../namespacearg__router_1_1traits.html',1,'arg_router']]],
+  ['utf8_524',['utf8',['../namespacearg__router_1_1utility_1_1utf8.html',1,'arg_router::utility']]],
+  ['utility_525',['utility',['../namespacearg__router_1_1utility.html',1,'arg_router']]],
+  ['validation_526',['validation',['../namespacearg__router_1_1policy_1_1validation.html',1,'arg_router::policy']]]
 ];
