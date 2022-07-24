@@ -9,23 +9,19 @@
 #include "arg_router/utility/compile_time_string.hpp"
 #include "arg_router/utility/utf8.hpp"
 
-namespace arg_router
-{
-namespace policy
+namespace arg_router::policy
 {
 /** Represents the character that separates a label token from its value token(s).
  *
  * Your terminal will separate tokens using whitespace by default, but often a different character
  * is used e.g. <TT>--arg=42</TT> - this policy specifies that character.
- * @tparam S UTF-8 code point
+ * @tparam S Compile-time string
  */
 template <typename S>
 class value_separator_t
 {
-    static_assert(utility::utf8::num_code_points(S::get()) == 1,
-                  "Value must only be 1 UTF-8 code point");
-    static_assert(utility::utf8::code_point_size(S::get()) == S::get().size(),
-                  "Value is malformed UTF-8, S is smaller than the header requires");
+    static_assert(utility::utf8::count(S::get()) == 1,
+                  "Value separator must only be one character");
     static_assert(!utility::utf8::is_whitespace(S::get()),
                   "Value separator character must not be whitespace");
 
@@ -43,7 +39,7 @@ public:
     [[nodiscard]] constexpr static std::string_view value_separator() noexcept { return S::get(); }
 
     /** Splits the label token from the value using the separator.
-     * 
+     *
      * @tparam ProcessedTarget @a processed_target payload type
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
      * @param tokens Currently processed tokens
@@ -116,5 +112,4 @@ constexpr auto value_separator_utf8 = value_separator_t<S>{};
 template <typename S>
 struct is_policy<value_separator_t<S>> : std::true_type {
 };
-}  // namespace policy
-}  // namespace arg_router
+}  // namespace arg_router::policy

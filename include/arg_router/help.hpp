@@ -142,7 +142,7 @@ public:
     }
 
     /** Parse function.
-     * 
+     *
      * Unless a routing policy is specified, then when parsed the help output is sent to
      * <TT>std::cout</TT> and <TT>std::exit(EXIT_SUCCESS)</TT> is called. If a routing policy is
      * called the generated help output is passed to it for further processing and the parse call
@@ -153,7 +153,7 @@ public:
      * @exception parese_exception Thrown if the requested mode cannot be found
      */
     template <typename... Parents>
-    void parse(parsing::parse_target target, const Parents&... parents) const
+    void parse(parsing::parse_target&& target, const Parents&... parents) const
     {
         const auto& root = std::get<sizeof...(Parents) - 1>(  //
                                std::tuple{std::cref(parents)...})
@@ -178,7 +178,7 @@ public:
                 generate_help<node_type, flatten>(std::cout);
                 std::exit(EXIT_SUCCESS);
             } else {
-                auto stream = std::ostringstream{};
+                auto stream = ostringstream{};
                 generate_help<node_type, flatten>(stream);
 
                 this->routing_policy::routing_phase(std::move(stream));
@@ -195,7 +195,7 @@ private:
         "Help only supports policies with pre-parse and routing phases");
 
     template <typename Node, typename TargetFn>
-    static void find_help_target(std::vector<parsing::token_type>& tokens,
+    static void find_help_target(vector<parsing::token_type>& tokens,
                                  const Node& node,
                                  const TargetFn& fn)
     {

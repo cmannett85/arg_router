@@ -9,10 +9,8 @@
 #include <algorithm>
 #include <string_view>
 
-namespace arg_router
-{
 /** Namespace for generic algorithms. */
-namespace algorithm
+namespace arg_router::algorithm
 {
 /** Evaluates to the index of the specialisation of @a T in @a Tuple.
  *
@@ -21,7 +19,7 @@ namespace algorithm
  * find_specialisation<std::vector, std::tuple<int, std::deque<int>, double>>::value  // 3
  * find_specialisation<std::vector, std::tuple<int, std::vector<int>, double>>::value // 1
  * @endcode
- * 
+ *
  * @tparam T Specialisation to search for
  * @tparam Tuple Types to search (may be empty)
  */
@@ -50,9 +48,10 @@ constexpr auto find_specialisation_v = find_specialisation<T, Tuple>::value;
  * @code
  * count_specialisation<std::vector, std::tuple<int, std::deque<int>, double>>::value  // 0
  * count_specialisation<std::vector, std::tuple<int, std::vector<int>, double>>::value // 1
- * count_specialisation<std::vector, std::tuple<int, std::vector<int>, std::vector<double>>>::value // 2
+ * count_specialisation<std::vector, std::tuple<int, std::vector<int>, std::vector<double>>>::value
+ * // 2
  * @endcode
- * 
+ *
  * @tparam T Specialisation to search for
  * @tparam Tuple Types to search (may be empty)
  */
@@ -104,7 +103,7 @@ constexpr auto count_despecialised_v = count_despecialised<T, Tuple>::value;
  * has_specialisation<std::vector, std::tuple<int, std::deque<int>, double>> // false
  * has_specialisation<std::vector, std::tuple<int, std::vector<int>, double>> // true
  * @endcode
- * 
+ *
  * @tparam T Specialisation to search for
  * @tparam Tuple Types to search (may be empty)
  */
@@ -123,7 +122,7 @@ template <template <typename...> typename T, typename Tuple>
 constexpr auto has_specialisation_v = has_specialisation<T, Tuple>::value;
 
 /** Tuple zipper.
- *  
+ *
  * Zips together two equal sized tuple-like types to form another tuple where each element is the
  * pair of the equivalent elements in @a First and @a Second.
  *
@@ -172,7 +171,9 @@ struct unzip {
 namespace detail
 {
 template <typename U, typename... I>
-[[nodiscard]] constexpr auto tuple_filter_and_construct_impl(U&& input, std::tuple<I...>) noexcept
+[[nodiscard]] constexpr auto tuple_filter_and_construct_impl(
+    U&& input,
+    [[maybe_unused]] std::tuple<I...> Is) noexcept
 {
     return std::tuple{std::get<I::value>(std::forward<U>(input))...};
 }
@@ -180,7 +181,7 @@ template <typename U, typename... I>
 
 /** Moves (or copies if unable to) elements from @a input if their type passes @a Fn, and constructs
  * a tuple instance from them.
- * 
+ *
  * The key point of this function is that this operation is done in a single expression so it works
  * with tuples with elements that are @em not default constructible.
  * @tparam Fn Metafunction type whose value is true for types in @a U wanted in the return
@@ -211,18 +212,20 @@ template <template <typename...> typename Tuple,
           typename Insert,
           typename... Args,
           std::size_t... I>
-[[nodiscard]] constexpr auto tuple_push_back_impl(Tuple<Args...> tuple,
-                                                  Insert insert,
-                                                  std::integer_sequence<std::size_t, I...>) noexcept
+[[nodiscard]] constexpr auto tuple_push_back_impl(
+    Tuple<Args...> tuple,
+    Insert insert,
+    [[maybe_unused]] std::integer_sequence<std::size_t, I...> Is) noexcept
 {
     return Tuple{std::move(std::get<I>(tuple))..., std::move(insert)};
 }
 
 // Empty tuple specialisation
 template <template <typename...> typename Tuple, typename Insert>
-[[nodiscard]] constexpr auto tuple_push_back_impl(Tuple<>,
-                                                  Insert insert,
-                                                  std::integer_sequence<std::size_t>) noexcept
+[[nodiscard]] constexpr auto tuple_push_back_impl(
+    [[maybe_unused]] Tuple<> t,
+    Insert insert,
+    [[maybe_unused]] std::integer_sequence<std::size_t> Is) noexcept
 {
     return Tuple{std::move(insert)};
 }
@@ -243,5 +246,4 @@ template <typename Tuple, typename Insert, std::size_t... I>
                                         std::move(insert),
                                         std::make_index_sequence<std::tuple_size_v<Tuple>>{});
 }
-}  // namespace algorithm
-}  // namespace arg_router
+}  // namespace arg_router::algorithm

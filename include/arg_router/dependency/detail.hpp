@@ -8,11 +8,7 @@
 
 #include <variant>
 
-namespace arg_router
-{
-namespace dependency
-{
-namespace detail
+namespace arg_router::dependency::detail
 {
 // Collect the child names and concetenate into a compile time string for the one_of display name
 template <typename ParentDocName, typename... Params>
@@ -154,6 +150,4 @@ protected:
     {
     }
 };
-}  // namespace detail
-}  // namespace dependency
-}  // namespace arg_router
+}  // namespace arg_router::dependency::detail

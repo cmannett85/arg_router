@@ -51,13 +51,13 @@ namespace detail
 {
 // Forward declared
 template <typename Result, typename Next, typename... Others>
-constexpr auto list_expander_impl(Result, Next, Others...) noexcept;
+constexpr auto list_expander_impl(Result r, Next n, Others... others) noexcept;
 
 template <typename Result, typename ListChildren, std::size_t... I>
 [[nodiscard]] constexpr auto list_expander_unpacker(
     Result result,
     ListChildren list_children,
-    std::integer_sequence<std::size_t, I...>) noexcept
+    [[maybe_unused]] std::integer_sequence<std::size_t, I...> Is) noexcept
 {
     return list_expander_impl(std::move(result), std::move(std::get<I>(list_children))...);
 }

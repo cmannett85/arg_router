@@ -9,9 +9,7 @@
 
 #include <limits>
 
-namespace arg_router
-{
-namespace policy
+namespace arg_router::policy
 {
 /** Provides inclusive minimum and maximum values for an parsed value.
  *
@@ -29,7 +27,7 @@ public:
     using less_than_compare = LessThanCompare;
 
     /** Constructor.
-     * 
+     *
      * Unlike min_max_count_t. value_type is not guaranteed to be compile-time constructible, and so
      * to avoid runtime overhead, @em no compile-time or runtime checking is done on the validity of
      * @a min and @a max.
@@ -70,7 +68,8 @@ public:
         if (comp_(value, min_)) {
             throw parse_exception{"Minimum value not reached",
                                   parsing::node_token_type<node_type>()};
-        } else if (comp_(max_, value)) {
+        }
+        if (comp_(max_, value)) {
             throw parse_exception{"Maximum value exceeded", parsing::node_token_type<node_type>()};
         }
     }
@@ -88,5 +87,4 @@ struct is_policy<min_max_value<ValueType, LessThanCompare>> : std::true_type {
 template <typename ValueType>
 struct is_policy<min_max_value<ValueType>> : std::true_type {
 };
-}  // namespace policy
-}  // namespace arg_router
+}  // namespace arg_router::policy

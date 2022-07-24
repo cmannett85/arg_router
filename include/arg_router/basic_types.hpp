@@ -22,11 +22,12 @@ namespace arg_router
  */
 using string = std::basic_string<char, std::char_traits<char>, config::allocator<char>>;
 
-/** arg_router stringstream.
+/** arg_router ostringstream.
  *
- * Same as a std::stringstream, except that it uses the config::allocator.
+ * Same as a std::ostringstream, except that it uses the config::allocator.
  */
-using stringstream = std::basic_stringstream<char, std::char_traits<char>, config::allocator<char>>;
+using ostringstream =
+    std::basic_ostringstream<char, std::char_traits<char>, config::allocator<char>>;
 
 /** arg_router vector.
  *

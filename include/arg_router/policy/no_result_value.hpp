@@ -4,13 +4,11 @@
 
 #include "arg_router/policy/policy.hpp"
 
-namespace arg_router
-{
-namespace policy
+namespace arg_router::policy
 {
 /** Indicates that a node or derived policy's owning node does not create a return value when
  * parsed.
- * 
+ *
  * Policies or nodes can derive from this.
  */
 template <typename = void>  // This is needed due so it can be used in
@@ -34,5 +32,4 @@ constexpr bool has_no_result_value_v = has_no_result_value<T>::value;
 template <>
 struct is_policy<no_result_value<>> : std::true_type {
 };
-}  // namespace policy
-}  // namespace arg_router
+}  // namespace arg_router::policy

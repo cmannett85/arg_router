@@ -56,13 +56,15 @@ set(TEST_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/string_view_ops_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/tree_recursor_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/unsafe_any_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/utility/utf8/code_point_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/utility/utf8/grapheme_cluster_break_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/utf8_test.cpp
 )
 
 # Format just the unit test files
 create_clangformat_target(
     NAME clangformat_test
-    FORMAT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/../.clang-format
+    FORMAT_FILE ${CMAKE_SOURCE_DIR}/.clang-format
     DEPENDS clangformat
     SOURCES ${TEST_HEADERS} ${TEST_SRCS}
 )

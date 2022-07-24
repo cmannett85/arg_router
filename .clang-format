@@ -17,7 +17,7 @@ ConstructorInitializerAllOnOneLineOrOnePerLine: false
 IndentCaseLabels: false
 IndentPPDirectives: AfterHash
 IndentWidth: 4
-ReflowComments: false
+ReflowComments: true
 SortUsingDeclarations: false
 SpacesInContainerLiterals: false
 Standard: Latest

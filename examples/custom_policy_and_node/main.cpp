@@ -11,7 +11,7 @@ using namespace std::string_view_literals;
 namespace
 {
 constexpr auto version = "v1.0.0"sv;
-}
+}  // namespace
 
 /* A ridiculous description policy implementation that appends a smiley face to the user supplied
  * description.
@@ -25,7 +25,7 @@ class smiley_description_t
 public:
     [[nodiscard]] constexpr static std::string_view description() noexcept
     {
-        return S::template append_t<S_(" :)")>::get();
+        return S::template append_t<S_(" 🙂")>::get();
     }
 
 private:
@@ -47,16 +47,14 @@ struct arp::is_policy<smiley_description_t<T>> : std::true_type {
 template <typename ValueType>
 class is_even
 {
-    static_assert(std::is_integral_v<ValueType>,
-                  "ValueType must be an integer");
+    static_assert(std::is_integral_v<ValueType>, "ValueType must be an integer");
 
 public:
     template <typename... Parents>
-    void validation_phase(const ValueType& value, const Parents&...) const
+    void validation_phase(const ValueType& value, [[maybe_unused]] const Parents&... parents) const
     {
         if (value % 2 != 0) {
-            throw ar::parse_exception{"Value not even: " +
-                                      std::to_string(value)};
+            throw ar::parse_exception{"Value not even: " + std::to_string(value)};
         }
     }
 };
@@ -71,19 +69,15 @@ struct arp::is_policy<is_even<ValueType>> : std::true_type {
 // This is really just a simplified positional_arg_t that only supports a single argument
 template <typename T, typename... Policies>
 class single_positional_arg_t :
-    public ar::tree_node<std::decay_t<decltype(arp::fixed_count<1>)>,
-                         Policies...>
+    public ar::tree_node<std::decay_t<decltype(arp::fixed_count<1>)>, Policies...>
 {
-    static_assert(
-        arp::is_all_policies_v<std::tuple<Policies...>>,
-        "Positional args must only contain policies (not other nodes)");
+    static_assert(arp::is_all_policies_v<std::tuple<Policies...>>,
+                  "Positional args must only contain policies (not other nodes)");
 
-    using parent_type =
-        ar::tree_node<std::decay_t<decltype(arp::fixed_count<1>)>, Policies...>;
+    using parent_type = ar::tree_node<std::decay_t<decltype(arp::fixed_count<1>)>, Policies...>;
 
-    static_assert(
-        ar::traits::has_display_name_method_v<single_positional_arg_t>,
-        "Positional arg must have a display name policy");
+    static_assert(ar::traits::has_display_name_method_v<single_positional_arg_t>,
+                  "Positional arg must have a display name policy");
     static_assert(!ar::traits::has_long_name_method_v<single_positional_arg_t>,
                   "Positional arg must not have a long name policy");
     static_assert(!ar::traits::has_short_name_method_v<single_positional_arg_t>,
@@ -105,22 +99,18 @@ public:
     {
         [[nodiscard]] constexpr static auto label_generator() noexcept
         {
-            constexpr auto name_index = boost::mp11::mp_find_if<
-                policies_type,
-                ar::traits::has_display_name_method>::value;
-            constexpr auto name =
-                std::tuple_element_t<name_index, policies_type>::display_name();
+            constexpr auto name_index =
+                boost::mp11::mp_find_if<policies_type, ar::traits::has_display_name_method>::value;
+            constexpr auto name = std::tuple_element_t<name_index, policies_type>::display_name();
 
             return S_("<"){} + S_(name){} + S_("> "){} +
-                   parent_type::template default_leaf_help_data_type<
-                       Flatten>::count_suffix();
+                   parent_type::template default_leaf_help_data_type<Flatten>::count_suffix();
         }
 
     public:
         using label = std::decay_t<decltype(label_generator())>;
         using description =
-            typename parent_type::template default_leaf_help_data_type<
-                Flatten>::description;
+            typename parent_type::template default_leaf_help_data_type<Flatten>::description;
         using children = std::tuple<>;
     };
 
@@ -143,22 +133,20 @@ public:
     }
 
     template <typename... Parents>
-    value_type parse(ar::parsing::parse_target target,
-                     const Parents&... parents) const
+    [[nodiscard]] value_type parse(ar::parsing::parse_target target,
+                                   const Parents&... parents) const
     {
         // The fixed count of 1 guarantees there is a single token.  Pass it onto the parent type
         // which will use a custom parse if one is available, otherwise it will use the global
         // parser
-        auto result = parent_type::template parse<value_type>(
-            target.tokens().front().name,
-            *this,
-            parents...);
+        auto result = parent_type::template parse<value_type>(target.tokens().front().name,
+                                                              *this,
+                                                              parents...);
 
         // Run the result through the validation policies
         ar::utility::tuple_type_iterator<policies_type>([&](auto i) {
             using policy_type = std::tuple_element_t<i, policies_type>;
-            if constexpr (arp::has_validation_phase_method_v<policy_type,
-                                                             value_type>) {
+            if constexpr (arp::has_validation_phase_method_v<policy_type, value_type>) {
                 this->policy_type::validation_phase(result, *this, parents...);
             }
         });
@@ -169,34 +157,29 @@ public:
     }
 
 private:
-    static_assert(
-        !parent_type::template any_phases_v<value_type,
-                                            arp::has_routing_phase_method>,
-        "Single positional arg does not support policies with routing phases "
-        "(e.g. router)");
+    static_assert(!parent_type::template any_phases_v<value_type, arp::has_routing_phase_method>,
+                  "Single positional arg does not support policies with routing phases "
+                  "(e.g. router)");
 };
 
 // Create a helper function to ease CTAD.
 template <typename T, typename... Policies>
-[[nodiscard]] constexpr single_positional_arg_t<T, Policies...>
-single_positional_arg(Policies... policies) noexcept
+[[nodiscard]] constexpr single_positional_arg_t<T, Policies...> single_positional_arg(
+    Policies... policies) noexcept
 {
-    return single_positional_arg_t<T, std::decay_t<Policies>...>{
-        std::move(policies)...};
+    return single_positional_arg_t<T, std::decay_t<Policies>...>{std::move(policies)...};
 }
 
 // Take a copy of the default rules, as we're adding new types we just need to add to them
-using original_rules =
-    typename decltype(arp::validation::default_validator)::rules_type;
+using original_rules = typename decltype(arp::validation::default_validator)::rules_type;
 
 // We can't have two description types in a single node, that's just confusing
 using smiley_rules = boost::mp11::mp_push_front<
     original_rules,
-    arp::validation::rule_q<arp::validation::common_rules::
-                                despecialised_any_of_rule<smiley_description_t>,
-                            arp::validation::despecialised_unique_in_owner,
-                            arp::validation::policy_parent_must_not_have_policy<
-                                arp::description_t>>>;
+    arp::validation::rule_q<
+        arp::validation::common_rules::despecialised_any_of_rule<smiley_description_t>,
+        arp::validation::despecialised_unique_in_owner,
+        arp::validation::policy_parent_must_not_have_policy<arp::description_t>>>;
 
 // is_even doesn't need it's own rule as the generic policy one suffices
 
@@ -207,8 +190,7 @@ constexpr auto pos_rule_index = boost::mp11::mp_find_if_q<
     smiley_rules,
     boost::mp11::mp_bind<
         std::is_same,
-        arp::validation::common_rules::despecialised_any_of_rule<
-            ar::positional_arg_t>,
+        arp::validation::common_rules::despecialised_any_of_rule<ar::positional_arg_t>,
         boost::mp11::mp_bind<boost::mp11::mp_first, boost::mp11::_1>>>::value;
 static_assert(pos_rule_index < std::tuple_size_v<smiley_rules>,
               "Cannot find positional_arg_t rule");
@@ -216,37 +198,31 @@ static_assert(pos_rule_index < std::tuple_size_v<smiley_rules>,
 using pos_rule = boost::mp11::mp_replace_at_c<
     boost::mp11::mp_at_c<smiley_rules, pos_rule_index>,
     0,
-    arp::validation::common_rules::despecialised_any_of_rule<
-        ar::positional_arg_t,
-        single_positional_arg_t>>;
-using new_rules =
-    boost::mp11::mp_replace_at_c<smiley_rules, pos_rule_index, pos_rule>;
+    arp::validation::common_rules::despecialised_any_of_rule<ar::positional_arg_t,
+                                                             single_positional_arg_t>>;
+using new_rules = boost::mp11::mp_replace_at_c<smiley_rules, pos_rule_index, pos_rule>;
 
 using my_validator = arp::validation::validator_from_tuple<new_rules>;
 
 int main(int argc, char* argv[])
 {
-    ar::root(
-        my_validator{},
-        ar::help(arp::long_name<S_("help")>,
-                 arp::short_name<'h'>,
-                 arp::program_name<S_("is_even")>,
-                 arp::program_version<S_(version)>,
-                 smiley_description<S_("Display this help and exit")>),
-        ar::flag(arp::long_name<S_("version")>,
-                 smiley_description<S_("Output version information and exit")>,
-                 arp::router{[](bool) {
-                     std::cout << version << std::endl;
-                     std::exit(EXIT_SUCCESS);
-                 }}),
-        ar::mode(
-            single_positional_arg<int>(arp::required,
-                                       arp::display_name<S_("Value")>,
-                                       smiley_description<S_("Value to read")>,
-                                       is_even<int>{}),
-            arp::router{[](int value) {
-                std::cout << "Value: " << value << std::endl;
-            }}))
+    ar::root(my_validator{},
+             ar::help(arp::long_name<S_("help")>,
+                      arp::short_name<'h'>,
+                      arp::program_name<S_("is_even")>,
+                      arp::program_version<S_(version)>,
+                      smiley_description<S_("Display this help and exit")>),
+             ar::flag(arp::long_name<S_("version")>,
+                      smiley_description<S_("Output version information and exit")>,
+                      arp::router{[](bool) {
+                          std::cout << version << std::endl;
+                          std::exit(EXIT_SUCCESS);
+                      }}),
+             ar::mode(single_positional_arg<int>(arp::required,
+                                                 arp::display_name<S_("Value")>,
+                                                 smiley_description<S_("Value to read")>,
+                                                 is_even<int>{}),
+                      arp::router{[](int value) { std::cout << "Value: " << value << std::endl; }}))
         .parse(argc, argv);
 
     return EXIT_SUCCESS;

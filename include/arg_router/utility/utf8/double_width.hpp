@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "arg_router/utility/utf8_tables/code_point.hpp"
+#include "arg_router/utility/utf8/code_point.hpp"
 
 #include <array>
 
@@ -13,11 +13,13 @@ namespace utility
 namespace utf8
 {
 /** Double-width code points i.e. those that occupy 2 terminal columns when rendered.
- * 
+ *
+ * Each entry is an inclusive range of code points.
+ *
  * This table is generated using scripts/unicode_table_generators.py from
  * http://www.unicode.org/Public/UNIDATA/EastAsianWidth.txt v14.0.0.
  */
-constexpr auto double_width_table = std::array<code_point_range, 281>{{
+constexpr auto double_width_table = std::array<code_point::range, 281>{{
     {0x1100, 0x115F},   {0x231A, 0x231B},   {0x2329, 0x2329},   {0x232A, 0x232A},
     {0x23E9, 0x23EC},   {0x23F0, 0x23F0},   {0x23F3, 0x23F3},   {0x25FD, 0x25FE},
     {0x2614, 0x2615},   {0x2648, 0x2653},   {0x267F, 0x267F},   {0x2693, 0x2693},

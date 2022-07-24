@@ -10,12 +10,8 @@
 #    include <windows.h>
 #endif
 
-namespace arg_router
-{
-namespace utility
-{
 /** Namespace for terminal utilities. */
-namespace terminal
+namespace arg_router::utility::terminal
 {
 #ifdef UNIT_TEST_BUILD
 static auto test_columns_value = std::size_t{80};
@@ -31,10 +27,12 @@ inline std::size_t columns()
     return test_columns_value;
 #else
 #    if defined(__linux__) || defined(__APPLE__)
+    // NOLINTBEGIN(*-member-init, *-vararg)
     struct winsize w;
     if (::ioctl(0, TIOCGWINSZ, &w) != 0) {
         return 0;
     }
+    // NOLINTEND(*-member-init, *-vararg)
     return w.ws_col;
 #    elif _WIN32
     CONSOLE_SCREEN_BUFFER_INFO csbi;
@@ -45,6 +43,4 @@ inline std::size_t columns()
 #    endif
 #endif
 }
-}  // namespace terminal
-}  // namespace utility
-}  // namespace arg_router
+}  // namespace arg_router::utility::terminal

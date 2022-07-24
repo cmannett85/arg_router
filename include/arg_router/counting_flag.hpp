@@ -15,7 +15,7 @@ namespace arg_router
  * represents a positive boolean value.  However a counting flag's value is the number of times it
  * appears on the command line.  By default this type does not do short-form name collapsing, add
  * policy::short_form_expander to the policies during construction to enable that.
- * 
+ *
  * Create with the counting_flag(Policies...) function for consistency with arg_t.
  * @tparam T Counting value type, must be explicitly convertible to std::size_t
  * @tparam Policies Pack of policies that define its behaviour
@@ -73,14 +73,14 @@ public:
     }
 
     /** Parse function.
-     * 
+     *
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
      * @param target Parse target
      * @param parents Parents instances pack
      * @return Parsed result
      */
     template <typename... Parents>
-    bool parse([[maybe_unused]] parsing::parse_target target,
+    bool parse([[maybe_unused]] parsing::parse_target&& target,
                [[maybe_unused]] const Parents&... parents) const noexcept
     {
         // Presence of the flag yields a constant true.  Validation is done by the parent mode as it
@@ -110,7 +110,7 @@ private:
 /** Constructs a counting_flag_t with the given policies.
  *
  * This is used for similarity with arg_t.
- * 
+ *
  * Just like 'normal' flags, counting flags with shortnames can be concatenated or 'collapsed' on
  * the command line,
  * e.g.

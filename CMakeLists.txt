@@ -83,20 +83,25 @@ set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/tree_node_fwd.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/compile_time_string.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/compile_time_optional.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/result.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/string_view_ops.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/terminal.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/tree_recursor.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/tuple_iterator.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/unsafe_any.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/utf8.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/utf8_tables/code_point.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/utf8_tables/double_width.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/utf8_tables/whitespace.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/utf8_tables/zero_width.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/utf8/code_point.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/utf8/double_width.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/utf8/grapheme_cluster_break.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/utf8/whitespace.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/utf8/zero_width.hpp
 )
 
 set(FOR_IDE
     ${CMAKE_CURRENT_SOURCE_DIR}/.clang-format
+    ${CMAKE_CURRENT_SOURCE_DIR}/.clang-tidy
+    ${CMAKE_CURRENT_SOURCE_DIR}/test/.clang-tidy
+    ${CMAKE_CURRENT_SOURCE_DIR}/.clangd
     ${CMAKE_CURRENT_SOURCE_DIR}/.github/workflows/docs_pusher.yml
     ${CMAKE_CURRENT_SOURCE_DIR}/.github/workflows/pr_checker.yml
     ${CMAKE_CURRENT_SOURCE_DIR}/.gitignore
@@ -120,7 +125,7 @@ set(FOR_IDE
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/copyright_checker.cmake)
     create_copyright_checker_target(
     NAME copyright_checker
-    SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/scripts/copyright_checker.py
+    SCRIPT ${CMAKE_SOURCE_DIR}/scripts/copyright_checker.py
     SOURCES ${HEADERS} ${FOR_IDE}
 )
 
@@ -132,7 +137,7 @@ if(NOT DOCS_ONLY)
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/clang-format.cmake)
     create_clangformat_target(
         NAME clangformat
-        FORMAT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/.clang-format
+        FORMAT_FILE ${CMAKE_SOURCE_DIR}/.clang-format
         DEPENDS copyright_checker
         SOURCES ${HEADERS}
     )

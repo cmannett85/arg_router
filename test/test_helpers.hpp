@@ -186,7 +186,7 @@ constexpr void data_set(F&& f, std::tuple<Args...>&& tuple)
  * There is a dedicated CMake target for death tests, this function replaces the content of the
  * target's only source file with @a code (which is why it must contain <TT>main()</TT> function)
  * and attempts to build it.
- * 
+ *
  * This function contains all the necessary <TT>BOOST_CHECK_...</TT> calls for testing.
  * @param code Code to compile, must contain a <TT>main()</TT>
  * @param expected_error Error string to search for in output

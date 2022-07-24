@@ -4,16 +4,11 @@
 
 #include "arg_router/basic_types.hpp"
 
-namespace arg_router
-{
-namespace utility
-{
-/** Namespace for std::string_view operators.
- */
-namespace string_view_ops
+/** Namespace for std::string_view operators. */
+namespace arg_router::utility::string_view_ops
 {
 /** Concatentation operator between std::string and std::string_view.
- * 
+ *
  * @tparam CharT Character type
  * @tparam Traits Character traits
  * @tparam Allocator Allocator type
@@ -32,7 +27,7 @@ template <typename CharT,
 }
 
 /** Overload that accepts reversed arguments.
- * 
+ *
  * @tparam CharT Character type
  * @tparam Traits Character traits
  * @tparam Allocator Allocator type
@@ -51,7 +46,7 @@ template <typename CharT,
 }
 
 /** Returns a std::string using two std::string_views.
- * 
+ *
  * The returned std::string uses the library allocator
  * (<TT>config::allocator</TT>).
  * @tparam CharT Character type
@@ -67,6 +62,4 @@ template <typename CharT, typename Traits = std::char_traits<CharT>>
 {
     return std::basic_string<CharT, Traits, config::allocator<CharT>>(lhs) + rhs;
 }
-}  // namespace string_view_ops
-}  // namespace utility
-}  // namespace arg_router
+}  // namespace arg_router::utility::string_view_ops

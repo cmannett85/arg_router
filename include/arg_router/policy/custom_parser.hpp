@@ -8,12 +8,10 @@
 #include <functional>
 #include <string_view>
 
-namespace arg_router
-{
-namespace policy
+namespace arg_router::policy
 {
 /** Provides the ability for an argument to have a user-provided value parser.
- * 
+ *
  * @tparam T Argument's value type i.e. the type the parser needs to return
  */
 template <typename T>
@@ -55,5 +53,4 @@ private:
 template <typename... Args>
 struct is_policy<custom_parser<Args...>> : std::true_type {
 };
-}  // namespace policy
-}  // namespace arg_router
+}  // namespace arg_router::policy

@@ -5,12 +5,7 @@
 #include "arg_router/dependency/detail.hpp"
 #include "arg_router/policy/multi_stage_value.hpp"
 
-namespace arg_router
-{
-/** The dependency namespace carries nodes and policies that define dependency relationships between
- * other nodes.
- */
-namespace dependency
+namespace arg_router::dependency
 {
 /** Groups child nodes such that any @em one can be used on the command line.
  *
@@ -106,5 +101,4 @@ template <typename... Params>
 {
     return one_of_t{std::move(params)...};
 }
-}  // namespace dependency
-}  // namespace arg_router
+}  // namespace arg_router::dependency

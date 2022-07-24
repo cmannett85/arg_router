@@ -14,130 +14,30 @@ BOOST_AUTO_TEST_SUITE(utility_suite)
 
 BOOST_AUTO_TEST_SUITE(utf8_suite)
 
-BOOST_AUTO_TEST_CASE(num_code_points_test)
-{
-    {
-        using str = S_("");
-        static_assert(utf8::num_code_points(str::get()) == 0);
-    }
-    {
-        using str = S_("hello");
-        static_assert(utf8::num_code_points(str::get()) == 5);
-    }
-    {
-        using str = S_("zß水🍌");
-        static_assert(utf8::num_code_points(str::get()) == 4);
-    }
-    {
-        using str = S_("Δàrö");
-        static_assert(utf8::num_code_points(str::get()) == 4);
-    }
-
-    // That's right, code points are not the same as grapheme clusters!
-    {
-        using str = S_("🇦🇬");
-        static_assert(utf8::num_code_points(str::get()) == 2);
-    }
-    {
-        using str = S_("m̃");
-        static_assert(utf8::num_code_points(str::get()) == 2);
-    }
-    {
-        using str = S_("क़");
-        static_assert(utf8::num_code_points(str::get()) == 2);
-    }
-}
-
-BOOST_AUTO_TEST_CASE(code_point_size_test)
-{
-    {
-        using str = S_("");
-        static_assert(utf8::code_point_size(str::get()) == 0);
-    }
-    {
-        using str = S_("h");
-        static_assert(utf8::code_point_size(str::get()) == 1);
-    }
-    {
-        using str = S_("hello");
-        static_assert(utf8::code_point_size(str::get()) == 1);
-    }
-    {
-        using str = S_("Δ");
-        static_assert(utf8::code_point_size(str::get()) == 2);
-    }
-    {
-        using str = S_("猫");
-        static_assert(utf8::code_point_size(str::get()) == 3);
-    }
-    {
-        using str = S_("🍌");
-        static_assert(utf8::code_point_size(str::get()) == 4);
-    }
-}
-
-BOOST_AUTO_TEST_CASE(code_point_to_number_test)
-{
-    {
-        using str = S_("");
-        static_assert(!utf8::code_point_to_number(str::get()).has_value());
-    }
-    {
-        using str = S_("g");
-        static_assert(utf8::code_point_to_number(str::get()).has_value());
-        static_assert(*utf8::code_point_to_number(str::get()) == 103);
-    }
-    {
-        using str = S_("gh");
-        static_assert(utf8::code_point_to_number(str::get()).has_value());
-        static_assert(*utf8::code_point_to_number(str::get()) == 103);
-    }
-    {
-        using str = S_("Δ");
-        static_assert(utf8::code_point_to_number(str::get()).has_value());
-        static_assert(*utf8::code_point_to_number(str::get()) == 916);
-    }
-    {
-        using str = S_("Δh");
-        static_assert(utf8::code_point_to_number(str::get()).has_value());
-        static_assert(*utf8::code_point_to_number(str::get()) == 916);
-    }
-    {
-        using str = S_("gΔ");
-        static_assert(utf8::code_point_to_number(str::get()).has_value());
-        static_assert(*utf8::code_point_to_number(str::get()) == 103);
-    }
-    {
-        using str = S_("🙂");
-        static_assert(utf8::code_point_to_number(str::get()).has_value());
-        static_assert(*utf8::code_point_to_number(str::get()) == 128578);
-    }
-}
-
 BOOST_AUTO_TEST_CASE(code_point_iterator_test)
 {
     using str = S_("a🙂bΔ猫");
     {
-        constexpr auto it = utf8::code_point_iterator{str::get()};
+        constexpr auto it = utf8::code_point::iterator{str::get()};
         static_assert(*it == "a");
-        static_assert(it != utf8::code_point_iterator{});
+        static_assert(it != utf8::code_point::iterator{});
     }
     {
-        auto it = utf8::code_point_iterator{str::get()};
+        auto it = utf8::code_point::iterator{str::get()};
         ++it;
         BOOST_CHECK_EQUAL(*it, "🙂"sv);
-        BOOST_CHECK(it != utf8::code_point_iterator{});
+        BOOST_CHECK(it != utf8::code_point::iterator{});
         ++it;
         BOOST_CHECK_EQUAL(*it, "b"sv);
-        BOOST_CHECK(it != utf8::code_point_iterator{});
+        BOOST_CHECK(it != utf8::code_point::iterator{});
         ++it;
         ++it;
         ++it;
-        BOOST_CHECK(it == utf8::code_point_iterator{});
+        BOOST_CHECK(it == utf8::code_point::iterator{});
     }
     {
         auto result = std::vector<std::string_view>{};
-        for (auto it = utf8::code_point_iterator{str::get()}; it != utf8::code_point_iterator{};
+        for (auto it = utf8::code_point::iterator{str::get()}; it != utf8::code_point::iterator{};
              ++it) {
             result.push_back(*it);
         }
@@ -147,37 +47,87 @@ BOOST_AUTO_TEST_CASE(code_point_iterator_test)
     }
     {
         auto result = std::vector<std::string_view>{};
-        for (auto cp : utf8::code_point_iterator_wrapper{str::get()}) {
+        for (auto cp : utf8::code_point::iterator::range(str::get())) {
             result.push_back(cp);
         }
 
         const auto expected = std::vector{"a"sv, "🙂"sv, "b"sv, "Δ"sv, "猫"sv};
         BOOST_CHECK_EQUAL(result, expected);
     }
+    {
+        using empty_str = S_("");
+
+        auto it = utf8::code_point::iterator{empty_str::get()};
+        BOOST_CHECK(it == utf8::code_point::iterator{});
+    }
 }
 
-BOOST_AUTO_TEST_CASE(code_point_index_to_byte_index_test)
+BOOST_AUTO_TEST_CASE(iterator_test)
 {
+    using str = S_("क़m̃🙂b🇦🇬Δ猫");
     {
-        using str = S_("Δàrö");
-
-        static_assert(utf8::code_point_index_to_byte_index(0, str::get()) ==
-                      std::optional<std::size_t>{0});
-        static_assert(utf8::code_point_index_to_byte_index(1, str::get()) ==
-                      std::optional<std::size_t>{2});
-        static_assert(utf8::code_point_index_to_byte_index(2, str::get()) ==
-                      std::optional<std::size_t>{4});
-        static_assert(utf8::code_point_index_to_byte_index(3, str::get()) ==
-                      std::optional<std::size_t>{5});
-        static_assert(utf8::code_point_index_to_byte_index(4, str::get()) ==
-                      std::optional<std::size_t>{});
-        static_assert(utf8::code_point_index_to_byte_index(100, str::get()) ==
-                      std::optional<std::size_t>{});
+        constexpr auto it = utf8::iterator{str::get()};
+        static_assert(*it == "क़");
+        static_assert(it != utf8::iterator{});
     }
     {
+        auto it = utf8::iterator{str::get()};
+        BOOST_CHECK_EQUAL(*it, "क़");
+        BOOST_CHECK(it != utf8::iterator{});
+        ++it;
+        BOOST_CHECK_EQUAL(*it, "m̃");
+        ++it;
+        BOOST_CHECK_EQUAL(*it, "🙂");
+        ++it;
+        ++it;
+        ++it;
+        ++it;
+        ++it;
+        BOOST_CHECK(it == utf8::iterator{});
+    }
+    {
+        auto result = std::vector<std::string_view>{};
+        for (auto it = utf8::iterator{str::get()}; it != utf8::iterator{}; ++it) {
+            result.push_back(*it);
+        }
+
+        const auto expected = std::vector{"क़"sv, "m̃"sv, "🙂"sv, "b"sv, "🇦🇬"sv, "Δ"sv, "猫"sv};
+        BOOST_CHECK_EQUAL(result, expected);
+    }
+    {
+        auto result = std::vector<std::string_view>{};
+        for (auto cp : utf8::iterator::range(str::get())) {
+            result.push_back(cp);
+        }
+
+        const auto expected = std::vector{"क़"sv, "m̃"sv, "🙂"sv, "b"sv, "🇦🇬"sv, "Δ"sv, "猫"sv};
+        BOOST_CHECK_EQUAL(result, expected);
+    }
+    {
+        using empty_str = S_("");
+
+        auto it = utf8::iterator{empty_str::get()};
+        BOOST_CHECK(it == utf8::iterator{});
+    }
+}
+
+BOOST_AUTO_TEST_CASE(count_test)
+{
+    {
         using str = S_("");
-        static_assert(utf8::code_point_index_to_byte_index(0, str::get()) ==
-                      std::optional<std::size_t>{});
+        static_assert(utf8::count(str::get()) == 0);
+    }
+    {
+        using str = S_("🇦🇬");
+        static_assert(utf8::count(str::get()) == 1);
+    }
+    {
+        using str = S_("🇦🇬m̃");
+        static_assert(utf8::count(str::get()) == 2);
+    }
+    {
+        using str = S_("hello");
+        static_assert(utf8::count(str::get()) == 5);
     }
 }
 
@@ -275,6 +225,10 @@ BOOST_AUTO_TEST_CASE(terminal_width_test)
     {
         using str = S_("🇦🇬");
         static_assert(utf8::terminal_width(str::get()) == 2);
+    }
+    {
+        using str = S_("m̃");
+        static_assert(utf8::terminal_width(str::get()) == 1);
     }
 }
 

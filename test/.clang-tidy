@@ -1,0 +1,4 @@
+# Disable clang-tidy in the test dir - we need to get dirty for the tests!
+InheritParentConfig: false
+Checks: '-*'
+

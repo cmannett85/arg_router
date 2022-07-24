@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "arg_router/utility/utf8_tables/code_point.hpp"
+#include "arg_router/utility/utf8/code_point.hpp"
 
 #include <array>
 
@@ -13,11 +13,13 @@ namespace utility
 namespace utf8
 {
 /** Zero-width code points i.e. those that occupy 0 terminal columns when rendered.
- * 
+ *
+ * Each entry is an inclusive range of code points.
+ *
  * This table is generated using scripts/unicode_table_generators.py from
  * http://www.unicode.org/Public/UNIDATA/extracted/DerivedGeneralCategory.txt v14.0.0.
  */
-constexpr auto zero_width_table = std::array<code_point_range, 341>{{
+constexpr auto zero_width_table = std::array<code_point::range, 341>{{
     {0x300, 0x36F},     {0x483, 0x487},     {0x488, 0x489},     {0x591, 0x5BD},
     {0x5BF, 0x5BF},     {0x5C1, 0x5C2},     {0x5C4, 0x5C5},     {0x5C7, 0x5C7},
     {0x610, 0x61A},     {0x64B, 0x65F},     {0x670, 0x670},     {0x6D6, 0x6DC},

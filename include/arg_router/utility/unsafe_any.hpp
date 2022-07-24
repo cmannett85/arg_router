@@ -7,9 +7,7 @@
 #include <cstring>
 #include <functional>
 
-namespace arg_router
-{
-namespace utility
+namespace arg_router::utility
 {
 /** Type erasure type similar to <TT>std::any</TT> but has no type checking safety features.
  *
@@ -17,6 +15,7 @@ namespace utility
  * Holding objects larger will incur heap allocation. Defaults to word size
  */
 template <std::size_t SmallObjectOptimisationSize = sizeof(std::size_t)>
+// NOLINTNEXTLINE(*-special-member-functions)
 class unsafe_any_t
 {
     using ptr_type = void*;
@@ -27,7 +26,7 @@ class unsafe_any_t
 
 public:
     /** Default constructor.
-     *  
+     *
      * Calling get() will result in undefined behaviour.
      */
     constexpr unsafe_any_t() = default;
@@ -42,6 +41,7 @@ public:
     template <typename T,
               typename = std::enable_if_t<use_internal_storage<T> &&
                                           !std::is_same_v<std::decay_t<T>, unsafe_any_t>>>
+    // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
     unsafe_any_t(T&& value) noexcept
     {
         using value_type = std::decay_t<T>;
@@ -71,6 +71,7 @@ public:
               typename Allocator = config::allocator<std::decay_t<T>>,
               typename = std::enable_if_t<!use_internal_storage<T> &&
                                           !std::is_same_v<std::decay_t<T>, unsafe_any_t>>>
+    // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
     unsafe_any_t(T&& value, Allocator alloc = Allocator{})
     {
         using value_type = std::decay_t<T>;
@@ -202,5 +203,4 @@ private:
 /** Typedef for an unsafe_any_t with internal storage big enough to fit a <TT>std::string_view</TT>.
  */
 using unsafe_any = unsafe_any_t<sizeof(std::string_view)>;
-}  // namespace utility
-}  // namespace arg_router
+}  // namespace arg_router::utility

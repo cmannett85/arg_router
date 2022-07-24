@@ -15,7 +15,7 @@ namespace arg_router
  * represents a positive boolean value.  It has a default value of false and a fixed count of 0.
  * By default this type does not do short-form name collapsing, add policy::short_form_expander to
  * the policies during construction to enable that.
- * 
+ *
  * Create with the flag(Policies...) function for consistency with arg_t.
  * @tparam Policies Pack of policies that define its behaviour
  */
@@ -69,7 +69,7 @@ public:
     }
 
     /** Parse function.
-     * 
+     *
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
      * @param target Parse target
      * @param parents Parents instances pack
@@ -77,7 +77,7 @@ public:
      * @exception parse_exception Thrown if routing phase failed
      */
     template <typename... Parents>
-    value_type parse([[maybe_unused]] parsing::parse_target target,
+    value_type parse([[maybe_unused]] parsing::parse_target&& target,
                      [[maybe_unused]] const Parents&... parents) const
     {
         // Presence of the flag yields a constant true
@@ -104,7 +104,7 @@ private:
 /** Constructs a flag_t with the given policies.
  *
  * This is used for similarity with arg_t.
- * 
+ *
  * Flags with shortnames can be concatenated or 'collapsed' on the command line, e.g.
  * @code
  * foo -a -b -c

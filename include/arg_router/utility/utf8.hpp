@@ -2,42 +2,34 @@
 
 #pragma once
 
-#include "arg_router/algorithm.hpp"
-#include "arg_router/utility/utf8_tables/double_width.hpp"
-#include "arg_router/utility/utf8_tables/whitespace.hpp"
-#include "arg_router/utility/utf8_tables/zero_width.hpp"
+#include "arg_router/utility/utf8/double_width.hpp"
+#include "arg_router/utility/utf8/grapheme_cluster_break.hpp"
+#include "arg_router/utility/utf8/whitespace.hpp"
+#include "arg_router/utility/utf8/zero_width.hpp"
 
-namespace arg_router
-{
-namespace utility
-{
-/** Namespace for UTF-8 encoded string functions.
- *
- * @note These are not true UTF-8 algorithms as they make the assumption that 1 code point is equal
- * to one user-perceived character (a.k.a. grapheme cluster) - this is @b not always true!  For true
- * UTF-8 support, you must link against ICU
- */
-namespace utf8
+#include <string_view>
+
+/** Namespace for UTF-8 encoded string functions. */
+namespace arg_router::utility::utf8
 {
 namespace detail
 {
 template <std::size_t N>
-[[nodiscard]] constexpr std::optional<code_point_range> find_range(
-    const std::array<code_point_range, N>& table,
-    code_point cp) noexcept
+[[nodiscard]] constexpr std::optional<code_point::range> find_range(
+    const std::array<code_point::range, N>& table,
+    code_point::type cp,
+    code_point::type mask = 0x1FFFFF) noexcept
 {
     auto first = table.begin();
-    [[maybe_unused]] auto last = table.end();
 
     auto len = N;
     while (len > 0) {
         const auto step = len / 2;
         auto halfway = first + step;
 
-        if (cp < halfway->first) {
-            last = halfway;
+        if (cp < (halfway->first & mask)) {
             len = step;
-        } else if (cp <= halfway->last) {
+        } else if (cp <= (halfway->last & mask)) {
             return *halfway;
         } else {
             first = ++halfway;
@@ -49,93 +41,9 @@ template <std::size_t N>
 }
 }  // namespace detail
 
-/** Number of UTF-8 code points in the string.
- *
- * @note This is not the same as the number of grapheme clusters in @a str
- * @param str Input string
- * @return Number of code points
+/** Forward iterator for a string's grapheme clusters a.k.a. user-perceived characters.
  */
-[[nodiscard]] inline constexpr std::size_t num_code_points(std::string_view str) noexcept
-{
-    auto result = std::size_t{0};
-    for (auto c : str) {
-        result += (c & 0xC0) != 0x80;
-    }
-
-    return result;
-}
-
-/** Returns the size in bytes for the leading code point of @a str
- *
- * @param str Input string
- * @return Size in bytes, zero if @a str is empty
- */
-[[nodiscard]] inline constexpr std::size_t code_point_size(std::string_view str) noexcept
-{
-    if (str.empty()) {
-        return 0;
-    }
-
-    // The MSB determines if it's ASCII or UTF-8
-    const auto first_byte = static_cast<std::uint8_t>(str[0]);
-    if ((first_byte & 0b1000'0000) == 0) {
-        // ASCII
-        return 1;
-    }
-
-    // Can't think of a way to do this without branches
-    if (first_byte < 0b1101'1111) {
-        return 2;
-    } else if (first_byte < 0b1110'1111) {
-        return 3;
-    }
-
-    return 4;
-}
-
-/** Converts the code point @a str into the underlying numerical representation.
- *
- * Only up to the first four bytes of @a str are read.  Undefined behaviour if @a str is empty or
- * malformed.
- * @param str Code point
- * @return Number, or empty optional if @a str is empty or there are not enough bytes in @a str to
- * read the entire code point
- */
-[[nodiscard]] inline constexpr std::optional<code_point> code_point_to_number(
-    std::string_view str) noexcept
-{
-    const auto bytes_to_read = code_point_size(str);
-    if (bytes_to_read == 0) {
-        return {};
-    }
-
-    if (bytes_to_read == 1) {
-        // ASCII
-        return str[0];
-    }
-
-    if (str.size() < bytes_to_read) {
-        return {};
-    }
-
-    constexpr auto subsequent_byte_mask = code_point{0b0011'1111};
-    const auto first_byte = static_cast<std::uint8_t>(str[0]);
-
-    auto result = first_byte & (0b0001'1111 >> (bytes_to_read - 2));
-    for (auto i = 1u; i < bytes_to_read; ++i) {
-        const auto subsequent_byte = static_cast<code_point>(str[i]);
-
-        // Move the previous reads up to make space for the subsequent byte's data
-        result <<= 6;
-        result |= subsequent_byte & subsequent_byte_mask;
-    }
-
-    return result;
-}
-
-/** Forward iterator for a string's code points.
- */
-class code_point_iterator
+class iterator
 {
 public:
     /** Difference in bytes between two iterator positions. */
@@ -149,28 +57,74 @@ public:
     /** Iterator category. */
     using iterator_category = std::forward_iterator_tag;
 
+    /** A simple wrapper for a string view that allows code point iteration in range-for loops.
+     *
+     * @code
+     * for (auto cp : iterator::range(str)) {
+     *     // Do stuff
+     * }
+     * @endcode
+     */
+    class range_t
+    {
+    public:
+        friend class iterator;
+
+        /** Returns a start iterator.
+         *
+         * @return Start iterator
+         */
+        [[nodiscard]] constexpr iterator begin() noexcept { return iterator{str_}; }
+
+        /** Returns an end iterator.
+         *
+         * @return End iterator
+         */
+        [[nodiscard]] static constexpr iterator end() noexcept { return iterator{}; }
+
+    private:
+        constexpr explicit range_t(std::string_view str) noexcept : str_{str} {}
+
+        std::string_view str_;
+    };
+
+    /** Returns an object that can be used in range-for loops.
+     *
+     * @param str Input string
+     * @return Range object
+     */
+    [[nodiscard]] static constexpr range_t range(std::string_view str) noexcept
+    {
+        return range_t{str};
+    }
+
     /** Default constructor.
-     * 
+     *
      * Represents the end iterator.
      */
-    constexpr code_point_iterator() noexcept = default;
+    constexpr iterator() noexcept : current_{0}, trailing_window_{} {}
 
     /** Constructor.
      *
      * If @a str is empty, then this will create an end iterator.
      * @param str String to iterator over.
      */
-    constexpr explicit code_point_iterator(std::string_view str) noexcept : str_{str} {}
+    constexpr explicit iterator(std::string_view str) noexcept :
+        current_{0}, str_{str}, trailing_window_{}
+    {
+        fill_trailing_window();
+        update_current();
+    }
 
     /** Equality operator.
      *
      * @param other Instance to compare against
      * @return True if the start and end positions are the same
      */
-    [[nodiscard]] constexpr bool operator==(code_point_iterator other) const noexcept
+    [[nodiscard]] constexpr bool operator==(iterator other) const noexcept
     {
         // If they are both empty, then they are considered both end iterators and therefore equal
-        if ((str_.size() == 0) && (other.str_.size() == 0)) {
+        if (str_.empty() && other.str_.empty()) {
             return true;
         }
         return (str_.data() == other.str_.data()) && (str_.size() == other.str_.size());
@@ -181,29 +135,32 @@ public:
      * @param other Instance to compare against
      * @return False if the start and end positions are the same
      */
-    [[nodiscard]] constexpr bool operator!=(code_point_iterator other) const noexcept
+    [[nodiscard]] constexpr bool operator!=(iterator other) const noexcept
     {
         return !(*this == other);
     }
 
     /** Dereference operator.
-     * 
-     * @return Code point
+     *
+     * @return Grapheme cluster
      */
     [[nodiscard]] constexpr value_type operator*() const noexcept
     {
-        const auto num_bytes = code_point_size(str_);
-        return str_.substr(0, num_bytes);
+        return str_.substr(0, current_);
     }
 
     /** Pre-increment the iterator by one code point.
      *
      * @return Reference to this after moving the iterator
      */
-    constexpr code_point_iterator& operator++() noexcept
+    constexpr iterator& operator++() noexcept
     {
-        const auto num_bytes = code_point_size(str_);
-        str_.remove_prefix(num_bytes);
+        // Remove the leading cluster
+        str_.remove_prefix(current_);
+
+        // Find the end of the new one
+        update_current();
+
         return *this;
     }
 
@@ -211,7 +168,7 @@ public:
      *
      * @return Copy of this before moving the iterator
      */
-    constexpr code_point_iterator operator++(int) noexcept
+    constexpr iterator operator++(int) noexcept
     {
         auto result = *this;
 
@@ -220,57 +177,107 @@ public:
     }
 
 private:
-    std::string_view str_;
-};
+    static constexpr auto trailing_window_size = std::size_t{64};
 
-/** A simple wrapper for a string view that allows code point iteration in range-for loops.
- */
-class code_point_iterator_wrapper
-{
-public:
-    /** Constructor.
-     *
-     * @param str Input string
-     */
-    constexpr explicit code_point_iterator_wrapper(std::string_view str) : str_{str} {}
-
-    /** Returns a start iterator.
-     *
-     * @return Start iterator
-     */
-    [[nodiscard]] constexpr code_point_iterator begin() noexcept
+    [[nodiscard]] static constexpr grapheme_cluster_break_property extract_property(
+        code_point::type cp) noexcept
     {
-        return code_point_iterator{str_};
+        auto result = grapheme_cluster_break_property::any;
+        const auto range = detail::find_range(grapheme_cluster_break_table, cp);
+        if (range) {
+            result = static_cast<grapheme_cluster_break_property>(
+                (range->first & grapheme_cluster_break_property_mask) >> code_point::data_offset);
+        }
+
+        return result;
     }
 
-    /** Returns an end iterator.
-     *
-     * @return End iterator
-     */
-    [[nodiscard]] constexpr code_point_iterator end() noexcept { return code_point_iterator{}; }
+    [[nodiscard]] constexpr bool should_break(
+        grapheme_cluster_break_property next_property) noexcept
+    {
+        for (auto rule : no_break_rules::grapheme_cluster<trailing_window_size>) {
+            if (rule(trailing_window_, next_property)) {
+                return false;
+            }
+        }
 
-private:
-    std::string_view str_;
-};
+        return true;
+    }
 
-/** Returns the start byte index into @a str corresponding to the UTF-8 code point @a i.
- *
- * @param i UTF-8 code point index
- * @param str Input string
- * @return Byte index, or empty optional if requested index was not found
- */
-[[nodiscard]] inline constexpr std::optional<std::size_t> code_point_index_to_byte_index(
-    std::size_t i,
-    std::string_view str) noexcept
-{
-    auto cp = std::size_t{0};
-    for (auto b = std::size_t{0}; b < str.size(); ++b) {
-        if (((str[b] & 0xC0) != 0x80) && (cp++ == i)) {
-            return b;
+    constexpr void fill_trailing_window() noexcept
+    {
+        // array::fill(..) is only constexpr in C++20
+        for (auto& p : trailing_window_) {
+            p = grapheme_cluster_break_property::any;
         }
     }
 
-    return {};
+    constexpr void rotate_trailing_window() noexcept
+    {
+        // Right rotate the window, std::rotate isn't constexpr in C++17
+        auto it = trailing_window_.rbegin();
+        while (true) {
+            auto prev = it++;
+            if (it == trailing_window_.rend()) {
+                break;
+            }
+            *prev = *it;
+        }
+    }
+
+    constexpr void update_current() noexcept
+    {
+        current_ = 0;
+        if (str_.empty()) {
+            return;
+        }
+
+        // Iterate over each code point and its neighbour, pass their break properties into the
+        // rule checker
+        for (auto it = code_point::iterator{str_}; it != code_point::iterator{}; ++it) {
+            current_ += code_point::size(*it);
+
+            // If this code point is malformed, then just skip it
+            const auto this_cp = code_point::decode(*it);
+            if (!this_cp) {
+                continue;
+            }
+
+            rotate_trailing_window();
+            trailing_window_.front() = extract_property(*this_cp);
+
+            // If there is a following code point, use it to update the next_break_property
+            auto next_break_property = grapheme_cluster_break_property::any;
+            {
+                auto next_it = it;
+                ++next_it;
+                if (next_it != code_point::iterator{}) {
+                    const auto next_cp = code_point::decode(*next_it);
+                    if (next_cp) {
+                        next_break_property = extract_property(*next_cp);
+                    }
+                }
+            }
+
+            if (should_break(next_break_property)) {
+                break;
+            }
+        }
+    }
+
+    std::size_t current_;
+    std::string_view str_;
+    std::array<grapheme_cluster_break_property, trailing_window_size> trailing_window_;
+};
+
+/** Number of UTF-8 grapheme clusters in the string.
+ *
+ * @param str Input string
+ * @return Number of grapheme clusters
+ */
+[[nodiscard]] inline constexpr std::size_t count(std::string_view str) noexcept
+{
+    return std::distance(iterator(str), iterator());
 }
 
 /** True if the leading code point of @a str is one of the known whitespace characters.
@@ -281,7 +288,7 @@ private:
  */
 [[nodiscard]] inline constexpr bool is_whitespace(std::string_view str) noexcept
 {
-    const auto cp = code_point_to_number(str);
+    const auto cp = code_point::decode(str);
     if (!cp) {
         return false;
     }
@@ -296,7 +303,7 @@ private:
  */
 [[nodiscard]] inline constexpr bool contains_whitespace(std::string_view str) noexcept
 {
-    for (auto cp : code_point_iterator_wrapper{str}) {
+    for (auto cp : code_point::iterator::range(str)) {
         if (is_whitespace(cp)) {
             return true;
         }
@@ -314,8 +321,8 @@ private:
 [[nodiscard]] inline constexpr std::size_t terminal_width(std::string_view str) noexcept
 {
     auto width = std::size_t{0};
-    for (auto cp_str : code_point_iterator_wrapper{str}) {
-        const auto cp = code_point_to_number(cp_str);
+    for (auto cp_str : code_point::iterator::range(str)) {
+        const auto cp = code_point::decode(cp_str);
         if (!cp) {
             continue;
         }
@@ -348,7 +355,7 @@ public:
     using iterator_category = std::forward_iterator_tag;
 
     /** Default constructor.
-     * 
+     *
      * Represents the end iterator.
      */
     constexpr line_iterator() noexcept : max_columns_{0}, line_break_byte_{0} {}
@@ -383,7 +390,7 @@ public:
     [[nodiscard]] constexpr bool operator==(line_iterator other) const noexcept
     {
         // If they are both empty, then they are considered both end iterators and therefore equal
-        if ((str_.size() == 0) && (other.str_.size() == 0)) {
+        if (str_.empty() && other.str_.empty()) {
             return true;
         }
         return (str_.data() == other.str_.data()) && (str_.size() == other.str_.size()) &&
@@ -401,7 +408,7 @@ public:
     }
 
     /** Dereference operator.
-     * 
+     *
      * @return Whole line
      */
     [[nodiscard]] constexpr value_type operator*() const noexcept
@@ -441,11 +448,11 @@ private:
 
             // Consuming any leading whitespace
             auto bytes = std::size_t{0};
-            for (auto cp : code_point_iterator_wrapper{str_}) {
+            for (auto cp : code_point::iterator::range(str_)) {
                 if (!is_whitespace(cp)) {
                     break;
                 }
-                bytes += code_point_size(cp);
+                bytes += code_point::size(cp);
             }
             str_.remove_prefix(bytes);
 
@@ -460,7 +467,7 @@ private:
         auto bytes = std::size_t{0};
         auto line_break_column = std::size_t{0};
         auto line_break_byte = std::size_t{0};
-        for (auto cp : code_point_iterator_wrapper{str_}) {
+        for (auto cp : code_point::iterator::range(str_)) {
             // Have we exceeded the terminal width?
             column += terminal_width(cp);
             if (column > max_columns_) {
@@ -474,7 +481,7 @@ private:
                 return;
             }
 
-            bytes += code_point_size(cp);
+            bytes += code_point::size(cp);
             if (is_whitespace(cp)) {
                 line_break_column = column;
                 line_break_byte = bytes;
@@ -489,6 +496,4 @@ private:
     std::size_t max_columns_;
     std::size_t line_break_byte_;
 };
-}  // namespace utf8
-}  // namespace utility
-}  // namespace arg_router
+}  // namespace arg_router::utility::utf8

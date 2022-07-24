@@ -9,16 +9,14 @@
 #include <functional>
 #include <typeindex>
 
-namespace arg_router
-{
-namespace parsing
+namespace arg_router::parsing
 {
 /** A parse target i.e. a target node optionally with tokens for parsing.
  *
  * This type is the result of a pre-parse phase, and is used to trigger a parse of the given tokens
  * (optional) on the target node.  Sub-targets can also be attached allowing a node to trigger the
  * parse of other nodes e.g. mode-like types.
- * 
+ *
  * The target can only be invoked once, invoking a second or more time is a no-op.
  */
 class parse_target
@@ -41,13 +39,13 @@ public:
 
         parse_ = [&node, &parents...](parse_target target) -> utility::unsafe_any {
             constexpr bool no_parse_value =
-                std::is_void_v<decltype(node.parse(target, parents...))>;
+                std::is_void_v<decltype(node.parse(std::move(target), parents...))>;
 
             if constexpr (no_parse_value) {
-                node.parse(target, parents...);
+                node.parse(std::move(target), parents...);
                 return {};
             } else {
-                return node.parse(target, parents...);
+                return node.parse(std::move(target), parents...);
             }
         };
     }
@@ -94,7 +92,7 @@ public:
      *
      * @return True if target is invocable (i.e. trigger a parse)
      */
-    [[nodiscard]] operator bool() const noexcept { return static_cast<bool>(parse_); }
+    [[nodiscard]] explicit operator bool() const noexcept { return static_cast<bool>(parse_); }
 
     /** Returns the <TT>std::type_index</TT> for the target node.
      *
@@ -113,7 +111,7 @@ public:
      *
      * @param tokens New tokens
      */
-    void tokens(std::vector<token_type> tokens) { tokens_ = std::move(tokens); }
+    void tokens(vector<token_type> tokens) { tokens_ = std::move(tokens); }
 
     /** Trigger the parse of this target.
      *
@@ -135,5 +133,4 @@ private:
     vector<parse_target> sub_targets_;
     std::function<utility::unsafe_any(parse_target)> parse_;
 };
-}  // namespace parsing
-}  // namespace arg_router
+}  // namespace arg_router::parsing

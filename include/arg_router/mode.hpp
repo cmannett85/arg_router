@@ -16,7 +16,7 @@ namespace arg_router
  * If no none name policy is provided, then the node is regarded as 'anonymous', and there can only
  * be one in the parse tree.  Conversely, if any mode is named, then there can only be named modes
  * in the parse tree.
- * 
+ *
  * A mode must have at least one child node.
  * @tparam Params Policies and child node types for the mode
  */
@@ -220,10 +220,10 @@ public:
     }
 
     /** Parse function.
-     * 
+     *
      * This function will recurse into child nodes to find matching tokens, a mode must have a
      * routing phase policy which is why this method does not return the parsed tuple.
-     * 
+     *
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
      * @param target Parse target
      * @param parents Parents instances pack

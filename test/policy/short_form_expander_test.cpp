@@ -1,7 +1,6 @@
 /* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
 
 #include "arg_router/policy/short_form_expander.hpp"
-#include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/short_name.hpp"
 #include "arg_router/tree_node.hpp"
 
@@ -123,6 +122,15 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                                                         {parsing::prefix_type::short_, "l"},
                                                         {parsing::prefix_type::short_, "o"}},
                        stub_node{policy::short_name_utf8<S_("h")>}},
+            std::tuple{std::vector<parsing::token_type>{},
+                       std::vector<parsing::token_type>{
+                           {parsing::prefix_type::none, "-🙂b🇦🇬Δ猫"}},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::short_, "🙂"}},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::short_, "b"},
+                                                        {parsing::prefix_type::short_, "🇦🇬"},
+                                                        {parsing::prefix_type::short_, "Δ"},
+                                                        {parsing::prefix_type::short_, "猫"}},
+                       stub_node{policy::short_name_utf8<S_("🙂")>}},
         });
 }
 

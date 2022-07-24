@@ -2,13 +2,10 @@
 
 #pragma once
 
-#include "arg_router/algorithm.hpp"
 #include "arg_router/policy/policy.hpp"
 #include "arg_router/utility/utf8.hpp"
 
-namespace arg_router
-{
-namespace policy
+namespace arg_router::policy
 {
 /** Represents the program introduction.
  *
@@ -30,7 +27,7 @@ public:
     [[nodiscard]] constexpr static std::string_view program_intro() noexcept { return S::get(); }
 
 private:
-    static_assert(utility::utf8::num_code_points(program_intro()) > 1,
+    static_assert(utility::utf8::count(program_intro()) > 1,
                   "Program intro must be longer than one character");
 };
 
@@ -44,5 +41,4 @@ constexpr auto program_intro = program_intro_t<S>{};
 template <typename S>
 struct is_policy<program_intro_t<S>> : std::true_type {
 };
-}  // namespace policy
-}  // namespace arg_router
+}  // namespace arg_router::policy

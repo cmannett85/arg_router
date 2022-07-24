@@ -5,10 +5,8 @@
 #include "arg_router/traits.hpp"
 #include "arg_router/utility/result.hpp"
 
-namespace arg_router
-{
 /** Namespace containing types and functions to aid parsing. */
-namespace parsing
+namespace arg_router::parsing
 {
 /** Owning nodes requested action by a pre-parse implementing policy. */
 enum class pre_parse_action : std::uint8_t {
@@ -77,5 +75,4 @@ template <typename Node>
         static_assert(traits::always_false_v<Node>, "Node does not have a name");
     }
 }
-}  // namespace parsing
-}  // namespace arg_router
+}  // namespace arg_router::parsing

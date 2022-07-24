@@ -57,7 +57,7 @@ public:
     }
 
     /** Parse function.
-     * 
+     *
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
      * @param target Parse target
      * @param parents Parents instances pack
@@ -65,7 +65,7 @@ public:
      * @exception parse_exception Thrown if parsing failed
      */
     template <typename... Parents>
-    value_type parse(parsing::parse_target target, const Parents&... parents) const
+    value_type parse(parsing::parse_target&& target, const Parents&... parents) const
     {
         // Parse the value token
         auto result = parent_type::template parse<value_type>(target.tokens().front().name,

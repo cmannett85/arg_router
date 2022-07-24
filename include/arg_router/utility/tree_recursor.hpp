@@ -5,9 +5,7 @@
 #include "arg_router/tree_node.hpp"
 #include "arg_router/utility/tuple_iterator.hpp"
 
-namespace arg_router
-{
-namespace utility
+namespace arg_router::utility
 {
 namespace detail
 {
@@ -121,7 +119,7 @@ constexpr void tree_recursor(Visitor visitor, const Root& root)
  * Where <TT>Current</TT> is the current type from the tree, and <TT>Parents</TT> is a pack of
  * ancestors in increasing generation from <TT>Current</TT>.  The last in the pack is always the
  * root.
- * 
+ *
  * @a SkipFn must be object with the same method signatue as below:
  * @code
  * struct my_skip_fn {
@@ -135,7 +133,7 @@ constexpr void tree_recursor(Visitor visitor, const Root& root)
  * @endcode
  * If the return value is true, then the <TT>Current</TT> node or policy and any subtree below it
  * are skipped i.e. <TT>fn</TT> is not called.
- * 
+ *
  * @note Unlike tree_recursor(Visitor visitor, const Root& root), this will recurse into tree_node
  * policies.
  * @tparam Visitor Visitor type
@@ -189,5 +187,4 @@ struct tree_type_recursor_collector {
  */
 template <template <typename...> typename Visitor, typename Root>
 using tree_type_recursor_collector_t = typename tree_type_recursor_collector<Visitor, Root>::type;
-}  // namespace utility
-}  // namespace arg_router
+}  // namespace arg_router::utility

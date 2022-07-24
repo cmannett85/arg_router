@@ -2,6 +2,12 @@
 
 #pragma once
 
-#include <arg_router/policy/min_max_value.hpp>
-#include <arg_router/policy/validator.hpp>
+#include "arg_router/policy/min_max_value.hpp"
+#include "arg_router/policy/validator.hpp"
 #include "arg_router/policy/value_separator.hpp"
+
+/** Namespace for all arg_router types and functions. */
+namespace arg_router
+{
+
+}  // namespace arg_router
