@@ -83,7 +83,7 @@ BOOST_AUTO_TEST_CASE(iterator_ops_test)
         BOOST_CHECK_EQUAL(*it2, (parsing::token_type{parsing::prefix_type::none, "-f"}));
     }
 
-    BOOST_CHECK_EQUAL(it[3], (parsing::token_type{parsing::prefix_type::none, "-f"}));
+    BOOST_CHECK_EQUAL(it[2], (parsing::token_type{parsing::prefix_type::none, "goodbye"}));
 
     it += 5;
     BOOST_CHECK(it == adapter.end());

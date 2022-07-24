@@ -123,7 +123,7 @@ set(FOR_IDE
 )
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/copyright_checker.cmake)
-    create_copyright_checker_target(
+create_copyright_checker_target(
     NAME copyright_checker
     SCRIPT ${CMAKE_SOURCE_DIR}/scripts/copyright_checker.py
     SOURCES ${HEADERS} ${FOR_IDE}
