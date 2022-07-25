@@ -280,7 +280,7 @@ template&lt;typename ResultType , typename ExceptionType &gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Move the result of this instance, or throw the exception if one is held.</p>
-<p>As this method moves the value out of the instance, it should not be called again unless you know the value is not move-constructible. </p><dl class="section return"><dt>Returns</dt><dd>Result </dd></dl>
+<p>As this method moves the value or exception out of the instance, it should not be called again unless you know the value or exception is not move-constructible. </p><dl class="section return"><dt>Returns</dt><dd>Result </dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname">ExceptionType</td><td>Thrown if the instance holds an exception </td></tr>
@@ -308,9 +308,9 @@ template&lt;typename ResultType , typename ExceptionType &gt; </div>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const -&gt; std::conditional_t&lt;(sizeof(std::size_t) &gt;= sizeof(<a class="el" href="classarg__router_1_1utility_1_1result.html#ad3c5c0950c273a75a0908889e13d5d55">result_type</a>)) &amp;&amp;
-                                               std::is_copy_constructible_v&lt;<a class="el" href="classarg__router_1_1utility_1_1result.html#ad3c5c0950c273a75a0908889e13d5d55">result_type</a>&gt;,
-                                           <a class="el" href="classarg__router_1_1utility_1_1result.html#ad3c5c0950c273a75a0908889e13d5d55">result_type</a>,
-                                           const <a class="el" href="classarg__router_1_1utility_1_1result.html#ad3c5c0950c273a75a0908889e13d5d55">result_type</a>&amp;&gt;
+                                  std::is_copy_constructible_v&lt;<a class="el" href="classarg__router_1_1utility_1_1result.html#ad3c5c0950c273a75a0908889e13d5d55">result_type</a>&gt;,
+                              <a class="el" href="classarg__router_1_1utility_1_1result.html#ad3c5c0950c273a75a0908889e13d5d55">result_type</a>,
+                              const <a class="el" href="classarg__router_1_1utility_1_1result.html#ad3c5c0950c273a75a0908889e13d5d55">result_type</a>&amp;&gt;
     </td>
         </tr>
       </table>
@@ -627,7 +627,7 @@ template&lt;typename ResultType , typename ExceptionType &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="result_8hpp_source.html#l00195">195</a> of file <a class="el" href="result_8hpp_source.html">result.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="result_8hpp_source.html#l00196">196</a> of file <a class="el" href="result_8hpp_source.html">result.hpp</a>.</p>
 
 </div>
 </div>
