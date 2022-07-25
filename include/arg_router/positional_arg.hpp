@@ -102,6 +102,7 @@ public:
      */
     template <auto has_min_max = detail::add_missing_min_max_policy<Policies...>::has_min_max>
     constexpr explicit positional_arg_t(Policies... policies,
+                                        // NOLINTNEXTLINE(*-named-parameter)
                                         std::enable_if_t<has_min_max>* = nullptr) noexcept :
         parent_type{std::move(policies)...}
     {
@@ -109,6 +110,7 @@ public:
 
     template <auto has_min_max = detail::add_missing_min_max_policy<Policies...>::has_min_max>
     constexpr explicit positional_arg_t(Policies... policies,
+                                        // NOLINTNEXTLINE(*-named-parameter)
                                         std::enable_if_t<!has_min_max>* = nullptr) noexcept :
         parent_type{policy::min_count<0>, std::move(policies)...}
     {
@@ -132,7 +134,7 @@ public:
      * @exception parse_exception Thrown if parsing failed
      */
     template <typename... Parents>
-    value_type parse(parsing::parse_target target, const Parents&... parents) const
+    [[nodiscard]] value_type parse(parsing::parse_target target, const Parents&... parents) const
     {
         auto result = value_type{};
         if constexpr (traits::has_push_back_method_v<value_type>) {

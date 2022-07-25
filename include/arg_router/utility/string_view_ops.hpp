@@ -4,6 +4,8 @@
 
 #include "arg_router/basic_types.hpp"
 
+#include <string_view>
+
 /** Namespace for std::string_view operators. */
 namespace arg_router::utility::string_view_ops
 {

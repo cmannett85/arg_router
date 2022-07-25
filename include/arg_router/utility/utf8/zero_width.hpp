@@ -6,11 +6,7 @@
 
 #include <array>
 
-namespace arg_router
-{
-namespace utility
-{
-namespace utf8
+namespace arg_router::utility::utf8
 {
 /** Zero-width code points i.e. those that occupy 0 terminal columns when rendered.
  *
@@ -107,6 +103,4 @@ constexpr auto zero_width_table = std::array<code_point::range, 341>{{
     {0x1E2AE, 0x1E2AE}, {0x1E2EC, 0x1E2EF}, {0x1E8D0, 0x1E8D6}, {0x1E944, 0x1E94A},
     {0xE0100, 0xE01EF},
 }};
-}  // namespace utf8
-}  // namespace utility
-}  // namespace arg_router
+}  // namespace arg_router::utility::utf8

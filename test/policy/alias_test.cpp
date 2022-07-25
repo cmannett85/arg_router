@@ -275,7 +275,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_too_small_view_test)
     const auto match =
         owner.pre_parse_phase(adapter, utility::compile_time_optional{}, target, owner, root);
 
-    BOOST_CHECK_EXCEPTION(match.get(), parse_exception, [](const auto& e) {
+    BOOST_CHECK_EXCEPTION((void)match.get(), parse_exception, [](const auto& e) {
         return e.what() == "Too few values for alias, needs 2: --arg1"s;
     });
 }

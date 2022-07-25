@@ -58,6 +58,8 @@ public:
      * @param parents Parents of @a node
      */
     template <typename Node, typename... Parents>
+    // https://github.com/llvm/llvm-project/issues/37250
+    // NOLINTNEXTLINE(*-member-init)
     explicit parse_target(const Node& node,  //
                           const Parents&... parents) noexcept :
         parse_target(vector<token_type>{}, node, parents...)

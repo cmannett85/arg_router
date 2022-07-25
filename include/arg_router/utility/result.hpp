@@ -158,8 +158,8 @@ public:
 
     /** Move the result of this instance, or throw the exception if one is held.
      *
-     * As this method moves the value out of the instance, it should not be called again unless you
-     * know the value is not move-constructible.
+     * As this method moves the value or exception out of the instance, it should not be called
+     * again unless you know the value or exception is not move-constructible.
      * @return Result
      * @exception ExceptionType Thrown if the instance holds an exception
      */
@@ -168,7 +168,7 @@ public:
         if (has_result()) {
             return std::move(std::get<0>(data_));
         }
-        throw std::get<1>(data_);
+        throw std::move(std::get<1>(data_));
     }
 
     /** Returns the the result of this instance, or throw the exception if one is held.
@@ -177,15 +177,16 @@ public:
      * larger than a word and trivially constructible
      * @exception ExceptionType Thrown if the instance holds an exception
      */
-    auto get() const -> std::conditional_t<(sizeof(std::size_t) >= sizeof(result_type)) &&
-                                               std::is_copy_constructible_v<result_type>,
-                                           result_type,
-                                           const result_type&>
+    [[nodiscard]] auto get() const
+        -> std::conditional_t<(sizeof(std::size_t) >= sizeof(result_type)) &&
+                                  std::is_copy_constructible_v<result_type>,
+                              result_type,
+                              const result_type&>
     {
         if (has_result()) {
             return std::get<0>(data_);
         }
-        throw std::get<1>(data_);
+        throw exception_type{std::get<1>(data_)};
     }
 
     /** Throws the exception if present, otherwise does nothing.
@@ -195,7 +196,7 @@ public:
     void throw_exception() const
     {
         if (has_error()) {
-            throw std::get<1>(data_);
+            throw exception_type{std::get<1>(data_)};
         }
     }
 

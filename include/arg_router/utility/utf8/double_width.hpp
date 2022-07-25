@@ -6,11 +6,7 @@
 
 #include <array>
 
-namespace arg_router
-{
-namespace utility
-{
-namespace utf8
+namespace arg_router::utility::utf8
 {
 /** Double-width code points i.e. those that occupy 2 terminal columns when rendered.
  *
@@ -92,6 +88,4 @@ constexpr auto double_width_table = std::array<code_point::range, 281>{{
     {0x2F800, 0x2FA1D}, {0x2FA1E, 0x2FA1F}, {0x2FA20, 0x2FFFD}, {0x30000, 0x3134A},
     {0x3134B, 0x3FFFD},
 }};
-}  // namespace utf8
-}  // namespace utility
-}  // namespace arg_router
+}  // namespace arg_router::utility::utf8

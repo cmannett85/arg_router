@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-### Copyright (C) 2022 by Camden Mannett.  All rights reserved. 
+### Copyright (C) 2022 by Camden Mannett.  All rights reserved.
 
 # Run from inside the scripts/ci folder.
 # - First argument is the top-level build directory and is required
@@ -11,15 +11,25 @@ if [ -z "$1" ]; then
 fi
 
 BUILD_DIR=$1
-GCOV=${2:-gcov-11}
+DEFAULT_TOOL_NAME="llvm-gcov-14"
+TOOL=${2:-"${BUILD_DIR}/${DEFAULT_TOOL_NAME}"}
 SKIP_UPDATE="${SKIP_COVERAGE_UPDATE:-1}"
 
 SRC_PATH=${PWD}
 OLD_COVERAGE="$(cat ./old_coverage)"
 
+# llvm-cov needs a gcov arg to be used with lcov, but lcov doesn't accept it, so we need to create
+# a script that emulates it
 cd ${BUILD_DIR}
+if [[ "${TOOL}" == *"${DEFAULT_TOOL_NAME}"* ]]; then
+    rm ${TOOL}
+    SCRIPT_TEXT="#!/usr/bin/env bash\nexec llvm-cov-14 gcov \"\$@\""
+    echo -e ${SCRIPT_TEXT} >> ${TOOL}
+    chmod a+x ${TOOL}
+fi
+
 lcov -d ./test/CMakeFiles/arg_router_test_coverage.dir    \
-     -c -o temp.info --rc geninfo_gcov_tool=${GCOV}
+     -c -o temp.info --gcov-tool ${TOOL}
 lcov --remove temp.info "/usr/include/*" \
      --remove temp.info "*/vcpkg_installed/*" \
      --remove temp.info "*/arg_router/test/*" \

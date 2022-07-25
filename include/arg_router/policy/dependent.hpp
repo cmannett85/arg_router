@@ -70,6 +70,7 @@ public:
 
             // Try to find the matching node in the target, if it's not found then look in all the
             // sub-targets
+            // NOLINTNEXTLINE(google-readability-casting)
             const auto target_index = std::type_index{typeid(node_target)};
             if (processed_target->node_type() == target_index) {
                 return;

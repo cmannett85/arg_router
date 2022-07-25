@@ -101,7 +101,7 @@ public:
      * @param argv Array of char pointers to the command line tokens
      * @exception parse_exception Thrown if parsing has failed
      */
-    void parse(int argc, char* argv[]) const
+    void parse(int argc, char** argv) const
     {
         // Skip the program name
         auto args = vector<parsing::token_type>{};

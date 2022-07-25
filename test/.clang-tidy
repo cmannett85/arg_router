@@ -1,4 +1,8 @@
 # Disable clang-tidy in the test dir - we need to get dirty for the tests!
+# The added check is a workaround for this issue:
+# https://stackoverflow.com/a/58379342/498437
 InheritParentConfig: false
-Checks: '-*'
-
+Checks: '-*,misc-definitions-in-headers'
+CheckOptions:
+  - key: HeaderFileExtensions
+    value: 'x'
