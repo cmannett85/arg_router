@@ -255,7 +255,7 @@ public:
 
                         match_child(child, node_hash, [&](const auto& sub_child) {
                             found = true;
-                            process_result<i>(results, std::move(result), sub_child);
+                            process_result<i>(results, result, sub_child);
                         });
                     },
                     this->children());
@@ -339,6 +339,7 @@ private:
                 // never allow that, but let's help the compiler out...
                 if constexpr (!traits::is_specialisation_of_v<node_type, mode_t> &&
                               traits::has_parse_method_v<node_type>) {
+                    // NOLINTNEXTLINE(google-readability-casting)
                     if (!found && (std::type_index{typeid(node_type)} == ti)) {
                         found = true;
                         handler(node);

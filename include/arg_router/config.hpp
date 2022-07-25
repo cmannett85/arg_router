@@ -3,6 +3,7 @@
 #pragma once
 
 #include <cstddef>
+#include <memory>
 #include <string_view>
 
 /** Build configuration-defined constants.

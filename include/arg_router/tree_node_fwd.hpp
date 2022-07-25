@@ -22,6 +22,7 @@ private:
     constexpr static std::false_type test(...);
 
 public:
+    // NOLINTNEXTLINE(hicpp-vararg)
     constexpr static bool value = decltype(test(std::declval<T*>()))::value;
 };
 

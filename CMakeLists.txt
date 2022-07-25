@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.15)
 
 # Options
 option(DOCS_ONLY "Only build the documentation" OFF)
-option(ENABLE_CLANG_TIDY "Enable clang-tidy warnings" ON)
+option(ENABLE_CLANG_TIDY "Enable clang-tidy warnings" OFF)
 
 # Use the libraries brought in from vcpkg rather than the system ones
 if(NOT DOCS_ONLY)

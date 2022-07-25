@@ -6,11 +6,7 @@
 
 #include <array>
 
-namespace arg_router
-{
-namespace utility
-{
-namespace utf8
+namespace arg_router::utility::utf8
 {
 /** Whitespace code points.
  *
@@ -31,6 +27,4 @@ constexpr auto whitespace_table = std::array<code_point::range, 10>{{
     {0x205F, 0x205F},
     {0x3000, 0x3000},
 }};
-}  // namespace utf8
-}  // namespace utility
-}  // namespace arg_router
+}  // namespace arg_router::utility::utf8

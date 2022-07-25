@@ -102,6 +102,7 @@ BOOST_AUTO_TEST_CASE(exception_test)
             return e.what() == message;
         });
 
+        r = utility::result<bool, std::runtime_error>{std::runtime_error{message}};
         BOOST_CHECK_EXCEPTION(r.throw_exception(), std::runtime_error, [&](const auto& e) {
             return e.what() == message;
         });
