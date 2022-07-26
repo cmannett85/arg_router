@@ -123,6 +123,7 @@ public:
     {
         if (parse_) {
             auto parse = std::move(parse_);
+            parse_ = decltype(parse_){};
             return parse(std::move(*this));
         }
 
