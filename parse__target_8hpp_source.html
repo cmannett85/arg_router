@@ -135,19 +135,20 @@ $(function() {
 <div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    {</div>
 <div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;        <span class="keywordflow">if</span> (parse_) {</div>
 <div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;            <span class="keyword">auto</span> parse = std::move(parse_);</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;            <span class="keywordflow">return</span> parse(std::move(*<span class="keyword">this</span>));</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;        }</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;        <span class="keywordflow">return</span> {};</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    }</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160; </div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    std::type_index node_type_;</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;    <a class="code" href="namespacearg__router.html#a3d789cf2175008b4124de867a13a2edf">vector&lt;token_type&gt;</a> tokens_;</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    <a class="code" href="namespacearg__router.html#a3d789cf2175008b4124de867a13a2edf">vector&lt;parse_target&gt;</a> sub_targets_;</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    std::function&lt;<a class="code" href="namespacearg__router_1_1utility.html#ae043ae4c53048fdf30045cf4c163db05">utility::unsafe_any</a>(<a class="code" href="classarg__router_1_1parsing_1_1parse__target.html">parse_target</a>)&gt; parse_;</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;};</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;}  <span class="comment">// namespace arg_router::parsing</span></div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;            parse_ = decltype(parse_){};</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;            <span class="keywordflow">return</span> parse(std::move(*<span class="keyword">this</span>));</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;        }</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160; </div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;        <span class="keywordflow">return</span> {};</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    }</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160; </div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;    std::type_index node_type_;</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    <a class="code" href="namespacearg__router.html#a3d789cf2175008b4124de867a13a2edf">vector&lt;token_type&gt;</a> tokens_;</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    <a class="code" href="namespacearg__router.html#a3d789cf2175008b4124de867a13a2edf">vector&lt;parse_target&gt;</a> sub_targets_;</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    std::function&lt;<a class="code" href="namespacearg__router_1_1utility.html#ae043ae4c53048fdf30045cf4c163db05">utility::unsafe_any</a>(<a class="code" href="classarg__router_1_1parsing_1_1parse__target.html">parse_target</a>)&gt; parse_;</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;};</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;}  <span class="comment">// namespace arg_router::parsing</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclassarg__router_1_1parsing_1_1parse__target_html_a283a1d5359625dd3c0968adf9322be43"><div class="ttname"><a href="classarg__router_1_1parsing_1_1parse__target.html#a283a1d5359625dd3c0968adf9322be43">arg_router::parsing::parse_target::tokens</a></div><div class="ttdeci">const vector&lt; token_type &gt; &amp; tokens() const noexcept</div><div class="ttdef"><b>Definition:</b> <a href="parse__target_8hpp_source.html#l00079">parse_target.hpp:79</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1parsing_1_1parse__target_html_a1df177283c5a2929488f2095480b3fdf"><div class="ttname"><a href="classarg__router_1_1parsing_1_1parse__target.html#a1df177283c5a2929488f2095480b3fdf">arg_router::parsing::parse_target::sub_targets</a></div><div class="ttdeci">const vector&lt; parse_target &gt; &amp; sub_targets() const noexcept</div><div class="ttdef"><b>Definition:</b> <a href="parse__target_8hpp_source.html#l00091">parse_target.hpp:91</a></div></div>
