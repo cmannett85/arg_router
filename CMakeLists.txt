@@ -1,6 +1,6 @@
 ### Copyright (C) 2022 by Camden Mannett.  All rights reserved. 
 
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.18)
 
 # Options
 option(DOCS_ONLY "Only build the documentation" OFF)
