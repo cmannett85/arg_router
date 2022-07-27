@@ -297,42 +297,45 @@ $(function() {
 <div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;            stream &lt;&lt; utility::create_sequence_cts_t&lt;indent, &#39; &#39;&gt;::get() &lt;&lt; HelpData::label::get();</div>
 <div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160; </div>
 <div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;            <span class="keywordflow">if</span> constexpr (!HelpData::description::empty()) {</div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;                constexpr <span class="keyword">auto</span> gap =</div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;                    DescStart - indent - utility::utf8::terminal_width(HelpData::label::get());</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;                static_assert(HelpData::description::get().find(<span class="charliteral">&#39;\t&#39;</span>) == std::string_view::npos,</div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;                              <span class="stringliteral">&quot;Help descriptions cannot contain tabs&quot;</span>);</div>
 <div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160; </div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;                <span class="comment">// Spacing between the end of the args label and start of description</span></div>
-<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;                stream &lt;&lt; utility::create_sequence_cts_t&lt;gap, &#39; &#39;&gt;::get();</div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;                constexpr <span class="keyword">auto</span> gap =</div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;                    DescStart - indent - utility::utf8::terminal_width(HelpData::label::get());</div>
 <div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160; </div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;                <span class="comment">// Print the description, breaking if a word will exceed the terminal width</span></div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;                <span class="keywordflow">for</span> (<span class="keyword">auto</span> it = utility::utf8::line_iterator{HelpData::description::get(),</div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;                                                            <a class="code" href="namespacearg__router_1_1utility_1_1terminal.html#acd0f8412a18a5275568c0fa51a64bf04">columns</a> - DescStart};</div>
-<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;                     it != utility::utf8::line_iterator{};) {</div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;                    stream &lt;&lt; *it;</div>
-<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160; </div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;                    <span class="comment">// If there&#39;s more data to follow, then add the offset</span></div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;                    <span class="keywordflow">if</span> (++it != utility::utf8::line_iterator{}) {</div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;                        stream &lt;&lt; &#39;\n&#39; &lt;&lt; utility::create_sequence_cts_t&lt;DescStart, &#39; &#39;&gt;::get();</div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;                    }</div>
-<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;                }</div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;            }</div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160; </div>
-<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;            stream &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
-<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;        }</div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;                <span class="comment">// Spacing between the end of the args label and start of description</span></div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;                stream &lt;&lt; utility::create_sequence_cts_t&lt;gap, &#39; &#39;&gt;::get();</div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160; </div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;                <span class="comment">// Print the description, breaking if a word will exceed the terminal width</span></div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;                <span class="keywordflow">for</span> (<span class="keyword">auto</span> it = utility::utf8::line_iterator{HelpData::description::get(),</div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;                                                            <a class="code" href="namespacearg__router_1_1utility_1_1terminal.html#acd0f8412a18a5275568c0fa51a64bf04">columns</a> - DescStart};</div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;                     it != utility::utf8::line_iterator{};) {</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;                    stream &lt;&lt; *it;</div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160; </div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;                    <span class="comment">// If there&#39;s more data to follow, then add the offset</span></div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;                    <span class="keywordflow">if</span> (++it != utility::utf8::line_iterator{}) {</div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;                        stream &lt;&lt; &#39;\n&#39; &lt;&lt; utility::create_sequence_cts_t&lt;DescStart, &#39; &#39;&gt;::get();</div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;                    }</div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;                }</div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;            }</div>
 <div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160; </div>
-<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;        utility::tuple_type_iterator&lt;typename HelpData::children&gt;([&amp;](<span class="keyword">auto</span> i) {</div>
-<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;            <span class="keyword">using</span> child_type = std::tuple_element_t&lt;i, typename HelpData::children&gt;;</div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;            stream &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;        }</div>
 <div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160; </div>
-<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;            generate_help&lt;DescStart, Depth + 1, child_type&gt;(stream, columns);</div>
-<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;        });</div>
-<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;    }</div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;};</div>
-<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160; </div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Policies&gt;</div>
-<div class="line"><a name="l00300"></a><span class="lineno"><a class="line" href="namespacearg__router.html#a1eb8c408da38619d624f435441efac48">  300</a></span>&#160;[[nodiscard]] constexpr <span class="keyword">auto</span> <a class="code" href="namespacearg__router.html#a1eb8c408da38619d624f435441efac48">help</a>(Policies... policies) noexcept</div>
-<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;{</div>
-<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classarg__router_1_1help__t.html">help_t</a>{std::move(policies)...};</div>
-<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;}</div>
-<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;        utility::tuple_type_iterator&lt;typename HelpData::children&gt;([&amp;](<span class="keyword">auto</span> i) {</div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;            <span class="keyword">using</span> child_type = std::tuple_element_t&lt;i, typename HelpData::children&gt;;</div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160; </div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;            generate_help&lt;DescStart, Depth + 1, child_type&gt;(stream, columns);</div>
+<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;        });</div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;    }</div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;};</div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160; </div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Policies&gt;</div>
+<div class="line"><a name="l00303"></a><span class="lineno"><a class="line" href="namespacearg__router.html#a1eb8c408da38619d624f435441efac48">  303</a></span>&#160;[[nodiscard]] constexpr <span class="keyword">auto</span> <a class="code" href="namespacearg__router.html#a1eb8c408da38619d624f435441efac48">help</a>(Policies... policies) noexcept</div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;{</div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classarg__router_1_1help__t.html">help_t</a>{std::move(policies)...};</div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;}</div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclassarg__router_1_1help__t_html"><div class="ttname"><a href="classarg__router_1_1help__t.html">arg_router::help_t</a></div><div class="ttdef"><b>Definition:</b> <a href="help_8hpp_source.html#l00026">help.hpp:26</a></div></div>
 <div class="ttc" id="astructarg__router_1_1policy_1_1flatten__help__t_html"><div class="ttname"><a href="structarg__router_1_1policy_1_1flatten__help__t.html">arg_router::policy::flatten_help_t</a></div><div class="ttdef"><b>Definition:</b> <a href="flatten__help_8hpp_source.html#l00015">flatten_help.hpp:15</a></div></div>
@@ -348,7 +351,7 @@ $(function() {
 <div class="ttc" id="anamespacearg__router_1_1algorithm_html_a6ec178bdd8a13b8cce0b4accb53bceab"><div class="ttname"><a href="namespacearg__router_1_1algorithm.html#a6ec178bdd8a13b8cce0b4accb53bceab">arg_router::algorithm::find_specialisation_v</a></div><div class="ttdeci">constexpr auto find_specialisation_v</div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00044">algorithm.hpp:44</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1help__t_html_afa7913f7fc35e90a05145689e2763df1"><div class="ttname"><a href="classarg__router_1_1help__t.html#afa7913f7fc35e90a05145689e2763df1">arg_router::help_t::parse</a></div><div class="ttdeci">void parse(parsing::parse_target &amp;&amp;target, const Parents &amp;... parents) const</div><div class="ttdef"><b>Definition:</b> <a href="help_8hpp_source.html#l00156">help.hpp:156</a></div></div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00013">algorithm.hpp:13</a></div></div>
-<div class="ttc" id="anamespacearg__router_html_a1eb8c408da38619d624f435441efac48"><div class="ttname"><a href="namespacearg__router.html#a1eb8c408da38619d624f435441efac48">arg_router::help</a></div><div class="ttdeci">constexpr auto help(Policies... policies) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="help_8hpp_source.html#l00300">help.hpp:300</a></div></div>
+<div class="ttc" id="anamespacearg__router_html_a1eb8c408da38619d624f435441efac48"><div class="ttname"><a href="namespacearg__router.html#a1eb8c408da38619d624f435441efac48">arg_router::help</a></div><div class="ttdeci">constexpr auto help(Policies... policies) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="help_8hpp_source.html#l00303">help.hpp:303</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1help__t_html_a151a462c99f9e5ead695d7e097a9436e"><div class="ttname"><a href="classarg__router_1_1help__t.html#a151a462c99f9e5ead695d7e097a9436e">arg_router::help_t::help_data_type</a></div><div class="ttdeci">typename parent_type::template default_leaf_help_data_type&lt; Flatten &gt; help_data_type</div><div class="ttdef"><b>Definition:</b> <a href="help_8hpp_source.html#l00054">help.hpp:54</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1tree__node_html_af40bd11c46f72002e5a32f5c5d3c830e"><div class="ttname"><a href="classarg__router_1_1tree__node.html#af40bd11c46f72002e5a32f5c5d3c830e">arg_router::tree_node&lt; policy::no_result_value&lt;&gt;, std::decay_t&lt; decltype(policy::min_count&lt; 0 &gt;)&gt;, std::decay_t&lt; Policies &gt;... &gt;::pre_parse</a></div><div class="ttdeci">std::optional&lt; parsing::parse_target &gt; pre_parse(parsing::pre_parse_data&lt; Validator, HasTarget &gt; pre_parse_data, const Node &amp;node, const Parents &amp;... parents) const</div><div class="ttdef"><b>Definition:</b> <a href="tree__node_8hpp_source.html#l00351">tree_node.hpp:351</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1policy_1_1program__intro__t_html"><div class="ttname"><a href="classarg__router_1_1policy_1_1program__intro__t.html">arg_router::policy::program_intro_t</a></div><div class="ttdef"><b>Definition:</b> <a href="program__intro_8hpp_source.html#l00017">program_intro.hpp:17</a></div></div>
