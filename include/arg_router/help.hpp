@@ -259,6 +259,9 @@ private:
             stream << utility::create_sequence_cts_t<indent, ' '>::get() << HelpData::label::get();
 
             if constexpr (!HelpData::description::empty()) {
+                static_assert(HelpData::description::get().find('\t') == std::string_view::npos,
+                              "Help descriptions cannot contain tabs");
+
                 constexpr auto gap =
                     DescStart - indent - utility::utf8::terminal_width(HelpData::label::get());
 

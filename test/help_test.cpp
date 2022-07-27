@@ -735,6 +735,49 @@ int main() {
         "At least one parent needed for help");
 }
 
+BOOST_AUTO_TEST_CASE(no_tabs_in_description_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/help.hpp"
+#include "arg_router/flag.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/description.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+template <typename... Params>
+class mock_root : public tree_node<Params...>
+{
+public:
+    constexpr explicit mock_root(Params... params) : tree_node<Params...>{std::move(params)...} {}
+
+    template <bool Flatten>
+    class help_data_type
+    {
+    public:
+        using label = S_("");
+        using description = S_("");
+        using children = typename tree_node<std::decay_t<Params>...>::template  //
+            default_leaf_help_data_type<Flatten>::all_children_help;
+    };
+};
+
+int main() {
+    const auto root = mock_root{flag(policy::long_name<S_("flag1")>,
+                                     policy::description<S_("Flag1\tdescription")>),
+                                help(policy::long_name<S_("help")>)};
+    const auto& h = std::get<1>(root.children());
+
+    auto stream = ostringstream{};
+    h.generate_help<std::decay_t<decltype(root)>>(stream);
+    return 0;
+}
+    )",
+        "Help descriptions cannot contain tabs");
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
