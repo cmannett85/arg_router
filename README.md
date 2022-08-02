@@ -1,4 +1,4 @@
-![Documentation Generator](https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg) ![Unit test coverage](https://img.shields.io/badge/Unit_Test_Coverage-97.2%25-brightgreen)
+![Documentation Generator](https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg) ![Unit test coverage](https://img.shields.io/badge/Unit_Test_Coverage-97.7%25-brightgreen)
 
 # arg_router
 `arg_router` is a C++17 command line parser and router.  It uses policy-based objects hierarchically, so the parsing code is self-describing.  Rather than just providing a parsing service that returns a map of `variant`s/`any`s, it allows you to bind `Callable` instances to points in the parse structure, so complex command line arguments can directly call functions with the expected arguments - rather than you having to do this yourself.
@@ -10,7 +10,7 @@
 - Detects invalid or ambiguous parse trees at compile-time
 - Generates its help output, which you can modify at runtime using a `Callable`
 - Easy custom parsers by using `Callable`s inline for specific arguments, or you can implement a specialisation to cover all instances of that type
-- _Quite_ Unicode compliant by supporting UTF-8 encoded compile-time strings ([details](#unicode-compliance))
+- Unicode compliant by supporting UTF-8 encoded compile-time strings ([details](#unicode-compliance))
 
 ## Basics
 Let's start simple, with this `cat`-like program:
@@ -534,12 +534,10 @@ $ ./example_just_cats --кіт
 кіт
 ```
 
-I mentioned in the blurb at the top that `arg_router` is _quite_ Unicode compliant which doesn't exactly inspire confidence...  There are three limitations to current support:
+`arg_router` only supports UTF-8 encoding, and will stay that way for the medium term.  If you want other encodings (e.g. UTF-16 on Windows), then you'll need to convert the input tokens to UTF-8 before calling `parse(..)`.  The compile-time strings used in the parse tree _must_ be UTF-8 because that's the only encoding supported by `arg_router`'s string checkers and line-break algorithm.  Likewise the help output generated will be UTF-8, so you'll need to capture the output (by attaching a `policy::router`) and then convert before printing
 
-1. Only UTF-8 support.  If you want other encodings (e.g. UTF-16 on Windows), then you'll need to convert the input tokens to UTF-8 before calling `parse(..)`.  The compile-time strings used in the parse tree _must_ be UTF-8 because that's the only encoding supported by `arg_router`'s string checkers and line-break algorithm.  Likewise the help output generated will be UTF-8, so you'll need to capture the output (by attaching a `policy::router`) and then convert before printing
-2. The line-break algorithm only works with whitespace, otherwise it may split mid word or mid multi-code point grapheme clusters (will be fixed in #135)
-
-Normally an application will link to ICU for its Unicode needs, but unfortunately we can't do that here as ICU is not `constexpr` and therefore cannot be used for our compile-time needs - so we need to roll our own.
+### Why have you written your own Unicode algorithms!?
+We didn't want to...  Normally an application will link to ICU for its Unicode needs, but unfortunately we can't do that here as ICU is not `constexpr` and therefore cannot be used for our compile-time needs - so we need to roll our own.
 
 ## Error Handling
 Currently `arg_router` only supports exceptions as error handling.  If a parsing fails for some reason a `arg_router::parse_exception` is thrown carrying information on the failure.

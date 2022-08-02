@@ -101,8 +101,13 @@ BOOST_AUTO_TEST_CASE(function_test)
 
     auto target = parsing::parse_target{tokens, node};
     BOOST_CHECK(target);
-    target();
+    const auto parse_result1 = target();
+    BOOST_REQUIRE(parse_result1.has_value());
+    BOOST_CHECK(parse_result1.get<bool>());
+
     BOOST_CHECK(!target);
+    const auto parse_result2 = target();
+    BOOST_CHECK(!parse_result2.has_value());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

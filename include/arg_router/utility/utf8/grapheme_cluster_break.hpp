@@ -9,12 +9,12 @@
 
 namespace arg_router::utility::utf8
 {
-/** Grapheme cluster break properties, and their values in the encoded code points in
+/** Grapheme cluster break classes, and their values in the encoded code points in
  * grapheme_cluster_break_table.
  *
  * Do not change the order or value as they need to match scripts/unicode_table_generators.py.
  */
-enum class grapheme_cluster_break_property : std::uint8_t {
+enum class grapheme_cluster_break_class : std::uint8_t {
     any,
     CR,
     LF,
@@ -42,181 +42,177 @@ namespace no_break_rules
  *
  * From https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundary_Rules.
  * @tparam N Size of trailing window
- * @param trailing_window Trailing window of properties, the zeroth index is the 'current' property
+ * @param trailing_window Trailing window of properties, the zeroth index is the 'current' class
  * begin iterated over
- * @param next_property The property after the current one
- * @return True if you should not break between these code points
+ * @param next_class The class after the current one
+ * @return True if you should not break between these break classes
  */
 template <std::size_t N>
-[[nodiscard]] constexpr bool GB3(
-    const std::array<grapheme_cluster_break_property, N>& trailing_window,
-    grapheme_cluster_break_property next_property) noexcept
+[[nodiscard]] constexpr bool GB3(const std::array<grapheme_cluster_break_class, N>& trailing_window,
+                                 grapheme_cluster_break_class next_class) noexcept
 {
     static_assert(N > 0, "Trailing window must be at least 1 element");
-    return (trailing_window.front() == grapheme_cluster_break_property::CR) &&
-           (next_property == grapheme_cluster_break_property::LF);
+    return (trailing_window[0] == grapheme_cluster_break_class::CR) &&
+           (next_class == grapheme_cluster_break_class::LF);
 }
 
 /** Rule GB6, do not break Hangul syllable sequences.
  *
  * From https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundary_Rules.
  * @tparam N Size of trailing window
- * @param trailing_window Trailing window of properties, the zeroth index is the 'current' property
+ * @param trailing_window Trailing window of properties, the zeroth index is the 'current' class
  * begin iterated over
- * @param next_property The property after the current one
- * @return True if you should not break between these code points
+ * @param next_class The class after the current one
+ * @return True if you should not break between these break classes
  */
 template <std::size_t N>
-[[nodiscard]] constexpr bool GB6(
-    const std::array<grapheme_cluster_break_property, N>& trailing_window,
-    grapheme_cluster_break_property next_property) noexcept
+[[nodiscard]] constexpr bool GB6(const std::array<grapheme_cluster_break_class, N>& trailing_window,
+                                 grapheme_cluster_break_class next_class) noexcept
 {
     static_assert(N > 0, "Trailing window must be at least 1 element");
-    return (trailing_window.front() == grapheme_cluster_break_property::L) &&
-           ((next_property == grapheme_cluster_break_property::L) ||
-            (next_property == grapheme_cluster_break_property::V) ||
-            (next_property == grapheme_cluster_break_property::LV) ||
-            (next_property == grapheme_cluster_break_property::LVT));
+    return (trailing_window[0] == grapheme_cluster_break_class::L) &&
+           ((next_class == grapheme_cluster_break_class::L) ||
+            (next_class == grapheme_cluster_break_class::V) ||
+            (next_class == grapheme_cluster_break_class::LV) ||
+            (next_class == grapheme_cluster_break_class::LVT));
 };
 
 /** Rule GB7, do not break Hangul syllable sequences.
  *
  * From https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundary_Rules.
  * @tparam N Size of trailing window
- * @param trailing_window Trailing window of properties, the zeroth index is the 'current' property
+ * @param trailing_window Trailing window of properties, the zeroth index is the 'current' class
  * begin iterated over
- * @param next_property The property after the current one
- * @return True if you should not break between these code points
+ * @param next_class The class after the current one
+ * @return True if you should not break between these break classes
  */
 template <std::size_t N>
-[[nodiscard]] constexpr bool GB7(
-    const std::array<grapheme_cluster_break_property, N>& trailing_window,
-    grapheme_cluster_break_property next_property) noexcept
+[[nodiscard]] constexpr bool GB7(const std::array<grapheme_cluster_break_class, N>& trailing_window,
+                                 grapheme_cluster_break_class next_class) noexcept
 {
     static_assert(N > 0, "Trailing window must be at least 1 element");
-    return ((trailing_window.front() == grapheme_cluster_break_property::LV) ||
-            (trailing_window.front() == grapheme_cluster_break_property::V)) &&
-           ((next_property == grapheme_cluster_break_property::V) ||
-            (next_property == grapheme_cluster_break_property::T));
+    return ((trailing_window[0] == grapheme_cluster_break_class::LV) ||
+            (trailing_window[0] == grapheme_cluster_break_class::V)) &&
+           ((next_class == grapheme_cluster_break_class::V) ||
+            (next_class == grapheme_cluster_break_class::T));
 };
 
 /** Rule GB8, do not break Hangul syllable sequences.
  *
  * From https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundary_Rules.
  * @tparam N Size of trailing window
- * @param trailing_window Trailing window of properties, the zeroth index is the 'current' property
+ * @param trailing_window Trailing window of properties, the zeroth index is the 'current' class
  * begin iterated over
- * @param next_property The property after the current one
- * @return True if you should not break between these code points
+ * @param next_class The class after the current one
+ * @return True if you should not break between these break classes
  */
 template <std::size_t N>
-[[nodiscard]] constexpr bool GB8(
-    const std::array<grapheme_cluster_break_property, N>& trailing_window,
-    grapheme_cluster_break_property next_property) noexcept
+[[nodiscard]] constexpr bool GB8(const std::array<grapheme_cluster_break_class, N>& trailing_window,
+                                 grapheme_cluster_break_class next_class) noexcept
 {
     static_assert(N > 0, "Trailing window must be at least 1 element");
-    return ((trailing_window.front() == grapheme_cluster_break_property::LVT) ||
-            (trailing_window.front() == grapheme_cluster_break_property::T)) &&
-           (next_property == grapheme_cluster_break_property::T);
+    return ((trailing_window[0] == grapheme_cluster_break_class::LVT) ||
+            (trailing_window[0] == grapheme_cluster_break_class::T)) &&
+           (next_class == grapheme_cluster_break_class::T);
 };
 
 /** Rule GB9, do not break before extending characters or ZWJ.
  *
  * From https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundary_Rules.
  * @tparam N Size of trailing window
- * @param trailing_window Trailing window of properties, the zeroth index is the 'current' property
+ * @param trailing_window Trailing window of properties, the zeroth index is the 'current' class
  * begin iterated over
- * @param next_property The property after the current one
- * @return True if you should not break between these code points
+ * @param next_class The class after the current one
+ * @return True if you should not break between these break classes
  */
 template <std::size_t N>
 [[nodiscard]] constexpr bool GB9(
-    [[maybe_unused]] const std::array<grapheme_cluster_break_property, N>& trailing_window,
-    grapheme_cluster_break_property next_property) noexcept
+    [[maybe_unused]] const std::array<grapheme_cluster_break_class, N>& trailing_window,
+    grapheme_cluster_break_class next_class) noexcept
 {
-    return (next_property == grapheme_cluster_break_property::extend) ||
-           (next_property == grapheme_cluster_break_property::ZWJ);
+    return (next_class == grapheme_cluster_break_class::extend) ||
+           (next_class == grapheme_cluster_break_class::ZWJ);
 };
 
 /** Rule GB9a, do not break before SpacingMarks, or after Prepend characters.
  *
  * From https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundary_Rules.
  * @tparam N Size of trailing window
- * @param trailing_window Trailing window of properties, the zeroth index is the 'current' property
+ * @param trailing_window Trailing window of properties, the zeroth index is the 'current' class
  * begin iterated over
- * @param next_property The property after the current one
- * @return True if you should not break between these code points
+ * @param next_class The class after the current one
+ * @return True if you should not break between these break classes
  */
 template <std::size_t N>
 [[nodiscard]] constexpr bool GB9a(
-    [[maybe_unused]] const std::array<grapheme_cluster_break_property, N>& trailing_window,
-    grapheme_cluster_break_property next_property) noexcept
+    [[maybe_unused]] const std::array<grapheme_cluster_break_class, N>& trailing_window,
+    grapheme_cluster_break_class next_class) noexcept
 {
-    return next_property == grapheme_cluster_break_property::spacing_mark;
+    return next_class == grapheme_cluster_break_class::spacing_mark;
 };
 
 /** Rule GB9b, do not break before SpacingMarks, or after Prepend characters.
  *
  * From https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundary_Rules.
  * @tparam N Size of trailing window
- * @param trailing_window Trailing window of properties, the zeroth index is the 'current' property
+ * @param trailing_window Trailing window of properties, the zeroth index is the 'current' class
  * begin iterated over
- * @param next_property The property after the current one
- * @return True if you should not break between these code points
+ * @param next_class The class after the current one
+ * @return True if you should not break between these break classes
  */
 template <std::size_t N>
 [[nodiscard]] constexpr bool GB9b(
-    const std::array<grapheme_cluster_break_property, N>& trailing_window,
-    [[maybe_unused]] grapheme_cluster_break_property next_property) noexcept
+    const std::array<grapheme_cluster_break_class, N>& trailing_window,
+    [[maybe_unused]] grapheme_cluster_break_class next_class) noexcept
 {
     static_assert(N > 0, "Trailing window must be at least 1 element");
-    return trailing_window.front() == grapheme_cluster_break_property::prepend;
+    return trailing_window[0] == grapheme_cluster_break_class::prepend;
 };
 
 /** Rule GB11, do not break within emoji modifier sequences or emoji zwj sequences.
  *
  * From https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundary_Rules.
  * @tparam N Size of trailing window
- * @param trailing_window Trailing window of properties, the zeroth index is the 'current' property
+ * @param trailing_window Trailing window of properties, the zeroth index is the 'current' class
  * begin iterated over
- * @param next_property The property after the current one
- * @return True if you should not break between these code points
+ * @param next_class The class after the current one
+ * @return True if you should not break between these break classes
  */
 template <std::size_t N>
 [[nodiscard]] constexpr bool GB11(
-    const std::array<grapheme_cluster_break_property, N>& trailing_window,
-    grapheme_cluster_break_property next_property) noexcept
+    const std::array<grapheme_cluster_break_class, N>& trailing_window,
+    grapheme_cluster_break_class next_class) noexcept
 {
     static_assert(N > 0, "Trailing window must be at least 1 element");
-    return (trailing_window.front() == grapheme_cluster_break_property::ZWJ) &&
-           (next_property == grapheme_cluster_break_property::extended_pictographic);
+    return (trailing_window[0] == grapheme_cluster_break_class::ZWJ) &&
+           (next_class == grapheme_cluster_break_class::extended_pictographic);
 };
 
 /** Rule GB12 and GB13, do not break within emoji flag sequences.
  *
  * From https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundary_Rules.
  * @tparam N Size of trailing window
- * @param trailing_window Trailing window of properties, the zeroth index is the 'current' property
+ * @param trailing_window Trailing window of properties, the zeroth index is the 'current' class
  * begin iterated over
- * @param next_property The property after the current one
- * @return True if you should not break between these code points
+ * @param next_class The class after the current one
+ * @return True if you should not break between these break classes
  */
 template <std::size_t N>
 [[nodiscard]] constexpr bool GB12_13(
-    const std::array<grapheme_cluster_break_property, N>& trailing_window,
-    grapheme_cluster_break_property next_property) noexcept
+    const std::array<grapheme_cluster_break_class, N>& trailing_window,
+    grapheme_cluster_break_class next_class) noexcept
 {
     static_assert(N > 0, "Trailing window must be at least 1 element");
 
     // Count the preceding RIs, if there's an odd number - do not break
     auto i = 0u;
     for (; i < trailing_window.size(); ++i) {
-        if (trailing_window[i] != grapheme_cluster_break_property::regional_indicator) {
+        if (trailing_window[i] != grapheme_cluster_break_class::regional_indicator) {
             break;
         }
     }
 
-    return ((i % 2) != 0) && (next_property == grapheme_cluster_break_property::regional_indicator);
+    return ((i % 2) != 0) && (next_class == grapheme_cluster_break_class::regional_indicator);
 };
 
 /** Array of rule function pointers, just to ease iteration.
@@ -235,20 +231,20 @@ constexpr auto grapheme_cluster = std::array{&GB3<N>,
                                              &GB12_13<N>};
 }  // namespace no_break_rules
 
-/** Grapheme cluster break property mask for values in grapheme_cluster_break_table. */
-constexpr auto grapheme_cluster_break_property_mask = code_point::type{0x1E00000};
+/** Grapheme cluster break class mask for values in grapheme_cluster_break_table. */
+constexpr auto grapheme_cluster_break_class_mask = code_point::type{0x1E00000};
 
-/** Grapheme cluster break property table.
+/** Grapheme cluster break class table.
  *
  * Each entry is an inclusive range of code points, with each code point in the range being encoded
- * with their break property value.  The first 21 bits is the code point value (as normal), whilst
- * the following 4 bits carries the property.
+ * with their break class value.  The first 21 bits is the code point value (as normal), whilst the
+ * following 4 bits carries the class.
  *
  * This table is generated using scripts/unicode_table_generators.py from
  * https://www.unicode.org/Public/UCD/latest/ucd/auxiliary/GraphemeBreakProperty.txt v14.0.0 and
  * https://www.unicode.org/Public/14.0.0/ucd/emoji/emoji-data.txt v14.0.0
  *
- * @note The values are sorted as if the property bits are not present, this allows for binary
+ * @note The values are sorted as if the class bits are not present, this allows for binary
  * searching using a code point - as long as your binary search algorithm only compares the code
  * point bits of the ranges
  */

@@ -4,8 +4,8 @@
 
 from io import StringIO
 from enum import Enum, unique
-import requests
 import re
+import requests
 
 RANGE_DIVIDER = '..'
 COMMENT = '#'
@@ -32,6 +32,53 @@ class GraphemeClusterBreak(Enum):
 
     def add_to_code_point(self, cp):
         abbrv_value = self.value[0] & 0xF
+        return (cp & 0x1FFFFF) | (abbrv_value << CODE_POINT_DATA_OFFSET)
+
+
+@unique
+class LineBreak(Enum):
+    # Any = 0, not used in the script but is in the C++
+    AL  = 1
+    BA  = 2
+    BB  = 3
+    B2  = 4
+    BK  = 5
+    CB  = 6
+    CL  = 7
+    CM  = 8
+    CP  = 9
+    CR  = 10
+    EB  = 11
+    EM  = 12
+    EX  = 13
+    GL  = 14
+    H2  = 15
+    H3  = 16
+    HY  = 17
+    ID  = 18
+    HL  = 19
+    IN  = 20
+    IS  = 21
+    JL  = 22
+    JT  = 23
+    JV  = 24
+    LF  = 25
+    NL  = 26
+    NS  = 27
+    NU  = 28
+    OP  = 29
+    PO  = 30
+    PR  = 31
+    QU  = 32
+    RI  = 33
+    SP  = 34
+    SY  = 35
+    WJ  = 36
+    ZW  = 37
+    ZWJ = 38
+
+    def add_to_code_point(self, cp):
+        abbrv_value = self.value & 0x3F
         return (cp & 0x1FFFFF) | (abbrv_value << CODE_POINT_DATA_OFFSET)
 
 
@@ -126,7 +173,7 @@ def run(url, abbrvs, varname):
     print('}};')
 
 
-def run_grapheme_cluster_break_property():
+def run_grapheme_cluster_break():
     # First grab all the break properties
     url = 'https://www.unicode.org/Public/UCD/latest/ucd/auxiliary/' \
           'GraphemeBreakProperty.txt'
@@ -148,6 +195,7 @@ def run_grapheme_cluster_break_property():
         for member in list(GraphemeClusterBreak):
             if member.value[1] == abbrv:
                 abbrv_value = member
+                break
         if abbrv_value is None:
             raise RuntimeError('Unknown abbreviation: {}'.format(abbrv))
 
@@ -206,6 +254,70 @@ def run_grapheme_cluster_break_property():
     print('}};')
 
 
+def line_break():
+    # First grab all the break properties
+    url = 'https://www.unicode.org/Public/UCD/latest/ucd/LineBreak.txt'
+    print('\tURL: {}'.format(url))
+    contents = download(url)
+    extract_version(contents)
+
+    result = []
+    for line in StringIO(contents):
+        line = line.strip()
+
+        abbrv = get_abbreviation(line)
+        if abbrv is None:
+            continue
+        sc_pos = abbrv[0]
+        abbrv = abbrv[1]
+
+        # Some values need resolving manually because they map to different classes
+        abbrv_value = None
+        if abbrv == 'AI' or abbrv == 'SG' or \
+                abbrv == 'XX':
+            abbrv_value = LineBreak.AL
+        elif abbrv == 'CJ':
+            abbrv_value = LineBreak.NS
+        elif abbrv == 'SA':
+            # Extract the general category
+            c_pos = line.find(COMMENT, sc_pos)
+            if c_pos == -1:
+                raise RuntimeError(
+                    'Cannot find comment divider, to extract general category')
+
+            general_category = line[c_pos+2:c_pos+4]
+            if general_category == 'Mn' or general_category == 'Mc':
+                abbrv_value = LineBreak.CM
+            else:
+                abbrv_value = LineBreak.AL
+        else:
+            for member in list(LineBreak):
+                if member.name == abbrv:
+                    abbrv_value = member
+                    break
+            if abbrv_value is None:
+                raise RuntimeError('Unknown abbreviation: {}'.format(abbrv))
+
+        # The code point could be singular or a range.  Each code point has
+        # the 21 bits of value data followed by 6 bits for the abbreviation
+        # type
+        line = line[0:sc_pos].strip()
+        range_split = line.find(RANGE_DIVIDER)
+        if range_split == -1:
+            start = abbrv_value.add_to_code_point(int(line, 16))
+            result.append([start, start])
+        else:
+            start = abbrv_value.add_to_code_point(int(line[0:range_split], 16))
+            end = abbrv_value.add_to_code_point(
+                int(line[range_split+len(RANGE_DIVIDER):], 16))
+            result.append([start, end])
+
+    cps = sort_code_points(result)
+    print('constexpr auto line_break_table = std::array<code_point::range, {}>{{{{'.format(len(cps)))
+    print_code_points(cps)
+    print('}};')
+
+
 if __name__ == '__main__':
     print('Whitespace:')
     run('http://www.unicode.org/Public/UNIDATA/PropList.txt',
@@ -223,7 +335,10 @@ if __name__ == '__main__':
         ['Mn', 'Me'],
         'zero_width_table')
 
-    # The grapheme cluster break property table is done separately as this
-    # table is a different structure to the others
-    print('\nGrapheme cluster break property table')
-    run_grapheme_cluster_break_property()
+    # The following property tables are done separately as they are a different structure to the
+    # others
+    print('\nGrapheme cluster break table')
+    run_grapheme_cluster_break()
+
+    print('\nLine break table')
+    line_break()

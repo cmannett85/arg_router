@@ -4,6 +4,7 @@
 
 #include "arg_router/utility/utf8/double_width.hpp"
 #include "arg_router/utility/utf8/grapheme_cluster_break.hpp"
+#include "arg_router/utility/utf8/line_break.hpp"
 #include "arg_router/utility/utf8/whitespace.hpp"
 #include "arg_router/utility/utf8/zero_width.hpp"
 
@@ -179,24 +180,23 @@ public:
 private:
     static constexpr auto trailing_window_size = std::size_t{64};
 
-    [[nodiscard]] static constexpr grapheme_cluster_break_property extract_property(
+    [[nodiscard]] static constexpr grapheme_cluster_break_class extract_class(
         code_point::type cp) noexcept
     {
-        auto result = grapheme_cluster_break_property::any;
+        auto result = grapheme_cluster_break_class::any;
         const auto range = detail::find_range(grapheme_cluster_break_table, cp);
         if (range) {
-            result = static_cast<grapheme_cluster_break_property>(
-                (range->first & grapheme_cluster_break_property_mask) >> code_point::data_offset);
+            result = static_cast<grapheme_cluster_break_class>(
+                (range->first & grapheme_cluster_break_class_mask) >> code_point::data_offset);
         }
 
         return result;
     }
 
-    [[nodiscard]] constexpr bool should_break(
-        grapheme_cluster_break_property next_property) noexcept
+    [[nodiscard]] constexpr bool should_break(grapheme_cluster_break_class next_class) noexcept
     {
         for (auto rule : no_break_rules::grapheme_cluster<trailing_window_size>) {
-            if (rule(trailing_window_, next_property)) {
+            if (rule(trailing_window_, next_class)) {
                 return false;
             }
         }
@@ -208,7 +208,7 @@ private:
     {
         // array::fill(..) is only constexpr in C++20
         for (auto& p : trailing_window_) {
-            p = grapheme_cluster_break_property::any;
+            p = grapheme_cluster_break_class::any;
         }
     }
 
@@ -232,8 +232,8 @@ private:
             return;
         }
 
-        // Iterate over each code point and its neighbour, pass their break properties into the
-        // rule checker
+        // Iterate over each code point and its neighbour, pass their break classes into the rule
+        // checker
         for (auto it = code_point::iterator{str_}; it != code_point::iterator{}; ++it) {
             current_ += code_point::size(*it);
 
@@ -244,22 +244,22 @@ private:
             }
 
             rotate_trailing_window();
-            trailing_window_.front() = extract_property(*this_cp);
+            trailing_window_.front() = extract_class(*this_cp);
 
-            // If there is a following code point, use it to update the next_break_property
-            auto next_break_property = grapheme_cluster_break_property::any;
+            // If there is a following code point, use it to update the next_break_class
+            auto next_break_class = grapheme_cluster_break_class::any;
             {
                 auto next_it = it;
                 ++next_it;
                 if (next_it != code_point::iterator{}) {
                     const auto next_cp = code_point::decode(*next_it);
                     if (next_cp) {
-                        next_break_property = extract_property(*next_cp);
+                        next_break_class = extract_class(*next_cp);
                     }
                 }
             }
 
-            if (should_break(next_break_property)) {
+            if (should_break(next_break_class)) {
                 break;
             }
         }
@@ -267,7 +267,7 @@ private:
 
     std::size_t current_;
     std::string_view str_;
-    std::array<grapheme_cluster_break_property, trailing_window_size> trailing_window_;
+    std::array<grapheme_cluster_break_class, trailing_window_size> trailing_window_;
 };
 
 /** Number of UTF-8 grapheme clusters in the string.
@@ -358,7 +358,7 @@ public:
      *
      * Represents the end iterator.
      */
-    constexpr line_iterator() noexcept : max_columns_{0}, line_break_byte_{0} {}
+    constexpr line_iterator() noexcept : max_columns_{0}, line_break_byte_{0}, trailing_window_{} {}
 
     /** Constructor.
      *
@@ -368,11 +368,13 @@ public:
      * @param max_columns Maximum width of each iteration in terminal columns
      */
     constexpr explicit line_iterator(std::string_view str, std::size_t max_columns) noexcept :
-        str_{str}, max_columns_{max_columns}, line_break_byte_{0}
+        str_{str}, max_columns_{max_columns}, line_break_byte_{0}, trailing_window_{}
     {
         if (max_columns_ == 0) {
             str_ = std::string_view{};
         }
+
+        fill_trailing_window();
         consume();
     }
 
@@ -435,6 +437,52 @@ public:
     }
 
 private:
+    static constexpr auto trailing_window_size = std::size_t{64};
+
+    [[nodiscard]] static constexpr line_break_class extract_class(code_point::type cp) noexcept
+    {
+        auto result = line_break_class::any;
+        const auto range = detail::find_range(line_break_table, cp);
+        if (range) {
+            result = static_cast<line_break_class>((range->first & line_break_class_mask) >>
+                                                   code_point::data_offset);
+        }
+
+        return result;
+    }
+
+    [[nodiscard]] constexpr bool should_break(line_break_class next_class) noexcept
+    {
+        for (auto rule : no_break_rules::line_break<trailing_window_size>) {
+            if (rule(trailing_window_, next_class)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    constexpr void fill_trailing_window() noexcept
+    {
+        // array::fill(..) is only constexpr in C++20
+        for (auto& p : trailing_window_) {
+            p = line_break_class::any;
+        }
+    }
+
+    constexpr void rotate_trailing_window() noexcept
+    {
+        // Right rotate the window, std::rotate isn't constexpr in C++17
+        auto it = trailing_window_.rbegin();
+        while (true) {
+            auto prev = it++;
+            if (it == trailing_window_.rend()) {
+                break;
+            }
+            *prev = *it;
+        }
+    }
+
     constexpr void consume() noexcept
     {
         if (str_.empty()) {
@@ -467,13 +515,13 @@ private:
         auto bytes = std::size_t{0};
         auto line_break_column = std::size_t{0};
         auto line_break_byte = std::size_t{0};
-        for (auto cp : code_point::iterator::range(str_)) {
+        for (auto it = code_point::iterator{str_}; it != code_point::iterator{}; ++it) {
             // Have we exceeded the terminal width?
-            column += terminal_width(cp);
+            column += terminal_width(*it);
             if (column > max_columns_) {
-                // Oh dear, the line has no whitespace in it to break on, so force break on the last
-                // code  point
                 if (line_break_column == 0) {
+                    // Oh dear, the line has no whitespace in it to break on, so force break on the
+                    // last code point
                     line_break_byte_ = bytes;
                 } else {
                     line_break_byte_ = line_break_byte;
@@ -481,8 +529,31 @@ private:
                 return;
             }
 
-            bytes += code_point::size(cp);
-            if (is_whitespace(cp)) {
+            bytes += code_point::size(*it);
+
+            // If this code point is malformed, then just skip it
+            const auto this_cp = code_point::decode(*it);
+            if (!this_cp) {
+                continue;
+            }
+
+            rotate_trailing_window();
+            trailing_window_.front() = extract_class(*this_cp);
+
+            // If there is a following code point, use it to update the next_break_class
+            auto next_break_class = line_break_class::any;
+            {
+                auto next_it = it;
+                ++next_it;
+                if (next_it != code_point::iterator{}) {
+                    const auto next_cp = code_point::decode(*next_it);
+                    if (next_cp) {
+                        next_break_class = extract_class(*next_cp);
+                    }
+                }
+            }
+
+            if (should_break(next_break_class)) {
                 line_break_column = column;
                 line_break_byte = bytes;
             }
@@ -495,5 +566,6 @@ private:
     std::string_view str_;
     std::size_t max_columns_;
     std::size_t line_break_byte_;
+    std::array<line_break_class, trailing_window_size> trailing_window_;
 };
 }  // namespace arg_router::utility::utf8

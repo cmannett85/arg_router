@@ -58,6 +58,7 @@ set(TEST_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/unsafe_any_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/utf8/code_point_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/utf8/grapheme_cluster_break_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/utility/utf8/line_break_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/utf8_test.cpp
 )
 
