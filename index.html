@@ -76,7 +76,7 @@ $(function() {
 <li>Detects invalid or ambiguous parse trees at compile-time</li>
 <li>Generates its help output, which you can modify at runtime using a <code>Callable</code></li>
 <li>Easy custom parsers by using <code>Callable</code>s inline for specific arguments, or you can implement a specialisation to cover all instances of that type</li>
-<li><em>Quite</em> Unicode compliant by supporting UTF-8 encoded compile-time strings (<a href="#unicode-compliance">details</a>)</li>
+<li>Unicode compliant by supporting UTF-8 encoded compile-time strings (<a href="#unicode-compliance">details</a>)</li>
 </ul>
 <h1>Basics</h1>
 <p>Let's start simple, with this <code>cat</code>-like program: </p><div class="fragment"><div class="line"><span class="keyword">namespace </span>ar = <a class="code" href="namespacearg__router.html">arg_router</a></div>
@@ -513,12 +513,9 @@ $(function() {
 <div class="line">แมว</div>
 <div class="line">$ ./example_just_cats --кіт</div>
 <div class="line">кіт</div>
-</div><!-- fragment --><p>I mentioned in the blurb at the top that <code><a class="el" href="namespacearg__router.html">arg_router</a></code> is <em>quite</em> Unicode compliant which doesn't exactly inspire confidence... There are three limitations to current support:</p>
-<ol type="1">
-<li>Only UTF-8 support. If you want other encodings (e.g. UTF-16 on Windows), then you'll need to convert the input tokens to UTF-8 before calling <code>parse(..)</code>. The compile-time strings used in the parse tree <em>must</em> be UTF-8 because that's the only encoding supported by <code><a class="el" href="namespacearg__router.html">arg_router</a></code>'s string checkers and line-break algorithm. Likewise the help output generated will be UTF-8, so you'll need to capture the output (by attaching a <code>policy::router</code>) and then convert before printing</li>
-<li>The line-break algorithm only works with whitespace, otherwise it may split mid word or mid multi-code point grapheme clusters (will be fixed in #135)</li>
-</ol>
-<p>Normally an application will link to ICU for its Unicode needs, but unfortunately we can't do that here as ICU is not <code>constexpr</code> and therefore cannot be used for our compile-time needs - so we need to roll our own.</p>
+</div><!-- fragment --><p><code><a class="el" href="namespacearg__router.html">arg_router</a></code> only supports UTF-8 encoding, and will stay that way for the medium term. If you want other encodings (e.g. UTF-16 on Windows), then you'll need to convert the input tokens to UTF-8 before calling <code>parse(..)</code>. The compile-time strings used in the parse tree <em>must</em> be UTF-8 because that's the only encoding supported by <code><a class="el" href="namespacearg__router.html">arg_router</a></code>'s string checkers and line-break algorithm. Likewise the help output generated will be UTF-8, so you'll need to capture the output (by attaching a <code>policy::router</code>) and then convert before printing</p>
+<h2>Why have you written your own Unicode algorithms!?</h2>
+<p>We didn't want to... Normally an application will link to ICU for its Unicode needs, but unfortunately we can't do that here as ICU is not <code>constexpr</code> and therefore cannot be used for our compile-time needs - so we need to roll our own.</p>
 <h1>Error Handling</h1>
 <p>Currently <code><a class="el" href="namespacearg__router.html">arg_router</a></code> only supports exceptions as error handling. If a parsing fails for some reason a <code><a class="el" href="classarg__router_1_1parse__exception.html">arg_router::parse_exception</a></code> is thrown carrying information on the failure.</p>
 <h1>API Documentation</h1>

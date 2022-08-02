@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['pre_5fparse_5faction_791',['pre_parse_action',['../namespacearg__router_1_1parsing.html#a425dc604db76181e7af022986d3015a5',1,'arg_router::parsing']]],
-  ['prefix_5ftype_792',['prefix_type',['../namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3',1,'arg_router::parsing']]]
+  ['line_5fbreak_5fclass_852',['line_break_class',['../namespacearg__router_1_1utility_1_1utf8.html#a4c3dc679c08e68732c76c2478d892548',1,'arg_router::utility::utf8']]]
 ];
