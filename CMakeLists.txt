@@ -96,6 +96,7 @@ set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/utf8/code_point.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/utf8/double_width.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/utf8/grapheme_cluster_break.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/utf8/line_break.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/utf8/whitespace.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/utility/utf8/zero_width.hpp
 )

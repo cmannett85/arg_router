@@ -237,10 +237,10 @@ BOOST_AUTO_TEST_CASE(line_iterator_test)
     {
         using str = S_("hello 🙂 zß水🍌   goodbye");
         {
-            constexpr auto it = utf8::line_iterator{str::get(), 11};
-            static_assert(it.max_columns() == 11);
-            static_assert(it == utf8::line_iterator{str::get(), 11});
-            static_assert(*it == "hello 🙂 ");
+            constexpr auto it = utf8::line_iterator{str::get(), 21};
+            static_assert(it.max_columns() == 21);
+            static_assert(it == utf8::line_iterator{str::get(), 21});
+            static_assert(*it == "hello 🙂 zß水🍌   ");
             static_assert(it != utf8::line_iterator{});
         }
         {
@@ -257,7 +257,7 @@ BOOST_AUTO_TEST_CASE(line_iterator_test)
         }
         BOOST_CHECK(it == utf8::line_iterator{});
 
-        const auto expected = std::vector{"hello "sv, "🙂 "sv, "zß水🍌 "sv, "goodbye"sv};
+        const auto expected = std::vector{"hello "sv, "🙂 zß水"sv, "🍌   "sv, "goodbye"sv};
         BOOST_CHECK_EQUAL(result, expected);
     }
     {

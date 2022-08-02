@@ -739,10 +739,10 @@ BOOST_AUTO_TEST_CASE(no_tabs_in_description_test)
 {
     test::death_test_compile(
         R"(
-#include "arg_router/help.hpp"
 #include "arg_router/flag.hpp"
-#include "arg_router/policy/long_name.hpp"
+#include "arg_router/help.hpp"
 #include "arg_router/policy/description.hpp"
+#include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
