@@ -18,8 +18,7 @@ namespace detail
 template <std::size_t N>
 [[nodiscard]] constexpr std::optional<code_point::range> find_range(
     const std::array<code_point::range, N>& table,
-    code_point::type cp,
-    code_point::type mask = 0x1FFFFF) noexcept
+    code_point::type cp) noexcept
 {
     auto first = table.begin();
 
@@ -28,9 +27,9 @@ template <std::size_t N>
         const auto step = len / 2;
         auto halfway = first + step;
 
-        if (cp < (halfway->first & mask)) {
+        if (cp < halfway->first()) {
             len = step;
-        } else if (cp <= (halfway->last & mask)) {
+        } else if (cp <= halfway->last()) {
             return *halfway;
         } else {
             first = ++halfway;
@@ -186,8 +185,7 @@ private:
         auto result = grapheme_cluster_break_class::any;
         const auto range = detail::find_range(grapheme_cluster_break_table, cp);
         if (range) {
-            result = static_cast<grapheme_cluster_break_class>(
-                (range->first & grapheme_cluster_break_class_mask) >> code_point::data_offset);
+            result = static_cast<grapheme_cluster_break_class>(range->meta());
         }
 
         return result;
@@ -444,8 +442,7 @@ private:
         auto result = line_break_class::any;
         const auto range = detail::find_range(line_break_table, cp);
         if (range) {
-            result = static_cast<line_break_class>((range->first & line_break_class_mask) >>
-                                                   code_point::data_offset);
+            result = static_cast<line_break_class>(range->meta());
         }
 
         return result;

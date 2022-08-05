@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include <array>
 #include <cstdint>
 #include <optional>
 #include <string_view>
@@ -12,16 +13,76 @@ namespace arg_router::utility::utf8::code_point
 /** Code point type. */
 using type = std::uint32_t;
 
-/** Number of bits that make up the code value portion of a code point.
- *
- * This allows for other data to be encoded in the upper bits.
+/** Defines an @em inclusive contiguous range of code points, plus some meta data specific to the
+ * table type it comes from.
  */
-constexpr auto data_offset = std::size_t{21};
+class range
+{
+public:
+    /** Constructor.
+     *
+     * @note Only the first 21 bits of a code point are valid Unicode data, and so that is all that
+     * is stored in here
+     * @param first First code point in range
+     * @param last Inclusive last code point in range
+     * @param meta Metadata, only the first 6 bits are used.  Zero will be set if unused
+     */
+    constexpr range(type first, type last, std::uint8_t meta = 0) noexcept : data_{}
+    {
+        // array::fill is not constexpr until C++20...
+        for (auto& b : data_) {
+            b = 0;
+        }
 
-/** Defines an @em inclusive contiguous range of code points. */
-struct range {
-    type first;  ///< First code point in range
-    type last;   ///< Last code point in range
+        // Can't use reinterpret_cast in constexpr function, so we have to do it the old fashioned
+        // way!
+        // [0-20]  Start code point
+        // [21-41] End code point
+        // [42-47] Metadata
+        data_[0] = first & 0xFF;
+        data_[1] = (first >> 8) & 0xFF;
+        data_[2] = (first >> 16) & 0x1F;
+
+        data_[2] |= (last & 0x7) << 5;
+        data_[3] = (last >> 3) & 0xFF;
+        data_[4] = (last >> 11) & 0xFF;
+        data_[5] = (last >> 19) & 0x3;
+
+        data_[5] |= (meta & 0x3F) << 2;
+    }
+
+    /** First code point in range.
+     *
+     * @return Code point
+     */
+    [[nodiscard]] constexpr type first() const noexcept
+    {
+        auto value = type{data_[0]};
+        value |= data_[1] << 8;
+        value |= (data_[2] & 0x1F) << 16;
+
+        return value;
+    }
+
+    /** Inclusive last code point in range.
+     *
+     * @return Code point
+     */
+    [[nodiscard]] constexpr type last() const noexcept
+    {
+        type value = (data_[2] >> 5) & 0x7;
+        value |= data_[3] << 3;
+        value |= data_[4] << 11;
+        value |= (data_[5] & 0x3) << 19;
+
+        return value;
+    }
+
+    /** Meta data.
+     *
+     * @return Meta data, zero if unset
+     */
+    [[nodiscard]] constexpr std::uint8_t meta() const noexcept { return (data_[5] >> 2) & 0x3F; }
 
     /** Less than operator.
      *
@@ -30,10 +91,10 @@ struct range {
      */
     constexpr bool operator<(range other) const noexcept
     {
-        if (first == other.first) {
-            return last < other.last;
+        if (first() == other.first()) {
+            return last() < other.last();
         }
-        return first < other.first;
+        return first() < other.first();
     }
 
     /** Less than operator for a single code point.
@@ -41,7 +102,10 @@ struct range {
      * @param cp Instance to compare against
      * @return True if the start of this range is less than @a cp
      */
-    constexpr bool operator<(type cp) const noexcept { return first < cp; }
+    constexpr bool operator<(type cp) const noexcept { return first() < cp; }
+
+private:
+    std::array<std::uint8_t, 6> data_;
 };
 
 /** Number of UTF-8 code points in the string.
