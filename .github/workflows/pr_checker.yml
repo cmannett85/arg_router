@@ -102,7 +102,7 @@ jobs:
 
     strategy:
       matrix:
-        compiler: ["g++-9", "g++-11", "clang++-12"]
+        compiler: ["g++-9", "g++-11"]
 
     steps:
     - uses: actions/checkout@v2

@@ -30,10 +30,6 @@ class GraphemeClusterBreak(Enum):
     LVT = (13, 'LVT')
     EXTENDED_PICTOGRAPHIC = (14, 'Extended_Pictographic')
 
-    def add_to_code_point(self, cp):
-        abbrv_value = self.value[0] & 0xF
-        return (cp & 0x1FFFFF) | (abbrv_value << CODE_POINT_DATA_OFFSET)
-
 
 @unique
 class LineBreak(Enum):
@@ -76,10 +72,6 @@ class LineBreak(Enum):
     WJ  = 36
     ZW  = 37
     ZWJ = 38
-
-    def add_to_code_point(self, cp):
-        abbrv_value = self.value & 0x3F
-        return (cp & 0x1FFFFF) | (abbrv_value << CODE_POINT_DATA_OFFSET)
 
 
 def download(url):
@@ -153,12 +145,17 @@ def extract_code_points(abbrvs, content):
 
 
 def sort_code_points(cps):
-    return sorted(cps, key=lambda cp_range: cp_range[0] & 0x1FFFFF)
+    return sorted(cps, key=lambda cp_range: cp_range[0])
 
 
 def print_code_points(cps):
     for cp_range in cps:
-        print('    {{0x{:X}, 0x{:X}}},'.format(cp_range[0], cp_range[1]))
+        if len(cp_range) == 3:
+            print('    {{0x{:06X}, 0x{:06X}, 0x{:06X}}},'.format(cp_range[0],
+                                                                 cp_range[1],
+                                                                 cp_range[2]))
+        else:
+            print('    {{0x{:06X}, 0x{:06X}}},'.format(cp_range[0], cp_range[1]))
 
 
 def run(url, abbrvs, varname):
@@ -205,13 +202,12 @@ def run_grapheme_cluster_break():
         line = line[0:sc_pos].strip()
         range_split = line.find(RANGE_DIVIDER)
         if range_split == -1:
-            start = abbrv_value.add_to_code_point(int(line, 16))
-            result.append([start, start])
+            start = int(line, 16)
+            result.append([start, start, abbrv_value.value[0]])
         else:
-            start = abbrv_value.add_to_code_point(int(line[0:range_split], 16))
-            end = abbrv_value.add_to_code_point(
-                int(line[range_split+len(RANGE_DIVIDER):], 16))
-            result.append([start, end])
+            start = int(line[0:range_split], 16)
+            end = int(line[range_split+len(RANGE_DIVIDER):], 16)
+            result.append([start, end, abbrv_value.value[0]])
 
     # Unfortuantely this doesn't include extended pictographic, so get that
     # separately
@@ -239,13 +235,12 @@ def run_grapheme_cluster_break():
         line = line[0:sc_pos].strip()
         range_split = line.find(RANGE_DIVIDER)
         if range_split == -1:
-            start = abbrv_value.add_to_code_point(int(line, 16))
-            result.append([start, start])
+            start = int(line, 16)
+            result.append([start, start, abbrv_value.value[0]])
         else:
-            start = abbrv_value.add_to_code_point(int(line[0:range_split], 16))
-            end = abbrv_value.add_to_code_point(
-                int(line[range_split+len(RANGE_DIVIDER):], 16))
-            result.append([start, end])
+            start = int(line[0:range_split], 16)
+            end = int(line[range_split+len(RANGE_DIVIDER):], 16)
+            result.append([start, end, abbrv_value.value[0]])
 
     cps = sort_code_points(result)
     print('constexpr auto grapheme_cluster_break_table = '
@@ -304,13 +299,12 @@ def line_break():
         line = line[0:sc_pos].strip()
         range_split = line.find(RANGE_DIVIDER)
         if range_split == -1:
-            start = abbrv_value.add_to_code_point(int(line, 16))
-            result.append([start, start])
+            start = int(line, 16)
+            result.append([start, start, abbrv_value.value])
         else:
-            start = abbrv_value.add_to_code_point(int(line[0:range_split], 16))
-            end = abbrv_value.add_to_code_point(
-                int(line[range_split+len(RANGE_DIVIDER):], 16))
-            result.append([start, end])
+            start = int(line[0:range_split], 16)
+            end = int(line[range_split+len(RANGE_DIVIDER):], 16)
+            result.append([start, end, abbrv_value.value])
 
     cps = sort_code_points(result)
     print('constexpr auto line_break_table = std::array<code_point::range, {}>{{{{'.format(len(cps)))
@@ -327,7 +321,7 @@ if __name__ == '__main__':
     print('\nDouble width:')
     run('http://www.unicode.org/Public/UNIDATA/EastAsianWidth.txt',
         ['W', 'F'],
-        'full_width_table')
+        'double_width_table')
 
     print('\nZero width:')
     run('http://www.unicode.org/Public/UNIDATA/extracted/'
