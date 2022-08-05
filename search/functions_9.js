@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['last_611',['last',['../classarg__router_1_1utility_1_1utf8_1_1code__point_1_1range.html#a69a7c0f615efdb1580cdfef624f83afb',1,'arg_router::utility::utf8::code_point::range']]],
   ['lb11_612',['LB11',['../namespacearg__router_1_1utility_1_1utf8_1_1no__break__rules.html#a37f01f5aac79a8841a6904c89fbbe601',1,'arg_router::utility::utf8::no_break_rules']]],
   ['lb12_613',['LB12',['../namespacearg__router_1_1utility_1_1utf8_1_1no__break__rules.html#a3512bd58ba81b693e89969dcc4a6931e',1,'arg_router::utility::utf8::no_break_rules']]],
   ['lb12a_614',['LB12a',['../namespacearg__router_1_1utility_1_1utf8_1_1no__break__rules.html#afd012f12853b80c1d89d8dcc5957b2f2',1,'arg_router::utility::utf8::no_break_rules']]],

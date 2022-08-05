@@ -77,87 +77,85 @@ $(function() {
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;arg_router/utility/utf8/code_point.hpp&quot;</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;array&gt;</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacearg__router_1_1utility_1_1utf8.html">arg_router::utility::utf8</a></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;{</div>
-<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1utility_1_1utf8.html#ad097d9ebe8fd378c8ef229d40100be7b">   18</a></span>&#160;constexpr <span class="keyword">auto</span> <a class="code" href="namespacearg__router_1_1utility_1_1utf8.html#ad097d9ebe8fd378c8ef229d40100be7b">double_width_table</a> = std::array&lt;code_point::range, 281&gt;{{</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    {0x1100, 0x115F},   {0x231A, 0x231B},   {0x2329, 0x2329},   {0x232A, 0x232A},</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    {0x23E9, 0x23EC},   {0x23F0, 0x23F0},   {0x23F3, 0x23F3},   {0x25FD, 0x25FE},</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    {0x2614, 0x2615},   {0x2648, 0x2653},   {0x267F, 0x267F},   {0x2693, 0x2693},</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    {0x26A1, 0x26A1},   {0x26AA, 0x26AB},   {0x26BD, 0x26BE},   {0x26C4, 0x26C5},</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    {0x26CE, 0x26CE},   {0x26D4, 0x26D4},   {0x26EA, 0x26EA},   {0x26F2, 0x26F3},</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    {0x26F5, 0x26F5},   {0x26FA, 0x26FA},   {0x26FD, 0x26FD},   {0x2705, 0x2705},</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    {0x270A, 0x270B},   {0x2728, 0x2728},   {0x274C, 0x274C},   {0x274E, 0x274E},</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    {0x2753, 0x2755},   {0x2757, 0x2757},   {0x2795, 0x2797},   {0x27B0, 0x27B0},</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    {0x27BF, 0x27BF},   {0x2B1B, 0x2B1C},   {0x2B50, 0x2B50},   {0x2B55, 0x2B55},</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    {0x2E80, 0x2E99},   {0x2E9B, 0x2EF3},   {0x2F00, 0x2FD5},   {0x2FF0, 0x2FFB},</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    {0x3000, 0x3000},   {0x3001, 0x3003},   {0x3004, 0x3004},   {0x3005, 0x3005},</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    {0x3006, 0x3006},   {0x3007, 0x3007},   {0x3008, 0x3008},   {0x3009, 0x3009},</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    {0x300A, 0x300A},   {0x300B, 0x300B},   {0x300C, 0x300C},   {0x300D, 0x300D},</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    {0x300E, 0x300E},   {0x300F, 0x300F},   {0x3010, 0x3010},   {0x3011, 0x3011},</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    {0x3012, 0x3013},   {0x3014, 0x3014},   {0x3015, 0x3015},   {0x3016, 0x3016},</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    {0x3017, 0x3017},   {0x3018, 0x3018},   {0x3019, 0x3019},   {0x301A, 0x301A},</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    {0x301B, 0x301B},   {0x301C, 0x301C},   {0x301D, 0x301D},   {0x301E, 0x301F},</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    {0x3020, 0x3020},   {0x3021, 0x3029},   {0x302A, 0x302D},   {0x302E, 0x302F},</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    {0x3030, 0x3030},   {0x3031, 0x3035},   {0x3036, 0x3037},   {0x3038, 0x303A},</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    {0x303B, 0x303B},   {0x303C, 0x303C},   {0x303D, 0x303D},   {0x303E, 0x303E},</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    {0x3041, 0x3096},   {0x3099, 0x309A},   {0x309B, 0x309C},   {0x309D, 0x309E},</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    {0x309F, 0x309F},   {0x30A0, 0x30A0},   {0x30A1, 0x30FA},   {0x30FB, 0x30FB},</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    {0x30FC, 0x30FE},   {0x30FF, 0x30FF},   {0x3105, 0x312F},   {0x3131, 0x318E},</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    {0x3190, 0x3191},   {0x3192, 0x3195},   {0x3196, 0x319F},   {0x31A0, 0x31BF},</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    {0x31C0, 0x31E3},   {0x31F0, 0x31FF},   {0x3200, 0x321E},   {0x3220, 0x3229},</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    {0x322A, 0x3247},   {0x3250, 0x3250},   {0x3251, 0x325F},   {0x3260, 0x327F},</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    {0x3280, 0x3289},   {0x328A, 0x32B0},   {0x32B1, 0x32BF},   {0x32C0, 0x32FF},</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    {0x3300, 0x33FF},   {0x3400, 0x4DBF},   {0x4E00, 0x9FFF},   {0xA000, 0xA014},</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    {0xA015, 0xA015},   {0xA016, 0xA48C},   {0xA490, 0xA4C6},   {0xA960, 0xA97C},</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    {0xAC00, 0xD7A3},   {0xF900, 0xFA6D},   {0xFA6E, 0xFA6F},   {0xFA70, 0xFAD9},</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    {0xFADA, 0xFAFF},   {0xFE10, 0xFE16},   {0xFE17, 0xFE17},   {0xFE18, 0xFE18},</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    {0xFE19, 0xFE19},   {0xFE30, 0xFE30},   {0xFE31, 0xFE32},   {0xFE33, 0xFE34},</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    {0xFE35, 0xFE35},   {0xFE36, 0xFE36},   {0xFE37, 0xFE37},   {0xFE38, 0xFE38},</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    {0xFE39, 0xFE39},   {0xFE3A, 0xFE3A},   {0xFE3B, 0xFE3B},   {0xFE3C, 0xFE3C},</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    {0xFE3D, 0xFE3D},   {0xFE3E, 0xFE3E},   {0xFE3F, 0xFE3F},   {0xFE40, 0xFE40},</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    {0xFE41, 0xFE41},   {0xFE42, 0xFE42},   {0xFE43, 0xFE43},   {0xFE44, 0xFE44},</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    {0xFE45, 0xFE46},   {0xFE47, 0xFE47},   {0xFE48, 0xFE48},   {0xFE49, 0xFE4C},</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    {0xFE4D, 0xFE4F},   {0xFE50, 0xFE52},   {0xFE54, 0xFE57},   {0xFE58, 0xFE58},</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    {0xFE59, 0xFE59},   {0xFE5A, 0xFE5A},   {0xFE5B, 0xFE5B},   {0xFE5C, 0xFE5C},</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    {0xFE5D, 0xFE5D},   {0xFE5E, 0xFE5E},   {0xFE5F, 0xFE61},   {0xFE62, 0xFE62},</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    {0xFE63, 0xFE63},   {0xFE64, 0xFE66},   {0xFE68, 0xFE68},   {0xFE69, 0xFE69},</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    {0xFE6A, 0xFE6B},   {0xFF01, 0xFF03},   {0xFF04, 0xFF04},   {0xFF05, 0xFF07},</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    {0xFF08, 0xFF08},   {0xFF09, 0xFF09},   {0xFF0A, 0xFF0A},   {0xFF0B, 0xFF0B},</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    {0xFF0C, 0xFF0C},   {0xFF0D, 0xFF0D},   {0xFF0E, 0xFF0F},   {0xFF10, 0xFF19},</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    {0xFF1A, 0xFF1B},   {0xFF1C, 0xFF1E},   {0xFF1F, 0xFF20},   {0xFF21, 0xFF3A},</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    {0xFF3B, 0xFF3B},   {0xFF3C, 0xFF3C},   {0xFF3D, 0xFF3D},   {0xFF3E, 0xFF3E},</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    {0xFF3F, 0xFF3F},   {0xFF40, 0xFF40},   {0xFF41, 0xFF5A},   {0xFF5B, 0xFF5B},</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    {0xFF5C, 0xFF5C},   {0xFF5D, 0xFF5D},   {0xFF5E, 0xFF5E},   {0xFF5F, 0xFF5F},</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    {0xFF60, 0xFF60},   {0xFFE0, 0xFFE1},   {0xFFE2, 0xFFE2},   {0xFFE3, 0xFFE3},</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    {0xFFE4, 0xFFE4},   {0xFFE5, 0xFFE6},   {0x16FE0, 0x16FE1}, {0x16FE2, 0x16FE2},</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    {0x16FE3, 0x16FE3}, {0x16FE4, 0x16FE4}, {0x16FF0, 0x16FF1}, {0x17000, 0x187F7},</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    {0x18800, 0x18AFF}, {0x18B00, 0x18CD5}, {0x18D00, 0x18D08}, {0x1AFF0, 0x1AFF3},</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    {0x1AFF5, 0x1AFFB}, {0x1AFFD, 0x1AFFE}, {0x1B000, 0x1B0FF}, {0x1B100, 0x1B122},</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    {0x1B150, 0x1B152}, {0x1B164, 0x1B167}, {0x1B170, 0x1B2FB}, {0x1F004, 0x1F004},</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    {0x1F0CF, 0x1F0CF}, {0x1F18E, 0x1F18E}, {0x1F191, 0x1F19A}, {0x1F200, 0x1F202},</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    {0x1F210, 0x1F23B}, {0x1F240, 0x1F248}, {0x1F250, 0x1F251}, {0x1F260, 0x1F265},</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    {0x1F300, 0x1F320}, {0x1F32D, 0x1F335}, {0x1F337, 0x1F37C}, {0x1F37E, 0x1F393},</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    {0x1F3A0, 0x1F3CA}, {0x1F3CF, 0x1F3D3}, {0x1F3E0, 0x1F3F0}, {0x1F3F4, 0x1F3F4},</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    {0x1F3F8, 0x1F3FA}, {0x1F3FB, 0x1F3FF}, {0x1F400, 0x1F43E}, {0x1F440, 0x1F440},</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    {0x1F442, 0x1F4FC}, {0x1F4FF, 0x1F53D}, {0x1F54B, 0x1F54E}, {0x1F550, 0x1F567},</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    {0x1F57A, 0x1F57A}, {0x1F595, 0x1F596}, {0x1F5A4, 0x1F5A4}, {0x1F5FB, 0x1F5FF},</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    {0x1F600, 0x1F64F}, {0x1F680, 0x1F6C5}, {0x1F6CC, 0x1F6CC}, {0x1F6D0, 0x1F6D2},</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    {0x1F6D5, 0x1F6D7}, {0x1F6DD, 0x1F6DF}, {0x1F6EB, 0x1F6EC}, {0x1F6F4, 0x1F6FC},</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    {0x1F7E0, 0x1F7EB}, {0x1F7F0, 0x1F7F0}, {0x1F90C, 0x1F93A}, {0x1F93C, 0x1F945},</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    {0x1F947, 0x1F9FF}, {0x1FA70, 0x1FA74}, {0x1FA78, 0x1FA7C}, {0x1FA80, 0x1FA86},</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    {0x1FA90, 0x1FAAC}, {0x1FAB0, 0x1FABA}, {0x1FAC0, 0x1FAC5}, {0x1FAD0, 0x1FAD9},</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    {0x1FAE0, 0x1FAE7}, {0x1FAF0, 0x1FAF6}, {0x20000, 0x2A6DF}, {0x2A6E0, 0x2A6FF},</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    {0x2A700, 0x2B738}, {0x2B739, 0x2B73F}, {0x2B740, 0x2B81D}, {0x2B81E, 0x2B81F},</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    {0x2B820, 0x2CEA1}, {0x2CEA2, 0x2CEAF}, {0x2CEB0, 0x2EBE0}, {0x2EBE1, 0x2F7FF},</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    {0x2F800, 0x2FA1D}, {0x2FA1E, 0x2FA1F}, {0x2FA20, 0x2FFFD}, {0x30000, 0x3134A},</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    {0x3134B, 0x3FFFD},</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;}};</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;}  <span class="comment">// namespace arg_router::utility::utf8</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacearg__router_1_1utility_1_1utf8.html">arg_router::utility::utf8</a></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;{</div>
+<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1utility_1_1utf8.html#ad097d9ebe8fd378c8ef229d40100be7b">   16</a></span>&#160;constexpr <span class="keyword">auto</span> <a class="code" href="namespacearg__router_1_1utility_1_1utf8.html#ad097d9ebe8fd378c8ef229d40100be7b">double_width_table</a> = std::array&lt;code_point::range, 281&gt;{{</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    {0x001100, 0x00115F}, {0x00231A, 0x00231B}, {0x002329, 0x002329}, {0x00232A, 0x00232A},</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    {0x0023E9, 0x0023EC}, {0x0023F0, 0x0023F0}, {0x0023F3, 0x0023F3}, {0x0025FD, 0x0025FE},</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    {0x002614, 0x002615}, {0x002648, 0x002653}, {0x00267F, 0x00267F}, {0x002693, 0x002693},</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    {0x0026A1, 0x0026A1}, {0x0026AA, 0x0026AB}, {0x0026BD, 0x0026BE}, {0x0026C4, 0x0026C5},</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    {0x0026CE, 0x0026CE}, {0x0026D4, 0x0026D4}, {0x0026EA, 0x0026EA}, {0x0026F2, 0x0026F3},</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    {0x0026F5, 0x0026F5}, {0x0026FA, 0x0026FA}, {0x0026FD, 0x0026FD}, {0x002705, 0x002705},</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    {0x00270A, 0x00270B}, {0x002728, 0x002728}, {0x00274C, 0x00274C}, {0x00274E, 0x00274E},</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    {0x002753, 0x002755}, {0x002757, 0x002757}, {0x002795, 0x002797}, {0x0027B0, 0x0027B0},</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    {0x0027BF, 0x0027BF}, {0x002B1B, 0x002B1C}, {0x002B50, 0x002B50}, {0x002B55, 0x002B55},</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    {0x002E80, 0x002E99}, {0x002E9B, 0x002EF3}, {0x002F00, 0x002FD5}, {0x002FF0, 0x002FFB},</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    {0x003000, 0x003000}, {0x003001, 0x003003}, {0x003004, 0x003004}, {0x003005, 0x003005},</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    {0x003006, 0x003006}, {0x003007, 0x003007}, {0x003008, 0x003008}, {0x003009, 0x003009},</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    {0x00300A, 0x00300A}, {0x00300B, 0x00300B}, {0x00300C, 0x00300C}, {0x00300D, 0x00300D},</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    {0x00300E, 0x00300E}, {0x00300F, 0x00300F}, {0x003010, 0x003010}, {0x003011, 0x003011},</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    {0x003012, 0x003013}, {0x003014, 0x003014}, {0x003015, 0x003015}, {0x003016, 0x003016},</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    {0x003017, 0x003017}, {0x003018, 0x003018}, {0x003019, 0x003019}, {0x00301A, 0x00301A},</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    {0x00301B, 0x00301B}, {0x00301C, 0x00301C}, {0x00301D, 0x00301D}, {0x00301E, 0x00301F},</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    {0x003020, 0x003020}, {0x003021, 0x003029}, {0x00302A, 0x00302D}, {0x00302E, 0x00302F},</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    {0x003030, 0x003030}, {0x003031, 0x003035}, {0x003036, 0x003037}, {0x003038, 0x00303A},</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    {0x00303B, 0x00303B}, {0x00303C, 0x00303C}, {0x00303D, 0x00303D}, {0x00303E, 0x00303E},</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    {0x003041, 0x003096}, {0x003099, 0x00309A}, {0x00309B, 0x00309C}, {0x00309D, 0x00309E},</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    {0x00309F, 0x00309F}, {0x0030A0, 0x0030A0}, {0x0030A1, 0x0030FA}, {0x0030FB, 0x0030FB},</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    {0x0030FC, 0x0030FE}, {0x0030FF, 0x0030FF}, {0x003105, 0x00312F}, {0x003131, 0x00318E},</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    {0x003190, 0x003191}, {0x003192, 0x003195}, {0x003196, 0x00319F}, {0x0031A0, 0x0031BF},</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    {0x0031C0, 0x0031E3}, {0x0031F0, 0x0031FF}, {0x003200, 0x00321E}, {0x003220, 0x003229},</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    {0x00322A, 0x003247}, {0x003250, 0x003250}, {0x003251, 0x00325F}, {0x003260, 0x00327F},</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    {0x003280, 0x003289}, {0x00328A, 0x0032B0}, {0x0032B1, 0x0032BF}, {0x0032C0, 0x0032FF},</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    {0x003300, 0x0033FF}, {0x003400, 0x004DBF}, {0x004E00, 0x009FFF}, {0x00A000, 0x00A014},</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    {0x00A015, 0x00A015}, {0x00A016, 0x00A48C}, {0x00A490, 0x00A4C6}, {0x00A960, 0x00A97C},</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    {0x00AC00, 0x00D7A3}, {0x00F900, 0x00FA6D}, {0x00FA6E, 0x00FA6F}, {0x00FA70, 0x00FAD9},</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    {0x00FADA, 0x00FAFF}, {0x00FE10, 0x00FE16}, {0x00FE17, 0x00FE17}, {0x00FE18, 0x00FE18},</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    {0x00FE19, 0x00FE19}, {0x00FE30, 0x00FE30}, {0x00FE31, 0x00FE32}, {0x00FE33, 0x00FE34},</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    {0x00FE35, 0x00FE35}, {0x00FE36, 0x00FE36}, {0x00FE37, 0x00FE37}, {0x00FE38, 0x00FE38},</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    {0x00FE39, 0x00FE39}, {0x00FE3A, 0x00FE3A}, {0x00FE3B, 0x00FE3B}, {0x00FE3C, 0x00FE3C},</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    {0x00FE3D, 0x00FE3D}, {0x00FE3E, 0x00FE3E}, {0x00FE3F, 0x00FE3F}, {0x00FE40, 0x00FE40},</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    {0x00FE41, 0x00FE41}, {0x00FE42, 0x00FE42}, {0x00FE43, 0x00FE43}, {0x00FE44, 0x00FE44},</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    {0x00FE45, 0x00FE46}, {0x00FE47, 0x00FE47}, {0x00FE48, 0x00FE48}, {0x00FE49, 0x00FE4C},</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    {0x00FE4D, 0x00FE4F}, {0x00FE50, 0x00FE52}, {0x00FE54, 0x00FE57}, {0x00FE58, 0x00FE58},</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    {0x00FE59, 0x00FE59}, {0x00FE5A, 0x00FE5A}, {0x00FE5B, 0x00FE5B}, {0x00FE5C, 0x00FE5C},</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    {0x00FE5D, 0x00FE5D}, {0x00FE5E, 0x00FE5E}, {0x00FE5F, 0x00FE61}, {0x00FE62, 0x00FE62},</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    {0x00FE63, 0x00FE63}, {0x00FE64, 0x00FE66}, {0x00FE68, 0x00FE68}, {0x00FE69, 0x00FE69},</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    {0x00FE6A, 0x00FE6B}, {0x00FF01, 0x00FF03}, {0x00FF04, 0x00FF04}, {0x00FF05, 0x00FF07},</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    {0x00FF08, 0x00FF08}, {0x00FF09, 0x00FF09}, {0x00FF0A, 0x00FF0A}, {0x00FF0B, 0x00FF0B},</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    {0x00FF0C, 0x00FF0C}, {0x00FF0D, 0x00FF0D}, {0x00FF0E, 0x00FF0F}, {0x00FF10, 0x00FF19},</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    {0x00FF1A, 0x00FF1B}, {0x00FF1C, 0x00FF1E}, {0x00FF1F, 0x00FF20}, {0x00FF21, 0x00FF3A},</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    {0x00FF3B, 0x00FF3B}, {0x00FF3C, 0x00FF3C}, {0x00FF3D, 0x00FF3D}, {0x00FF3E, 0x00FF3E},</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    {0x00FF3F, 0x00FF3F}, {0x00FF40, 0x00FF40}, {0x00FF41, 0x00FF5A}, {0x00FF5B, 0x00FF5B},</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    {0x00FF5C, 0x00FF5C}, {0x00FF5D, 0x00FF5D}, {0x00FF5E, 0x00FF5E}, {0x00FF5F, 0x00FF5F},</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    {0x00FF60, 0x00FF60}, {0x00FFE0, 0x00FFE1}, {0x00FFE2, 0x00FFE2}, {0x00FFE3, 0x00FFE3},</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    {0x00FFE4, 0x00FFE4}, {0x00FFE5, 0x00FFE6}, {0x016FE0, 0x016FE1}, {0x016FE2, 0x016FE2},</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    {0x016FE3, 0x016FE3}, {0x016FE4, 0x016FE4}, {0x016FF0, 0x016FF1}, {0x017000, 0x0187F7},</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    {0x018800, 0x018AFF}, {0x018B00, 0x018CD5}, {0x018D00, 0x018D08}, {0x01AFF0, 0x01AFF3},</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    {0x01AFF5, 0x01AFFB}, {0x01AFFD, 0x01AFFE}, {0x01B000, 0x01B0FF}, {0x01B100, 0x01B122},</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    {0x01B150, 0x01B152}, {0x01B164, 0x01B167}, {0x01B170, 0x01B2FB}, {0x01F004, 0x01F004},</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    {0x01F0CF, 0x01F0CF}, {0x01F18E, 0x01F18E}, {0x01F191, 0x01F19A}, {0x01F200, 0x01F202},</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    {0x01F210, 0x01F23B}, {0x01F240, 0x01F248}, {0x01F250, 0x01F251}, {0x01F260, 0x01F265},</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    {0x01F300, 0x01F320}, {0x01F32D, 0x01F335}, {0x01F337, 0x01F37C}, {0x01F37E, 0x01F393},</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    {0x01F3A0, 0x01F3CA}, {0x01F3CF, 0x01F3D3}, {0x01F3E0, 0x01F3F0}, {0x01F3F4, 0x01F3F4},</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    {0x01F3F8, 0x01F3FA}, {0x01F3FB, 0x01F3FF}, {0x01F400, 0x01F43E}, {0x01F440, 0x01F440},</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    {0x01F442, 0x01F4FC}, {0x01F4FF, 0x01F53D}, {0x01F54B, 0x01F54E}, {0x01F550, 0x01F567},</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    {0x01F57A, 0x01F57A}, {0x01F595, 0x01F596}, {0x01F5A4, 0x01F5A4}, {0x01F5FB, 0x01F5FF},</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    {0x01F600, 0x01F64F}, {0x01F680, 0x01F6C5}, {0x01F6CC, 0x01F6CC}, {0x01F6D0, 0x01F6D2},</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    {0x01F6D5, 0x01F6D7}, {0x01F6DD, 0x01F6DF}, {0x01F6EB, 0x01F6EC}, {0x01F6F4, 0x01F6FC},</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    {0x01F7E0, 0x01F7EB}, {0x01F7F0, 0x01F7F0}, {0x01F90C, 0x01F93A}, {0x01F93C, 0x01F945},</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    {0x01F947, 0x01F9FF}, {0x01FA70, 0x01FA74}, {0x01FA78, 0x01FA7C}, {0x01FA80, 0x01FA86},</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    {0x01FA90, 0x01FAAC}, {0x01FAB0, 0x01FABA}, {0x01FAC0, 0x01FAC5}, {0x01FAD0, 0x01FAD9},</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    {0x01FAE0, 0x01FAE7}, {0x01FAF0, 0x01FAF6}, {0x020000, 0x02A6DF}, {0x02A6E0, 0x02A6FF},</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    {0x02A700, 0x02B738}, {0x02B739, 0x02B73F}, {0x02B740, 0x02B81D}, {0x02B81E, 0x02B81F},</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    {0x02B820, 0x02CEA1}, {0x02CEA2, 0x02CEAF}, {0x02CEB0, 0x02EBE0}, {0x02EBE1, 0x02F7FF},</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    {0x02F800, 0x02FA1D}, {0x02FA1E, 0x02FA1F}, {0x02FA20, 0x02FFFD}, {0x030000, 0x03134A},</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    {0x03134B, 0x03FFFD},</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;}};</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;}  <span class="comment">// namespace arg_router::utility::utf8</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="anamespacearg__router_1_1utility_1_1utf8_html"><div class="ttname"><a href="namespacearg__router_1_1utility_1_1utf8.html">arg_router::utility::utf8</a></div><div class="ttdef"><b>Definition:</b> <a href="code__point_8hpp_source.html#l00010">code_point.hpp:10</a></div></div>
-<div class="ttc" id="anamespacearg__router_1_1utility_1_1utf8_html_ad097d9ebe8fd378c8ef229d40100be7b"><div class="ttname"><a href="namespacearg__router_1_1utility_1_1utf8.html#ad097d9ebe8fd378c8ef229d40100be7b">arg_router::utility::utf8::double_width_table</a></div><div class="ttdeci">constexpr auto double_width_table</div><div class="ttdef"><b>Definition:</b> <a href="double__width_8hpp_source.html#l00018">double_width.hpp:18</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1utility_1_1utf8_html"><div class="ttname"><a href="namespacearg__router_1_1utility_1_1utf8.html">arg_router::utility::utf8</a></div><div class="ttdef"><b>Definition:</b> <a href="code__point_8hpp_source.html#l00011">code_point.hpp:11</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1utility_1_1utf8_html_ad097d9ebe8fd378c8ef229d40100be7b"><div class="ttname"><a href="namespacearg__router_1_1utility_1_1utf8.html#ad097d9ebe8fd378c8ef229d40100be7b">arg_router::utility::utf8::double_width_table</a></div><div class="ttdeci">constexpr auto double_width_table</div><div class="ttdef"><b>Definition:</b> <a href="double__width_8hpp_source.html#l00016">double_width.hpp:16</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

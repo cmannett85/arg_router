@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['architectural_20overview_870',['Architectural Overview',['../architecture.html',1,'']]],
-  ['arg_5frouter_871',['arg_router',['../index.html',1,'']]]
+  ['architectural_20overview_866',['Architectural Overview',['../architecture.html',1,'']]],
+  ['arg_5frouter_867',['arg_router',['../index.html',1,'']]]
 ];

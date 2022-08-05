@@ -70,8 +70,7 @@ $(function() {
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
-<a href="#func-members">Functions</a> &#124;
-<a href="#var-members">Variables</a>  </div>
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">arg_router::utility::utf8::code_point Namespace Reference</div>  </div>
 </div><!--header-->
@@ -81,7 +80,7 @@ $(function() {
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1utility_1_1utf8_1_1code__point_1_1iterator.html">iterator</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structarg__router_1_1utility_1_1utf8_1_1code__point_1_1range.html">range</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1utility_1_1utf8_1_1code__point_1_1range.html">range</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
@@ -97,11 +96,6 @@ Functions</h2></td></tr>
 <tr class="separator:ac51626baaeb8aeee1b0b8edec66edaca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a33d5bdc2b5eda93913986b3a09ab0801"><td class="memItemLeft" align="right" valign="top">constexpr std::optional&lt; <a class="el" href="namespacearg__router_1_1utility_1_1utf8_1_1code__point.html#aa459732c88d21437e661f1468041a19b">type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1utility_1_1utf8_1_1code__point.html#a33d5bdc2b5eda93913986b3a09ab0801">decode</a> (std::string_view str) noexcept</td></tr>
 <tr class="separator:a33d5bdc2b5eda93913986b3a09ab0801"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
-Variables</h2></td></tr>
-<tr class="memitem:a09543ef5f35768d2f538132953833c6d"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1utility_1_1utf8_1_1code__point.html#a09543ef5f35768d2f538132953833c6d">data_offset</a> = std::size_t{21}</td></tr>
-<tr class="separator:a09543ef5f35768d2f538132953833c6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Namespace for UTF-8 code point types and functions. </p>
@@ -119,7 +113,7 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 <p>Code point type. </p>
 
-<p class="definition">Definition at line <a class="el" href="code__point_8hpp_source.html#l00013">13</a> of file <a class="el" href="code__point_8hpp_source.html">code_point.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="code__point_8hpp_source.html#l00014">14</a> of file <a class="el" href="code__point_8hpp_source.html">code_point.hpp</a>.</p>
 
 </div>
 </div>
@@ -156,7 +150,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Number of code points </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="code__point_8hpp_source.html#l00052">52</a> of file <a class="el" href="code__point_8hpp_source.html">code_point.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="code__point_8hpp_source.html#l00116">116</a> of file <a class="el" href="code__point_8hpp_source.html">code_point.hpp</a>.</p>
 
 </div>
 </div>
@@ -192,7 +186,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Number, or empty optional if <em>str</em> is empty or there are not enough bytes in <em>str</em> to read the entire code point </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="code__point_8hpp_source.html#l00107">107</a> of file <a class="el" href="code__point_8hpp_source.html">code_point.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="code__point_8hpp_source.html#l00171">171</a> of file <a class="el" href="code__point_8hpp_source.html">code_point.hpp</a>.</p>
 
 </div>
 </div>
@@ -228,34 +222,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Size in bytes, zero if <em>str</em> is empty </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="code__point_8hpp_source.html#l00071">71</a> of file <a class="el" href="code__point_8hpp_source.html">code_point.hpp</a>.</p>
-
-</div>
-</div>
-<h2 class="groupheader">Variable Documentation</h2>
-<a id="a09543ef5f35768d2f538132953833c6d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a09543ef5f35768d2f538132953833c6d">&#9670;&nbsp;</a></span>data_offset</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">constexpr auto arg_router::utility::utf8::code_point::data_offset = std::size_t{21}</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Number of bits that make up the code value portion of a code point.</p>
-<p>This allows for other data to be encoded in the upper bits. </p>
-
-<p class="definition">Definition at line <a class="el" href="code__point_8hpp_source.html#l00019">19</a> of file <a class="el" href="code__point_8hpp_source.html">code_point.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="code__point_8hpp_source.html#l00135">135</a> of file <a class="el" href="code__point_8hpp_source.html">code_point.hpp</a>.</p>
 
 </div>
 </div>
