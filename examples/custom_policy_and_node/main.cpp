@@ -174,33 +174,23 @@ template <typename T, typename... Policies>
 using original_rules = typename decltype(arp::validation::default_validator)::rules_type;
 
 // We can't have two description types in a single node, that's just confusing
-using smiley_rules = boost::mp11::mp_push_front<
-    original_rules,
+using smiley_rules = arp::validation::utility::insert_rule_t<
+    0,
     arp::validation::rule_q<
         arp::validation::common_rules::despecialised_any_of_rule<smiley_description_t>,
         arp::validation::despecialised_unique_in_owner,
-        arp::validation::policy_parent_must_not_have_policy<arp::description_t>>>;
+        arp::validation::policy_parent_must_not_have_policy<arp::description_t>>,
+    arp::validation::utility::default_rules>;
 
 // is_even doesn't need it's own rule as the generic policy one suffices
 
 // As single_positional_arg_t is just a slightly less generic version of positional_arg_t, we can
 // just add it to the despecialised_any_of_rule list for positional_arg_t.  First we need to find
 // it...
-constexpr auto pos_rule_index = boost::mp11::mp_find_if_q<
-    smiley_rules,
-    boost::mp11::mp_bind<
-        std::is_same,
-        arp::validation::common_rules::despecialised_any_of_rule<ar::positional_arg_t>,
-        boost::mp11::mp_bind<boost::mp11::mp_first, boost::mp11::_1>>>::value;
-static_assert(pos_rule_index < std::tuple_size_v<smiley_rules>,
-              "Cannot find positional_arg_t rule");
-
-using pos_rule = boost::mp11::mp_replace_at_c<
-    boost::mp11::mp_at_c<smiley_rules, pos_rule_index>,
-    0,
-    arp::validation::common_rules::despecialised_any_of_rule<ar::positional_arg_t,
-                                                             single_positional_arg_t>>;
-using new_rules = boost::mp11::mp_replace_at_c<smiley_rules, pos_rule_index, pos_rule>;
+using new_rules = arp::validation::utility::add_to_rule_types_by_rule_t<
+    arp::validation::common_rules::despecialised_any_of_rule<ar::positional_arg_t>,
+    single_positional_arg_t,
+    smiley_rules>;
 
 using my_validator = arp::validation::validator_from_tuple<new_rules>;
 

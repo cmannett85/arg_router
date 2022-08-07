@@ -78,6 +78,7 @@ set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/short_form_expander.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/short_name.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/validator.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/validator_rule_utilities.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/policy/value_separator.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/positional_arg.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/arg_router/root.hpp
