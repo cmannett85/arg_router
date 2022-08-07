@@ -239,33 +239,23 @@ $(function() {
 <div class="line"><span class="keyword">using</span> original_rules = <span class="keyword">typename</span> decltype(arp::validation::default_validator)::rules_type;</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// We can&#39;t have two description types in a single node, that&#39;s just confusing</span></div>
-<div class="line"><span class="keyword">using</span> smiley_rules = boost::mp11::mp_push_front&lt;</div>
-<div class="line">    original_rules,</div>
+<div class="line"><span class="keyword">using</span> smiley_rules = arp::validation::utility::insert_rule_t&lt;</div>
+<div class="line">    0,</div>
 <div class="line">    arp::validation::rule_q&lt;</div>
 <div class="line">        arp::validation::common_rules::despecialised_any_of_rule&lt;smiley_description_t&gt;,</div>
 <div class="line">        arp::validation::despecialised_unique_in_owner,</div>
-<div class="line">        arp::validation::policy_parent_must_not_have_policy&lt;arp::description_t&gt;&gt;&gt;;</div>
+<div class="line">        arp::validation::policy_parent_must_not_have_policy&lt;arp::description_t&gt;&gt;,</div>
+<div class="line">    arp::validation::utility::default_rules&gt;;</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// is_even doesn&#39;t need it&#39;s own rule as the generic policy one suffices</span></div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// As single_positional_arg_t is just a slightly less generic version of positional_arg_t, we can</span></div>
 <div class="line"><span class="comment">// just add it to the despecialised_any_of_rule list for positional_arg_t.  First we need to find</span></div>
 <div class="line"><span class="comment">// it...</span></div>
-<div class="line">constexpr <span class="keyword">auto</span> pos_rule_index = boost::mp11::mp_find_if_q&lt;</div>
-<div class="line">    smiley_rules,</div>
-<div class="line">    boost::mp11::mp_bind&lt;</div>
-<div class="line">        std::is_same,</div>
-<div class="line">        arp::validation::common_rules::despecialised_any_of_rule&lt;ar::positional_arg_t&gt;,</div>
-<div class="line">        boost::mp11::mp_bind&lt;boost::mp11::mp_first, boost::mp11::_1&gt;&gt;&gt;::value;</div>
-<div class="line">static_assert(pos_rule_index &lt; std::tuple_size_v&lt;smiley_rules&gt;,</div>
-<div class="line">              <span class="stringliteral">&quot;Cannot find positional_arg_t rule&quot;</span>);</div>
-<div class="line"> </div>
-<div class="line"><span class="keyword">using</span> pos_rule = boost::mp11::mp_replace_at_c&lt;</div>
-<div class="line">    boost::mp11::mp_at_c&lt;smiley_rules, pos_rule_index&gt;,</div>
-<div class="line">    0,</div>
-<div class="line">    arp::validation::common_rules::despecialised_any_of_rule&lt;ar::positional_arg_t,</div>
-<div class="line">                                                             single_positional_arg_t&gt;&gt;;</div>
-<div class="line"><span class="keyword">using</span> new_rules = boost::mp11::mp_replace_at_c&lt;smiley_rules, pos_rule_index, pos_rule&gt;;</div>
+<div class="line"><span class="keyword">using</span> new_rules = arp::validation::utility::add_to_rule_types_by_rule_t&lt;</div>
+<div class="line">    arp::validation::common_rules::despecialised_any_of_rule&lt;ar::positional_arg_t&gt;,</div>
+<div class="line">    single_positional_arg_t,</div>
+<div class="line">    smiley_rules&gt;;</div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">using</span> my_validator = arp::validation::validator_from_tuple&lt;new_rules&gt;;</div>
 <div class="line"> </div>
