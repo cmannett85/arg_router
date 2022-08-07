@@ -613,7 +613,7 @@ template <typename RuleTuple>
 using validator_from_tuple = typename detail::validator_from_tuple_impl<RuleTuple>::type;
 
 /** The default validator instance. */
-inline constexpr auto default_validator = validator<
+constexpr auto default_validator = validator<
     // List the policies first as there are more of them and therefore more likely to be the target
     // Name policy rules
     rule_q<common_rules::despecialised_any_of_rule<policy::long_name_t, policy::short_name_t>,
