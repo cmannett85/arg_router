@@ -542,5 +542,15 @@ We didn't want to...  Normally an application will link to ICU for its Unicode n
 ## Error Handling
 Currently `arg_router` only supports exceptions as error handling.  If a parsing fails for some reason a `arg_router::parse_exception` is thrown carrying information on the failure.
 
+### Supported Compilers/Platforms
+The CI system attached to this repo builds on:
+* Ubuntu 22.04, Clang 14/gcc-9/gcc-11
+* Windows Server 2022 (VS 17), Clang 13.0.1
+* MacOS 12, Apple Clang 13.1.6
+
+Other compiler versions and platform combinations may work, but I'm currently limited by the built-in GitHub runners and how much I'm willing to spend on Actions!
+
+You'll notice the big omission: No MSVC.  That's because even with the latest version, I get nothing but ICEs out of it with next to no useful diagnostics.
+
 ## API Documentation
 Complete Doxygen-generated documentation is available [here](https://cmannett85.github.io/arg_router/).
