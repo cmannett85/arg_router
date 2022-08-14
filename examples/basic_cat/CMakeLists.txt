@@ -19,3 +19,6 @@ add_clangtidy_to_target(example_basic_cat)
 target_include_directories(example_basic_cat
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../../include
 )
+
+create_ast_target(TARGET example_basic_cat_ast
+                  SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)

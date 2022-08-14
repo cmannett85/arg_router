@@ -23,5 +23,9 @@ namespace arg_router
  * <TT>AR_ALLOCATOR</TT> sets the allocator for all allocating types in arg_router (e.g.
  * <TT>std::vector</TT>, <TT>std::string</TT>, etc.).  It defaults to <TT>std::allocator</TT>, i.e.
  * heap allocation.
+ *
+ * <TT>AR_UTF8_TRAILING_WINDOW_SIZE</TT> sets the Trailing window size for the grapheme cluster and
+ * line break algorithms, defaults to 16.  Each entry in the trailing window is a break property of
+ * a grapheme cluster ("user-perceived character"), not a byte.
  */
 }

@@ -21,7 +21,7 @@ project(arg_router
         HOMEPAGE_URL "https://github.com/cmannett85/arg_router"
         LANGUAGES CXX)
 
-# Only enable LTO and find packages if we're not doing a Docs-only build
+# Only find packages if we're not doing a Docs-only build
 if(NOT DOCS_ONLY)
     set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/ccache.cmake)
