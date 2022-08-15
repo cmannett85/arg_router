@@ -2,12 +2,11 @@
 
 create_clangformat_target(
     NAME clangformat_example_custom_policy_and_node
-    FORMAT_FILE ${CMAKE_SOURCE_DIR}/.clang-format
-    SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
+    SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp"
 )
 
 add_executable(example_custom_policy_and_node EXCLUDE_FROM_ALL
-    ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
+    "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp")
 add_dependencies(example_custom_policy_and_node
                  clangformat_example_custom_policy_and_node
                  arg_router)
@@ -19,5 +18,5 @@ configure_test_build(example_custom_policy_and_node)
 add_clangtidy_to_target(example_custom_policy_and_node)
 
 target_include_directories(example_custom_policy_and_node
-    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../../include
+    PUBLIC "${CMAKE_SOURCE_DIR}/include"
 )

@@ -1,11 +1,11 @@
 ### Copyright (C) 2022 by Camden Mannett.  All rights reserved. 
 
-set(DEATH_TEST_DIR
-    ${CMAKE_CURRENT_SOURCE_DIR}/death_test
+path_prefixer(DEATH_TEST_DIR
+    death_test
 )
 
 set(DEATH_TEST_SRC
-    ${DEATH_TEST_DIR}/main.cpp
+    "${DEATH_TEST_DIR}/main.cpp"
 )
 
 # Make the death_test main stub to appease CMake, it'll get destroyed on first
@@ -22,6 +22,6 @@ set_target_properties(arg_router_death_test PROPERTIES CXX_EXTENSIONS OFF)
 configure_test_build(arg_router_death_test)
 
 target_include_directories(arg_router_death_test
-    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include
-    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
+    PUBLIC "${CMAKE_SOURCE_DIR}/include"
+    PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}"
 )

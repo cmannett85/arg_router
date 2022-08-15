@@ -4,26 +4,28 @@ if(DOCS_ONLY)
     message(STATUS "Documentation-only build")
 endif()
 
-set(DOCS_FOR_IDE
-    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/documentation_script.cmake
-    ${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile
-    ${CMAKE_CURRENT_SOURCE_DIR}/docs/related_pages/architecture.doxy
-    ${CMAKE_CURRENT_SOURCE_DIR}/docs/related_pages/configuration.doxy
-    ${CMAKE_CURRENT_SOURCE_DIR}/docs/related_pages/examples.doxy
-    ${CMAKE_CURRENT_SOURCE_DIR}/docs/related_pages/help.doxy
-    ${CMAKE_CURRENT_SOURCE_DIR}/docs/related_pages/images/node_relationships.dia
-    ${CMAKE_CURRENT_SOURCE_DIR}/docs/related_pages/images/node_relationships.svg
-    ${CMAKE_CURRENT_SOURCE_DIR}/docs/related_pages/nodes.doxy
-    ${CMAKE_CURRENT_SOURCE_DIR}/docs/related_pages/policies.doxy
-    ${CMAKE_CURRENT_SOURCE_DIR}/docs/related_pages/validation.doxy
+path_prefixer(DOCS_FOR_IDE
+    cmake/build_types/documentation_script.cmake
+    docs/Doxyfile
+    docs/related_pages/architecture.doxy
+    docs/related_pages/configuration.doxy
+    docs/related_pages/examples.doxy
+    docs/related_pages/help.doxy
+    docs/related_pages/images/node_relationships.dia
+    docs/related_pages/images/node_relationships.svg
+    docs/related_pages/nodes.doxy
+    docs/related_pages/policies.doxy
+    docs/related_pages/validation.doxy
 )
 
-set(README_API_PATH
-    ${CMAKE_CURRENT_SOURCE_DIR}/docs/README_API.md
+path_prefixer(README_API_PATH
+    docs/README_API.md
 )
 
 set(DOCS_COMMAND
-    ${CMAKE_COMMAND} -DROOT=${CMAKE_CURRENT_SOURCE_DIR} -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/documentation_script.cmake
+    "${CMAKE_COMMAND}"
+    -DROOT="${CMAKE_CURRENT_SOURCE_DIR}"
+    -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/documentation_script.cmake"
 )
 
 if (DOCS_ONLY)

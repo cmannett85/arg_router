@@ -2,12 +2,11 @@
 
 create_clangformat_target(
     NAME clangformat_example_just_cats
-    FORMAT_FILE ${CMAKE_SOURCE_DIR}/.clang-format
-    SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
+    SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp"
 )
 
 add_executable(example_just_cats EXCLUDE_FROM_ALL
-    ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
+    "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp")
 add_dependencies(example_just_cats clangformat_example_just_cats arg_router)
 
 target_compile_features(example_just_cats PUBLIC cxx_std_17)
@@ -17,5 +16,5 @@ configure_test_build(example_just_cats)
 add_clangtidy_to_target(example_just_cats)
 
 target_include_directories(example_just_cats
-    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../../include
+    PUBLIC "${CMAKE_SOURCE_DIR}/include"
 )
