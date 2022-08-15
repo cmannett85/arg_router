@@ -177,7 +177,7 @@ public:
     }
 
 private:
-    static constexpr auto trailing_window_size = std::size_t{64};
+    static constexpr auto trailing_window_size = std::size_t{AR_UTF8_TRAILING_WINDOW_SIZE};
 
     [[nodiscard]] static constexpr grapheme_cluster_break_class extract_class(
         code_point::type cp) noexcept
@@ -435,7 +435,7 @@ public:
     }
 
 private:
-    static constexpr auto trailing_window_size = std::size_t{64};
+    static constexpr auto trailing_window_size = std::size_t{AR_UTF8_TRAILING_WINDOW_SIZE};
 
     [[nodiscard]] static constexpr line_break_class extract_class(code_point::type cp) noexcept
     {

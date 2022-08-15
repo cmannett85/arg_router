@@ -15,3 +15,7 @@ add_compile_definitions(AR_SHORT_PREFIX="${SHORT_PREFIX}")
 set(ALLOCATOR "std::allocator"
     CACHE STRING "Container allocator, defaults to std::allocator")
 add_compile_definitions(AR_ALLOCATOR=${ALLOCATOR})
+
+set(UTF8_TRAILING_WINDOW_SIZE 16
+    CACHE STRING "Trailing window size for grapheme cluster and line break algorithms, defaults to 16")
+add_compile_definitions(AR_UTF8_TRAILING_WINDOW_SIZE=${UTF8_TRAILING_WINDOW_SIZE})
