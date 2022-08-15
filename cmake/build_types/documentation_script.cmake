@@ -1,7 +1,6 @@
 ### Copyright (C) 2022 by Camden Mannett.  All rights reserved. 
 
-# Can't use find_package as it tries to create a target which is not allowed in
-# script mode
+# Can't use find_package as it tries to create a target which is not allowed in script mode
 find_program(
     DOXYGEN_EXECUTABLE
     NAMES doxygen
@@ -14,8 +13,8 @@ find_program(
     DOC "Doxygen documentation generation tool (http://www.doxygen.org)"
 )
 
-set(API_MD_PATH     ${ROOT}/README.md)
-set(NEW_API_MD_PATH ${ROOT}/docs/README_API.md)
+set(API_MD_PATH     "${ROOT}/README.md")
+set(NEW_API_MD_PATH "${ROOT}/docs/README_API.md")
 
 file(READ ${API_MD_PATH} MD_DATA)
 
@@ -34,8 +33,8 @@ if(NOT "${MD_DATA}" STREQUAL "${UPDATED_MD_DATA}")
 endif()
 
 execute_process(
-    COMMAND           "${DOXYGEN_EXECUTABLE}" ${ROOT}/docs/Doxyfile
-    WORKING_DIRECTORY ${ROOT}/docs
+    COMMAND           "${DOXYGEN_EXECUTABLE}" "${ROOT}/docs/Doxyfile"
+    WORKING_DIRECTORY "${ROOT}/docs"
     RESULT_VARIABLE   DOXYGEN_RESULT
 )
 

@@ -1,8 +1,8 @@
 ### Copyright (C) 2022 by Camden Mannett.  All rights reserved. 
 
-set(TEST_COVERAGE_FOR_IDE
-    ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/ci/calculate_test_coverage.sh
-    ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/ci/old_coverage
+path_prefixer(TEST_COVERAGE_FOR_IDE
+    ../scripts/ci/calculate_test_coverage.sh
+    ../scripts/ci/old_coverage
 )
 
 add_executable(arg_router_test_coverage EXCLUDE_FROM_ALL
@@ -17,8 +17,8 @@ configure_test_build(arg_router_test_coverage --coverage)
 add_clangtidy_to_target(arg_router_test_coverage)
 
 target_include_directories(arg_router_test_coverage
-    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include
-    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
+    PUBLIC "${CMAKE_SOURCE_DIR}/include"
+    PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}"
 )
 
 target_link_libraries(arg_router_test_coverage
