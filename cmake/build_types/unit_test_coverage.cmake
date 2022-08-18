@@ -22,7 +22,6 @@ target_include_directories(arg_router_test_coverage
 )
 
 target_link_libraries(arg_router_test_coverage
-    PUBLIC Boost::unit_test_framework
     PUBLIC Boost::filesystem
     PUBLIC Threads::Threads
 )

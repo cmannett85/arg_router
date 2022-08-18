@@ -10,6 +10,8 @@ env:
   NUGET_SOURCE_URL: "https://nuget.pkg.github.com/cmannett85/index.json"
   VCPKG_BINARY_SOURCES: 'clear;nuget,vcpkg-cache,readwrite'
   BUILD_DIR: ${{ github.workspace }}/build
+  INSTALL_DIR: ${{ github.workspace }}/install
+  PACKAGE_BUILD_DIR: ${{ github.workspace }}/package_build
   AR_REPO_PATH: ${{ github.workspace }}
 
 jobs:
@@ -82,6 +84,24 @@ jobs:
         cd ${{ github.workspace }}/scripts/ci
         ./calculate_test_coverage.sh ${{ env.BUILD_DIR }}
 
+    - name: Test install
+      run: |
+        cd ${{ env.BUILD_DIR }}
+        cmake --install . --prefix ${{ env.INSTALL_DIR }}
+        cd ${{ env.INSTALL_DIR }}
+        [[ -f "./include/arg_router/version.hpp" ]]
+        [[ -f "./include/arg_router/README.md" ]]
+        [[ -f "./include/arg_router/arg_router-config.cmake" ]]
+        [[ -f "./include/arg_router/arg_router-config-version.cmake" ]]
+
+    - name: Test CMake package integrity
+      uses: lukka/run-cmake@v3
+      with:
+        cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
+        cmakeListsTxtPath: ${{ github.workspace }}/scripts/ci/package_test_project/CMakeLists.txt
+        cmakeAppendedArgs: -DCMAKE_CXX_COMPILER=clang++-14 -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}/include
+        buildDirectory: ${{ env.PACKAGE_BUILD_DIR }}
+
     - name: Update README unit test coverage badge
       run: |
         cd ${{ github.workspace }}
@@ -96,13 +116,9 @@ jobs:
 
   # Run the unit tests on other platforms/compilers, can't do this in one big
   # matrix as the invocations are different between the platforms
-  linux_compiler_tests:
+  old_gcc_test:
     runs-on: ubuntu-22.04
     needs: purge_old_packages
-
-    strategy:
-      matrix:
-        compiler: ["g++-9", "g++-11"]
 
     steps:
     - uses: actions/checkout@v2
@@ -135,7 +151,7 @@ jobs:
       uses: lukka/run-cmake@v3
       with:
         cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
-        cmakeAppendedArgs: -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
+        cmakeAppendedArgs: -DCMAKE_CXX_COMPILER=g++-9
         buildDirectory: ${{ env.BUILD_DIR }}
         buildWithCMakeArgs: --target arg_router_test
 
@@ -147,6 +163,10 @@ jobs:
   windows_compiler_tests:
     runs-on: windows-2022
     needs: purge_old_packages
+
+    # Use the CMake that ships with VS to match locally built versions
+    env:
+     CMAKE_EXE: "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe"
 
     steps:
     - uses: actions/checkout@v2
@@ -168,13 +188,32 @@ jobs:
         & "C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Auxiliary/Build/vcvarsall.bat" x64
         mkdir ${{ env.BUILD_DIR }}
         cd ${{ env.BUILD_DIR }}
-        cmake -G "Visual Studio 17 2022" -A x64 -T "ClangCl" -DVCPKG_TARGET_TRIPLET:STRING="x64-windows-static" -DCMAKE_CXX_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe" -DCMAKE_C_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe" -DCMAKE_RC_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/llvm-rc.exe" -DENABLE_CLANG_TIDY=ON ..
-        cmake --build . --target arg_router_test example_simple example_custom_policy_and_node example_basic_cat example_just_cats -- /v:n
+        & "${{ env.CMAKE_EXE }}" -G "Visual Studio 17 2022" -A x64 -T "ClangCl" -DVCPKG_TARGET_TRIPLET:STRING="x64-windows-static" -DCMAKE_CXX_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe" -DCMAKE_C_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe" -DCMAKE_RC_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/llvm-rc.exe" -DENABLE_CLANG_TIDY=ON ..
+        & "${{ env.CMAKE_EXE }}" --build . --target arg_router_test example_simple example_custom_policy_and_node example_basic_cat example_just_cats -- /v:n
 
     - name: Run unit tests
       run: |
         cd ${{ env.BUILD_DIR }}/test/Debug
         ./arg_router_test.exe -l test_suite
+
+    - name: Test install
+      run: |
+        & "C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Auxiliary/Build/vcvarsall.bat" x64
+        cd ${{ env.BUILD_DIR }}
+        & "${{ env.CMAKE_EXE }}" --install . --prefix ${{ env.INSTALL_DIR }}
+        cd ${{ env.INSTALL_DIR }}
+        Test-Path -Path "${{ env.INSTALL_DIR }}/include/arg_router/version.hpp" -PathType Leaf
+        Test-Path -Path "${{ env.INSTALL_DIR }}/include/arg_router/README.md" -PathType Leaf
+        Test-Path -Path "${{ env.INSTALL_DIR }}/include/arg_router/arg_router-config.cmake" -PathType Leaf
+        Test-Path -Path "${{ env.INSTALL_DIR }}/include/arg_router/arg_router-config-version.cmake" -PathType Leaf
+
+    - name: Test CMake package integrity
+      run: |
+        & "C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Auxiliary/Build/vcvarsall.bat" x64
+        mkdir ${{ env.PACKAGE_BUILD_DIR }}
+        cd ${{ env.PACKAGE_BUILD_DIR }}
+        & "${{ env.CMAKE_EXE }}" -G "Visual Studio 17 2022" -A x64 -T "ClangCl" -DVCPKG_TARGET_TRIPLET:STRING="x64-windows-static" -DCMAKE_CXX_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe" -DCMAKE_C_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe" -DCMAKE_RC_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/llvm-rc.exe" -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}/include ..
+        & "${{ env.CMAKE_EXE }}" --build . -- /v:n
 
   macos_compiler_tests:
     runs-on: macos-12
@@ -217,6 +256,24 @@ jobs:
       run: |
         cd ${{ env.BUILD_DIR }}/test
         ./arg_router_test -l test_suite
+
+    - name: Test install
+      run: |
+        cd ${{ env.BUILD_DIR }}
+        cmake --install . --prefix ${{ env.INSTALL_DIR }}
+        cd ${{ env.INSTALL_DIR }}
+        [[ -f "./include/arg_router/version.hpp" ]]
+        [[ -f "./include/arg_router/README.md" ]]
+        [[ -f "./include/arg_router/arg_router-config.cmake" ]]
+        [[ -f "./include/arg_router/arg_router-config-version.cmake" ]]
+
+    - name: Test CMake package integrity
+      uses: lukka/run-cmake@v3
+      with:
+        cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
+        cmakeListsTxtPath: ${{ github.workspace }}/scripts/ci/package_test_project/CMakeLists.txt
+        cmakeAppendedArgs: -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}/include
+        buildDirectory: ${{ env.PACKAGE_BUILD_DIR }}
 
   # Makes sure there are no errors when generating the documentation
   documentation:

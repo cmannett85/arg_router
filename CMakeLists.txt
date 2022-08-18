@@ -2,6 +2,8 @@
 
 cmake_minimum_required(VERSION 3.18)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/path_prefixer.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/copyright_checker.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/versioning/version.cmake")
@@ -20,19 +22,23 @@ endif()
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/clang-tidy.cmake")
 
 project(arg_router
-        VERSION 0.0.1
+        VERSION 0.1.0
         DESCRIPTION "C++ command line argument parsing and routing"
         HOMEPAGE_URL "https://github.com/cmannett85/arg_router"
         LANGUAGES CXX)
 
 # Only find packages if we're not doing a Docs-only build
 if(NOT DOCS_ONLY)
-    set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
     include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/ccache.cmake")
+    include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/package/install.cmake")
 
-    find_package(Threads REQUIRED)
+    find_package(span-lite)
+    if (NOT span-lite_FOUND)
+        message(WARNING "span-lite package not found, you will need to compile against a C++20 supporting compiler")
+    else()
+        include_directories(BEFORE SYSTEM ${span-lite_INCLUDE_DIRS})
+    endif()
 
-    set(Boost_USE_MULTITHREADED ON)
     set(BOOST_VERSION 1.75)
     find_package(Boost ${BOOST_VERSION} REQUIRED)
     include_directories(BEFORE SYSTEM ${Boost_INCLUDE_DIRS})
@@ -109,11 +115,11 @@ path_prefixer(HEADERS
 path_prefixer(FOR_IDE
     .clang-format
     .clang-tidy
-    test/.clang-tidy
     .clangd
     .github/workflows/docs_pusher.yml
     .github/workflows/pr_checker.yml
     .gitignore
+    cmake/package/arg_router-config.cmake.in
     LICENSE
     README.md
     scripts/ci/create_badge_url.sh
@@ -128,6 +134,7 @@ path_prefixer(FOR_IDE
     scripts/ci/docker/README.md
     scripts/copyright_checker.py
     scripts/unicode_table_generators.py
+    test/.clang-tidy
     vcpkg.json
 )
 

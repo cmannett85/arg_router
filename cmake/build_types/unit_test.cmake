@@ -1,9 +1,11 @@
 ### Copyright (C) 2022 by Camden Mannett.  All rights reserved. 
 
+set(Boost_USE_MULTITHREADED ON)
 find_package(Boost ${BOOST_VERSION} REQUIRED COMPONENTS
-    unit_test_framework
     filesystem
 )
+
+find_package(Threads REQUIRED)
 
 path_prefixer(TEST_HEADERS
     test_printers.hpp
@@ -104,7 +106,6 @@ target_include_directories(arg_router_test
 )
 
 target_link_libraries(arg_router_test
-    PUBLIC Boost::unit_test_framework
     PUBLIC Boost::filesystem
     PUBLIC Threads::Threads
 )

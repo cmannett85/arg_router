@@ -38,7 +38,7 @@ PROJECT_NAME           = arg_router
 # could be handy for archiving the generated documentation or if some version
 # control system is used.
 
-PROJECT_NUMBER         = 0.0.1
+PROJECT_NUMBER         = 0.1.0
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer a
@@ -361,7 +361,7 @@ AUTOLINK_SUPPORT       = YES
 # If you use STL classes (i.e. std::string, std::vector, etc.) but do not want
 # to include (a tag file for) the STL sources as input, then you should set this
 # tag to YES in order to let doxygen match functions declarations and
-# definitions whose arguments contain STL classes (e.g. func(std::string);
+# definitions whose arguments contain STL classes (e.g. func(std::string)
 # versus func(std::string) {}). This also make the inheritance and collaboration
 # diagrams that involve STL classes more complete and accurate.
 # The default value is: NO.
@@ -979,7 +979,7 @@ IMAGE_PATH             = related_pages/images
 # program writes to standard output. If FILTER_PATTERNS is specified, this tag
 # will be ignored.
 #
-# Note that the filter must not add or remove lines; it is applied before the
+# Note that the filter must not add or remove lines it is applied before the
 # code is scanned, but not when the output code is generated. If lines are added
 # or removed, the anchors will not be placed correctly.
 #
@@ -1251,7 +1251,7 @@ HTML_EXTRA_STYLESHEET  =
 # that these files will be copied to the base HTML output directory. Use the
 # $relpath^ marker in the HTML_HEADER and/or HTML_FOOTER files to load these
 # files. In the HTML_STYLESHEET file, use the file name only. Also note that the
-# files will be copied as-is; there are no commands or markers available.
+# files will be copied as-is there are no commands or markers available.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
 HTML_EXTRA_FILES       =
@@ -1315,7 +1315,7 @@ HTML_DYNAMIC_MENUS     = YES
 HTML_DYNAMIC_SECTIONS  = NO
 
 # With HTML_INDEX_NUM_ENTRIES one can control the preferred number of entries
-# shown in the various tree structured indices initially; the user can expand
+# shown in the various tree structured indices initially the user can expand
 # and collapse entries dynamically later on. Doxygen will expand the tree to
 # such a level that at most the specified number of entries are visible (unless
 # a fully collapsed tree already exceeds this amount). So setting the number of
@@ -1663,7 +1663,7 @@ MATHJAX_CODEFILE       =
 # there is already a search function so this one should typically be disabled.
 # For large projects the javascript based search engine can be slow, then
 # enabling SERVER_BASED_SEARCH may provide a better solution. It is possible to
-# search using the keyboard; to jump to the search box use <access key> + S
+# search using the keyboard to jump to the search box use <access key> + S
 # (what the <access key> is depends on the OS and browser, but it is typically
 # <CTRL>, <ALT>/<option>, or both). Inside the search box use the <cursor down
 # key> to jump into the search results window, the results can be navigated
@@ -1862,7 +1862,7 @@ LATEX_EXTRA_STYLESHEET =
 
 # The LATEX_EXTRA_FILES tag can be used to specify one or more extra images or
 # other source files which should be copied to the LATEX_OUTPUT output
-# directory. Note that the files will be copied as-is; there are no commands or
+# directory. Note that the files will be copied as-is there are no commands or
 # markers available.
 # This tag requires that the tag GENERATE_LATEX is set to YES.
 
