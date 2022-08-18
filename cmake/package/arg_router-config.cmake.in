@@ -1,0 +1,4 @@
+### Copyright (C) 2022 by Camden Mannett.  All rights reserved.
+
+@PACKAGE_INIT@
+set(arg_router_INCLUDE_DIRS "@PACKAGE_INSTALL_BASE_DIR@")

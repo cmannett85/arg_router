@@ -1,0 +1,10 @@
+{
+  "name": "package-test-project",
+  "version-string": "0.0.1",
+  "dependencies": [
+    "boost-lexical-cast",
+    "boost-mp11",
+    "boost-preprocessor",
+    "span-lite"
+  ]
+}

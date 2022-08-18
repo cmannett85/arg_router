@@ -10,6 +10,7 @@ docs/README_API.md
 
 # IDE cruft
 build/
+out/
 *.creator.user
 *.txt.user
 .vscode/
