@@ -68,7 +68,6 @@ path_prefixer(TEST_SRCS
 # Format just the unit test files
 create_clangformat_target(
     NAME clangformat_test
-    DEPENDS clangformat
     SOURCES ${TEST_HEADERS} ${TEST_SRCS}
 )
 

@@ -12,7 +12,7 @@ namespace arg_router
 {
 /** Project version as a SymVers-style string.
  */
-constexpr auto project_version = "${PROJECT_VERSION}";
+constexpr auto project_version = "${CMAKE_PROJECT_VERSION}";
 
 /** Git revision.
  */
@@ -20,5 +20,5 @@ constexpr auto git_revision = "${GIT_REV}";
 
 /** Full version string.
  */
-constexpr auto version_string = "${PROJECT_VERSION}.${GIT_REV}";
+constexpr auto version_string = "${CMAKE_PROJECT_VERSION}.${GIT_REV}";
 }

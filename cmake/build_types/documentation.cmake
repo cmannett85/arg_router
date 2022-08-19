@@ -39,7 +39,6 @@ else()
         SOURCES ${DOCS_FOR_IDE}
     )
 endif()
-add_dependencies(documentation copyright_checker gen_version)
 
 # We have touch the generated API readme because CPack configuration will fail if it is not there.
 # set_source_files_properties cannot be used in a script so that's set here too

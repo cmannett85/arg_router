@@ -11,6 +11,7 @@ find_program(
         /Applications/Utilities/Doxygen.app/Contents/Resources
         /Applications/Utilities/Doxygen.app/Contents/MacOS
     DOC "Doxygen documentation generation tool (http://www.doxygen.org)"
+    REQUIRED
 )
 
 set(API_MD_PATH     "${ROOT}/README.md")
@@ -36,8 +37,9 @@ execute_process(
     COMMAND           "${DOXYGEN_EXECUTABLE}" "${ROOT}/docs/Doxyfile"
     WORKING_DIRECTORY "${ROOT}/docs"
     RESULT_VARIABLE   DOXYGEN_RESULT
+    ERROR_VARIABLE    DOXY_ERROR_STRING
 )
 
-if(NOT ${DOXYGEN_RESULT} STREQUAL "0")
-    message(FATAL_ERROR "Doxygen generation failed")
+if(NOT ${DOXYGEN_RESULT} EQUAL 0)
+    message(FATAL_ERROR "Doxygen generation failed: ${DOXY_ERROR_STRING}")
 endif()
