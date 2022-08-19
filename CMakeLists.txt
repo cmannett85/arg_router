@@ -1,36 +1,41 @@
-### Copyright (C) 2022 by Camden Mannett.  All rights reserved. 
+### Copyright (C) 2022 by Camden Mannett.  All rights reserved.
 
 cmake_minimum_required(VERSION 3.18)
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
-include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/path_prefixer.cmake")
-include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/copyright_checker.cmake")
-include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/versioning/version.cmake")
-include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.cmake")
-include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/documentation.cmake")
+include(CMakeDependentOption)
 
 # Options
 option(DOCS_ONLY "Only build the documentation" OFF)
-option(ENABLE_CLANG_TIDY "Enable clang-tidy warnings" OFF)
+cmake_dependent_option(BUILD_UNIT_TESTS_AND_EXAMPLES "Build the unit tests and examples" ON
+                       "NOT DOCS_ONLY" OFF)
+cmake_dependent_option(ENABLE_CLANG_TIDY "Enable clang-tidy warnings" OFF
+                       "NOT DOCS_ONLY" OFF)
+cmake_dependent_option(DISABLE_VCPKG "Disable vcpkg, use system libraries" OFF
+                       "NOT DOCS_ONLY" OFF)
 
 # Use the libraries brought in from vcpkg rather than the system ones
-if(NOT DOCS_ONLY)
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/path_prefixer.cmake")
+if((NOT DOCS_ONLY) AND (NOT DISABLE_VCPKG))
     path_prefixer(CMAKE_TOOLCHAIN_FILE vcpkg/scripts/buildsystems/vcpkg.cmake)
 endif()
-
-include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/clang-tidy.cmake")
 
 project(arg_router
         VERSION 0.1.0
         DESCRIPTION "C++ command line argument parsing and routing"
         HOMEPAGE_URL "https://github.com/cmannett85/arg_router"
         LANGUAGES CXX)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/versioning/version.cmake")
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/copyright_checker.cmake")
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.cmake")
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/documentation.cmake")
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/clang-tidy.cmake")
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/package/install.cmake")
 
 # Only find packages if we're not doing a Docs-only build
 if(NOT DOCS_ONLY)
     include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/ccache.cmake")
-    include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/package/install.cmake")
 
     find_package(span-lite)
     if (NOT span-lite_FOUND)
@@ -39,7 +44,7 @@ if(NOT DOCS_ONLY)
         include_directories(BEFORE SYSTEM ${span-lite_INCLUDE_DIRS})
     endif()
 
-    set(BOOST_VERSION 1.75)
+    set(BOOST_VERSION 1.77)
     find_package(Boost ${BOOST_VERSION} REQUIRED)
     include_directories(BEFORE SYSTEM ${Boost_INCLUDE_DIRS})
 endif()
@@ -117,9 +122,12 @@ path_prefixer(FOR_IDE
     .clang-tidy
     .clangd
     .github/workflows/docs_pusher.yml
+    .github/workflows/merge_checker.yml
     .github/workflows/pr_checker.yml
     .gitignore
     cmake/package/arg_router-config.cmake.in
+    cmake/versioning/version.cmake
+    cmake/versioning/version.hpp.in
     LICENSE
     README.md
     scripts/ci/create_badge_url.sh
@@ -138,22 +146,16 @@ path_prefixer(FOR_IDE
     vcpkg.json
 )
 
-create_copyright_checker_target(
-    NAME copyright_checker
-    SOURCES ${HEADERS} ${FOR_IDE}
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/clang-format.cmake")
+create_clangformat_target(
+    NAME clangformat
+    FORMAT_FILE ${CMAKE_SOURCE_DIR}/.clang-format
+    SOURCES ${HEADERS}
 )
 
-if(NOT DOCS_ONLY)
-    include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/clang-format.cmake")
-    include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/library.cmake")
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/library.cmake")
 
-    create_clangformat_target(
-        NAME clangformat
-        FORMAT_FILE ${CMAKE_SOURCE_DIR}/.clang-format
-        DEPENDS copyright_checker
-        SOURCES ${HEADERS}
-    )
-
+if(BUILD_UNIT_TESTS_AND_EXAMPLES)
     enable_testing()
     add_subdirectory(test)
 

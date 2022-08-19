@@ -2,15 +2,11 @@
 
 find_package (Python3 REQUIRED COMPONENTS Interpreter)
 
-# Creates a copyright_checker target
-function(create_copyright_checker_target)
-    cmake_parse_arguments(ARGS "" "NAME" "SOURCES" ${ARGN})
-
-    add_custom_target(${ARGS_NAME}
-        COMMAND "${Python3_EXECUTABLE}"
-            "${CMAKE_CURRENT_SOURCE_DIR}/scripts/copyright_checker.py"
-            presence
-            "${CMAKE_CURRENT_SOURCE_DIR}"
-        SOURCES ${ARGS_SOURCES}
-    )
-endfunction()
+execute_process(COMMAND "${Python3_EXECUTABLE}"
+                "${CMAKE_SOURCE_DIR}/scripts/copyright_checker.py"
+                presence
+                "${CMAKE_SOURCE_DIR}"
+                RESULT_VARIABLE COPYRIGHT_PASS)
+if (NOT COPYRIGHT_PASS EQUAL 0)
+    message(FATAL_ERROR "Copyright check failure")
+endif()

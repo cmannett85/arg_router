@@ -5,16 +5,10 @@ message(STATUS "Found clang-format at ${CLANG_FORMAT}")
 
 # Creates a clang-format target
 function(create_clangformat_target)
-    set(single_value_args NAME)
-    set(multi_value_args SOURCES DEPENDS)
-    cmake_parse_arguments(ARGS "" "${single_value_args}" "${multi_value_args}" ${ARGN})
+    cmake_parse_arguments(ARGS "" "NAME" "SOURCES" ${ARGN})
 
     add_custom_target(${ARGS_NAME}
         COMMAND "${CLANG_FORMAT}" --style=file --Werror -i ${ARGS_SOURCES}
         SOURCES "${CMAKE_SOURCE_DIR}/.clang-format" ${ARGS_SOURCES}
     )
-
-    if(DEFINED ARGS_DEPENDS)
-        add_dependencies(${ARGS_NAME} ${ARGS_DEPENDS})
-    endif()
 endfunction()

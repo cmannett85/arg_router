@@ -1,9 +1,9 @@
-# This workflow runs a barrage of tests in order to validate a PR
+# This workflow runs a barrage of tests in order to validate a PR into the develop branch
 name: Pull Request Checker
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ develop ]
 
 env:
   SKIP_COVERAGE_UPDATE: 0
@@ -91,6 +91,7 @@ jobs:
         cd ${{ env.INSTALL_DIR }}
         [[ -f "./include/arg_router/version.hpp" ]]
         [[ -f "./include/arg_router/README.md" ]]
+        [[ -f "./include/arg_router/LICENSE" ]]
         [[ -f "./include/arg_router/arg_router-config.cmake" ]]
         [[ -f "./include/arg_router/arg_router-config-version.cmake" ]]
 
@@ -113,52 +114,6 @@ jobs:
       with:
         commit_message: Updating README.md unit test coverage badge
         file_pattern: README.md scripts/ci/old_coverage
-
-  # Run the unit tests on other platforms/compilers, can't do this in one big
-  # matrix as the invocations are different between the platforms
-  old_gcc_test:
-    runs-on: ubuntu-22.04
-    needs: purge_old_packages
-
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        submodules: true
-
-    - name: Update packages
-      run: |
-        sudo apt update
-        sudo apt install mono-complete
-
-    - name: Bootstrap vcpkg to build the NuGet client
-      run: |
-        ./vcpkg/bootstrap-vcpkg.sh -disableMetrics
-
-    - name: Configure NuGet client
-      run: |
-        mono `./vcpkg/vcpkg fetch nuget | tail -n 1` \
-          sources add \
-          -source ${{ env.NUGET_SOURCE_URL }} \
-          -storepasswordincleartext \
-          -name "vcpkg-cache" \
-          -username "cmannett85" \
-          -password "${{ secrets.GITHUB_TOKEN }}"
-        mono `./vcpkg/vcpkg fetch nuget | tail -n 1` \
-          setapikey "${{ secrets.GITHUB_TOKEN }}" \
-          -source ${{ env.NUGET_SOURCE_URL }}
-
-    - name: Build
-      uses: lukka/run-cmake@v3
-      with:
-        cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
-        cmakeAppendedArgs: -DCMAKE_CXX_COMPILER=g++-9
-        buildDirectory: ${{ env.BUILD_DIR }}
-        buildWithCMakeArgs: --target arg_router_test
-
-    - name: Run unit tests
-      run: |
-        cd ${{ env.BUILD_DIR }}/test
-        ./arg_router_test -l test_suite
  
   windows_compiler_tests:
     runs-on: windows-2022
@@ -204,6 +159,7 @@ jobs:
         cd ${{ env.INSTALL_DIR }}
         Test-Path -Path "${{ env.INSTALL_DIR }}/include/arg_router/version.hpp" -PathType Leaf
         Test-Path -Path "${{ env.INSTALL_DIR }}/include/arg_router/README.md" -PathType Leaf
+        Test-Path -Path "${{ env.INSTALL_DIR }}/include/arg_router/LICENSE" -PathType Leaf
         Test-Path -Path "${{ env.INSTALL_DIR }}/include/arg_router/arg_router-config.cmake" -PathType Leaf
         Test-Path -Path "${{ env.INSTALL_DIR }}/include/arg_router/arg_router-config-version.cmake" -PathType Leaf
 
@@ -214,66 +170,6 @@ jobs:
         cd ${{ env.PACKAGE_BUILD_DIR }}
         & "${{ env.CMAKE_EXE }}" -G "Visual Studio 17 2022" -A x64 -T "ClangCl" -DVCPKG_TARGET_TRIPLET:STRING="x64-windows-static" -DCMAKE_CXX_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe" -DCMAKE_C_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe" -DCMAKE_RC_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/llvm-rc.exe" -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}/include ..
         & "${{ env.CMAKE_EXE }}" --build . -- /v:n
-
-  macos_compiler_tests:
-    runs-on: macos-12
-    needs: purge_old_packages
-
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        submodules: true
-
-    - name: Update packages
-      run: |
-        brew install clang-format
-
-    - name: Bootstrap vcpkg to build the NuGet client
-      run: |
-        ./vcpkg/bootstrap-vcpkg.sh -disableMetrics
-
-    - name: Configure NuGet client
-      run: |
-        mono `./vcpkg/vcpkg fetch nuget | tail -n 1` \
-          sources add \
-          -source ${{ env.NUGET_SOURCE_URL }} \
-          -storepasswordincleartext \
-          -name "vcpkg-cache" \
-          -username "cmannett85" \
-          -password "${{ secrets.GITHUB_TOKEN }}"
-        mono `./vcpkg/vcpkg fetch nuget | tail -n 1` \
-          setapikey "${{ secrets.GITHUB_TOKEN }}" \
-          -source ${{ env.NUGET_SOURCE_URL }}
-
-    - name: Build
-      uses: lukka/run-cmake@v3
-      with:
-        cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
-        buildDirectory: ${{ env.BUILD_DIR }}
-        buildWithCMakeArgs: --target arg_router_test
-
-    - name: Run unit tests
-      run: |
-        cd ${{ env.BUILD_DIR }}/test
-        ./arg_router_test -l test_suite
-
-    - name: Test install
-      run: |
-        cd ${{ env.BUILD_DIR }}
-        cmake --install . --prefix ${{ env.INSTALL_DIR }}
-        cd ${{ env.INSTALL_DIR }}
-        [[ -f "./include/arg_router/version.hpp" ]]
-        [[ -f "./include/arg_router/README.md" ]]
-        [[ -f "./include/arg_router/arg_router-config.cmake" ]]
-        [[ -f "./include/arg_router/arg_router-config-version.cmake" ]]
-
-    - name: Test CMake package integrity
-      uses: lukka/run-cmake@v3
-      with:
-        cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
-        cmakeListsTxtPath: ${{ github.workspace }}/scripts/ci/package_test_project/CMakeLists.txt
-        cmakeAppendedArgs: -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}/include
-        buildDirectory: ${{ env.PACKAGE_BUILD_DIR }}
 
   # Makes sure there are no errors when generating the documentation
   documentation:
