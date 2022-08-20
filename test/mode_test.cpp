@@ -1109,12 +1109,10 @@ BOOST_AUTO_TEST_CASE(multi_stage_validated_alias_group_test)
         });
 }
 
-BOOST_AUTO_TEST_SUITE(death_suite)
-
-BOOST_AUTO_TEST_CASE(no_children_test)
+BOOST_AUTO_TEST_CASE(death_test)
 {
     test::death_test_compile(
-        R"(
+        {{R"(
 #include "arg_router/mode.hpp"
 
 using namespace arg_router;
@@ -1124,13 +1122,10 @@ int main() {
     return 0;
 }
     )",
-        "Mode must have at least one child node");
-}
-
-BOOST_AUTO_TEST_CASE(anonymous_modes_must_have_routing_test)
-{
-    test::death_test_compile(
-        R"(
+          "Mode must have at least one child node",
+          "no_children_test"},
+         {
+             R"(
 #include "arg_router/flag.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/long_name.hpp"
@@ -1147,13 +1142,10 @@ int main() {
     return 0;
 }
     )",
-        "Anonymous modes must have routing");
-}
-
-BOOST_AUTO_TEST_CASE(must_not_have_a_long_name_test)
-{
-    test::death_test_compile(
-        R"(
+             "Anonymous modes must have routing",
+             "anonymous_modes_must_have_routing_test"},
+         {
+             R"(
 #include "arg_router/flag.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/long_name.hpp"
@@ -1167,13 +1159,10 @@ int main() {
     return 0;
 }
     )",
-        "Mode must not have a long name policy");
-}
-
-BOOST_AUTO_TEST_CASE(must_not_have_a_short_name_test)
-{
-    test::death_test_compile(
-        R"(
+             "Mode must not have a long name policy",
+             "must_not_have_a_long_name_test"},
+         {
+             R"(
 #include "arg_router/flag.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/long_name.hpp"
@@ -1188,13 +1177,10 @@ int main() {
     return 0;
 }
     )",
-        "Mode must not have a short name policy");
-}
-
-BOOST_AUTO_TEST_CASE(must_not_have_a_display_name_test)
-{
-    test::death_test_compile(
-        R"(
+             "Mode must not have a short name policy",
+             "must_not_have_a_short_name_test"},
+         {
+             R"(
 #include "arg_router/flag.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/display_name.hpp"
@@ -1209,13 +1195,10 @@ int main() {
     return 0;
 }
     )",
-        "Mode must not have a display name policy");
-}
-
-BOOST_AUTO_TEST_CASE(anonymous_child_mode_test)
-{
-    test::death_test_compile(
-        R"(
+             "Mode must not have a display name policy",
+             "must_not_have_a_display_name_test"},
+         {
+             R"(
 #include "arg_router/flag.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/long_name.hpp"
@@ -1266,13 +1249,10 @@ int main() {
     return 0;
 }
     )",
-        "Anonymous modes can only exist under the root");
-}
-
-BOOST_AUTO_TEST_CASE(anonymous_mode_cannot_have_a_child_mode_test)
-{
-    test::death_test_compile(
-        R"(
+             "Anonymous modes can only exist under the root",
+             "anonymous_child_mode_test"},
+         {
+             R"(
 #include "arg_router/flag.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/long_name.hpp"
@@ -1289,13 +1269,10 @@ int main() {
     return 0;
 }
     )",
-        "Anonymous mode cannot have a child mode");
-}
-
-BOOST_AUTO_TEST_CASE(mode_has_router_or_all_children_are_modes_test)
-{
-    test::death_test_compile(
-        R"(
+             "Anonymous mode cannot have a child mode",
+             "anonymous_mode_cannot_have_a_child_mode_test"},
+         {
+             R"(
 #include "arg_router/flag.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/long_name.hpp"
@@ -1349,13 +1326,10 @@ int main() {
     return 0;
 }
     )",
-        "Mode must have a router or all its children are modes");
-}
-
-BOOST_AUTO_TEST_CASE(non_mode_children_cannot_have_children_test)
-{
-    test::death_test_compile(
-        R"(
+             "Mode must have a router or all its children are modes",
+             "mode_has_router_or_all_children_are_modes_test"},
+         {
+             R"(
 #include "arg_router/flag.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/long_name.hpp"
@@ -1371,13 +1345,10 @@ int main() {
     return 0;
 }
     )",
-        "Non-mode children cannot have routing");
-}
-
-BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
-{
-    test::death_test_compile(
-        R"(
+             "Non-mode children cannot have routing",
+             "non_mode_children_cannot_have_children_test"},
+         {
+             R"(
 #include "arg_router/flag.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/alias.hpp"
@@ -1392,14 +1363,11 @@ int main() {
     return 0;
 }
     )",
-        "Mode does not support policies with pre-parse, parse, validation, "
-        "or missing phases; as it delegates those to its children");
-}
-
-BOOST_AUTO_TEST_CASE(parse_phase_test)
-{
-    test::death_test_compile(
-        R"(
+             "Mode does not support policies with pre-parse, parse, validation, "
+             "or missing phases; as it delegates those to its children",
+             "pre_parse_phase_test"},
+         {
+             R"(
 #include "arg_router/flag.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/custom_parser.hpp"
@@ -1414,14 +1382,11 @@ int main() {
     return 0;
 }
     )",
-        "Mode does not support policies with pre-parse, parse, validation, "
-        "or missing phases; as it delegates those to its children");
-}
-
-BOOST_AUTO_TEST_CASE(validation_phase_test)
-{
-    test::death_test_compile(
-        R"(
+             "Mode does not support policies with pre-parse, parse, validation, "
+             "or missing phases; as it delegates those to its children",
+             "parse_phase_test"},
+         {
+             R"(
 #include "arg_router/flag.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/long_name.hpp"
@@ -1436,14 +1401,11 @@ int main() {
     return 0;
 }
     )",
-        "Mode does not support policies with pre-parse, parse, validation, "
-        "or missing phases; as it delegates those to its children");
-}
-
-BOOST_AUTO_TEST_CASE(missing_phase_test)
-{
-    test::death_test_compile(
-        R"(
+             "Mode does not support policies with pre-parse, parse, validation, "
+             "or missing phases; as it delegates those to its children",
+             "validation_phase_test"},
+         {
+             R"(
 #include "arg_router/flag.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/long_name.hpp"
@@ -1458,14 +1420,11 @@ int main() {
     return 0;
 }
     )",
-        "Mode does not support policies with pre-parse, parse, validation, "
-        "or missing phases; as it delegates those to its children");
-}
-
-BOOST_AUTO_TEST_CASE(no_parent_parse_target_test)
-{
-    test::death_test_compile(
-        R"(
+             "Mode does not support policies with pre-parse, parse, validation, "
+             "or missing phases; as it delegates those to its children",
+             "missing_phase_test"},
+         {
+             R"(
 #include "arg_router/flag.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/long_name.hpp"
@@ -1486,9 +1445,8 @@ int main() {
     return 0;
 }
     )",
-        "Modes cannot receive pre_parse_data containing parent parse_targets");
+             "Modes cannot receive pre_parse_data containing parent parse_targets",
+             "no_parent_parse_target_test"}});
 }
-
-BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

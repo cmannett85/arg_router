@@ -3,25 +3,30 @@
 path_prefixer(DEATH_TEST_DIR
     death_test
 )
-
-set(DEATH_TEST_SRC
-    "${DEATH_TEST_DIR}/main.cpp"
-)
-
-# Make the death_test main stub to appease CMake, it'll get destroyed on first
-# use.
 file(MAKE_DIRECTORY ${DEATH_TEST_DIR})
-file(TOUCH ${DEATH_TEST_SRC})
 
-add_executable(arg_router_death_test EXCLUDE_FROM_ALL ${DEATH_TEST_SRC})
-add_dependencies(arg_router_death_test arg_router)
+function(create_death_test NUM)
+    # Make the death_test main stub to appease CMake, it'll get destroyed on first use
+    set(DEATH_TEST_SRC
+        "${DEATH_TEST_DIR}/main_${NUM}.cpp"
+    )
+    file(TOUCH ${DEATH_TEST_SRC})
 
-target_compile_features(arg_router_death_test PUBLIC cxx_std_17)
-set_target_properties(arg_router_death_test PROPERTIES CXX_EXTENSIONS OFF)
+    set(TARGET_NAME "arg_router_death_test_${NUM}")
+    add_executable(${TARGET_NAME} EXCLUDE_FROM_ALL ${DEATH_TEST_SRC})
 
-configure_test_build(arg_router_death_test)
+    target_compile_features(${TARGET_NAME} PUBLIC cxx_std_17)
+    set_target_properties(${TARGET_NAME} PROPERTIES CXX_EXTENSIONS OFF)
 
-target_include_directories(arg_router_death_test
-    PUBLIC "${CMAKE_SOURCE_DIR}/include"
-    PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}"
-)
+    configure_test_build(${TARGET_NAME})
+
+    target_include_directories(${TARGET_NAME}
+        PUBLIC "${CMAKE_SOURCE_DIR}/include"
+        PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}"
+    )
+endfunction()
+
+math(EXPR STOP_INDEX "${DEATH_TEST_PARALLEL}-1")
+foreach(NUM RANGE ${STOP_INDEX})
+    create_death_test(${NUM})
+endforeach()

@@ -115,12 +115,9 @@ BOOST_AUTO_TEST_CASE(help_test)
         });
 }
 
-BOOST_AUTO_TEST_SUITE(death_suite)
-
-BOOST_AUTO_TEST_CASE(only_policies_test)
+BOOST_AUTO_TEST_CASE(death_test)
 {
-    test::death_test_compile(
-        R"(
+    test::death_test_compile({{R"(
 #include "arg_router/flag.hpp"
 #include "arg_router/policy/display_name.hpp"
 #include "arg_router/policy/short_name.hpp"
@@ -137,13 +134,10 @@ int main() {
     return 0;
 }
     )",
-        "Positional args must only contain policies (not other nodes)");
-}
-
-BOOST_AUTO_TEST_CASE(push_back_test)
-{
-    test::death_test_compile(
-        R"(
+                               "Positional args must only contain policies (not other nodes)",
+                               "only_policies_test"},
+                              {
+                                  R"(
 #include "arg_router/policy/display_name.hpp"
 #include "arg_router/positional_arg.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
@@ -155,13 +149,10 @@ int main() {
     return 0;
 }
     )",
-        "value_type must have a push_back() method");
-}
-
-BOOST_AUTO_TEST_CASE(must_have_a_display_name_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "value_type must have a push_back() method",
+                                  "push_back_test"},
+                              {
+                                  R"(
 #include "arg_router/positional_arg.hpp"
 
 using namespace arg_router;
@@ -171,13 +162,10 @@ int main() {
     return 0;
 }
     )",
-        "Positional arg must have a display name policy");
-}
-
-BOOST_AUTO_TEST_CASE(must_not_have_a_long_name_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "Positional arg must have a display name policy",
+                                  "must_have_a_display_name_test"},
+                              {
+                                  R"(
 #include "arg_router/policy/display_name.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/positional_arg.hpp"
@@ -191,13 +179,10 @@ int main() {
     return 0;
 }
     )",
-        "Positional arg must not have a long name policy");
-}
-
-BOOST_AUTO_TEST_CASE(must_not_have_a_short_name_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "Positional arg must not have a long name policy",
+                                  "must_not_have_a_long_name_test"},
+                              {
+                                  R"(
 #include "arg_router/policy/display_name.hpp"
 #include "arg_router/policy/short_name.hpp"
 #include "arg_router/positional_arg.hpp"
@@ -211,13 +196,10 @@ int main() {
     return 0;
 }
     )",
-        "Positional arg must not have a short name policy");
-}
-
-BOOST_AUTO_TEST_CASE(must_not_have_a_none_name_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "Positional arg must not have a short name policy",
+                                  "must_not_have_a_short_name_test"},
+                              {
+                                  R"(
 #include "arg_router/policy/display_name.hpp"
 #include "arg_router/policy/none_name.hpp"
 #include "arg_router/positional_arg.hpp"
@@ -231,13 +213,10 @@ int main() {
     return 0;
 }
     )",
-        "Positional arg must not have a none name policy");
-}
-
-BOOST_AUTO_TEST_CASE(min_count_greater_than_max_count_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "Positional arg must not have a none name policy",
+                                  "must_not_have_a_none_name_test"},
+                              {
+                                  R"(
 #include "arg_router/policy/display_name.hpp"
 #include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/positional_arg.hpp"
@@ -251,13 +230,10 @@ int main() {
     return 0;
 }
     )",
-        "MinType must be less than or equal to MaxType");
-}
-
-BOOST_AUTO_TEST_CASE(cannot_have_fixed_count_of_zero_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "MinType must be less than or equal to MaxType",
+                                  "min_count_greater_than_max_count_test"},
+                              {
+                                  R"(
 #include "arg_router/policy/display_name.hpp"
 #include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/positional_arg.hpp"
@@ -271,13 +247,10 @@ int main() {
     return 0;
 }
     )",
-        "Cannot have a fixed count of zero");
-}
-
-BOOST_AUTO_TEST_CASE(routing_phase_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "Cannot have a fixed count of zero",
+                                  "cannot_have_fixed_count_of_zero_test"},
+                              {
+                                  R"(
 #include "arg_router/policy/display_name.hpp"
 #include "arg_router/policy/router.hpp"
 #include "arg_router/positional_arg.hpp"
@@ -291,10 +264,9 @@ int main() {
     return 0;
 }
     )",
-        "Positional arg does not support policies with routing phases "
-        "(e.g. router)");
+                                  "Positional arg does not support policies with routing phases "
+                                  "(e.g. router)",
+                                  "routing_phase_test"}});
 }
-
-BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

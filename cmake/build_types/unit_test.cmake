@@ -78,6 +78,8 @@ target_compile_features(arg_router_test PUBLIC cxx_std_17)
 set_target_properties(arg_router_test PROPERTIES CXX_EXTENSIONS OFF)
 target_compile_definitions(arg_router_test PRIVATE UNIT_TEST_BUILD)
 
+set(DEATH_TEST_PARALLEL 8 CACHE STRING "Maximum number of parallel death tests to perform per suite")
+
 function(configure_test_build TARGET)
     # Clang can run in different command line argument modes to mimic gcc or cl.exe,
     # so we have to test for a 'frontent variant' too
@@ -93,7 +95,10 @@ function(configure_test_build TARGET)
         set(EXTRA_DEFINES "")
     endif()
     target_compile_options(${TARGET} PRIVATE ${EXTRA_FLAGS})
-    target_compile_definitions(${TARGET} PRIVATE ${EXTRA_DEFINES})
+    target_compile_definitions(${TARGET} PRIVATE
+        ${EXTRA_DEFINES}
+        AR_DEATH_TEST_PARALLEL=${DEATH_TEST_PARALLEL}
+    )
 endfunction()
 
 configure_test_build(arg_router_test)

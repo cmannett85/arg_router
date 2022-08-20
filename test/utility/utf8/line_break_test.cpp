@@ -1576,54 +1576,42 @@ BOOST_AUTO_TEST_CASE(LB30b_test)
         });
 }
 
-BOOST_AUTO_TEST_SUITE(death_suite)
-
-BOOST_AUTO_TEST_CASE(LB_1_element_trailing_window_tests)
+BOOST_AUTO_TEST_CASE(line_break_death_test)
 {
-    auto f = [](auto test_name) {
-        test::death_test_compile("#include \"arg_router/utility/utf8/line_break.hpp\"\n"
-                                 "using namespace arg_router;"
-                                 "int main() {"
-                                 "const auto no_break = utility::utf8::no_break_rules::"s +
-                                     test_name +
-                                     "("
-                                     "std::array<utility::utf8::line_break_class, 0>{},"
-                                     "utility::utf8::line_break_class::AL);"
-                                     "return 0;"
-                                     "}",
-                                 "Trailing window must be at least 1 element");
-    };
+    auto tests = std::forward_list<test::death_test_info>{};
+    for (auto test : {"LB8a_9", "LB11", "LB12",  "LB12a", "LB14",  "LB15", "LB16", "LB17",
+                      "LB19",   "LB21", "LB21b", "LB23",  "LB23a", "LB24", "LB25", "LB26",
+                      "LB27",   "LB28", "LB29",  "LB30",  "LB30a", "LB30b"}) {
+        tests.push_front({"#include \"arg_router/utility/utf8/line_break.hpp\"\n"
+                          "using namespace arg_router;"
+                          "int main() {"
+                          "const auto no_break = utility::utf8::no_break_rules::"s +
+                              test +
+                              "("
+                              "std::array<utility::utf8::line_break_class, 0>{},"
+                              "utility::utf8::line_break_class::AL);"
+                              "return 0;"
+                              "}",
+                          "Trailing window must be at least 1 element",
+                          test});
+    }
+    for (auto test : {"LB21a"}) {
+        tests.push_front({"#include \"arg_router/utility/utf8/line_break.hpp\"\n"
+                          "using namespace arg_router;"
+                          "int main() {"
+                          "const auto no_break = utility::utf8::no_break_rules::"s +
+                              test +
+                              "("
+                              "std::array<utility::utf8::line_break_class, 1>{},"
+                              "utility::utf8::line_break_class::AL);"
+                              "return 0;"
+                              "}",
+                          "Trailing window must be at least 2 elements",
+                          test});
+    }
 
-    test::data_set(
-        f,
-        {std::tuple{"LB8a_9"}, std::tuple{"LB11"}, std::tuple{"LB12"},  std::tuple{"LB12a"},
-         std::tuple{"LB14"},   std::tuple{"LB15"}, std::tuple{"LB16"},  std::tuple{"LB17"},
-         std::tuple{"LB19"},   std::tuple{"LB21"}, std::tuple{"LB21b"}, std::tuple{"LB23"},
-         std::tuple{"LB23a"},  std::tuple{"LB24"}, std::tuple{"LB25"},  std::tuple{"LB26"},
-         std::tuple{"LB27"},   std::tuple{"LB28"}, std::tuple{"LB29"},  std::tuple{"LB30"},
-         std::tuple{"LB30a"},  std::tuple{"LB30b"}});
+    test::death_test_compile(std::move(tests));
 }
-
-BOOST_AUTO_TEST_CASE(LB_2_element_trailing_window_tests)
-{
-    auto f = [](auto test_name) {
-        test::death_test_compile("#include \"arg_router/utility/utf8/line_break.hpp\"\n"
-                                 "using namespace arg_router;"
-                                 "int main() {"
-                                 "const auto no_break = utility::utf8::no_break_rules::"s +
-                                     test_name +
-                                     "("
-                                     "std::array<utility::utf8::line_break_class, 1>{},"
-                                     "utility::utf8::line_break_class::AL);"
-                                     "return 0;"
-                                     "}",
-                                 "Trailing window must be at least 2 elements");
-    };
-
-    test::data_set(f, {std::tuple{"LB21a"}});
-}
-
-BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
 

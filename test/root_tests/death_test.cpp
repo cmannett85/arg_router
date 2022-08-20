@@ -6,12 +6,9 @@ using namespace arg_router;
 
 BOOST_AUTO_TEST_SUITE(root_suite)
 
-BOOST_AUTO_TEST_SUITE(death_suite)
-
-BOOST_AUTO_TEST_CASE(must_have_validator_policy_test)
+BOOST_AUTO_TEST_CASE(death_test)
 {
-    test::death_test_compile(
-        R"(
+    test::death_test_compile({{R"(
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
@@ -24,15 +21,12 @@ int main() {
     return 0;
 }
     )",
-        "Root must have a validator policy, use "
-        "policy::validation::default_validator unless you have created a "
-        "custom one");
-}
-
-BOOST_AUTO_TEST_CASE(must_have_at_least_one_child_test)
-{
-    test::death_test_compile(
-        R"(
+                               "Root must have a validator policy, use "
+                               "policy::validation::default_validator unless you have created a "
+                               "custom one",
+                               "must_have_validator_policy_test"},
+                              {
+                                  R"(
 #include "arg_router/policy/validator.hpp"
 
 using namespace arg_router;
@@ -45,13 +39,10 @@ int main() {
     return 0;
 }
     )",
-        "Root must have at least one child");
-}
-
-BOOST_AUTO_TEST_CASE(single_child_must_have_router_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "Root must have at least one child",
+                                  "must_have_at_least_one_child_test"},
+                              {
+                                  R"(
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
@@ -66,13 +57,10 @@ int main() {
     return 0;
 }
     )",
-        "All root children must have routers, unless they have no value");
-}
-
-BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "All root children must have routers, unless they have no value",
+                                  "single_child_must_have_router_test"},
+                              {
+                                  R"(
 #include "arg_router/flag.hpp"
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/long_name.hpp"
@@ -87,13 +75,10 @@ int main() {
     return 0;
 }
     )",
-        "Root does not support policies with any parsing phases");
-}
-
-BOOST_AUTO_TEST_CASE(parse_phase_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "Root does not support policies with any parsing phases",
+                                  "pre_parse_phase_test"},
+                              {
+                                  R"(
 #include "arg_router/flag.hpp"
 #include "arg_router/policy/custom_parser.hpp"
 #include "arg_router/policy/long_name.hpp"
@@ -108,13 +93,10 @@ int main() {
     return 0;
 }
     )",
-        "Root does not support policies with any parsing phases");
-}
-
-BOOST_AUTO_TEST_CASE(validation_phase_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "Root does not support policies with any parsing phases",
+                                  "parse_phase_test"},
+                              {
+                                  R"(
 #include "arg_router/flag.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_value.hpp"
@@ -129,13 +111,10 @@ int main() {
     return 0;
 }
     )",
-        "Root does not support policies with any parsing phases");
-}
-
-BOOST_AUTO_TEST_CASE(routing_phase_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "Root does not support policies with any parsing phases",
+                                  "validation_phase_test"},
+                              {
+                                  R"(
 #include "arg_router/flag.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/router.hpp"
@@ -150,13 +129,10 @@ int main() {
     return 0;
 }
     )",
-        "Root does not support policies with any parsing phases");
-}
-
-BOOST_AUTO_TEST_CASE(missing_phase_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "Root does not support policies with any parsing phases",
+                                  "routing_phase_test"},
+                              {
+                                  R"(
 #include "arg_router/flag.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/required.hpp"
@@ -171,9 +147,8 @@ int main() {
     return 0;
 }
     )",
-        "Root does not support policies with any parsing phases");
+                                  "Root does not support policies with any parsing phases",
+                                  "missing_phase_test"}});
 }
-
-BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

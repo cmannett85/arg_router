@@ -379,12 +379,9 @@ BOOST_AUTO_TEST_CASE(add_to_rule_types_by_rule_test)
     }
 }
 
-BOOST_AUTO_TEST_SUITE(death_suite)
-
-BOOST_AUTO_TEST_CASE(insert_rule_test)
+BOOST_AUTO_TEST_CASE(death_test)
 {
-    test::death_test_compile(
-        R"(
+    test::death_test_compile({{R"(
 #include "arg_router/policy/validator_rule_utilities.hpp"
 
 using namespace arg_router;
@@ -398,13 +395,10 @@ int main() {
     return 0;
 }
     )",
-        "I must be less than or equal Rules size");
-}
-
-BOOST_AUTO_TEST_CASE(remove_rule_test)
-{
-    test::death_test_compile(
-        R"(
+                               "I must be less than or equal Rules size",
+                               "insert_rule_test"},
+                              {
+                                  R"(
 #include "arg_router/policy/validator_rule_utilities.hpp"
 
 using namespace arg_router;
@@ -417,13 +411,10 @@ int main() {
     return 0;
 }
     )",
-        "I must be less than Rules size");
-}
-
-BOOST_AUTO_TEST_CASE(update_rule_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "I must be less than Rules size",
+                                  "remove_rule_test"},
+                              {
+                                  R"(
 #include "arg_router/policy/validator_rule_utilities.hpp"
 
 using namespace arg_router;
@@ -437,13 +428,10 @@ int main() {
     return 0;
 }
     )",
-        "I must be less than Rules size");
-}
-
-BOOST_AUTO_TEST_CASE(update_rule_by_type_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "I must be less than Rules size",
+                                  "update_rule_test"},
+                              {
+                                  R"(
 #include "arg_router/policy/validator_rule_utilities.hpp"
 
 using namespace arg_router;
@@ -457,13 +445,10 @@ int main() {
     return 0;
 }
     )",
-        "RuleType cannot be found");
-}
-
-BOOST_AUTO_TEST_CASE(add_to_rule_types_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "RuleType cannot be found",
+                                  "update_rule_by_type_test"},
+                              {
+                                  R"(
 #include "arg_router/policy/validator_rule_utilities.hpp"
 
 using namespace arg_router;
@@ -475,13 +460,10 @@ int main() {
     return 0;
 }
     )",
-        "I must be less than Rules size");
-}
-
-BOOST_AUTO_TEST_CASE(add_to_rule_types_by_rule_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "I must be less than Rules size",
+                                  "add_to_rule_types_test"},
+                              {
+                                  R"(
 #include "arg_router/policy/validator_rule_utilities.hpp"
 
 using namespace arg_router;
@@ -495,10 +477,9 @@ int main() {
     return 0;
 }
     )",
-        "RuleType cannot be found");
+                                  "RuleType cannot be found",
+                                  "add_to_rule_types_by_rule_test"}});
 }
-
-BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
 

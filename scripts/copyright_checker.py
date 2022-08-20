@@ -17,7 +17,7 @@ LANGUAGE_COMMENT_ENDS = [('*.sh', '###', '\n'),
                          ('CMakeLists.txt', '###', '\n'),
                          ('*.doxy', '/*', '*/\n')]
 SKIP_PATHS = ['vcpkg' + os.sep,
-              os.path.join('test', 'death_test', 'main.cpp'),
+              'test' + os.sep + 'death_test',
               'build' + os.sep,         # VSCode
               'out' + os.sep,           # Visual Studio
               'install' + os.sep,       # CI

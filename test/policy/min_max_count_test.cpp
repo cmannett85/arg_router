@@ -279,12 +279,9 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_filled_test)
         });
 }
 
-BOOST_AUTO_TEST_SUITE(death_suite)
-
-BOOST_AUTO_TEST_CASE(value_type_test)
+BOOST_AUTO_TEST_CASE(death_test)
 {
-    test::death_test_compile(
-        R"(
+    test::death_test_compile({{R"(
 #include "arg_router/policy/min_max_count.hpp"
 
 struct my_type {};
@@ -294,13 +291,10 @@ int main() {
     return 0;
 }
     )",
-        "MinType and MaxType must have a value_type");
-}
-
-BOOST_AUTO_TEST_CASE(integral_test)
-{
-    test::death_test_compile(
-        R"(
+                               "MinType and MaxType must have a value_type",
+                               "value_type_test"},
+                              {
+                                  R"(
 #include "arg_router/policy/min_max_count.hpp"
 
 struct my_type {
@@ -312,14 +306,11 @@ int main() {
     return 0;
 }
     )",
-        "MinType and MaxType must have a value_type that is implicitly "
-        "convertible to std::size_t");
-}
-
-BOOST_AUTO_TEST_CASE(conversion_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "MinType and MaxType must have a value_type that is implicitly "
+                                  "convertible to std::size_t",
+                                  "integral_test"},
+                              {
+                                  R"(
 #include <string>
 #include "arg_router/policy/min_max_count.hpp"
 
@@ -332,13 +323,10 @@ int main() {
     return 0;
 }
     )",
-        "MinType and MaxType value_types must be integrals");
-}
-
-BOOST_AUTO_TEST_CASE(min_count_positive_value_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "MinType and MaxType value_types must be integrals",
+                                  "conversion_test"},
+                              {
+                                  R"(
 #include "arg_router/policy/min_max_count.hpp"
 
 using namespace arg_router;
@@ -348,13 +336,10 @@ int main() {
     return 0;
 }
     )",
-        "MinType and MaxType must have a value that is a positive number");
-}
-
-BOOST_AUTO_TEST_CASE(max_count_positive_value_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "MinType and MaxType must have a value that is a positive number",
+                                  "min_count_positive_value_test"},
+                              {
+                                  R"(
 #include "arg_router/policy/min_max_count.hpp"
 
 using namespace arg_router;
@@ -364,13 +349,10 @@ int main() {
     return 0;
 }
     )",
-        "MinType and MaxType must have a value that is a positive number");
-}
-
-BOOST_AUTO_TEST_CASE(valid_values_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "MinType and MaxType must have a value that is a positive number",
+                                  "max_count_positive_value_test"},
+                              {
+                                  R"(
 #include "arg_router/policy/min_max_count.hpp"
 
 using namespace arg_router;
@@ -379,13 +361,10 @@ int main() {
     return 0;
 }
     )",
-        "MinType must be less than or equal to MaxType");
-}
-
-BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "MinType must be less than or equal to MaxType",
+                                  "valid_values_test"},
+                              {
+                                  R"(
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/tree_node.hpp"
@@ -435,13 +414,10 @@ int main() {
     return 0;
 }
     )",
-        "At least one parent needed for min_max_count_t");
-}
-
-BOOST_AUTO_TEST_CASE(processed_target_cannot_be_empty_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "At least one parent needed for min_max_count_t",
+                                  "pre_parse_phase_test"},
+                              {
+                                  R"(
 #include "arg_router/policy/display_name.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_count.hpp"
@@ -499,10 +475,9 @@ int main() {
     return 0;
 }
     )",
-        "processed_target cannot be empty");
+                                  "processed_target cannot be empty",
+                                  "processed_target_cannot_be_empty_test"}});
 }
-
-BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
 

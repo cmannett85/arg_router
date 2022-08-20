@@ -222,12 +222,10 @@ BOOST_AUTO_TEST_CASE(help_test)
                    });
 }
 
-BOOST_AUTO_TEST_SUITE(death_suite)
-
-BOOST_AUTO_TEST_CASE(must_have_two_children_test)
+BOOST_AUTO_TEST_CASE(death_test)
 {
     test::death_test_compile(
-        R"(
+        {{R"(
 #include "arg_router/arg.hpp"
 #include "arg_router/dependency/alias_group.hpp"
 #include "arg_router/policy/default_value.hpp"
@@ -243,13 +241,10 @@ int main() {
     return 0;
 }
     )",
-        "basic_one_of_t must have at least one two child nodes");
-}
-
-BOOST_AUTO_TEST_CASE(cannot_have_long_name_test)
-{
-    test::death_test_compile(
-        R"(
+          "basic_one_of_t must have at least one two child nodes",
+          "must_have_two_children_test"},
+         {
+             R"(
 #include "arg_router/arg.hpp"
 #include "arg_router/dependency/alias_group.hpp"
 #include "arg_router/policy/default_value.hpp"
@@ -267,13 +262,10 @@ int main() {
     return 0;
 }
     )",
-        "basic_one_of_t must not have a long name policy");
-}
-
-BOOST_AUTO_TEST_CASE(cannot_have_short_name_test)
-{
-    test::death_test_compile(
-        R"(
+             "basic_one_of_t must not have a long name policy",
+             "cannot_have_long_name_test"},
+         {
+             R"(
 #include "arg_router/arg.hpp"
 #include "arg_router/dependency/alias_group.hpp"
 #include "arg_router/policy/default_value.hpp"
@@ -292,13 +284,10 @@ int main() {
     return 0;
 }
     )",
-        "basic_one_of_t must not have a short name policy");
-}
-
-BOOST_AUTO_TEST_CASE(cannot_have_none_name_test)
-{
-    test::death_test_compile(
-        R"(
+             "basic_one_of_t must not have a short name policy",
+             "cannot_have_short_name_test"},
+         {
+             R"(
 #include "arg_router/arg.hpp"
 #include "arg_router/dependency/alias_group.hpp"
 #include "arg_router/policy/default_value.hpp"
@@ -317,13 +306,10 @@ int main() {
     return 0;
 }
     )",
-        "basic_one_of_t must not have a none name policy");
-}
-
-BOOST_AUTO_TEST_CASE(all_children_must_be_named_test)
-{
-    test::death_test_compile(
-        R"(
+             "basic_one_of_t must not have a none name policy",
+             "cannot_have_none_name_test"},
+         {
+             R"(
 #include "arg_router/arg.hpp"
 #include "arg_router/dependency/alias_group.hpp"
 #include "arg_router/policy/default_value.hpp"
@@ -356,13 +342,10 @@ int main() {
     return 0;
 }
     )",
-        "All children must be named");
-}
-
-BOOST_AUTO_TEST_CASE(at_least_one_value_type_test)
-{
-    test::death_test_compile(
-        R"(
+             "All children must be named",
+             "all_children_must_be_named_test"},
+         {
+             R"(
 #include "arg_router/arg.hpp"
 #include "arg_router/dependency/alias_group.hpp"
 #include "arg_router/policy/alias.hpp"
@@ -382,13 +365,10 @@ int main() {
     return 0;
 }
     )",
-        "basic_one_of_t must have at least one child with a value_type");
-}
-
-BOOST_AUTO_TEST_CASE(missing_missing_phase_test)
-{
-    test::death_test_compile(
-        R"(
+             "basic_one_of_t must have at least one child with a value_type",
+             "at_least_one_value_type_test"},
+         {
+             R"(
 #include "arg_router/arg.hpp"
 #include "arg_router/dependency/alias_group.hpp"
 #include "arg_router/policy/long_name.hpp"
@@ -403,14 +383,11 @@ int main() {
     return 0;
 }
     )",
-        "basic_one_of_t must have a missing phase method, a policy::required "
-        "or policy::default_value are commonly used");
-}
-
-BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
-{
-    test::death_test_compile(
-        R"(
+             "basic_one_of_t must have a missing phase method, a policy::required "
+             "or policy::default_value are commonly used",
+             "missing_missing_phase_test"},
+         {
+             R"(
 #include "arg_router/arg.hpp"
 #include "arg_router/dependency/alias_group.hpp"
 #include "arg_router/policy/alias.hpp"
@@ -430,14 +407,11 @@ int main() {
     return 0;
 }
     )",
-        "basic_one_of_t does not support policies with pre-parse, parse, "
-        "or routing phases; as it delegates those to its children");
-}
-
-BOOST_AUTO_TEST_CASE(parse_phase_test)
-{
-    test::death_test_compile(
-        R"(
+             "basic_one_of_t does not support policies with pre-parse, parse, "
+             "or routing phases; as it delegates those to its children",
+             "pre_parse_phase_test"},
+         {
+             R"(
 #include "arg_router/arg.hpp"
 #include "arg_router/dependency/alias_group.hpp"
 #include "arg_router/policy/custom_parser.hpp"
@@ -458,14 +432,11 @@ int main() {
     return 0;
 }
     )",
-        "basic_one_of_t does not support policies with pre-parse, parse, "
-        "or routing phases; as it delegates those to its children");
-}
-
-BOOST_AUTO_TEST_CASE(router_phase_test)
-{
-    test::death_test_compile(
-        R"(
+             "basic_one_of_t does not support policies with pre-parse, parse, "
+             "or routing phases; as it delegates those to its children",
+             "parse_phase_test"},
+         {
+             R"(
 #include "arg_router/arg.hpp"
 #include "arg_router/dependency/alias_group.hpp"
 #include "arg_router/policy/long_name.hpp"
@@ -485,14 +456,11 @@ int main() {
     return 0;
 }
     )",
-        "basic_one_of_t does not support policies with pre-parse, parse, "
-        "or routing phases; as it delegates those to its children");
-}
-
-BOOST_AUTO_TEST_CASE(must_have_same_value_type_test)
-{
-    test::death_test_compile(
-        R"(
+             "basic_one_of_t does not support policies with pre-parse, parse, "
+             "or routing phases; as it delegates those to its children",
+             "router_phase_test"},
+         {
+             R"(
 #include "arg_router/arg.hpp"
 #include "arg_router/dependency/alias_group.hpp"
 #include "arg_router/policy/default_value.hpp"
@@ -509,14 +477,11 @@ int main() {
     return 0;
 }
     )",
-        "All children of alias_group must have the same value_type, or use "
-        "policy::no_result_value");
-}
-
-BOOST_AUTO_TEST_CASE(multi_stage_validation_children_test)
-{
-    test::death_test_compile(
-        R"(
+             "All children of alias_group must have the same value_type, or use "
+             "policy::no_result_value",
+             "must_have_same_value_type_test"},
+         {
+             R"(
 #include "arg_router/arg.hpp"
 #include "arg_router/counting_flag.hpp"
 #include "arg_router/dependency/alias_group.hpp"
@@ -537,12 +502,11 @@ int main() {
     return 0;
 }
     )",
-        "Multi-stage value supporting alias_group children (e.g. "
-        "counting_flag) cannot have a validation phase as they won't be "
-        "executed, move the implementing policies into the alias_group");
+             "Multi-stage value supporting alias_group children (e.g. "
+             "counting_flag) cannot have a validation phase as they won't be "
+             "executed, move the implementing policies into the alias_group",
+             "multi_stage_validation_children_test"}});
 }
-
-BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
 
