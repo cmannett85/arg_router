@@ -101,12 +101,10 @@ BOOST_AUTO_TEST_CASE(help_test)
         });
 }
 
-BOOST_AUTO_TEST_SUITE(death_suite)
-
-BOOST_AUTO_TEST_CASE(only_policies_test)
+BOOST_AUTO_TEST_CASE(death_test)
 {
-    test::death_test_compile(
-        R"(
+    test::death_test_compile({{
+                                  R"(
 #include "arg_router/arg.hpp"
 #include "arg_router/flag.hpp"
 #include "arg_router/policy/long_name.hpp"
@@ -124,13 +122,10 @@ int main() {
     return 0;
 }
     )",
-        "Args must only contain policies (not other nodes)");
-}
-
-BOOST_AUTO_TEST_CASE(must_be_named_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "Args must only contain policies (not other nodes)",
+                                  "only_policies_test"},
+                              {
+                                  R"(
 #include "arg_router/arg.hpp"
 
 using namespace arg_router;
@@ -140,13 +135,10 @@ int main() {
     return 0;
 }
     )",
-        "Arg must have a long and/or short name policy");
-}
-
-BOOST_AUTO_TEST_CASE(must_not_have_display_name_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "Arg must have a long and/or short name policy",
+                                  "must_be_named_test"},
+                              {
+                                  R"(
 #include "arg_router/arg.hpp"
 #include "arg_router/policy/display_name.hpp"
 #include "arg_router/policy/long_name.hpp"
@@ -160,13 +152,10 @@ int main() {
     return 0;
 }
     )",
-        "Arg must not have a display name policy");
-}
-
-BOOST_AUTO_TEST_CASE(must_not_have_none_name_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "Arg must not have a display name policy",
+                                  "must_not_have_display_name_test"},
+                              {
+                                  R"(
 #include "arg_router/arg.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/none_name.hpp"
@@ -180,9 +169,8 @@ int main() {
     return 0;
 }
     )",
-        "Arg must not have a none name policy");
+                                  "Arg must not have a none name policy",
+                                  "must_not_have_none_name_test"}});
 }
-
-BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

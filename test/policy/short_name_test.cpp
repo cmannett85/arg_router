@@ -25,35 +25,28 @@ BOOST_AUTO_TEST_CASE(constructor_and_get_test)
     BOOST_CHECK_EQUAL(c_4.short_name(), "4");
 }
 
-BOOST_AUTO_TEST_SUITE(death_suite)
-
-BOOST_AUTO_TEST_CASE(short_name_must_be_one_character_test)
+BOOST_AUTO_TEST_CASE(death_test)
 {
-    test::death_test_compile(
-        R"(
+    test::death_test_compile({{R"(
 #include "arg_router/policy/short_name.hpp"
 int main() {
     const auto ln = arg_router::policy::short_name_utf8<S_("")>;
     return 0;
 }
     )",
-        "Short name must only be one character");
-}
-
-BOOST_AUTO_TEST_CASE(short_name_cannot_start_with_argument_prefix_test)
-{
-    test::death_test_compile(
-        R"(
+                               "Short name must only be one character",
+                               "short_name_must_be_one_character_test"},
+                              {
+                                  R"(
 #include "arg_router/policy/short_name.hpp"
 int main() {
     const auto ln = arg_router::policy::short_name<'-'>;
     return 0;
 }
     )",
-        "Short name with short prefix cannot match the long prefix");
+                                  "Short name with short prefix cannot match the long prefix",
+                                  "short_name_cannot_start_with_argument_prefix_test"}});
 }
-
-BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
 

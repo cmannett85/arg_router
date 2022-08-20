@@ -588,12 +588,9 @@ My foo is good for you
         });
 }
 
-BOOST_AUTO_TEST_SUITE(death_suite)
-
-BOOST_AUTO_TEST_CASE(must_not_have_display_name_test)
+BOOST_AUTO_TEST_CASE(death_test)
 {
-    test::death_test_compile(
-        R"(
+    test::death_test_compile({{R"(
 #include "arg_router/help.hpp"
 #include "arg_router/policy/display_name.hpp"
 #include "arg_router/policy/long_name.hpp"
@@ -607,13 +604,10 @@ int main() {
     return 0;
 }
     )",
-        "Help must not have a display name policy");
-}
-
-BOOST_AUTO_TEST_CASE(must_not_have_none_name_test)
-{
-    test::death_test_compile(
-        R"(
+                               "Help must not have a display name policy",
+                               "must_not_have_display_name_test"},
+                              {
+                                  R"(
 #include "arg_router/help.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/none_name.hpp"
@@ -627,13 +621,10 @@ int main() {
     return 0;
 }
     )",
-        "Help must not have a none name policy");
-}
-
-BOOST_AUTO_TEST_CASE(must_not_have_parse_phase_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "Help must not have a none name policy",
+                                  "must_not_have_none_name_test"},
+                              {
+                                  R"(
 #include "arg_router/help.hpp"
 #include "arg_router/policy/custom_parser.hpp"
 #include "arg_router/policy/long_name.hpp"
@@ -647,13 +638,10 @@ int main() {
     return 0;
 }
     )",
-        "Help only supports policies with pre-parse and routing phases");
-}
-
-BOOST_AUTO_TEST_CASE(must_not_have_validation_phase_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "Help only supports policies with pre-parse and routing phases",
+                                  "must_not_have_parse_phase_test"},
+                              {
+                                  R"(
 #include "arg_router/help.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_value.hpp"
@@ -667,13 +655,10 @@ int main() {
     return 0;
 }
     )",
-        "Help only supports policies with pre-parse and routing phases");
-}
-
-BOOST_AUTO_TEST_CASE(must_not_have_missing_phase_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "Help only supports policies with pre-parse and routing phases",
+                                  "must_not_have_validation_phase_test"},
+                              {
+                                  R"(
 #include "arg_router/help.hpp"
 #include "arg_router/policy/default_value.hpp"
 #include "arg_router/policy/long_name.hpp"
@@ -687,13 +672,10 @@ int main() {
     return 0;
 }
     )",
-        "Help only supports policies with pre-parse and routing phases");
-}
-
-BOOST_AUTO_TEST_CASE(generate_help_node_must_have_help_data_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "Help only supports policies with pre-parse and routing phases",
+                                  "must_not_have_missing_phase_test"},
+                              {
+                                  R"(
 #include "arg_router/help.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
@@ -709,13 +691,10 @@ int main() {
     return 0;
 }
     )",
-        "Node must have a help_data_type to generate help from");
-}
-
-BOOST_AUTO_TEST_CASE(parse_must_have_parents_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "Node must have a help_data_type to generate help from",
+                                  "generate_help_node_must_have_help_data_test"},
+                              {
+                                  R"(
 #include "arg_router/help.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
@@ -732,13 +711,10 @@ int main() {
     return 0;
 }
     )",
-        "At least one parent needed for help");
-}
-
-BOOST_AUTO_TEST_CASE(no_tabs_in_description_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "At least one parent needed for help",
+                                  "parse_must_have_parents_test"},
+                              {
+                                  R"(
 #include "arg_router/flag.hpp"
 #include "arg_router/help.hpp"
 #include "arg_router/policy/description.hpp"
@@ -775,9 +751,8 @@ int main() {
     return 0;
 }
     )",
-        "Help descriptions cannot contain tabs");
+                                  "Help descriptions cannot contain tabs",
+                                  "no_tabs_in_description_test"}});
 }
-
-BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

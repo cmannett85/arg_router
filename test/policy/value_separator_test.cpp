@@ -160,38 +160,30 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
         });
 }
 
-BOOST_AUTO_TEST_SUITE(death_suite)
-
-BOOST_AUTO_TEST_CASE(must_be_one_character_test)
+BOOST_AUTO_TEST_CASE(death_test)
 {
     test::death_test_compile(
-        R"(
+        {{R"(
 #include "arg_router/policy/value_separator.hpp"
 int main() {
     const auto ln = arg_router::policy::value_separator_utf8<S_("")>;
     return 0;
 }
     )",
-        "Value separator must only be one character");
-}
-
-BOOST_AUTO_TEST_CASE(whitespace_test)
-{
-    test::death_test_compile(
-        R"(
+          "Value separator must only be one character",
+          "must_be_one_character_test"},
+         {
+             R"(
 #include "arg_router/policy/value_separator.hpp"
 int main() {
     const auto ln = arg_router::policy::value_separator<' '>;
     return 0;
 }
     )",
-        "Value separator character must not be whitespace");
-}
-
-BOOST_AUTO_TEST_CASE(at_least_one_parent_test)
-{
-    test::death_test_compile(
-        R"(
+             "Value separator character must not be whitespace",
+             "whitespace_test"},
+         {
+             R"(
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/value_separator.hpp"
 #include "arg_router/tree_node.hpp"
@@ -240,13 +232,10 @@ int main() {
     return 0;
 }
     )",
-        "At least one parent needed for value_separator_t");
-}
-
-BOOST_AUTO_TEST_CASE(owner_must_have_count_policies_test)
-{
-    test::death_test_compile(
-        R"(
+             "At least one parent needed for value_separator_t",
+             "at_least_one_parent_test"},
+         {
+             R"(
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/value_separator.hpp"
 #include "arg_router/tree_node.hpp"
@@ -296,14 +285,11 @@ int main() {
     return 0;
 }
         )",
-        "Value separator support requires an owning node to have minimum and "
-        "maximum count policies");
-}
-
-BOOST_AUTO_TEST_CASE(owner_must_have_fixed_count_test)
-{
-    test::death_test_compile(
-        R"(
+             "Value separator support requires an owning node to have minimum and "
+             "maximum count policies",
+             "owner_must_have_count_policies_test"},
+         {
+             R"(
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/policy/value_separator.hpp"
@@ -355,14 +341,11 @@ int main() {
     return 0;
 }
     )",
-        "Value separator support requires an owning node to have a fixed count "
-        "of 1");
-}
-
-BOOST_AUTO_TEST_CASE(owner_must_have_fixed_count_of_one_test)
-{
-    test::death_test_compile(
-        R"(
+             "Value separator support requires an owning node to have a fixed count "
+             "of 1",
+             "owner_must_have_fixed_count_test"},
+         {
+             R"(
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/policy/value_separator.hpp"
@@ -414,11 +397,10 @@ int main() {
     return 0;
 }
     )",
-        "Value separator support requires an owning node to have a fixed count "
-        "of 1");
+             "Value separator support requires an owning node to have a fixed count "
+             "of 1",
+             "owner_must_have_fixed_count_of_one_test"}});
 }
-
-BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
 

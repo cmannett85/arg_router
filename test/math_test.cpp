@@ -34,12 +34,9 @@ BOOST_AUTO_TEST_CASE(pow)
     static_assert(math::pow<10>(-3) == 1);
 }
 
-BOOST_AUTO_TEST_SUITE(death_suite)
-
-BOOST_AUTO_TEST_CASE(abs_must_be_integral_test)
+BOOST_AUTO_TEST_CASE(death_test)
 {
-    test::death_test_compile(
-        R"(
+    test::death_test_compile({{R"(
 #include "arg_router/math.hpp"
 
 using namespace arg_router;
@@ -49,13 +46,10 @@ int main() {
     return 0;
 }
     )",
-        "T must be an integral");
-}
-
-BOOST_AUTO_TEST_CASE(num_digits_must_be_integral_test)
-{
-    test::death_test_compile(
-        R"(
+                               "T must be an integral",
+                               "abs_must_be_integral_test"},
+                              {
+                                  R"(
 #include "arg_router/math.hpp"
 
 using namespace arg_router;
@@ -65,13 +59,10 @@ int main() {
     return 0;
 }
     )",
-        "T must be an integral");
-}
-
-BOOST_AUTO_TEST_CASE(pow_must_be_integral_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "T must be an integral",
+                                  "num_digits_must_be_integral_test"},
+                              {
+                                  R"(
 #include "arg_router/math.hpp"
 
 using namespace arg_router;
@@ -81,13 +72,10 @@ int main() {
     return 0;
 }
     )",
-        "T must be an integral");
-}
-
-BOOST_AUTO_TEST_CASE(pow_base_must_be_positive_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "T must be an integral",
+                                  "pow_must_be_integral_test"},
+                              {
+                                  R"(
 #include "arg_router/math.hpp"
 
 using namespace arg_router;
@@ -97,9 +85,8 @@ int main() {
     return 0;
 }
     )",
-        "Base must be greater than zero");
+                                  "Base must be greater than zero",
+                                  "pow_base_must_be_positive_test"}});
 }
-
-BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

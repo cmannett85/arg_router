@@ -190,12 +190,10 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                    });
 }
 
-BOOST_AUTO_TEST_SUITE(death_suite)
-
-BOOST_AUTO_TEST_CASE(zero_depends_test)
+BOOST_AUTO_TEST_CASE(death_test)
 {
     test::death_test_compile(
-        R"(
+        {{R"(
 #include "arg_router/policy/dependent.hpp"
 
 using namespace arg_router;
@@ -205,13 +203,10 @@ int main() {
     return 0;
 }
     )",
-        "At least one name needed for dependent");
-}
-
-BOOST_AUTO_TEST_CASE(all_params_must_be_policies_test)
-{
-    test::death_test_compile(
-        R"(
+          "At least one name needed for dependent",
+          "zero_depends_test"},
+         {
+             R"(
 #include "arg_router/flag.hpp"
 #include "arg_router/policy/dependent.hpp"
 #include "arg_router/policy/long_name.hpp"
@@ -224,13 +219,10 @@ int main() {
     return 0;
 }
     )",
-        "All parameters must be policies");
-}
-
-BOOST_AUTO_TEST_CASE(all_params_must_be_names_test)
-{
-    test::death_test_compile(
-        R"(
+             "All parameters must be policies",
+             "all_params_must_be_policies_test"},
+         {
+             R"(
 #include "arg_router/policy/dependent.hpp"
 #include "arg_router/policy/display_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
@@ -242,13 +234,10 @@ int main() {
     return 0;
 }
     )",
-        "All parameters must provide a long and/or short form name");
-}
-
-BOOST_AUTO_TEST_CASE(cannot_find_parent_node_empty_test)
-{
-    test::death_test_compile(
-        R"(
+             "All parameters must provide a long and/or short form name",
+             "all_params_must_be_names_test"},
+         {
+             R"(
 #include "arg_router/policy/dependent.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
@@ -298,13 +287,10 @@ int main() {
     return 0;
 }
     )",
-        "Cannot find parent mode");
-}
-
-BOOST_AUTO_TEST_CASE(cannot_find_parent_node_missing_test)
-{
-    test::death_test_compile(
-        R"(
+             "Cannot find parent mode",
+             "cannot_find_parent_node_empty_test"},
+         {
+             R"(
 #include "arg_router/policy/dependent.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
@@ -361,13 +347,10 @@ int main() {
     return 0;
 }
     )",
-        "Cannot find parent mode");
-}
-
-BOOST_AUTO_TEST_CASE(processed_target_cannot_be_empty_test)
-{
-    test::death_test_compile(
-        R"(
+             "Cannot find parent mode",
+             "cannot_find_parent_node_missing_test"},
+         {
+             R"(
 #include "arg_router/policy/dependent.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/router.hpp"
@@ -425,13 +408,10 @@ int main() {
     return 0;
 }
     )",
-        "processed_target cannot be empty");
-}
-
-BOOST_AUTO_TEST_CASE(cyclic_dependency_test)
-{
-    test::death_test_compile(
-        R"(
+             "processed_target cannot be empty",
+             "processed_target_cannot_be_empty_test"},
+         {
+             R"(
 #include "arg_router/policy/dependent.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/router.hpp"
@@ -492,13 +472,10 @@ int main() {
     return 0;
 }
     )",
-        "Cyclic dependency detected");
-}
-
-BOOST_AUTO_TEST_CASE(missing_target_test)
-{
-    test::death_test_compile(
-        R"(
+             "Cyclic dependency detected",
+             "cyclic_dependency_test"},
+         {
+             R"(
 #include "arg_router/policy/dependent.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/router.hpp"
@@ -557,13 +534,10 @@ int main() {
     return 0;
 }
     )",
-        "Number of found modes must match depends policy count");
-}
-
-BOOST_AUTO_TEST_CASE(duplicate_targets_test)
-{
-    test::death_test_compile(
-        R"(
+             "Number of found modes must match depends policy count",
+             "missing_target_test"},
+         {
+             R"(
 #include "arg_router/policy/dependent.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/router.hpp"
@@ -623,13 +597,10 @@ int main() {
     return 0;
 }
     )",
-        "Number of found modes must match depends policy count");
-}
-
-BOOST_AUTO_TEST_CASE(duplicate_target_different_name_types_test)
-{
-    test::death_test_compile(
-        R"(
+             "Number of found modes must match depends policy count",
+             "duplicate_targets_test"},
+         {
+             R"(
 #include "arg_router/policy/dependent.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/router.hpp"
@@ -691,11 +662,10 @@ int main() {
     return 0;
 }
     )",
-        "Node dependency list must be unique, do you have short and long names "
-        "from the same node?");
+             "Node dependency list must be unique, do you have short and long names "
+             "from the same node?",
+             "duplicate_target_different_name_types_test"}});
 }
-
-BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
 

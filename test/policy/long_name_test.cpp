@@ -25,12 +25,10 @@ BOOST_AUTO_TEST_CASE(constructor_and_get_test)
     BOOST_CHECK_EQUAL(three_char_str.long_name(), "boo");
 }
 
-BOOST_AUTO_TEST_SUITE(death_suite)
-
-BOOST_AUTO_TEST_CASE(empty_test)
+BOOST_AUTO_TEST_CASE(death_test)
 {
-    test::death_test_compile(
-        R"(
+    test::death_test_compile({{
+                                  R"(
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 int main() {
@@ -38,13 +36,10 @@ int main() {
     return 0;
 }
     )",
-        "Long names must be longer than one character");
-}
-
-BOOST_AUTO_TEST_CASE(single_char_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "Long names must be longer than one character",
+                                  "empty_test"},
+                              {
+                                  R"(
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 int main() {
@@ -52,13 +47,10 @@ int main() {
     return 0;
 }
     )",
-        "Long names must be longer than one character");
-}
-
-BOOST_AUTO_TEST_CASE(space_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "Long names must be longer than one character",
+                                  "single_char_test"},
+                              {
+                                  R"(
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 int main() {
@@ -66,10 +58,9 @@ int main() {
     return 0;
 }
     )",
-        "Long names cannot contain whitespace");
+                                  "Long names cannot contain whitespace",
+                                  "space_test"}});
 }
-
-BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
 
