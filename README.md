@@ -539,18 +539,56 @@ $ ./example_just_cats --кіт
 ### Why have you written your own Unicode algorithms!?
 We didn't want to...  Normally an application will link to ICU for its Unicode needs, but unfortunately we can't do that here as ICU is not `constexpr` and therefore cannot be used for our compile-time needs - so we need to roll our own.
 
+## Installation and Dependencies
+If you're simply a library user, then download the pre-packaged release and install somewhere.  You will need the following dependencies in order to build:
+* Boost.mp11 v1.77
+* Boost.Preprocessor v1.77
+* Boost.Lexical_Cast v1.77
+* [span-lite](https://github.com/martinmoene/span-lite) (only needed if building against C++17)
+
+`arg_router` is header-only (due to all the templates) and so are the above dependencies.
+
+To get a pre-release `arg_router`, or build the unit tests and examples, simply check out the repo and build via CMake in the usual way - the unit tests will be built by default:
+```
+$ cd arg_router
+$ mkdir build
+$ cd ./build
+$ cmake ..
+$ cmake --build . -j8
+$ cmake --install .
+```
+Building these targets will require more dependencies:
+* clang-format
+* Python v3 (used for copyright checking)
+* Doxygen
+* Boost.Test v1.77
+* Boost.Filesystem v1.77
+* Git
+
+By default all these dependencies are provided by `vcpkg` automatically, please **note** that `vcpkg` is provided via a submodule and therefore will need initialising (`git submodule update`).  If you would rather the dependencies came from the system then simply set `-DDISABLE_VCPKG=OFF`, and CMake will not bootstrap `vcpkg` and therefore try to find the packages locally.
+
+`arg_router` currently requires RTTI to be enabled.
+
 ## Error Handling
 Currently `arg_router` only supports exceptions as error handling.  If a parsing fails for some reason a `arg_router::parse_exception` is thrown carrying information on the failure.
 
-### Supported Compilers/Platforms
+## Supported Compilers/Platforms
 The CI system attached to this repo builds on:
 * Ubuntu 22.04, Clang 14/gcc-9/gcc-11
-* Windows Server 2022 (VS 17), Clang 13.0.1
+* Windows Server 2022 (Ninja), Clang 14.0.5
 * MacOS 12, Apple Clang 13.1.6
 
 Other compiler versions and platform combinations may work, but I'm currently limited by the built-in GitHub runners and how much I'm willing to spend on Actions!
 
-You'll notice the big omission: No MSVC.  That's because even with the latest version, I get nothing but ICEs out of it with next to no useful diagnostics.
+You'll notice the big omission: No MSVC.  That's because even with the latest version, I get nothing but ICEs out of it with no useful diagnostics making fixing the issues close to impossible.
 
 ## API Documentation
 Complete Doxygen-generated documentation is available [here](https://cmannett85.github.io/arg_router/).
+
+## Future Work
+Take a look at the [issues](https://github.com/cmannett85/arg_router/issues) page for all upcoming features and fixes.  Highlights are:
+* Finally get it working on MSVC ([#102](https://github.com/cmannett85/arg_router/issues/102))
+* Support for runtime language switching by swapping between parse trees depending on the locale ([#11](https://github.com/cmannett85/arg_router/issues/11))
+* Customised help formatting ([#86](https://github.com/cmannett85/arg_router/issues/86))
+* Command line tab autocomplete ([#123](https://github.com/cmannett85/arg_router/issues/123))
+* Try to drop the RTTI requirement as it causes significant binary bloat ([#155](https://github.com/cmannett85/arg_router/issues/155))

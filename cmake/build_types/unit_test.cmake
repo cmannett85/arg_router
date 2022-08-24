@@ -71,7 +71,7 @@ create_clangformat_target(
     SOURCES ${TEST_HEADERS} ${TEST_SRCS}
 )
 
-add_executable(arg_router_test EXCLUDE_FROM_ALL ${TEST_HEADERS} ${TEST_SRCS})
+add_executable(arg_router_test ${TEST_HEADERS} ${TEST_SRCS})
 add_dependencies(arg_router_test clangformat_test arg_router)
 
 target_compile_features(arg_router_test PUBLIC cxx_std_17)
@@ -84,7 +84,7 @@ function(configure_test_build TARGET)
     # Clang can run in different command line argument modes to mimic gcc or cl.exe,
     # so we have to test for a 'frontent variant' too
     if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" OR CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
-        set(EXTRA_FLAGS /W4 /Z7 /MP /clang:-fconstexpr-steps=10000000 ${ARGN})
+        set(EXTRA_FLAGS /W4 /Z7 /clang:-fconstexpr-steps=10000000 ${ARGN})
         set(EXTRA_DEFINES NOMINMAX BOOST_USE_WINDOWS_H WIN32_LEAN_AND_MEAN _CRT_SECURE_NO_WARNINGS)
 
         # /MT by default as it simplifies the running of the unit tests
