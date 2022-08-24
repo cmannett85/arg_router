@@ -121,7 +121,8 @@ jobs:
 
     # Use the CMake that ships with VS to match locally built versions
     env:
-     CMAKE_EXE: "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe"
+      CMAKE_EXE: "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe"
+      CMD_BUILD_DIR: ${{ github.workspace }}\\build
 
     steps:
     - uses: actions/checkout@v2
@@ -139,16 +140,17 @@ jobs:
         & $output[-1] setapikey "${{ secrets.GITHUB_TOKEN }}" -source ${{ env.NUGET_SOURCE_URL }}
 
     - name: Build
+      shell: cmd
       run: |
-        & "C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Auxiliary/Build/vcvarsall.bat" x64
-        mkdir ${{ env.BUILD_DIR }}
-        cd ${{ env.BUILD_DIR }}
-        & "${{ env.CMAKE_EXE }}" -G "Visual Studio 17 2022" -A x64 -T "ClangCl" -DVCPKG_TARGET_TRIPLET:STRING="x64-windows-static" -DCMAKE_CXX_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe" -DCMAKE_C_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe" -DCMAKE_RC_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/llvm-rc.exe" -DENABLE_CLANG_TIDY=ON ..
-        & "${{ env.CMAKE_EXE }}" --build . --target arg_router_test example_simple example_custom_policy_and_node example_basic_cat example_just_cats -- /v:n
+        call "C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Auxiliary/Build/vcvarsall.bat" x64
+        mkdir ${{ env.CMD_BUILD_DIR }}
+        cd ${{ env.CMD_BUILD_DIR }}
+        "${{ env.CMAKE_EXE }}" -G "Ninja" -DVCPKG_TARGET_TRIPLET:STRING="x64-windows-static" -DCMAKE_CXX_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe" -DDEATH_TEST_PARALLEL=2 ..
+        "${{ env.CMAKE_EXE }}" --build .
 
     - name: Run unit tests
       run: |
-        cd ${{ env.BUILD_DIR }}/test/Debug
+        cd ${{ env.BUILD_DIR }}/test
         ./arg_router_test.exe -l test_suite
 
     - name: Test install

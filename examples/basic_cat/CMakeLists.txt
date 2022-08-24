@@ -5,8 +5,7 @@ create_clangformat_target(
     SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp"
 )
 
-add_executable(example_basic_cat EXCLUDE_FROM_ALL
-    "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp")
+add_executable(example_basic_cat "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp")
 add_dependencies(example_basic_cat clangformat_example_basic_cat arg_router)
 
 target_compile_features(example_basic_cat PUBLIC cxx_std_17)
