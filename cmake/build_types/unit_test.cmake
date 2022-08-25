@@ -114,6 +114,9 @@ target_link_libraries(arg_router_test
     PUBLIC Threads::Threads
 )
 
-target_compile_definitions(arg_router_test PRIVATE UNIT_TEST_BUILD)
+target_compile_definitions(arg_router_test PRIVATE
+    UNIT_TEST_BUILD
+    AR_REPO_PATH="${CMAKE_SOURCE_DIR}"
+)
 
 add_test(NAME arg_router_test COMMAND arg_router_test -l message)

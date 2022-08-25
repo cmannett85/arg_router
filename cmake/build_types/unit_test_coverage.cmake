@@ -11,7 +11,10 @@ add_dependencies(arg_router_test_coverage clangformat_test arg_router)
 
 target_compile_features(arg_router_test_coverage PUBLIC cxx_std_17)
 set_target_properties(arg_router_test_coverage PROPERTIES CXX_EXTENSIONS OFF)
-target_compile_definitions(arg_router_test_coverage PRIVATE UNIT_TEST_BUILD)
+target_compile_definitions(arg_router_test_coverage PRIVATE
+    UNIT_TEST_BUILD
+    AR_REPO_PATH="${CMAKE_SOURCE_DIR}"
+)
 
 configure_test_build(arg_router_test_coverage --coverage)
 add_clangtidy_to_target(arg_router_test_coverage)
