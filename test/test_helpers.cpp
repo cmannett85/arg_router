@@ -39,9 +39,11 @@ void test_message(const std::string& message)
 std::string_view project_repo()
 {
     auto lk = std::lock_guard{general_mtx};
-    static const auto path = std::getenv("AR_REPO_PATH");
-    BOOST_REQUIRE_MESSAGE(path,
-                          "env var AR_REPO_PATH not set, set to the absolute repository path");
+    const auto path = std::getenv("AR_REPO_PATH");
+    if (path == nullptr) {
+        // If there's no env var, then fallback to the installation dir set at build time
+        return AR_REPO_PATH;
+    }
 
     return path;
 }

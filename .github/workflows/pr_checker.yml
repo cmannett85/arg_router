@@ -12,7 +12,6 @@ env:
   BUILD_DIR: ${{ github.workspace }}/build
   INSTALL_DIR: ${{ github.workspace }}/install
   PACKAGE_BUILD_DIR: ${{ github.workspace }}/package_build
-  AR_REPO_PATH: ${{ github.workspace }}
 
 jobs:
   # Discard packages older than 90 days
