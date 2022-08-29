@@ -553,8 +553,8 @@ To get a pre-release `arg_router`, or build the unit tests and examples, simply 
 $ cd arg_router
 $ mkdir build
 $ cd ./build
-$ cmake ..
-$ cmake --build . -j8
+$ cmake -G "Ninja" ..
+$ cmake --build .
 $ cmake --install .
 ```
 Building these targets will require more dependencies:
@@ -573,12 +573,14 @@ By default all these dependencies are provided by `vcpkg` automatically, please 
 Currently `arg_router` only supports exceptions as error handling.  If a parsing fails for some reason a `arg_router::parse_exception` is thrown carrying information on the failure.
 
 ## Supported Compilers/Platforms
-The CI system attached to this repo builds on:
-* Ubuntu 22.04, Clang 14/gcc-9/gcc-11
-* Windows Server 2022 (Ninja), Clang 14.0.5
-* MacOS 12, Apple Clang 13.1.6
+The CI system attached to this repo builds the unit tests and examples with:
+* Ubuntu 22.04 (Ninja), Clang 14/gcc-9
+* Windows Server 2022 (Ninja, MSBuild), Clang 14.0.5
+* MacOS 12 (Ninja), Apple Clang 13.1.6
 
 Other compiler versions and platform combinations may work, but I'm currently limited by the built-in GitHub runners and how much I'm willing to spend on Actions!
+
+You can build on Windows with the VS 2022 generator (MSBuild) but you must set the CMake variable `DEATH_TEST_PARALLEL` to 1 otherwise the parallel tests will attempt to write to the project-wide `lastSuccessfulBuild` file simultaneously, which causes the build to fail.
 
 You'll notice the big omission: No MSVC.  That's because even with the latest version, I get nothing but ICEs out of it with no useful diagnostics making fixing the issues close to impossible.
 

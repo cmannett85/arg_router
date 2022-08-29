@@ -16,6 +16,49 @@ env:
 
 jobs:
   # Run the more esoteric/likely to succeed unit tests when merging to main
+  valgrind_unit_tests:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - name: Update packages
+      run: |
+        sudo apt update
+        sudo apt install mono-complete valgrind
+
+    - name: Bootstrap vcpkg to build the NuGet client
+      run: |
+        ./vcpkg/bootstrap-vcpkg.sh -disableMetrics
+
+    - name: Configure NuGet client
+      run: |
+        mono `./vcpkg/vcpkg fetch nuget | tail -n 1` \
+          sources add \
+          -source ${{ env.NUGET_SOURCE_URL }} \
+          -storepasswordincleartext \
+          -name "vcpkg-cache" \
+          -username "cmannett85" \
+          -password "${{ secrets.GITHUB_TOKEN }}"
+        mono `./vcpkg/vcpkg fetch nuget | tail -n 1` \
+          setapikey "${{ secrets.GITHUB_TOKEN }}" \
+          -source ${{ env.NUGET_SOURCE_URL }}
+
+    - name: Build
+      uses: lukka/run-cmake@v3
+      with:
+        cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
+        cmakeAppendedArgs: -DCMAKE_CXX_COMPILER=clang++-14 -DDEATH_TEST_PARALLEL=2
+        buildDirectory: ${{ env.BUILD_DIR }}
+        buildWithCMakeArgs: --target arg_router_test
+
+    - name: Run unit tests under Valgrind/Memcheck
+      run: |
+        cd ${{ env.BUILD_DIR }}/test
+        valgrind --error-exitcode=1 --leak-check=full ./arg_router_test -l test_suite
+
   old_gcc_test:
     runs-on: ubuntu-22.04
 

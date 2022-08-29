@@ -18,7 +18,7 @@ template <template <typename...> typename T,
 struct appender_t {
     using type = U<V..., T>;
 
-    explicit appender_t(U<V...>) {}
+    explicit appender_t([[maybe_unused]] U<V...> rule_type) {}
 };
 
 template <template <typename...> typename T,
