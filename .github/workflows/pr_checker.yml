@@ -26,7 +26,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # Builds the unit tests and executes them
-  unit_tests:
+  unit_test_coverage:
     runs-on: ubuntu-22.04
     needs: purge_old_packages
 
@@ -46,7 +46,7 @@ jobs:
     - name: Update packages
       run: |
         sudo apt update
-        sudo apt install mono-complete lcov
+        sudo apt install valgrind lcov ninja-build
 
     - name: Bootstrap vcpkg to build the NuGet client
       run: |
@@ -66,17 +66,19 @@ jobs:
           -source ${{ env.NUGET_SOURCE_URL }}
 
     - name: Build
-      uses: lukka/run-cmake@v3
-      with:
-        cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
-        cmakeAppendedArgs: -DCMAKE_CXX_COMPILER=clang++-14 -DENABLE_CLANG_TIDY=ON -DENABLE_SANITIZERS=ON -DDEATH_TEST_PARALLEL=2
-        buildDirectory: ${{ env.BUILD_DIR }}
-        buildWithCMakeArgs: --target arg_router_test_coverage example_simple example_custom_policy_and_node example_basic_cat example_just_cats
+      run: |
+        mkdir -p ${{ env.BUILD_DIR }}
+        cd ${{ env.BUILD_DIR }}
+        cmake ${{ github.workspace }} -G "Ninja" -DCMAKE_CXX_COMPILER=clang++-14 -DENABLE_CLANG_TIDY=ON -DDEATH_TEST_PARALLEL=2
+        cmake --build . --target arg_router_test_coverage example_simple example_custom_policy_and_node example_basic_cat example_just_cats
 
-    - name: Run unit tests under ASan/UBSan
+    # We run the tests under Valgrind rather than ASan/UBSan because when combined with coverage
+    # causes hangs in the death tests
+    - name: Run unit tests under Valgrind
+      timeout-minutes: 30
       run: |
         cd ${{ env.BUILD_DIR }}/test
-        ./arg_router_test_coverage -l test_suite
+        valgrind --error-exitcode=1 --leak-check=full ./arg_router_test_coverage -l test_suite
 
     - name: Calculate unit test coverage
       run: |
@@ -95,12 +97,11 @@ jobs:
         [[ -f "./include/arg_router/arg_router-config-version.cmake" ]]
 
     - name: Test CMake package integrity
-      uses: lukka/run-cmake@v3
-      with:
-        cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
-        cmakeListsTxtPath: ${{ github.workspace }}/scripts/ci/package_test_project/CMakeLists.txt
-        cmakeAppendedArgs: -DCMAKE_CXX_COMPILER=clang++-14 -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}/include
-        buildDirectory: ${{ env.PACKAGE_BUILD_DIR }}
+      run: |
+        mkdir -p ${{ env.PACKAGE_BUILD_DIR }}
+        cd ${{ env.PACKAGE_BUILD_DIR }}
+        cmake ${{ github.workspace }}/scripts/ci/package_test_project -DCMAKE_CXX_COMPILER=clang++-14 -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}/include
+        cmake --build .
 
     - name: Update README unit test coverage badge
       run: |
@@ -144,10 +145,11 @@ jobs:
         call "C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Auxiliary/Build/vcvarsall.bat" x64
         mkdir ${{ env.CMD_BUILD_DIR }}
         cd ${{ env.CMD_BUILD_DIR }}
-        "${{ env.CMAKE_EXE }}" -G "Ninja" -DVCPKG_TARGET_TRIPLET:STRING="x64-windows-static" -DCMAKE_CXX_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe" -DDEATH_TEST_PARALLEL=2 ..
+        "${{ env.CMAKE_EXE }}" ${{ github.workspace }} -G "Ninja" -DVCPKG_TARGET_TRIPLET:STRING="x64-windows-static" -DCMAKE_CXX_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe" -DDEATH_TEST_PARALLEL=2
         "${{ env.CMAKE_EXE }}" --build .
 
     - name: Run unit tests
+      timeout-minutes: 20
       run: |
         cd ${{ env.BUILD_DIR }}/test
         ./arg_router_test.exe -l test_suite
@@ -169,7 +171,7 @@ jobs:
         & "C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Auxiliary/Build/vcvarsall.bat" x64
         mkdir ${{ env.PACKAGE_BUILD_DIR }}
         cd ${{ env.PACKAGE_BUILD_DIR }}
-        & "${{ env.CMAKE_EXE }}" -G "Visual Studio 17 2022" -A x64 -T "ClangCl" -DVCPKG_TARGET_TRIPLET:STRING="x64-windows-static" -DCMAKE_CXX_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe" -DCMAKE_C_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe" -DCMAKE_RC_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/llvm-rc.exe" -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}/include ..
+        & "${{ env.CMAKE_EXE }}" ${{ github.workspace }}/scripts/ci/package_test_project -G "Visual Studio 17 2022" -A x64 -T "ClangCl" -DVCPKG_TARGET_TRIPLET:STRING="x64-windows-static" -DCMAKE_CXX_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe" -DCMAKE_C_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe" -DCMAKE_RC_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/llvm-rc.exe" -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}/include
         & "${{ env.CMAKE_EXE }}" --build . -- /v:n
 
   # Makes sure there are no errors when generating the documentation
@@ -186,9 +188,8 @@ jobs:
         sudo apt install doxygen graphviz
 
     - name: Generate API documentation
-      uses: lukka/run-cmake@v3
-      with:
-        cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
-        cmakeAppendedArgs: -DDOCS_ONLY=ON
-        buildDirectory: ${{ env.BUILD_DIR }}
-        buildWithCMakeArgs: --target documentation
+      run: |
+        mkdir -p ${{ env.BUILD_DIR }}
+        cd ${{ env.BUILD_DIR }}
+        cmake ${{ github.workspace }} -DDOCS_ONLY=ON
+        cmake --build . --target documentation

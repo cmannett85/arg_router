@@ -19,6 +19,11 @@ jobs:
       with:
           fetch-depth: 1
 
+    - name: Update packages
+      run: |
+        sudo apt update
+        sudo apt install ninja-build
+
     - name: Get commit message and percent-encode
       id: commit_msg
       run: |
@@ -30,12 +35,11 @@ jobs:
         echo "::set-output name=commit_msg::${MSG}"
 
     - name: Build release
-      uses: lukka/run-cmake@v3
-      with:
-        cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
-        cmakeAppendedArgs: -DDOCS_ONLY
-        buildDirectory: ${{ env.BUILD_DIR }}
-        buildWithCMakeArgs: --target package
+      run: |
+        mkdir -p ${{ env.BUILD_DIR }}
+        cd ${{ env.BUILD_DIR }}
+        cmake ${{ github.workspace }} -G "Ninja" -DDOCS_ONLY=ON
+        cmake --build . --target package
 
     - name: Check versions match
       id: version_check
