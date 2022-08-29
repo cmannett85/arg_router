@@ -18,6 +18,7 @@ target_compile_definitions(arg_router_test_coverage PRIVATE
 
 configure_test_build(arg_router_test_coverage --coverage)
 add_clangtidy_to_target(arg_router_test_coverage)
+add_santizers_to_target(arg_router_test_coverage)
 
 target_include_directories(arg_router_test_coverage
     PUBLIC "${CMAKE_SOURCE_DIR}/include"

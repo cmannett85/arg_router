@@ -83,13 +83,17 @@ set(DEATH_TEST_PARALLEL 8 CACHE STRING "Maximum number of parallel death tests t
 function(configure_test_build TARGET)
     # Clang can run in different command line argument modes to mimic gcc or cl.exe,
     # so we have to test for a 'frontent variant' too
-    if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" OR CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
+    if (MSVC_FRONTEND)
         set(EXTRA_FLAGS /W4 /Z7 /clang:-fconstexpr-steps=10000000 ${ARGN})
         set(EXTRA_DEFINES NOMINMAX BOOST_USE_WINDOWS_H WIN32_LEAN_AND_MEAN _CRT_SECURE_NO_WARNINGS)
 
         # /MT by default as it simplifies the running of the unit tests
         set_property(TARGET ${TARGET} PROPERTY
                      MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+
+        if (CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
+            set(/clang:-fconstexpr-steps=10000000)
+        endif()
     else()
         set(EXTRA_FLAGS -Werror -Wall -Wextra -ftemplate-backtrace-limit=0 ${ARGN})
         set(EXTRA_DEFINES "")
@@ -103,6 +107,7 @@ endfunction()
 
 configure_test_build(arg_router_test)
 add_clangtidy_to_target(arg_router_test)
+add_santizers_to_target(arg_router_test)
 
 target_include_directories(arg_router_test
     PUBLIC "${CMAKE_SOURCE_DIR}/include"

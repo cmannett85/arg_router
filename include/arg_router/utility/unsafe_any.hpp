@@ -84,7 +84,10 @@ public:
             return *reinterpret_cast<const value_type*>(storage.ptr);
         };
         destroyer_ = [alloc = std::move(alloc)](storage_type& storage) mutable noexcept {
-            alloc.deallocate(reinterpret_cast<value_type*>(storage.ptr), 1);
+            auto s_ptr = reinterpret_cast<value_type*>(storage.ptr);
+
+            std::allocator_traits<Allocator>::destroy(alloc, s_ptr);
+            alloc.deallocate(s_ptr, 1);
             storage.ptr = nullptr;
         };
     }
