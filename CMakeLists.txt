@@ -38,7 +38,6 @@ include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/documentation.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/clang-tidy.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/sanitizers.cmake")
-include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/package/install.cmake")
 
 # Only find packages if we're not doing a Docs-only build
 if(NOT DOCS_ONLY)
@@ -55,6 +54,8 @@ if(NOT DOCS_ONLY)
     find_package(Boost ${BOOST_VERSION} REQUIRED)
     include_directories(BEFORE SYSTEM ${Boost_INCLUDE_DIRS})
 endif()
+
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/package/install.cmake")
 
 path_prefixer(HEADERS
     include/arg_router/algorithm.hpp
