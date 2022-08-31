@@ -4,11 +4,12 @@ cmake_minimum_required(VERSION 3.18)
 
 include(CMakeDependentOption)
 
-# Options
 option(DOCS_ONLY "Only build the documentation" OFF)
 cmake_dependent_option(BUILD_UNIT_TESTS_AND_EXAMPLES "Build the unit tests and examples" ON
                        "NOT DOCS_ONLY" OFF)
-cmake_dependent_option(ENABLE_CLANG_TIDY "Enable clang-tidy warnings" OFF
+cmake_dependent_option(ENABLE_CLANG_TIDY "Enable clang-tidy warnings for unit tests and examples" OFF
+                      "NOT DOCS_ONLY" OFF)
+cmake_dependent_option(ENABLE_SANITIZERS "Enable ASan/UBSan for unit tests and examples" OFF
                        "NOT DOCS_ONLY" OFF)
 cmake_dependent_option(DISABLE_VCPKG "Disable vcpkg, use system libraries" OFF
                        "NOT DOCS_ONLY" OFF)
@@ -26,12 +27,17 @@ project(arg_router
         LANGUAGES CXX)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+set(MSVC_FRONTEND OFF)
+if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" OR CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
+    set(MSVC_FRONTEND ON)
+endif()
+
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/versioning/version.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/copyright_checker.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/documentation.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/clang-tidy.cmake")
-include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/package/install.cmake")
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/sanitizers.cmake")
 
 # Only find packages if we're not doing a Docs-only build
 if(NOT DOCS_ONLY)
@@ -48,6 +54,8 @@ if(NOT DOCS_ONLY)
     find_package(Boost ${BOOST_VERSION} REQUIRED)
     include_directories(BEFORE SYSTEM ${Boost_INCLUDE_DIRS})
 endif()
+
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/package/install.cmake")
 
 path_prefixer(HEADERS
     include/arg_router/algorithm.hpp

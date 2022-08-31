@@ -5,8 +5,7 @@ create_clangformat_target(
     SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp"
 )
 
-add_executable(example_custom_policy_and_node EXCLUDE_FROM_ALL
-    "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp")
+add_executable(example_custom_policy_and_node "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp")
 add_dependencies(example_custom_policy_and_node
                  clangformat_example_custom_policy_and_node
                  arg_router)

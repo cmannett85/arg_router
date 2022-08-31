@@ -387,12 +387,10 @@ BOOST_AUTO_TEST_CASE(pre_parse_test)
         });
 }
 
-BOOST_AUTO_TEST_SUITE(death_suite)
-
-BOOST_AUTO_TEST_CASE(only_policies_or_nodes_test)
+BOOST_AUTO_TEST_CASE(death_test)
 {
     test::death_test_compile(
-        R"(
+        {{R"(
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/short_name.hpp"
 #include "arg_router/tree_node.hpp"
@@ -415,13 +413,10 @@ int main() {
     return 0;
 }
     )",
-        "tree_node constructor can only accept other tree_nodes and policies");
-}
-
-BOOST_AUTO_TEST_CASE(parse_phase_policies_test)
-{
-    test::death_test_compile(
-        R"(
+          "tree_node constructor can only accept other tree_nodes and policies",
+          "only_policies_or_nodes_test"},
+         {
+             R"(
 #include "arg_router/policy/custom_parser.hpp"
 #include "arg_router/tree_node.hpp"
 
@@ -448,13 +443,10 @@ int main() {
     return 0;
 }
     )",
-        "Only zero or one policies supporting a parse phase is supported");
-}
-
-BOOST_AUTO_TEST_CASE(missing_phase_policies_test)
-{
-    test::death_test_compile(
-        R"(
+             "Only zero or one policies supporting a parse phase is supported",
+             "parse_phase_policies_test"},
+         {
+             R"(
 #include "arg_router/policy/default_value.hpp"
 #include "arg_router/policy/required.hpp"
 #include "arg_router/tree_node.hpp"
@@ -481,13 +473,10 @@ int main() {
     return 0;
 }
     )",
-        "Only zero or one policies supporting a missing phase is supported");
-}
-
-BOOST_AUTO_TEST_CASE(routing_phase_policies_test)
-{
-    test::death_test_compile(
-        R"(
+             "Only zero or one policies supporting a missing phase is supported",
+             "missing_phase_policies_test"},
+         {
+             R"(
 #include "arg_router/policy/router.hpp"
 #include "arg_router/tree_node.hpp"
 
@@ -516,9 +505,8 @@ int main() {
     return 0;
 }
     )",
-        "Only zero or one policies supporting a routing phase is supported");
+             "Only zero or one policies supporting a routing phase is supported",
+             "routing_phase_policies_test"}});
 }
-
-BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

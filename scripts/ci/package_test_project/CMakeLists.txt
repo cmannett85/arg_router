@@ -28,7 +28,6 @@ include_directories(BEFORE SYSTEM ${Boost_INCLUDE_DIRS})
 
 find_package(arg_router REQUIRED)
 include_directories(BEFORE SYSTEM "${arg_router_INCLUDE_DIRS}")
-message(STATUS "arg_router: ${arg_router_INCLUDE_DIRS}")
 
 add_executable(package_test_project
     "${ROOT_DIR}/examples/just_cats/main.cpp"
@@ -36,3 +35,24 @@ add_executable(package_test_project
 
 target_compile_features(package_test_project PUBLIC cxx_std_17)
 set_target_properties(package_test_project PROPERTIES CXX_EXTENSIONS OFF)
+
+if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" OR CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
+    target_compile_options(package_test_project PRIVATE /W4 /Z7)
+    target_compile_definitions(package_test_project PRIVATE
+        NOMINMAX
+        BOOST_USE_WINDOWS_H
+        WIN32_LEAN_AND_MEAN
+        _CRT_SECURE_NO_WARNINGS
+    )
+
+    if (CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
+        target_compile_options(package_test_project PRIVATE /clang:-fconstexpr-steps=10000000)
+    endif()
+else()
+    target_compile_options(package_test_project PRIVATE
+        -Werror
+        -Wall
+        -Wextra
+        -ftemplate-backtrace-limit=0
+    )
+endif()

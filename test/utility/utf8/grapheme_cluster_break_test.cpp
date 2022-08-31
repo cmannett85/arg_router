@@ -495,35 +495,26 @@ BOOST_AUTO_TEST_CASE(GB12_13_test)
         });
 }
 
-BOOST_AUTO_TEST_SUITE(death_suite)
-
-BOOST_AUTO_TEST_CASE(GB_1_element_trailing_window_tests)
+BOOST_AUTO_TEST_CASE(grapheme_cluster_death_test)
 {
-    auto f = [](auto test_name) {
-        test::death_test_compile("#include \"arg_router/utility/utf8/grapheme_cluster_break.hpp\"\n"
-                                 "using namespace arg_router;"
-                                 "int main() {"
-                                 "const auto no_break = utility::utf8::no_break_rules::"s +
-                                     test_name +
-                                     "("
-                                     "std::array<utility::utf8::grapheme_cluster_break_class, 0>{},"
-                                     "utility::utf8::grapheme_cluster_break_class::CR);"
-                                     "return 0;"
-                                     "}",
-                                 "Trailing window must be at least 1 element");
-    };
+    auto tests = std::forward_list<test::death_test_info>{};
+    for (auto test : {"GB3", "GB6", "GB7", "GB8", "GB9b", "GB11", "GB12_13"}) {
+        tests.push_front({"#include \"arg_router/utility/utf8/grapheme_cluster_break.hpp\"\n"
+                          "using namespace arg_router;"
+                          "int main() {"
+                          "const auto no_break = utility::utf8::no_break_rules::"s +
+                              test +
+                              "("
+                              "std::array<utility::utf8::grapheme_cluster_break_class, 0>{},"
+                              "utility::utf8::grapheme_cluster_break_class::CR);"
+                              "return 0;"
+                              "}",
+                          "Trailing window must be at least 1 element",
+                          test});
+    }
 
-    test::data_set(f,
-                   {std::tuple{"GB3"},
-                    std::tuple{"GB6"},
-                    std::tuple{"GB7"},
-                    std::tuple{"GB8"},
-                    std::tuple{"GB9b"},
-                    std::tuple{"GB11"},
-                    std::tuple{"GB12_13"}});
+    test::death_test_compile(std::move(tests));
 }
-
-BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
 

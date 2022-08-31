@@ -265,12 +265,10 @@ BOOST_AUTO_TEST_CASE(must_have_at_least_min_count_of_1_if_required_test)
 
 BOOST_AUTO_TEST_SUITE_END()
 
-BOOST_AUTO_TEST_SUITE(death_suite)
-
-BOOST_AUTO_TEST_CASE(despecialised_unique_in_owner_test)
+BOOST_AUTO_TEST_CASE(death_test)
 {
     test::death_test_compile(
-        R"(
+        {{R"(
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
@@ -284,13 +282,10 @@ int main() {
     return 0;
 }
     )",
-        "Policy must be present and unique in owner");
-}
-
-BOOST_AUTO_TEST_CASE(policy_unique_from_owner_parent_to_mode_or_root_test)
-{
-    test::death_test_compile(
-        R"(
+          "Policy must be present and unique in owner",
+          "despecialised_unique_in_owner_test"},
+         {
+             R"(
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
@@ -319,14 +314,11 @@ int main() {
     return 0;
 }
     )",
-        "Policy must be unique in the parse tree up to the nearest mode or "
-        "root");
-}
-
-BOOST_AUTO_TEST_CASE(parent_types_test)
-{
-    test::death_test_compile(
-        R"(
+             "Policy must be unique in the parse tree up to the nearest mode or "
+             "root",
+             "policy_unique_from_owner_parent_to_mode_or_root_test"},
+         {
+             R"(
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
@@ -344,10 +336,10 @@ int main() {
     return 0;
 }
     )",
-        "Must be at least one parent_index_pair_type");
-
-    test::death_test_compile(
-        R"(
+             "Must be at least one parent_index_pair_type",
+             "parent_types_test_1"},
+         {
+             R"(
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
@@ -370,13 +362,10 @@ int main() {
     return 0;
 }
     )",
-        "Parent must be one of a set of types");
-}
-
-BOOST_AUTO_TEST_CASE(must_have_policies_test)
-{
-    test::death_test_compile(
-        R"(
+             "Parent must be one of a set of types",
+             "parent_types_test_2"},
+         {
+             R"(
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
@@ -389,13 +378,10 @@ int main() {
     return 0;
 }
     )",
-        "T must have all these policies");
-}
-
-BOOST_AUTO_TEST_CASE(must_have_policies_multiple_test)
-{
-    test::death_test_compile(
-        R"(
+             "T must have all these policies",
+             "must_have_policies_test"},
+         {
+             R"(
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
@@ -409,13 +395,10 @@ int main() {
     return 0;
 }
     )",
-        "T must have all these policies");
-}
-
-BOOST_AUTO_TEST_CASE(must_not_have_policies_test)
-{
-    test::death_test_compile(
-        R"(
+             "T must have all these policies",
+             "must_have_policies_multiple_test"},
+         {
+             R"(
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
@@ -429,13 +412,10 @@ int main() {
     return 0;
 }
     )",
-        "T must have none of these policies");
-}
-
-BOOST_AUTO_TEST_CASE(must_not_have_policies_multiple_test)
-{
-    test::death_test_compile(
-        R"(
+             "T must have none of these policies",
+             "must_not_have_policies_test"},
+         {
+             R"(
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
@@ -450,13 +430,10 @@ int main() {
     return 0;
 }
     )",
-        "T must have none of these policies");
-}
-
-BOOST_AUTO_TEST_CASE(child_must_have_policy_test)
-{
-    test::death_test_compile(
-        R"(
+             "T must have none of these policies",
+             "must_not_have_policies_multiple_test"},
+         {
+             R"(
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
@@ -473,13 +450,10 @@ int main() {
     return 0;
 }
     )",
-        "All children of T must have this policy");
-}
-
-BOOST_AUTO_TEST_CASE(not_policy_policy_parent_must_not_have_policy_test)
-{
-    test::death_test_compile(
-        R"(
+             "All children of T must have this policy",
+             "child_must_have_policy_test"},
+         {
+             R"(
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
@@ -493,13 +467,10 @@ int main() {
                    policy::short_name_t<S_('a')>>>();
 }
     )",
-        "T must be a policy");
-}
-
-BOOST_AUTO_TEST_CASE(no_parent_policy_parent_must_not_have_policy_test)
-{
-    test::death_test_compile(
-        R"(
+             "T must be a policy",
+             "not_policy_policy_parent_must_not_have_policy_test"},
+         {
+             R"(
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
@@ -511,13 +482,10 @@ int main() {
             policy::display_name_t<S_("hello")>>();
 }
     )",
-        "Must be at least one parent");
-}
-
-BOOST_AUTO_TEST_CASE(has_policy_policy_parent_must_not_have_policy_test)
-{
-    test::death_test_compile(
-        R"(
+             "Must be at least one parent",
+             "no_parent_policy_parent_must_not_have_policy_test"},
+         {
+             R"(
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
@@ -531,13 +499,10 @@ int main() {
                    policy::long_name_t<S_("flag")>>>();
 }
     )",
-        "Parent must not have this policy");
-}
-
-BOOST_AUTO_TEST_CASE(single_anonymous_mode_test)
-{
-    test::death_test_compile(
-        R"(
+             "Parent must not have this policy",
+             "has_policy_policy_parent_must_not_have_policy_test"},
+         {
+             R"(
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
@@ -554,13 +519,10 @@ int main() {
         std::decay_t<decltype(policy::validation::default_validator)>>>();
 }
     )",
-        "Only one child mode can be anonymous");
-}
-
-BOOST_AUTO_TEST_CASE(none_in_at_least_one_of_policies_test)
-{
-    test::death_test_compile(
-        R"(
+             "Only one child mode can be anonymous",
+             "single_anonymous_mode_test"},
+         {
+             R"(
 #include "arg_router/policy/description.hpp"
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
@@ -576,13 +538,10 @@ int main() {
     return 0;
 }
     )",
-        "T must have at least one of the policies");
-}
-
-BOOST_AUTO_TEST_CASE(node_types_must_be_at_end_test)
-{
-    test::death_test_compile(
-        R"(
+             "T must have at least one of the policies",
+             "none_in_at_least_one_of_policies_test"},
+         {
+             R"(
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
@@ -598,13 +557,10 @@ int main() {
     return 0;
 }
     )",
-        "Node types must all appear at the end of child list for a node");
-}
-
-BOOST_AUTO_TEST_CASE(anonymous_mode_must_be_at_end_test)
-{
-    test::death_test_compile(
-        R"(
+             "Node types must all appear at the end of child list for a node",
+             "node_types_must_be_at_end_test"},
+         {
+             R"(
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
@@ -620,13 +576,10 @@ int main() {
     return 0;
 }
     )",
-        "Node types must all appear at the end of child list for a node");
-}
-
-BOOST_AUTO_TEST_CASE(positional_args_at_beginning_test)
-{
-    test::death_test_compile(
-        R"(
+             "Node types must all appear at the end of child list for a node",
+             "anonymous_mode_must_be_at_end_test"},
+         {
+             R"(
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
@@ -642,13 +595,10 @@ int main() {
     return 0;
 }
     )",
-        "Node types must all appear at the end of child list for a node");
-}
-
-BOOST_AUTO_TEST_CASE(positional_args_must_have_fixed_count_if_not_at_end_no_counts_test)
-{
-    test::death_test_compile(
-        R"(
+             "Node types must all appear at the end of child list for a node",
+             "positional_args_at_beginning_test"},
+         {
+             R"(
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
@@ -667,13 +617,10 @@ int main() {
     return 0;
 }
     )",
-        "Positional args not at the end of the list must have a fixed count");
-}
-
-BOOST_AUTO_TEST_CASE(positional_args_must_have_fixed_count_if_not_at_end_last_has_count_test)
-{
-    test::death_test_compile(
-        R"(
+             "Positional args not at the end of the list must have a fixed count",
+             "positional_args_must_have_fixed_count_if_not_at_end_no_counts_test"},
+         {
+             R"(
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
@@ -695,13 +642,10 @@ int main() {
     return 0;
 }
     )",
-        "Positional args not at the end of the list must have a fixed count");
-}
-
-BOOST_AUTO_TEST_CASE(positional_args_must_have_fixed_count_if_not_at_end_min_no_max_test)
-{
-    test::death_test_compile(
-        R"(
+             "Positional args not at the end of the list must have a fixed count",
+             "positional_args_must_have_fixed_count_if_not_at_end_last_has_count_test"},
+         {
+             R"(
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
@@ -722,13 +666,10 @@ int main() {
     return 0;
 }
     )",
-        "Positional args not at the end of the list must have a fixed count");
-}
-
-BOOST_AUTO_TEST_CASE(positional_args_must_have_fixed_count_if_not_at_end_max_no_min_test)
-{
-    test::death_test_compile(
-        R"(
+             "Positional args not at the end of the list must have a fixed count",
+             "positional_args_must_have_fixed_count_if_not_at_end_min_no_max_test"},
+         {
+             R"(
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
@@ -749,13 +690,10 @@ int main() {
     return 0;
 }
     )",
-        "Positional args not at the end of the list must have a fixed count");
-}
-
-BOOST_AUTO_TEST_CASE(positional_args_must_have_fixed_count_if_not_at_end_unequal_min_max_test)
-{
-    test::death_test_compile(
-        R"(
+             "Positional args not at the end of the list must have a fixed count",
+             "positional_args_must_have_fixed_count_if_not_at_end_max_no_min_test"},
+         {
+             R"(
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
@@ -777,13 +715,10 @@ int main() {
     return 0;
 }
     )",
-        "Positional args not at the end of the list must have a fixed count");
-}
-
-BOOST_AUTO_TEST_CASE(must_have_at_least_min_count_of_1_if_required_test)
-{
-    test::death_test_compile(
-        R"(
+             "Positional args not at the end of the list must have a fixed count",
+             "positional_args_must_have_fixed_count_if_not_at_end_unequal_min_max_test"},
+         {
+             R"(
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
@@ -797,10 +732,9 @@ int main() {
     return 0;
 }
     )",
-        "T must have a minimum count of at least 1 if required (it improves help output)");
+             "T must have a minimum count of at least 1 if required (it improves help output)",
+             "must_have_at_least_min_count_of_1_if_required_test"}});
 }
-
-BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
 

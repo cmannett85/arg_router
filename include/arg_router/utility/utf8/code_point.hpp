@@ -39,6 +39,7 @@ public:
         // [0-20]  Start code point
         // [21-41] End code point
         // [42-47] Metadata
+        // NOLINTBEGIN(readability-magic-numbers)
         data_[0] = first & 0xFF;
         data_[1] = (first >> 8) & 0xFF;
         data_[2] = (first >> 16) & 0x1F;
@@ -49,6 +50,7 @@ public:
         data_[5] = (last >> 19) & 0x3;
 
         data_[5] |= (meta & 0x3F) << 2;
+        // NOLINTEND(readability-magic-numbers)
     }
 
     /** First code point in range.
@@ -57,9 +59,11 @@ public:
      */
     [[nodiscard]] constexpr type first() const noexcept
     {
+        // NOLINTBEGIN(readability-magic-numbers)
         auto value = type{data_[0]};
         value |= data_[1] << 8;
         value |= (data_[2] & 0x1F) << 16;
+        // NOLINTEND(readability-magic-numbers)
 
         return value;
     }
@@ -70,10 +74,12 @@ public:
      */
     [[nodiscard]] constexpr type last() const noexcept
     {
+        // NOLINTBEGIN(readability-magic-numbers)
         type value = (data_[2] >> 5) & 0x7;
         value |= data_[3] << 3;
         value |= data_[4] << 11;
         value |= (data_[5] & 0x3) << 19;
+        // NOLINTEND(readability-magic-numbers)
 
         return value;
     }
@@ -82,7 +88,11 @@ public:
      *
      * @return Meta data, zero if unset
      */
-    [[nodiscard]] constexpr std::uint8_t meta() const noexcept { return (data_[5] >> 2) & 0x3F; }
+    [[nodiscard]] constexpr std::uint8_t meta() const noexcept
+    {
+        // NOLINTNEXTLINE
+        return (data_[5] >> 2) & 0x3F;
+    }
 
     /** Less than operator.
      *
@@ -105,7 +115,8 @@ public:
     constexpr bool operator<(type cp) const noexcept { return first() < cp; }
 
 private:
-    std::array<std::uint8_t, 6> data_;
+    static constexpr auto bytes_per_cp = std::size_t{6};
+    std::array<std::uint8_t, bytes_per_cp> data_;
 };
 
 /** Number of UTF-8 code points in the string.

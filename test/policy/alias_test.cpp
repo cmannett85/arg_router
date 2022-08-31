@@ -280,12 +280,10 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_too_small_view_test)
     });
 }
 
-BOOST_AUTO_TEST_SUITE(death_suite)
-
-BOOST_AUTO_TEST_CASE(zero_aliases_test)
+BOOST_AUTO_TEST_CASE(death_test)
 {
     test::death_test_compile(
-        R"(
+        {{R"(
 #include "arg_router/policy/alias.hpp"
 
 using namespace arg_router;
@@ -295,13 +293,10 @@ int main() {
     return 0;
 }
     )",
-        "At least one name needed for alias");
-}
-
-BOOST_AUTO_TEST_CASE(all_params_must_be_policies_test)
-{
-    test::death_test_compile(
-        R"(
+          "At least one name needed for alias",
+          "zero_aliases_test"},
+         {
+             R"(
 #include "arg_router/flag.hpp"
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/long_name.hpp"
@@ -314,13 +309,10 @@ int main() {
     return 0;
 }
     )",
-        "All parameters must be policies");
-}
-
-BOOST_AUTO_TEST_CASE(all_params_must_be_names_test)
-{
-    test::death_test_compile(
-        R"(
+             "All parameters must be policies",
+             "all_params_must_be_policies_test"},
+         {
+             R"(
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/display_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
@@ -332,13 +324,10 @@ int main() {
     return 0;
 }
     )",
-        "All parameters must provide a long and/or short form name");
-}
-
-BOOST_AUTO_TEST_CASE(cannot_find_parent_node_empty_test)
-{
-    test::death_test_compile(
-        R"(
+             "All parameters must provide a long and/or short form name",
+             "all_params_must_be_names_test"},
+         {
+             R"(
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_count.hpp"
@@ -390,13 +379,10 @@ int main() {
     return 0;
 }
     )",
-        "Cannot find parent mode");
-}
-
-BOOST_AUTO_TEST_CASE(alias_must_have_minimum_and_maximum_count_methods_test)
-{
-    test::death_test_compile(
-        R"(
+             "Cannot find parent mode",
+             "cannot_find_parent_node_empty_test"},
+         {
+             R"(
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
@@ -451,13 +437,10 @@ int main() {
     return 0;
 }
     )",
-        "Aliased nodes must have minimum and maximum count methods");
-}
-
-BOOST_AUTO_TEST_CASE(alias_must_have_fixed_count_test)
-{
-    test::death_test_compile(
-        R"(
+             "Aliased nodes must have minimum and maximum count methods",
+             "alias_must_have_minimum_and_maximum_count_methods_test"},
+         {
+             R"(
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_count.hpp"
@@ -514,13 +497,10 @@ int main() {
     return 0;
 }
     )",
-        "Aliased nodes must have a fixed count");
-}
-
-BOOST_AUTO_TEST_CASE(cannot_find_parent_node_missing_test)
-{
-    test::death_test_compile(
-        R"(
+             "Aliased nodes must have a fixed count",
+             "alias_must_have_fixed_count_test"},
+         {
+             R"(
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
@@ -577,13 +557,10 @@ int main() {
     return 0;
 }
     )",
-        "Cannot find parent mode");
-}
-
-BOOST_AUTO_TEST_CASE(cyclic_dependency_test)
-{
-    test::death_test_compile(
-        R"(
+             "Cannot find parent mode",
+             "cannot_find_parent_node_missing_test"},
+         {
+             R"(
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_count.hpp"
@@ -648,13 +625,10 @@ int main() {
     return 0;
 }
     )",
-        "Cyclic dependency detected");
-}
-
-BOOST_AUTO_TEST_CASE(missing_target_test)
-{
-    test::death_test_compile(
-        R"(
+             "Cyclic dependency detected",
+             "cyclic_dependency_test"},
+         {
+             R"(
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_count.hpp"
@@ -715,13 +689,10 @@ int main() {
     return 0;
 }
     )",
-        "Number of found modes must match alias policy count");
-}
-
-BOOST_AUTO_TEST_CASE(duplicate_targets_test)
-{
-    test::death_test_compile(
-        R"(
+             "Number of found modes must match alias policy count",
+             "missing_target_test"},
+         {
+             R"(
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_count.hpp"
@@ -783,13 +754,10 @@ int main() {
     return 0;
 }
     )",
-        "Number of found modes must match alias policy count");
-}
-
-BOOST_AUTO_TEST_CASE(duplicate_target_different_name_types_test)
-{
-    test::death_test_compile(
-        R"(
+             "Number of found modes must match alias policy count",
+             "duplicate_targets_test"},
+         {
+             R"(
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_count.hpp"
@@ -853,14 +821,11 @@ int main() {
     return 0;
 }
     )",
-        "Node alias list must be unique, do you have short and long names from "
-        "the same node?");
-}
-
-BOOST_AUTO_TEST_CASE(parse_phase_test)
-{
-    test::death_test_compile(
-        R"(
+             "Node alias list must be unique, do you have short and long names from "
+             "the same node?",
+             "duplicate_target_different_name_types_test"},
+         {
+             R"(
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/custom_parser.hpp"
 #include "arg_router/policy/long_name.hpp"
@@ -915,14 +880,11 @@ int main() {
     return 0;
 }
     )",
-        "Alias owning node cannot have policies that support parse, "
-        "validation, or routing phases");
-}
-
-BOOST_AUTO_TEST_CASE(validation_phase_test)
-{
-    test::death_test_compile(
-        R"(
+             "Alias owning node cannot have policies that support parse, "
+             "validation, or routing phases",
+             "parse_phase_test"},
+         {
+             R"(
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_value.hpp"
@@ -976,14 +938,11 @@ int main() {
     return 0;
 }
     )",
-        "Alias owning node cannot have policies that support parse, "
-        "validation, or routing phases");
-}
-
-BOOST_AUTO_TEST_CASE(routing_phase_test)
-{
-    test::death_test_compile(
-        R"(
+             "Alias owning node cannot have policies that support parse, "
+             "validation, or routing phases",
+             "validation_phase_test"},
+         {
+             R"(
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/router.hpp"
@@ -1037,14 +996,11 @@ int main() {
     return 0;
 }
     )",
-        "Alias owning node cannot have policies that support parse, "
-        "validation, or routing phases");
-}
-
-BOOST_AUTO_TEST_CASE(target_counts_test)
-{
-    test::death_test_compile(
-        R"(
+             "Alias owning node cannot have policies that support parse, "
+             "validation, or routing phases",
+             "routing_phase_test"},
+         {
+             R"(
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_count.hpp"
@@ -1104,10 +1060,9 @@ int main() {
     return 0;
 }
     )",
-        "All alias targets must have a count that matches the owner");
+             "All alias targets must have a count that matches the owner",
+             "target_counts_test"}});
 }
-
-BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
 

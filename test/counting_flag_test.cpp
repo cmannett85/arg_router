@@ -108,12 +108,11 @@ BOOST_AUTO_TEST_CASE(help_test)
                    });
 }
 
-BOOST_AUTO_TEST_SUITE(death_suite)
-
-BOOST_AUTO_TEST_CASE(policies_only_test)
+BOOST_AUTO_TEST_CASE(death_test)
 {
     test::death_test_compile(
-        R"(
+        {{
+             R"(
 #include "arg_router/counting_flag.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/short_name.hpp"
@@ -130,13 +129,10 @@ int main() {
     return 0;
 }
     )",
-        "Counting flags must only contain policies (not other nodes)");
-}
-
-BOOST_AUTO_TEST_CASE(must_be_named_test)
-{
-    test::death_test_compile(
-        R"(
+             "Counting flags must only contain policies (not other nodes)",
+             "policies_only_test"},
+         {
+             R"(
 #include "arg_router/counting_flag.hpp"
 
 using namespace arg_router;
@@ -146,13 +142,10 @@ int main() {
     return 0;
 }
     )",
-        "Counting flag must have a long and/or short name policy");
-}
-
-BOOST_AUTO_TEST_CASE(must_not_have_display_name_test)
-{
-    test::death_test_compile(
-        R"(
+             "Counting flag must have a long and/or short name policy",
+             "must_be_named_test"},
+         {
+             R"(
 #include "arg_router/counting_flag.hpp"
 #include "arg_router/policy/display_name.hpp"
 #include "arg_router/policy/long_name.hpp"
@@ -166,13 +159,10 @@ int main() {
     return 0;
 }
     )",
-        "Counting flag must not have a display name policy");
-}
-
-BOOST_AUTO_TEST_CASE(must_not_have_none_name_test)
-{
-    test::death_test_compile(
-        R"(
+             "Counting flag must not have a display name policy",
+             "must_not_have_display_name_test"},
+         {
+             R"(
 #include "arg_router/counting_flag.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/none_name.hpp"
@@ -186,13 +176,10 @@ int main() {
     return 0;
 }
     )",
-        "Counting flag must not have a none name policy");
-}
-
-BOOST_AUTO_TEST_CASE(parse_policy_test)
-{
-    test::death_test_compile(
-        R"(
+             "Counting flag must not have a none name policy",
+             "must_not_have_none_name_test"},
+         {
+             R"(
 #include "arg_router/counting_flag.hpp"
 #include "arg_router/policy/custom_parser.hpp"
 #include "arg_router/policy/long_name.hpp"
@@ -208,14 +195,11 @@ int main() {
     return 0;
 }
     )",
-        "Counting flag does not support policies with parse or routing phases "
-        "(e.g. custom_parser)");
-}
-
-BOOST_AUTO_TEST_CASE(routing_phase_test)
-{
-    test::death_test_compile(
-        R"(
+             "Counting flag does not support policies with parse or routing phases "
+             "(e.g. custom_parser)",
+             "parse_policy_test"},
+         {
+             R"(
 #include "arg_router/counting_flag.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/router.hpp"
@@ -229,10 +213,9 @@ int main() {
     return 0;
 }
     )",
-        "Counting flag does not support policies with parse or routing phases "
-        "(e.g. custom_parser)");
+             "Counting flag does not support policies with parse or routing phases (e.g. "
+             "custom_parser)",
+             "routing_phase_test"}});
 }
-
-BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

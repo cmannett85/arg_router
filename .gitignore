@@ -2,7 +2,7 @@
 include/arg_router/version.hpp
 
 # Death test main (modified by tests)
-test/death_test/main.cpp
+test/death_test/main_*.cpp
 
 # Generated docs
 docs/doxygen

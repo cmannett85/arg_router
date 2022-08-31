@@ -50,12 +50,9 @@ BOOST_AUTO_TEST_CASE(list_expander_test)
         "list_expander test failed");
 }
 
-BOOST_AUTO_TEST_SUITE(death_suite)
-
-BOOST_AUTO_TEST_CASE(single_policy_test)
+BOOST_AUTO_TEST_CASE(death_test)
 {
-    test::death_test_compile(
-        R"(
+    test::death_test_compile({{R"(
 #include "arg_router/list.hpp"
 #include "arg_router/policy/short_name.hpp"
 
@@ -67,13 +64,10 @@ int main() {
     return 0;
 }
     )",
-        "All list children must be tree_nodes (i.e. not policies)");
-}
-
-BOOST_AUTO_TEST_CASE(triple_policy_test)
-{
-    test::death_test_compile(
-        R"(
+                               "All list children must be tree_nodes (i.e. not policies)",
+                               "single_policy_test"},
+                              {
+                                  R"(
 #include "arg_router/list.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/short_name.hpp"
@@ -89,13 +83,10 @@ int main() {
     return 0;
 }
     )",
-        "All list children must be tree_nodes (i.e. not policies)");
-}
-
-BOOST_AUTO_TEST_CASE(tree_node_policy_mix_test)
-{
-    test::death_test_compile(
-        R"(
+                                  "All list children must be tree_nodes (i.e. not policies)",
+                                  "triple_policy_test"},
+                              {
+                                  R"(
 #include "arg_router/flag.hpp"
 #include "arg_router/list.hpp"
 #include "arg_router/policy/long_name.hpp"
@@ -112,9 +103,8 @@ int main() {
     return 0;
 }
     )",
-        "All list children must be tree_nodes (i.e. not policies)");
+                                  "All list children must be tree_nodes (i.e. not policies)",
+                                  "tree_node_policy_mix_test"}});
 }
-
-BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

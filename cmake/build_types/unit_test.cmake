@@ -71,33 +71,43 @@ create_clangformat_target(
     SOURCES ${TEST_HEADERS} ${TEST_SRCS}
 )
 
-add_executable(arg_router_test EXCLUDE_FROM_ALL ${TEST_HEADERS} ${TEST_SRCS})
+add_executable(arg_router_test ${TEST_HEADERS} ${TEST_SRCS})
 add_dependencies(arg_router_test clangformat_test arg_router)
 
 target_compile_features(arg_router_test PUBLIC cxx_std_17)
 set_target_properties(arg_router_test PROPERTIES CXX_EXTENSIONS OFF)
 target_compile_definitions(arg_router_test PRIVATE UNIT_TEST_BUILD)
 
+set(DEATH_TEST_PARALLEL 8 CACHE STRING "Maximum number of parallel death tests to perform per suite")
+
 function(configure_test_build TARGET)
     # Clang can run in different command line argument modes to mimic gcc or cl.exe,
     # so we have to test for a 'frontent variant' too
-    if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" OR CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
-        set(EXTRA_FLAGS /W4 /Z7 /MP /clang:-fconstexpr-steps=10000000 ${ARGN})
+    if (MSVC_FRONTEND)
+        set(EXTRA_FLAGS /W4 /Z7 ${ARGN})
         set(EXTRA_DEFINES NOMINMAX BOOST_USE_WINDOWS_H WIN32_LEAN_AND_MEAN _CRT_SECURE_NO_WARNINGS)
 
         # /MT by default as it simplifies the running of the unit tests
         set_property(TARGET ${TARGET} PROPERTY
                      MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+
+        if (CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
+            set(EXTRA_FLAGS /clang:-fconstexpr-steps=10000000)
+        endif()
     else()
         set(EXTRA_FLAGS -Werror -Wall -Wextra -ftemplate-backtrace-limit=0 ${ARGN})
         set(EXTRA_DEFINES "")
     endif()
     target_compile_options(${TARGET} PRIVATE ${EXTRA_FLAGS})
-    target_compile_definitions(${TARGET} PRIVATE ${EXTRA_DEFINES})
+    target_compile_definitions(${TARGET} PRIVATE
+        ${EXTRA_DEFINES}
+        AR_DEATH_TEST_PARALLEL=${DEATH_TEST_PARALLEL}
+    )
 endfunction()
 
 configure_test_build(arg_router_test)
 add_clangtidy_to_target(arg_router_test)
+add_santizers_to_target(arg_router_test)
 
 target_include_directories(arg_router_test
     PUBLIC "${CMAKE_SOURCE_DIR}/include"
@@ -109,6 +119,9 @@ target_link_libraries(arg_router_test
     PUBLIC Threads::Threads
 )
 
-target_compile_definitions(arg_router_test PRIVATE UNIT_TEST_BUILD)
+target_compile_definitions(arg_router_test PRIVATE
+    UNIT_TEST_BUILD
+    AR_REPO_PATH="${CMAKE_SOURCE_DIR}"
+)
 
 add_test(NAME arg_router_test COMMAND arg_router_test -l message)

@@ -6,6 +6,7 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <forward_list>
 #include <typeindex>
 
 namespace arg_router
@@ -181,6 +182,19 @@ constexpr void data_set(F&& f, std::tuple<Args...>&& tuple)
         std::forward<std::decay_t<decltype(tuple)>>(tuple));
 }
 
+/** Pair-like structure containing the input data for death_test_compile. */
+struct death_test_info {
+    std::string code;                 /// Code to compile, must contain a <TT>main()</TT>
+    std::string_view expected_error;  /// Error string to search for in output
+    std::string_view test_name;       /// Test name, ignored if empty
+};
+
+/** Runs multiple death tests in parallel, up to a maximum of AR_DEATH_TEST_PARALLEL.
+ *
+ * @param tests death_test_info instances
+ */
+void death_test_compile(std::forward_list<death_test_info> tests);
+
 /** Compiles @a code and returns the result.
  *
  * There is a dedicated CMake target for death tests, this function replaces the content of the
@@ -192,5 +206,6 @@ constexpr void data_set(F&& f, std::tuple<Args...>&& tuple)
  * @param expected_error Error string to search for in output
  */
 void death_test_compile(std::string_view code, std::string_view expected_error);
+
 }  // namespace test
 }  // namespace arg_router
