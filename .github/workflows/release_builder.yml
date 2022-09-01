@@ -39,6 +39,7 @@ jobs:
     - name: Check versions match
       id: version_check
       run: |
+        cd ${{ env.BUILD_DIR }}
         VERSION=`cut -c 12- <<< "${{ env.TAG_VERSION }}"`
         FILENAME="arg_router-${VERSION}"
         ls -l | grep ${FILENAME}.zip
