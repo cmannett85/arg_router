@@ -19,11 +19,6 @@ jobs:
       with:
           fetch-depth: 1
 
-    - name: Update packages
-      run: |
-        sudo apt update
-        sudo apt install ninja-build
-
     - name: Get commit message and percent-encode
       id: commit_msg
       run: |
@@ -38,7 +33,7 @@ jobs:
       run: |
         mkdir -p ${{ env.BUILD_DIR }}
         cd ${{ env.BUILD_DIR }}
-        cmake ${{ github.workspace }} -G "Ninja" -DINSTALLATION_ONLY=ON
+        cmake ${{ github.workspace }} -DINSTALLATION_ONLY=ON
         cmake --build . --target package
 
     - name: Check versions match

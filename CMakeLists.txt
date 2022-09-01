@@ -14,9 +14,9 @@ cmake_dependent_option(ENABLE_SANITIZERS "Enable ASan/UBSan for unit tests and e
 cmake_dependent_option(DISABLE_VCPKG "Disable vcpkg, use system libraries" OFF
                        "NOT INSTALLATION_ONLY" OFF)
 
-# Use the libraries brought in from vcpkg rather than the system ones
+# Use the libraries brought in from vcpkg rather than the system ones, unless overridden
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/path_prefixer.cmake")
-if(NOT DISABLE_VCPKG)
+if((NOT INSTALLATION_ONLY) AND (NOT DISABLE_VCPKG))
     path_prefixer(CMAKE_TOOLCHAIN_FILE vcpkg/scripts/buildsystems/vcpkg.cmake)
 endif()
 
