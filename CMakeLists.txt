@@ -4,19 +4,19 @@ cmake_minimum_required(VERSION 3.18)
 
 include(CMakeDependentOption)
 
-option(DOCS_ONLY "Only build the documentation" OFF)
+option(INSTALLATION_ONLY "Just 'build' for installation" OFF)
 cmake_dependent_option(BUILD_UNIT_TESTS_AND_EXAMPLES "Build the unit tests and examples" ON
-                       "NOT DOCS_ONLY" OFF)
+                       "NOT INSTALLATION_ONLY" OFF)
 cmake_dependent_option(ENABLE_CLANG_TIDY "Enable clang-tidy warnings for unit tests and examples" OFF
-                      "NOT DOCS_ONLY" OFF)
+                      "NOT INSTALLATION_ONLY" OFF)
 cmake_dependent_option(ENABLE_SANITIZERS "Enable ASan/UBSan for unit tests and examples" OFF
-                       "NOT DOCS_ONLY" OFF)
+                       "NOT INSTALLATION_ONLY" OFF)
 cmake_dependent_option(DISABLE_VCPKG "Disable vcpkg, use system libraries" OFF
-                       "NOT DOCS_ONLY" OFF)
+                       "NOT INSTALLATION_ONLY" OFF)
 
 # Use the libraries brought in from vcpkg rather than the system ones
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/path_prefixer.cmake")
-if((NOT DOCS_ONLY) AND (NOT DISABLE_VCPKG))
+if(NOT DISABLE_VCPKG)
     path_prefixer(CMAKE_TOOLCHAIN_FILE vcpkg/scripts/buildsystems/vcpkg.cmake)
 endif()
 
@@ -33,14 +33,13 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" OR CMAKE_CXX_COMPILER_FRONTEND_VARIANT
 endif()
 
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/versioning/version.cmake")
-include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/copyright_checker.cmake")
-include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/documentation.cmake")
-include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/clang-tidy.cmake")
-include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/sanitizers.cmake")
 
-# Only find packages if we're not doing a Docs-only build
-if(NOT DOCS_ONLY)
+if(NOT INSTALLATION_ONLY)
+    include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/copyright_checker.cmake")
+    include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.cmake")
+    include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/clang-tidy.cmake")
+    include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/sanitizers.cmake")
     include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/ccache.cmake")
 
     find_package(span-lite)
@@ -154,12 +153,14 @@ path_prefixer(FOR_IDE
     vcpkg.json
 )
 
-include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/clang-format.cmake")
-create_clangformat_target(
-    NAME clangformat
-    FORMAT_FILE ${CMAKE_SOURCE_DIR}/.clang-format
-    SOURCES ${HEADERS}
-)
+if(NOT INSTALLATION_ONLY)
+    include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/clang-format.cmake")
+    create_clangformat_target(
+        NAME clangformat
+        FORMAT_FILE ${CMAKE_SOURCE_DIR}/.clang-format
+        SOURCES ${HEADERS}
+    )
+endif()
 
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/library.cmake")
 

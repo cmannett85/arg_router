@@ -26,7 +26,7 @@ jobs:
       run: |
         mkdir -p ${{ env.BUILD_DIR }}
         cd ${{ env.BUILD_DIR }}
-        cmake ${{ github.workspace }} -DDOCS_ONLY=ON
+        cmake ${{ github.workspace }} -DINSTALLATION_ONLY=ON
         cmake --build . --target documentation
 
     - name: Deploy

@@ -1,9 +1,5 @@
 ### Copyright (C) 2022 by Camden Mannett.  All rights reserved. 
 
-if(DOCS_ONLY)
-    message(STATUS "Documentation-only build")
-endif()
-
 path_prefixer(DOCS_FOR_IDE
     cmake/build_types/documentation_script.cmake
     docs/Doxyfile
@@ -28,17 +24,10 @@ set(DOCS_COMMAND
     -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/documentation_script.cmake"
 )
 
-if (DOCS_ONLY)
-    add_custom_target(documentation ALL
-        COMMAND ${DOCS_COMMAND}
-        SOURCES ${DOCS_FOR_IDE}
-    )
-else()
-    add_custom_target(documentation
-        COMMAND ${DOCS_COMMAND}
-        SOURCES ${DOCS_FOR_IDE}
-    )
-endif()
+add_custom_target(documentation
+    COMMAND ${DOCS_COMMAND}
+    SOURCES ${DOCS_FOR_IDE}
+)
 
 # We have touch the generated API readme because CPack configuration will fail if it is not there.
 # set_source_files_properties cannot be used in a script so that's set here too

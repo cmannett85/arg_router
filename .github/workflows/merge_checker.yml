@@ -178,8 +178,8 @@ jobs:
       run: |
         mkdir -p ${{ env.BUILD_DIR }}
         cd ${{ env.BUILD_DIR }}
-        cmake ${{ github.workspace }} -DDEATH_TEST_PARALLEL=2
-        cmake --build . --target arg_router_test -j2
+        cmake ${{ github.workspace }} -DDEATH_TEST_PARALLEL=3
+        cmake --build . --target arg_router_test -j3
 
     - name: Run unit tests
       timeout-minutes: 30
