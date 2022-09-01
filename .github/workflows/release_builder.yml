@@ -38,7 +38,7 @@ jobs:
       run: |
         mkdir -p ${{ env.BUILD_DIR }}
         cd ${{ env.BUILD_DIR }}
-        cmake ${{ github.workspace }} -G "Ninja" -DDOCS_ONLY=ON
+        cmake ${{ github.workspace }} -G "Ninja" -DINSTALLATION_ONLY=ON
         cmake --build . --target package
 
     - name: Check versions match
