@@ -42,8 +42,16 @@ jobs:
         cd ${{ env.BUILD_DIR }}
         VERSION=`cut -c 12- <<< "${{ env.TAG_VERSION }}"`
         FILENAME="arg_router-${VERSION}"
-        ls -l | grep ${FILENAME}.zip
+        test -e ${FILENAME}.zip
         echo "::set-output name=filename::${FILENAME}"
+
+    - name: Test Deb install
+      run: |
+        cd ${{ env.BUILD_DIR }}
+        sudo apt install ./${{ steps.version_check.outputs.filename }}.deb
+        test -e /usr/include/arg_router
+        sudo apt remove arg_router
+        ! test -e /usr/include/arg_router
 
     - name: Create GitHub release entry
       id: create_release

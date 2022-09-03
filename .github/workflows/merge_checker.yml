@@ -219,18 +219,11 @@ jobs:
         sudo apt update
         sudo apt install ninja-build
 
-    - name: Download Boost 1.77
-      run: |
-        mkdir ${{ env.DOWNLOAD_DIR }}
-        cd ${{ env.DOWNLOAD_DIR }}
-        wget https://boostorg.jfrog.io/artifactory/main/release/1.77.0/source/boost_1_77_0.7z
-        7z x boost_1_77_0.7z
-
     - name: Build
       run: |
         mkdir -p ${{ env.BUILD_DIR }}
         cd ${{ env.BUILD_DIR }}
-        cmake ${{ github.workspace }} -G "Ninja" -DBUILD_UNIT_TESTS_AND_EXAMPLES=OFF -DDISABLE_VCPKG=ON -DBoost_INCLUDE_DIR=${{ env.DOWNLOAD_DIR }}/boost_1_77_0 -DDEATH_TEST_PARALLEL=2
+        cmake ${{ github.workspace }} -G "Ninja" -DBUILD_UNIT_TESTS_AND_EXAMPLES=OFF -DDISABLE_VCPKG=ON -DDEATH_TEST_PARALLEL=2
         cmake --build .
 
     - name: Test install
@@ -248,5 +241,5 @@ jobs:
       run: |
         mkdir ${{ env.PACKAGE_BUILD_DIR }}
         cd ${{ env.PACKAGE_BUILD_DIR }}
-        cmake ${{ github.workspace }}/scripts/ci/package_test_project -DCMAKE_CXX_STANDARD=20 -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}/include -DDISABLE_VCPKG=ON -DBoost_INCLUDE_DIR=${{ env.DOWNLOAD_DIR }}/boost_1_77_0
+        cmake ${{ github.workspace }}/scripts/ci/package_test_project -DCMAKE_CXX_STANDARD=20 -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}/include -DDISABLE_VCPKG=ON
         cmake --build .

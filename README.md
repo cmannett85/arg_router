@@ -541,9 +541,9 @@ We didn't want to...  Normally an application will link to ICU for its Unicode n
 
 ## Installation and Dependencies
 If you're simply a library user, then download the pre-packaged release and install somewhere.  You will need the following dependencies in order to build:
-* Boost.mp11 v1.77
-* Boost.Preprocessor v1.77
-* Boost.Lexical_Cast v1.77
+* Boost.mp11 v1.74
+* Boost.Preprocessor v1.74
+* Boost.Lexical_Cast v1.74
 * [span-lite](https://github.com/martinmoene/span-lite) (only needed if building against C++17)
 
 `arg_router` is header-only (due to all the templates) and so are the above dependencies.
@@ -561,8 +561,8 @@ Building these targets will require more dependencies:
 * clang-format
 * Python v3 (used for copyright checking)
 * Doxygen
-* Boost.Test v1.77
-* Boost.Filesystem v1.77
+* Boost.Test v1.74
+* Boost.Filesystem v1.74
 * Git
 
 By default all these dependencies are provided by `vcpkg` automatically, please **note** that `vcpkg` is provided via a submodule and therefore will need initialising (`git submodule update`).  If you would rather the dependencies came from the system then simply set `-DDISABLE_VCPKG=OFF`, and CMake will not bootstrap `vcpkg` and therefore try to find the packages locally.

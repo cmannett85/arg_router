@@ -53,20 +53,24 @@ struct generate_string_of_child_names {
         using type = typename std::decay_t<decltype(build())>::array_type;
     };
 
+    template <typename ChildNameArray>
+    using joiner = boost::mp11::mp_push_back<ChildNameArray, traits::integral_constant<','>>;
+
     using children_type = boost::mp11::mp_filter<is_tree_node, std::tuple<Params...>>;
 
     // The gist is that for each child we get its name (prepended with an appropriate prefix) and
     // concatenate with a comma separator.  And then add a helpful prefix to the whole thing
     using string_array = prepend_prefix<
         ParentDocName,
-        boost::mp11::mp_join<
+        boost::mp11::mp_transform<
+            joiner,
             boost::mp11::mp_transform_q<
                 boost::mp11::mp_bind<traits::get_type,
                                      boost::mp11::mp_bind<build_name, boost::mp11::_1>>,
-                children_type>,
-            traits::integral_constant<','>>>;
+                children_type>>>;
 
-    using type = utility::convert_to_cts_t<string_array>;
+    using type = utility::convert_to_cts_t<
+        boost::mp11::mp_take_c<string_array, std::tuple_size_v<string_array> - 1>>;
 };
 
 template <typename ParentDocName, typename... Params>
