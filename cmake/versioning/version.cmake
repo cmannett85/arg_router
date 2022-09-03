@@ -27,7 +27,7 @@ if(NOT "${VERSION_FILE_TMP}" STREQUAL "${VERSION_FILE}")
     file(RENAME ${VERSION_FILE_TMP} ${VERSION_FILE})
 endif()
 
-# Update the project version in the Doxyfile too
+# Update the project version in the Doxyfile
 file(READ "${CMAKE_SOURCE_DIR}/docs/Doxyfile" DOXYFILE_DATA)
 
 string(
@@ -41,4 +41,20 @@ string(
 if(NOT "${DOXYFILE_DATA}" STREQUAL "${UPDATED_DOXYFILE_DATA}")
     message(STATUS "Updating Doxyfile project version")
     file(WRITE "${CMAKE_SOURCE_DIR}/docs/Doxyfile" ${UPDATED_DOXYFILE_DATA})
+endif()
+
+# Update the version in vcpkg.json
+file(READ "${CMAKE_SOURCE_DIR}/vcpkg.json" VCPKG_JSON_DATA)
+
+string(
+    REGEX REPLACE
+    "\"version-string\": \"[0-9]*\\.[0-9]*\\.[0-9]*\""
+    "\"version-string\": \"${CMAKE_PROJECT_VERSION}\""
+    UPDATED_VCPKG_JSON_DATA
+    "${VCPKG_JSON_DATA}"
+)
+
+if(NOT "${VCPKG_JSON_DATA}" STREQUAL "${UPDATED_VCPKG_JSON_DATA}")
+    message(STATUS "Updating vcpkg.json version")
+    file(WRITE "${CMAKE_SOURCE_DIR}/vcpkg.json" ${UPDATED_VCPKG_JSON_DATA})
 endif()
