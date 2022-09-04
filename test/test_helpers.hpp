@@ -3,11 +3,11 @@
 #pragma once
 
 #include "arg_router/utility/tuple_iterator.hpp"
+#include "arg_router/utility/type_hash.hpp"
 
 #include <boost/test/unit_test.hpp>
 
 #include <forward_list>
-#include <typeindex>
 
 namespace arg_router
 {
@@ -39,19 +39,19 @@ constexpr auto& get_node(Root& root) noexcept
     }
 }
 
-/** Returns the <TT>std::type_index</TT> using the descending child indices, starting from @a root.
+/** Returns the hash code using the descending child indices, starting from @a root.
  *
  * @tparam I First index
  * @tparam Is Optional nested indices
  * @tparam Root Starting node type
  * @param root Starting node
- * @return Type index of node at the specified child indices
+ * @return Hash code of node at the specified child indices
  */
 template <std::size_t I, std::size_t... Is, typename Root>
-std::type_index get_type_index(const Root& root) noexcept
+std::size_t get_type_index(const Root& root) noexcept
 {
     const auto& child = get_node<I, Is...>(root);
-    return typeid(std::decay_t<decltype(child)>);
+    return utility::type_hash<std::decay_t<decltype(child)>>();
 }
 
 /** Generates a tuple of <TT>std::reference_wrapper<TT>s containing a node and all of its parents in

@@ -15,7 +15,7 @@ std::vector<utility::unsafe_any> expected_target_and_parents;
 template <typename Node, typename... Parents>
 void parse_checker(parsing::parse_target target, const Node& node, const Parents&... parents)
 {
-    BOOST_CHECK_EQUAL(std::type_index{typeid(Node)}.hash_code(), target.node_type().hash_code());
+    BOOST_CHECK_EQUAL(utility::type_hash<Node>(), target.node_type());
 
     const auto target_and_parents_tuple = std::tuple{std::cref(node), std::cref(parents)...};
     utility::tuple_iterator(
@@ -71,12 +71,12 @@ BOOST_AUTO_TEST_CASE(accessors_test)
 {
     auto f = [](auto expected_tokens) {
         const auto node = stub_node{};
-        const auto expected_index = std::type_index{typeid(node)}.hash_code();
+        const auto expected_index = utility::type_hash<std::decay_t<decltype(node)>>();
         auto target = parsing::parse_target{expected_tokens, node};
 
         BOOST_CHECK(target);
         BOOST_CHECK_EQUAL(expected_tokens, target.tokens());
-        BOOST_CHECK_EQUAL(expected_index, target.node_type().hash_code());
+        BOOST_CHECK_EQUAL(expected_index, target.node_type());
     };
 
     test::data_set(
