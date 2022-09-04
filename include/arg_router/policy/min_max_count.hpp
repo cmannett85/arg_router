@@ -88,9 +88,7 @@ public:
         if constexpr (!owner_type::is_named) {
             static_assert(!processed_target.empty, "processed_target cannot be empty");
 
-            if (has_filled_tokens(*processed_target,
-                                  std::type_index{typeid(owner_type)},
-                                  max_count)) {
+            if (has_filled_tokens(*processed_target, utility::type_hash<owner_type>(), max_count)) {
                 return parsing::pre_parse_action::skip_node;
             }
         }
@@ -112,15 +110,15 @@ public:
 
 private:
     [[nodiscard]] static bool has_filled_tokens(const parsing::parse_target& target,
-                                                std::type_index owner_index,
+                                                std::size_t owner_hash_code,
                                                 std::size_t max_count) noexcept
     {
-        if (target.node_type() == owner_index) {
+        if (target.node_type() == owner_hash_code) {
             return target.tokens().size() >= max_count;
         }
 
         for (const auto& sub_target : target.sub_targets()) {
-            if (has_filled_tokens(sub_target, owner_index, max_count)) {
+            if (has_filled_tokens(sub_target, owner_hash_code, max_count)) {
                 return true;
             }
         }

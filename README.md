@@ -539,6 +539,9 @@ $ ./example_just_cats --кіт
 ### Why have you written your own Unicode algorithms!?
 We didn't want to...  Normally an application will link to ICU for its Unicode needs, but unfortunately we can't do that here as ICU is not `constexpr` and therefore cannot be used for our compile-time needs - so we need to roll our own.
 
+## Error Handling
+Currently `arg_router` only supports exceptions as error handling.  If a parsing fails for some reason a `arg_router::parse_exception` is thrown carrying information on the failure.
+
 ## Installation and Dependencies
 If you're simply a library user, then download the pre-packaged release and install somewhere.  You will need the following dependencies in order to build:
 * Boost.mp11 v1.74
@@ -547,6 +550,8 @@ If you're simply a library user, then download the pre-packaged release and inst
 * [span-lite](https://github.com/martinmoene/span-lite) (only needed if building against C++17)
 
 `arg_router` is header-only (due to all the templates) and so are the above dependencies.
+
+**Note** currently arg_router requires exception support, but _not_ RTTI.
 
 To get a pre-release `arg_router`, or build the unit tests and examples, simply check out the repo and build via CMake in the usual way - the unit tests will be built by default:
 ```
@@ -567,11 +572,6 @@ Building these targets will require more dependencies:
 
 By default all these dependencies are provided by `vcpkg` automatically, please **note** that `vcpkg` is provided via a submodule and therefore will need initialising (`git submodule update`).  If you would rather the dependencies came from the system then simply set `-DDISABLE_VCPKG=OFF`, and CMake will not bootstrap `vcpkg` and therefore try to find the packages locally.
 
-`arg_router` currently requires RTTI to be enabled.
-
-## Error Handling
-Currently `arg_router` only supports exceptions as error handling.  If a parsing fails for some reason a `arg_router::parse_exception` is thrown carrying information on the failure.
-
 ## Supported Compilers/Platforms
 The CI system attached to this repo builds the unit tests and examples with:
 * Ubuntu 22.04 (Ninja), Clang 14/gcc-9
@@ -584,6 +584,21 @@ You can build on Windows with the VS 2022 generator (MSBuild) but you must set t
 
 You'll notice the big omission: No MSVC.  That's because even with the latest version, I get nothing but ICEs out of it with no useful diagnostics making fixing the issues close to impossible.
 
+## Tips for Users
+### Do **NOT** Make the Parse Tree Type Accessible
+The parse tree is _very_ expensive to construct due to all the compile-time checking and meta-programming shennanigans, so do **NOT** define it in a header and have multiple source files
+include it - it will cause the tree to be built/checked in every source file it is included in.
+
+`arg_router` is designed to be self-contained, the user only needs to define the 'hooks' (`router` instances) that call into their application's entry points - there will never be a need for the application logic to access the tree.
+
+This is a long-winded way of saying define the tree in _one_ source file.
+
+### Minimise Static Storage Bloat
+Despite not using `typeid` or `dynamic_cast` in the library, compilers will still generate class name data if RTTI is enabled.  Due to the highly nested templates that make up the parse tree, these class names can become huge and occupy large amount of static storage in the executable.  As an example, the `basic_cat` project in the repo will create ~100KB of class name data in the binary - this data is
+not used and cannot be stripped out.
+
+Disabling RTTI is rarely feasible for most projects, but it is possible to disable RTTI for a single CMake target.  So if it was deemed worth it for the size reduction, the command line parsing could be the application's executable (compiled without RTTI) and then the wider application logic could be in a static library (compiled with RTTI).  This does not affect exceptions, as their type information is always added by the compiler regardless of RTTI status.
+
 ## API Documentation
 Complete Doxygen-generated documentation is available [here](https://cmannett85.github.io/arg_router/).
 
@@ -593,4 +608,3 @@ Take a look at the [issues](https://github.com/cmannett85/arg_router/issues) pag
 * Support for runtime language switching by swapping between parse trees depending on the locale ([#11](https://github.com/cmannett85/arg_router/issues/11))
 * Customised help formatting ([#86](https://github.com/cmannett85/arg_router/issues/86))
 * Command line tab autocomplete ([#123](https://github.com/cmannett85/arg_router/issues/123))
-* Try to drop the RTTI requirement as it causes significant binary bloat ([#155](https://github.com/cmannett85/arg_router/issues/155))

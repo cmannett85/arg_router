@@ -328,7 +328,7 @@ private:
                   "Non-mode children cannot have routing");
 
     template <typename Child, typename Handler>
-    static void match_child(const Child& child, std::type_index ti, Handler handler)
+    static void match_child(const Child& child, std::size_t hash, Handler handler)
     {
         auto found = false;
         utility::tree_recursor(
@@ -339,8 +339,7 @@ private:
                 // never allow that, but let's help the compiler out...
                 if constexpr (!traits::is_specialisation_of_v<node_type, mode_t> &&
                               traits::has_parse_method_v<node_type>) {
-                    // NOLINTNEXTLINE(google-readability-casting)
-                    if (!found && (std::type_index{typeid(node_type)} == ti)) {
+                    if (!found && (utility::type_hash<node_type>() == hash)) {
                         found = true;
                         handler(node);
                     }

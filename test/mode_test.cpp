@@ -48,7 +48,7 @@ struct test_help_data {
 };
 
 struct pre_parse_data {
-    std::type_index type_index;
+    std::size_t hash_code;
     std::vector<parsing::token_type> tokens;
 };
 }  // namespace
@@ -86,15 +86,13 @@ BOOST_AUTO_TEST_CASE(anonymous_single_flag_pre_parse_test)
             BOOST_REQUIRE_EQUAL(expected_result, !!result);
 
             BOOST_CHECK(result->tokens().empty());
-            BOOST_CHECK_EQUAL(result->node_type().hash_code(),
-                              std::type_index{typeid(std::decay_t<decltype(m)>)}.hash_code());
+            BOOST_CHECK_EQUAL(result->node_type(), utility::type_hash<std::decay_t<decltype(m)>>());
             if (expected_result) {
                 BOOST_REQUIRE_EQUAL(result->sub_targets().size(), 1);
                 auto& sub_target = result->sub_targets().front();
                 BOOST_CHECK_EQUAL(
-                    sub_target.node_type().hash_code(),
-                    std::type_index{typeid(std::decay_t<decltype(test::get_node<0>(m))>)}
-                        .hash_code());
+                    sub_target.node_type(),
+                    utility::type_hash<std::decay_t<decltype(test::get_node<0>(m))>>());
                 BOOST_CHECK(sub_target.tokens().empty());
             } else {
                 BOOST_CHECK(result->sub_targets().empty());
@@ -207,14 +205,13 @@ BOOST_AUTO_TEST_CASE(anonymous_triple_child_pre_parse_test)
                 BOOST_REQUIRE_EQUAL(expected_results.empty(), !result);
 
                 BOOST_CHECK(result->tokens().empty());
-                BOOST_CHECK_EQUAL(result->node_type().hash_code(),
-                                  std::type_index{typeid(std::decay_t<decltype(m)>)}.hash_code());
+                BOOST_CHECK_EQUAL(result->node_type(),
+                                  utility::type_hash<std::decay_t<decltype(m)>>());
 
                 BOOST_REQUIRE_EQUAL(result->sub_targets().size(), expected_results.size());
                 for (auto i = 0u; i < expected_results.size(); ++i) {
                     auto& sub_target = result->sub_targets()[i];
-                    BOOST_CHECK_EQUAL(sub_target.node_type().hash_code(),
-                                      expected_results[i].type_index.hash_code());
+                    BOOST_CHECK_EQUAL(sub_target.node_type(), expected_results[i].hash_code);
                     BOOST_CHECK_EQUAL(sub_target.tokens(), expected_results[i].tokens);
                 }
             } catch (parse_exception& e) {
@@ -412,15 +409,13 @@ BOOST_AUTO_TEST_CASE(named_triple_arg_pre_parse_test)
 
                 if (result) {
                     BOOST_CHECK(result->tokens().empty());
-                    BOOST_CHECK_EQUAL(
-                        result->node_type().hash_code(),
-                        std::type_index{typeid(std::decay_t<decltype(m)>)}.hash_code());
+                    BOOST_CHECK_EQUAL(result->node_type(),
+                                      utility::type_hash<std::decay_t<decltype(m)>>());
 
                     BOOST_REQUIRE_EQUAL(result->sub_targets().size(), expected_results.size());
                     for (auto i = 0u; i < expected_results.size(); ++i) {
                         auto& sub_target = result->sub_targets()[i];
-                        BOOST_CHECK_EQUAL(sub_target.node_type().hash_code(),
-                                          expected_results[i].type_index.hash_code());
+                        BOOST_CHECK_EQUAL(sub_target.node_type(), expected_results[i].hash_code);
                         BOOST_CHECK_EQUAL(sub_target.tokens(), expected_results[i].tokens);
                     }
                 }
@@ -584,14 +579,13 @@ BOOST_AUTO_TEST_CASE(anonymous_triple_flag_single_list_pre_parse_test)
                 BOOST_REQUIRE_EQUAL(expected_results.empty(), !result);
 
                 BOOST_CHECK(result->tokens().empty());
-                BOOST_CHECK_EQUAL(result->node_type().hash_code(),
-                                  std::type_index{typeid(std::decay_t<decltype(m)>)}.hash_code());
+                BOOST_CHECK_EQUAL(result->node_type(),
+                                  utility::type_hash<std::decay_t<decltype(m)>>());
 
                 BOOST_REQUIRE_EQUAL(result->sub_targets().size(), expected_results.size());
                 for (auto i = 0u; i < expected_results.size(); ++i) {
                     auto& sub_target = result->sub_targets()[i];
-                    BOOST_CHECK_EQUAL(sub_target.node_type().hash_code(),
-                                      expected_results[i].type_index.hash_code());
+                    BOOST_CHECK_EQUAL(sub_target.node_type(), expected_results[i].hash_code);
                     BOOST_CHECK_EQUAL(sub_target.tokens(), expected_results[i].tokens);
                 }
             } catch (parse_exception& e) {
@@ -641,15 +635,13 @@ BOOST_AUTO_TEST_CASE(named_triple_flag_double_list_pre_parse_test)
 
                 if (result) {
                     BOOST_CHECK(result->tokens().empty());
-                    BOOST_CHECK_EQUAL(
-                        result->node_type().hash_code(),
-                        std::type_index{typeid(std::decay_t<decltype(m)>)}.hash_code());
+                    BOOST_CHECK_EQUAL(result->node_type(),
+                                      utility::type_hash<std::decay_t<decltype(m)>>());
 
                     BOOST_REQUIRE_EQUAL(result->sub_targets().size(), expected_results.size());
                     for (auto i = 0u; i < expected_results.size(); ++i) {
                         auto& sub_target = result->sub_targets()[i];
-                        BOOST_CHECK_EQUAL(sub_target.node_type().hash_code(),
-                                          expected_results[i].type_index.hash_code());
+                        BOOST_CHECK_EQUAL(sub_target.node_type(), expected_results[i].hash_code);
                         BOOST_CHECK_EQUAL(sub_target.tokens(), expected_results[i].tokens);
                     }
                 }
@@ -715,14 +707,13 @@ BOOST_AUTO_TEST_CASE(nested_modes_pre_parse_test)
 
             if (result) {
                 BOOST_CHECK(result->tokens().empty());
-                BOOST_CHECK_EQUAL(result->node_type().hash_code(), expected_hash);
+                BOOST_CHECK_EQUAL(result->node_type(), expected_hash);
 
                 if (expected_results) {
                     BOOST_REQUIRE_EQUAL(result->sub_targets().size(), expected_results->size());
                     for (auto i = 0u; i < expected_results->size(); ++i) {
                         auto& sub_target = result->sub_targets()[i];
-                        BOOST_CHECK_EQUAL(sub_target.node_type().hash_code(),
-                                          (*expected_results)[i].type_index.hash_code());
+                        BOOST_CHECK_EQUAL(sub_target.node_type(), (*expected_results)[i].hash_code);
                         BOOST_CHECK_EQUAL(sub_target.tokens(), (*expected_results)[i].tokens);
                     }
                 }
@@ -737,7 +728,7 @@ BOOST_AUTO_TEST_CASE(nested_modes_pre_parse_test)
         {
             std::tuple{std::vector<parsing::token_type>{{parsing::prefix_type::none, "mode1"}},
                        std::vector<parsing::token_type>{},
-                       std::type_index{typeid(std::decay_t<decltype(m)>)}.hash_code(),
+                       utility::type_hash<std::decay_t<decltype(m)>>(),
                        std::optional{std::vector<pre_parse_data>{}},
                        ""},
             std::tuple{std::vector<parsing::token_type>{{parsing::prefix_type::none, "mode2"}},
@@ -748,7 +739,7 @@ BOOST_AUTO_TEST_CASE(nested_modes_pre_parse_test)
             std::tuple{std::vector<parsing::token_type>{{parsing::prefix_type::none, "mode1"},
                                                         {parsing::prefix_type::none, "mode2"}},
                        std::vector<parsing::token_type>{},
-                       test::get_type_index<0>(m).hash_code(),
+                       test::get_type_index<0>(m),
                        std::optional{std::vector<pre_parse_data>{}},
                        ""},
             std::tuple{std::vector<parsing::token_type>{{parsing::prefix_type::none, "mode1"},
@@ -762,7 +753,7 @@ BOOST_AUTO_TEST_CASE(nested_modes_pre_parse_test)
                                                         {parsing::prefix_type::none, "mode3"},
                                                         {parsing::prefix_type::none, "--hello"}},
                        std::vector<parsing::token_type>{},
-                       test::get_type_index<0, 0>(m).hash_code(),
+                       test::get_type_index<0, 0>(m),
                        std::optional{std::vector<pre_parse_data>{
                            {test::get_type_index<0, 0, 0>(m), std::vector<parsing::token_type>{}}}},
                        ""},
@@ -771,7 +762,7 @@ BOOST_AUTO_TEST_CASE(nested_modes_pre_parse_test)
                                                         {parsing::prefix_type::none, "mode3"},
                                                         {parsing::prefix_type::none, "-l"}},
                        std::vector<parsing::token_type>{},
-                       test::get_type_index<0, 0>(m).hash_code(),
+                       test::get_type_index<0, 0>(m),
                        std::optional{std::vector<pre_parse_data>{
                            {test::get_type_index<0, 0, 0>(m), std::vector<parsing::token_type>{}}}},
                        ""},
@@ -785,7 +776,7 @@ BOOST_AUTO_TEST_CASE(nested_modes_pre_parse_test)
                                                         {parsing::prefix_type::none, "mode3"},
                                                         {parsing::prefix_type::none, "-l"},
                                                         {parsing::prefix_type::none, "--hello"}},
-                       test::get_type_index<0, 0>(m).hash_code(),
+                       test::get_type_index<0, 0>(m),
                        std::optional<std::vector<pre_parse_data>>{},
                        "Argument has already been set: --hello"},
             std::tuple{std::vector<parsing::token_type>{{parsing::prefix_type::none, "mode1"},
@@ -794,7 +785,7 @@ BOOST_AUTO_TEST_CASE(nested_modes_pre_parse_test)
                                                         {parsing::prefix_type::none, "--フー"},
                                                         {parsing::prefix_type::none, "42"}},
                        std::vector<parsing::token_type>{},
-                       test::get_type_index<0, 0>(m).hash_code(),
+                       test::get_type_index<0, 0>(m),
                        std::optional{std::vector<pre_parse_data>{
                            {test::get_type_index<0, 0, 1>(m),
                             std::vector<parsing::token_type>{{parsing::prefix_type::none, "42"}}}}},

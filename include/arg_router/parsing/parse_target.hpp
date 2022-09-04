@@ -4,6 +4,7 @@
 
 #include "arg_router/parsing/token_type.hpp"
 #include "arg_router/tree_node_fwd.hpp"
+#include "arg_router/utility/type_hash.hpp"
 #include "arg_router/utility/unsafe_any.hpp"
 
 #include <functional>
@@ -33,7 +34,7 @@ public:
      */
     template <typename Node, typename... Parents>
     parse_target(vector<token_type> tokens, const Node& node, const Parents&... parents) noexcept :
-        node_type_{typeid(Node)}, tokens_(std::move(tokens))
+        node_type_{utility::type_hash<std::decay_t<Node>>()}, tokens_(std::move(tokens))
     {
         static_assert(is_tree_node_v<Node>, "Target must be a tree_node");
 
@@ -96,11 +97,11 @@ public:
      */
     [[nodiscard]] explicit operator bool() const noexcept { return static_cast<bool>(parse_); }
 
-    /** Returns the <TT>std::type_index</TT> for the target node.
+    /** Returns the hash code for the target node.
      *
-     * @return Target node <TT>std::type_index</TT>
+     * @return Target node hash code
      */
-    [[nodiscard]] std::type_index node_type() const noexcept { return node_type_; }
+    [[nodiscard]] std::size_t node_type() const noexcept { return node_type_; }
 
     /** Append a sub-target.
      *
@@ -131,7 +132,7 @@ public:
     }
 
 private:
-    std::type_index node_type_;
+    std::size_t node_type_;
     vector<token_type> tokens_;
     vector<parse_target> sub_targets_;
     std::function<utility::unsafe_any(parse_target)> parse_;

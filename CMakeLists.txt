@@ -114,6 +114,7 @@ path_prefixer(HEADERS
     include/arg_router/utility/terminal.hpp
     include/arg_router/utility/tree_recursor.hpp
     include/arg_router/utility/tuple_iterator.hpp
+    include/arg_router/utility/type_hash.hpp
     include/arg_router/utility/unsafe_any.hpp
     include/arg_router/utility/utf8.hpp
     include/arg_router/utility/utf8/code_point.hpp
