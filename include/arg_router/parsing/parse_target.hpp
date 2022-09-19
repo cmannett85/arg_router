@@ -8,7 +8,6 @@
 #include "arg_router/utility/unsafe_any.hpp"
 
 #include <functional>
-#include <typeindex>
 
 namespace arg_router::parsing
 {

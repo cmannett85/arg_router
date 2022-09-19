@@ -20,7 +20,13 @@ BOOST_AUTO_TEST_CASE(internal_storage_test)
             BOOST_CHECK(any.has_value());
 
             decltype(auto) any_value = any.get<value_type>();
-            static_assert(std::is_same_v<decltype(any_value), decltype(value)>, "Type mismatch");
+            if constexpr (sizeof(value_type) > sizeof(std::size_t)) {
+                static_assert(std::is_same_v<decltype(any_value), const decltype(value)&>,
+                              "Type mismatch");
+            } else {
+                static_assert(std::is_same_v<decltype(any_value), decltype(value)>,
+                              "Type mismatch");
+            }
             BOOST_CHECK_EQUAL(any_value, value);
         }
 
