@@ -10,41 +10,45 @@ namespace detail
 {
 // constexpr hash combine implementations, based on Boost's equivalent:
 // https://github.com/boostorg/container_hash/blob/boost-1.74.0/include/boost/container_hash/hash.hpp#L316
-[[nodiscard]] constexpr std::uint32_t hash_combine(std::uint32_t a, std::uint32_t b) noexcept
+[[nodiscard]] constexpr std::size_t hash_combine(std::size_t a, std::size_t b) noexcept
 {
-    constexpr auto c1 = std::uint32_t{0xcc9e2d51};
-    constexpr auto c2 = std::uint32_t{0x1b873593};
+    static_assert((sizeof(std::size_t) == 4) || (sizeof(std::size_t) == 8),
+                  "std::size_t must be 32 or 64 bits");
 
-    // NOLINTBEGIN(readability-magic-numbers)
-    b *= c1;
-    b = (b << 15) | (b >> (32 - 15));  // ROTL 15 bits
-    b *= c2;
+    // Personally I hate this and previously had it as two separate overloads, but that caused
+    // ambiguity on AppleClang hence approach
+    if constexpr (sizeof(std::size_t) == 4) {
+        constexpr auto c1 = std::uint32_t{0xcc9e2d51};
+        constexpr auto c2 = std::uint32_t{0x1b873593};
 
-    a ^= b;
-    a = (a << 13) | (a >> (32 - 13));  // ROTL 13 bits
-    a = a * 5 + 0xe6546b64;
-    // NOLINTEND(readability-magic-numbers)
+        // NOLINTBEGIN(readability-magic-numbers)
+        b *= c1;
+        b = (b << 15) | (b >> (32 - 15));  // ROTL 15 bits
+        b *= c2;
 
-    return a;
-}
+        a ^= b;
+        a = (a << 13) | (a >> (32 - 13));  // ROTL 13 bits
+        a = a * 5 + 0xe6546b64;
+        // NOLINTEND(readability-magic-numbers)
 
-[[nodiscard]] constexpr std::uint64_t hash_combine(std::uint64_t a, std::uint64_t b) noexcept
-{
-    constexpr auto m = std::uint64_t{0xc6a4a7935bd1e995};
-    constexpr auto r = 47;
+        return a;
+    } else {
+        constexpr auto m = std::uint64_t{0xc6a4a7935bd1e995};
+        constexpr auto r = 47;
 
-    b *= m;
-    b ^= b >> r;
-    b *= m;
+        b *= m;
+        b ^= b >> r;
+        b *= m;
 
-    a ^= b;
-    a *= m;
+        a ^= b;
+        a *= m;
 
-    // Completely arbitrary number, to prevent 0's from hashing to 0.
-    // NOLINTNEXTLINE(readability-magic-numbers)
-    a += 0xe6546b64;
+        // Completely arbitrary number, to prevent 0's from hashing to 0.
+        // NOLINTNEXTLINE(readability-magic-numbers)
+        a += 0xe6546b64;
 
-    return a;
+        return a;
+    }
 }
 
 // Do this rather than just put the generate() body into type_hash(), because otherwise the compiler
@@ -65,8 +69,7 @@ class type_hash_t
 
         auto result = std::size_t{0};
         for (auto c : sig) {
-            // Identity hash for integral types smaller than size_t
-            result = detail::hash_combine(result, static_cast<std::size_t>(c));
+            result = detail::hash_combine(result, c);
         }
 
         return result;

@@ -20,7 +20,7 @@ BOOST_AUTO_TEST_SUITE(type_hash_suite)
 BOOST_AUTO_TEST_CASE(negative_primitives_test)
 {
     utility::tuple_type_iterator<primitive_types>([](auto i) {
-        utility::tuple_type_iterator<primitive_types>([&](auto j) {
+        utility::tuple_type_iterator<primitive_types>([i](auto j) {
             using first_type = std::tuple_element_t<i, primitive_types>;
             using second_type = std::tuple_element_t<j, primitive_types>;
 
