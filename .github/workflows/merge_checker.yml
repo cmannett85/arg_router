@@ -244,7 +244,7 @@ jobs:
         cmake ${{ github.workspace }}/scripts/ci/package_test_project -DCMAKE_CXX_STANDARD=20 -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}/include -DDISABLE_VCPKG=ON
         cmake --build .
 
-  32bit_gcc_test:
+  thirtytwobit_gcc_test:
     runs-on: ubuntu-22.04
 
     steps:
