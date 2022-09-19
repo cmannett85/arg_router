@@ -22,7 +22,7 @@ else()
     include_directories(BEFORE SYSTEM ${span-lite_INCLUDE_DIRS})
 endif()
 
-set(BOOST_VERSION 1.75)
+set(BOOST_VERSION 1.74)
 find_package(Boost ${BOOST_VERSION} REQUIRED)
 include_directories(BEFORE SYSTEM ${Boost_INCLUDE_DIRS})
 
