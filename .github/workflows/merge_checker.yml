@@ -217,7 +217,7 @@ jobs:
     - name: Update packages
       run: |
         sudo apt update
-        sudo apt install ninja-build
+        sudo apt install ninja-build libboost-dev
 
     - name: Build
       run: |
