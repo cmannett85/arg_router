@@ -516,14 +516,17 @@ $(function() {
 </div><!-- fragment --><p><code><a class="el" href="namespacearg__router.html">arg_router</a></code> only supports UTF-8 encoding, and will stay that way for the medium term. If you want other encodings (e.g. UTF-16 on Windows), then you'll need to convert the input tokens to UTF-8 before calling <code>parse(..)</code>. The compile-time strings used in the parse tree <em>must</em> be UTF-8 because that's the only encoding supported by <code><a class="el" href="namespacearg__router.html">arg_router</a></code>'s string checkers and line-break algorithm. Likewise the help output generated will be UTF-8, so you'll need to capture the output (by attaching a <code>policy::router</code>) and then convert before printing</p>
 <h2>Why have you written your own Unicode algorithms!?</h2>
 <p>We didn't want to... Normally an application will link to ICU for its Unicode needs, but unfortunately we can't do that here as ICU is not <code>constexpr</code> and therefore cannot be used for our compile-time needs - so we need to roll our own.</p>
+<h1>Error Handling</h1>
+<p>Currently <code><a class="el" href="namespacearg__router.html">arg_router</a></code> only supports exceptions as error handling. If a parsing fails for some reason a <code><a class="el" href="classarg__router_1_1parse__exception.html">arg_router::parse_exception</a></code> is thrown carrying information on the failure.</p>
 <h1>Installation and Dependencies</h1>
 <p>If you're simply a library user, then download the pre-packaged release and install somewhere. You will need the following dependencies in order to build:</p><ul>
-<li>Boost.mp11 v1.77</li>
-<li>Boost.Preprocessor v1.77</li>
-<li>Boost.Lexical_Cast v1.77</li>
+<li>Boost.mp11 v1.74</li>
+<li>Boost.Preprocessor v1.74</li>
+<li>Boost.Lexical_Cast v1.74</li>
 <li><a href="https://github.com/martinmoene/span-lite">span-lite</a> (only needed if building against C++17)</li>
 </ul>
 <p><code><a class="el" href="namespacearg__router.html">arg_router</a></code> is header-only (due to all the templates) and so are the above dependencies.</p>
+<p><b>Note</b> currently <a class="el" href="namespacearg__router.html">arg_router</a> requires exception support, but <em>not</em> RTTI.</p>
 <p>To get a pre-release <code><a class="el" href="namespacearg__router.html">arg_router</a></code>, or build the unit tests and examples, simply check out the repo and build via CMake in the usual way - the unit tests will be built by default: </p><div class="fragment"><div class="line">$ cd arg_router</div>
 <div class="line">$ mkdir build</div>
 <div class="line">$ cd ./build</div>
@@ -534,14 +537,11 @@ $(function() {
 <li>clang-format</li>
 <li>Python v3 (used for copyright checking)</li>
 <li>Doxygen</li>
-<li>Boost.Test v1.77</li>
-<li>Boost.Filesystem v1.77</li>
+<li>Boost.Test v1.74</li>
+<li>Boost.Filesystem v1.74</li>
 <li>Git</li>
 </ul>
 <p>By default all these dependencies are provided by <code>vcpkg</code> automatically, please <b>note</b> that <code>vcpkg</code> is provided via a submodule and therefore will need initialising (<code>git submodule update</code>). If you would rather the dependencies came from the system then simply set <code>-DDISABLE_VCPKG=OFF</code>, and CMake will not bootstrap <code>vcpkg</code> and therefore try to find the packages locally.</p>
-<p><code><a class="el" href="namespacearg__router.html">arg_router</a></code> currently requires RTTI to be enabled.</p>
-<h1>Error Handling</h1>
-<p>Currently <code><a class="el" href="namespacearg__router.html">arg_router</a></code> only supports exceptions as error handling. If a parsing fails for some reason a <code><a class="el" href="classarg__router_1_1parse__exception.html">arg_router::parse_exception</a></code> is thrown carrying information on the failure.</p>
 <h1>Supported Compilers/Platforms</h1>
 <p>The CI system attached to this repo builds the unit tests and examples with:</p><ul>
 <li>Ubuntu 22.04 (Ninja), Clang 14/gcc-9</li>
@@ -551,6 +551,14 @@ $(function() {
 <p>Other compiler versions and platform combinations may work, but I'm currently limited by the built-in GitHub runners and how much I'm willing to spend on Actions!</p>
 <p>You can build on Windows with the VS 2022 generator (MSBuild) but you must set the CMake variable <code>DEATH_TEST_PARALLEL</code> to 1 otherwise the parallel tests will attempt to write to the project-wide <code>lastSuccessfulBuild</code> file simultaneously, which causes the build to fail.</p>
 <p>You'll notice the big omission: No MSVC. That's because even with the latest version, I get nothing but ICEs out of it with no useful diagnostics making fixing the issues close to impossible.</p>
+<h1>Tips for Users</h1>
+<h2>Do <b>NOT</b> Make the Parse Tree Type Accessible</h2>
+<p>The parse tree is <em>very</em> expensive to construct due to all the compile-time checking and meta-programming shennanigans, so do <b>NOT</b> define it in a header and have multiple source files include it - it will cause the tree to be built/checked in every source file it is included in.</p>
+<p><code><a class="el" href="namespacearg__router.html">arg_router</a></code> is designed to be self-contained, the user only needs to define the 'hooks' (<code>router</code> instances) that call into their application's entry points - there will never be a need for the application logic to access the tree.</p>
+<p>This is a long-winded way of saying define the tree in <em>one</em> source file.</p>
+<h2>Minimise Static Storage Bloat</h2>
+<p>Despite not using <code>typeid</code> or <code>dynamic_cast</code> in the library, compilers will still generate class name data if RTTI is enabled. Due to the highly nested templates that make up the parse tree, these class names can become huge and occupy large amount of static storage in the executable. As an example, the <code>basic_cat</code> project in the repo will create ~100KB of class name data in the binary - this data is not used and cannot be stripped out.</p>
+<p>Disabling RTTI is rarely feasible for most projects, but it is possible to disable RTTI for a single CMake target. So if it was deemed worth it for the size reduction, the command line parsing could be the application's executable (compiled without RTTI) and then the wider application logic could be in a static library (compiled with RTTI). This does not affect exceptions, as their type information is always added by the compiler regardless of RTTI status.</p>
 <h1>API Documentation</h1>
 <p>Complete Doxygen-generated documentation is available <a href="https://cmannett85.github.io/arg_router/">here</a>.</p>
 <h1>Future Work</h1>
@@ -558,8 +566,7 @@ $(function() {
 <li>Finally get it working on MSVC (<a href="https://github.com/cmannett85/arg_router/issues/102">#102</a>)</li>
 <li>Support for runtime language switching by swapping between parse trees depending on the locale (<a href="https://github.com/cmannett85/arg_router/issues/11">#11</a>)</li>
 <li>Customised help formatting (<a href="https://github.com/cmannett85/arg_router/issues/86">#86</a>)</li>
-<li>Command line tab autocomplete (<a href="https://github.com/cmannett85/arg_router/issues/123">#123</a>)</li>
-<li>Try to drop the RTTI requirement as it causes significant binary bloat (<a href="https://github.com/cmannett85/arg_router/issues/155">#155</a>) </li>
+<li>Command line tab autocomplete (<a href="https://github.com/cmannett85/arg_router/issues/123">#123</a>) </li>
 </ul>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->

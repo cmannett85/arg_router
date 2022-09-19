@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['unsafe_5fany_855',['unsafe_any',['../namespacearg__router_1_1utility.html#ae043ae4c53048fdf30045cf4c163db05',1,'arg_router::utility']]]
+  ['unsafe_5fany_857',['unsafe_any',['../namespacearg__router_1_1utility.html#ae043ae4c53048fdf30045cf4c163db05',1,'arg_router::utility']]]
 ];

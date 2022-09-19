@@ -142,6 +142,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ab6c88e88b99b207bf36631b8d191abfa"><td class="memTemplParams" colspan="2">template&lt;typename Tuple , typename F &gt; </td></tr>
 <tr class="memitem:ab6c88e88b99b207bf36631b8d191abfa"><td class="memTemplItemLeft" align="right" valign="top">constexpr std::enable_if_t&lt; <a class="el" href="namespacearg__router_1_1traits.html#a3fb5f200575fec97170262ab4e077699">traits::is_tuple_like_v</a>&lt; std::decay_t&lt; Tuple &gt; &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1utility.html#ab6c88e88b99b207bf36631b8d191abfa">tuple_type_iterator</a> (F &amp;&amp;f)</td></tr>
 <tr class="separator:ab6c88e88b99b207bf36631b8d191abfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9d6ad58bb37fedffd805722297f59394"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a9d6ad58bb37fedffd805722297f59394"><td class="memTemplItemLeft" align="right" valign="top">constexpr std::size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1utility.html#a9d6ad58bb37fedffd805722297f59394">type_hash</a> () noexcept</td></tr>
+<tr class="separator:a9d6ad58bb37fedffd805722297f59394"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Namespace for utility types and functions. </p>
@@ -592,6 +595,44 @@ template&lt;typename Tuple , typename F &gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>Void </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="tuple__iterator_8hpp_source.html#l00074">74</a> of file <a class="el" href="tuple__iterator_8hpp_source.html">tuple_iterator.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a9d6ad58bb37fedffd805722297f59394"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9d6ad58bb37fedffd805722297f59394">&#9670;&nbsp;</a></span>type_hash()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr std::size_t arg_router::utility::type_hash </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Compile-time hash generation for a type.</p>
+<p>This is intended to replace <code>typeid(T).hash_code()</code>, as the use of typeid causes huge amounts of class name data to be put into the binary's static data storage - which isn't used! </p><dl class="section note"><dt>Note</dt><dd>Aliases are resolved by the compiler in a pre-processing stage before this, so <code><a class="el" href="namespacearg__router_1_1utility.html#a9d6ad58bb37fedffd805722297f59394">type_hash&lt;std::uint64_t&gt;()</a> == <a class="el" href="namespacearg__router_1_1utility.html#a9d6ad58bb37fedffd805722297f59394">type_hash&lt;unsigned long&gt;()</a></code> (on a 64bit system) </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">T</td><td>Type to generate a hash code for </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Hash code of <em>T</em> </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="type__hash_8hpp_source.html#l00093">93</a> of file <a class="el" href="type__hash_8hpp_source.html">type_hash.hpp</a>.</p>
 
 </div>
 </div>

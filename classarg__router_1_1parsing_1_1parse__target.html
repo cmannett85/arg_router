@@ -95,8 +95,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a1df177283c5a2929488f2095480b3fdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a30f3c510f0a2dcfd46a60dfd239fc004"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1parsing_1_1parse__target.html#a30f3c510f0a2dcfd46a60dfd239fc004">operator bool</a> () const noexcept</td></tr>
 <tr class="separator:a30f3c510f0a2dcfd46a60dfd239fc004"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a054ef7706adf9ee89aa2c1acd94ef1ba"><td class="memItemLeft" align="right" valign="top">std::type_index&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1parsing_1_1parse__target.html#a054ef7706adf9ee89aa2c1acd94ef1ba">node_type</a> () const noexcept</td></tr>
-<tr class="separator:a054ef7706adf9ee89aa2c1acd94ef1ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a93cf35b701f9f617579ccbbaa8294ee3"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1parsing_1_1parse__target.html#a93cf35b701f9f617579ccbbaa8294ee3">node_type</a> () const noexcept</td></tr>
+<tr class="separator:a93cf35b701f9f617579ccbbaa8294ee3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac52bea78aefeded81a0c23632fb4d28e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1parsing_1_1parse__target.html#ac52bea78aefeded81a0c23632fb4d28e">add_sub_target</a> (<a class="el" href="classarg__router_1_1parsing_1_1parse__target.html">parse_target</a> target)</td></tr>
 <tr class="separator:ac52bea78aefeded81a0c23632fb4d28e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a68a874acd0927f91b9d4cdd8f7507a3a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1parsing_1_1parse__target.html#a68a874acd0927f91b9d4cdd8f7507a3a">tokens</a> (<a class="el" href="namespacearg__router.html#a3d789cf2175008b4124de867a13a2edf">vector</a>&lt; <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> &gt; tokens)</td></tr>
@@ -264,8 +264,8 @@ template&lt;typename Node , typename... Parents&gt; </div>
 
 </div>
 </div>
-<a id="a054ef7706adf9ee89aa2c1acd94ef1ba"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a054ef7706adf9ee89aa2c1acd94ef1ba">&#9670;&nbsp;</a></span>node_type()</h2>
+<a id="a93cf35b701f9f617579ccbbaa8294ee3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a93cf35b701f9f617579ccbbaa8294ee3">&#9670;&nbsp;</a></span>node_type()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -274,7 +274,7 @@ template&lt;typename Node , typename... Parents&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::type_index arg_router::parsing::parse_target::node_type </td>
+          <td class="memname">std::size_t arg_router::parsing::parse_target::node_type </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -286,8 +286,8 @@ template&lt;typename Node , typename... Parents&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the <code>std::type_index</code> for the target node.</p>
-<dl class="section return"><dt>Returns</dt><dd>Target node <code>std::type_index</code> </dd></dl>
+<p>Returns the hash code for the target node.</p>
+<dl class="section return"><dt>Returns</dt><dd>Target node hash code </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="parse__target_8hpp_source.html#l00103">103</a> of file <a class="el" href="parse__target_8hpp_source.html">parse_target.hpp</a>.</p>
 
