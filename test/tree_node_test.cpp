@@ -25,7 +25,7 @@ std::vector<utility::unsafe_any> expected_target_and_parents;
 template <typename Node, typename... Parents>
 void parse_checker(parsing::parse_target target, const Node& node, const Parents&... parents)
 {
-    BOOST_CHECK_EQUAL(std::type_index{typeid(Node)}.hash_code(), target.node_type().hash_code());
+    BOOST_CHECK_EQUAL(utility::type_hash<Node>(), target.node_type());
 
     const auto target_and_parents_tuple = std::tuple{std::cref(node), std::cref(parents)...};
     utility::tuple_iterator(

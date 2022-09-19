@@ -217,20 +217,13 @@ jobs:
     - name: Update packages
       run: |
         sudo apt update
-        sudo apt install ninja-build
-
-    - name: Download Boost 1.77
-      run: |
-        mkdir ${{ env.DOWNLOAD_DIR }}
-        cd ${{ env.DOWNLOAD_DIR }}
-        wget https://boostorg.jfrog.io/artifactory/main/release/1.77.0/source/boost_1_77_0.7z
-        7z x boost_1_77_0.7z
+        sudo apt install ninja-build libboost-dev
 
     - name: Build
       run: |
         mkdir -p ${{ env.BUILD_DIR }}
         cd ${{ env.BUILD_DIR }}
-        cmake ${{ github.workspace }} -G "Ninja" -DBUILD_UNIT_TESTS_AND_EXAMPLES=OFF -DDISABLE_VCPKG=ON -DBoost_INCLUDE_DIR=${{ env.DOWNLOAD_DIR }}/boost_1_77_0 -DDEATH_TEST_PARALLEL=2
+        cmake ${{ github.workspace }} -G "Ninja" -DBUILD_UNIT_TESTS_AND_EXAMPLES=OFF -DDISABLE_VCPKG=ON -DDEATH_TEST_PARALLEL=2
         cmake --build .
 
     - name: Test install
@@ -248,5 +241,48 @@ jobs:
       run: |
         mkdir ${{ env.PACKAGE_BUILD_DIR }}
         cd ${{ env.PACKAGE_BUILD_DIR }}
-        cmake ${{ github.workspace }}/scripts/ci/package_test_project -DCMAKE_CXX_STANDARD=20 -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}/include -DDISABLE_VCPKG=ON -DBoost_INCLUDE_DIR=${{ env.DOWNLOAD_DIR }}/boost_1_77_0
+        cmake ${{ github.workspace }}/scripts/ci/package_test_project -DCMAKE_CXX_STANDARD=20 -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}/include -DDISABLE_VCPKG=ON
         cmake --build .
+
+  thirtytwobit_gcc_test:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - name: Update packages
+      run: |
+        sudo apt update
+        sudo apt install ninja-build g++-multilib
+
+    - name: Bootstrap vcpkg to build the NuGet client
+      run: |
+        ./vcpkg/bootstrap-vcpkg.sh -disableMetrics
+
+    - name: Configure NuGet client
+      run: |
+        mono `./vcpkg/vcpkg fetch nuget | tail -n 1` \
+          sources add \
+          -source ${{ env.NUGET_SOURCE_URL }} \
+          -storepasswordincleartext \
+          -name "vcpkg-cache" \
+          -username "cmannett85" \
+          -password "${{ secrets.GITHUB_TOKEN }}"
+        mono `./vcpkg/vcpkg fetch nuget | tail -n 1` \
+          setapikey "${{ secrets.GITHUB_TOKEN }}" \
+          -source ${{ env.NUGET_SOURCE_URL }}
+
+    - name: Build
+      run: |
+        mkdir -p ${{ env.BUILD_DIR }}
+        cd ${{ env.BUILD_DIR }}
+        cmake ${{ github.workspace }} -G "Ninja" -DCMAKE_CXX_COMPILER=g++-11 -DCMAKE_CXX_FLAGS=-m32 -DCMAKE_EXE_LINKER_FLAGS=-m32 -DVCPKG_OVERLAY_TRIPLETS=${{ github.workspace }}/cmake/triplets -DVCPKG_TARGET_TRIPLET=x86-linux -DDEATH_TEST_PARALLEL=2
+        cmake --build . --target arg_router_test example_simple example_custom_policy_and_node example_basic_cat example_just_cats
+
+    - name: Run unit tests
+      timeout-minutes: 30
+      run: |
+        cd ${{ env.BUILD_DIR }}/test
+        ./arg_router_test -l test_suite

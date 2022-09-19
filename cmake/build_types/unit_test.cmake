@@ -58,6 +58,7 @@ path_prefixer(TEST_SRCS
     utility/result_test.cpp
     utility/string_view_ops_test.cpp
     utility/tree_recursor_test.cpp
+    utility/type_hash_test.cpp
     utility/unsafe_any_test.cpp
     utility/utf8/code_point_test.cpp
     utility/utf8/grapheme_cluster_break_test.cpp
@@ -84,7 +85,7 @@ function(configure_test_build TARGET)
     # Clang can run in different command line argument modes to mimic gcc or cl.exe,
     # so we have to test for a 'frontent variant' too
     if (MSVC_FRONTEND)
-        set(EXTRA_FLAGS /W4 /Z7 ${ARGN})
+        set(EXTRA_FLAGS /W4 /Z7 /GR- /permissive- ${ARGN} )
         set(EXTRA_DEFINES NOMINMAX BOOST_USE_WINDOWS_H WIN32_LEAN_AND_MEAN _CRT_SECURE_NO_WARNINGS)
 
         # /MT by default as it simplifies the running of the unit tests
@@ -95,7 +96,7 @@ function(configure_test_build TARGET)
             set(EXTRA_FLAGS /clang:-fconstexpr-steps=10000000)
         endif()
     else()
-        set(EXTRA_FLAGS -Werror -Wall -Wextra -ftemplate-backtrace-limit=0 ${ARGN})
+        set(EXTRA_FLAGS -Werror -Wall -Wextra -ftemplate-backtrace-limit=0 -fno-rtti ${ARGN})
         set(EXTRA_DEFINES "")
     endif()
     target_compile_options(${TARGET} PRIVATE ${EXTRA_FLAGS})

@@ -128,9 +128,8 @@ BOOST_AUTO_TEST_CASE(pre_parse_test)
             BOOST_CHECK(expected_args_copy.empty());
             BOOST_CHECK_EQUAL(expected_args, result->tokens());
 
-            const auto index =
-                std::type_index{typeid(std::decay_t<decltype(expected_child)>)}.hash_code();
-            BOOST_CHECK_EQUAL(result->node_type().hash_code(), index);
+            const auto index = utility::type_hash<std::decay_t<decltype(expected_child)>>();
+            BOOST_CHECK_EQUAL(result->node_type(), index);
 
             expected_child.parent_addr =
                 reinterpret_cast<std::ptrdiff_t>(std::addressof(fake_parent));

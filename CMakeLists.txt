@@ -49,7 +49,7 @@ if(NOT INSTALLATION_ONLY)
         include_directories(BEFORE SYSTEM ${span-lite_INCLUDE_DIRS})
     endif()
 
-    set(BOOST_VERSION 1.77)
+    set(BOOST_VERSION 1.74)
     find_package(Boost ${BOOST_VERSION} REQUIRED)
     include_directories(BEFORE SYSTEM ${Boost_INCLUDE_DIRS})
 endif()
@@ -114,6 +114,7 @@ path_prefixer(HEADERS
     include/arg_router/utility/terminal.hpp
     include/arg_router/utility/tree_recursor.hpp
     include/arg_router/utility/tuple_iterator.hpp
+    include/arg_router/utility/type_hash.hpp
     include/arg_router/utility/unsafe_any.hpp
     include/arg_router/utility/utf8.hpp
     include/arg_router/utility/utf8/code_point.hpp
