@@ -189,8 +189,7 @@ ar::mode(
     ...
     ar::counting_flag<verbosity_level_t>(
         arp::short_name<'v'>,
-        arp::min_max_value{verbosity_level_t::ERROR,
-                           verbosity_level_t::DEBUG},
+        arp::max_value<verbosity_level_t::DEBUG>(),
         arp::description<S_("Verbosity level, number of 'v's sets level")>,
         arp::default_value{verbosity_level_t::ERROR}),
     ...
@@ -210,7 +209,7 @@ Note that even though we are using a custom enum, we haven't specified a `custom
 
 Short name collapsing still works as expected, so passing `-Evnv` will result in `show_ends` and `show_non_printing` being true, and `verbosity_level` will be `verbosity_level_t::INFO` in the `router` call.
 
-We can constrain the amount of flags the user can provide by using the `min_max_value` policy, so passing `-vvvv` will result in a runtime error.
+We can constrain the amount of flags the user can provide by using the `max_value` policy, so passing `-vvvv` will result in a runtime error.  There are min/max and min variants too.  Here we are using the compile-time variant of the policy, we can do that because the value type is an integral/enum, but if your value type cannot be used as a template parameter then there equivalent runtime variants that take the paramters as function parameters instead.  The compile-time variants should be used when possible due to extra checks e.g. setting the max value less than the min.
 
 The `long_name` policy is allowed but usually leads to ugly invocations, however there is a better option:
 ```cpp
@@ -218,8 +217,7 @@ ar::mode(
     ...
     ard::alias_group(
         arp::default_value{verbosity_level_t::INFO},
-        arp::min_max_value{verbosity_level_t::ERROR,
-                           verbosity_level_t::DEBUG},
+        arp::max_value<verbosity_level_t::DEBUG>(),
         ar::counting_flag<verbosity_level_t>(
             arp::short_name<'v'>,
             arp::description<S_("Verbosity level, number of 'v's sets level")>),

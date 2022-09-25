@@ -480,7 +480,7 @@ int main() {
         arg<int>(policy::long_name<S_("arg1")>),
         arg<double>(policy::long_name<S_("arg2")>),
         policy::required,
-        policy::min_max_value{42, 84});
+        policy::min_max_value<42, 84>());
     return 0;
 }
     )",

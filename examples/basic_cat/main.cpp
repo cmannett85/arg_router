@@ -206,7 +206,7 @@ int main(int argc, char* argv[])
                 ar::arg<verbosity_level_t>(arp::long_name<S_("verbose")>,
                                            arp::description<S_("Verbosity level")>,
                                            arp::value_separator<'='>),
-                arp::min_max_value{verbosity_level_t::error, verbosity_level_t::debug}),
+                arp::min_max_value<verbosity_level_t::error, verbosity_level_t::debug>()),
             ar::positional_arg<std::vector<std::string_view>>(
                 arp::required,
                 arp::min_count<1>,

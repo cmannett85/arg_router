@@ -106,7 +106,7 @@ int main() {
 using namespace arg_router;
 
 int main() {
-    const auto m = root(policy::min_max_value{1, 3},
+    const auto m = root(policy::min_max_value<1, 3>(),
                         flag(policy::long_name<S_("hello")>));
     return 0;
 }

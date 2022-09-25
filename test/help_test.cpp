@@ -6,6 +6,7 @@
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/description.hpp"
 #include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/min_max_value.hpp"
 #include "arg_router/policy/none_name.hpp"
 #include "arg_router/policy/router.hpp"
 #include "arg_router/policy/short_name.hpp"
@@ -83,6 +84,110 @@ My foo is good for you
     -b                b description
     --arg1=<Value>
     --help,-h         Help output
+)"s},
+            std::tuple{
+                mock_root{flag(policy::long_name<S_("flag1")>,
+                               policy::short_name<'a'>,
+                               policy::description<S_("Flag1 description")>),
+                          flag(policy::long_name<S_("flag2")>),
+                          flag(policy::short_name<'b'>, policy::description<S_("b description")>),
+                          arg<int>(policy::long_name<S_("arg1")>,
+                                   policy::value_separator<'='>,
+                                   policy::min_max_value<2, 8>()),
+                          help(policy::long_name<S_("help")>,
+                               policy::short_name<'h'>,
+                               policy::description<S_("Help output")>,
+                               policy::program_name<S_("foo")>,
+                               policy::program_version<S_("v3.14")>,
+                               policy::program_intro<S_("My foo is good for you")>)},
+                traits::integral_constant<4>{},
+                R"(foo v3.14
+
+My foo is good for you
+
+    --flag1,-a      Flag1 description
+    --flag2
+    -b              b description
+    --arg1=<2-8>
+    --help,-h       Help output
+)"s},
+            std::tuple{
+                mock_root{flag(policy::long_name<S_("flag1")>,
+                               policy::short_name<'a'>,
+                               policy::description<S_("Flag1 description")>),
+                          flag(policy::long_name<S_("flag2")>),
+                          flag(policy::short_name<'b'>, policy::description<S_("b description")>),
+                          arg<int>(policy::long_name<S_("arg1")>,
+                                   policy::value_separator<'='>,
+                                   policy::min_value<2>()),
+                          help(policy::long_name<S_("help")>,
+                               policy::short_name<'h'>,
+                               policy::description<S_("Help output")>,
+                               policy::program_name<S_("foo")>,
+                               policy::program_version<S_("v3.14")>,
+                               policy::program_intro<S_("My foo is good for you")>)},
+                traits::integral_constant<4>{},
+                R"(foo v3.14
+
+My foo is good for you
+
+    --flag1,-a      Flag1 description
+    --flag2
+    -b              b description
+    --arg1=<2-N>
+    --help,-h       Help output
+)"s},
+            std::tuple{
+                mock_root{flag(policy::long_name<S_("flag1")>,
+                               policy::short_name<'a'>,
+                               policy::description<S_("Flag1 description")>),
+                          flag(policy::long_name<S_("flag2")>),
+                          flag(policy::short_name<'b'>, policy::description<S_("b description")>),
+                          arg<int>(policy::long_name<S_("arg1")>,
+                                   policy::value_separator<'='>,
+                                   policy::max_value<8>()),
+                          help(policy::long_name<S_("help")>,
+                               policy::short_name<'h'>,
+                               policy::description<S_("Help output")>,
+                               policy::program_name<S_("foo")>,
+                               policy::program_version<S_("v3.14")>,
+                               policy::program_intro<S_("My foo is good for you")>)},
+                traits::integral_constant<4>{},
+                R"(foo v3.14
+
+My foo is good for you
+
+    --flag1,-a       Flag1 description
+    --flag2
+    -b               b description
+    --arg1=<-N-8>
+    --help,-h        Help output
+)"s},
+            std::tuple{
+                mock_root{flag(policy::long_name<S_("flag1")>,
+                               policy::short_name<'a'>,
+                               policy::description<S_("Flag1 description")>),
+                          flag(policy::long_name<S_("flag2")>),
+                          flag(policy::short_name<'b'>, policy::description<S_("b description")>),
+                          arg<std::size_t>(policy::long_name<S_("arg1")>,
+                                           policy::value_separator<'='>,
+                                           policy::max_value<8u>()),
+                          help(policy::long_name<S_("help")>,
+                               policy::short_name<'h'>,
+                               policy::description<S_("Help output")>,
+                               policy::program_name<S_("foo")>,
+                               policy::program_version<S_("v3.14")>,
+                               policy::program_intro<S_("My foo is good for you")>)},
+                traits::integral_constant<4>{},
+                R"(foo v3.14
+
+My foo is good for you
+
+    --flag1,-a      Flag1 description
+    --flag2
+    -b              b description
+    --arg1=<0-8>
+    --help,-h       Help output
 )"s},
             std::tuple{
                 mock_root{flag(policy::long_name<S_("flag1")>,
@@ -651,7 +756,7 @@ using namespace arg_router;
 
 int main() {
     const auto m = help(policy::long_name<S_("help")>,
-                        policy::min_max_value{0, 1});
+                        policy::min_max_value<0, 1>());
     return 0;
 }
     )",

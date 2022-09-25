@@ -187,7 +187,7 @@ using namespace arg_router;
 
 int main() {
     auto f = flag(policy::long_name<S_("hello")>,
-                  policy::min_max_value{true, true});
+                  policy::min_max_value<true, true>());
     return 0;
 }
     )",
