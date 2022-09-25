@@ -928,7 +928,7 @@ public:
 int main() {
     const auto root = stub_node{policy::long_name<S_("flag1")>,
                                 policy::alias(policy::long_name<S_("flag2")>),
-                                policy::min_max_value{3, 6}};
+                                policy::min_max_value<3, 6>()};
 
     auto result = vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "flag2"},

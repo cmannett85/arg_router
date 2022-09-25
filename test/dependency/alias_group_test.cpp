@@ -170,7 +170,7 @@ BOOST_AUTO_TEST_CASE(help_test)
         using help_data = typename node_type::template help_data_type<false>;
         using flattened_help_data = typename node_type::template help_data_type<true>;
 
-        static_assert(std::is_same_v<typename help_data::label, S_("Alias Group:")>);
+        static_assert(std::is_same_v<typename help_data::label, S_("Alias Group: ")>);
         static_assert(
             std::is_same_v<typename help_data::label, typename flattened_help_data::label>);
 
@@ -496,7 +496,7 @@ int main() {
     auto f = ard::alias_group(arg<int>(policy::long_name<S_("arg1")>),
                               counting_flag<int>(
                                  policy::long_name<S_("arg2")>,
-                                 policy::min_max_value{2, 3}),                  
+                                 policy::min_max_value<2, 3>()),                  
                               policy::required);
     return 0;
 }

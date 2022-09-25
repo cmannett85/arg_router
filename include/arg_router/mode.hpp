@@ -70,11 +70,17 @@ public:
     template <bool Flatten>
     class help_data_type
     {
+        [[nodiscard]] constexpr auto static label_generator() noexcept
+        {
+            if constexpr (is_anonymous) {
+                return S_(""){};
+            } else {
+                return S_(parent_type::none_name()){};
+            }
+        }
+
     public:
-        using label = std::conditional_t<
-            is_anonymous,
-            S_(""),
-            typename parent_type::template default_leaf_help_data_type<Flatten>::label>;
+        using label = decltype(label_generator());
 
         using description = std::conditional_t<
             is_anonymous,

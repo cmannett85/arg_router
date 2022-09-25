@@ -170,6 +170,56 @@ protected:
         constexpr static auto num_policies = std::tuple_size_v<policies_type>;
 
     public:
+        /** @return Minimum and/or maximum value suffix string
+         */
+        [[nodiscard]] constexpr static auto value_suffix() noexcept
+        {
+            if constexpr (traits::has_minimum_value_method_v<tree_node> ||
+                          traits::has_maximum_value_method_v<tree_node>) {
+                constexpr auto prefix = S_("<"){};
+
+                constexpr auto min_value = []() {
+                    if constexpr (traits::has_minimum_value_method_v<tree_node>) {
+                        constexpr auto value = tree_node::minimum_value();
+                        return utility::convert_integral_to_cts_t<
+                            static_cast<traits::underlying_type_t<decltype(value)>>(value)>{};
+                    } else {
+                        // If we have got this far, then we must a maximum value, we can use that
+                        // type to determine if the lowest bound is 0 or -N depending on whether or
+                        // not the type is signed
+                        using max_value_type =
+                            traits::underlying_type_t<decltype(tree_node::maximum_value())>;
+                        if constexpr (std::is_unsigned_v<max_value_type>) {
+                            return S_("0"){};
+                        } else {
+                            return S_("-N"){};
+                        }
+                    }
+                }();
+
+                constexpr auto max_value = []() {
+                    if constexpr (traits::has_maximum_value_method_v<tree_node>) {
+                        constexpr auto value = tree_node::maximum_value();
+                        if constexpr (std::is_enum_v<std::decay_t<decltype(value)>>) {
+                            return utility::convert_integral_to_cts_t<
+                                static_cast<std::underlying_type_t<decltype(value)>>(value)>{};
+                        } else {
+                            return utility::convert_integral_to_cts_t<value>{};
+                        }
+                    } else {
+                        return S_("N"){};
+                    }
+                }();
+
+                return prefix + min_value + S_("-"){} + max_value + S_(">"){};
+            } else {
+                return S_(""){};
+            }
+        }
+
+        /** @return Textual representation of a value suffix suitable for help output, or an empty
+         *  string if no value separator policy is attached to the node
+         */
         [[nodiscard]] constexpr static auto value_separator_suffix()
         {
             constexpr bool fixed_count_of_one = []() {
@@ -182,6 +232,15 @@ protected:
                 return false;
             }();
 
+            constexpr auto value_str = []() {
+                constexpr auto min_max_str = value_suffix();
+                if constexpr (std::is_same_v<std::decay_t<decltype(min_max_str)>, S_("")>) {
+                    return S_("<Value>"){};
+                } else {
+                    return min_max_str;
+                }
+            }();
+
             [[maybe_unused]] constexpr auto separator_index =
                 boost::mp11::mp_find_if<policies_type, traits::has_value_separator_method>::value;
 
@@ -189,22 +248,23 @@ protected:
                 constexpr auto value_separator =
                     std::tuple_element_t<separator_index, policies_type>::value_separator();
 
-                return S_(value_separator){} + S_("<Value>"){};
+                return S_(value_separator){} + value_str;
             } else if constexpr (fixed_count_of_one) {
-                return S_(" <Value>"){};
+                return S_(" "){} + value_str;
             } else {
                 return S_(""){};
             }
         }
 
+        /** @return Long and short name label(s) for node with value suffix if present, or empty
+         *  string if not present
+         */
         [[nodiscard]] constexpr static auto label_generator() noexcept
         {
             [[maybe_unused]] constexpr auto long_name_index =
                 boost::mp11::mp_find_if<policies_type, traits::has_long_name_method>::value;
             [[maybe_unused]] constexpr auto short_name_index =
                 boost::mp11::mp_find_if<policies_type, traits::has_short_name_method>::value;
-            [[maybe_unused]] constexpr auto none_name_index =
-                boost::mp11::mp_find_if<policies_type, traits::has_none_name_method>::value;
 
             if constexpr ((long_name_index != num_policies) && (short_name_index != num_policies)) {
                 constexpr auto long_name =
@@ -224,16 +284,13 @@ protected:
                     std::tuple_element_t<short_name_index, policies_type>::short_name();
 
                 return S_(config::short_prefix){} + S_(short_name){} + value_separator_suffix();
-            } else if constexpr (none_name_index != num_policies) {
-                constexpr auto none_name =
-                    std::tuple_element_t<none_name_index, policies_type>::none_name();
-
-                return S_(none_name){} + value_separator_suffix();
             } else {
                 return S_(""){};
             }
         }
 
+        /** @return Description text for string, or empty string if providing policy not present
+         */
         [[nodiscard]] constexpr static auto description_generator() noexcept
         {
             constexpr auto description_index =
@@ -247,6 +304,8 @@ protected:
             }
         }
 
+        /** @return Minimum and/or maximum count suffix string
+         */
         [[nodiscard]] constexpr static auto count_suffix() noexcept
         {
             constexpr bool fixed_count = []() {

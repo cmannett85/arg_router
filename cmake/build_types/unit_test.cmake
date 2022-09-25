@@ -37,7 +37,8 @@ path_prefixer(TEST_SRCS
     policy/display_name_test.cpp
     policy/long_name_test.cpp
     policy/min_max_count_test.cpp
-    policy/min_max_value_test.cpp
+    policy/min_max_value_ct_test.cpp
+    policy/min_max_value_t_test.cpp
     policy/required_test.cpp
     policy/router_test.cpp
     policy/short_form_expander_test.cpp

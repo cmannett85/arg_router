@@ -68,7 +68,9 @@ public:
     class help_data_type
     {
     public:
-        using label = S_("Alias Group:");
+        using label =
+            decltype(S_("Alias Group: "){} +
+                     parent_type::template default_leaf_help_data_type<Flatten>::value_suffix());
         using description = S_("");
         using children = typename parent_type::template  //
             children_help_data_type<Flatten>::children;
