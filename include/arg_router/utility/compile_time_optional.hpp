@@ -31,7 +31,7 @@ public:
     using value_type = T;
 
     /** True if empty. */
-    static constexpr bool empty = false;
+    constexpr static bool empty = false;
 
     /** Constructor.
      *
@@ -83,7 +83,7 @@ class compile_time_optional<std::reference_wrapper<T>>
 public:
     using value_type = T;
 
-    static constexpr bool empty = false;
+    constexpr static bool empty = false;
 
     constexpr explicit operator bool() const { return !empty; }
 
@@ -105,7 +105,7 @@ template <>
 class compile_time_optional<void>
 {
 public:
-    static constexpr bool empty = true;
+    constexpr static bool empty = true;
 
     explicit constexpr operator bool() const { return !empty; }
 };

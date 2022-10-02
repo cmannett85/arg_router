@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "arg_router/policy/flatten_help.hpp"
 #include "arg_router/policy/no_result_value.hpp"
 #include "arg_router/tree_node.hpp"
 
@@ -143,7 +144,13 @@ public:
     void help(std::ostream& stream) const
     {
         if constexpr (help_index < std::tuple_size_v<children_type>) {
-            std::get<help_index>(this->children()).template generate_help<root_t>(stream);
+            using help_type = std::tuple_element_t<help_index, children_type>;
+            constexpr auto flatten =
+                algorithm::has_specialisation_v<policy::flatten_help_t,
+                                                typename help_type::policies_type>;
+
+            std::get<help_index>(this->children())
+                .template generate_help<root_t, help_type, flatten>(stream);
         }
     }
 

@@ -79,7 +79,9 @@ path_prefixer(HEADERS
     include/arg_router/parsing/pre_parse_data.hpp
     include/arg_router/parsing/token_type.hpp
     include/arg_router/policy/alias.hpp
+    include/arg_router/policy/colour_help_formatter.hpp
     include/arg_router/policy/custom_parser.hpp
+    include/arg_router/policy/default_help_formatter.hpp
     include/arg_router/policy/default_value.hpp
     include/arg_router/policy/dependent.hpp
     include/arg_router/policy/description.hpp

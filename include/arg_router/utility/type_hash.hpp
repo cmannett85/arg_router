@@ -56,7 +56,7 @@ namespace detail
 template <typename T>
 class type_hash_t
 {
-    [[nodiscard]] static constexpr std::size_t generate() noexcept
+    [[nodiscard]] constexpr static std::size_t generate() noexcept
     {
         // Because we can't guarantee default construction support for T and reinterpret_cast is not
         // allowed in constant evaluation, we'll resort to the (valid, but) dirty hack of using the
@@ -76,7 +76,7 @@ class type_hash_t
     }
 
 public:
-    static constexpr auto value = generate();
+    constexpr static auto value = generate();
 };
 }  // namespace detail
 

@@ -129,7 +129,7 @@ public:
      * @return Minimum value
      */
     template <typename T = MinType>
-    [[nodiscard]] static constexpr auto minimum_value(
+    [[nodiscard]] constexpr static auto minimum_value(
         std::enable_if_t<!std::is_void_v<T>>* = nullptr) noexcept
     {
         return MinType::value;
@@ -141,7 +141,7 @@ public:
      * @return Maximum value
      */
     template <typename T = MaxType>
-    [[nodiscard]] static constexpr auto maximum_value(
+    [[nodiscard]] constexpr static auto maximum_value(
         std::enable_if_t<!std::is_void_v<T>>* = nullptr) noexcept
     {
         return MaxType::value;

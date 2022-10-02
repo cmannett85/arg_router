@@ -104,8 +104,8 @@ using remove_rule_t = typename remove_rule<I, Rules>::type;
 template <typename RuleType, typename Rules>
 class remove_rule_by_type
 {
-    static constexpr auto I = find_index_of_rule_type<RuleType, Rules>();
-    static constexpr auto found = I < std::tuple_size_v<Rules>;
+    constexpr static auto I = find_index_of_rule_type<RuleType, Rules>();
+    constexpr static auto found = I < std::tuple_size_v<Rules>;
 
 public:
     /** Updated rules list. */
@@ -157,7 +157,7 @@ using update_rule_t = typename update_rule<I, Rule, Rules>::type;
 template <typename RuleType, typename Rule, typename Rules>
 class update_rule_by_type
 {
-    static constexpr auto I = find_index_of_rule_type<RuleType, Rules>();
+    constexpr static auto I = find_index_of_rule_type<RuleType, Rules>();
     static_assert(I < std::tuple_size_v<Rules>, "RuleType cannot be found");
 
 public:
@@ -229,7 +229,7 @@ using add_to_rule_types_t = typename add_to_rule_types<I, T, Rules>::type;
 template <typename RuleType, template <typename...> typename T, typename Rules>
 class add_to_rule_types_by_rule
 {
-    static constexpr auto I = find_index_of_rule_type<RuleType, Rules>();
+    constexpr static auto I = find_index_of_rule_type<RuleType, Rules>();
     static_assert(I < std::tuple_size_v<Rules>, "RuleType cannot be found");
 
 public:

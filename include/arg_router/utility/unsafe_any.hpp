@@ -22,7 +22,7 @@ class unsafe_any_t
     using aligned_storage_type = std::aligned_storage_t<SmallObjectOptimisationSize>;
 
     template <typename T>
-    static constexpr bool use_internal_storage = (sizeof(T) <= sizeof(aligned_storage_type));
+    constexpr static bool use_internal_storage = (sizeof(T) <= sizeof(aligned_storage_type));
 
 public:
     /** Default constructor.

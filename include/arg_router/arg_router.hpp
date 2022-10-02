@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "arg_router/policy/colour_help_formatter.hpp"
 #include "arg_router/policy/min_max_value.hpp"
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/policy/validator_rule_utilities.hpp"

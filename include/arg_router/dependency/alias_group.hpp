@@ -48,7 +48,7 @@ public:
 private:
     template <typename Child>
     struct multi_stage_with_result_and_validation {
-        static constexpr auto value =
+        constexpr static auto value =
             policy::has_multi_stage_value_v<Child> && !policy::has_no_result_value_v<Child> &&
             Child::template any_phases_v<value_type, policy::has_validation_phase_method>;
     };

@@ -499,12 +499,17 @@ copy              Copy source files to destination
     <DST> [1]     Destination directory
     <SRC> [1,N]   Source file paths
 ```
-Currently the formatting is quite basic, more advanced formatting options are coming in future releases.
-
 ### Programmatic Access
 By default when parsed `help` will output its contents to `std::cout` and then exit the application with `EXIT_SUCCESS`.  Obviously this won't always be desired, so a `router` policy can be attached that will pass a `std::ostringstream` to the user-provided `Callable`.  The stream will have already been populated with the help data shown above, but it can now be appended to or converted to string for use somewhere else.
 
 Often programmatic access is desired for the help output outside of the user requesting it, for example if a parse exception is thrown, generally the exception error is printed to the terminal followed by the help output.  This is exposed by the `help()` or `help(std::ostringstream&)` methods of the root object.
+
+### Customisation
+Help output can be customised in several ways:
+1. Use a `router` policy to capture the output and modify it.  This is useful for appending string data, but anything more sophisticated becomes a chore
+2. Write your own `help` node.  This is the nuclear option as it gives maximal control but is a lot of work, it is very rarely necessary to do this as the node is primarily just the `tree_node` implementation, the actual formatting is delegated
+3. Write your own help formatter policy for the built-in `help` node.  The `help` node delegates the formatting to a policy, if no formatter is specified when defining a `help` node specialisation the `default_help_formatter` is used.  This is still non-trivial as the formatter policy needs to perform the compile-time tree iteration in order to process the per-node help data
+4. Write your own line formatter and/or preamble formatter. The `default_help_formatter` further delegates formatting to two sub-policies, one that generates the 'preamble' text (i.e. the program name, version, intro) and another that generates each argument in the argument output.  `default_helper_formatter` uses `help_formatter_component::default_preamble_formatter` and `help_formatter_component::default_line_formatter` respectively by default
 
 ## Unicode Compliance
 A faintly ridiculous example of Unicode support from the `just_cats` example:
@@ -597,12 +602,10 @@ not used and cannot be stripped out.
 
 Disabling RTTI is rarely feasible for most projects, but it is possible to disable RTTI for a single CMake target.  So if it was deemed worth it for the size reduction, the command line parsing could be the application's executable (compiled without RTTI) and then the wider application logic could be in a static library (compiled with RTTI).  This does not affect exceptions, as their type information is always added by the compiler regardless of RTTI status.
 
-## API Documentation
-Complete Doxygen-generated documentation is available [here](https://cmannett85.github.io/arg_router/).
+## Extra Documentation
+Complete Doxygen-generated API documentation is available [here](https://cmannett85.github.io/arg_router/).  Examples are provided in the `examples` directory of the repo or online [here](https://github.com/cmannett85/arg_router/tree/develop/examples).
 
 ## Future Work
 Take a look at the [issues](https://github.com/cmannett85/arg_router/issues) page for all upcoming features and fixes.  Highlights are:
 * Finally get it working on MSVC ([#102](https://github.com/cmannett85/arg_router/issues/102))
 * Support for runtime language switching by swapping between parse trees depending on the locale ([#11](https://github.com/cmannett85/arg_router/issues/11))
-* Customised help formatting ([#86](https://github.com/cmannett85/arg_router/issues/86))
-* Command line tab autocomplete ([#123](https://github.com/cmannett85/arg_router/issues/123))

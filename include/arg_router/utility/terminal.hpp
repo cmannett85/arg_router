@@ -14,7 +14,7 @@
 namespace arg_router::utility::terminal
 {
 #ifdef UNIT_TEST_BUILD
-static auto test_columns_value = std::size_t{80};
+extern std::size_t test_columns_value;
 #endif
 
 /** Returns the current number columns in the terminal.

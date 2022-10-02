@@ -512,7 +512,7 @@ constexpr bool has_help_data_type_v = has_help_data_type<T>::value;
 template <typename T>
 struct has_generate_help_method {
     template <typename U>
-    using type = decltype(U::template generate_help<U, false>(std::declval<std::ostream&>()));
+    using type = decltype(U::template generate_help<U, U, false>(std::declval<std::ostream&>()));
 
     constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
 };
