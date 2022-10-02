@@ -28,7 +28,7 @@ class pre_parse_data_base
 {
 public:
     /** True if this instance contains a parse_target reference */
-    static constexpr auto has_target = HasTarget;
+    constexpr static auto has_target = HasTarget;
 
     /** Returns the arg list reference.
      *

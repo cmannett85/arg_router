@@ -12,6 +12,7 @@ int main(int argc, char* argv[])
                       arp::short_name<'h'>,
                       arp::program_name<S_("just-cats")>,
                       arp::program_intro<S_("Prints cats!")>,
+                      arp::program_addendum<S_("An example program for arg_router.")>,
                       arp::description<S_("Display this help and exit")>),
              ar::flag(arp::long_name<S_("cat")>,
                       arp::description<S_("English cat")>,

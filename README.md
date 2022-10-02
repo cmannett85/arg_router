@@ -1,4 +1,4 @@
-![Documentation Generator](https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg) ![Unit test coverage](https://img.shields.io/badge/Unit_Test_Coverage-97.8%25-brightgreen)
+![Documentation Generator](https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg) ![Unit test coverage](https://img.shields.io/badge/Unit_Test_Coverage-97.7%25-brightgreen)
 
 # arg_router
 `arg_router` is a C++17 command line parser and router.  It uses policy-based objects hierarchically, so the parsing code is self-describing.  Rather than just providing a parsing service that returns a map of `variant`s/`any`s, it allows you to bind `Callable` instances to points in the parse structure, so complex command line arguments can directly call functions with the expected arguments - rather than you having to do this yourself.
@@ -405,6 +405,7 @@ The output can be tweaked using policies:
 - `program_name`, this is printed first.  Without it neither this nor the version are printed
 - `program_version`, this followes the name
 - `program_intro`, used to give some more information on the program.  This is printed two new lines away from the name and version
+- `program_addendum`, used to add supplementary text after the argument output
 - `flatten_help`, by default only top-level arguments and/or those in an anonymous mode are displayed.  Child modes are shown by requesting the mode's 'path' on the command line (e.g. `app --help mode sub-mode`).  The presence of this policy will make the entire requested subtree's (or root's, if no mode path was requested) help output be displayed
 
 Unlike string data everywhere else in the library, the formatted help output is created at runtime using `std::string` so we don't need to keep duplicate read-only text data.
@@ -431,6 +432,7 @@ ar::root(
         arp::program_name<S_("simple")>,
         arp::program_version<S_("v0.1")>,
         arp::program_intro<S_("A simple file copier and mover.")>,
+        arp::program_addendum<S_("An example program for arg_router.")>,
         arp::flatten_help),
     ar::mode(
         arp::none_name<S_("copy")>,
@@ -473,6 +475,8 @@ A simple file copier and mover.
         --force,-f    Force overwrite existing files
         <DST> [1]     Destination directory
         <SRC> [1]     Source file path
+
+An example program for arg_router.
 ```
 As you can see positional arguments are wrapped in angle brackets, and counts are displayed using interval notation.
 
@@ -486,6 +490,8 @@ A simple file copier and mover.
     --help,-h    Display this help and exit
     copy         Copy source files to destination
     move         Move source file to destination
+
+An example program for arg_router.
 ```
 In either case specifying the mode as an argument to the help argument displays just the sub-arguments of that mode:
 ```
@@ -498,13 +504,20 @@ copy              Copy source files to destination
     --force,-f    Force overwrite existing files
     <DST> [1]     Destination directory
     <SRC> [1,N]   Source file paths
-```
-Currently the formatting is quite basic, more advanced formatting options are coming in future releases.
 
+An example program for arg_router.
+```
 ### Programmatic Access
 By default when parsed `help` will output its contents to `std::cout` and then exit the application with `EXIT_SUCCESS`.  Obviously this won't always be desired, so a `router` policy can be attached that will pass a `std::ostringstream` to the user-provided `Callable`.  The stream will have already been populated with the help data shown above, but it can now be appended to or converted to string for use somewhere else.
 
 Often programmatic access is desired for the help output outside of the user requesting it, for example if a parse exception is thrown, generally the exception error is printed to the terminal followed by the help output.  This is exposed by the `help()` or `help(std::ostringstream&)` methods of the root object.
+
+### Customisation
+Help output can be customised in several ways:
+1. Use a `router` policy to capture the output and modify it.  This is useful for appending string data, but anything more sophisticated becomes a chore
+2. Write your own `help` node.  This is the nuclear option as it gives maximal control but is a lot of work, it is very rarely necessary to do this as the node is primarily just the `tree_node` implementation, the actual formatting is delegated
+3. Write your own help formatter policy for the built-in `help` node.  The `help` node delegates the formatting to a policy, if no formatter is specified when defining a `help` node specialisation the `default_help_formatter` is used.  This is still non-trivial as the formatter policy needs to perform the compile-time tree iteration in order to process the per-node help data
+4. Write your own line formatter and/or preamble formatter. The `default_help_formatter` further delegates formatting to two sub-policies, one that generates the 'preamble' text (i.e. the program name, version, intro) and another that generates each argument in the argument output.  `default_helper_formatter` uses `help_formatter_component::default_preamble_formatter` and `help_formatter_component::default_line_formatter` respectively by default
 
 ## Unicode Compliance
 A faintly ridiculous example of Unicode support from the `just_cats` example:
@@ -597,12 +610,10 @@ not used and cannot be stripped out.
 
 Disabling RTTI is rarely feasible for most projects, but it is possible to disable RTTI for a single CMake target.  So if it was deemed worth it for the size reduction, the command line parsing could be the application's executable (compiled without RTTI) and then the wider application logic could be in a static library (compiled with RTTI).  This does not affect exceptions, as their type information is always added by the compiler regardless of RTTI status.
 
-## API Documentation
-Complete Doxygen-generated documentation is available [here](https://cmannett85.github.io/arg_router/).
+## Extra Documentation
+Complete Doxygen-generated API documentation is available [here](https://cmannett85.github.io/arg_router/).  Examples are provided in the `examples` directory of the repo or online [here](https://github.com/cmannett85/arg_router/tree/develop/examples).
 
 ## Future Work
 Take a look at the [issues](https://github.com/cmannett85/arg_router/issues) page for all upcoming features and fixes.  Highlights are:
 * Finally get it working on MSVC ([#102](https://github.com/cmannett85/arg_router/issues/102))
 * Support for runtime language switching by swapping between parse trees depending on the locale ([#11](https://github.com/cmannett85/arg_router/issues/11))
-* Customised help formatting ([#86](https://github.com/cmannett85/arg_router/issues/86))
-* Command line tab autocomplete ([#123](https://github.com/cmannett85/arg_router/issues/123))

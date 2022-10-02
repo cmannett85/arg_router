@@ -29,8 +29,10 @@ path_prefixer(TEST_SRCS
     parsing/parse_target_test.cpp
     parsing/parsing_test.cpp
     parsing/pre_parse_data_test.cpp
-    policy/custom_parser_test.cpp
     policy/alias_test.cpp
+    policy/colour_help_formatter_test.cpp
+    policy/custom_parser_test.cpp
+    policy/default_help_formatter_test.cpp
     policy/default_value_test.cpp
     policy/dependent_test.cpp
     policy/description_test.cpp

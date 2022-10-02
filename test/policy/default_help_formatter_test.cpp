@@ -1,0 +1,671 @@
+/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
+
+#include "arg_router/arg.hpp"
+#include "arg_router/flag.hpp"
+#include "arg_router/help.hpp"
+#include "arg_router/mode.hpp"
+#include "arg_router/policy/description.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/min_max_value.hpp"
+#include "arg_router/policy/none_name.hpp"
+#include "arg_router/policy/short_name.hpp"
+#include "arg_router/policy/value_separator.hpp"
+
+#include "test_helpers.hpp"
+
+using namespace arg_router;
+using namespace std::string_literals;
+
+auto utility::terminal::test_columns_value = std::size_t{80};
+
+namespace
+{
+template <typename... Params>
+class mock_root : public tree_node<Params...>
+{
+public:
+    constexpr explicit mock_root(Params... params) : tree_node<Params...>{std::move(params)...} {}
+
+    template <bool Flatten>
+    class help_data_type
+    {
+    public:
+        using label = S_("");
+        using description = S_("");
+        using children = typename tree_node<Params...>::template  //
+            default_leaf_help_data_type<Flatten>::all_children_help;
+    };
+};
+}  // namespace
+
+BOOST_AUTO_TEST_SUITE(policy_suite)
+
+BOOST_AUTO_TEST_SUITE(default_help_formatter_suite)
+
+BOOST_AUTO_TEST_CASE(is_policy_test)
+{
+    static_assert(policy::is_policy_v<policy::default_help_formatter_t<>>,
+                  "Policy test has failed");
+}
+
+BOOST_AUTO_TEST_CASE(generate_help_test)
+{
+    auto f = [](const auto& root, auto help_index, auto flatten, const auto& expected_result) {
+        using root_type = std::decay_t<decltype(root)>;
+        using help_type = std::tuple_element_t<help_index, typename root_type::children_type>;
+
+        auto stream = std::stringstream{};
+        std::tuple_element_t<0, typename help_type::policies_type>::
+            template generate_help<root_type, help_type, flatten>(stream);
+        BOOST_CHECK_EQUAL(stream.str(), expected_result);
+    };
+
+    test::data_set(
+        f,
+        std::tuple{
+            std::tuple{
+                mock_root{flag(policy::long_name<S_("flag1")>,
+                               policy::short_name<'a'>,
+                               policy::description<S_("Flag1 description")>),
+                          flag(policy::long_name<S_("flag2")>),
+                          flag(policy::short_name<'b'>, policy::description<S_("b description")>),
+                          arg<int>(policy::long_name<S_("arg1")>, policy::value_separator<'='>),
+                          help(policy::long_name<S_("help")>,
+                               policy::short_name<'h'>,
+                               policy::description<S_("Help output")>,
+                               policy::program_name<S_("foo")>,
+                               policy::program_version<S_("v3.14")>,
+                               policy::program_intro<S_("My foo is good for you")>)},
+                traits::integral_constant<4>{},
+                std::false_type{},
+                R"(foo v3.14
+
+My foo is good for you
+
+    --flag1,-a        Flag1 description
+    --flag2
+    -b                b description
+    --arg1=<Value>
+    --help,-h         Help output
+)"s},
+            std::tuple{
+                mock_root{flag(policy::long_name<S_("flag1")>,
+                               policy::short_name<'a'>,
+                               policy::description<S_("Flag1 description")>),
+                          flag(policy::long_name<S_("flag2")>),
+                          flag(policy::short_name<'b'>, policy::description<S_("b description")>),
+                          arg<int>(policy::long_name<S_("arg1")>, policy::value_separator<'='>),
+                          help(policy::long_name<S_("help")>,
+                               policy::short_name<'h'>,
+                               policy::description<S_("Help output")>,
+                               policy::program_name<S_("foo")>,
+                               policy::program_version<S_("v3.14")>,
+                               policy::program_intro<S_("My foo is good for you")>,
+                               policy::program_addendum<S_("Some addendum information.")>)},
+                traits::integral_constant<4>{},
+                std::false_type{},
+                R"(foo v3.14
+
+My foo is good for you
+
+    --flag1,-a        Flag1 description
+    --flag2
+    -b                b description
+    --arg1=<Value>
+    --help,-h         Help output
+
+Some addendum information.
+)"s},
+            std::tuple{
+                mock_root{flag(policy::long_name<S_("flag1")>,
+                               policy::short_name<'a'>,
+                               policy::description<S_("Flag1 description")>),
+                          flag(policy::long_name<S_("flag2")>),
+                          flag(policy::short_name<'b'>, policy::description<S_("b description")>),
+                          arg<int>(policy::long_name<S_("arg1")>,
+                                   policy::value_separator<'='>,
+                                   policy::min_max_value<2, 8>()),
+                          help(policy::long_name<S_("help")>,
+                               policy::short_name<'h'>,
+                               policy::description<S_("Help output")>,
+                               policy::program_name<S_("foo")>,
+                               policy::program_version<S_("v3.14")>,
+                               policy::program_intro<S_("My foo is good for you")>)},
+                traits::integral_constant<4>{},
+                std::false_type{},
+                R"(foo v3.14
+
+My foo is good for you
+
+    --flag1,-a      Flag1 description
+    --flag2
+    -b              b description
+    --arg1=<2-8>
+    --help,-h       Help output
+)"s},
+            std::tuple{
+                mock_root{flag(policy::long_name<S_("flag1")>,
+                               policy::short_name<'a'>,
+                               policy::description<S_("Flag1 description")>),
+                          flag(policy::long_name<S_("flag2")>),
+                          flag(policy::short_name<'b'>, policy::description<S_("b description")>),
+                          arg<int>(policy::long_name<S_("arg1")>,
+                                   policy::value_separator<'='>,
+                                   policy::min_value<2>()),
+                          help(policy::long_name<S_("help")>,
+                               policy::short_name<'h'>,
+                               policy::description<S_("Help output")>,
+                               policy::program_name<S_("foo")>,
+                               policy::program_version<S_("v3.14")>,
+                               policy::program_intro<S_("My foo is good for you")>)},
+                traits::integral_constant<4>{},
+                std::false_type{},
+                R"(foo v3.14
+
+My foo is good for you
+
+    --flag1,-a      Flag1 description
+    --flag2
+    -b              b description
+    --arg1=<2-N>
+    --help,-h       Help output
+)"s},
+            std::tuple{
+                mock_root{flag(policy::long_name<S_("flag1")>,
+                               policy::short_name<'a'>,
+                               policy::description<S_("Flag1 description")>),
+                          flag(policy::long_name<S_("flag2")>),
+                          flag(policy::short_name<'b'>, policy::description<S_("b description")>),
+                          arg<int>(policy::long_name<S_("arg1")>,
+                                   policy::value_separator<'='>,
+                                   policy::max_value<8>()),
+                          help(policy::long_name<S_("help")>,
+                               policy::short_name<'h'>,
+                               policy::description<S_("Help output")>,
+                               policy::program_name<S_("foo")>,
+                               policy::program_version<S_("v3.14")>,
+                               policy::program_intro<S_("My foo is good for you")>)},
+                traits::integral_constant<4>{},
+                std::false_type{},
+                R"(foo v3.14
+
+My foo is good for you
+
+    --flag1,-a       Flag1 description
+    --flag2
+    -b               b description
+    --arg1=<-N-8>
+    --help,-h        Help output
+)"s},
+            std::tuple{
+                mock_root{flag(policy::long_name<S_("flag1")>,
+                               policy::short_name<'a'>,
+                               policy::description<S_("Flag1 description")>),
+                          flag(policy::long_name<S_("flag2")>),
+                          flag(policy::short_name<'b'>, policy::description<S_("b description")>),
+                          arg<std::size_t>(policy::long_name<S_("arg1")>,
+                                           policy::value_separator<'='>,
+                                           policy::max_value<8u>()),
+                          help(policy::long_name<S_("help")>,
+                               policy::short_name<'h'>,
+                               policy::description<S_("Help output")>,
+                               policy::program_name<S_("foo")>,
+                               policy::program_version<S_("v3.14")>,
+                               policy::program_intro<S_("My foo is good for you")>)},
+                traits::integral_constant<4>{},
+                std::false_type{},
+                R"(foo v3.14
+
+My foo is good for you
+
+    --flag1,-a      Flag1 description
+    --flag2
+    -b              b description
+    --arg1=<0-8>
+    --help,-h       Help output
+)"s},
+            std::tuple{
+                mock_root{flag(policy::long_name<S_("flag1")>,
+                               policy::short_name<'a'>,
+                               policy::description<S_("Flag1 description")>),
+                          flag(policy::long_name<S_("flag2")>),
+                          flag(policy::short_name<'b'>, policy::description<S_("b description")>),
+                          arg<int>(policy::long_name<S_("arg1")>),
+                          help(policy::long_name<S_("help")>,
+                               policy::short_name<'h'>,
+                               policy::description<S_("Help output")>,
+                               policy::program_name<S_("foo")>,
+                               policy::program_version<S_("v3.14")>,
+                               policy::program_intro<S_("My foo is good for you")>)},
+                traits::integral_constant<4>{},
+                std::false_type{},
+                R"(foo v3.14
+
+My foo is good for you
+
+    --flag1,-a        Flag1 description
+    --flag2
+    -b                b description
+    --arg1 <Value>
+    --help,-h         Help output
+)"s},
+            std::tuple{mock_root{help(policy::long_name<S_("help")>,
+                                      policy::short_name<'h'>,
+                                      policy::description<S_("Help output")>,
+                                      policy::program_name<S_("foo")>,
+                                      policy::program_version<S_("v3.14")>,
+                                      policy::program_intro<S_("My foo is good for you")>),
+                                 mode(flag(policy::long_name<S_("flag1")>,
+                                           policy::short_name<'a'>,
+                                           policy::description<S_("Flag1 description")>),
+                                      flag(policy::long_name<S_("flag2")>),
+                                      arg<int>(policy::long_name<S_("arg1")>,
+                                               policy::value_separator<'='>,
+                                               policy::description<S_("Arg1 description")>),
+                                      flag(policy::short_name<'b'>,
+                                           policy::description<S_("b description")>))},
+                       traits::integral_constant<0>{},
+                       std::false_type{},
+                       R"(foo v3.14
+
+My foo is good for you
+
+    --help,-h             Help output
+        --flag1,-a        Flag1 description
+        --flag2
+        --arg1=<Value>    Arg1 description
+        -b                b description
+)"s},
+            std::tuple{mock_root{help(policy::long_name<S_("help")>,
+                                      policy::short_name<'h'>,
+                                      policy::description<S_("Help output")>,
+                                      policy::program_name<S_("foo")>,
+                                      policy::program_version<S_("v3.14")>,
+                                      policy::program_intro<S_("My foo is good for you")>,
+                                      policy::flatten_help),
+                                 mode(flag(policy::long_name<S_("flag1")>,
+                                           policy::short_name<'a'>,
+                                           policy::description<S_("Flag1 description")>),
+                                      flag(policy::long_name<S_("flag2")>),
+                                      flag(policy::short_name<'b'>,
+                                           policy::description<S_("b description")>))},
+                       traits::integral_constant<0>{},
+                       std::true_type{},
+                       R"(foo v3.14
+
+My foo is good for you
+
+    --help,-h         Help output
+        --flag1,-a    Flag1 description
+        --flag2
+        -b            b description
+)"s},
+            std::tuple{mock_root{help(policy::long_name<S_("help")>,
+                                      policy::short_name<'h'>,
+                                      policy::description<S_("Help output")>,
+                                      policy::program_name<S_("foo")>,
+                                      policy::program_version<S_("v3.14")>,
+                                      policy::program_intro<S_("My foo is good for you")>),
+                                 mode(policy::none_name<S_("mode1")>,
+                                      policy::description<S_("Mode1 description")>,
+                                      flag(policy::long_name<S_("flag1")>,
+                                           policy::short_name<'a'>,
+                                           policy::description<S_("Flag1 description")>),
+                                      flag(policy::long_name<S_("flag2")>),
+                                      flag(policy::short_name<'b'>,
+                                           policy::description<S_("b description")>)),
+                                 mode(policy::none_name<S_("mode2")>,
+                                      flag(policy::long_name<S_("flag3")>,
+                                           policy::short_name<'c'>,
+                                           policy::description<S_("Flag3 description")>))},
+                       traits::integral_constant<0>{},
+                       std::false_type{},
+                       R"(foo v3.14
+
+My foo is good for you
+
+    --help,-h    Help output
+    mode1        Mode1 description
+    mode2
+)"s},
+            std::tuple{mock_root{help(policy::long_name<S_("help")>,
+                                      policy::short_name<'h'>,
+                                      policy::description<S_("Help output")>,
+                                      policy::program_name<S_("foo")>,
+                                      policy::program_version<S_("v3.14")>,
+                                      policy::program_intro<S_("My foo is good for you")>,
+                                      policy::flatten_help),
+                                 mode(policy::none_name<S_("mode1")>,
+                                      policy::description<S_("Mode1 description")>,
+                                      flag(policy::long_name<S_("flag1")>,
+                                           policy::short_name<'a'>,
+                                           policy::description<S_("Flag1 description")>),
+                                      flag(policy::long_name<S_("flag2")>),
+                                      flag(policy::short_name<'b'>,
+                                           policy::description<S_("b description")>)),
+                                 mode(policy::none_name<S_("mode2")>,
+                                      flag(policy::long_name<S_("flag3")>,
+                                           policy::short_name<'c'>,
+                                           policy::description<S_("Flag3 description")>))},
+                       traits::integral_constant<0>{},
+                       std::true_type{},
+                       R"(foo v3.14
+
+My foo is good for you
+
+    --help,-h         Help output
+    mode1             Mode1 description
+        --flag1,-a    Flag1 description
+        --flag2
+        -b            b description
+    mode2
+        --flag3,-c    Flag3 description
+)"s},
+            std::tuple{mock_root{flag(policy::long_name<S_("flag1")>,
+                                      policy::short_name<'a'>,
+                                      policy::description<S_("Flag1 description")>),
+                                 help(policy::long_name<S_("help")>,
+                                      policy::short_name<'h'>,
+                                      policy::description<S_("Help output")>,
+                                      policy::program_name<S_("foo")>,
+                                      policy::program_intro<S_("My foo is good for you")>)},
+                       traits::integral_constant<1>{},
+                       std::false_type{},
+                       R"(foo
+
+My foo is good for you
+
+    --flag1,-a    Flag1 description
+    --help,-h     Help output
+)"s},
+            std::tuple{mock_root{flag(policy::long_name<S_("flag1")>,
+                                      policy::short_name<'a'>,
+                                      policy::description<S_("Flag1 description")>),
+                                 help(policy::long_name<S_("help")>,
+                                      policy::short_name<'h'>,
+                                      policy::description<S_("Help output")>,
+                                      policy::program_version<S_("v3.14")>,
+                                      policy::program_intro<S_("My foo is good for you")>)},
+                       traits::integral_constant<1>{},
+                       std::false_type{},
+                       R"(My foo is good for you
+
+    --flag1,-a    Flag1 description
+    --help,-h     Help output
+)"s},
+            std::tuple{mock_root{flag(policy::long_name<S_("flag1")>,
+                                      policy::short_name<'a'>,
+                                      policy::description<S_("Flag1 description")>),
+                                 help(policy::long_name<S_("help")>,
+                                      policy::short_name<'h'>,
+                                      policy::description<S_("Help output")>,
+                                      policy::program_name<S_("foo")>,
+                                      policy::program_version<S_("v3.14")>)},
+                       traits::integral_constant<1>{},
+                       std::false_type{},
+                       R"(foo v3.14
+
+    --flag1,-a    Flag1 description
+    --help,-h     Help output
+)"s},
+            std::tuple{mock_root{flag(policy::long_name<S_("flag1")>,
+                                      policy::short_name<'a'>,
+                                      policy::description<S_("Flag1 description")>),
+                                 help(policy::long_name<S_("help")>,
+                                      policy::short_name<'h'>,
+                                      policy::description<S_("Help output")>)},
+                       traits::integral_constant<1>{},
+                       std::false_type{},
+                       R"(    --flag1,-a    Flag1 description
+    --help,-h     Help output
+)"s},
+        });
+}
+
+BOOST_AUTO_TEST_CASE(generate_help_terminal_width_test)
+{
+    auto f = [](const auto& root, auto help_index, auto term_width, const auto& expected_result) {
+        [[maybe_unused]] const auto columns1 = utility::terminal::columns();
+        utility::terminal::test_columns_value = term_width;
+        [[maybe_unused]] const auto columns2 = utility::terminal::columns();
+
+        using root_type = std::decay_t<decltype(root)>;
+        using help_type = std::tuple_element_t<help_index,  //
+                                               typename root_type::children_type>;
+
+        auto stream = std::stringstream{};
+        std::tuple_element_t<0, typename help_type::policies_type>::
+            template generate_help<root_type, help_type, false>(stream);
+        BOOST_CHECK_EQUAL(stream.str(), expected_result);
+    };
+
+    // Save the default value...
+    const auto default_test_columns_value = utility::terminal::test_columns_value;
+
+    test::data_set(
+        f,
+        std::tuple{
+            std::tuple{
+                mock_root{flag(policy::long_name<S_("flag1")>,
+                               policy::short_name<'a'>,
+                               policy::description<S_("Flag1 description")>),
+                          flag(policy::long_name<S_("flag2")>),
+                          flag(policy::short_name<'b'>, policy::description<S_("b description")>),
+                          arg<int>(policy::long_name<S_("arg1")>, policy::value_separator<'='>),
+                          help(policy::long_name<S_("help")>,
+                               policy::short_name<'h'>,
+                               policy::description<S_("Help output")>,
+                               policy::program_name<S_("foo")>,
+                               policy::program_version<S_("v3.14")>,
+                               policy::program_intro<S_("My foo is good for you")>)},
+                traits::integral_constant<4>{},
+                32,
+                R"(foo v3.14
+
+My foo is good for you
+
+    --flag1,-a        Flag1 
+                      descriptio
+                      n
+    --flag2
+    -b                b 
+                      descriptio
+                      n
+    --arg1=<Value>
+    --help,-h         Help 
+                      output
+)"s},
+            std::tuple{
+                mock_root{flag(policy::long_name<S_("flag1")>,
+                               policy::short_name<'a'>,
+                               policy::description<S_("aaa aaaaaaa aaa aaaaaaa aaaaaaaaaaa")>),
+                          flag(policy::long_name<S_("flag2")>),
+                          help(policy::long_name<S_("help")>,
+                               policy::short_name<'h'>,
+                               policy::description<S_("bbbbbbbbbbbbbbbbbbbbbbbb")>,
+                               policy::program_name<S_("foo")>,
+                               policy::program_version<S_("v3.14")>,
+                               policy::program_intro<S_("My foo is good for you")>)},
+                traits::integral_constant<2>{},
+                40,
+                R"(foo v3.14
+
+My foo is good for you
+
+    --flag1,-a    aaa aaaaaaa aaa 
+                  aaaaaaa aaaaaaaaaaa
+    --flag2
+    --help,-h     bbbbbbbbbbbbbbbbbbbbbb
+                  bb
+)"s},
+        });
+
+    // ... And then reinstate so we don't break later tests
+    utility::terminal::test_columns_value = default_test_columns_value;
+}
+
+BOOST_AUTO_TEST_CASE(death_test)
+{
+    test::death_test_compile({{
+                                  R"(
+#include "arg_router/help.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+struct mock_root {};
+
+int main() {
+    const auto m = help(policy::long_name<S_("help")>);
+    auto stream = std::stringstream{};
+    m.generate_help<mock_root, std::decay_t<decltype(m)>, false>(stream);
+    return 0;
+}
+    )",
+                                  "Node must have a help_data_type to generate help from",
+                                  "generate_help_node_must_have_help_data_test"},
+                              {
+                                  R"(
+#include "arg_router/help.hpp"
+
+using namespace arg_router;
+
+int main() {
+    const auto m = policy::default_help_formatter_t<
+        int,
+        traits::integral_constant<std::size_t{8}>,
+        policy::help_formatter_component::default_line_formatter<4>,
+        policy::help_formatter_component::default_preamble_formatter>{};
+    return 0;
+}
+    )",
+                                  "Indent must have a value_type",
+                                  "indent_must_have_value_type"},
+                              {
+                                  R"(
+#include "arg_router/help.hpp"
+
+using namespace arg_router;
+
+int main() {
+    const auto m = policy::default_help_formatter_t<
+        traits::integral_constant<std::size_t{4}>,
+        int,
+        policy::help_formatter_component::default_line_formatter<4>,
+        policy::help_formatter_component::default_preamble_formatter>{};
+    return 0;
+}
+    )",
+                                  "DescColumnOffset must have a value_type",
+                                  "desc_column_offset_must_have_value_type"},
+                              {
+                                  R"(
+#include "arg_router/help.hpp"
+
+using namespace arg_router;
+
+int main() {
+    const auto m = policy::default_help_formatter_t<
+        traits::integral_constant<std::size_t{0}>,
+        traits::integral_constant<std::size_t{8}>,
+        policy::help_formatter_component::default_line_formatter<4>,
+        policy::help_formatter_component::default_preamble_formatter>{};
+    return 0;
+}
+    )",
+                                  "Indent value_type must be greater than zero",
+                                  "indent_value_type_must_be_greater_than_zero"},
+                              {
+                                  R"(
+#include "arg_router/help.hpp"
+
+using namespace arg_router;
+
+int main() {
+    const auto m = policy::default_help_formatter_t<
+        traits::integral_constant<std::size_t{4}>,
+        traits::integral_constant<std::size_t{0}>,
+        policy::help_formatter_component::default_line_formatter<4>,
+        policy::help_formatter_component::default_preamble_formatter>{};
+    return 0;
+}
+    )",
+                                  "DescColumnOffset value_type must be greater than zero",
+                                  "desc_column_offset_value_type_must_be_greater_than_zero"},
+                              {
+                                  R"(
+#include "arg_router/help.hpp"
+
+using namespace arg_router;
+
+struct mock_root {
+    template <bool Flatten>
+    class help_data_type
+    {
+    public:
+        using label = S_("");
+        using description = S_("");
+        using children = std::tuple<>;
+    };
+};
+
+int main() {
+    const auto m = policy::default_help_formatter_t<
+        traits::integral_constant<std::size_t{4}>,
+        traits::integral_constant<std::size_t{8}>,
+        policy::help_formatter_component::default_line_formatter<0>,
+        policy::help_formatter_component::default_preamble_formatter>{};
+
+    auto stream = std::stringstream{};
+    m.generate_help<mock_root, std::decay_t<decltype(m)>, false>(stream);
+    return 0;
+}
+    )",
+                                  "Indent must be greater than zero",
+                                  "indent_must_be_greater_than_zero"},
+                              {
+                                  R"(
+#include "arg_router/flag.hpp"
+#include "arg_router/help.hpp"
+#include "arg_router/policy/description.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+template <typename... Params>
+class mock_root : public tree_node<Params...>
+{
+public:
+    constexpr explicit mock_root(Params... params) : tree_node<Params...>{std::move(params)...} {}
+
+    template <bool Flatten>
+    class help_data_type
+    {
+    public:
+        using label = S_("");
+        using description = S_("");
+        using children = typename tree_node<std::decay_t<Params>...>::template  //
+            default_leaf_help_data_type<Flatten>::all_children_help;
+    };
+};
+
+int main() {
+    const auto root = mock_root{flag(policy::long_name<S_("flag1")>,
+                                     policy::description<S_("Flag1\tdescription")>),
+                                help(policy::long_name<S_("help")>)};
+    const auto& h = std::get<1>(root.children());
+
+    auto stream = ostringstream{};
+    h.generate_help<std::decay_t<decltype(root)>, std::decay_t<decltype(h)>, false>(stream);
+    return 0;
+}
+    )",
+                                  "Help descriptions cannot contain tabs",
+                                  "no_tabs_in_description_test"}});
+}
+
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE_END()

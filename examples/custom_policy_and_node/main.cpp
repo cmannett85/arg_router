@@ -201,6 +201,7 @@ int main(int argc, char* argv[])
                       arp::short_name<'h'>,
                       arp::program_name<S_("is_even")>,
                       arp::program_version<S_(version)>,
+                      arp::program_addendum<S_("An example program for arg_router.")>,
                       smiley_description<S_("Display this help and exit")>),
              ar::flag(arp::long_name<S_("version")>,
                       smiley_description<S_("Output version information and exit")>,

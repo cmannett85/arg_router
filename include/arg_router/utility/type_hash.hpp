@@ -12,6 +12,7 @@ namespace detail
 // https://github.com/boostorg/container_hash/blob/boost-1.74.0/include/boost/container_hash/hash.hpp#L316
 [[nodiscard]] constexpr std::size_t hash_combine(std::size_t a, std::size_t b) noexcept
 {
+    // NOLINTBEGIN(readability-magic-numbers)
     static_assert((sizeof(std::size_t) == 4) || (sizeof(std::size_t) == 8),
                   "std::size_t must be 32 or 64 bits");
 
@@ -21,7 +22,6 @@ namespace detail
         constexpr auto c1 = std::uint32_t{0xcc9e2d51};
         constexpr auto c2 = std::uint32_t{0x1b873593};
 
-        // NOLINTBEGIN(readability-magic-numbers)
         b *= c1;
         b = (b << 15) | (b >> (32 - 15));  // ROTL 15 bits
         b *= c2;
@@ -29,7 +29,6 @@ namespace detail
         a ^= b;
         a = (a << 13) | (a >> (32 - 13));  // ROTL 13 bits
         a = a * 5 + 0xe6546b64;
-        // NOLINTEND(readability-magic-numbers)
 
         return a;
     } else {
@@ -44,11 +43,11 @@ namespace detail
         a *= m;
 
         // Completely arbitrary number, to prevent 0's from hashing to 0.
-        // NOLINTNEXTLINE(readability-magic-numbers)
         a += 0xe6546b64;
 
         return a;
     }
+    // NOLINTEND(readability-magic-numbers)
 }
 
 // Do this rather than just put the generate() body into type_hash(), because otherwise the compiler
@@ -56,7 +55,7 @@ namespace detail
 template <typename T>
 class type_hash_t
 {
-    [[nodiscard]] static constexpr std::size_t generate() noexcept
+    [[nodiscard]] constexpr static std::size_t generate() noexcept
     {
         // Because we can't guarantee default construction support for T and reinterpret_cast is not
         // allowed in constant evaluation, we'll resort to the (valid, but) dirty hack of using the
@@ -76,7 +75,7 @@ class type_hash_t
     }
 
 public:
-    static constexpr auto value = generate();
+    constexpr static auto value = generate();
 };
 }  // namespace detail
 

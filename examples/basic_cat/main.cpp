@@ -154,6 +154,7 @@ int main(int argc, char* argv[])
                  arp::short_name<'h'>,
                  arp::program_name<S_("my-cat")>,
                  arp::program_version<S_(version)>,
+                 arp::program_addendum<S_("An example program for arg_router.")>,
                  arp::description<S_("Display this help and exit")>),
         ar::flag(arp::long_name<S_("version")>,
                  arp::description<S_("Output version information and exit")>,
