@@ -57,6 +57,7 @@ int main(int argc, char* argv[])
                       arp::program_name<S_("simple")>,
                       arp::program_version<S_("v0.1")>,
                       arp::program_intro<S_("A simple file copier and mover.")>,
+                      arp::program_addendum<S_("An example program for arg_router.")>,
                       arp::flatten_help,
                       arp::colour_help_formatter),
              ar::mode(arp::none_name<S_("copy")>,

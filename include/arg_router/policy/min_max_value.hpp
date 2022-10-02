@@ -130,6 +130,7 @@ public:
      */
     template <typename T = MinType>
     [[nodiscard]] constexpr static auto minimum_value(
+        // NOLINTNEXTLINE(*-named-parameter)
         std::enable_if_t<!std::is_void_v<T>>* = nullptr) noexcept
     {
         return MinType::value;
@@ -142,6 +143,7 @@ public:
      */
     template <typename T = MaxType>
     [[nodiscard]] constexpr static auto maximum_value(
+        // NOLINTNEXTLINE(*-named-parameter)
         std::enable_if_t<!std::is_void_v<T>>* = nullptr) noexcept
     {
         return MaxType::value;

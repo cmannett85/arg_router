@@ -94,6 +94,34 @@ My foo is good for you
                                policy::description<S_("Flag1 description")>),
                           flag(policy::long_name<S_("flag2")>),
                           flag(policy::short_name<'b'>, policy::description<S_("b description")>),
+                          arg<int>(policy::long_name<S_("arg1")>, policy::value_separator<'='>),
+                          help(policy::long_name<S_("help")>,
+                               policy::short_name<'h'>,
+                               policy::description<S_("Help output")>,
+                               policy::program_name<S_("foo")>,
+                               policy::program_version<S_("v3.14")>,
+                               policy::program_intro<S_("My foo is good for you")>,
+                               policy::program_addendum<S_("Some addendum information.")>)},
+                traits::integral_constant<4>{},
+                std::false_type{},
+                R"(foo v3.14
+
+My foo is good for you
+
+    --flag1,-a        Flag1 description
+    --flag2
+    -b                b description
+    --arg1=<Value>
+    --help,-h         Help output
+
+Some addendum information.
+)"s},
+            std::tuple{
+                mock_root{flag(policy::long_name<S_("flag1")>,
+                               policy::short_name<'a'>,
+                               policy::description<S_("Flag1 description")>),
+                          flag(policy::long_name<S_("flag2")>),
+                          flag(policy::short_name<'b'>, policy::description<S_("b description")>),
                           arg<int>(policy::long_name<S_("arg1")>,
                                    policy::value_separator<'='>,
                                    policy::min_max_value<2, 8>()),

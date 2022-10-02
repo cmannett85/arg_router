@@ -4,6 +4,7 @@
 
 #include "arg_router/algorithm.hpp"
 #include "arg_router/policy/policy.hpp"
+#include "arg_router/policy/program_addendum.hpp"
 #include "arg_router/policy/program_intro.hpp"
 #include "arg_router/policy/program_name.hpp"
 #include "arg_router/policy/program_version.hpp"
@@ -128,6 +129,32 @@ public:
         }
     }
 };
+
+/** Default addendum formatter */
+class default_addendum_formatter
+{
+public:
+    /** Formats an available program_addendum_t policy in @a HelpNode and writes it out to
+     * @a stream.
+     *
+     * @tparam HelpNode Help node controlling the help generation
+     * @param stream Output stream
+     */
+    template <typename HelpNode>
+    void format(std::ostream& stream)
+    {
+        [[maybe_unused]] constexpr auto addendum_index =
+            algorithm::find_specialisation_v<policy::program_addendum_t,
+                                             typename HelpNode::policies_type>;
+
+        if constexpr (addendum_index != std::tuple_size_v<typename HelpNode::policies_type>) {
+            stream << "\n"
+                   << std::tuple_element_t<addendum_index,
+                                           typename HelpNode::policies_type>::program_addendum()
+                   << "\n";
+        }
+    }
+};
 }  // namespace help_formatter_component
 
 /** Default help formatter, used when none is specified when defining a help node.
@@ -143,7 +170,8 @@ public:
 template <typename Indent = traits::integral_constant<std::size_t{4}>,
           typename DescColumnOffset = traits::integral_constant<Indent{} * 2>,
           typename LineFormatter = help_formatter_component::default_line_formatter<Indent{}>,
-          typename PreambleFormatter = help_formatter_component::default_preamble_formatter>
+          typename PreambleFormatter = help_formatter_component::default_preamble_formatter,
+          typename AddendumFormatter = help_formatter_component::default_addendum_formatter>
 class default_help_formatter_t
 {
     static_assert(traits::has_value_type_v<Indent>, "Indent must have a value_type");
@@ -172,6 +200,7 @@ public:
 
         using help_data_type = typename Node::template help_data_type<Flatten>;
 
+        // Write out the preamble
         auto preamble_formatter = PreambleFormatter{};
         preamble_formatter.template format<HelpNode>(stream);
 
@@ -190,6 +219,10 @@ public:
             columns >= (desc_column + DescColumnOffset{}) ? columns :
                                                             std::numeric_limits<std::size_t>::max(),
             line_formatter);
+
+        // Write out the addendum
+        auto addendum_formatter = AddendumFormatter{};
+        addendum_formatter.template format<HelpNode>(stream);
     }
 
 private:

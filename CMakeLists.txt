@@ -94,6 +94,7 @@ path_prefixer(HEADERS
     include/arg_router/policy/multi_stage_value.hpp
     include/arg_router/policy/no_result_value.hpp
     include/arg_router/policy/policy.hpp
+    include/arg_router/policy/program_addendum.hpp
     include/arg_router/policy/program_intro.hpp
     include/arg_router/policy/program_name.hpp
     include/arg_router/policy/program_version.hpp
