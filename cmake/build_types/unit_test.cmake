@@ -24,6 +24,9 @@ path_prefixer(TEST_SRCS
     list_test.cpp
     math_test.cpp
     mode_test.cpp
+    multi_lang/iso_locale_test.cpp
+    multi_lang/root_wrapper_test.cpp
+    multi_lang/string_selector_test.cpp
     parsing/dynamic_token_adapter_test.cpp
     parsing/global_parser_test.cpp
     parsing/parse_target_test.cpp

@@ -6,4 +6,5 @@
  * @example custom_policy_and_node/main.cpp
  * @example just_cats/main.cpp
  * @example simple/main.cpp
+ * @example simple_ml/main.cpp
  */
