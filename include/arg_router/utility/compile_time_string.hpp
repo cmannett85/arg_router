@@ -6,9 +6,7 @@
 #include "arg_router/traits.hpp"
 
 #include <boost/mp11/algorithm.hpp>
-#include <boost/preprocessor/config/limits.hpp>
-#include <boost/preprocessor/punctuation/comma_if.hpp>
-#include <boost/preprocessor/repetition/repeat.hpp>
+#include <boost/preprocessor/repetition/enum.hpp>
 
 #include <array>
 
@@ -219,13 +217,13 @@ struct builder {
 
     using type = decltype(list_to_string(strip_null{}));
 };
-
-#define AR_STR_CHAR(z, n, tok) BOOST_PP_COMMA_IF(n) arg_router::utility::cts_detail::get(tok, n)
-
-#define AR_STR_N(n, tok) \
-    typename arg_router::utility::cts_detail::builder<BOOST_PP_REPEAT(n, AR_STR_CHAR, tok)>::type
 }  // namespace cts_detail
 }  // namespace arg_router::utility
+
+#define AR_STR_CHAR(z, n, tok) arg_router::utility::cts_detail::get(tok, n)
+
+#define AR_STR_N(n, tok) \
+    typename arg_router::utility::cts_detail::builder<BOOST_PP_ENUM(n, AR_STR_CHAR, tok)>::type
 
 /** Macro that represents the type of a compile-time string, useful for policies that require a
  * compile string.
