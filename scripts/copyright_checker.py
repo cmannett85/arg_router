@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
-# Copyright (C) 2022 by Camden Mannett.  All rights reserved.
+# Copyright (C) 2022 by Camden Mannett.
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 import sys
 import glob
@@ -9,13 +11,13 @@ import re
 import datetime
 import argparse
 
-LANGUAGE_COMMENT_ENDS = [('*.sh', '###', '\n'),
-                         ('*.cpp', '/*', '*/\n'),
-                         ('*.hpp', '/*', '*/\n'),
-                         ('*.py', '###', '\n'),
-                         ('*.cmake', '###', '\n'),
-                         ('CMakeLists.txt', '###', '\n'),
-                         ('*.doxy', '/*', '*/\n')]
+LANGUAGE_COMMENT_ENDS = [('*.sh', '###'),
+                         ('*.cpp', '//'),
+                         ('*.hpp', '//'),
+                         ('*.py', '#'),
+                         ('*.cmake', '###'),
+                         ('CMakeLists.txt', '###'),
+                         ('*.doxy', '//')]
 SKIP_PATHS = ['vcpkg' + os.sep,
               'test' + os.sep + 'death_test',
               'build' + os.sep,         # VSCode
@@ -24,6 +26,9 @@ SKIP_PATHS = ['vcpkg' + os.sep,
               'package_build' + os.sep,  # CI
               'download' + os.sep]      # CI
 THIS_YEAR = datetime.datetime.now().year
+
+SECOND_COPYRIGHT_LINE = ' Distributed under the Boost Software License, Version 1.0.\n'
+THIRD_COPYRIGHT_LINE = ' (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)\n'
 
 
 def skip_file(file):
@@ -51,25 +56,27 @@ def find_re_in_lines(lines, prog):
     return None
 
 
-def find_copyright(lines):
+def find_copyright(line_prefix, lines):
     prog = re.compile(
-        r'Copyright \(C\) (\d{4}|\d{4}-\d{4}) by Camden Mannett\.  All rights reserved\.')
-    return find_re_in_lines(lines, prog)
+        r'Copyright \(C\) (\d{4}|\d{4}-\d{4}) by Camden Mannett\.')
+    for i in range(len(lines)):
+        m = prog.search(lines[i])
+        if m and ((i+2) < len(lines)):
+            return (lines[i+1] == (line_prefix + SECOND_COPYRIGHT_LINE)) and \
+                (lines[i+2] == (line_prefix + THIRD_COPYRIGHT_LINE))
+
+    return False
 
 
-def find_shebang(lines):
-    prog = re.compile(r'^#!\/')
-    return find_re_in_lines(lines, prog)
-
-
-def build_copyright():
-    return ' Copyright (C) ' + str(THIS_YEAR) + \
-           ' by Camden Mannett.  All rights reserved. '
+def build_copyright(line_prefix):
+    return line_prefix + ' Copyright (C) ' + str(THIS_YEAR) + \
+        ' by Camden Mannett.\n' + \
+        line_prefix + SECOND_COPYRIGHT_LINE + \
+        line_prefix + THIRD_COPYRIGHT_LINE
 
 
 def presence_checker(args):
     root_dir = args.dir
-    generate = args.generate
 
     print('Checking copyrights, starting at ' + root_dir + '...')
 
@@ -84,17 +91,8 @@ def presence_checker(args):
             with open(file, 'r', encoding='utf-8') as f:
                 data = f.readlines()
 
-            if not find_copyright(data):
-                if generate:
-                    if find_shebang(data):
-                        data.insert(1, '\n' + t[1] + build_copyright() + t[2])
-                    else:
-                        data.insert(0, t[1] + build_copyright() + t[2] + '\n')
-
-                    with open(file, 'w') as f:
-                        f.writelines(data)
-                else:
-                    missing.append(file)
+            if not find_copyright(t[1], data):
+                missing.append(file)
 
     if len(missing) != 0:
         print('Failed to find copyright notice in:')
@@ -131,7 +129,7 @@ def date_checker(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Checks for the presence of copyright notices in the ' +
-                    'given directory, and can generate them too.')
+                    'given directory.')
     subparsers = parser.add_subparsers()
 
     presence_parser = subparsers.add_parser(
@@ -139,9 +137,6 @@ if __name__ == '__main__':
         help='Check for the presence for, or generate, copyright notices')
     presence_parser.add_argument('dir', help='Directory to recurse through and check',
                                  default='.')
-    presence_parser.add_argument('-g', '--generate',
-                                 help='Generate copyright notices if necessary',
-                                 action='store_true')
     presence_parser.set_defaults(func=presence_checker)
 
     date_parser = subparsers.add_parser(
