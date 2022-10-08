@@ -23,7 +23,7 @@ if((NOT INSTALLATION_ONLY) AND (NOT DISABLE_VCPKG))
 endif()
 
 project(arg_router
-        VERSION 0.1.0
+        VERSION 1.0.0
         DESCRIPTION "C++ command line argument parsing and routing"
         HOMEPAGE_URL "https://github.com/cmannett85/arg_router"
         LANGUAGES CXX)
