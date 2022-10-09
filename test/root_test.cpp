@@ -829,7 +829,7 @@ BOOST_AUTO_TEST_CASE(counting_flag_test)
         mode(policy::none_name<S_("mode2")>,
              counting_flag<std::size_t>(policy::short_name<'a'>,
                                         policy::alias(policy::short_name<'b'>)),
-             counting_flag<std::size_t>(policy::short_name<'b'>, policy::min_max_value<2, 5>()),
+             counting_flag<std::size_t>(policy::short_name<'b'>, policy::min_max_value<2u, 5u>()),
              policy::router{[&](std::size_t b) { result = std::tuple{b}; }}),
         mode(policy::none_name<S_("mode3")>,
              flag(policy::short_name<'a'>),

@@ -18,7 +18,7 @@
 using namespace arg_router;
 using namespace std::string_literals;
 
-auto utility::terminal::test_columns_value = std::size_t{80};
+std::size_t utility::terminal::test_columns_value = 80;
 
 namespace
 {
