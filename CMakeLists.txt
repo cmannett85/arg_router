@@ -1,4 +1,6 @@
-### Copyright (C) 2022 by Camden Mannett.  All rights reserved.
+### Copyright (C) 2022 by Camden Mannett.
+### Distributed under the Boost Software License, Version 1.0.
+### (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 cmake_minimum_required(VERSION 3.18)
 
@@ -21,7 +23,7 @@ if((NOT INSTALLATION_ONLY) AND (NOT DISABLE_VCPKG))
 endif()
 
 project(arg_router
-        VERSION 0.1.0
+        VERSION 1.0.0
         DESCRIPTION "C++ command line argument parsing and routing"
         HOMEPAGE_URL "https://github.com/cmannett85/arg_router"
         LANGUAGES CXX)

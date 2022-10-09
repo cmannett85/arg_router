@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
-# Copyright (C) 2022 by Camden Mannett.  All rights reserved.
+# Copyright (C) 2022 by Camden Mannett.
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 from io import StringIO
 from enum import Enum, unique
@@ -34,43 +36,43 @@ class GraphemeClusterBreak(Enum):
 @unique
 class LineBreak(Enum):
     # Any = 0, not used in the script but is in the C++
-    AL  = 1
-    BA  = 2
-    BB  = 3
-    B2  = 4
-    BK  = 5
-    CB  = 6
-    CL  = 7
-    CM  = 8
-    CP  = 9
-    CR  = 10
-    EB  = 11
-    EM  = 12
-    EX  = 13
-    GL  = 14
-    H2  = 15
-    H3  = 16
-    HY  = 17
-    ID  = 18
-    HL  = 19
-    IN  = 20
-    IS  = 21
-    JL  = 22
-    JT  = 23
-    JV  = 24
-    LF  = 25
-    NL  = 26
-    NS  = 27
-    NU  = 28
-    OP  = 29
-    PO  = 30
-    PR  = 31
-    QU  = 32
-    RI  = 33
-    SP  = 34
-    SY  = 35
-    WJ  = 36
-    ZW  = 37
+    AL = 1
+    BA = 2
+    BB = 3
+    B2 = 4
+    BK = 5
+    CB = 6
+    CL = 7
+    CM = 8
+    CP = 9
+    CR = 10
+    EB = 11
+    EM = 12
+    EX = 13
+    GL = 14
+    H2 = 15
+    H3 = 16
+    HY = 17
+    ID = 18
+    HL = 19
+    IN = 20
+    IS = 21
+    JL = 22
+    JT = 23
+    JV = 24
+    LF = 25
+    NL = 26
+    NS = 27
+    NU = 28
+    OP = 29
+    PO = 30
+    PR = 31
+    QU = 32
+    RI = 33
+    SP = 34
+    SY = 35
+    WJ = 36
+    ZW = 37
     ZWJ = 38
 
 
@@ -155,7 +157,8 @@ def print_code_points(cps):
                                                                  cp_range[1],
                                                                  cp_range[2]))
         else:
-            print('    {{0x{:06X}, 0x{:06X}}},'.format(cp_range[0], cp_range[1]))
+            print('    {{0x{:06X}, 0x{:06X}}},'.format(
+                cp_range[0], cp_range[1]))
 
 
 def run(url, abbrvs, varname):
