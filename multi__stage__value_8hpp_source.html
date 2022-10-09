@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">arg_router
-   &#160;<span id="projectnumber">0.1.0</span>
+   &#160;<span id="projectnumber">1.0.0</span>
    </div>
    <div id="projectbrief">C++ command line argument parsing and routing</div>
   </td>
@@ -71,62 +71,64 @@ $(function() {
 <div class="title">multi_stage_value.hpp</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#pragma once</span></div>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">// Copyright (C) 2022 by Camden Mannett.</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">// Distributed under the Boost Software License, Version 1.0.</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">// (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;arg_router/policy/policy.hpp&quot;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;functional&gt;</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;optional&gt;</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacearg__router_1_1policy.html">arg_router::policy</a></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;{</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> ResultType, <span class="keyword">typename</span> ValueType&gt;</div>
-<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1multi__stage__value.html">   26</a></span>&#160;<span class="keyword">class </span><a class="code" href="classarg__router_1_1policy_1_1multi__stage__value.html">multi_stage_value</a></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;{</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1multi__stage__value.html#a5a463b5dc6c149a3f5e5340886db012e">   30</a></span>&#160;    <span class="keyword">using</span> <a class="code" href="classarg__router_1_1policy_1_1multi__stage__value.html#a5a463b5dc6c149a3f5e5340886db012e">merge_fn</a> = std::function&lt;void(std::optional&lt;ResultType&gt;&amp;, ValueType&amp;&amp;)&gt;;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
-<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1multi__stage__value.html#a0019ba50043a49c3d4b9486a6c3227ba">   36</a></span>&#160;    constexpr <span class="keyword">explicit</span> <a class="code" href="classarg__router_1_1policy_1_1multi__stage__value.html#a0019ba50043a49c3d4b9486a6c3227ba">multi_stage_value</a>(<a class="code" href="classarg__router_1_1policy_1_1multi__stage__value.html#a5a463b5dc6c149a3f5e5340886db012e">merge_fn</a> fn) noexcept : fn_{std::move(fn)} {}</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
-<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1multi__stage__value.html#a96a51f4d9e7c3001e1015a0f7c6f5c17">   44</a></span>&#160;    constexpr <span class="keywordtype">void</span> <a class="code" href="classarg__router_1_1policy_1_1multi__stage__value.html#a96a51f4d9e7c3001e1015a0f7c6f5c17">merge</a>(std::optional&lt;ResultType&gt;&amp; result, ValueType&amp;&amp; value)<span class="keyword"> const</span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="keyword">    </span>{</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        fn_(result, std::forward&lt;ValueType&gt;(value));</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    }</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <a class="code" href="classarg__router_1_1policy_1_1multi__stage__value.html#a5a463b5dc6c149a3f5e5340886db012e">merge_fn</a> fn_;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;};</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> ResultType, <span class="keyword">typename</span> ValueType&gt;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="keyword">struct </span>is_policy&lt;multi_stage_value&lt;ResultType, ValueType&gt;&gt; : std::true_type {</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;};</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="structarg__router_1_1policy_1_1has__multi__stage__value.html">   62</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structarg__router_1_1policy_1_1has__multi__stage__value.html">has_multi_stage_value</a> {</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Ts&gt;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    constexpr <span class="keyword">static</span> std::true_type test(<span class="keyword">const</span> <a class="code" href="classarg__router_1_1policy_1_1multi__stage__value.html">multi_stage_value&lt;Ts...&gt;</a>*);</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    constexpr <span class="keyword">static</span> std::false_type test(...);</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;arg_router/policy/policy.hpp&quot;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;functional&gt;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;optional&gt;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacearg__router_1_1policy.html">arg_router::policy</a></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;{</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> ResultType, <span class="keyword">typename</span> ValueType&gt;</div>
+<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1multi__stage__value.html">   28</a></span>&#160;<span class="keyword">class </span><a class="code" href="classarg__router_1_1policy_1_1multi__stage__value.html">multi_stage_value</a></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;{</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1multi__stage__value.html#a5a463b5dc6c149a3f5e5340886db012e">   32</a></span>&#160;    <span class="keyword">using</span> <a class="code" href="classarg__router_1_1policy_1_1multi__stage__value.html#a5a463b5dc6c149a3f5e5340886db012e">merge_fn</a> = std::function&lt;void(std::optional&lt;ResultType&gt;&amp;, ValueType&amp;&amp;)&gt;;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
+<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1multi__stage__value.html#a0019ba50043a49c3d4b9486a6c3227ba">   38</a></span>&#160;    constexpr <span class="keyword">explicit</span> <a class="code" href="classarg__router_1_1policy_1_1multi__stage__value.html#a0019ba50043a49c3d4b9486a6c3227ba">multi_stage_value</a>(<a class="code" href="classarg__router_1_1policy_1_1multi__stage__value.html#a5a463b5dc6c149a3f5e5340886db012e">merge_fn</a> fn) noexcept : fn_{std::move(fn)} {}</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1multi__stage__value.html#a96a51f4d9e7c3001e1015a0f7c6f5c17">   46</a></span>&#160;    constexpr <span class="keywordtype">void</span> <a class="code" href="classarg__router_1_1policy_1_1multi__stage__value.html#a96a51f4d9e7c3001e1015a0f7c6f5c17">merge</a>(std::optional&lt;ResultType&gt;&amp; result, ValueType&amp;&amp; value)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="keyword">    </span>{</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        fn_(result, std::forward&lt;ValueType&gt;(value));</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    }</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <a class="code" href="classarg__router_1_1policy_1_1multi__stage__value.html#a5a463b5dc6c149a3f5e5340886db012e">merge_fn</a> fn_;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;};</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> ResultType, <span class="keyword">typename</span> ValueType&gt;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="keyword">struct </span>is_policy&lt;multi_stage_value&lt;ResultType, ValueType&gt;&gt; : std::true_type {</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;};</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="structarg__router_1_1policy_1_1has__multi__stage__value.html">   64</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structarg__router_1_1policy_1_1has__multi__stage__value.html">has_multi_stage_value</a> {</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Ts&gt;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    constexpr <span class="keyword">static</span> std::true_type test(<span class="keyword">const</span> <a class="code" href="classarg__router_1_1policy_1_1multi__stage__value.html">multi_stage_value&lt;Ts...&gt;</a>*);</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="comment">// NOLINTNEXTLINE(hicpp-vararg)</span></div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    constexpr <span class="keyword">static</span> <span class="keywordtype">bool</span> value = decltype(test(std::declval&lt;T*&gt;()))::value;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;};</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00079"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1policy.html#a14e7a79455b5ae4432ff6e10b94618e7">   79</a></span>&#160;constexpr <span class="keywordtype">bool</span> <a class="code" href="namespacearg__router_1_1policy.html#a14e7a79455b5ae4432ff6e10b94618e7">has_multi_stage_value_v</a> = <a class="code" href="structarg__router_1_1policy_1_1has__multi__stage__value.html">has_multi_stage_value&lt;T&gt;::value</a>;</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;}  <span class="comment">// namespace arg_router::policy</span></div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    constexpr <span class="keyword">static</span> std::false_type test(...);</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="comment">// NOLINTNEXTLINE(hicpp-vararg)</span></div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    constexpr <span class="keyword">static</span> <span class="keywordtype">bool</span> value = decltype(test(std::declval&lt;T*&gt;()))::value;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;};</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00081"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1policy.html#a14e7a79455b5ae4432ff6e10b94618e7">   81</a></span>&#160;constexpr <span class="keywordtype">bool</span> <a class="code" href="namespacearg__router_1_1policy.html#a14e7a79455b5ae4432ff6e10b94618e7">has_multi_stage_value_v</a> = <a class="code" href="structarg__router_1_1policy_1_1has__multi__stage__value.html">has_multi_stage_value&lt;T&gt;::value</a>;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;}  <span class="comment">// namespace arg_router::policy</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="anamespacearg__router_1_1policy_html"><div class="ttname"><a href="namespacearg__router_1_1policy.html">arg_router::policy</a></div><div class="ttdef"><b>Definition:</b> <a href="alias_8hpp_source.html#l00012">alias.hpp:12</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1policy_1_1multi__stage__value_html_a0019ba50043a49c3d4b9486a6c3227ba"><div class="ttname"><a href="classarg__router_1_1policy_1_1multi__stage__value.html#a0019ba50043a49c3d4b9486a6c3227ba">arg_router::policy::multi_stage_value::multi_stage_value</a></div><div class="ttdeci">constexpr multi_stage_value(merge_fn fn) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="multi__stage__value_8hpp_source.html#l00036">multi_stage_value.hpp:36</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1policy_1_1multi__stage__value_html_a5a463b5dc6c149a3f5e5340886db012e"><div class="ttname"><a href="classarg__router_1_1policy_1_1multi__stage__value.html#a5a463b5dc6c149a3f5e5340886db012e">arg_router::policy::multi_stage_value::merge_fn</a></div><div class="ttdeci">std::function&lt; void(std::optional&lt; ResultType &gt; &amp;, ValueType &amp;&amp;)&gt; merge_fn</div><div class="ttdef"><b>Definition:</b> <a href="multi__stage__value_8hpp_source.html#l00030">multi_stage_value.hpp:30</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1policy_1_1multi__stage__value_html_a96a51f4d9e7c3001e1015a0f7c6f5c17"><div class="ttname"><a href="classarg__router_1_1policy_1_1multi__stage__value.html#a96a51f4d9e7c3001e1015a0f7c6f5c17">arg_router::policy::multi_stage_value::merge</a></div><div class="ttdeci">constexpr void merge(std::optional&lt; ResultType &gt; &amp;result, ValueType &amp;&amp;value) const</div><div class="ttdef"><b>Definition:</b> <a href="multi__stage__value_8hpp_source.html#l00044">multi_stage_value.hpp:44</a></div></div>
-<div class="ttc" id="astructarg__router_1_1policy_1_1has__multi__stage__value_html"><div class="ttname"><a href="structarg__router_1_1policy_1_1has__multi__stage__value.html">arg_router::policy::has_multi_stage_value</a></div><div class="ttdef"><b>Definition:</b> <a href="multi__stage__value_8hpp_source.html#l00062">multi_stage_value.hpp:62</a></div></div>
-<div class="ttc" id="anamespacearg__router_1_1policy_html_a14e7a79455b5ae4432ff6e10b94618e7"><div class="ttname"><a href="namespacearg__router_1_1policy.html#a14e7a79455b5ae4432ff6e10b94618e7">arg_router::policy::has_multi_stage_value_v</a></div><div class="ttdeci">constexpr bool has_multi_stage_value_v</div><div class="ttdef"><b>Definition:</b> <a href="multi__stage__value_8hpp_source.html#l00079">multi_stage_value.hpp:79</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1policy_1_1multi__stage__value_html"><div class="ttname"><a href="classarg__router_1_1policy_1_1multi__stage__value.html">arg_router::policy::multi_stage_value</a></div><div class="ttdef"><b>Definition:</b> <a href="multi__stage__value_8hpp_source.html#l00026">multi_stage_value.hpp:26</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1policy_html"><div class="ttname"><a href="namespacearg__router_1_1policy.html">arg_router::policy</a></div><div class="ttdef"><b>Definition:</b> <a href="alias_8hpp_source.html#l00014">alias.hpp:14</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1policy_1_1multi__stage__value_html_a0019ba50043a49c3d4b9486a6c3227ba"><div class="ttname"><a href="classarg__router_1_1policy_1_1multi__stage__value.html#a0019ba50043a49c3d4b9486a6c3227ba">arg_router::policy::multi_stage_value::multi_stage_value</a></div><div class="ttdeci">constexpr multi_stage_value(merge_fn fn) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="multi__stage__value_8hpp_source.html#l00038">multi_stage_value.hpp:38</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1policy_1_1multi__stage__value_html_a5a463b5dc6c149a3f5e5340886db012e"><div class="ttname"><a href="classarg__router_1_1policy_1_1multi__stage__value.html#a5a463b5dc6c149a3f5e5340886db012e">arg_router::policy::multi_stage_value::merge_fn</a></div><div class="ttdeci">std::function&lt; void(std::optional&lt; ResultType &gt; &amp;, ValueType &amp;&amp;)&gt; merge_fn</div><div class="ttdef"><b>Definition:</b> <a href="multi__stage__value_8hpp_source.html#l00032">multi_stage_value.hpp:32</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1policy_1_1multi__stage__value_html_a96a51f4d9e7c3001e1015a0f7c6f5c17"><div class="ttname"><a href="classarg__router_1_1policy_1_1multi__stage__value.html#a96a51f4d9e7c3001e1015a0f7c6f5c17">arg_router::policy::multi_stage_value::merge</a></div><div class="ttdeci">constexpr void merge(std::optional&lt; ResultType &gt; &amp;result, ValueType &amp;&amp;value) const</div><div class="ttdef"><b>Definition:</b> <a href="multi__stage__value_8hpp_source.html#l00046">multi_stage_value.hpp:46</a></div></div>
+<div class="ttc" id="astructarg__router_1_1policy_1_1has__multi__stage__value_html"><div class="ttname"><a href="structarg__router_1_1policy_1_1has__multi__stage__value.html">arg_router::policy::has_multi_stage_value</a></div><div class="ttdef"><b>Definition:</b> <a href="multi__stage__value_8hpp_source.html#l00064">multi_stage_value.hpp:64</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1policy_html_a14e7a79455b5ae4432ff6e10b94618e7"><div class="ttname"><a href="namespacearg__router_1_1policy.html#a14e7a79455b5ae4432ff6e10b94618e7">arg_router::policy::has_multi_stage_value_v</a></div><div class="ttdeci">constexpr bool has_multi_stage_value_v</div><div class="ttdef"><b>Definition:</b> <a href="multi__stage__value_8hpp_source.html#l00081">multi_stage_value.hpp:81</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1policy_1_1multi__stage__value_html"><div class="ttname"><a href="classarg__router_1_1policy_1_1multi__stage__value.html">arg_router::policy::multi_stage_value</a></div><div class="ttdef"><b>Definition:</b> <a href="multi__stage__value_8hpp_source.html#l00028">multi_stage_value.hpp:28</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

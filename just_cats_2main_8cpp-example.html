@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">arg_router
-   &#160;<span id="projectnumber">0.1.0</span>
+   &#160;<span id="projectnumber">1.0.0</span>
    </div>
    <div id="projectbrief">C++ command line argument parsing and routing</div>
   </td>
@@ -67,7 +67,9 @@ $(function() {
 <div class="title">just_cats/main.cpp</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><span class="comment">/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */</span></div>
+<div class="fragment"><div class="line"><span class="comment">// Copyright (C) 2022 by Camden Mannett.</span></div>
+<div class="line"><span class="comment">// Distributed under the Boost Software License, Version 1.0.</span></div>
+<div class="line"><span class="comment">// (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)</span></div>
 <div class="line"> </div>
 <div class="line"><span class="preprocessor">#include &lt;arg_router/arg_router.hpp&gt;</span></div>
 <div class="line"> </div>
@@ -81,6 +83,7 @@ $(function() {
 <div class="line">                      arp::short_name&lt;&#39;h&#39;&gt;,</div>
 <div class="line">                      arp::program_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;just-cats&quot;</span>)&gt;,</div>
 <div class="line">                      arp::program_intro&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Prints cats!&quot;</span>)&gt;,</div>
+<div class="line">                      arp::program_addendum&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;An example program for arg_router.&quot;</span>)&gt;,</div>
 <div class="line">                      arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Display this help and exit&quot;</span>)&gt;),</div>
 <div class="line">             ar::flag(arp::long_name&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;cat&quot;</span>)&gt;,</div>
 <div class="line">                      arp::description&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;English cat&quot;</span>)&gt;,</div>
@@ -102,7 +105,7 @@ $(function() {
 <div class="line">    <span class="keywordflow">return</span> EXIT_SUCCESS;</div>
 <div class="line">}</div>
 </div><!-- fragment --> </div><!-- contents -->
-<div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00013">algorithm.hpp:13</a></div></div>
+<div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00015">algorithm.hpp:15</a></div></div>
 <div class="ttc" id="acompile__time__string_8hpp_html_a741f251b243f90ef2b4d915e50d40bac"><div class="ttname"><a href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a></div><div class="ttdeci">#define S_(tok)</div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00240">compile_time_string.hpp:240</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

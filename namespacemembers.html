@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">arg_router
-   &#160;<span id="projectnumber">0.1.0</span>
+   &#160;<span id="projectnumber">1.0.0</span>
    </div>
    <div id="projectbrief">C++ command line argument parsing and routing</div>
   </td>
@@ -100,6 +100,12 @@ $(function() {
 
 
 <h3><a id="index_c"></a>- c -</h3><ul>
+<li>colour_help_formatter
+: <a class="el" href="namespacearg__router_1_1policy.html#a2b0c8681a2563d4b2cac7ff4bdf918f1">arg_router::policy</a>
+</li>
+<li>colour_help_formatter_t
+: <a class="el" href="namespacearg__router_1_1policy.html#a8f75dcf7d479004106e69f977500d8fa">arg_router::policy</a>
+</li>
 <li>columns()
 : <a class="el" href="namespacearg__router_1_1utility_1_1terminal.html#acd0f8412a18a5275568c0fa51a64bf04">arg_router::utility::terminal</a>
 </li>
@@ -134,6 +140,9 @@ $(function() {
 <h3><a id="index_d"></a>- d -</h3><ul>
 <li>decode()
 : <a class="el" href="namespacearg__router_1_1utility_1_1utf8_1_1code__point.html#a33d5bdc2b5eda93913986b3a09ab0801">arg_router::utility::utf8::code_point</a>
+</li>
+<li>default_help_formatter
+: <a class="el" href="namespacearg__router_1_1policy.html#a5839f9553ec6db8d71d7414c03ed5705">arg_router::policy</a>
 </li>
 <li>default_validator
 : <a class="el" href="namespacearg__router_1_1policy_1_1validation.html#a3d0ef627a5432bc462c0044a6b01f583">arg_router::policy::validation</a>
@@ -240,8 +249,14 @@ $(function() {
 <li>has_maximum_count_method_v
 : <a class="el" href="namespacearg__router_1_1traits.html#a3aee6143c69d607faf803915000822eb">arg_router::traits</a>
 </li>
+<li>has_maximum_value_method_v
+: <a class="el" href="namespacearg__router_1_1traits.html#a38f22f465868b5ec4d9e685a11d59753">arg_router::traits</a>
+</li>
 <li>has_minimum_count_method_v
 : <a class="el" href="namespacearg__router_1_1traits.html#a53672f714d567be807963d292d78668e">arg_router::traits</a>
+</li>
+<li>has_minimum_value_method_v
+: <a class="el" href="namespacearg__router_1_1traits.html#a92cb7351c9fda90cabcf962cd76da403">arg_router::traits</a>
 </li>
 <li>has_multi_stage_value_v
 : <a class="el" href="namespacearg__router_1_1policy.html#a14e7a79455b5ae4432ff6e10b94618e7">arg_router::policy</a>
@@ -309,6 +324,9 @@ $(function() {
 </li>
 <li>is_whitespace()
 : <a class="el" href="namespacearg__router_1_1utility_1_1utf8.html#aad277f05a6c346029d0ba45b981e5304">arg_router::utility::utf8</a>
+</li>
+<li>iso_locale()
+: <a class="el" href="namespacearg__router_1_1multi__lang.html#a306df8264ecd85408a572e574a6560c4">arg_router::multi_lang</a>
 </li>
 </ul>
 
@@ -423,11 +441,20 @@ $(function() {
 <li>max_count
 : <a class="el" href="namespacearg__router_1_1policy.html#a1ed9134eb30f23ae83b00d4ca7300790">arg_router::policy</a>
 </li>
+<li>max_value()
+: <a class="el" href="namespacearg__router_1_1policy.html#a2b77cc36c2fd0d641820bc1e7b15b147">arg_router::policy</a>
+</li>
 <li>min_count
 : <a class="el" href="namespacearg__router_1_1policy.html#af48ba27f975e36205df8a6a1ceb07be2">arg_router::policy</a>
 </li>
 <li>min_max_count
 : <a class="el" href="namespacearg__router_1_1policy.html#a41f72699e6e7b4f8f76a8bd4b80ee34c">arg_router::policy</a>
+</li>
+<li>min_max_value()
+: <a class="el" href="namespacearg__router_1_1policy.html#a569f93a44862fceefde73245a0c5b76f">arg_router::policy</a>
+</li>
+<li>min_value()
+: <a class="el" href="namespacearg__router_1_1policy.html#ac6f521df4ab3ce91b7c97190f044761d">arg_router::policy</a>
 </li>
 <li>mode()
 : <a class="el" href="namespacearg__router.html#ad143ff2b625031722784ae817ee2ce94">arg_router</a>
@@ -477,6 +504,9 @@ $(function() {
 <li>prefix_type
 : <a class="el" href="namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3">arg_router::parsing</a>
 </li>
+<li>program_addendum
+: <a class="el" href="namespacearg__router_1_1policy.html#a50ebcd2455ba90ecbbcaf7d6aab2dc16">arg_router::policy</a>
+</li>
 <li>program_intro
 : <a class="el" href="namespacearg__router_1_1policy.html#ae4c0515ad6d58ea37fe121ee3f4a9861">arg_router::policy</a>
 </li>
@@ -498,6 +528,9 @@ $(function() {
 </li>
 <li>root()
 : <a class="el" href="namespacearg__router.html#a911ab5ded2b36269fdec3e768450d415">arg_router</a>
+</li>
+<li>root_wrapper()
+: <a class="el" href="namespacearg__router_1_1multi__lang.html#a90152afb33363b4b4835b50dd5c328f1">arg_router::multi_lang</a>
 </li>
 <li>rule
 : <a class="el" href="namespacearg__router_1_1policy_1_1validation.html#a9526b062af79c0a8922ccbc564ab6788">arg_router::policy::validation</a>
@@ -529,6 +562,9 @@ $(function() {
 </li>
 <li>string
 : <a class="el" href="namespacearg__router.html#abafabad5af18e8dda89e6b568b594738">arg_router</a>
+</li>
+<li>string_selector
+: <a class="el" href="namespacearg__router_1_1multi__lang.html#af248e7bc35641fdca7f234112fd2140c">arg_router::multi_lang</a>
 </li>
 <li>supports_static_cast_conversion_v
 : <a class="el" href="namespacearg__router_1_1traits.html#a297f44147f20027fdaa4eed223980213">arg_router::traits</a>
@@ -574,6 +610,9 @@ $(function() {
 
 
 <h3><a id="index_u"></a>- u -</h3><ul>
+<li>underlying_type_t
+: <a class="el" href="namespacearg__router_1_1traits.html#ab996c815d8775a8cb737b7ccb5342d62">arg_router::traits</a>
+</li>
 <li>unsafe_any
 : <a class="el" href="namespacearg__router_1_1utility.html#ae043ae4c53048fdf30045cf4c163db05">arg_router::utility</a>
 </li>

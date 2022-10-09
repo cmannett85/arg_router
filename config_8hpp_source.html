@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">arg_router
-   &#160;<span id="projectnumber">0.1.0</span>
+   &#160;<span id="projectnumber">1.0.0</span>
    </div>
    <div id="projectbrief">C++ command line argument parsing and routing</div>
   </td>
@@ -71,35 +71,37 @@ $(function() {
 <div class="title">config.hpp</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#pragma once</span></div>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">// Copyright (C) 2022 by Camden Mannett.</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">// Distributed under the Boost Software License, Version 1.0.</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">// (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;cstddef&gt;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;memory&gt;</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;string_view&gt;</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
-<div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1config.html">   14</a></span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacearg__router_1_1config.html">arg_router::config</a></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;{</div>
-<div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1config.html#a801b0c98daa90f1951e5cdd72e680b3e">   17</a></span>&#160;constexpr <span class="keyword">auto</span> <a class="code" href="namespacearg__router_1_1config.html#a801b0c98daa90f1951e5cdd72e680b3e">long_prefix</a> = std::string_view{AR_LONG_PREFIX};</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
-<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1config.html#a46080eba5c23480d20901c2c412a8eed">   20</a></span>&#160;constexpr <span class="keyword">auto</span> <a class="code" href="namespacearg__router_1_1config.html#a46080eba5c23480d20901c2c412a8eed">short_prefix</a> = std::string_view{AR_SHORT_PREFIX};</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;static_assert(<a class="code" href="namespacearg__router_1_1config.html#a46080eba5c23480d20901c2c412a8eed">short_prefix</a>.size() == 1, <span class="stringliteral">&quot;Short prefix must be one character&quot;</span>);</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#pragma once</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;cstddef&gt;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;memory&gt;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;string_view&gt;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
+<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1config.html">   16</a></span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacearg__router_1_1config.html">arg_router::config</a></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;{</div>
+<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1config.html#a801b0c98daa90f1951e5cdd72e680b3e">   19</a></span>&#160;constexpr <span class="keyword">auto</span> <a class="code" href="namespacearg__router_1_1config.html#a801b0c98daa90f1951e5cdd72e680b3e">long_prefix</a> = std::string_view{AR_LONG_PREFIX};</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1config.html#a46080eba5c23480d20901c2c412a8eed">   22</a></span>&#160;constexpr <span class="keyword">auto</span> <a class="code" href="namespacearg__router_1_1config.html#a46080eba5c23480d20901c2c412a8eed">short_prefix</a> = std::string_view{AR_SHORT_PREFIX};</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;static_assert(<a class="code" href="namespacearg__router_1_1config.html#a801b0c98daa90f1951e5cdd72e680b3e">long_prefix</a>.size() &gt;= <a class="code" href="namespacearg__router_1_1config.html#a46080eba5c23480d20901c2c412a8eed">short_prefix</a>.size(),</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;              <span class="stringliteral">&quot;Long prefix must be longer or the same as short prefix&quot;</span>);</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;static_assert(<a class="code" href="namespacearg__router_1_1config.html#a46080eba5c23480d20901c2c412a8eed">short_prefix</a> != <a class="code" href="namespacearg__router_1_1config.html#a801b0c98daa90f1951e5cdd72e680b3e">long_prefix</a>, <span class="stringliteral">&quot;Short and long prefixes cannot be the same&quot;</span>);</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;static_assert(<a class="code" href="namespacearg__router_1_1config.html#a46080eba5c23480d20901c2c412a8eed">short_prefix</a>.size() == 1, <span class="stringliteral">&quot;Short prefix must be one character&quot;</span>);</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;static_assert(<a class="code" href="namespacearg__router_1_1config.html#a801b0c98daa90f1951e5cdd72e680b3e">long_prefix</a>.size() &gt;= <a class="code" href="namespacearg__router_1_1config.html#a46080eba5c23480d20901c2c412a8eed">short_prefix</a>.size(),</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;              <span class="stringliteral">&quot;Long prefix must be longer or the same as short prefix&quot;</span>);</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1config.html#a644404cc56de59ea1bfe58054395ec1a">   34</a></span>&#160;<span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1config.html#a644404cc56de59ea1bfe58054395ec1a">allocator</a> = AR_ALLOCATOR&lt;T&gt;;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;}  <span class="comment">// namespace arg_router::config</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;static_assert(<a class="code" href="namespacearg__router_1_1config.html#a46080eba5c23480d20901c2c412a8eed">short_prefix</a> != <a class="code" href="namespacearg__router_1_1config.html#a801b0c98daa90f1951e5cdd72e680b3e">long_prefix</a>, <span class="stringliteral">&quot;Short and long prefixes cannot be the same&quot;</span>);</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1config.html#a644404cc56de59ea1bfe58054395ec1a">   36</a></span>&#160;<span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1config.html#a644404cc56de59ea1bfe58054395ec1a">allocator</a> = AR_ALLOCATOR&lt;T&gt;;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;}  <span class="comment">// namespace arg_router::config</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="anamespacearg__router_1_1config_html_a644404cc56de59ea1bfe58054395ec1a"><div class="ttname"><a href="namespacearg__router_1_1config.html#a644404cc56de59ea1bfe58054395ec1a">arg_router::config::allocator</a></div><div class="ttdeci">AR_ALLOCATOR&lt; T &gt; allocator</div><div class="ttdef"><b>Definition:</b> <a href="config_8hpp_source.html#l00034">config.hpp:34</a></div></div>
-<div class="ttc" id="anamespacearg__router_1_1config_html"><div class="ttname"><a href="namespacearg__router_1_1config.html">arg_router::config</a></div><div class="ttdef"><b>Definition:</b> <a href="config_8hpp_source.html#l00014">config.hpp:14</a></div></div>
-<div class="ttc" id="anamespacearg__router_1_1config_html_a801b0c98daa90f1951e5cdd72e680b3e"><div class="ttname"><a href="namespacearg__router_1_1config.html#a801b0c98daa90f1951e5cdd72e680b3e">arg_router::config::long_prefix</a></div><div class="ttdeci">constexpr auto long_prefix</div><div class="ttdef"><b>Definition:</b> <a href="config_8hpp_source.html#l00017">config.hpp:17</a></div></div>
-<div class="ttc" id="anamespacearg__router_1_1config_html_a46080eba5c23480d20901c2c412a8eed"><div class="ttname"><a href="namespacearg__router_1_1config.html#a46080eba5c23480d20901c2c412a8eed">arg_router::config::short_prefix</a></div><div class="ttdeci">constexpr auto short_prefix</div><div class="ttdef"><b>Definition:</b> <a href="config_8hpp_source.html#l00020">config.hpp:20</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1config_html_a644404cc56de59ea1bfe58054395ec1a"><div class="ttname"><a href="namespacearg__router_1_1config.html#a644404cc56de59ea1bfe58054395ec1a">arg_router::config::allocator</a></div><div class="ttdeci">AR_ALLOCATOR&lt; T &gt; allocator</div><div class="ttdef"><b>Definition:</b> <a href="config_8hpp_source.html#l00036">config.hpp:36</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1config_html"><div class="ttname"><a href="namespacearg__router_1_1config.html">arg_router::config</a></div><div class="ttdef"><b>Definition:</b> <a href="config_8hpp_source.html#l00016">config.hpp:16</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1config_html_a801b0c98daa90f1951e5cdd72e680b3e"><div class="ttname"><a href="namespacearg__router_1_1config.html#a801b0c98daa90f1951e5cdd72e680b3e">arg_router::config::long_prefix</a></div><div class="ttdeci">constexpr auto long_prefix</div><div class="ttdef"><b>Definition:</b> <a href="config_8hpp_source.html#l00019">config.hpp:19</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1config_html_a46080eba5c23480d20901c2c412a8eed"><div class="ttname"><a href="namespacearg__router_1_1config.html#a46080eba5c23480d20901c2c412a8eed">arg_router::config::short_prefix</a></div><div class="ttdeci">constexpr auto short_prefix</div><div class="ttdef"><b>Definition:</b> <a href="config_8hpp_source.html#l00022">config.hpp:22</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

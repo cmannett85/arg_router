@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">arg_router
-   &#160;<span id="projectnumber">0.1.0</span>
+   &#160;<span id="projectnumber">1.0.0</span>
    </div>
    <div id="projectbrief">C++ command line argument parsing and routing</div>
   </td>
@@ -71,99 +71,103 @@ $(function() {
 <div class="title">alias_group.hpp</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#pragma once</span></div>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">// Copyright (C) 2022 by Camden Mannett.</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">// Distributed under the Boost Software License, Version 1.0.</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">// (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;arg_router/dependency/detail.hpp&quot;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;arg_router/policy/multi_stage_value.hpp&quot;</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
-<div class="line"><a name="l00011"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1dependency.html">   11</a></span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacearg__router_1_1dependency.html">arg_router::dependency</a></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;{</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Params&gt;</div>
-<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="classarg__router_1_1dependency_1_1alias__group__t.html">   32</a></span>&#160;<span class="keyword">class </span><a class="code" href="classarg__router_1_1dependency_1_1alias__group__t.html">alias_group_t</a> : <span class="keyword">public</span> detail::basic_one_of_t&lt;S_(&quot;Alias Group: &quot;), Params...&gt;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;{</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keyword">using</span> parent_type = detail::basic_one_of_t&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Alias Group: &quot;</span>), Params...&gt;;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keyword">using</span> <span class="keyword">typename</span> parent_type::children_type;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keyword">using</span> <span class="keyword">typename</span> parent_type::policies_type;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="classarg__router_1_1dependency_1_1alias__group__t.html#afc3ece02b70e2f61d540baf05571baa9">   41</a></span>&#160;    <span class="keyword">using</span> <a class="code" href="classarg__router_1_1dependency_1_1alias__group__t.html#afc3ece02b70e2f61d540baf05571baa9">value_type</a> = boost::mp11::mp_first&lt;typename parent_type::basic_value_type&gt;;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    static_assert(</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        std::tuple_size_v&lt;boost::mp11::mp_unique&lt;typename parent_type::basic_value_type&gt;&gt; == 1,</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="stringliteral">&quot;All children of alias_group must have the same value_type, or use &quot;</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="stringliteral">&quot;policy::no_result_value&quot;</span>);</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Child&gt;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keyword">struct </span>multi_stage_with_result_and_validation {</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <span class="keyword">static</span> constexpr <span class="keyword">auto</span> value =</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;            policy::has_multi_stage_value_v&lt;Child&gt; &amp;&amp; !policy::has_no_result_value_v&lt;Child&gt; &amp;&amp;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;            Child::template any_phases_v&lt;value_type, policy::has_validation_phase_method&gt;;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    };</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="comment">// If any of the children are multi_stage_values, not no_result_value, and have a validation</span></div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="comment">// phase; then fail as the policy that implements needs to be moved into this node otherwise</span></div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <span class="comment">// they won&#39;t be called</span></div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    static_assert(</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        boost::mp11::mp_none_of&lt;children_type, multi_stage_with_result_and_validation&gt;::value,</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        <span class="stringliteral">&quot;Multi-stage value supporting alias_group children (e.g. &quot;</span></div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        <span class="stringliteral">&quot;counting_flag) cannot have a validation phase as they won&#39;t be &quot;</span></div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        <span class="stringliteral">&quot;executed, move the implementing policies into the alias_group&quot;</span>);</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keyword">template</span> &lt;<span class="keywordtype">bool</span> Flatten&gt;</div>
-<div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="classarg__router_1_1dependency_1_1alias__group__t_1_1help__data__type.html">   68</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classarg__router_1_1dependency_1_1alias__group__t_1_1help__data__type.html">help_data_type</a></div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    {</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <span class="keyword">using</span> label = <a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Alias Group:&quot;</span>);</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        <span class="keyword">using</span> description = <a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;&quot;</span>);</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        <span class="keyword">using</span> children = <span class="keyword">typename</span> parent_type::template  <span class="comment">//</span></div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;            children_help_data_type&lt;Flatten&gt;::children;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    };</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
-<div class="line"><a name="l00081"></a><span class="lineno"><a class="line" href="classarg__router_1_1dependency_1_1alias__group__t.html#a74f0de7b6f71c7c45c8afbc07ba8444e">   81</a></span>&#160;    constexpr <span class="keyword">explicit</span> <a class="code" href="classarg__router_1_1dependency_1_1alias__group__t.html#a74f0de7b6f71c7c45c8afbc07ba8444e">alias_group_t</a>(Params... params) noexcept : parent_type{std::move(params)...}</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    {</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    }</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Validator, <span class="keywordtype">bool</span> HasTarget, <span class="keyword">typename</span>... Parents&gt;</div>
-<div class="line"><a name="l00099"></a><span class="lineno"><a class="line" href="classarg__router_1_1dependency_1_1alias__group__t.html#a075c92decfca9d5d4203baf694e4de9d">   99</a></span>&#160;    [[nodiscard]] std::optional&lt;parsing::parse_target&gt; <a class="code" href="classarg__router_1_1dependency_1_1alias__group__t.html#a075c92decfca9d5d4203baf694e4de9d">pre_parse</a>(</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        <a class="code" href="classarg__router_1_1parsing_1_1pre__parse__data.html">parsing::pre_parse_data&lt;Validator, HasTarget&gt;</a> pre_parse_data,</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        <span class="keyword">const</span> Parents&amp;... parents)<span class="keyword"> const</span></div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="keyword">    </span>{</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        <span class="keyword">auto</span> found = std::optional&lt;parsing::parse_target&gt;{};</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        <a class="code" href="namespacearg__router_1_1utility.html#a99e297c7383915d8754a23f4dcfa07b5">utility::tuple_iterator</a>(</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;            [&amp;](<span class="keyword">auto</span> <span class="comment">/*i*/</span>, <span class="keyword">const</span> <span class="keyword">auto</span>&amp; child) {</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;                <span class="keywordflow">if</span> (!found) {</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;                    found = child.pre_parse(pre_parse_data, parents...);</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;                }</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;            },</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;            this-&gt;<a class="code" href="classarg__router_1_1tree__node.html#af215c7c6d0b8639df1b7dab770803884">children</a>());</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160; </div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        <span class="keywordflow">return</span> found;</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    }</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;};</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#pragma once</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;arg_router/dependency/detail.hpp&quot;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;arg_router/policy/multi_stage_value.hpp&quot;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
+<div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1dependency.html">   13</a></span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacearg__router_1_1dependency.html">arg_router::dependency</a></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;{</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Params&gt;</div>
+<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="classarg__router_1_1dependency_1_1alias__group__t.html">   34</a></span>&#160;<span class="keyword">class </span><a class="code" href="classarg__router_1_1dependency_1_1alias__group__t.html">alias_group_t</a> : <span class="keyword">public</span> detail::basic_one_of_t&lt;S_(&quot;Alias Group: &quot;), Params...&gt;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;{</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keyword">using</span> parent_type = detail::basic_one_of_t&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Alias Group: &quot;</span>), Params...&gt;;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keyword">using</span> <span class="keyword">typename</span> parent_type::children_type;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keyword">using</span> <span class="keyword">typename</span> parent_type::policies_type;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
+<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="classarg__router_1_1dependency_1_1alias__group__t.html#afc3ece02b70e2f61d540baf05571baa9">   43</a></span>&#160;    <span class="keyword">using</span> <a class="code" href="classarg__router_1_1dependency_1_1alias__group__t.html#afc3ece02b70e2f61d540baf05571baa9">value_type</a> = boost::mp11::mp_first&lt;typename parent_type::basic_value_type&gt;;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    static_assert(</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        std::tuple_size_v&lt;boost::mp11::mp_unique&lt;typename parent_type::basic_value_type&gt;&gt; == 1,</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="stringliteral">&quot;All children of alias_group must have the same value_type, or use &quot;</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="stringliteral">&quot;policy::no_result_value&quot;</span>);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Child&gt;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keyword">struct </span>multi_stage_with_result_and_validation {</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        constexpr <span class="keyword">static</span> <span class="keyword">auto</span> value =</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;            policy::has_multi_stage_value_v&lt;Child&gt; &amp;&amp; !policy::has_no_result_value_v&lt;Child&gt; &amp;&amp;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;            Child::template any_phases_v&lt;value_type, policy::has_validation_phase_method&gt;;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    };</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <span class="comment">// If any of the children are multi_stage_values, not no_result_value, and have a validation</span></div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="comment">// phase; then fail as the policy that implements needs to be moved into this node otherwise</span></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="comment">// they won&#39;t be called</span></div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    static_assert(</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        boost::mp11::mp_none_of&lt;children_type, multi_stage_with_result_and_validation&gt;::value,</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        <span class="stringliteral">&quot;Multi-stage value supporting alias_group children (e.g. &quot;</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <span class="stringliteral">&quot;counting_flag) cannot have a validation phase as they won&#39;t be &quot;</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <span class="stringliteral">&quot;executed, move the implementing policies into the alias_group&quot;</span>);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keyword">template</span> &lt;<span class="keywordtype">bool</span> Flatten&gt;</div>
+<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="classarg__router_1_1dependency_1_1alias__group__t_1_1help__data__type.html">   70</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classarg__router_1_1dependency_1_1alias__group__t_1_1help__data__type.html">help_data_type</a></div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    {</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        <span class="keyword">using</span> label =</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;            decltype(<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Alias Group: &quot;</span>){} +</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;                     parent_type::template default_leaf_help_data_type&lt;Flatten&gt;::value_suffix());</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        <span class="keyword">using</span> description = <a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;&quot;</span>);</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        <span class="keyword">using</span> children = <span class="keyword">typename</span> parent_type::template  <span class="comment">//</span></div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;            children_help_data_type&lt;Flatten&gt;::children;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    };</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
+<div class="line"><a name="l00085"></a><span class="lineno"><a class="line" href="classarg__router_1_1dependency_1_1alias__group__t.html#a74f0de7b6f71c7c45c8afbc07ba8444e">   85</a></span>&#160;    constexpr <span class="keyword">explicit</span> <a class="code" href="classarg__router_1_1dependency_1_1alias__group__t.html#a74f0de7b6f71c7c45c8afbc07ba8444e">alias_group_t</a>(Params... params) noexcept : parent_type{std::move(params)...}</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    {</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    }</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Validator, <span class="keywordtype">bool</span> HasTarget, <span class="keyword">typename</span>... Parents&gt;</div>
+<div class="line"><a name="l00103"></a><span class="lineno"><a class="line" href="classarg__router_1_1dependency_1_1alias__group__t.html#a075c92decfca9d5d4203baf694e4de9d">  103</a></span>&#160;    [[nodiscard]] std::optional&lt;parsing::parse_target&gt; <a class="code" href="classarg__router_1_1dependency_1_1alias__group__t.html#a075c92decfca9d5d4203baf694e4de9d">pre_parse</a>(</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        <a class="code" href="classarg__router_1_1parsing_1_1pre__parse__data.html">parsing::pre_parse_data&lt;Validator, HasTarget&gt;</a> pre_parse_data,</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;        <span class="keyword">const</span> Parents&amp;... parents)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;<span class="keyword">    </span>{</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        <span class="keyword">auto</span> found = std::optional&lt;parsing::parse_target&gt;{};</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;        <a class="code" href="namespacearg__router_1_1utility.html#a99e297c7383915d8754a23f4dcfa07b5">utility::tuple_iterator</a>(</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;            [&amp;](<span class="keyword">auto</span> <span class="comment">/*i*/</span>, <span class="keyword">const</span> <span class="keyword">auto</span>&amp; child) {</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;                <span class="keywordflow">if</span> (!found) {</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;                    found = child.pre_parse(pre_parse_data, parents...);</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;                }</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;            },</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;            this-&gt;<a class="code" href="classarg__router_1_1tree__node.html#af215c7c6d0b8639df1b7dab770803884">children</a>());</div>
 <div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160; </div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Params&gt;</div>
-<div class="line"><a name="l00124"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1dependency.html#ab35b17f6aaf02a9b7430081262022a11">  124</a></span>&#160;[[nodiscard]] constexpr <span class="keyword">auto</span> <a class="code" href="namespacearg__router_1_1dependency.html#ab35b17f6aaf02a9b7430081262022a11">alias_group</a>(Params... params) noexcept</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;{</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classarg__router_1_1dependency_1_1alias__group__t.html">alias_group_t</a>{std::move(params)...};</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;}</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;}  <span class="comment">// namespace arg_router::dependency</span></div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        <span class="keywordflow">return</span> found;</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    }</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;};</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160; </div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Params&gt;</div>
+<div class="line"><a name="l00128"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1dependency.html#ab35b17f6aaf02a9b7430081262022a11">  128</a></span>&#160;[[nodiscard]] constexpr <span class="keyword">auto</span> <a class="code" href="namespacearg__router_1_1dependency.html#ab35b17f6aaf02a9b7430081262022a11">alias_group</a>(Params... params) noexcept</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;{</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classarg__router_1_1dependency_1_1alias__group__t.html">alias_group_t</a>{std::move(params)...};</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;}</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;}  <span class="comment">// namespace arg_router::dependency</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclassarg__router_1_1tree__node_html_af215c7c6d0b8639df1b7dab770803884"><div class="ttname"><a href="classarg__router_1_1tree__node.html#af215c7c6d0b8639df1b7dab770803884">arg_router::tree_node&lt; policy::display_name_t&lt; generate_string_of_child_names&lt; ParentDocName, std::decay_t&lt; Params &gt;... &gt;::type &gt;, std::decay_t&lt; Params &gt;... &gt;::children</a></div><div class="ttdeci">children_type &amp; children() noexcept</div><div class="ttdef"><b>Definition:</b> <a href="tree__node_8hpp_source.html#l00146">tree_node.hpp:146</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1dependency_1_1alias__group__t_1_1help__data__type_html"><div class="ttname"><a href="classarg__router_1_1dependency_1_1alias__group__t_1_1help__data__type.html">arg_router::dependency::alias_group_t::help_data_type</a></div><div class="ttdef"><b>Definition:</b> <a href="alias__group_8hpp_source.html#l00068">alias_group.hpp:68</a></div></div>
-<div class="ttc" id="anamespacearg__router_1_1dependency_html_ab35b17f6aaf02a9b7430081262022a11"><div class="ttname"><a href="namespacearg__router_1_1dependency.html#ab35b17f6aaf02a9b7430081262022a11">arg_router::dependency::alias_group</a></div><div class="ttdeci">constexpr auto alias_group(Params... params) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="alias__group_8hpp_source.html#l00124">alias_group.hpp:124</a></div></div>
-<div class="ttc" id="anamespacearg__router_1_1utility_html_a99e297c7383915d8754a23f4dcfa07b5"><div class="ttname"><a href="namespacearg__router_1_1utility.html#a99e297c7383915d8754a23f4dcfa07b5">arg_router::utility::tuple_iterator</a></div><div class="ttdeci">constexpr std::enable_if_t&lt; traits::is_tuple_like_v&lt; std::decay_t&lt; Tuple &gt; &gt; &gt; tuple_iterator(F &amp;&amp;f, Tuple &amp;&amp;tuple)</div><div class="ttdef"><b>Definition:</b> <a href="tuple__iterator_8hpp_source.html#l00031">tuple_iterator.hpp:31</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1tree__node_html_af215c7c6d0b8639df1b7dab770803884"><div class="ttname"><a href="classarg__router_1_1tree__node.html#af215c7c6d0b8639df1b7dab770803884">arg_router::tree_node&lt; policy::display_name_t&lt; generate_string_of_child_names&lt; ParentDocName, std::decay_t&lt; Params &gt;... &gt;::type &gt;, std::decay_t&lt; Params &gt;... &gt;::children</a></div><div class="ttdeci">children_type &amp; children() noexcept</div><div class="ttdef"><b>Definition:</b> <a href="tree__node_8hpp_source.html#l00148">tree_node.hpp:148</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1dependency_1_1alias__group__t_1_1help__data__type_html"><div class="ttname"><a href="classarg__router_1_1dependency_1_1alias__group__t_1_1help__data__type.html">arg_router::dependency::alias_group_t::help_data_type</a></div><div class="ttdef"><b>Definition:</b> <a href="alias__group_8hpp_source.html#l00070">alias_group.hpp:70</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1dependency_html_ab35b17f6aaf02a9b7430081262022a11"><div class="ttname"><a href="namespacearg__router_1_1dependency.html#ab35b17f6aaf02a9b7430081262022a11">arg_router::dependency::alias_group</a></div><div class="ttdeci">constexpr auto alias_group(Params... params) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="alias__group_8hpp_source.html#l00128">alias_group.hpp:128</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1utility_html_a99e297c7383915d8754a23f4dcfa07b5"><div class="ttname"><a href="namespacearg__router_1_1utility.html#a99e297c7383915d8754a23f4dcfa07b5">arg_router::utility::tuple_iterator</a></div><div class="ttdeci">constexpr std::enable_if_t&lt; traits::is_tuple_like_v&lt; std::decay_t&lt; Tuple &gt; &gt; &gt; tuple_iterator(F &amp;&amp;f, Tuple &amp;&amp;tuple)</div><div class="ttdef"><b>Definition:</b> <a href="tuple__iterator_8hpp_source.html#l00033">tuple_iterator.hpp:33</a></div></div>
 <div class="ttc" id="acompile__time__string_8hpp_html_a741f251b243f90ef2b4d915e50d40bac"><div class="ttname"><a href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a></div><div class="ttdeci">#define S_(tok)</div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00240">compile_time_string.hpp:240</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1parsing_1_1pre__parse__data_html"><div class="ttname"><a href="classarg__router_1_1parsing_1_1pre__parse__data.html">arg_router::parsing::pre_parse_data</a></div><div class="ttdef"><b>Definition:</b> <a href="pre__parse__data_8hpp_source.html#l00088">pre_parse_data.hpp:88</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1dependency_1_1alias__group__t_html"><div class="ttname"><a href="classarg__router_1_1dependency_1_1alias__group__t.html">arg_router::dependency::alias_group_t</a></div><div class="ttdef"><b>Definition:</b> <a href="alias__group_8hpp_source.html#l00032">alias_group.hpp:32</a></div></div>
-<div class="ttc" id="anamespacearg__router_1_1dependency_html"><div class="ttname"><a href="namespacearg__router_1_1dependency.html">arg_router::dependency</a></div><div class="ttdef"><b>Definition:</b> <a href="alias__group_8hpp_source.html#l00011">alias_group.hpp:11</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1dependency_1_1alias__group__t_html_a075c92decfca9d5d4203baf694e4de9d"><div class="ttname"><a href="classarg__router_1_1dependency_1_1alias__group__t.html#a075c92decfca9d5d4203baf694e4de9d">arg_router::dependency::alias_group_t::pre_parse</a></div><div class="ttdeci">std::optional&lt; parsing::parse_target &gt; pre_parse(parsing::pre_parse_data&lt; Validator, HasTarget &gt; pre_parse_data, const Parents &amp;... parents) const</div><div class="ttdef"><b>Definition:</b> <a href="alias__group_8hpp_source.html#l00099">alias_group.hpp:99</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1dependency_1_1alias__group__t_html_a74f0de7b6f71c7c45c8afbc07ba8444e"><div class="ttname"><a href="classarg__router_1_1dependency_1_1alias__group__t.html#a74f0de7b6f71c7c45c8afbc07ba8444e">arg_router::dependency::alias_group_t::alias_group_t</a></div><div class="ttdeci">constexpr alias_group_t(Params... params) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="alias__group_8hpp_source.html#l00081">alias_group.hpp:81</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1dependency_1_1alias__group__t_html_afc3ece02b70e2f61d540baf05571baa9"><div class="ttname"><a href="classarg__router_1_1dependency_1_1alias__group__t.html#afc3ece02b70e2f61d540baf05571baa9">arg_router::dependency::alias_group_t::value_type</a></div><div class="ttdeci">boost::mp11::mp_first&lt; typename parent_type::basic_value_type &gt; value_type</div><div class="ttdef"><b>Definition:</b> <a href="alias__group_8hpp_source.html#l00041">alias_group.hpp:41</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1parsing_1_1pre__parse__data_html"><div class="ttname"><a href="classarg__router_1_1parsing_1_1pre__parse__data.html">arg_router::parsing::pre_parse_data</a></div><div class="ttdef"><b>Definition:</b> <a href="pre__parse__data_8hpp_source.html#l00090">pre_parse_data.hpp:90</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1dependency_1_1alias__group__t_html"><div class="ttname"><a href="classarg__router_1_1dependency_1_1alias__group__t.html">arg_router::dependency::alias_group_t</a></div><div class="ttdef"><b>Definition:</b> <a href="alias__group_8hpp_source.html#l00034">alias_group.hpp:34</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1dependency_html"><div class="ttname"><a href="namespacearg__router_1_1dependency.html">arg_router::dependency</a></div><div class="ttdef"><b>Definition:</b> <a href="alias__group_8hpp_source.html#l00013">alias_group.hpp:13</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1dependency_1_1alias__group__t_html_a075c92decfca9d5d4203baf694e4de9d"><div class="ttname"><a href="classarg__router_1_1dependency_1_1alias__group__t.html#a075c92decfca9d5d4203baf694e4de9d">arg_router::dependency::alias_group_t::pre_parse</a></div><div class="ttdeci">std::optional&lt; parsing::parse_target &gt; pre_parse(parsing::pre_parse_data&lt; Validator, HasTarget &gt; pre_parse_data, const Parents &amp;... parents) const</div><div class="ttdef"><b>Definition:</b> <a href="alias__group_8hpp_source.html#l00103">alias_group.hpp:103</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1dependency_1_1alias__group__t_html_a74f0de7b6f71c7c45c8afbc07ba8444e"><div class="ttname"><a href="classarg__router_1_1dependency_1_1alias__group__t.html#a74f0de7b6f71c7c45c8afbc07ba8444e">arg_router::dependency::alias_group_t::alias_group_t</a></div><div class="ttdeci">constexpr alias_group_t(Params... params) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="alias__group_8hpp_source.html#l00085">alias_group.hpp:85</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1dependency_1_1alias__group__t_html_afc3ece02b70e2f61d540baf05571baa9"><div class="ttname"><a href="classarg__router_1_1dependency_1_1alias__group__t.html#afc3ece02b70e2f61d540baf05571baa9">arg_router::dependency::alias_group_t::value_type</a></div><div class="ttdeci">boost::mp11::mp_first&lt; typename parent_type::basic_value_type &gt; value_type</div><div class="ttdef"><b>Definition:</b> <a href="alias__group_8hpp_source.html#l00043">alias_group.hpp:43</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

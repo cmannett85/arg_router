@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">arg_router
-   &#160;<span id="projectnumber">0.1.0</span>
+   &#160;<span id="projectnumber">1.0.0</span>
    </div>
    <div id="projectbrief">C++ command line argument parsing and routing</div>
   </td>
@@ -69,6 +69,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="classarg__router_1_1tree__node_1_1default__leaf__help__data__type-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">arg_router::tree_node&lt; Params &gt;::default_leaf_help_data_type&lt; Flatten &gt; Class Template Reference</div>  </div>
@@ -81,12 +82,25 @@ $(function() {
 Public Types</h2></td></tr>
 <tr class="memitem:aac796395628945d83ef19473fc6dccc1"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html#aac796395628945d83ef19473fc6dccc1">all_children_help</a> = boost::mp11::mp_remove_if&lt; boost::mp11::mp_transform&lt; child_help, <a class="el" href="classarg__router_1_1tree__node.html#aaaca33de60d8e9aad70c49df0b053b87">children_type</a> &gt;, std::is_void &gt;</td></tr>
 <tr class="separator:aac796395628945d83ef19473fc6dccc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9648395f9c43c871912a24942e388df5"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html#a9648395f9c43c871912a24942e388df5">label</a> = std::decay_t&lt; decltype(label_generator())&gt;</td></tr>
+<tr class="memitem:a9648395f9c43c871912a24942e388df5"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html#a9648395f9c43c871912a24942e388df5">label</a> = std::decay_t&lt; decltype(<a class="el" href="classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html#a2fb6ac9a18c86002099ab65c06f3e0e4">label_generator</a>())&gt;</td></tr>
 <tr class="separator:a9648395f9c43c871912a24942e388df5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7bece7090f423ba73a3edfda29e33b0f"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html#a7bece7090f423ba73a3edfda29e33b0f">description</a> = std::decay_t&lt; decltype(description_generator())&gt;</td></tr>
+<tr class="memitem:a7bece7090f423ba73a3edfda29e33b0f"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html#a7bece7090f423ba73a3edfda29e33b0f">description</a> = std::decay_t&lt; decltype(<a class="el" href="classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html#a49d38138d669309d0ca415ef8bb4bd59">description_generator</a>())&gt;</td></tr>
 <tr class="separator:a7bece7090f423ba73a3edfda29e33b0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad302752dfa5161e7060f7552b07047af"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html#ad302752dfa5161e7060f7552b07047af">children</a> = std::tuple&lt;&gt;</td></tr>
 <tr class="separator:ad302752dfa5161e7060f7552b07047af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:ab614b9b6f282cc75e93c1fa9aa8deafc"><td class="memItemLeft" align="right" valign="top">constexpr static auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html#ab614b9b6f282cc75e93c1fa9aa8deafc">value_suffix</a> () noexcept</td></tr>
+<tr class="separator:ab614b9b6f282cc75e93c1fa9aa8deafc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc3dba95b79c2fbdf904ed05a267afc4"><td class="memItemLeft" align="right" valign="top">constexpr static auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html#acc3dba95b79c2fbdf904ed05a267afc4">value_separator_suffix</a> ()</td></tr>
+<tr class="separator:acc3dba95b79c2fbdf904ed05a267afc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2fb6ac9a18c86002099ab65c06f3e0e4"><td class="memItemLeft" align="right" valign="top">constexpr static auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html#a2fb6ac9a18c86002099ab65c06f3e0e4">label_generator</a> () noexcept</td></tr>
+<tr class="separator:a2fb6ac9a18c86002099ab65c06f3e0e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a49d38138d669309d0ca415ef8bb4bd59"><td class="memItemLeft" align="right" valign="top">constexpr static auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html#a49d38138d669309d0ca415ef8bb4bd59">description_generator</a> () noexcept</td></tr>
+<tr class="separator:a49d38138d669309d0ca415ef8bb4bd59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5b3186572044b01afd880d4f69cebd77"><td class="memItemLeft" align="right" valign="top">constexpr static auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html#a5b3186572044b01afd880d4f69cebd77">count_suffix</a> () noexcept</td></tr>
+<tr class="separator:a5b3186572044b01afd880d4f69cebd77"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename... Params&gt;<br />
@@ -101,7 +115,7 @@ class arg_router::tree_node&lt; Params &gt;::default_leaf_help_data_type&lt; Fla
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00161">161</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00163">163</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="aac796395628945d83ef19473fc6dccc1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aac796395628945d83ef19473fc6dccc1">&#9670;&nbsp;</a></span>all_children_help</h2>
@@ -120,7 +134,7 @@ template&lt;bool Flatten&gt; </div>
 </div><div class="memdoc">
 <p>Collects the help data from all the children that have a help_data_type. </p>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00295">295</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00356">356</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>
@@ -142,7 +156,7 @@ template&lt;bool Flatten&gt; </div>
 <p>Children help data tuple.</p>
 <p>Empty as this is the default for leaf types. </p>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00314">314</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00375">375</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>
@@ -157,14 +171,14 @@ template&lt;typename... Params&gt; </div>
 template&lt;bool Flatten&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node</a>&lt; Params &gt;::<a class="el" href="classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html">default_leaf_help_data_type</a>&lt; Flatten &gt;::<a class="el" href="classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html#a7bece7090f423ba73a3edfda29e33b0f">description</a> =  std::decay_t&lt;decltype(description_generator())&gt;</td>
+          <td class="memname">using <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node</a>&lt; Params &gt;::<a class="el" href="classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html">default_leaf_help_data_type</a>&lt; Flatten &gt;::<a class="el" href="classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html#a7bece7090f423ba73a3edfda29e33b0f">description</a> =  std::decay_t&lt;decltype(<a class="el" href="classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html#a49d38138d669309d0ca415ef8bb4bd59">description_generator</a>())&gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p>Description compile time string.</p>
 <p>Evaluates to a the description time, or an empty string if none is available. </p>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00308">308</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00369">369</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>
@@ -179,14 +193,175 @@ template&lt;typename... Params&gt; </div>
 template&lt;bool Flatten&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node</a>&lt; Params &gt;::<a class="el" href="classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html">default_leaf_help_data_type</a>&lt; Flatten &gt;::<a class="el" href="classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html#a9648395f9c43c871912a24942e388df5">label</a> =  std::decay_t&lt;decltype(label_generator())&gt;</td>
+          <td class="memname">using <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node</a>&lt; Params &gt;::<a class="el" href="classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html">default_leaf_help_data_type</a>&lt; Flatten &gt;::<a class="el" href="classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html#a9648395f9c43c871912a24942e388df5">label</a> =  std::decay_t&lt;decltype(<a class="el" href="classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html#a2fb6ac9a18c86002099ab65c06f3e0e4">label_generator</a>())&gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p>Label compile time string.</p>
 <p>Evaluates to a string of the form "&lt;short name&gt;,&lt;long_name&gt;", or only of them if only one available, or an empty string if none are available. </p>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00302">302</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00363">363</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a5b3186572044b01afd880d4f69cebd77"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5b3186572044b01afd880d4f69cebd77">&#9670;&nbsp;</a></span>count_suffix()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename... Params&gt; </div>
+<div class="memtemplate">
+template&lt;bool Flatten&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr static auto <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node</a>&lt; Params &gt;::<a class="el" href="classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html">default_leaf_help_data_type</a>&lt; Flatten &gt;::count_suffix </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>Minimum and/or maximum count suffix string </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00311">311</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a49d38138d669309d0ca415ef8bb4bd59"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a49d38138d669309d0ca415ef8bb4bd59">&#9670;&nbsp;</a></span>description_generator()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename... Params&gt; </div>
+<div class="memtemplate">
+template&lt;bool Flatten&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr static auto <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node</a>&lt; Params &gt;::<a class="el" href="classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html">default_leaf_help_data_type</a>&lt; Flatten &gt;::description_generator </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>Description text for string, or empty string if providing policy not present </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00296">296</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a2fb6ac9a18c86002099ab65c06f3e0e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2fb6ac9a18c86002099ab65c06f3e0e4">&#9670;&nbsp;</a></span>label_generator()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename... Params&gt; </div>
+<div class="memtemplate">
+template&lt;bool Flatten&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr static auto <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node</a>&lt; Params &gt;::<a class="el" href="classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html">default_leaf_help_data_type</a>&lt; Flatten &gt;::label_generator </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>Long and short name label(s) for node with value suffix if present, or empty string if not present </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00264">264</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+
+</div>
+</div>
+<a id="acc3dba95b79c2fbdf904ed05a267afc4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acc3dba95b79c2fbdf904ed05a267afc4">&#9670;&nbsp;</a></span>value_separator_suffix()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename... Params&gt; </div>
+<div class="memtemplate">
+template&lt;bool Flatten&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr static auto <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node</a>&lt; Params &gt;::<a class="el" href="classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html">default_leaf_help_data_type</a>&lt; Flatten &gt;::value_separator_suffix </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>Textual representation of a value suffix suitable for help output, or an empty string if no value separator policy is attached to the node </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00225">225</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ab614b9b6f282cc75e93c1fa9aa8deafc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab614b9b6f282cc75e93c1fa9aa8deafc">&#9670;&nbsp;</a></span>value_suffix()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename... Params&gt; </div>
+<div class="memtemplate">
+template&lt;bool Flatten&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr static auto <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node</a>&lt; Params &gt;::<a class="el" href="classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html">default_leaf_help_data_type</a>&lt; Flatten &gt;::value_suffix </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>Minimum and/or maximum value suffix string </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00177">177</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>

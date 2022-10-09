@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">arg_router
-   &#160;<span id="projectnumber">0.1.0</span>
+   &#160;<span id="projectnumber">1.0.0</span>
    </div>
    <div id="projectbrief">C++ command line argument parsing and routing</div>
   </td>
@@ -71,46 +71,48 @@ $(function() {
 <div class="title">basic_types.hpp</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#pragma once</span></div>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">// Copyright (C) 2022 by Camden Mannett.</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">// Distributed under the Boost Software License, Version 1.0.</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">// (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;arg_router/config.hpp&quot;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;sstream&gt;</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#if __cplusplus &gt;= 202000L</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#    include &lt;span&gt;</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#    define span_CONFIG_CONTRACT_LEVEL_OFF</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#    include &lt;nonstd/span.hpp&gt;</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacearg__router.html">arg_router</a></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;{</div>
-<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="namespacearg__router.html#abafabad5af18e8dda89e6b568b594738">   23</a></span>&#160;<span class="keyword">using</span> <span class="keywordtype">string</span> = std::basic_string&lt;char, std::char_traits&lt;char&gt;, <a class="code" href="namespacearg__router_1_1config.html#a644404cc56de59ea1bfe58054395ec1a">config::allocator&lt;char&gt;</a>&gt;;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="keyword">using</span> <a class="code" href="namespacearg__router.html#a6944ca001b050158bb79759503fbf6d6">ostringstream</a> =</div>
-<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="namespacearg__router.html#a6944ca001b050158bb79759503fbf6d6">   30</a></span>&#160;    std::basic_ostringstream&lt;char, std::char_traits&lt;char&gt;, <a class="code" href="namespacearg__router_1_1config.html#a644404cc56de59ea1bfe58054395ec1a">config::allocator&lt;char&gt;</a>&gt;;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="namespacearg__router.html#a3d789cf2175008b4124de867a13a2edf">   37</a></span>&#160;<span class="keyword">using</span> <a class="code" href="namespacearg__router.html#a3d789cf2175008b4124de867a13a2edf">vector</a> = std::vector&lt;T, config::allocator&lt;T&gt;&gt;;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor">#if __cplusplus &gt;= 202000L</span></div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, auto Extent = std::dynamic_extent&gt;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keyword">using</span> <a class="code" href="namespacearg__router.html#a6e05967fd7ae36c31f67ff016576619d">span</a> = std::span&lt;T, Extent&gt;;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, auto Extent = nonstd::span_lite::dynamic_extent&gt;</div>
-<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="namespacearg__router.html#a6e05967fd7ae36c31f67ff016576619d">   47</a></span>&#160;<span class="keyword">using</span> <a class="code" href="namespacearg__router.html#a6e05967fd7ae36c31f67ff016576619d">span</a> = nonstd::span_lite::span&lt;T, Extent&gt;;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;arg_router/config.hpp&quot;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;sstream&gt;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#if __cplusplus &gt;= 202000L</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#    include &lt;span&gt;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#    define span_CONFIG_CONTRACT_LEVEL_OFF</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#    include &lt;nonstd/span.hpp&gt;</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacearg__router.html">arg_router</a></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;{</div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="namespacearg__router.html#abafabad5af18e8dda89e6b568b594738">   25</a></span>&#160;<span class="keyword">using</span> <span class="keywordtype">string</span> = std::basic_string&lt;char, std::char_traits&lt;char&gt;, <a class="code" href="namespacearg__router_1_1config.html#a644404cc56de59ea1bfe58054395ec1a">config::allocator&lt;char&gt;</a>&gt;;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keyword">using</span> <a class="code" href="namespacearg__router.html#a6944ca001b050158bb79759503fbf6d6">ostringstream</a> =</div>
+<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="namespacearg__router.html#a6944ca001b050158bb79759503fbf6d6">   32</a></span>&#160;    std::basic_ostringstream&lt;char, std::char_traits&lt;char&gt;, <a class="code" href="namespacearg__router_1_1config.html#a644404cc56de59ea1bfe58054395ec1a">config::allocator&lt;char&gt;</a>&gt;;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="namespacearg__router.html#a3d789cf2175008b4124de867a13a2edf">   39</a></span>&#160;<span class="keyword">using</span> <a class="code" href="namespacearg__router.html#a3d789cf2175008b4124de867a13a2edf">vector</a> = std::vector&lt;T, config::allocator&lt;T&gt;&gt;;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor">#if __cplusplus &gt;= 202000L</span></div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, auto Extent = std::dynamic_extent&gt;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="keyword">using</span> <a class="code" href="namespacearg__router.html#a6e05967fd7ae36c31f67ff016576619d">span</a> = std::span&lt;T, Extent&gt;;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, auto Extent = nonstd::span_lite::dynamic_extent&gt;</div>
+<div class="line"><a name="l00049"></a><span class="lineno"><a class="line" href="namespacearg__router.html#a6e05967fd7ae36c31f67ff016576619d">   49</a></span>&#160;<span class="keyword">using</span> <a class="code" href="namespacearg__router.html#a6e05967fd7ae36c31f67ff016576619d">span</a> = nonstd::span_lite::span&lt;T, Extent&gt;;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;}  <span class="comment">// namespace arg_router</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="anamespacearg__router_1_1config_html_a644404cc56de59ea1bfe58054395ec1a"><div class="ttname"><a href="namespacearg__router_1_1config.html#a644404cc56de59ea1bfe58054395ec1a">arg_router::config::allocator</a></div><div class="ttdeci">AR_ALLOCATOR&lt; T &gt; allocator</div><div class="ttdef"><b>Definition:</b> <a href="config_8hpp_source.html#l00034">config.hpp:34</a></div></div>
-<div class="ttc" id="anamespacearg__router_html_a6e05967fd7ae36c31f67ff016576619d"><div class="ttname"><a href="namespacearg__router.html#a6e05967fd7ae36c31f67ff016576619d">arg_router::span</a></div><div class="ttdeci">nonstd::span_lite::span&lt; T, Extent &gt; span</div><div class="ttdef"><b>Definition:</b> <a href="basic__types_8hpp_source.html#l00047">basic_types.hpp:47</a></div></div>
-<div class="ttc" id="anamespacearg__router_html_a3d789cf2175008b4124de867a13a2edf"><div class="ttname"><a href="namespacearg__router.html#a3d789cf2175008b4124de867a13a2edf">arg_router::vector</a></div><div class="ttdeci">std::vector&lt; T, config::allocator&lt; T &gt; &gt; vector</div><div class="ttdef"><b>Definition:</b> <a href="basic__types_8hpp_source.html#l00037">basic_types.hpp:37</a></div></div>
-<div class="ttc" id="anamespacearg__router_html_a6944ca001b050158bb79759503fbf6d6"><div class="ttname"><a href="namespacearg__router.html#a6944ca001b050158bb79759503fbf6d6">arg_router::ostringstream</a></div><div class="ttdeci">std::basic_ostringstream&lt; char, std::char_traits&lt; char &gt;, config::allocator&lt; char &gt; &gt; ostringstream</div><div class="ttdef"><b>Definition:</b> <a href="basic__types_8hpp_source.html#l00030">basic_types.hpp:30</a></div></div>
-<div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00013">algorithm.hpp:13</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1config_html_a644404cc56de59ea1bfe58054395ec1a"><div class="ttname"><a href="namespacearg__router_1_1config.html#a644404cc56de59ea1bfe58054395ec1a">arg_router::config::allocator</a></div><div class="ttdeci">AR_ALLOCATOR&lt; T &gt; allocator</div><div class="ttdef"><b>Definition:</b> <a href="config_8hpp_source.html#l00036">config.hpp:36</a></div></div>
+<div class="ttc" id="anamespacearg__router_html_a6e05967fd7ae36c31f67ff016576619d"><div class="ttname"><a href="namespacearg__router.html#a6e05967fd7ae36c31f67ff016576619d">arg_router::span</a></div><div class="ttdeci">nonstd::span_lite::span&lt; T, Extent &gt; span</div><div class="ttdef"><b>Definition:</b> <a href="basic__types_8hpp_source.html#l00049">basic_types.hpp:49</a></div></div>
+<div class="ttc" id="anamespacearg__router_html_a3d789cf2175008b4124de867a13a2edf"><div class="ttname"><a href="namespacearg__router.html#a3d789cf2175008b4124de867a13a2edf">arg_router::vector</a></div><div class="ttdeci">std::vector&lt; T, config::allocator&lt; T &gt; &gt; vector</div><div class="ttdef"><b>Definition:</b> <a href="basic__types_8hpp_source.html#l00039">basic_types.hpp:39</a></div></div>
+<div class="ttc" id="anamespacearg__router_html_a6944ca001b050158bb79759503fbf6d6"><div class="ttname"><a href="namespacearg__router.html#a6944ca001b050158bb79759503fbf6d6">arg_router::ostringstream</a></div><div class="ttdeci">std::basic_ostringstream&lt; char, std::char_traits&lt; char &gt;, config::allocator&lt; char &gt; &gt; ostringstream</div><div class="ttdef"><b>Definition:</b> <a href="basic__types_8hpp_source.html#l00032">basic_types.hpp:32</a></div></div>
+<div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00015">algorithm.hpp:15</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

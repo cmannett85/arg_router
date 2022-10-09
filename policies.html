@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">arg_router
-   &#160;<span id="projectnumber">0.1.0</span>
+   &#160;<span id="projectnumber">1.0.0</span>
    </div>
    <div id="projectbrief">C++ command line argument parsing and routing</div>
   </td>
@@ -108,7 +108,7 @@ Parse Phase</h3>
 <dl class="section note"><dt>Note</dt><dd>Only one policy used by a <a class="el" href="classarg__router_1_1tree__node.html">tree_node</a> can support a parse phase. It doesn't make any sense to parse more than once.</dd></dl>
 <h3><a class="anchor" id="policies_basic_parsing_phase_validation"></a>
 Validation Phase</h3>
-<p>Once the value has been parsed it can be validated by other policies, <a class="el" href="classarg__router_1_1policy_1_1min__max__value.html">policy::min_max_value</a> being an example. It simply checks that the parsed value is between two values as determined by a comparator (defaulting to <code>std::less</code>), if it fails the check then a <a class="el" href="classarg__router_1_1parse__exception.html">parse_exception</a> is thrown.</p>
+<p>Once the value has been parsed it can be validated by other policies, <a class="el" href="namespacearg__router_1_1policy.html#a6f394eb493fca6969c7de2ad48004f8f">policy::min_max_value</a> being an example. It simply checks that the parsed value is between two values as determined by a comparator (defaulting to <code>std::less</code>), if it fails the check then a <a class="el" href="classarg__router_1_1parse__exception.html">parse_exception</a> is thrown.</p>
 <h3><a class="anchor" id="policies_basic_parsing_phase_routing"></a>
 Routing Phase</h3>
 <p>The final parse phase is the one that performs the routing of the result values back to the library user.</p>

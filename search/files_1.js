@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['version_2ehpp_572',['version.hpp',['../version_8hpp.html',1,'']]]
+  ['string_5fselector_2ehpp_617',['string_selector.hpp',['../string__selector_8hpp.html',1,'']]]
 ];

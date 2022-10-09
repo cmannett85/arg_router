@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">arg_router
-   &#160;<span id="projectnumber">0.1.0</span>
+   &#160;<span id="projectnumber">1.0.0</span>
    </div>
    <div id="projectbrief">C++ command line argument parsing and routing</div>
   </td>
@@ -96,7 +96,11 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structarg__router_1_1traits_1_1has__maximum__count__method.html">has_maximum_count_method</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structarg__router_1_1traits_1_1has__maximum__value__method.html">has_maximum_value_method</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structarg__router_1_1traits_1_1has__minimum__count__method.html">has_minimum_count_method</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structarg__router_1_1traits_1_1has__minimum__value__method.html">has_minimum_value_method</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structarg__router_1_1traits_1_1has__none__name__method.html">has_none_name_method</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -120,6 +124,8 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structarg__router_1_1traits_1_1supports__static__cast__conversion.html">supports_static_cast_conversion</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structarg__router_1_1traits_1_1underlying__type.html">underlying_type</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1traits_1_1unpack__and__derive.html">unpack_and_derive</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -131,6 +137,9 @@ Typedefs</h2></td></tr>
 <tr class="memitem:ac436bd1d964e7c584c5d40af98b95283"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ac436bd1d964e7c584c5d40af98b95283"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1traits.html#ac436bd1d964e7c584c5d40af98b95283">get_value_type</a> = typename T::value_type</td></tr>
 <tr class="separator:ac436bd1d964e7c584c5d40af98b95283"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab996c815d8775a8cb737b7ccb5342d62"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ab996c815d8775a8cb737b7ccb5342d62"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1traits.html#ab996c815d8775a8cb737b7ccb5342d62">underlying_type_t</a> = typename <a class="el" href="structarg__router_1_1traits_1_1underlying__type.html">underlying_type</a>&lt; T &gt;::type</td></tr>
+<tr class="separator:ab996c815d8775a8cb737b7ccb5342d62"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab335cfad0ef1eeed3ad34d06694b0244"><td class="memTemplParams" colspan="2">template&lt;auto Value&gt; </td></tr>
 <tr class="memitem:ab335cfad0ef1eeed3ad34d06694b0244"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1traits.html#ab335cfad0ef1eeed3ad34d06694b0244">integral_constant</a> = std::integral_constant&lt; decltype(Value), Value &gt;</td></tr>
 <tr class="separator:ab335cfad0ef1eeed3ad34d06694b0244"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -191,6 +200,12 @@ Variables</h2></td></tr>
 <tr class="memitem:a53672f714d567be807963d292d78668e"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a53672f714d567be807963d292d78668e"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1traits.html#a53672f714d567be807963d292d78668e">has_minimum_count_method_v</a> = <a class="el" href="structarg__router_1_1traits_1_1has__minimum__count__method.html">has_minimum_count_method</a>&lt;T&gt;::value</td></tr>
 <tr class="separator:a53672f714d567be807963d292d78668e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a92cb7351c9fda90cabcf962cd76da403"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a92cb7351c9fda90cabcf962cd76da403"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1traits.html#a92cb7351c9fda90cabcf962cd76da403">has_minimum_value_method_v</a> = <a class="el" href="structarg__router_1_1traits_1_1has__minimum__value__method.html">has_minimum_value_method</a>&lt;T&gt;::value</td></tr>
+<tr class="separator:a92cb7351c9fda90cabcf962cd76da403"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a38f22f465868b5ec4d9e685a11d59753"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a38f22f465868b5ec4d9e685a11d59753"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1traits.html#a38f22f465868b5ec4d9e685a11d59753">has_maximum_value_method_v</a> = <a class="el" href="structarg__router_1_1traits_1_1has__maximum__value__method.html">has_maximum_value_method</a>&lt;T&gt;::value</td></tr>
+<tr class="separator:a38f22f465868b5ec4d9e685a11d59753"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adff3672ffa49c8da3823272f3b2bf1a2"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:adff3672ffa49c8da3823272f3b2bf1a2"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1traits.html#adff3672ffa49c8da3823272f3b2bf1a2">has_push_back_method_v</a> = <a class="el" href="structarg__router_1_1traits_1_1has__push__back__method.html">has_push_back_method</a>&lt;T&gt;::value</td></tr>
 <tr class="separator:adff3672ffa49c8da3823272f3b2bf1a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -228,7 +243,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00195">195</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00218">218</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -253,7 +268,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00531">531</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00592">592</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -279,7 +294,7 @@ template&lt;typename T , std::size_t I&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00546">546</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00607">607</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -304,7 +319,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00052">52</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00054">54</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -329,7 +344,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00059">59</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00061">61</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -354,7 +369,32 @@ template&lt;auto Value&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00179">179</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00202">202</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ab996c815d8775a8cb737b7ccb5342d62"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab996c815d8775a8cb737b7ccb5342d62">&#9670;&nbsp;</a></span>underlying_type_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="namespacearg__router_1_1traits.html#ab996c815d8775a8cb737b7ccb5342d62">arg_router::traits::underlying_type_t</a> = typedef typename <a class="el" href="structarg__router_1_1traits_1_1underlying__type.html">underlying_type</a>&lt;T&gt;::type</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Helper alias for <a class="el" href="structarg__router_1_1traits_1_1underlying__type.html">underlying_type</a>.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>Type to query </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00098">98</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -388,7 +428,7 @@ template&lt;typename... T&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00045">45</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00047">47</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -421,7 +461,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00538">538</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00599">599</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -454,7 +494,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00351">351</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00374">374</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -487,7 +527,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00313">313</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00336">336</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -520,7 +560,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00466">466</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00527">527</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -553,7 +593,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00446">446</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00507">507</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -586,7 +626,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00275">275</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00298">298</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -619,7 +659,40 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00389">389</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00412">412</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a38f22f465868b5ec4d9e685a11d59753"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a38f22f465868b5ec4d9e685a11d59753">&#9670;&nbsp;</a></span>has_maximum_value_method_v</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr bool arg_router::traits::has_maximum_value_method_v = <a class="el" href="structarg__router_1_1traits_1_1has__maximum__value__method.html">has_maximum_value_method</a>&lt;T&gt;::value</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Helper variable for <a class="el" href="structarg__router_1_1traits_1_1has__maximum__value__method.html">has_maximum_value_method</a>.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>Type to query </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00469">469</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -652,7 +725,40 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00408">408</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00431">431</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a92cb7351c9fda90cabcf962cd76da403"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a92cb7351c9fda90cabcf962cd76da403">&#9670;&nbsp;</a></span>has_minimum_value_method_v</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr bool arg_router::traits::has_minimum_value_method_v = <a class="el" href="structarg__router_1_1traits_1_1has__minimum__value__method.html">has_minimum_value_method</a>&lt;T&gt;::value</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Helper variable for <a class="el" href="structarg__router_1_1traits_1_1has__minimum__value__method.html">has_minimum_value_method</a>.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>Type to query </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00450">450</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -685,7 +791,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00332">332</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00355">355</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -718,7 +824,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00427">427</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00488">488</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -751,7 +857,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00294">294</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00317">317</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -784,7 +890,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00370">370</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00393">393</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -817,7 +923,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00075">75</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00077">77</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -851,7 +957,7 @@ template&lt;typename T , typename U &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00172">172</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00195">195</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -885,7 +991,7 @@ template&lt;typename T , template&lt; typename... &gt; typename U&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00144">144</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00167">167</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -918,7 +1024,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00117">117</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00140">140</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -951,7 +1057,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00096">96</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00119">119</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
 
 </div>
 </div>
@@ -985,7 +1091,7 @@ template&lt;typename From , typename To &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00256">256</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="traits_8hpp_source.html#l00279">279</a> of file <a class="el" href="traits_8hpp_source.html">traits.hpp</a>.</p>
 
 </div>
 </div>

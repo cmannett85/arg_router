@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">arg_router
-   &#160;<span id="projectnumber">0.1.0</span>
+   &#160;<span id="projectnumber">1.0.0</span>
    </div>
    <div id="projectbrief">C++ command line argument parsing and routing</div>
   </td>
@@ -71,31 +71,33 @@ $(function() {
 <div class="title">whitespace.hpp</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#pragma once</span></div>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">// Copyright (C) 2022 by Camden Mannett.</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">// Distributed under the Boost Software License, Version 1.0.</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">// (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;arg_router/utility/utf8/code_point.hpp&quot;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacearg__router_1_1utility_1_1utf8.html">arg_router::utility::utf8</a></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;{</div>
-<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1utility_1_1utf8.html#a7ffc697e54df9179d94bb905da750d49">   16</a></span>&#160;constexpr <span class="keyword">auto</span> <a class="code" href="namespacearg__router_1_1utility_1_1utf8.html#a7ffc697e54df9179d94bb905da750d49">whitespace_table</a> = std::array&lt;code_point::range, 11&gt;{{</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    {0x000009, 0x00000D},</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    {0x000020, 0x000020},</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    {0x000085, 0x000085},</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    {0x0000A0, 0x0000A0},</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    {0x001680, 0x001680},</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    {0x002000, 0x00200A},</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    {0x002028, 0x002028},</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    {0x002029, 0x002029},</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    {0x00202F, 0x00202F},</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    {0x00205F, 0x00205F},</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    {0x003000, 0x003000},</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;}};</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;}  <span class="comment">// namespace arg_router::utility::utf8</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;arg_router/utility/utf8/code_point.hpp&quot;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacearg__router_1_1utility_1_1utf8.html">arg_router::utility::utf8</a></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;{</div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1utility_1_1utf8.html#a7ffc697e54df9179d94bb905da750d49">   18</a></span>&#160;constexpr <span class="keyword">auto</span> <a class="code" href="namespacearg__router_1_1utility_1_1utf8.html#a7ffc697e54df9179d94bb905da750d49">whitespace_table</a> = std::array&lt;code_point::range, 11&gt;{{</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    {0x000009, 0x00000D},</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    {0x000020, 0x000020},</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    {0x000085, 0x000085},</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    {0x0000A0, 0x0000A0},</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    {0x001680, 0x001680},</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    {0x002000, 0x00200A},</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    {0x002028, 0x002028},</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    {0x002029, 0x002029},</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    {0x00202F, 0x00202F},</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    {0x00205F, 0x00205F},</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    {0x003000, 0x003000},</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;}};</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;}  <span class="comment">// namespace arg_router::utility::utf8</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="anamespacearg__router_1_1utility_1_1utf8_html_a7ffc697e54df9179d94bb905da750d49"><div class="ttname"><a href="namespacearg__router_1_1utility_1_1utf8.html#a7ffc697e54df9179d94bb905da750d49">arg_router::utility::utf8::whitespace_table</a></div><div class="ttdeci">constexpr auto whitespace_table</div><div class="ttdef"><b>Definition:</b> <a href="whitespace_8hpp_source.html#l00016">whitespace.hpp:16</a></div></div>
-<div class="ttc" id="anamespacearg__router_1_1utility_1_1utf8_html"><div class="ttname"><a href="namespacearg__router_1_1utility_1_1utf8.html">arg_router::utility::utf8</a></div><div class="ttdef"><b>Definition:</b> <a href="code__point_8hpp_source.html#l00011">code_point.hpp:11</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1utility_1_1utf8_html_a7ffc697e54df9179d94bb905da750d49"><div class="ttname"><a href="namespacearg__router_1_1utility_1_1utf8.html#a7ffc697e54df9179d94bb905da750d49">arg_router::utility::utf8::whitespace_table</a></div><div class="ttdeci">constexpr auto whitespace_table</div><div class="ttdef"><b>Definition:</b> <a href="whitespace_8hpp_source.html#l00018">whitespace.hpp:18</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1utility_1_1utf8_html"><div class="ttname"><a href="namespacearg__router_1_1utility_1_1utf8.html">arg_router::utility::utf8</a></div><div class="ttdef"><b>Definition:</b> <a href="code__point_8hpp_source.html#l00013">code_point.hpp:13</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">
