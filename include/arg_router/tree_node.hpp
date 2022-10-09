@@ -224,7 +224,7 @@ protected:
          */
         [[nodiscard]] constexpr static auto value_separator_suffix()
         {
-            constexpr bool fixed_count_of_one = []() {
+            [[maybe_unused]] constexpr bool fixed_count_of_one = []() {
                 if constexpr (traits::has_minimum_count_method_v<tree_node> &&
                               traits::has_maximum_count_method_v<tree_node>) {
                     return (tree_node::minimum_count() == tree_node::maximum_count()) &&
@@ -234,7 +234,7 @@ protected:
                 return false;
             }();
 
-            constexpr auto value_str = []() {
+            [[maybe_unused]] constexpr auto value_str = []() {
                 constexpr auto min_max_str = value_suffix();
                 if constexpr (std::is_same_v<std::decay_t<decltype(min_max_str)>, S_("")>) {
                     return S_("<Value>"){};
