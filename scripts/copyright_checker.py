@@ -62,11 +62,11 @@ def find_copyright(line_prefix, lines):
         r'Copyright \(C\) (\d{4}|\d{4}-\d{4}) by Camden Mannett\.')
     for i in range(len(lines)):
         m = prog.search(lines[i])
-        if m and ((i+2) < len(lines)):
-            return (lines[i+1] == (line_prefix + SECOND_COPYRIGHT_LINE)) and \
-                (lines[i+2] == (line_prefix + THIRD_COPYRIGHT_LINE))
+        if m and ((i+2) < len(lines)) and (lines[i+1] == (line_prefix + SECOND_COPYRIGHT_LINE)) and \
+                (lines[i+2] == (line_prefix + THIRD_COPYRIGHT_LINE)):
+            return m
 
-    return False
+    return None
 
 
 def build_copyright(line_prefix):
