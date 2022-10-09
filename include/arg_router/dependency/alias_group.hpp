@@ -1,4 +1,6 @@
-/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
+// Copyright (C) 2022 by Camden Mannett.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #pragma once
 
@@ -48,7 +50,7 @@ public:
 private:
     template <typename Child>
     struct multi_stage_with_result_and_validation {
-        static constexpr auto value =
+        constexpr static auto value =
             policy::has_multi_stage_value_v<Child> && !policy::has_no_result_value_v<Child> &&
             Child::template any_phases_v<value_type, policy::has_validation_phase_method>;
     };
@@ -68,7 +70,9 @@ public:
     class help_data_type
     {
     public:
-        using label = S_("Alias Group:");
+        using label =
+            decltype(S_("Alias Group: "){} +
+                     parent_type::template default_leaf_help_data_type<Flatten>::value_suffix());
         using description = S_("");
         using children = typename parent_type::template  //
             children_help_data_type<Flatten>::children;

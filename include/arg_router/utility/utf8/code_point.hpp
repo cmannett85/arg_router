@@ -1,4 +1,6 @@
-/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
+// Copyright (C) 2022 by Camden Mannett.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #pragma once
 
@@ -115,7 +117,7 @@ public:
     constexpr bool operator<(type cp) const noexcept { return first() < cp; }
 
 private:
-    static constexpr auto bytes_per_cp = std::size_t{6};
+    constexpr static auto bytes_per_cp = std::size_t{6};
     std::array<std::uint8_t, bytes_per_cp> data_;
 };
 
@@ -252,7 +254,7 @@ public:
          *
          * @return End iterator
          */
-        [[nodiscard]] static constexpr iterator end() noexcept { return iterator{}; }
+        [[nodiscard]] constexpr static iterator end() noexcept { return iterator{}; }
 
     private:
         constexpr explicit range_t(std::string_view str) noexcept : str_{str} {}
@@ -265,7 +267,7 @@ public:
      * @param str Input string
      * @return Range object
      */
-    [[nodiscard]] static constexpr range_t range(std::string_view str) noexcept
+    [[nodiscard]] constexpr static range_t range(std::string_view str) noexcept
     {
         return range_t{str};
     }

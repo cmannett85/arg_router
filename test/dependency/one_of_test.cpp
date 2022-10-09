@@ -1,4 +1,6 @@
-/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
+// Copyright (C) 2022 by Camden Mannett.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #include "arg_router/dependency/one_of.hpp"
 #include "arg_router/arg.hpp"
@@ -480,7 +482,7 @@ int main() {
         arg<int>(policy::long_name<S_("arg1")>),
         arg<double>(policy::long_name<S_("arg2")>),
         policy::required,
-        policy::min_max_value{42, 84});
+        policy::min_max_value<42, 84>());
     return 0;
 }
     )",

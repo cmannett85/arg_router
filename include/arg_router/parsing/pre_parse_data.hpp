@@ -1,4 +1,6 @@
-/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
+// Copyright (C) 2022 by Camden Mannett.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #pragma once
 
@@ -28,7 +30,7 @@ class pre_parse_data_base
 {
 public:
     /** True if this instance contains a parse_target reference */
-    static constexpr auto has_target = HasTarget;
+    constexpr static auto has_target = HasTarget;
 
     /** Returns the arg list reference.
      *

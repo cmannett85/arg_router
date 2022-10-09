@@ -1,4 +1,6 @@
-/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
+// Copyright (C) 2022 by Camden Mannett.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/flag.hpp"
@@ -928,7 +930,7 @@ public:
 int main() {
     const auto root = stub_node{policy::long_name<S_("flag1")>,
                                 policy::alias(policy::long_name<S_("flag2")>),
-                                policy::min_max_value{3, 6}};
+                                policy::min_max_value<3, 6>()};
 
     auto result = vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "flag2"},

@@ -1,22 +1,41 @@
-/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
+// Copyright (C) 2022 by Camden Mannett.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #pragma once
 
+#include "arg_router/policy/default_help_formatter.hpp"
 #include "arg_router/policy/flatten_help.hpp"
 #include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/policy/no_result_value.hpp"
-#include "arg_router/policy/program_intro.hpp"
-#include "arg_router/policy/program_name.hpp"
-#include "arg_router/policy/program_version.hpp"
 #include "arg_router/tree_node.hpp"
-#include "arg_router/utility/terminal.hpp"
-#include "arg_router/utility/utf8.hpp"
 
 #include <iostream>
 #include <sstream>
 
 namespace arg_router
 {
+namespace detail
+{
+template <typename... Policies>
+class add_missing_formatter_policy
+{
+    using policies_tuple = std::tuple<std::decay_t<Policies>...>;
+    using default_formatter_type = policy::default_help_formatter_t<>;
+
+public:
+    constexpr static auto has_formatter =
+        boost::mp11::mp_find_if<policies_tuple, traits::has_generate_help_method>::value !=
+        std::tuple_size_v<policies_tuple>;
+
+    using type = std::conditional_t<
+        has_formatter,
+        boost::mp11::mp_rename<policies_tuple, tree_node>,
+        boost::mp11::mp_rename<boost::mp11::mp_push_front<policies_tuple, default_formatter_type>,
+                               tree_node>>;
+};
+}  // namespace detail
+
 /** Generates the help output.
  *
  * Create with the help(Policies...) function for consistency with arg_t.
@@ -24,10 +43,11 @@ namespace arg_router
  */
 template <typename... Policies>
 class help_t :
-    public tree_node<policy::no_result_value<>,
-                     std::decay_t<decltype(policy::min_count<0>)>,
-                     std::decay_t<Policies>...>
+    public detail::add_missing_formatter_policy<policy::no_result_value<>,
+                                                std::decay_t<decltype(policy::min_count<0>)>,
+                                                std::decay_t<Policies>...>::type
 {
+private:
     static_assert(policy::is_all_policies_v<std::tuple<std::decay_t<Policies>...>>,
                   "Help must only contain policies (not other nodes)");
 
@@ -37,14 +57,22 @@ class help_t :
                   "Help must not have a display name policy");
     static_assert(!traits::has_none_name_method_v<help_t>, "Help must not have a none name policy");
 
-    using parent_type = tree_node<policy::no_result_value<>,
-                                  std::decay_t<decltype(policy::min_count<0>)>,
-                                  std::decay_t<Policies>...>;
+    using parent_type =
+        typename detail::add_missing_formatter_policy<policy::no_result_value<>,
+                                                      std::decay_t<decltype(policy::min_count<0>)>,
+                                                      std::decay_t<Policies>...>::type;
 
-    constexpr static auto indent_spaces = 4u;
+    constexpr static auto formatter_index =
+        boost::mp11::mp_find_if<typename parent_type::policies_type,
+                                traits::has_generate_help_method>::value;
+    static_assert(formatter_index != std::tuple_size_v<typename parent_type::policies_type>,
+                  "Help node must have a formatter policy");
+    using formatter_type =
+        std::tuple_element_t<formatter_index, typename parent_type::policies_type>;
 
 public:
     using typename parent_type::policies_type;
+    using parent_type::generate_help;
 
     /** Help data type.
      *
@@ -53,80 +81,26 @@ public:
     template <bool Flatten>
     using help_data_type = typename parent_type::template default_leaf_help_data_type<Flatten>;
 
-    /** Generates the help string.
-     *
-     * Recurses through the parse tree, starting at @a Node, at compile time to build a string
-     * representation of it.  The program name, version, and info are always generated if the
-     * policies are available.
-     * @tparam Node The node type to begin help output generation from
-     * @tparam Flatten True to display all nested help data, defaults to true if
-     * policy::flatten_help is present in the policies list
-     * @param stream Output stream to write the output to
-     * @return void
-     */
-    template <typename Node,
-              bool Flatten = algorithm::has_specialisation_v<policy::flatten_help_t,
-                                                             typename parent_type::policies_type>>
-    static void generate_help(std::ostream& stream)
-    {
-        static_assert(traits::has_help_data_type_v<Node>,
-                      "Node must have a help_data_type to generate help from");
-
-        using help_data_type = typename Node::template help_data_type<Flatten>;
-
-        [[maybe_unused]] constexpr auto name_index =
-            algorithm::find_specialisation_v<policy::program_name_t,
-                                             typename parent_type::policies_type>;
-        [[maybe_unused]] constexpr auto version_index =
-            algorithm::find_specialisation_v<policy::program_version_t,
-                                             typename parent_type::policies_type>;
-        [[maybe_unused]] constexpr auto intro_index =
-            algorithm::find_specialisation_v<policy::program_intro_t,
-                                             typename parent_type::policies_type>;
-
-        // Generate the preamble
-        if constexpr (name_index != std::tuple_size_v<typename parent_type::policies_type>) {
-            stream << std::tuple_element_t<name_index,
-                                           typename parent_type::policies_type>::program_name();
-            if constexpr (version_index != std::tuple_size_v<typename parent_type::policies_type>) {
-                stream
-                    << " "
-                    << std::tuple_element_t<version_index,
-                                            typename parent_type::policies_type>::program_version();
-            }
-            stream << "\n"
-                   << "\n";
-        }
-        if constexpr (intro_index != std::tuple_size_v<typename parent_type::policies_type>) {
-            stream << std::tuple_element_t<intro_index,
-                                           typename parent_type::policies_type>::program_intro()
-                   << "\n"
-                   << "\n";
-        }
-
-        // Calculate description offset
-        constexpr auto desc_column = description_column_start<0, help_data_type>(0);
-
-        // Get the current number of console columns, so we can wrap the description nicely.  If
-        // the call fails (it returns zero), or the description field start column plus a fixed
-        // offset exceeds the column count, then don't attempt to wrap
-        const auto columns = utility::terminal::columns();
-        constexpr auto desc_column_offset = std::size_t{8};  // Completely arbitrary
-
-        // Generate the args output
-        generate_help<desc_column, 0, help_data_type>(
-            stream,
-            columns >= (desc_column + desc_column_offset) ?
-                columns :
-                std::numeric_limits<std::size_t>::max());
-    }
-
     /** Constructor.
      *
      * @param policies Policy instances
      */
-    constexpr explicit help_t(Policies... policies) noexcept :
+    template <auto has_formatter = detail::add_missing_formatter_policy<Policies...>::has_formatter>
+    constexpr explicit help_t(Policies... policies,
+                              // NOLINTNEXTLINE(*-named-parameter)
+                              std::enable_if_t<has_formatter>* = nullptr) noexcept :
         parent_type{policy::no_result_value<>{}, policy::min_count<0>, std::move(policies)...}
+    {
+    }
+
+    template <auto has_formatter = detail::add_missing_formatter_policy<Policies...>::has_formatter>
+    constexpr explicit help_t(Policies... policies,
+                              // NOLINTNEXTLINE(*-named-parameter)
+                              std::enable_if_t<!has_formatter>* = nullptr) noexcept :
+        parent_type{policy::default_help_formatter,
+                    policy::no_result_value<>{},
+                    policy::min_count<0>,
+                    std::move(policies)...}
     {
     }
 
@@ -175,12 +149,11 @@ public:
             using routing_policy =
                 typename parent_type::template phase_finder_t<policy::has_routing_phase_method>;
             if constexpr (std::is_void_v<routing_policy>) {
-                generate_help<node_type, flatten>(std::cout);
+                formatter_type::template generate_help<node_type, help_t, flatten>(std::cout);
                 std::exit(EXIT_SUCCESS);
             } else {
                 auto stream = ostringstream{};
-                generate_help<node_type, flatten>(stream);
-
+                formatter_type::template generate_help<node_type, help_t, flatten>(stream);
                 this->routing_policy::routing_phase(std::move(stream));
             }
         });
@@ -226,70 +199,6 @@ private:
             throw parse_exception{"Unknown argument", token};
         }
     }
-
-    template <std::size_t Depth>
-    [[nodiscard]] constexpr static std::size_t indent_size() noexcept
-    {
-        return Depth * indent_spaces;
-    }
-
-    template <std::size_t Depth, typename HelpData>
-    [[nodiscard]] constexpr static std::size_t description_column_start(
-        std::size_t current_max) noexcept
-    {
-        constexpr auto this_row_start = (Depth * indent_spaces) +
-                                        utility::utf8::terminal_width(HelpData::label::get()) +
-                                        indent_spaces;
-        current_max = std::max(current_max, this_row_start);
-
-        utility::tuple_type_iterator<typename HelpData::children>([&](auto i) {
-            using child_type = std::tuple_element_t<i, typename HelpData::children>;
-
-            current_max = description_column_start<Depth + 1, child_type>(current_max);
-        });
-
-        return current_max;
-    }
-
-    template <std::size_t DescStart, std::size_t Depth, typename HelpData>
-    static void generate_help(std::ostream& stream, std::size_t columns)
-    {
-        if constexpr (!HelpData::label::empty()) {
-            constexpr auto indent = indent_size<Depth>();
-            stream << utility::create_sequence_cts_t<indent, ' '>::get() << HelpData::label::get();
-
-            if constexpr (!HelpData::description::empty()) {
-                static_assert(HelpData::description::get().find('\t') == std::string_view::npos,
-                              "Help descriptions cannot contain tabs");
-
-                constexpr auto gap =
-                    DescStart - indent - utility::utf8::terminal_width(HelpData::label::get());
-
-                // Spacing between the end of the args label and start of description
-                stream << utility::create_sequence_cts_t<gap, ' '>::get();
-
-                // Print the description, breaking if a word will exceed the terminal width
-                for (auto it = utility::utf8::line_iterator{HelpData::description::get(),
-                                                            columns - DescStart};
-                     it != utility::utf8::line_iterator{};) {
-                    stream << *it;
-
-                    // If there's more data to follow, then add the offset
-                    if (++it != utility::utf8::line_iterator{}) {
-                        stream << '\n' << utility::create_sequence_cts_t<DescStart, ' '>::get();
-                    }
-                }
-            }
-
-            stream << "\n";
-        }
-
-        utility::tuple_type_iterator<typename HelpData::children>([&](auto i) {
-            using child_type = std::tuple_element_t<i, typename HelpData::children>;
-
-            generate_help<DescStart, Depth + 1, child_type>(stream, columns);
-        });
-    }
 };
 
 /** Constructs a help_t with the given policies.
@@ -302,6 +211,6 @@ private:
 template <typename... Policies>
 [[nodiscard]] constexpr auto help(Policies... policies) noexcept
 {
-    return help_t{std::move(policies)...};
+    return help_t<std::decay_t<Policies>...>{std::move(policies)...};
 }
 }  // namespace arg_router

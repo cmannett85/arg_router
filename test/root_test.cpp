@@ -1,4 +1,6 @@
-/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
+// Copyright (C) 2022 by Camden Mannett.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #include "arg_router/policy/min_max_value.hpp"
 #include "arg_router/policy/validator.hpp"
@@ -815,28 +817,28 @@ BOOST_AUTO_TEST_CASE(counting_flag_test)
         std::variant<std::tuple<double, bool, bool, std::size_t>,
                      std::tuple<std::size_t>,
                      std::tuple<bool, std::size_t>>>{};
-    auto r =
-        root(mode(policy::none_name<S_("mode1")>,
-                  arg<double>(policy::long_name<S_("arg1")>, policy::default_value{3.14}),
-                  flag(policy::short_name<'a'>),
-                  flag(policy::short_name<'b'>),
-                  counting_flag<std::size_t>(policy::short_name<'c'>),
-                  policy::router{[&](double arg1, bool a, bool b, std::size_t c) {
-                      result = std::tuple{arg1, a, b, c};
-                  }}),
-             mode(policy::none_name<S_("mode2")>,
-                  counting_flag<std::size_t>(policy::short_name<'a'>,
-                                             policy::alias(policy::short_name<'b'>)),
-                  counting_flag<std::size_t>(policy::short_name<'b'>, policy::min_max_value{2, 5}),
-                  policy::router{[&](std::size_t b) { result = std::tuple{b}; }}),
-             mode(policy::none_name<S_("mode3")>,
-                  flag(policy::short_name<'a'>),
-                  counting_flag<std::size_t>(policy::short_name<'b'>,
-                                             policy::dependent(policy::short_name<'a'>)),
-                  policy::router{[&](bool a, std::size_t b) {
-                      result = std::tuple{a, b};
-                  }}),
-             policy::validation::default_validator);
+    auto r = root(
+        mode(policy::none_name<S_("mode1")>,
+             arg<double>(policy::long_name<S_("arg1")>, policy::default_value{3.14}),
+             flag(policy::short_name<'a'>),
+             flag(policy::short_name<'b'>),
+             counting_flag<std::size_t>(policy::short_name<'c'>),
+             policy::router{[&](double arg1, bool a, bool b, std::size_t c) {
+                 result = std::tuple{arg1, a, b, c};
+             }}),
+        mode(policy::none_name<S_("mode2")>,
+             counting_flag<std::size_t>(policy::short_name<'a'>,
+                                        policy::alias(policy::short_name<'b'>)),
+             counting_flag<std::size_t>(policy::short_name<'b'>, policy::min_max_value<2u, 5u>()),
+             policy::router{[&](std::size_t b) { result = std::tuple{b}; }}),
+        mode(policy::none_name<S_("mode3")>,
+             flag(policy::short_name<'a'>),
+             counting_flag<std::size_t>(policy::short_name<'b'>,
+                                        policy::dependent(policy::short_name<'a'>)),
+             policy::router{[&](bool a, std::size_t b) {
+                 result = std::tuple{a, b};
+             }}),
+        policy::validation::default_validator);
 
     auto f = [&](auto args, auto expected_result, std::string fail_message) {
         result.reset();

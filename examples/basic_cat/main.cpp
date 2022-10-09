@@ -1,4 +1,6 @@
-/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
+// Copyright (C) 2022 by Camden Mannett.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #include <arg_router/arg_router.hpp>
 
@@ -154,6 +156,7 @@ int main(int argc, char* argv[])
                  arp::short_name<'h'>,
                  arp::program_name<S_("my-cat")>,
                  arp::program_version<S_(version)>,
+                 arp::program_addendum<S_("An example program for arg_router.")>,
                  arp::description<S_("Display this help and exit")>),
         ar::flag(arp::long_name<S_("version")>,
                  arp::description<S_("Output version information and exit")>,
@@ -206,7 +209,7 @@ int main(int argc, char* argv[])
                 ar::arg<verbosity_level_t>(arp::long_name<S_("verbose")>,
                                            arp::description<S_("Verbosity level")>,
                                            arp::value_separator<'='>),
-                arp::min_max_value{verbosity_level_t::error, verbosity_level_t::debug}),
+                arp::min_max_value<verbosity_level_t::error, verbosity_level_t::debug>()),
             ar::positional_arg<std::vector<std::string_view>>(
                 arp::required,
                 arp::min_count<1>,

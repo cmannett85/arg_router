@@ -1,4 +1,6 @@
-/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
+// Copyright (C) 2022 by Camden Mannett.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #pragma once
 
@@ -70,11 +72,17 @@ public:
     template <bool Flatten>
     class help_data_type
     {
+        [[nodiscard]] constexpr auto static label_generator() noexcept
+        {
+            if constexpr (is_anonymous) {
+                return S_(""){};
+            } else {
+                return S_(parent_type::none_name()){};
+            }
+        }
+
     public:
-        using label = std::conditional_t<
-            is_anonymous,
-            S_(""),
-            typename parent_type::template default_leaf_help_data_type<Flatten>::label>;
+        using label = decltype(label_generator());
 
         using description = std::conditional_t<
             is_anonymous,

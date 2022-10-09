@@ -1,4 +1,6 @@
-/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
+// Copyright (C) 2022 by Camden Mannett.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #include "arg_router/mode.hpp"
 #include "arg_router/arg.hpp"
@@ -1038,7 +1040,7 @@ BOOST_AUTO_TEST_CASE(multi_stage_validated_alias_group_test)
     auto result = 0;
     const auto m = mode(ard::alias_group(arg<int>(policy::long_name<S_("arg")>),
                                          counting_flag<int>(policy::short_name<'a'>),
-                                         policy::min_max_value{1, 3},
+                                         policy::min_max_value<1, 3>(),
                                          policy::required),
                         policy::router([&](int value) { result = value; }));
 
@@ -1387,7 +1389,7 @@ int main() {
 using namespace arg_router;
 
 int main() {
-    const auto m = mode(policy::min_max_value{1, 3},
+    const auto m = mode(policy::min_max_value<1, 3>(),
                         flag(policy::long_name<S_("hello")>));
     return 0;
 }

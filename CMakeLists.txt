@@ -1,4 +1,6 @@
-### Copyright (C) 2022 by Camden Mannett.  All rights reserved.
+### Copyright (C) 2022 by Camden Mannett.
+### Distributed under the Boost Software License, Version 1.0.
+### (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 cmake_minimum_required(VERSION 3.18)
 
@@ -21,7 +23,7 @@ if((NOT INSTALLATION_ONLY) AND (NOT DISABLE_VCPKG))
 endif()
 
 project(arg_router
-        VERSION 0.1.0
+        VERSION 1.0.0
         DESCRIPTION "C++ command line argument parsing and routing"
         HOMEPAGE_URL "https://github.com/cmannett85/arg_router"
         LANGUAGES CXX)
@@ -72,6 +74,9 @@ path_prefixer(HEADERS
     include/arg_router/list.hpp
     include/arg_router/math.hpp
     include/arg_router/mode.hpp
+    include/arg_router/multi_lang/iso_locale.hpp
+    include/arg_router/multi_lang/root_wrapper.hpp
+    include/arg_router/multi_lang/string_selector.hpp
     include/arg_router/parsing/dynamic_token_adapter.hpp
     include/arg_router/parsing/global_parser.hpp
     include/arg_router/parsing/parse_target.hpp
@@ -79,7 +84,9 @@ path_prefixer(HEADERS
     include/arg_router/parsing/pre_parse_data.hpp
     include/arg_router/parsing/token_type.hpp
     include/arg_router/policy/alias.hpp
+    include/arg_router/policy/colour_help_formatter.hpp
     include/arg_router/policy/custom_parser.hpp
+    include/arg_router/policy/default_help_formatter.hpp
     include/arg_router/policy/default_value.hpp
     include/arg_router/policy/dependent.hpp
     include/arg_router/policy/description.hpp
@@ -92,6 +99,7 @@ path_prefixer(HEADERS
     include/arg_router/policy/multi_stage_value.hpp
     include/arg_router/policy/no_result_value.hpp
     include/arg_router/policy/policy.hpp
+    include/arg_router/policy/program_addendum.hpp
     include/arg_router/policy/program_intro.hpp
     include/arg_router/policy/program_name.hpp
     include/arg_router/policy/program_version.hpp

@@ -1,4 +1,6 @@
-/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
+// Copyright (C) 2022 by Camden Mannett.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #pragma once
 
@@ -22,7 +24,7 @@ class unsafe_any_t
     using aligned_storage_type = std::aligned_storage_t<SmallObjectOptimisationSize>;
 
     template <typename T>
-    static constexpr bool use_internal_storage = (sizeof(T) <= sizeof(aligned_storage_type));
+    constexpr static bool use_internal_storage = (sizeof(T) <= sizeof(aligned_storage_type));
 
 public:
     /** Default constructor.

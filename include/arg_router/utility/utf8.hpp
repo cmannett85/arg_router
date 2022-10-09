@@ -1,4 +1,6 @@
-/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
+// Copyright (C) 2022 by Camden Mannett.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #pragma once
 
@@ -80,7 +82,7 @@ public:
          *
          * @return End iterator
          */
-        [[nodiscard]] static constexpr iterator end() noexcept { return iterator{}; }
+        [[nodiscard]] constexpr static iterator end() noexcept { return iterator{}; }
 
     private:
         constexpr explicit range_t(std::string_view str) noexcept : str_{str} {}
@@ -93,7 +95,7 @@ public:
      * @param str Input string
      * @return Range object
      */
-    [[nodiscard]] static constexpr range_t range(std::string_view str) noexcept
+    [[nodiscard]] constexpr static range_t range(std::string_view str) noexcept
     {
         return range_t{str};
     }
@@ -177,9 +179,9 @@ public:
     }
 
 private:
-    static constexpr auto trailing_window_size = std::size_t{AR_UTF8_TRAILING_WINDOW_SIZE};
+    constexpr static auto trailing_window_size = std::size_t{AR_UTF8_TRAILING_WINDOW_SIZE};
 
-    [[nodiscard]] static constexpr grapheme_cluster_break_class extract_class(
+    [[nodiscard]] constexpr static grapheme_cluster_break_class extract_class(
         code_point::type cp) noexcept
     {
         auto result = grapheme_cluster_break_class::any;
@@ -435,9 +437,9 @@ public:
     }
 
 private:
-    static constexpr auto trailing_window_size = std::size_t{AR_UTF8_TRAILING_WINDOW_SIZE};
+    constexpr static auto trailing_window_size = std::size_t{AR_UTF8_TRAILING_WINDOW_SIZE};
 
-    [[nodiscard]] static constexpr line_break_class extract_class(code_point::type cp) noexcept
+    [[nodiscard]] constexpr static line_break_class extract_class(code_point::type cp) noexcept
     {
         auto result = line_break_class::any;
         const auto range = detail::find_range(line_break_table, cp);

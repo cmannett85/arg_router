@@ -1,4 +1,6 @@
-### Copyright (C) 2022 by Camden Mannett.  All rights reserved. 
+### Copyright (C) 2022 by Camden Mannett.
+### Distributed under the Boost Software License, Version 1.0.
+### (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 set(Boost_USE_MULTITHREADED ON)
 find_package(Boost ${BOOST_VERSION} REQUIRED COMPONENTS
@@ -24,20 +26,26 @@ path_prefixer(TEST_SRCS
     list_test.cpp
     math_test.cpp
     mode_test.cpp
+    multi_lang/iso_locale_test.cpp
+    multi_lang/root_wrapper_test.cpp
+    multi_lang/string_selector_test.cpp
     parsing/dynamic_token_adapter_test.cpp
     parsing/global_parser_test.cpp
     parsing/parse_target_test.cpp
     parsing/parsing_test.cpp
     parsing/pre_parse_data_test.cpp
-    policy/custom_parser_test.cpp
     policy/alias_test.cpp
+    policy/colour_help_formatter_test.cpp
+    policy/custom_parser_test.cpp
+    policy/default_help_formatter_test.cpp
     policy/default_value_test.cpp
     policy/dependent_test.cpp
     policy/description_test.cpp
     policy/display_name_test.cpp
     policy/long_name_test.cpp
     policy/min_max_count_test.cpp
-    policy/min_max_value_test.cpp
+    policy/min_max_value_ct_test.cpp
+    policy/min_max_value_t_test.cpp
     policy/required_test.cpp
     policy/router_test.cpp
     policy/short_form_expander_test.cpp

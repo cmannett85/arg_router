@@ -1,4 +1,6 @@
-/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
+// Copyright (C) 2022 by Camden Mannett.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #pragma once
 
@@ -14,7 +16,7 @@
 namespace arg_router::utility::terminal
 {
 #ifdef UNIT_TEST_BUILD
-static auto test_columns_value = std::size_t{80};
+extern std::size_t test_columns_value;
 #endif
 
 /** Returns the current number columns in the terminal.

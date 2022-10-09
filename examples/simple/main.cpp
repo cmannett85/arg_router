@@ -1,4 +1,6 @@
-/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
+// Copyright (C) 2022 by Camden Mannett.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #include <arg_router/arg_router.hpp>
 
@@ -57,7 +59,9 @@ int main(int argc, char* argv[])
                       arp::program_name<S_("simple")>,
                       arp::program_version<S_("v0.1")>,
                       arp::program_intro<S_("A simple file copier and mover.")>,
-                      arp::flatten_help),
+                      arp::program_addendum<S_("An example program for arg_router.")>,
+                      arp::flatten_help,
+                      arp::colour_help_formatter),
              ar::mode(arp::none_name<S_("copy")>,
                       arp::description<S_("Copy source files to destination")>,
                       common_args,

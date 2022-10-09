@@ -1,4 +1,6 @@
-/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
+// Copyright (C) 2022 by Camden Mannett.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #pragma once
 
@@ -11,6 +13,7 @@ namespace arg_router::utility::string_view_ops
 {
 /** Concatentation operator between std::string and std::string_view.
  *
+ * The returned std::string uses the library allocator (<TT>config::allocator</TT>) by default.
  * @tparam CharT Character type
  * @tparam Traits Character traits
  * @tparam Allocator Allocator type
@@ -20,7 +23,7 @@ namespace arg_router::utility::string_view_ops
  */
 template <typename CharT,
           typename Traits = std::char_traits<CharT>,
-          typename Allocator = std::allocator<CharT>>
+          typename Allocator = config::allocator<CharT>>
 [[nodiscard]] constexpr std::basic_string<CharT, Traits, Allocator> operator+(
     std::basic_string<CharT, Traits, Allocator> lhs,
     std::basic_string_view<CharT, Traits> rhs)
@@ -30,6 +33,7 @@ template <typename CharT,
 
 /** Overload that accepts reversed arguments.
  *
+ * The returned std::string uses the library allocator (<TT>config::allocator</TT>) by default.
  * @tparam CharT Character type
  * @tparam Traits Character traits
  * @tparam Allocator Allocator type
@@ -39,7 +43,7 @@ template <typename CharT,
  */
 template <typename CharT,
           typename Traits = std::char_traits<CharT>,
-          typename Allocator = std::allocator<CharT>>
+          typename Allocator = config::allocator<CharT>>
 [[nodiscard]] constexpr std::basic_string<CharT, Traits, Allocator> operator+(
     std::basic_string_view<CharT, Traits> lhs,
     std::basic_string<CharT, Traits, Allocator> rhs)
@@ -49,8 +53,7 @@ template <typename CharT,
 
 /** Returns a std::string using two std::string_views.
  *
- * The returned std::string uses the library allocator
- * (<TT>config::allocator</TT>).
+ * The returned std::string uses the library allocator (<TT>config::allocator</TT>).
  * @tparam CharT Character type
  * @tparam Traits Character traits
  * @param lhs std::string_view instance

@@ -1,4 +1,6 @@
-/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
+// Copyright (C) 2022 by Camden Mannett.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #include "test_helpers.hpp"
 
@@ -106,7 +108,7 @@ int main() {
 using namespace arg_router;
 
 int main() {
-    const auto m = root(policy::min_max_value{1, 3},
+    const auto m = root(policy::min_max_value<1, 3>(),
                         flag(policy::long_name<S_("hello")>));
     return 0;
 }

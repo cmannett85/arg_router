@@ -1,4 +1,6 @@
-/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
+// Copyright (C) 2022 by Camden Mannett.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #include "arg_router/flag.hpp"
 #include "arg_router/mode.hpp"
@@ -187,7 +189,7 @@ using namespace arg_router;
 
 int main() {
     auto f = flag(policy::long_name<S_("hello")>,
-                  policy::min_max_value{true, true});
+                  policy::min_max_value<true, true>());
     return 0;
 }
     )",

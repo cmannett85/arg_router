@@ -1,4 +1,6 @@
-/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
+// Copyright (C) 2022 by Camden Mannett.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #pragma once
 
@@ -31,7 +33,7 @@ public:
     using value_type = T;
 
     /** True if empty. */
-    static constexpr bool empty = false;
+    constexpr static bool empty = false;
 
     /** Constructor.
      *
@@ -83,7 +85,7 @@ class compile_time_optional<std::reference_wrapper<T>>
 public:
     using value_type = T;
 
-    static constexpr bool empty = false;
+    constexpr static bool empty = false;
 
     constexpr explicit operator bool() const { return !empty; }
 
@@ -105,7 +107,7 @@ template <>
 class compile_time_optional<void>
 {
 public:
-    static constexpr bool empty = true;
+    constexpr static bool empty = true;
 
     explicit constexpr operator bool() const { return !empty; }
 };

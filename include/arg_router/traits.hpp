@@ -1,4 +1,6 @@
-/* Copyright (C) 2022 by Camden Mannett.  All rights reserved. */
+// Copyright (C) 2022 by Camden Mannett.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #pragma once
 
@@ -73,6 +75,27 @@ struct has_value_type {
  */
 template <typename T>
 constexpr bool has_value_type_v = has_value_type<T>::value;
+
+/** Same as std::underlying_type except that it acts as an identity type for non-enum inputs.
+ *
+ * @tparam T Type to query
+ */
+template <typename T, typename Enable = void>
+struct underlying_type {
+    using type = T;
+};
+
+template <typename T>
+struct underlying_type<T, std::enable_if_t<std::is_enum_v<T>>> {
+    using type = std::underlying_type_t<T>;
+};
+
+/** Helper alias for underlying_type.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+using underlying_type_t = typename underlying_type<T>::type;
 
 /** Evaluates to true if @a T is a tuple-like type.
  *
@@ -407,6 +430,44 @@ struct has_minimum_count_method {
 template <typename T>
 constexpr bool has_minimum_count_method_v = has_minimum_count_method<T>::value;
 
+/** Determine if a type has a <TT>minimum_value()</TT> static method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+struct has_minimum_value_method {
+    template <typename U>
+    using type = decltype(U::minimum_value());
+
+    constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
+};
+
+/** Helper variable for has_minimum_value_method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+constexpr bool has_minimum_value_method_v = has_minimum_value_method<T>::value;
+
+/** Determine if a type has a <TT>maximum_value()</TT> static method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+struct has_maximum_value_method {
+    template <typename U>
+    using type = decltype(U::maximum_value());
+
+    constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
+};
+
+/** Helper variable for has_maximum_value_method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+constexpr bool has_maximum_value_method_v = has_maximum_value_method<T>::value;
+
 /** Determine if a type has a <TT>push_back(typename T::value_type)</TT> method.
  *
  * @tparam T Type to query
@@ -453,7 +514,7 @@ constexpr bool has_help_data_type_v = has_help_data_type<T>::value;
 template <typename T>
 struct has_generate_help_method {
     template <typename U>
-    using type = decltype(U::template generate_help<U, false>(std::declval<std::ostream&>()));
+    using type = decltype(U::template generate_help<U, U, false>(std::declval<std::ostream&>()));
 
     constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
 };

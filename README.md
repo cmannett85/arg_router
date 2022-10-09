@@ -5,12 +5,13 @@
 
 ## Features
 - Use policies to define the properties and constraints of arguments at compile-time
-- Group arguments together to define mutually exclusive operating modes, for complex applications
+- Group arguments together to define mutually exclusive operating modes, for more complex applications
 - Define logical connections between arguments
 - Detects invalid or ambiguous parse trees at compile-time
-- Generates its help output, which you can modify at runtime using a `Callable`
+- Generates its help output, which you can modify at runtime using a `Callable`, or tweak its formatting using policies
 - Easy custom parsers by using `Callable`s inline for specific arguments, or you can implement a specialisation to cover all instances of that type
 - Unicode compliant by supporting UTF-8 encoded compile-time strings ([details](#unicode-compliance))
+- Support of runtime language selection
 
 ## Basics
 Let's start simple, with this `cat`-like program:
@@ -189,8 +190,7 @@ ar::mode(
     ...
     ar::counting_flag<verbosity_level_t>(
         arp::short_name<'v'>,
-        arp::min_max_value{verbosity_level_t::ERROR,
-                           verbosity_level_t::DEBUG},
+        arp::max_value<verbosity_level_t::DEBUG>(),
         arp::description<S_("Verbosity level, number of 'v's sets level")>,
         arp::default_value{verbosity_level_t::ERROR}),
     ...
@@ -210,7 +210,7 @@ Note that even though we are using a custom enum, we haven't specified a `custom
 
 Short name collapsing still works as expected, so passing `-Evnv` will result in `show_ends` and `show_non_printing` being true, and `verbosity_level` will be `verbosity_level_t::INFO` in the `router` call.
 
-We can constrain the amount of flags the user can provide by using the `min_max_value` policy, so passing `-vvvv` will result in a runtime error.
+We can constrain the amount of flags the user can provide by using the `max_value` policy, so passing `-vvvv` will result in a runtime error.  There are min/max and min variants too.  Here we are using the compile-time variant of the policy, we can do that because the value type is an integral/enum, but if your value type cannot be used as a template parameter then there equivalent runtime variants that take the paramters as function parameters instead.  The compile-time variants should be used when possible due to extra checks e.g. setting the max value less than the min.
 
 The `long_name` policy is allowed but usually leads to ugly invocations, however there is a better option:
 ```cpp
@@ -218,8 +218,7 @@ ar::mode(
     ...
     ard::alias_group(
         arp::default_value{verbosity_level_t::INFO},
-        arp::min_max_value{verbosity_level_t::ERROR,
-                           verbosity_level_t::DEBUG},
+        arp::max_value<verbosity_level_t::DEBUG>(),
         ar::counting_flag<verbosity_level_t>(
             arp::short_name<'v'>,
             arp::description<S_("Verbosity level, number of 'v's sets level")>),
@@ -407,6 +406,7 @@ The output can be tweaked using policies:
 - `program_name`, this is printed first.  Without it neither this nor the version are printed
 - `program_version`, this followes the name
 - `program_intro`, used to give some more information on the program.  This is printed two new lines away from the name and version
+- `program_addendum`, used to add supplementary text after the argument output
 - `flatten_help`, by default only top-level arguments and/or those in an anonymous mode are displayed.  Child modes are shown by requesting the mode's 'path' on the command line (e.g. `app --help mode sub-mode`).  The presence of this policy will make the entire requested subtree's (or root's, if no mode path was requested) help output be displayed
 
 Unlike string data everywhere else in the library, the formatted help output is created at runtime using `std::string` so we don't need to keep duplicate read-only text data.
@@ -433,6 +433,7 @@ ar::root(
         arp::program_name<S_("simple")>,
         arp::program_version<S_("v0.1")>,
         arp::program_intro<S_("A simple file copier and mover.")>,
+        arp::program_addendum<S_("An example program for arg_router.")>,
         arp::flatten_help),
     ar::mode(
         arp::none_name<S_("copy")>,
@@ -475,6 +476,8 @@ A simple file copier and mover.
         --force,-f    Force overwrite existing files
         <DST> [1]     Destination directory
         <SRC> [1]     Source file path
+
+An example program for arg_router.
 ```
 As you can see positional arguments are wrapped in angle brackets, and counts are displayed using interval notation.
 
@@ -488,6 +491,8 @@ A simple file copier and mover.
     --help,-h    Display this help and exit
     copy         Copy source files to destination
     move         Move source file to destination
+
+An example program for arg_router.
 ```
 In either case specifying the mode as an argument to the help argument displays just the sub-arguments of that mode:
 ```
@@ -500,13 +505,20 @@ copy              Copy source files to destination
     --force,-f    Force overwrite existing files
     <DST> [1]     Destination directory
     <SRC> [1,N]   Source file paths
-```
-Currently the formatting is quite basic, more advanced formatting options are coming in future releases.
 
+An example program for arg_router.
+```
 ### Programmatic Access
 By default when parsed `help` will output its contents to `std::cout` and then exit the application with `EXIT_SUCCESS`.  Obviously this won't always be desired, so a `router` policy can be attached that will pass a `std::ostringstream` to the user-provided `Callable`.  The stream will have already been populated with the help data shown above, but it can now be appended to or converted to string for use somewhere else.
 
 Often programmatic access is desired for the help output outside of the user requesting it, for example if a parse exception is thrown, generally the exception error is printed to the terminal followed by the help output.  This is exposed by the `help()` or `help(std::ostringstream&)` methods of the root object.
+
+### Customisation
+Help output can be customised in several ways:
+1. Use a `router` policy to capture the output and modify it.  This is useful for appending string data, but anything more sophisticated becomes a chore
+2. Write your own `help` node.  This is the nuclear option as it gives maximal control but is a lot of work, it is very rarely necessary to do this as the node is primarily just the `tree_node` implementation, the actual formatting is delegated
+3. Write your own help formatter policy for the built-in `help` node.  The `help` node delegates the formatting to a policy, if no formatter is specified when defining a `help` node specialisation the `default_help_formatter` is used.  This is still non-trivial as the formatter policy needs to perform the compile-time tree iteration in order to process the per-node help data
+4. Write your own line formatter and/or preamble formatter. The `default_help_formatter` further delegates formatting to two sub-policies, one that generates the 'preamble' text (i.e. the program name, version, intro) and another that generates each argument in the argument output.  `default_helper_formatter` uses `help_formatter_component::default_preamble_formatter` and `help_formatter_component::default_line_formatter` respectively by default
 
 ## Unicode Compliance
 A faintly ridiculous example of Unicode support from the `just_cats` example:
@@ -539,14 +551,67 @@ $ ./example_just_cats --кіт
 ### Why have you written your own Unicode algorithms!?
 We didn't want to...  Normally an application will link to ICU for its Unicode needs, but unfortunately we can't do that here as ICU is not `constexpr` and therefore cannot be used for our compile-time needs - so we need to roll our own.
 
+## Runtime Language Selection
+`arg_router` has support for runtime language selection, using `multi_lang::root_wrapper`.  As the name suggests, this wraps around a `Callable` that returns a `root` instance 'tweaked' for a given language.  Let's take the start of the simple file copier/mover application, and convert it:
+```cpp
+// Apologies for any translation faux pas - Google Translate did it for me!
+ar::multi_lang::root_wrapper<S_("en_GB"), S_("fr"), S_("ja")>(  //
+    ar::multi_lang::iso_locale(std::locale("").name()),
+    [&](auto I) {
+        const auto common_args = ar::list{
+            ar::flag(arp::long_name<SM_(I, "force", "forcer", "強制")>,
+                     arp::short_name<'f'>,
+                     arp::description<SM_(I,
+                                          "Force overwrite existing files",
+                                          "Forcer l'écrasement des fichiers existants",
+                                          "既存のファイルを強制的に上書きする")>),
+            ar::positional_arg<fs::path>(arp::required,
+                                         arp::display_name<SM_(I, "DST", "DST", "先")>,
+                                         arp::description<SM_(I,
+                                                              "Destination directory",
+                                                              "Répertoire de destination",
+                                                              "宛先ディレクトリ")>,
+                                         arp::fixed_count<1>)};
+
+        return ar::root(
+            arp::validation::default_validator,
+            ar::help(arp::long_name<SM_(I, "help", "aider", "ヘルプ")>,
+                     arp::short_name<'h'>,
+                     arp::description<SM_(I,
+                                          "Display this help and exit",
+                                          "Afficher cette aide et quitter",
+                                          "このヘルプを表示して終了")>,
+                     arp::program_name<S_("simple")>,
+                     arp::program_version<S_("v0.1")>,
+                     arp::program_intro<SM_(
+                        I,
+                        "A simple file copier and mover.",
+                        "Un simple copieur et déménageur de fichiers.",
+                        "ファイルをコピーおよび移動するためのシンプルなプログラム。")>,
+                     arp::program_addendum<SM_(I,
+                                               "An example program for arg_router.",
+                                               "Un exemple de programme pour arg_router.",
+                                               "「arg_router」のサンプルプログラム。")>,
+                     arp::flatten_help,
+                     arp::colour_help_formatter),
+                ...
+        );
+    }).parse(argc, argv);
+```
+The `multi_lang::root_wrapper` takes a set of supported language identifiers (ISO language/country codes are recommended for readability, but not required), the number and order of these defines the number and order of translations needed for each translated compile-time string in the root definition.  Core to this functionality is the `SM_` macro, which just expands to an element selector in a tuple of compile-time strings - depending on the value of the index passed in, it resolves to one of the translation strings.
+
+The first argument is a string provided by the user that should match one of the language identifiers, if it doesn't `arg_router` will fall back to using the first defined language (UK English in this case).  As a convenience `arg_router` provides a simple function that takes the OS locale name and standardises it to an ISO language/country identifier.
+
+As you may have guessed from the interface, `multi_lang::root_wrapper` works by simply finding a match for the input against the supported language identifiers, and instantiating a `root` instance via the user-provided `Callable` with the index of the selected language.  This root instance is then held in a variant, which `root_wrapper` accesses when its `root`-compatible interface is used.
+
 ## Error Handling
 Currently `arg_router` only supports exceptions as error handling.  If a parsing fails for some reason a `arg_router::parse_exception` is thrown carrying information on the failure.
 
 ## Installation and Dependencies
 If you're simply a library user, then download the pre-packaged release and install somewhere.  You will need the following dependencies in order to build:
-* Boost.mp11 v1.74
-* Boost.Preprocessor v1.74
-* Boost.Lexical_Cast v1.74
+* Boost.mp11 v1.74+
+* Boost.Preprocessor v1.74+
+* Boost.Lexical_Cast v1.74+
 * [span-lite](https://github.com/martinmoene/span-lite) (only needed if building against C++17)
 
 `arg_router` is header-only (due to all the templates) and so are the above dependencies.
@@ -566,8 +631,9 @@ Building these targets will require more dependencies:
 * clang-format
 * Python v3 (used for copyright checking)
 * Doxygen
-* Boost.Test v1.74
-* Boost.Filesystem v1.74
+* Boost.Test v1.74+
+* Boost.Filesystem v1.74+
+* Boost.Process v1.74+
 * Git
 
 By default all these dependencies are provided by `vcpkg` automatically, please **note** that `vcpkg` is provided via a submodule and therefore will need initialising (`git submodule update`).  If you would rather the dependencies came from the system then simply set `-DDISABLE_VCPKG=OFF`, and CMake will not bootstrap `vcpkg` and therefore try to find the packages locally.
@@ -586,25 +652,17 @@ You'll notice the big omission: No MSVC.  That's because even with the latest ve
 
 ## Tips for Users
 ### Do **NOT** Make the Parse Tree Type Accessible
-The parse tree is _very_ expensive to construct due to all the compile-time checking and meta-programming shennanigans, so do **NOT** define it in a header and have multiple source files
-include it - it will cause the tree to be built/checked in every source file it is included in.
-
-`arg_router` is designed to be self-contained, the user only needs to define the 'hooks' (`router` instances) that call into their application's entry points - there will never be a need for the application logic to access the tree.
-
-This is a long-winded way of saying define the tree in _one_ source file.
+The parse tree is _very_ expensive to construct due to all the compile-time checking and meta-programming shennanigans, so do **NOT** define it in a header and have multiple source files include it - it will cause the tree to be built/checked in every source file it is included in.
 
 ### Minimise Static Storage Bloat
-Despite not using `typeid` or `dynamic_cast` in the library, compilers will still generate class name data if RTTI is enabled.  Due to the highly nested templates that make up the parse tree, these class names can become huge and occupy large amount of static storage in the executable.  As an example, the `basic_cat` project in the repo will create ~100KB of class name data in the binary - this data is
-not used and cannot be stripped out.
+Despite not using `typeid` or `dynamic_cast` in the library, compilers will still generate class name data if RTTI is enabled.  Due to the highly nested templates that make up the parse tree, these class names can become huge and occupy large amount of static storage in the executable.  As an example, the `basic_cat` project in the repo will create ~100KB of class name data in the binary - this data is not used and cannot be stripped out.
 
 Disabling RTTI is rarely feasible for most projects, but it is possible to disable RTTI for a single CMake target.  So if it was deemed worth it for the size reduction, the command line parsing could be the application's executable (compiled without RTTI) and then the wider application logic could be in a static library (compiled with RTTI).  This does not affect exceptions, as their type information is always added by the compiler regardless of RTTI status.
 
-## API Documentation
-Complete Doxygen-generated documentation is available [here](https://cmannett85.github.io/arg_router/).
+## Extra Documentation
+Complete Doxygen-generated API documentation is available [here](https://cmannett85.github.io/arg_router/).  Examples are provided in the `examples` directory of the repo or online [here](https://github.com/cmannett85/arg_router/tree/develop/examples).
 
 ## Future Work
 Take a look at the [issues](https://github.com/cmannett85/arg_router/issues) page for all upcoming features and fixes.  Highlights are:
 * Finally get it working on MSVC ([#102](https://github.com/cmannett85/arg_router/issues/102))
-* Support for runtime language switching by swapping between parse trees depending on the locale ([#11](https://github.com/cmannett85/arg_router/issues/11))
-* Customised help formatting ([#86](https://github.com/cmannett85/arg_router/issues/86))
-* Command line tab autocomplete ([#123](https://github.com/cmannett85/arg_router/issues/123))
+* Add to vcpkg ([#8](https://github.com/cmannett85/arg_router/issues/8))
