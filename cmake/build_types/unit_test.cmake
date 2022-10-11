@@ -17,6 +17,7 @@ path_prefixer(TEST_HEADERS
 path_prefixer(TEST_SRCS
     main_test.cpp
     algorithm_test.cpp
+    allocator_test.cpp
     arg_test.cpp
     counting_flag_test.cpp
     dependency/alias_group_test.cpp
