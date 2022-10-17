@@ -16,11 +16,11 @@ namespace arg_router
  * size, but will increase the build time
  * 
  * <TT>AR_LONG_PREFIX</TT> is the character string that defines the prefix of <I>long</I>-form token
- * labels e.g. "--help".  It defaults to two hyphens. If redefining, this must have more characters
- * that <TT>AR_SHORT_PREFIX</TT>.
+ * labels e.g. "--help".  It defaults to two hyphens. If redefining, this must have the same or more
+ * characters than <TT>AR_SHORT_PREFIX</TT>.
  * 
  * <TT>AR_SHORT_PREFIX</TT> is the character string that defines the prefix of <I>short</I>-form
- * token labels e.g. "-h".  It defaults to one hyphen.  It must have at least one character in it.
+ * token labels e.g. "-h".  It defaults to one hyphen.  It must have one character in it.
  * 
  * <TT>AR_ALLOCATOR</TT> sets the allocator for all allocating types in arg_router (e.g.
  * <TT>std::vector</TT>, <TT>std::string</TT>, etc.).  It defaults to <TT>std::allocator</TT>, i.e.

@@ -20,8 +20,10 @@ path_prefixer(TEST_SRCS
     allocator_test.cpp
     arg_test.cpp
     counting_flag_test.cpp
+    counting_flag_same_prefix_test.cpp
     dependency/alias_group_test.cpp
     dependency/one_of_test.cpp
+    flag_same_prefix_test.cpp
     flag_test.cpp
     help_test.cpp
     list_test.cpp
