@@ -33,6 +33,8 @@ public:
      * match or the owner does not have short name policy then it just returns false.  Otherwise all
      * the characters in the token are converted into short form tokens, added to @a tokens.
      *
+     * @note If a short-form expander is used, the long and short prefixes must be different
+     *
      * @tparam ProcessedTarget @a processed_target payload type
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
      * @param tokens Currently processed tokens
@@ -50,6 +52,8 @@ public:
         [[maybe_unused]] parsing::parse_target& target,
         [[maybe_unused]] const Parents&... parents) const
     {
+        static_assert(sizeof...(Parents) > 0,
+                      "Short-form expansion policy requires at least one parent");
         using owner_type = boost::mp11::mp_first<std::tuple<Parents...>>;
 
         static_assert(traits::has_short_name_method_v<owner_type>,
@@ -57,6 +61,12 @@ public:
 
         static_assert(utility::utf8::count(owner_type::short_name()) == 1,
                       "Short name must only be 1 character");
+
+        // Parents is always greater than zero, but having it in this statement causes it to only be
+        // evaluated upon template instantiation - otherwise it would fail even if the class is
+        // never used
+        static_assert((sizeof...(Parents) > 0) && (config::short_prefix != config::long_prefix),
+                      "Short and long prefixes cannot be the same");
 
         auto first = tokens.begin();
         auto first_token = *first;

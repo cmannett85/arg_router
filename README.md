@@ -66,7 +66,7 @@ The `arp::validation::default_validator` instance provides the default validator
 
 The `help` node is used by the `root` to generate the argument documentation for the help output, by default it just prints directly to the console and then exits, but a `router` can be attached that accepts the formatted output and do something else with it.  The optional `program_name` and `program_version` policies add a header to the help output.
 
-Now let's introduce some 'policies'.  Policies define common behaviours across node types, a basic one is `long_name` which provides long form argument definition.  By default, a standard unix double hyphen prefix for long names is added automatically.  Having the name defined at compile-time means we detect duplicate names and fail the build - one less unit test you have to worry about.  `short_name` is the single character short form name, by default a single hyphen is prefixed automatically.  `arg_router` supports short name collapsing for flags, so if you have defined flags like `-a -b -c` then `-abc` will be accepted or `-bca`, etc.
+Now let's introduce some 'policies'.  Policies define common behaviours across node types, a basic one is `long_name` which provides long-form argument definition.  By default, a standard unix double hyphen prefix for long names is added automatically.  Having the name defined at compile-time means we detect duplicate names and fail the build - one less unit test you have to worry about.  `short_name` is the single character short-form name, by default a single hyphen is prefixed automatically.  `arg_router` supports short name collapsing for flags, so if you have defined flags like `-a -b -c` then `-abc` will be accepted or `-bca`, etc. (**note** short-form name collapsing is disabled if the library has been configured to have the same long and short prefix).
 
 In order to group arguments under a specific operating mode, you put them under a `mode` instance.  In this case our simple cat program only has one mode, so it is anonymous i.e. there's no long name or description associated with it - it is a build error to have more than one anonymous mode under the root of a parse tree.
 
@@ -637,6 +637,9 @@ Building these targets will require more dependencies:
 * Git
 
 By default all these dependencies are provided by `vcpkg` automatically, please **note** that `vcpkg` is provided via a submodule and therefore will need initialising (`git submodule update`).  If you would rather the dependencies came from the system then simply set `-DDISABLE_VCPKG=OFF`, and CMake will not bootstrap `vcpkg` and therefore try to find the packages locally.
+
+## Configuration
+Low-level tweaking of the library is achieved via some defines and/or CMake variables, documented [here](https://cmannett85.github.io/arg_router/configuration.html).
 
 ## Supported Compilers/Platforms
 The CI system attached to this repo builds the unit tests and examples with:
