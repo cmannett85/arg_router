@@ -48,12 +48,9 @@ struct parser<T, typename std::enable_if_t<std::is_arithmetic_v<T>>> {
     }
 };
 
-template <>
-struct parser<std::string_view> {
-    [[nodiscard]] constexpr static inline std::string_view parse(std::string_view token) noexcept
-    {
-        return token;
-    }
+template <typename T>
+struct parser<T, typename std::enable_if_t<std::is_constructible_v<T, std::string_view>>> {
+    [[nodiscard]] static T parse(std::string_view token) { return T{token}; }
 };
 
 template <>
@@ -109,7 +106,9 @@ struct parser<std::optional<T>> {
 // because an argument that can be parsed as a complete container will need a custom parser.  In
 // other words, this is only used for positional arg parsing
 template <typename T>
-struct parser<T, typename std::enable_if_t<traits::has_push_back_method_v<T>>> {
+struct parser<
+    T,
+    typename std::enable_if_t<traits::has_push_back_method_v<T> && !std::is_same_v<T, string>>> {
     [[nodiscard]] static typename T::value_type parse(std::string_view token)
     {
         return parser<typename T::value_type>::parse(token);
