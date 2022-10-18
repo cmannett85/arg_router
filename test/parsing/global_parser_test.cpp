@@ -58,6 +58,23 @@ BOOST_AUTO_TEST_CASE(string_view_parse_test)
                    });
 }
 
+BOOST_AUTO_TEST_CASE(string_parse_test)
+{
+    auto f = [](auto input, auto expected) {
+        const auto result = parser<std::string>::parse(input);
+        static_assert(std::is_same_v<std::decay_t<decltype(result)>, std::string>,
+                      "Parse result unexpected type");
+        BOOST_CHECK_EQUAL(result, expected);
+    };
+
+    test::data_set(f,
+                   {
+                       std::tuple{"hello", "hello"},
+                       std::tuple{"a", "a"},
+                       std::tuple{"", ""},
+                   });
+}
+
 BOOST_AUTO_TEST_CASE(bool_parse_test)
 {
     auto f = [](auto input, auto expected, std::string_view fail_message) {
