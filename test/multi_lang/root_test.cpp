@@ -2,8 +2,7 @@
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
-#include "arg_router/multi_lang/root_wrapper.hpp"
-#include "arg_router/multi_lang/string_selector.hpp"
+#include "arg_router/multi_lang/root.hpp"
 #include "arg_router/policy/validator.hpp"
 
 #include "test_helpers.hpp"
@@ -11,27 +10,58 @@
 using namespace arg_router;
 using namespace std::string_view_literals;
 
+namespace arg_router::multi_lang
+{
+template <>
+class translation<S_("en_GB")>
+{
+public:
+    using hello = S_("hello");
+    using hello_description = S_("Hello description");
+    using help = S_("help");
+    using help_description = S_("Display help");
+};
+
+template <>
+class translation<S_("fr")>
+{
+public:
+    using hello = S_("bonjour");
+    using hello_description = S_("Bonjour descriptif");
+    using help = S_("aider");
+    using help_description = S_("Afficher l'aide");
+};
+
+template <>
+class translation<S_("es")>
+{
+public:
+    using hello = S_("hola");
+    using hello_description = S_("Hola descripción");
+    using help = S_("ayuda");
+    using help_description = S_("Mostrar ayuda");
+};
+}  // namespace arg_router::multi_lang
+
 BOOST_AUTO_TEST_SUITE(multi_lang_suite)
 
-BOOST_AUTO_TEST_SUITE(root_wrapper_suite)
+BOOST_AUTO_TEST_SUITE(root_suite)
 
 BOOST_AUTO_TEST_CASE(parse_test)
 {
     auto f = [](auto lang, auto args, auto parse_result, std::string exception_message) {
         auto result = std::optional<int>{};
-        const auto r = multi_lang::root_wrapper<S_("en_GB"), S_("fr"), S_("es")>(lang, [&](auto I) {
-            return root(
-                mode(
-                    arg<int>(
-                        policy::long_name<SM_(I, "hello", "bonjour", "hola")>,
-                        policy::required,
-                        policy::description<
-                            SM_(I, "Hello description", "Bonjour descriptif", "Hola descripción")>),
-                    policy::router{[&](auto value) {
-                        BOOST_CHECK(!result);
-                        result = value;
-                    }}),
-                policy::validation::default_validator);
+        const auto r = multi_lang::root<S_("en_GB"), S_("fr"), S_("es")>(lang, [&](auto tr_) {
+            using tr = decltype(tr_);
+
+            return root(mode(arg<int>(policy::long_name<typename tr::hello>,
+                                      policy::required,
+                                      policy::description<typename tr::hello_description>),
+                             policy::router{[&](auto value) {
+                                 BOOST_CHECK(!result);
+                                 result = value;
+                             }}),
+                        policy::validation::default_validator);
         });
 
         try {
@@ -64,24 +94,22 @@ BOOST_AUTO_TEST_CASE(parse_test)
         });
 }
 
-BOOST_AUTO_TEST_CASE(parse_default_test)
+BOOST_AUTO_TEST_CASE(default_parse_test)
 {
     for (auto input : {"da", "en-us", "POSIX", "*", "C", ""}) {
         auto result = std::optional<int>{};
-        const auto r =
-            multi_lang::root_wrapper<S_("en_GB"), S_("fr"), S_("es")>(input, [&](auto I) {
-                return root(mode(arg<int>(policy::long_name<SM_(I, "hello", "bonjour", "hola")>,
-                                          policy::required,
-                                          policy::description<SM_(I,
-                                                                  "Hello description",
-                                                                  "Bonjour descriptif",
-                                                                  "Hola descripción")>),
-                                 policy::router{[&](auto value) {
-                                     BOOST_CHECK(!result);
-                                     result = value;
-                                 }}),
-                            policy::validation::default_validator);
-            });
+        const auto r = multi_lang::root<S_("en_GB"), S_("fr"), S_("es")>(input, [&](auto tr_) {
+            using tr = decltype(tr_);
+
+            return root(mode(arg<int>(policy::long_name<typename tr::hello>,
+                                      policy::required,
+                                      policy::description<typename tr::hello_description>),
+                             policy::router{[&](auto value) {
+                                 BOOST_CHECK(!result);
+                                 result = value;
+                             }}),
+                        policy::validation::default_validator);
+        });
 
         auto args = std::vector{"foo", "--hello", "42"};
         r.parse(args.size(), const_cast<char**>(args.data()));
@@ -94,28 +122,23 @@ BOOST_AUTO_TEST_CASE(help_test)
 {
     auto f = [](auto input, auto expected_output) {
         auto result = std::optional<int>{};
-        const auto r = multi_lang::root_wrapper<S_("en_GB"),
-                                                S_("fr"),
-                                                S_("es")>(input, [&](auto I) {
-            return root(
-                help(
-                    policy::long_name<SM_(I, "help", "aider", "ayuda")>,
-                    policy::short_name<'h'>,
-                    policy::description<SM_(I, "Display help", "Afficher l'aide", "Mostrar ayuda")>,
-                    policy::program_name<S_("foo")>,
-                    policy::program_version<S_("v3.14")>,
-                    policy::program_intro<S_("Fooooooo")>),
-                mode(
-                    arg<int>(
-                        policy::long_name<SM_(I, "hello", "bonjour", "hola")>,
-                        policy::required,
-                        policy::description<
-                            SM_(I, "Hello description", "Bonjour descriptif", "Hola descripción")>),
-                    policy::router{[&](auto value) {
-                        BOOST_CHECK(!result);
-                        result = value;
-                    }}),
-                policy::validation::default_validator);
+        const auto r = multi_lang::root<S_("en_GB"), S_("fr"), S_("es")>(input, [&](auto tr_) {
+            using tr = decltype(tr_);
+
+            return root(help(policy::long_name<typename tr::help>,
+                             policy::short_name<'h'>,
+                             policy::description<typename tr::help_description>,
+                             policy::program_name<S_("foo")>,
+                             policy::program_version<S_("v3.14")>,
+                             policy::program_intro<S_("Fooooooo")>),
+                        mode(arg<int>(policy::long_name<typename tr::hello>,
+                                      policy::required,
+                                      policy::description<typename tr::hello_description>),
+                             policy::router{[&](auto value) {
+                                 BOOST_CHECK(!result);
+                                 result = value;
+                             }}),
+                        policy::validation::default_validator);
         });
 
         auto stream = std::ostringstream{};
@@ -152,17 +175,18 @@ BOOST_AUTO_TEST_CASE(death_test)
             R"(
 #include "arg_router/arg.hpp"
 #include "arg_router/mode.hpp"
-#include "arg_router/multi_lang/root_wrapper.hpp"
+#include "arg_router/multi_lang/root.hpp"
 #include "arg_router/policy/description.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/required.hpp"
-#include "arg_router/policy/short_name.hpp"
+#include "arg_router/policy/router.hpp"
+#include "arg_router/policy/validator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
 
 int main() {
-    const auto r = multi_lang::root_wrapper<S_("en_GB")>("en_GB", [&](auto I) {
+    const auto r = multi_lang::root<S_("en_GB")>("en_GB", [&]([[maybe_unused]] auto tr_) {
         return root(
             mode(arg<int>(
                      policy::long_name<S_("hello")>,
@@ -174,23 +198,31 @@ int main() {
     return 0;
 }
     )",
-            "Must be more than one language provided",
+            "Must be more than one language supported",
             "must_be_more_than_one_language_provided_test"},
         {
             R"(
 #include "arg_router/arg.hpp"
 #include "arg_router/mode.hpp"
-#include "arg_router/multi_lang/root_wrapper.hpp"
+#include "arg_router/multi_lang/root.hpp"
 #include "arg_router/policy/description.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/required.hpp"
-#include "arg_router/policy/short_name.hpp"
+#include "arg_router/policy/router.hpp"
+#include "arg_router/policy/validator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
+
+namespace arg_router::multi_lang
+{
+template <>
+class translation<S_("en_GB")> {};
+}
 
 using namespace arg_router;
 
 int main() {
-    const auto r = multi_lang::root_wrapper<S_("en_GB"), S_("en_GB")>("en_GB", [&](auto I) {
+    const auto r = multi_lang::root<S_("en_GB"), S_("en_GB")>(
+        "en_GB", [&]([[maybe_unused]] auto tr_) {
         return root(
             mode(arg<int>(
                      policy::long_name<S_("hello")>,
@@ -202,25 +234,26 @@ int main() {
     return 0;
 }
     )",
-            "Supported ISO language codes must be unique",
+            "Supported languages must be unique",
             "unique_iso_codes1_test"},
         {
             R"(
 #include "arg_router/arg.hpp"
 #include "arg_router/mode.hpp"
-#include "arg_router/multi_lang/root_wrapper.hpp"
+#include "arg_router/multi_lang/root.hpp"
 #include "arg_router/policy/description.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/required.hpp"
-#include "arg_router/policy/short_name.hpp"
+#include "arg_router/policy/router.hpp"
+#include "arg_router/policy/validator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
 
 int main() {
-    const auto r = multi_lang::root_wrapper<S_("fr"), S_("en_GB"), S_("en_GB")>(
+    const auto r = multi_lang::root<S_("fr"), S_("en_GB"), S_("en_GB")>(
         "en_GB",
-        [&](auto I) {
+        [&]([[maybe_unused]] auto tr_) {
             return root(
                 mode(arg<int>(
                          policy::long_name<S_("hello")>,
@@ -232,7 +265,7 @@ int main() {
     return 0;
 }
     )",
-            "Supported ISO language codes must be unique",
+            "Supported languages must be unique",
             "unique_iso_codes2_test"},
     });
 }

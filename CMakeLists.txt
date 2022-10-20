@@ -77,6 +77,7 @@ path_prefixer(HEADERS
     include/arg_router/multi_lang/iso_locale.hpp
     include/arg_router/multi_lang/root_wrapper.hpp
     include/arg_router/multi_lang/string_selector.hpp
+    include/arg_router/multi_lang/translation.hpp
     include/arg_router/parsing/dynamic_token_adapter.hpp
     include/arg_router/parsing/global_parser.hpp
     include/arg_router/parsing/parse_target.hpp

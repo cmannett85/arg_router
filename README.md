@@ -1,4 +1,4 @@
-![Documentation Generator](https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg) ![Unit test coverage](https://img.shields.io/badge/Unit_Test_Coverage-97.7%25-brightgreen)
+![Documentation Generator](https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg) ![Unit test coverage](https://img.shields.io/badge/Unit_Test_Coverage-97.8%25-brightgreen)
 
 # arg_router
 `arg_router` is a C++17 command line parser and router.  It uses policy-based objects hierarchically, so the parsing code is self-describing.  Rather than just providing a parsing service that returns a map of `variant`s/`any`s, it allows you to bind `Callable` instances to points in the parse structure, so complex command line arguments can directly call functions with the expected arguments - rather than you having to do this yourself.
@@ -554,57 +554,188 @@ $ ./example_just_cats --кіт
 We didn't want to...  Normally an application will link to ICU for its Unicode needs, but unfortunately we can't do that here as ICU is not `constexpr` and therefore cannot be used for our compile-time needs - so we need to roll our own.
 
 ## Runtime Language Selection
-`arg_router` has support for runtime language selection, using `multi_lang::root_wrapper`.  As the name suggests, this wraps around a `Callable` that returns a `root` instance 'tweaked' for a given language.  Let's take the start of the simple file copier/mover application, and convert it:
+`arg_router` has support for runtime language selection, using `multi_lang::root`.  This wraps around a `Callable` that returns a `root` instance 'tweaked' for a given language.  Let's take the start of the simple file copier/mover application and convert it to use `multi_lang::root`, start by defining translations of the tree's strings:
 ```cpp
-// Apologies for any translation faux pas - Google Translate did it for me!
-ar::multi_lang::root_wrapper<S_("en_GB"), S_("fr"), S_("ja")>(  //
-    ar::multi_lang::iso_locale(std::locale("").name()),
-    [&](auto I) {
-        const auto common_args = ar::list{
-            ar::flag(arp::long_name<SM_(I, "force", "forcer", "強制")>,
-                     arp::short_name<'f'>,
-                     arp::description<SM_(I,
-                                          "Force overwrite existing files",
-                                          "Forcer l'écrasement des fichiers existants",
-                                          "既存のファイルを強制的に上書きする")>),
-            ar::positional_arg<fs::path>(arp::required,
-                                         arp::display_name<SM_(I, "DST", "DST", "先")>,
-                                         arp::description<SM_(I,
-                                                              "Destination directory",
-                                                              "Répertoire de destination",
-                                                              "宛先ディレクトリ")>,
-                                         arp::fixed_count<1>)};
+namespace arg_router::multi_lang
+{
+template <>
+class translation<S_("en_GB")>
+{
+public:
+    using force = S_("force");
+    using force_description = S_("Force overwrite existing files");
+    using destination = S_("DST");
+    using destination_description = S_("Destination directory");
+    using help = S_("help");
+    using help_description = S_("Display this help and exit");
+    using program_intro = S_("A simple file copier and mover.");
+    using program_addendum = S_("An example program for arg_router.");
+    using copy = S_("copy");
+    using copy_description = S_("Copy source files to destination");
+    using source = S_("SRC");
+    using sources_description = S_("Source file paths");
+    using move = S_("move");
+    using move_description = S_("Move source file to destination");
+    using source_description = S_("Source file path");
+};
 
-        return ar::root(
-            arp::validation::default_validator,
-            ar::help(arp::long_name<SM_(I, "help", "aider", "ヘルプ")>,
-                     arp::short_name<'h'>,
-                     arp::description<SM_(I,
-                                          "Display this help and exit",
-                                          "Afficher cette aide et quitter",
-                                          "このヘルプを表示して終了")>,
-                     arp::program_name<S_("simple")>,
-                     arp::program_version<S_("v0.1")>,
-                     arp::program_intro<SM_(
-                        I,
-                        "A simple file copier and mover.",
-                        "Un simple copieur et déménageur de fichiers.",
-                        "ファイルをコピーおよび移動するためのシンプルなプログラム。")>,
-                     arp::program_addendum<SM_(I,
-                                               "An example program for arg_router.",
-                                               "Un exemple de programme pour arg_router.",
-                                               "「arg_router」のサンプルプログラム。")>,
-                     arp::flatten_help,
-                     arp::colour_help_formatter),
+template <>
+class translation<S_("fr")>
+{
+public:
+    using force = S_("forcer");
+    using force_description = S_("Forcer l'écrasement des fichiers existants");
+    using destination = S_("DST");
+    using destination_description = S_("Répertoire de destination");
+    using help = S_("aider");
+    using help_description = S_("Afficher cette aide et quitter");
+    using program_intro = S_("Un simple copieur et déménageur de fichiers.");
+    using program_addendum = S_("Un exemple de programme pour arg_router.");
+    using copy = S_("copier");
+    using copy_description = S_("Copier les fichiers source vers la destination");
+    using source = S_("SRC");
+    using sources_description = S_("Chemins des fichiers sources");
+    using move = S_("déplacer");
+    using move_description = S_("Déplacer le fichier source vers la destination");
+    using source_description = S_("Chemin du fichier source");
+};
+
+template <>
+class translation<S_("ja")>
+{
+public:
+    using force = S_("強制");
+    using force_description = S_("既存のファイルを強制的に上書きする");
+    using destination = S_("先");
+    using destination_description = S_("宛先ディレクトリ");
+    using help = S_("ヘルプ");
+    using help_description = S_("このヘルプを表示して終了");
+    using program_intro = S_("ファイルをコピーおよび移動するためのシンプルなプログラム。");
+    using program_addendum = S_("「arg_router」のサンプルプログラム。");
+    using copy = S_("コピー");
+    using copy_description = S_("ソース ファイルを宛先にコピーする");
+    using source = S_("出典");
+    using sources_description = S_("ソース ファイルのパス");
+    using move = S_("移動");
+    using move_description = S_("ソース ファイルを宛先に移動する");
+    using source_description = S_("ソース ファイル パス");
+};
+}  // namespace arg_router::multi_lang
+```
+There is nothing special about the `translation` type, the unspecialised version will simply static assert if used to remind you to implement specialisations for all language IDs (the template parameter type) - otherwise it is just an empty type.  Its use is still recommended though as functionality may be added to it in the future.
+```
+int main(int argc, char* argv[])
+{
+    // Apologies for any translation faux pas - Google Translate did it for me!
+    ar::multi_lang::root<S_("en_GB"), S_("fr"), S_("ja")>(  //
+        ar::multi_lang::iso_locale(locale_name()),
+        [&](auto tr_) {
+            // This isn't necessary with C++20 lambda template params
+            using tr = decltype(tr_);
+
+            const auto common_args = ar::list{
+                ar::flag(arp::long_name<typename tr::force>,
+                         arp::short_name<'f'>,
+                         arp::description<typename tr::force_description>),
+                ar::positional_arg<fs::path>(arp::required,
+                                             arp::display_name<typename tr::destination>,
+                                             arp::description<typename tr::destination_description>,
+                                             arp::fixed_count<1>)};
+
+            return ar::root(
+                arp::validation::default_validator,
+                ar::help(arp::long_name<typename tr::help>,
+                         arp::short_name<'h'>,
+                         arp::description<typename tr::help_description>,
+                         arp::program_name<S_("simple")>,
+                         arp::program_version<S_("v0.1")>,
+                         arp::program_intro<typename tr::program_intro>,
+                         arp::program_addendum<typename tr::program_addendum>,
+                         arp::flatten_help,
+                         arp::colour_help_formatter),
                 ...
         );
     }).parse(argc, argv);
 ```
-The `multi_lang::root_wrapper` takes a set of supported language identifiers (ISO language/country codes are recommended for readability, but not required), the number and order of these defines the number and order of translations needed for each translated compile-time string in the root definition.  Core to this functionality is the `SM_` macro, which just expands to an element selector in a tuple of compile-time strings - depending on the value of the index passed in, it resolves to one of the translation strings.
+`multi_lang::root` takes a set of supported language identifiers (ISO language/country codes are recommended for readability/ease, but not required), these are used as the language IDs for `translation` specialisation.  The runtime-selected `translation` instance is then passed to the `Callable` provided to `multi_lang::root`, the type of which is then used to access the translated compile-time string.  Any missing string translation will cause a compilation error.
 
-The first argument is a string provided by the user that should match one of the language identifiers, if it doesn't `arg_router` will fall back to using the first defined language (UK English in this case).  As a convenience `arg_router` provides a simple function that takes the OS locale name and standardises it to an ISO language/country identifier.
+The first argument to `multi_lang::root` is a string provided by the user that should match one of the language identifiers, if it doesn't `arg_router` will fall back to using the first defined language (UK English in this case).  As a convenience `arg_router` provides a simple function that takes the OS locale name and standardises it to an ISO language/country identifier.
 
-As you may have guessed from the interface, `multi_lang::root_wrapper` works by simply finding a match for the input against the supported language identifiers, and instantiating a `root` instance via the user-provided `Callable` with the index of the selected language.  This root instance is then held in a variant, which `root_wrapper` accesses when its `root`-compatible interface is used.
+`multi_lang::root`'s interface is designed to mimic `ar::root`, so it can be used as a drop in replacement.
+
+The above code (which is available as a [buildable example](https://cmannett85.github.io/arg_router/simple_ml_2main_8cpp-example.html)) will yield the following help output:
+```
+$ ./example_simple_ml -h
+simple v0.1
+
+A simple file copier and mover.
+
+    --help,-h          Display this help and exit
+    copy               Copy source files to destination
+        --force,-f     Force overwrite existing files
+        <DST> [1]      Destination directory
+        <SRC> [1,N]    Source file paths
+    move               Move source file to destination
+        --force,-f     Force overwrite existing files
+        <DST> [1]      Destination directory
+        <SRC> [1]      Source file path
+
+An example program for arg_router.
+
+$ AR_LOCALE_OVERRIDE=fr ./example_simple_ml -h
+simple v0.1
+
+Un simple copieur et déménageur de fichiers.
+
+    --aider,-h         Afficher cette aide et quitter
+    copier             Copier les fichiers source vers la destination
+        --forcer,-f    Forcer l'écrasement des fichiers existants
+        <DST> [1]      Répertoire de destination
+        <SRC> [1,N]    Chemins des fichiers sources
+    déplacer           Déplacer le fichier source vers la destination
+        --forcer,-f    Forcer l'écrasement des fichiers existants
+        <DST> [1]      Répertoire de destination
+        <SRC> [1]      Chemin du fichier source
+
+Un exemple de programme pour arg_router.
+
+$ AR_LOCALE_OVERRIDE=ja ./example_simple_ml -h
+simple v0.1
+
+ファイルをコピーおよび移動するためのシンプルなプログラム。
+
+    --ヘルプ,-h         このヘルプを表示して終了
+    コピー              ソース ファイルを宛先にコピーする
+        --強制,-f       既存のファイルを強制的に上書きする
+        <先> [1]        宛先ディレクトリ
+        <出典> [1,N]    ソース ファイルのパス
+    移動                ソース ファイルを宛先に移動する
+        --強制,-f       既存のファイルを強制的に上書きする
+        <先> [1]        宛先ディレクトリ
+        <出典> [1]      ソース ファイル パス
+
+「arg_router」のサンプルプログラム。
+
+$ AR_LOCALE_OVERRIDE=foo ./example_simple_ml -h
+simple v0.1
+
+A simple file copier and mover.
+
+    --help,-h          Display this help and exit
+    copy               Copy source files to destination
+        --force,-f     Force overwrite existing files
+        <DST> [1]      Destination directory
+        <SRC> [1,N]    Source file paths
+    move               Move source file to destination
+        --force,-f     Force overwrite existing files
+        <DST> [1]      Destination directory
+        <SRC> [1]      Source file path
+
+An example program for arg_router.
+```
+
+### Note ###
+`multi_lang::root_wrapper` from v1.0 is still present and supported, but is now marked as deprecated - new code should use `multi_lang::root`.
 
 ## Error Handling
 Currently `arg_router` only supports exceptions as error handling.  If a parsing fails for some reason a `arg_router::parse_exception` is thrown carrying information on the failure.
@@ -665,7 +796,7 @@ Despite not using `typeid` or `dynamic_cast` in the library, compilers will stil
 Disabling RTTI is rarely feasible for most projects, but it is possible to disable RTTI for a single CMake target.  So if it was deemed worth it for the size reduction, the command line parsing could be the application's executable (compiled without RTTI) and then the wider application logic could be in a static library (compiled with RTTI).  This does not affect exceptions, as their type information is always added by the compiler regardless of RTTI status.
 
 ## Extra Documentation
-Complete Doxygen-generated API documentation is available [here](https://cmannett85.github.io/arg_router/).  Examples are provided in the `examples` directory of the repo or online [here](https://github.com/cmannett85/arg_router/tree/develop/examples).
+Complete Doxygen-generated API documentation is available [here](https://cmannett85.github.io/arg_router/).  Examples are provided in the `examples` directory of the repo or online [here](https://cmannett85.github.io/arg_router/examples.html).
 
 ## Future Work
 Take a look at the [issues](https://github.com/cmannett85/arg_router/issues) page for all upcoming features and fixes.  Highlights are:
