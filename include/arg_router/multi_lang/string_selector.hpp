@@ -33,6 +33,8 @@ using string_selector = std::tuple_element_t<I, std::tuple<S...>>;
  * arp::long_name<SM_("help", "aider", "ayuda")>
  * @endcode
  *
+ * @note This has now been superceded by multi_lang::root_t, and will be removed in v2
+ *
  * The macro creates compile_time_string types from the inputs and puts them into a string_selector.
  * There is no requirement to use this macro, it's just a convenience.
  * @param I Index to select

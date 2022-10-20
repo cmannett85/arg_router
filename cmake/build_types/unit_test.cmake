@@ -30,6 +30,7 @@ path_prefixer(TEST_SRCS
     math_test.cpp
     mode_test.cpp
     multi_lang/iso_locale_test.cpp
+    multi_lang/root_test.cpp
     multi_lang/root_wrapper_test.cpp
     multi_lang/string_selector_test.cpp
     parsing/dynamic_token_adapter_test.cpp
@@ -107,7 +108,8 @@ function(configure_test_build TARGET)
             set(EXTRA_FLAGS /clang:-fconstexpr-steps=10000000)
         endif()
     else()
-        set(EXTRA_FLAGS -Werror -Wall -Wextra -ftemplate-backtrace-limit=0 -fno-rtti ${ARGN})
+        set(EXTRA_FLAGS -Werror -Wall -Wextra -ftemplate-backtrace-limit=0 -fno-rtti
+            -Wno-deprecated-declarations ${ARGN})
         set(EXTRA_DEFINES "")
     endif()
     target_compile_options(${TARGET} PRIVATE ${EXTRA_FLAGS})
