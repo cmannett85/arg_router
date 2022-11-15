@@ -87,7 +87,7 @@ public:
                 boost::mp11::mp_find_if<policies_type, traits::has_display_name_method>::value;
             constexpr auto name = std::tuple_element_t<name_index, policies_type>::display_name();
 
-            return S_("<"){} + S_(name){} + S_("> "){} +
+            return AR_STRING("<"){} + AR_STRING(name){} + AR_STRING("> "){} +
                    parent_type::template default_leaf_help_data_type<Flatten>::count_suffix();
         }
 

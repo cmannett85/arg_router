@@ -2,15 +2,93 @@
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
-#include "arg_router/utility/compile_time_string.hpp"
+#include "arg_router/literals.hpp"
 
 #include "test_helpers.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
+using namespace std::string_view_literals;
 
 BOOST_AUTO_TEST_SUITE(utility_suite)
 
 BOOST_AUTO_TEST_SUITE(compile_time_string_suite)
+
+#ifdef ENABLE_CPP20_STRINGS
+BOOST_AUTO_TEST_CASE(empty_test)
+{
+    using empty_str = utility::str<>;
+    static_assert(empty_str::get().size() == 0);
+    static_assert(empty_str::size() == 0);
+    static_assert(empty_str::empty());
+    static_assert(empty_str::get() == "");
+}
+
+BOOST_AUTO_TEST_CASE(char_literal_declaration_test)
+{
+    using hello_str = utility::str<"hello">;
+    static_assert(hello_str::get().size() == 5);
+    static_assert(hello_str::size() == 5);
+    static_assert(!hello_str::empty());
+    static_assert(hello_str::get() == "hello");
+}
+
+BOOST_AUTO_TEST_CASE(char_array_declaration_test)
+{
+    using hello_str = utility::str<std::array{'h', 'e', 'l', 'l', 'o'}>;
+    static_assert(hello_str::get().size() == 5);
+    static_assert(hello_str::size() == 5);
+    static_assert(!hello_str::empty());
+    static_assert(hello_str::get() == "hello");
+}
+
+BOOST_AUTO_TEST_CASE(string_view_declaration_test)
+{
+    using hello_str = utility::str<"hello"sv>;
+    static_assert(hello_str::get().size() == 5);
+    static_assert(hello_str::size() == 5);
+    static_assert(!hello_str::empty());
+    static_assert(hello_str::get() == "hello");
+}
+
+BOOST_AUTO_TEST_CASE(char_declaration_test)
+{
+    using char_str = utility::str<'a'>;
+    static_assert(char_str::get().size() == 1);
+    static_assert(char_str::size() == 1);
+    static_assert(!char_str::empty());
+    static_assert(char_str::get() == "a");
+}
+
+BOOST_AUTO_TEST_CASE(literal_declaration_test)
+{
+    constexpr auto hello_str = "hello"_S;
+    static_assert(hello_str.get().size() == 5);
+    static_assert(hello_str.size() == 5);
+    static_assert(!hello_str.empty());
+    static_assert(hello_str.get() == "hello");
+}
+
+BOOST_AUTO_TEST_CASE(empty_literal_declaration_test)
+{
+    constexpr auto empty_str = ""_S;
+    static_assert(empty_str.get().size() == 0);
+    static_assert(empty_str.size() == 0);
+    static_assert(empty_str.empty());
+    static_assert(empty_str.get() == "");
+}
+#else
+BOOST_AUTO_TEST_CASE(empty_test)
+{
+    using empty_str = utility::compile_time_string<>;
+    using macro_str = S_("");
+
+    static_assert(std::is_same_v<empty_str, macro_str>);
+    static_assert(macro_str::get().size() == 0);
+    static_assert(macro_str::size() == 0);
+    static_assert(macro_str::empty());
+    static_assert(macro_str::get() == "");
+}
 
 BOOST_AUTO_TEST_CASE(declaration_test)
 {
@@ -18,7 +96,7 @@ BOOST_AUTO_TEST_CASE(declaration_test)
     static_assert(hello_str::get().size() == 5);
     static_assert(hello_str::size() == 5);
     static_assert(!hello_str::empty());
-    BOOST_CHECK_EQUAL(hello_str::get(), "hello");
+    static_assert(hello_str::get() == "hello");
 }
 
 BOOST_AUTO_TEST_CASE(macro_test)
@@ -30,12 +108,12 @@ BOOST_AUTO_TEST_CASE(macro_test)
     static_assert(macro_str::get().size() == 5);
     static_assert(hello_str::size() == 5);
     static_assert(!hello_str::empty());
-    BOOST_CHECK_EQUAL(macro_str::get(), "hello");
+    static_assert(macro_str::get() == "hello");
 }
 
 BOOST_AUTO_TEST_CASE(define_test)
 {
-#define MY_STR "hello"
+#    define MY_STR "hello"
 
     using hello_str = utility::compile_time_string<'h', 'e', 'l', 'l', 'o'>;
     using macro_str = S_(MY_STR);
@@ -44,22 +122,11 @@ BOOST_AUTO_TEST_CASE(define_test)
     static_assert(macro_str::get().size() == 5);
     static_assert(hello_str::size() == 5);
     static_assert(!hello_str::empty());
-    BOOST_CHECK_EQUAL(macro_str::get(), "hello");
+    static_assert(macro_str::get() == "hello");
 
-#undef MY_STR
+#    undef MY_STR
 }
-
-BOOST_AUTO_TEST_CASE(empty_test)
-{
-    using empty_str = utility::compile_time_string<>;
-    using macro_str = S_("");
-
-    static_assert(std::is_same_v<empty_str, macro_str>);
-    static_assert(macro_str::get().size() == 0);
-    static_assert(macro_str::size() == 0);
-    static_assert(macro_str::empty());
-    BOOST_CHECK_EQUAL(macro_str::get(), "");
-}
+#endif
 
 BOOST_AUTO_TEST_CASE(append_string_type_test)
 {

@@ -36,4 +36,8 @@ static_assert(utility::utf8::count(long_prefix) >= utility::utf8::count(short_pr
  */
 template <typename T>
 using allocator = AR_ALLOCATOR<T>;
+
+#if (__cplusplus >= 202002L) && !AR_DISABLE_CPP20_STRINGS
+#    define ENABLE_CPP20_STRINGS
+#endif
 }  // namespace arg_router::config

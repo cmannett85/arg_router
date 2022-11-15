@@ -3,10 +3,12 @@
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #include "arg_router/policy/short_name.hpp"
+#include "arg_router/literals.hpp"
 
 #include "test_helpers.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 BOOST_AUTO_TEST_SUITE(policy_suite)
 
@@ -20,12 +22,23 @@ BOOST_AUTO_TEST_CASE(is_policy_test)
 
 BOOST_AUTO_TEST_CASE(constructor_and_get_test)
 {
-    const auto c_a = policy::short_name<'a'>;
-    BOOST_CHECK_EQUAL(c_a.short_name(), "a");
+    constexpr auto c_a = policy::short_name<'a'>;
+    static_assert(c_a.short_name() == "a");
 
-    const auto c_4 = policy::short_name<'4'>;
-    BOOST_CHECK_EQUAL(c_4.short_name(), "4");
+    constexpr auto c_4 = policy::short_name<'4'>;
+    static_assert(c_4.short_name() == "4");
+
+    constexpr auto s_a = policy::short_name_t{S_("a"){}};
+    static_assert(s_a.short_name() == "a");
 }
+
+#ifdef ENABLE_CPP20_STRINGS
+BOOST_AUTO_TEST_CASE(string_literal_test)
+{
+    const auto s_a = policy::short_name_t{"a"_S};
+    static_assert(s_a.short_name() == "a");
+}
+#endif
 
 BOOST_AUTO_TEST_CASE(death_test)
 {

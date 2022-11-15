@@ -20,5 +20,4 @@ target_include_directories(example_basic_cat
     PUBLIC "${CMAKE_SOURCE_DIR}/include"
 )
 
-create_ast_target(TARGET example_basic_cat_ast
-                  SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp")
+add_dependencies(cpp17_examples example_basic_cat)

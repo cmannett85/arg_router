@@ -83,8 +83,8 @@ public:
     class help_data_type
     {
     public:
-        using label = S_("");
-        using description = S_("");
+        using label = AR_STRING("");
+        using description = AR_STRING("");
         using children = typename tree_node<std::decay_t<Params>...>::template  //
             default_leaf_help_data_type<Flatten>::all_children_help;
     };

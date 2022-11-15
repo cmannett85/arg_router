@@ -6,19 +6,32 @@
 
 #include "arg_router/policy/policy.hpp"
 
-#include <string_view>
-
 namespace arg_router::policy
 {
 /** Represents the description of an argument.
  *
+ * If using C++17 then use the template variable helper with the <TT>S_</TT> macro; for C++20 and
+ * higher, use the constructor directly with a compile-time string literal:
+ * @code
+ * constexpr auto a = ar::policy::description<S_("hello")>;
+ * constexpr auto b = ar::policy::description_t{"hello"_S};
+ * @endcode
  * @note Descriptions must not be empty
- * @tparam S compile_time_string
+ * @tparam S Compile-time string
  */
 template <typename S>
 class description_t
 {
 public:
+    /** String type. */
+    using string_type = S;
+
+    /** Constructor.
+     *
+     * @param str String instance
+     */
+    constexpr explicit description_t([[maybe_unused]] S str = {}) noexcept {}
+
     /** Returns the description.
      *
      * @return Description
@@ -31,7 +44,7 @@ private:
 
 /** Constant variable helper.
  *
- * @tparam S compile_time_string
+ * @tparam S Compile-time string
  */
 template <typename S>
 constexpr auto description = description_t<S>{};

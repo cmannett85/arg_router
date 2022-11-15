@@ -19,3 +19,5 @@ add_clangtidy_to_target(example_simple_ml)
 target_include_directories(example_simple_ml
     PUBLIC "${CMAKE_SOURCE_DIR}/include"
 )
+
+add_dependencies(cpp17_examples example_simple_ml)

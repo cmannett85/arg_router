@@ -17,8 +17,9 @@ function(create_death_test NUM)
     set(TARGET_NAME "arg_router_death_test_${NUM}")
     add_executable(${TARGET_NAME} EXCLUDE_FROM_ALL ${DEATH_TEST_SRC})
 
-    target_compile_features(${TARGET_NAME} PUBLIC cxx_std_17)
+    target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
     set_target_properties(${TARGET_NAME} PROPERTIES CXX_EXTENSIONS OFF)
+    target_compile_definitions(${TARGET_NAME} PRIVATE DEATH_TEST_BUILD)
 
     configure_test_build(${TARGET_NAME})
 

@@ -17,9 +17,9 @@ namespace arg_router::dependency
  * @tparam Params Policies and child node types for the mode
  */
 template <typename... Params>
-class one_of_t : public detail::basic_one_of_t<S_("One of: "), Params...>
+class one_of_t : public detail::basic_one_of_t<AR_STRING("One of: "), Params...>
 {
-    using parent_type = detail::basic_one_of_t<S_("One of: "), Params...>;
+    using parent_type = detail::basic_one_of_t<AR_STRING("One of: "), Params...>;
 
     static_assert(boost::mp11::mp_none_of<typename parent_type::children_type,
                                           policy::has_multi_stage_value>::value,
@@ -48,8 +48,8 @@ public:
     class help_data_type
     {
     public:
-        using label = S_("One of:");
-        using description = S_("");
+        using label = AR_STRING("One of:");
+        using description = AR_STRING("");
         using children = typename parent_type::template  //
             children_help_data_type<Flatten>::children;
     };

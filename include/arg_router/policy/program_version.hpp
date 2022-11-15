@@ -5,7 +5,6 @@
 #pragma once
 
 #include "arg_router/policy/policy.hpp"
-#include "arg_router/utility/utf8.hpp"
 
 namespace arg_router::policy
 {
@@ -13,7 +12,14 @@ namespace arg_router::policy
  *
  * Used by help nodes to produce their output, though in principle can be used by anything that
  * wants to.
- * @tparam S compile_time_string
+ *
+ * If using C++17 then use the template variable helper with the <TT>S_</TT> macro; for C++20 and
+ * higher, use the constructor directly with a compile-time string literal:
+ * @code
+ * constexpr auto a = ar::policy::program_version<S_("hello")>;
+ * constexpr auto b = ar::policy::program_version_t{"hello"_S};
+ * @endcode
+ * @tparam S Compile-time string
  */
 template <typename S>
 class program_version_t
@@ -21,6 +27,12 @@ class program_version_t
 public:
     /** String type. */
     using string_type = S;
+
+    /** Constructor.
+     *
+     * @param str String instance
+     */
+    constexpr explicit program_version_t([[maybe_unused]] S str = {}) noexcept {}
 
     /** Returns the program version.
      *
@@ -35,7 +47,7 @@ private:
 
 /** Constant variable helper.
  *
- * @tparam S compile_time_string
+ * @tparam S Compile-time string
  */
 template <typename S>
 constexpr auto program_version = program_version_t<S>{};

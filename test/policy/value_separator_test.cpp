@@ -3,6 +3,7 @@
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #include "arg_router/policy/value_separator.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/tree_node.hpp"
@@ -11,6 +12,7 @@
 #include "test_printers.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 namespace
 {
@@ -45,12 +47,23 @@ BOOST_AUTO_TEST_CASE(is_policy_test)
 
 BOOST_AUTO_TEST_CASE(constructor_and_get_test)
 {
-    const auto c_a = policy::value_separator<'='>;
-    BOOST_CHECK_EQUAL(c_a.value_separator(), "=");
+    constexpr auto c_a = policy::value_separator<'='>;
+    static_assert(c_a.value_separator() == "=");
 
-    const auto c_4 = policy::value_separator<'/'>;
-    BOOST_CHECK_EQUAL(c_4.value_separator(), "/");
+    constexpr auto c_4 = policy::value_separator<'/'>;
+    static_assert(c_4.value_separator() == "/");
+
+    constexpr auto s_a = policy::value_separator_t{S_("="){}};
+    static_assert(s_a.value_separator() == "=");
 }
+
+#ifdef ENABLE_CPP20_STRINGS
+BOOST_AUTO_TEST_CASE(string_literal_test)
+{
+    const auto s_a = policy::value_separator_t{"="_S};
+    static_assert(s_a.value_separator() == "=");
+}
+#endif
 
 BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
 {

@@ -31,8 +31,8 @@ namespace
 template <typename ChildA, typename ChildB>
 constexpr void check_tree()
 {
-    static_assert(std::is_same_v<typename ChildA::label, typename ChildB::label>);
-    static_assert(std::is_same_v<typename ChildA::description, typename ChildB::description>);
+    static_assert(ChildA::label::get() == ChildB::label::get());
+    static_assert(ChildA::description::get() == ChildB::description::get());
     static_assert(std::tuple_size_v<typename ChildA::children> ==
                   std::tuple_size_v<typename ChildB::children>);
 
