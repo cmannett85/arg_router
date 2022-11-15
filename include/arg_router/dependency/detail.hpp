@@ -15,9 +15,15 @@ namespace arg_router::dependency::detail
 // Collect the child names and concetenate into a compile time string for the one_of display name
 template <typename ParentDocName, typename... Params>
 struct generate_string_of_child_names {
-    template <typename Prefix, typename String>
+private:
+    template <typename Prefix, typename Strings>
     using prepend_prefix =
-        boost::mp11::mp_flatten<boost::mp11::mp_insert_c<String, 0, typename Prefix::array_type>>;
+#ifdef ENABLE_CPP20_STRINGS
+        std::decay_t<decltype(
+            Prefix{} + boost::mp11::mp_fold<Strings, utility::str<>, utility::str_concat>{})>;
+#else
+        boost::mp11::mp_flatten<boost::mp11::mp_insert_c<Strings, 0, typename Prefix::array_type>>;
+#endif
 
     template <typename Child>
     struct build_name {
@@ -41,28 +47,33 @@ struct generate_string_of_child_names {
 
                     static_assert(short_index < num_policies, "All children must be named");
 
-                    return S_(config::short_prefix){} +
-                           S_((std::tuple_element_t<short_index, policies>::short_name())){};
+                    return AR_STRING(config::short_prefix){} +
+                           AR_STRING((std::tuple_element_t<short_index, policies>::short_name())){};
                 } else {
-                    return S_(config::long_prefix){} +
-                           S_((std::tuple_element_t<long_index, policies>::long_name())){};
+                    return AR_STRING(config::long_prefix){} +
+                           AR_STRING((std::tuple_element_t<long_index, policies>::long_name())){};
                 }
             } else {
-                return S_((std::tuple_element_t<display_index, policies>::display_name())){};
+                return AR_STRING((std::tuple_element_t<display_index, policies>::display_name())){};
             }
         }
 
-        using type = typename std::decay_t<decltype(build())>::array_type;
+        using type = typename std::decay_t<decltype(build())>;
     };
 
-    template <typename ChildNameArray>
-    using joiner = boost::mp11::mp_push_back<ChildNameArray, traits::integral_constant<','>>;
+    template <typename ChildName>
+    using joiner =
+#ifdef ENABLE_CPP20_STRINGS
+        typename ChildName::template append_t<utility::str<','>>;
+#else
+        boost::mp11::mp_push_back<typename ChildName::array_type, traits::integral_constant<','>>;
+#endif
 
     using children_type = boost::mp11::mp_filter<is_tree_node, std::tuple<Params...>>;
 
     // The gist is that for each child we get its name (prepended with an appropriate prefix) and
     // concatenate with a comma separator.  And then add a helpful prefix to the whole thing
-    using string_array = prepend_prefix<
+    using concatenated_string = prepend_prefix<
         ParentDocName,
         boost::mp11::mp_transform<
             joiner,
@@ -71,8 +82,15 @@ struct generate_string_of_child_names {
                                      boost::mp11::mp_bind<build_name, boost::mp11::_1>>,
                 children_type>>>;
 
+public:
+// We only take the first N-1 characters to strip off the trailing comma
+#ifdef ENABLE_CPP20_STRINGS
+    using type = std::decay_t<decltype(
+        concatenated_string{}.template substr<0, concatenated_string::size() - 1>())>;
+#else
     using type = utility::convert_to_cts_t<
-        boost::mp11::mp_take_c<string_array, std::tuple_size_v<string_array> - 1>>;
+        boost::mp11::mp_take_c<concatenated_string, std::tuple_size_v<concatenated_string> - 1>>;
+#endif
 };
 
 template <typename ParentDocName, typename... Params>
@@ -135,13 +153,13 @@ protected:
         };
 
         template <typename Child>
-        using first_prefixer = prefixer<Child, S_("┌ ")>;
+        using first_prefixer = prefixer<Child, AR_STRING("┌ ")>;
 
         template <typename Child>
-        using middle_prefixer = prefixer<Child, S_("├ ")>;
+        using middle_prefixer = prefixer<Child, AR_STRING("├ ")>;
 
         template <typename Child>
-        using last_prefixer = prefixer<Child, S_("└ ")>;
+        using last_prefixer = prefixer<Child, AR_STRING("└ ")>;
 
     public:
         using children = boost::mp11::mp_replace_at_c<

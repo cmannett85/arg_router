@@ -4,13 +4,276 @@
 
 #pragma once
 
+#include "arg_router/config.hpp"
 #include "arg_router/math.hpp"
-#include "arg_router/traits.hpp"
-
-#include <boost/mp11/algorithm.hpp>
-#include <boost/preprocessor/repetition/enum.hpp>
 
 #include <array>
+
+#ifdef ENABLE_CPP20_STRINGS
+#    include <algorithm>
+#    include <string_view>
+
+namespace arg_router
+{
+namespace utility
+{
+namespace detail
+{
+template <std::size_t N>
+class compile_time_string_storage
+{
+public:
+    constexpr compile_time_string_storage() = default;
+
+    // We need all the constructors to support implicit conversion, otherwise you would have to
+    // declare the storage type in every `str` declaration which would be very annoying...
+    // NOLINTNEXTLINE(google-explicit-constructor,hicpp-explicit-conversions)
+    constexpr compile_time_string_storage(std::array<char, N> str) : value(str) {}
+
+    // NOLINTNEXTLINE(google-explicit-constructor,hicpp-explicit-conversions)
+    constexpr compile_time_string_storage(std::string_view str)
+    {
+        value.fill('\0');
+        std::copy(str.begin(), str.end(), value.begin());
+    }
+
+    // NOLINTNEXTLINE(google-explicit-constructor,hicpp-explicit-conversions,*-c-arrays)
+    constexpr compile_time_string_storage(const char (&str)[N])
+    {
+        std::copy_n(str, N, value.begin());
+    }
+
+    // NOLINTNEXTLINE(google-explicit-constructor,hicpp-explicit-conversions)
+    constexpr compile_time_string_storage(char c) : value{c} {}
+
+    std::array<char, N> value;
+};
+
+compile_time_string_storage()->compile_time_string_storage<0>;
+compile_time_string_storage(std::string_view)->compile_time_string_storage<AR_MAX_CTS_SIZE>;
+compile_time_string_storage(char)->compile_time_string_storage<1>;
+}  // namespace detail
+
+/** Compile-time string.
+ *
+ * This type is only used when C++20 and greater is supported, and when AR_DISABLE_CPP20_STRINGS is
+ * false.
+ *
+ * Like the C++17 equivalent <TT>S_(..)</TT> macro, this can accept a string literal directly.
+ *
+ * @note AR_MAX_CTS_SIZE define (defaults to 128) has a different meaning when used in this context,
+ * it is the maximum size a string can be <I>when initialised from a std::string_view</I>.  This
+ * somewhat obscure behaviour is due to std::string_view's size not being set in its type (as it can
+ * be changed at runtime).  Increasing this will not increase the size of your program as the
+ * compilers (at least Clang and gcc) are smart enough to not put the internal array into static
+ * storage, only the input texts
+ *
+ * @tparam S Internal storage type
+ */
+template <detail::compile_time_string_storage S = detail::compile_time_string_storage<0>{}>
+class str
+{
+public:
+    /** Number of characters in string.
+     *
+     * @return String size
+     */
+    [[nodiscard]] constexpr static std::size_t size() noexcept { return size_; }
+
+    /** True if string is empty.
+     *
+     * @return True if number of characters is zero
+     */
+    [[nodiscard]] constexpr static bool empty() noexcept { return size() == 0; }
+
+    /** Returns the string data as a view.
+     *
+     * @return View of the string data
+     */
+    [[nodiscard]] constexpr static std::string_view get() noexcept
+    {
+        return {S.value.data(), size()};
+    }
+
+    /** Concatentation operator.
+     *
+     * @tparam S2 Compile-time string from other instance
+     * @param other Instance to concatenate
+     * @return New instance
+     */
+    template <detail::compile_time_string_storage S2>
+    [[nodiscard]] constexpr auto operator+([[maybe_unused]] const str<S2>& other) const noexcept
+    {
+        return []<std::size_t... LIs, std::size_t... RIs>(std::index_sequence<LIs...>,
+                                                          std::index_sequence<RIs...>)
+        {
+            return str<std::array{S.value[LIs]..., S2.value[RIs]..., '\0'}>{};
+        }
+        (std::make_index_sequence<size()>{}, std::make_index_sequence<str<S2>::size()>{});
+    }
+
+    /** Returns a substring of this type, consisting of @a Count characters starting at @a Pos.
+     *
+     * It is a compile-time failure if @a Pos + @a Count is greater than or equal to size().
+     * @tparam Pos Start index
+     * @tparam Count Number of characters to use
+     * @return Substring
+     */
+    template <std::size_t Pos, std::size_t Count>
+    [[nodiscard]] constexpr static auto substr() noexcept
+    {
+        static_assert((Pos + Count) < size_, "Pos+Count must be less than string size");
+
+        return substr_impl<Pos>(std::make_index_sequence<Count>{});
+    }
+
+    /** Appends @a T to this string type.
+     *
+     * @tparam T String to append
+     */
+    template <typename T>
+    struct append;
+
+    template <detail::compile_time_string_storage S2>
+    struct append<str<S2>> {
+        using type = std::decay_t<decltype(str{} + str<S2>{})>;
+    };
+
+    /** Helper alias for append.
+     *
+     * @tparam T String to append
+     */
+    template <typename T>
+    using append_t = typename append<T>::type;
+
+private:
+    // This is a necessary evil, as we can't use std::char_traits<char>::length(..) in a
+    // constant expression
+    constexpr static std::size_t calculate_size() noexcept
+    {
+        auto count = std::size_t{0};
+        for (; count < S.value.size(); ++count) {
+            if (S.value[count] == '\0') {
+                break;
+            }
+        }
+        return count;
+    }
+
+    template <std::size_t Pos, std::size_t... Is>
+    constexpr static auto substr_impl([[maybe_unused]] std::index_sequence<Is...> seq)
+    {
+        return str<std::array{S.value[Pos + Is]..., '\0'}>{};
+    }
+
+    constexpr static std::size_t size_ = calculate_size();
+};
+
+/** TMP helper for concatenating two compile-time strings together.
+ *
+ * @tparam S1 Prefix
+ * @tparam S2 Suffix
+ */
+template <typename S1, typename S2>
+using str_concat = typename S1::template append_t<S2>;
+
+/** Provides a compile time string that is a repeating sequence of @a C @a N characters long.
+ *
+ * @tparam N Number of times to repeat @a C
+ * @tparam C Character to repeat
+ */
+template <std::size_t N, char C>
+class create_sequence_cts
+{
+    template <std::size_t>
+    [[nodiscard]] constexpr static char get() noexcept
+    {
+        return C;
+    }
+
+    template <std::size_t... Is>
+    [[nodiscard]] constexpr static std::array<char, N> builder(
+        [[maybe_unused]] std::index_sequence<Is...> seq) noexcept
+    {
+        return {get<Is>()...};
+    }
+
+public:
+    using type = str<builder(std::make_index_sequence<N>{})>;
+};
+
+/** Helper alias for create_sequence_cts.
+ *
+ * @tparam N Number of times to repeat @a C
+ * @tparam C Character to repeat
+ */
+template <std::size_t N, char C>
+using create_sequence_cts_t = typename create_sequence_cts<N, C>::type;
+
+/** Converts the integral @a Value to a compile time string.
+ *
+ * @tparam Value Integral to convert
+ */
+template <auto Value>
+struct convert_integral_to_cts {
+private:
+    static_assert(std::is_integral_v<decltype(Value)>, "Value must be an integral");
+
+    template <typename Str, auto NewValue>
+    [[nodiscard]] constexpr static auto build() noexcept
+    {
+        constexpr auto num_digits = math::num_digits(NewValue);
+        constexpr auto power10 = math::pow<10>(num_digits - 1);
+        constexpr auto digit = NewValue / power10;
+
+        using digit_str = str<'0' + digit>;
+
+        if constexpr (num_digits != 1) {
+            constexpr auto next_value = NewValue % power10;
+            return build<typename Str::template append_t<digit_str>, next_value>();
+        } else {
+            return typename Str::template append_t<digit_str>{};
+        }
+    }
+
+    using digit_str = decltype(build<str<>, math::abs(Value)>());
+
+public:
+    using type = std::conditional_t<(Value < 0), str<'-'>::template append_t<digit_str>, digit_str>;
+};
+
+/** Helper alias for convert_integral_to_cts.
+ *
+ * @tparam Value Integral to convert
+ */
+template <auto Value>
+using convert_integral_to_cts_t = typename convert_integral_to_cts<Value>::type;
+}  // namespace utility
+
+/** Alias to make the compile-time string type available in the top-level namespace.
+ *
+ * @tparam S Internal storage type
+ */
+template <utility::detail::compile_time_string_storage S>
+using str = utility::str<S>;
+}  // namespace arg_router
+
+// A function macro common between utility::str and S_, which allows us to use the same method to
+// construct strings internally between versions.  NOT for user consumption!
+#    define AR_STRING(tok) arg_router::utility::str<tok>
+
+#    if defined(UNIT_TEST_BUILD) || defined(DEATH_TEST_BUILD)
+// Redefine the S_ macro to use str<>, this allows us to not need to make unit test changes between
+// the two compile-time string types
+#        define S_(tok) AR_STRING(tok)
+#    endif
+
+#else
+
+#    include "arg_router/traits.hpp"
+
+#    include <boost/mp11/algorithm.hpp>
+#    include <boost/preprocessor/repetition/enum.hpp>
 
 /** @file
  */
@@ -153,11 +416,11 @@ private:
         constexpr auto num_digits = math::num_digits(NewValue);
         constexpr auto power10 = math::pow<10>(num_digits - 1);
         constexpr auto digit = NewValue / power10;
-        [[maybe_unused]] constexpr auto next_value = NewValue % power10;
 
         using digit_str = typename Str::template append_t<compile_time_string<'0' + digit>>;
 
         if constexpr (num_digits != 1) {
+            constexpr auto next_value = NewValue % power10;
             return build<digit_str, next_value>();
         } else {
             return digit_str{};
@@ -222,10 +485,10 @@ struct builder {
 }  // namespace cts_detail
 }  // namespace arg_router::utility
 
-#define AR_STR_CHAR(z, n, tok) arg_router::utility::cts_detail::get(tok, n)
+#    define AR_STR_CHAR(z, n, tok) arg_router::utility::cts_detail::get(tok, n)
 
-#define AR_STR_N(n, tok) \
-    typename arg_router::utility::cts_detail::builder<BOOST_PP_ENUM(n, AR_STR_CHAR, tok)>::type
+#    define AR_STR_N(n, tok) \
+        typename arg_router::utility::cts_detail::builder<BOOST_PP_ENUM(n, AR_STR_CHAR, tok)>::type
 
 /** Macro that represents the type of a compile-time string, useful for policies that require a
  * compile string.
@@ -237,4 +500,9 @@ struct builder {
  *
  * @param tok Can be a string literal, a <TT>std::string_view</TT>, or a single char
  */
-#define S_(tok) AR_STR_N(AR_MAX_CTS_SIZE, tok)
+#    define S_(tok) AR_STR_N(AR_MAX_CTS_SIZE, tok)
+
+// A function macro common between utility::str and S_, which allows us to use the same method to
+// construct strings internally between versions.  NOT for user consumption!
+#    define AR_STRING(tok) S_(tok)
+#endif

@@ -9,7 +9,6 @@
 #include "arg_router/policy/policy.hpp"
 #include "arg_router/utility/compile_time_optional.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
-#include "arg_router/utility/utf8.hpp"
 
 namespace arg_router::policy
 {
@@ -17,6 +16,14 @@ namespace arg_router::policy
  *
  * Your terminal will separate tokens using whitespace by default, but often a different character
  * is used e.g. <TT>--arg=42</TT> - this policy specifies that character.
+ *
+ * If using C++17 then use the template variable helper with the <TT>S_</TT> macro; for C++20 and
+ * higher, use the constructor directly with a compile-time string literal:
+ * @code
+ * constexpr auto a = ar::policy::value_separator<'='>;
+ * constexpr auto b = ar::policy::value_separator_utf8<S_("=")>;
+ * constexpr auto c = ar::policy::value_separator_t{"="_S};
+ * @endcode
  * @tparam S Compile-time string
  */
 template <typename S>
@@ -33,6 +40,12 @@ public:
 
     /** Policy priority. */
     constexpr static auto priority = std::size_t{1000};
+
+    /** Constructor.
+     *
+     * @param str String instance
+     */
+    constexpr explicit value_separator_t([[maybe_unused]] S str = {}) noexcept {}
 
     /** Returns the separator.
      *
@@ -102,7 +115,7 @@ public:
  * @tparam S Arg/value separator character
  */
 template <char S>
-constexpr auto value_separator = value_separator_t<S_(S)>{};
+constexpr auto value_separator = value_separator_t<AR_STRING(S)>{};
 
 /** Constant variable helper that supports UTF-8 code points.
  *

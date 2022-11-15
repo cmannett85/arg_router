@@ -3,11 +3,11 @@
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #undef AR_ALLOCATOR
-#define AR_ALLOCATOR tracking_allocator
+#define AR_ALLOCATOR arg_router::test::tracking_allocator
 
 #include <memory>
 
-namespace
+namespace arg_router::test
 {
 std::size_t allocated_bytes = 0;
 
@@ -53,7 +53,7 @@ public:
 private:
     std::allocator<T> alloc_;
 };
-}  // namespace
+}  // namespace arg_router::test
 
 #include "arg_router/basic_types.hpp"
 
@@ -68,24 +68,24 @@ BOOST_AUTO_TEST_SUITE(allocator_suite)
 
 BOOST_AUTO_TEST_CASE(string_test)
 {
-    allocated_bytes = 0;
+    arg_router::test::allocated_bytes = 0;
     auto s = string("Try to exceed the Small String Optimisation limit!");
-    BOOST_CHECK_GT(allocated_bytes, 0u);
+    BOOST_CHECK_GT(arg_router::test::allocated_bytes, 0u);
 }
 
 BOOST_AUTO_TEST_CASE(ostringstream_test)
 {
-    allocated_bytes = 0;
+    arg_router::test::allocated_bytes = 0;
     auto ss = ostringstream{};
     ss << "Try to exceed the Small String Optimisation limit!";
-    BOOST_CHECK_GT(allocated_bytes, 0u);
+    BOOST_CHECK_GT(arg_router::test::allocated_bytes, 0u);
 }
 
 BOOST_AUTO_TEST_CASE(vector_test)
 {
-    allocated_bytes = 0;
+    arg_router::test::allocated_bytes = 0;
     auto s = vector<char>('a', 42);
-    BOOST_CHECK_GT(allocated_bytes, 0u);
+    BOOST_CHECK_GT(arg_router::test::allocated_bytes, 0u);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

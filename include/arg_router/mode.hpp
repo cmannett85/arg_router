@@ -75,9 +75,9 @@ public:
         [[nodiscard]] constexpr auto static label_generator() noexcept
         {
             if constexpr (is_anonymous) {
-                return S_(""){};
+                return AR_STRING(""){};
             } else {
-                return S_(parent_type::none_name()){};
+                return AR_STRING(parent_type::none_name()){};
             }
         }
 
@@ -86,7 +86,7 @@ public:
 
         using description = std::conditional_t<
             is_anonymous,
-            S_(""),
+            AR_STRING(""),
             typename parent_type::template default_leaf_help_data_type<Flatten>::description>;
 
         using children = std::conditional_t<

@@ -3,7 +3,6 @@
 ### (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 add_library(arg_router INTERFACE ${HEADERS} ${FOR_IDE})
-target_compile_features(arg_router INTERFACE cxx_std_17)
 target_include_directories(arg_router
     INTERFACE "${CMAKE_SOURCE_DIR}/include"
 )

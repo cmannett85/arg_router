@@ -21,3 +21,7 @@ add_compile_definitions(AR_ALLOCATOR=${ALLOCATOR})
 set(UTF8_TRAILING_WINDOW_SIZE 16
     CACHE STRING "Trailing window size for grapheme cluster and line break algorithms, defaults to 16")
 add_compile_definitions(AR_UTF8_TRAILING_WINDOW_SIZE=${UTF8_TRAILING_WINDOW_SIZE})
+
+set(DISABLE_CPP20_STRINGS false
+    CACHE STRING "Disable the use of C++20-style compile-time strings")
+add_compile_definitions(AR_DISABLE_CPP20_STRINGS=${DISABLE_CPP20_STRINGS})

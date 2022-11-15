@@ -9,6 +9,8 @@ include(CMakeDependentOption)
 option(INSTALLATION_ONLY "Just 'build' for installation" OFF)
 cmake_dependent_option(BUILD_UNIT_TESTS_AND_EXAMPLES "Build the unit tests and examples" ON
                        "NOT INSTALLATION_ONLY" OFF)
+cmake_dependent_option(BUILD_CPP20_EXAMPLES "Build the C++20 and above examples" ON
+                       "BUILD_UNIT_TESTS_AND_EXAMPLES" OFF)
 cmake_dependent_option(ENABLE_CLANG_TIDY "Enable clang-tidy warnings for unit tests and examples" OFF
                       "NOT INSTALLATION_ONLY" OFF)
 cmake_dependent_option(ENABLE_SANITIZERS "Enable ASan/UBSan for unit tests and examples" OFF
@@ -72,6 +74,7 @@ path_prefixer(HEADERS
     include/arg_router/flag.hpp
     include/arg_router/help.hpp
     include/arg_router/list.hpp
+    include/arg_router/literals.hpp
     include/arg_router/math.hpp
     include/arg_router/mode.hpp
     include/arg_router/multi_lang/iso_locale.hpp

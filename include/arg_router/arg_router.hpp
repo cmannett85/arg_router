@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "arg_router/literals.hpp"
 #include "arg_router/multi_lang/iso_locale.hpp"
 #include "arg_router/multi_lang/root.hpp"
 #include "arg_router/multi_lang/root_wrapper.hpp"

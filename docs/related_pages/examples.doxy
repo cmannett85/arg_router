@@ -4,9 +4,9 @@
 
 /** List example source files here.
  *
- * @example basic_cat/main.cpp
- * @example custom_policy_and_node/main.cpp
- * @example just_cats/main.cpp
- * @example simple/main.cpp
- * @example simple_ml/main.cpp
+ * @example c++20/basic_cat/main.cpp
+ * @example c++20/custom_policy_and_node/main.cpp
+ * @example c++20/just_cats/main.cpp
+ * @example c++20/simple/main.cpp
+ * @example c++20/simple_ml/main.cpp
  */
