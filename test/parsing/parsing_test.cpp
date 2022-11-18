@@ -24,7 +24,7 @@ BOOST_AUTO_TEST_CASE(match_test)
 {
     {
         [[maybe_unused]] const auto f =
-            flag(policy::long_name<S_("hello")>, policy::short_name<'H'>);
+            flag(policy::long_name<AR_STRING("hello")>, policy::short_name<'H'>);
         const auto result =
             parsing::match<std::decay_t<decltype(f)>>({parsing::prefix_type::long_, "hello"});
         BOOST_CHECK(result);
@@ -32,7 +32,7 @@ BOOST_AUTO_TEST_CASE(match_test)
 
     {
         [[maybe_unused]] const auto f =
-            flag(policy::long_name<S_("hello")>, policy::short_name<'H'>);
+            flag(policy::long_name<AR_STRING("hello")>, policy::short_name<'H'>);
         const auto result =
             parsing::match<std::decay_t<decltype(f)>>({parsing::prefix_type::short_, "H"});
         BOOST_CHECK(result);
@@ -40,21 +40,21 @@ BOOST_AUTO_TEST_CASE(match_test)
 
     {
         [[maybe_unused]] const auto f =
-            flag(policy::long_name<S_("hello")>, policy::short_name<'H'>);
+            flag(policy::long_name<AR_STRING("hello")>, policy::short_name<'H'>);
         const auto result =
             parsing::match<std::decay_t<decltype(f)>>({parsing::prefix_type::long_, "foo"});
         BOOST_CHECK(!result);
     }
 
     {
-        [[maybe_unused]] const auto f = flag(policy::long_name<S_("hello")>);
+        [[maybe_unused]] const auto f = flag(policy::long_name<AR_STRING("hello")>);
         const auto result =
             parsing::match<std::decay_t<decltype(f)>>({parsing::prefix_type::long_, "hello"});
         BOOST_CHECK(result);
     }
 
     {
-        [[maybe_unused]] const auto f = flag(policy::long_name<S_("hello")>);
+        [[maybe_unused]] const auto f = flag(policy::long_name<AR_STRING("hello")>);
         const auto result =
             parsing::match<std::decay_t<decltype(f)>>({parsing::prefix_type::long_, "foo"});
         BOOST_CHECK(!result);
@@ -76,7 +76,7 @@ BOOST_AUTO_TEST_CASE(match_test)
 
     {
         [[maybe_unused]] const auto a =
-            arg<int>(policy::long_name<S_("arg")>, policy::value_separator<'='>);
+            arg<int>(policy::long_name<AR_STRING("arg")>, policy::value_separator<'='>);
         const auto result =
             parsing::match<std::decay_t<decltype(a)>>({parsing::prefix_type::long_, "arg"});
         BOOST_CHECK(result);

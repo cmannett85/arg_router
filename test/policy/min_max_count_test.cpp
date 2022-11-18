@@ -104,7 +104,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                                                         {parsing::prefix_type::none, "hello"}},
                        std::vector<parsing::token_type>{},
                        "",
-                       stub_node{policy::long_name<S_("node1")>, policy::min_count<1>}},
+                       stub_node{policy::long_name<AR_STRING("node1")>, policy::min_count<1>}},
             std::tuple{policy::fixed_count<1>,
                        std::vector<parsing::token_type>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "--node1"},
@@ -116,7 +116,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "foo"},
                                                         {parsing::prefix_type::none, "hello"}},
                        "",
-                       stub_node{policy::long_name<S_("node1")>, policy::fixed_count<1>}},
+                       stub_node{policy::long_name<AR_STRING("node1")>, policy::fixed_count<1>}},
             std::tuple{policy::min_count<1>,
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "--node1"},
                                                         {parsing::prefix_type::none, "42"},
@@ -129,7 +129,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                                                         {parsing::prefix_type::none, "hello"}},
                        std::vector<parsing::token_type>{},
                        "",
-                       stub_node{policy::long_name<S_("node1")>, policy::min_count<1>}},
+                       stub_node{policy::long_name<AR_STRING("node1")>, policy::min_count<1>}},
             std::tuple{policy::min_count<1>,
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "--node1"},
                                                         {parsing::prefix_type::none, "42"}},
@@ -141,7 +141,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                                                         {parsing::prefix_type::none, "hello"}},
                        std::vector<parsing::token_type>{},
                        "",
-                       stub_node{policy::long_name<S_("node1")>, policy::min_count<1>}},
+                       stub_node{policy::long_name<AR_STRING("node1")>, policy::min_count<1>}},
             std::tuple{policy::min_count<2>,
                        std::vector<parsing::token_type>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "--node2"},
@@ -150,7 +150,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                                                         {parsing::prefix_type::none, "42"}},
                        std::vector<parsing::token_type>{},
                        "Minimum count not reached: --node2",
-                       stub_node{policy::long_name<S_("node2")>, policy::min_count<2>}},
+                       stub_node{policy::long_name<AR_STRING("node2")>, policy::min_count<2>}},
             std::tuple{policy::max_count<2>,
                        std::vector<parsing::token_type>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "--node1"},
@@ -162,7 +162,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                                                         {parsing::prefix_type::none, "foo"}},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "hello"}},
                        "",
-                       stub_node{policy::long_name<S_("node1")>, policy::max_count<2>}},
+                       stub_node{policy::long_name<AR_STRING("node1")>, policy::max_count<2>}},
             std::tuple{policy::max_count<2>,
                        std::vector<parsing::token_type>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "42"},
@@ -172,7 +172,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                                                         {parsing::prefix_type::none, "foo"}},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "hello"}},
                        "",
-                       stub_node{policy::display_name<S_("node1")>, policy::max_count<2>}},
+                       stub_node{policy::display_name<AR_STRING("node1")>, policy::max_count<2>}},
             std::tuple{policy::fixed_count<1>,
                        std::vector<parsing::token_type>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "--node1"},
@@ -184,16 +184,17 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "foo"},
                                                         {parsing::prefix_type::none, "hello"}},
                        "",
-                       stub_node{policy::long_name<S_("node1")>, policy::fixed_count<1>}},
+                       stub_node{policy::long_name<AR_STRING("node1")>, policy::fixed_count<1>}},
         });
 }
 
 BOOST_AUTO_TEST_CASE(pre_parse_phase_filled_test)
 {
-    auto root = stub_node{policy::long_name<S_("root")>,
-                          stub_node{policy::display_name<S_("node0")>, policy::fixed_count<2>},
-                          stub_node{policy::display_name<S_("node1")>, policy::fixed_count<1>},
-                          stub_node{policy::display_name<S_("node2")>, policy::min_count<0>}};
+    auto root =
+        stub_node{policy::long_name<AR_STRING("root")>,
+                  stub_node{policy::display_name<AR_STRING("node0")>, policy::fixed_count<2>},
+                  stub_node{policy::display_name<AR_STRING("node1")>, policy::fixed_count<1>},
+                  stub_node{policy::display_name<AR_STRING("node2")>, policy::min_count<0>}};
 
     auto f = [&](const auto& node,
                  auto expected_match,
@@ -407,8 +408,8 @@ public:
 }  // namespace
 
 int main() {
-    const auto parent = stub_node{policy::long_name<S_("parent")>,
-                                  stub_node{policy::long_name<S_("test")>,
+    const auto parent = stub_node{policy::long_name<AR_STRING("parent")>,
+                                  stub_node{policy::long_name<AR_STRING("test")>,
                                             policy::fixed_count<1>}};
     auto tokens = vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "hello"}};
@@ -468,8 +469,8 @@ public:
 }  // namespace
 
 int main() {
-    const auto parent = stub_node{policy::long_name<S_("parent")>,
-                                  stub_node{policy::display_name<S_("test")>,
+    const auto parent = stub_node{policy::long_name<AR_STRING("parent")>,
+                                  stub_node{policy::display_name<AR_STRING("test")>,
                                             policy::fixed_count<1>}};
     auto tokens = vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "hello"}};

@@ -77,7 +77,12 @@ public:
             if constexpr (is_anonymous) {
                 return AR_STRING(""){};
             } else {
-                return AR_STRING(parent_type::none_name()){};
+                constexpr auto none_index =
+                    boost::mp11::mp_find_if<policies_type, traits::has_none_name_method>::value;
+                using none_type =
+                    typename std::tuple_element_t<none_index, policies_type>::string_type;
+
+                return none_type{};
             }
         }
 

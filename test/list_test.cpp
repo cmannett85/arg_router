@@ -29,8 +29,9 @@ BOOST_AUTO_TEST_CASE(constructor_test)
     static_assert(
         std::is_same_v<
             std::decay_t<decltype(l.children())>,
-            std::tuple<flag_t<policy::short_form_expander_t<>, policy::short_name_t<S_('a')>>,
-                       flag_t<policy::short_form_expander_t<>, policy::short_name_t<S_('b')>>>>,
+            std::tuple<
+                flag_t<policy::short_form_expander_t<>, policy::short_name_t<AR_STRING('a')>>,
+                flag_t<policy::short_form_expander_t<>, policy::short_name_t<AR_STRING('b')>>>>,
         "Constructor test failed");
 
     BOOST_CHECK_EQUAL(std::get<0>(l.children()).short_name(), "a");
@@ -45,10 +46,11 @@ BOOST_AUTO_TEST_CASE(list_expander_test)
     static_assert(
         std::is_same_v<
             std::decay_t<decltype(result)>,
-            std::tuple<flag_t<policy::short_form_expander_t<>, policy::short_name_t<S_('a')>>,
-                       flag_t<policy::short_form_expander_t<>, policy::short_name_t<S_('b')>>,
-                       flag_t<policy::short_form_expander_t<>, policy::short_name_t<S_('c')>>,
-                       flag_t<policy::short_form_expander_t<>, policy::short_name_t<S_('d')>>>>,
+            std::tuple<
+                flag_t<policy::short_form_expander_t<>, policy::short_name_t<AR_STRING('a')>>,
+                flag_t<policy::short_form_expander_t<>, policy::short_name_t<AR_STRING('b')>>,
+                flag_t<policy::short_form_expander_t<>, policy::short_name_t<AR_STRING('c')>>,
+                flag_t<policy::short_form_expander_t<>, policy::short_name_t<AR_STRING('d')>>>>,
         "list_expander test failed");
 }
 
@@ -79,7 +81,7 @@ using namespace arg_router;
 
 int main() {
     list<policy::short_name_t<traits::integral_constant<'a'>>,
-         policy::long_name_t<S_("hello")>,
+         policy::long_name_t<AR_STRING("hello")>,
          policy::short_name_t<traits::integral_constant<'b'>>>{};
         
     return 0;
@@ -99,7 +101,7 @@ using namespace arg_router;
 
 int main() {
     list<flag_t<policy::short_name_t<traits::integral_constant<'a'>>,
-                policy::long_name_t<S_("hello")>>,
+                policy::long_name_t<AR_STRING("hello")>>,
          policy::short_name_t<traits::integral_constant<'b'>>>{};
         
     return 0;

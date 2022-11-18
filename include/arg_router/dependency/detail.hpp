@@ -47,14 +47,14 @@ private:
 
                     static_assert(short_index < num_policies, "All children must be named");
 
-                    return AR_STRING(config::short_prefix){} +
-                           AR_STRING((std::tuple_element_t<short_index, policies>::short_name())){};
+                    return AR_STRING_SV(config::short_prefix){} +
+                           typename std::tuple_element_t<short_index, policies>::string_type{};
                 } else {
-                    return AR_STRING(config::long_prefix){} +
-                           AR_STRING((std::tuple_element_t<long_index, policies>::long_name())){};
+                    return AR_STRING_SV(config::long_prefix){} +
+                           typename std::tuple_element_t<long_index, policies>::string_type{};
                 }
             } else {
-                return AR_STRING((std::tuple_element_t<display_index, policies>::display_name())){};
+                return typename std::tuple_element_t<display_index, policies>::string_type{};
             }
         }
 

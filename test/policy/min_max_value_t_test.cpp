@@ -73,53 +73,53 @@ BOOST_AUTO_TEST_CASE(validation_phase_test)
     test::data_set(
         f,
         std::tuple{
-            std::tuple{stub_node{policy::min_max_value(1, 4), policy::long_name<S_("node")>},
+            std::tuple{stub_node{policy::min_max_value(1, 4), policy::long_name<AR_STRING("node")>},
                        2,
                        true,
                        ""},
-            std::tuple{stub_node{policy::min_max_value(1, 4), policy::long_name<S_("node")>},
+            std::tuple{stub_node{policy::min_max_value(1, 4), policy::long_name<AR_STRING("node")>},
                        1,
                        true,
                        ""},
-            std::tuple{stub_node{policy::min_max_value(1, 4), policy::long_name<S_("node")>},
+            std::tuple{stub_node{policy::min_max_value(1, 4), policy::long_name<AR_STRING("node")>},
                        4,
                        true,
                        ""},
-            std::tuple{stub_node{policy::min_max_value(1, 4), policy::long_name<S_("node")>},
+            std::tuple{stub_node{policy::min_max_value(1, 4), policy::long_name<AR_STRING("node")>},
                        0,
                        true,
                        "Minimum value not reached: --node"},
-            std::tuple{stub_node{policy::min_max_value(1, 4), policy::long_name<S_("node")>},
+            std::tuple{stub_node{policy::min_max_value(1, 4), policy::long_name<AR_STRING("node")>},
                        -5,
                        true,
                        "Minimum value not reached: --node"},
-            std::tuple{stub_node{policy::min_max_value(1, 4), policy::long_name<S_("node")>},
+            std::tuple{stub_node{policy::min_max_value(1, 4), policy::long_name<AR_STRING("node")>},
                        6,
                        true,
                        "Maximum value exceeded: --node"},
 
-            std::tuple{stub_node{policy::min_value(2), policy::long_name<S_("node")>},  //
+            std::tuple{stub_node{policy::min_value(2), policy::long_name<AR_STRING("node")>},  //
                        2,
                        true,
                        ""},
-            std::tuple{stub_node{policy::min_value(2), policy::long_name<S_("node")>},  //
+            std::tuple{stub_node{policy::min_value(2), policy::long_name<AR_STRING("node")>},  //
                        20,
                        true,
                        ""},
-            std::tuple{stub_node{policy::min_value(2), policy::long_name<S_("node")>},
+            std::tuple{stub_node{policy::min_value(2), policy::long_name<AR_STRING("node")>},
                        1,
                        true,
                        "Minimum value not reached: --node"},
 
-            std::tuple{stub_node{policy::max_value(2), policy::long_name<S_("node")>},  //
+            std::tuple{stub_node{policy::max_value(2), policy::long_name<AR_STRING("node")>},  //
                        2,
                        true,
                        ""},
-            std::tuple{stub_node{policy::max_value(2), policy::long_name<S_("node")>},  //
+            std::tuple{stub_node{policy::max_value(2), policy::long_name<AR_STRING("node")>},  //
                        1,
                        true,
                        ""},
-            std::tuple{stub_node{policy::max_value(2), policy::long_name<S_("node")>},
+            std::tuple{stub_node{policy::max_value(2), policy::long_name<AR_STRING("node")>},
                        20,
                        true,
                        "Maximum value exceeded: --node"},
@@ -128,7 +128,7 @@ BOOST_AUTO_TEST_CASE(validation_phase_test)
                                      std::vector{5, 6},
                                      std::vector{1, 3, 4, 2},
                                      [](auto&& a, auto&& b) { return a.size() < b.size(); }),
-                                 policy::long_name<S_("node")>},
+                                 policy::long_name<AR_STRING("node")>},
                        std::vector{3, 4, 5},
                        true,
                        ""},
@@ -136,7 +136,7 @@ BOOST_AUTO_TEST_CASE(validation_phase_test)
                                      std::vector{5, 6},
                                      std::vector{1, 3, 4, 2},
                                      [](auto&& a, auto&& b) { return a.size() < b.size(); }),
-                                 policy::long_name<S_("node")>},
+                                 policy::long_name<AR_STRING("node")>},
                        std::vector<int>{},
                        true,
                        "Minimum value not reached: --node"},
@@ -144,7 +144,7 @@ BOOST_AUTO_TEST_CASE(validation_phase_test)
                                      std::vector{5, 6},
                                      std::vector{1, 3, 4, 2},
                                      [](auto&& a, auto&& b) { return a.size() < b.size(); }),
-                                 policy::long_name<S_("node")>},
+                                 policy::long_name<AR_STRING("node")>},
                        std::vector{5},
                        true,
                        "Minimum value not reached: --node"},
@@ -152,12 +152,12 @@ BOOST_AUTO_TEST_CASE(validation_phase_test)
                                      std::vector{5, 6},
                                      std::vector{1, 3, 4, 2},
                                      [](auto&& a, auto&& b) { return a.size() < b.size(); }),
-                                 policy::long_name<S_("node")>},
+                                 policy::long_name<AR_STRING("node")>},
                        std::vector{1, 2, 3, 4, 5},
                        true,
                        "Maximum value exceeded: --node"},
 
-            std::tuple{stub_node{policy::long_name<S_("node")>}, 0, false, ""},
+            std::tuple{stub_node{policy::long_name<AR_STRING("node")>}, 0, false, ""},
         });
 }
 
@@ -198,7 +198,7 @@ public:
 }  // namespace
 
 int main() {
-    const auto node = stub_node{policy::long_name<S_("test")>,
+    const auto node = stub_node{policy::long_name<AR_STRING("test")>,
                                 policy::min_max_value(1, 4)};
     node.validation_phase(2);
     return 0;

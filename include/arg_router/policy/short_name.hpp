@@ -43,7 +43,7 @@ public:
     [[nodiscard]] constexpr static std::string_view short_name() noexcept { return S::get(); }
 
 private:
-    using full_name_type = AR_STRING(config::short_prefix)::append_t<S>;
+    using full_name_type = AR_STRING_SV(config::short_prefix)::append_t<S>;
 
     static_assert(utility::utf8::count(short_name()) == 1, "Short name must only be one character");
     static_assert(full_name_type::get() != config::long_prefix,

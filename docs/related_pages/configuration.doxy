@@ -11,15 +11,9 @@ namespace arg_router
  * accessible globally (in a more C++ friendly way) in the @ref config namespace.  All are available
  * as CMake cache variables, minus the "AR_" prefix.
  * 
- * <TT>AR_MAX_CTS_SIZE</TT> when using C++17 or if <TT>AR_DISABLE_CPP20_STRINGS=true</TT> is the maximum
- * size a utility::compile_time_string can be, it defaults to 128.  This is used by the S_ macro.
- * Increasing the size won't increase your program size, but will increase the build time.
- *
- * If neither of those conditions are true, it is the maximum size a utility::str can be <I>when
- * initialised from a std::string_view</I>. This somewhat obscure behaviour is due to
- * <TT>std::string_view</TT>'s size not being set in its type (as it can be changed at runtime).
- * Increasing this will not increase the size of your program as the compilers (at least Clang and
- * gcc) are smart enough to not put the internal array into static storage, only the input texts.
+ * <TT>AR_MAX_CTS_SIZE</TT> when using C++17 or if <TT>AR_DISABLE_CPP20_STRINGS=true</TT> is the
+ * maximum size an argument to <TT>S_</TT> can be, it defaults to 128.  Increasing the size won't
+ * increase your program size, but will increase the build time.
  * 
  * <TT>AR_LONG_PREFIX</TT> is the character string that defines the prefix of <I>long</I>-form token
  * labels e.g. "--help".  It defaults to two hyphens. If redefining, this must have the same or more

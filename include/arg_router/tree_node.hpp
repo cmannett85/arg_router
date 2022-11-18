@@ -250,7 +250,7 @@ protected:
                 constexpr auto value_separator =
                     std::tuple_element_t<separator_index, policies_type>::value_separator();
 
-                return AR_STRING(value_separator){} + value_str;
+                return AR_STRING_SV(value_separator){} + value_str;
             } else if constexpr (fixed_count_of_one) {
                 return AR_STRING(" "){} + value_str;
             } else {
@@ -274,20 +274,20 @@ protected:
                 constexpr auto short_name =
                     std::tuple_element_t<short_name_index, policies_type>::short_name();
 
-                return AR_STRING(config::long_prefix){} + AR_STRING(long_name){} +
-                       AR_STRING(","){} + AR_STRING(config::short_prefix){} +
-                       AR_STRING(short_name){} + value_separator_suffix();
+                return AR_STRING_SV(config::long_prefix){} + AR_STRING_SV(long_name){} +
+                       AR_STRING(","){} + AR_STRING_SV(config::short_prefix){} +
+                       AR_STRING_SV(short_name){} + value_separator_suffix();
             } else if constexpr (long_name_index != num_policies) {
                 constexpr auto long_name =
                     std::tuple_element_t<long_name_index, policies_type>::long_name();
 
-                return AR_STRING(config::long_prefix){} + AR_STRING(long_name){} +
+                return AR_STRING_SV(config::long_prefix){} + AR_STRING_SV(long_name){} +
                        value_separator_suffix();
             } else if constexpr (short_name_index != num_policies) {
                 constexpr auto short_name =
                     std::tuple_element_t<short_name_index, policies_type>::short_name();
 
-                return AR_STRING(config::short_prefix){} + AR_STRING(short_name){} +
+                return AR_STRING_SV(config::short_prefix){} + AR_STRING_SV(short_name){} +
                        value_separator_suffix();
             } else {
                 return AR_STRING(""){};
@@ -302,7 +302,7 @@ protected:
                 boost::mp11::mp_find_if<policies_type, traits::has_description_method>::value;
 
             if constexpr (description_index != num_policies) {
-                return AR_STRING(
+                return AR_STRING_SV(
                     (std::tuple_element_t<description_index, policies_type>::description())){};
             } else {
                 return AR_STRING(""){};

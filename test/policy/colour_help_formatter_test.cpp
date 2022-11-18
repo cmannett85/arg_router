@@ -28,8 +28,8 @@ public:
     class help_data_type
     {
     public:
-        using label = S_("");
-        using description = S_("");
+        using label = AR_STRING("");
+        using description = AR_STRING("");
         using children = typename tree_node<Params...>::template  //
             default_leaf_help_data_type<Flatten>::all_children_help;
     };
@@ -48,18 +48,18 @@ BOOST_AUTO_TEST_CASE(is_policy_test)
 BOOST_AUTO_TEST_CASE(generate_help_test)
 {
     const auto root =
-        mock_root{flag(policy::long_name<S_("flag1")>,
+        mock_root{flag(policy::long_name<AR_STRING("flag1")>,
                        policy::short_name<'a'>,
-                       policy::description<S_("Flag1 description")>),
-                  flag(policy::long_name<S_("flag2")>),
-                  flag(policy::short_name<'b'>, policy::description<S_("b description")>),
-                  arg<int>(policy::long_name<S_("arg1")>, policy::value_separator<'='>),
-                  help(policy::long_name<S_("help")>,
+                       policy::description<AR_STRING("Flag1 description")>),
+                  flag(policy::long_name<AR_STRING("flag2")>),
+                  flag(policy::short_name<'b'>, policy::description<AR_STRING("b description")>),
+                  arg<int>(policy::long_name<AR_STRING("arg1")>, policy::value_separator<'='>),
+                  help(policy::long_name<AR_STRING("help")>,
                        policy::short_name<'h'>,
-                       policy::description<S_("Help output")>,
-                       policy::program_name<S_("foo")>,
-                       policy::program_version<S_("v3.14")>,
-                       policy::program_intro<S_("My foo is good for you")>,
+                       policy::description<AR_STRING("Help output")>,
+                       policy::program_name<AR_STRING("foo")>,
+                       policy::program_version<AR_STRING("v3.14")>,
+                       policy::program_intro<AR_STRING("My foo is good for you")>,
                        policy::colour_help_formatter)};
 
     constexpr auto expected_result =

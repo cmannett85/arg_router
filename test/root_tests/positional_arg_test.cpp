@@ -19,16 +19,16 @@ BOOST_AUTO_TEST_CASE(single_positional_arg_parse_test)
     auto router_hit = false;
     auto result = std::tuple<bool, bool, int, std::vector<std::string_view>>{};
     const auto r =
-        root(mode(flag(policy::long_name<S_("flag1")>,
+        root(mode(flag(policy::long_name<AR_STRING("flag1")>,
                        policy::short_name<'a'>,
-                       policy::description<S_("First description")>),
+                       policy::description<AR_STRING("First description")>),
                   flag(policy::short_name<'b'>),
-                  arg<int>(policy::long_name<S_("arg1")>,
+                  arg<int>(policy::long_name<AR_STRING("arg1")>,
                            policy::default_value(42),
-                           policy::description<S_("Second description")>),
+                           policy::description<AR_STRING("Second description")>),
                   positional_arg<std::vector<std::string_view>>(
-                      policy::display_name<S_("pos_args")>,
-                      policy::description<S_("Third description")>,
+                      policy::display_name<AR_STRING("pos_args")>,
+                      policy::description<AR_STRING("Third description")>,
                       policy::required,
                       policy::min_count<2>),
                   policy::router{
@@ -105,25 +105,26 @@ BOOST_AUTO_TEST_CASE(two_positional_arg_parse_test)
 {
     auto router_hit = false;
     auto result = std::tuple<bool, int, std::vector<std::string_view>, std::vector<double>>{};
-    const auto r = root(
-        mode(flag(policy::long_name<S_("flag1")>, policy::description<S_("First description")>),
-             arg<int>(policy::long_name<S_("arg1")>,
-                      policy::default_value(42),
-                      policy::description<S_("Second description")>),
-             positional_arg<std::vector<std::string_view>>(
-                 policy::display_name<S_("pos_args1")>,
-                 policy::description<S_("Third description")>,
-                 policy::fixed_count<2>),
-             positional_arg<std::vector<double>>(policy::display_name<S_("pos_args2")>,
-                                                 policy::description<S_("Fourth description")>),
-             policy::router{[&](bool flag1,
-                                int arg1,
-                                std::vector<std::string_view> pos_args1,
-                                std::vector<double> pos_args2) {
-                 result = decltype(result){flag1, arg1, pos_args1, pos_args2};
-                 router_hit = true;
-             }}),
-        policy::validation::default_validator);
+    const auto r = root(mode(flag(policy::long_name<AR_STRING("flag1")>,
+                                  policy::description<AR_STRING("First description")>),
+                             arg<int>(policy::long_name<AR_STRING("arg1")>,
+                                      policy::default_value(42),
+                                      policy::description<AR_STRING("Second description")>),
+                             positional_arg<std::vector<std::string_view>>(
+                                 policy::display_name<AR_STRING("pos_args1")>,
+                                 policy::description<AR_STRING("Third description")>,
+                                 policy::fixed_count<2>),
+                             positional_arg<std::vector<double>>(
+                                 policy::display_name<AR_STRING("pos_args2")>,
+                                 policy::description<AR_STRING("Fourth description")>),
+                             policy::router{[&](bool flag1,
+                                                int arg1,
+                                                std::vector<std::string_view> pos_args1,
+                                                std::vector<double> pos_args2) {
+                                 result = decltype(result){flag1, arg1, pos_args1, pos_args2};
+                                 router_hit = true;
+                             }}),
+                        policy::validation::default_validator);
 
     auto f = [&](auto args, auto expected, std::string fail_message) {
         result = decltype(result){};

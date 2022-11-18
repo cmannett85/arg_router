@@ -16,18 +16,19 @@ BOOST_AUTO_TEST_SUITE(long_name_suite)
 
 BOOST_AUTO_TEST_CASE(is_policy_test)
 {
-    static_assert(policy::is_policy_v<policy::long_name_t<S_("hello")>>, "Policy test has failed");
+    static_assert(policy::is_policy_v<policy::long_name_t<AR_STRING("hello")>>,
+                  "Policy test has failed");
 }
 
 BOOST_AUTO_TEST_CASE(constructor_and_get_test)
 {
-    constexpr auto hello_str = policy::long_name<S_("hello")>;
+    constexpr auto hello_str = policy::long_name<AR_STRING("hello")>;
     static_assert(hello_str.long_name() == "hello");
 
-    constexpr auto three_char_str = policy::long_name<S_("boo")>;
+    constexpr auto three_char_str = policy::long_name<AR_STRING("boo")>;
     static_assert(three_char_str.long_name() == "boo");
 
-    constexpr auto world_str = policy::long_name_t{S_("world"){}};
+    constexpr auto world_str = policy::long_name_t{AR_STRING("world"){}};
     static_assert(world_str.long_name() == "world");
 }
 
@@ -46,7 +47,7 @@ BOOST_AUTO_TEST_CASE(death_test)
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 int main() {
-    const auto ln = arg_router::policy::long_name<S_("")>;
+    const auto ln = arg_router::policy::long_name<AR_STRING("")>;
     return 0;
 }
     )",
@@ -57,7 +58,7 @@ int main() {
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 int main() {
-    const auto ln = arg_router::policy::long_name<S_("a")>;
+    const auto ln = arg_router::policy::long_name<AR_STRING("a")>;
     return 0;
 }
     )",
@@ -68,7 +69,7 @@ int main() {
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 int main() {
-    const auto ln = arg_router::policy::long_name<S_("a b")>;
+    const auto ln = arg_router::policy::long_name<AR_STRING("a b")>;
     return 0;
 }
     )",

@@ -11,6 +11,7 @@
 
 #ifdef ENABLE_CPP20_STRINGS
 #    include <algorithm>
+#    include <span>
 #    include <string_view>
 
 namespace arg_router
@@ -25,15 +26,14 @@ class compile_time_string_storage
 public:
     constexpr compile_time_string_storage() = default;
 
-    // We need all the constructors to support implicit conversion, otherwise you would have to
-    // declare the storage type in every `str` declaration which would be very annoying...
+    // We need all the constructors to support implicit conversion, because that's kind of the
+    // point of this class...
     // NOLINTNEXTLINE(google-explicit-constructor,hicpp-explicit-conversions)
     constexpr compile_time_string_storage(std::array<char, N> str) : value(str) {}
 
     // NOLINTNEXTLINE(google-explicit-constructor,hicpp-explicit-conversions)
-    constexpr compile_time_string_storage(std::string_view str)
+    constexpr compile_time_string_storage(std::span<const char, N> str)
     {
-        value.fill('\0');
         std::copy(str.begin(), str.end(), value.begin());
     }
 
@@ -50,7 +50,6 @@ public:
 };
 
 compile_time_string_storage()->compile_time_string_storage<0>;
-compile_time_string_storage(std::string_view)->compile_time_string_storage<AR_MAX_CTS_SIZE>;
 compile_time_string_storage(char)->compile_time_string_storage<1>;
 }  // namespace detail
 
@@ -61,12 +60,8 @@ compile_time_string_storage(char)->compile_time_string_storage<1>;
  *
  * Like the C++17 equivalent <TT>S_(..)</TT> macro, this can accept a string literal directly.
  *
- * @note AR_MAX_CTS_SIZE define (defaults to 128) has a different meaning when used in this context,
- * it is the maximum size a string can be <I>when initialised from a std::string_view</I>.  This
- * somewhat obscure behaviour is due to std::string_view's size not being set in its type (as it can
- * be changed at runtime).  Increasing this will not increase the size of your program as the
- * compilers (at least Clang and gcc) are smart enough to not put the internal array into static
- * storage, only the input texts
+ * @note Unlike the <TT>S_(..)</TT> macro, this cannot use a <TT>std::string_view</TT> as an input
+ * type, use <TT>std::array<char, N></TT> or <TT>std::span<char, N></TT> instead
  *
  * @tparam S Internal storage type
  */
@@ -261,12 +256,7 @@ using str = utility::str<S>;
 // A function macro common between utility::str and S_, which allows us to use the same method to
 // construct strings internally between versions.  NOT for user consumption!
 #    define AR_STRING(tok) arg_router::utility::str<tok>
-
-#    if defined(UNIT_TEST_BUILD) || defined(DEATH_TEST_BUILD)
-// Redefine the S_ macro to use str<>, this allows us to not need to make unit test changes between
-// the two compile-time string types
-#        define S_(tok) AR_STRING(tok)
-#    endif
+#    define AR_STRING_SV(tok) arg_router::utility::str<std::span<const char, tok.size()>{tok}>
 
 #else
 
@@ -473,6 +463,9 @@ struct builder {
     using strip_null =
         boost::mp11::mp_remove_if_q<boost::mp11::mp_list_c<char, Cs...>, is_null_char>;
 
+    static_assert(std::tuple_size_v<strip_null> < AR_MAX_CTS_SIZE,
+                  "Compile-time string limit reached, consider increasing AR_MAX_CTS_SIZE");
+
     template <char... StrippedCs>
     [[nodiscard]] constexpr static auto list_to_string(
         [[maybe_unused]] boost::mp11::mp_list_c<char, StrippedCs...> chars) noexcept
@@ -505,4 +498,5 @@ struct builder {
 // A function macro common between utility::str and S_, which allows us to use the same method to
 // construct strings internally between versions.  NOT for user consumption!
 #    define AR_STRING(tok) S_(tok)
+#    define AR_STRING_SV(tok) S_(tok)
 #endif

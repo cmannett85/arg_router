@@ -52,7 +52,7 @@ BOOST_AUTO_TEST_CASE(is_policy_test)
 BOOST_AUTO_TEST_CASE(missing_phase_test)
 {
     const auto root =
-        stub_node{stub_node{policy::long_name<S_("test")>, policy::required}, stub_node{}};
+        stub_node{stub_node{policy::long_name<AR_STRING("test")>, policy::required}, stub_node{}};
 
     auto f = [&](const auto& owner, std::string fail_message) {
         try {
@@ -105,7 +105,7 @@ public:
 }  // namespace
 
 int main() {
-    const auto node = stub_node{policy::long_name<S_("test")>,
+    const auto node = stub_node{policy::long_name<AR_STRING("test")>,
                                 policy::required};
     node.template missing_phase<int>();
     return 0;

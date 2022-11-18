@@ -17,8 +17,8 @@ BOOST_AUTO_TEST_CASE(death_test)
 int main() {
     arg_router::root_t<
         arg_router::flag_t<
-            arg_router::policy::short_name_t<S_('a')>,
-            arg_router::policy::long_name_t<S_("test")>,
+            arg_router::policy::short_name_t<AR_STRING('a')>,
+            arg_router::policy::long_name_t<AR_STRING("test")>,
             arg_router::policy::router<std::less<>>>>();
     return 0;
 }
@@ -55,7 +55,7 @@ using default_validator_type =
 
 int main() {
     arg_router::root_t<default_validator_type,
-                       flag_t<policy::long_name_t<S_("f1")>>>();
+                       flag_t<policy::long_name_t<AR_STRING("f1")>>>();
     return 0;
 }
     )",
@@ -72,8 +72,8 @@ int main() {
 using namespace arg_router;
 
 int main() {
-    const auto m = root(policy::alias(policy::long_name<S_("foo")>),
-                        flag(policy::long_name<S_("hello")>));
+    const auto m = root(policy::alias(policy::long_name<AR_STRING("foo")>),
+                        flag(policy::long_name<AR_STRING("hello")>));
     return 0;
 }
     )",
@@ -91,7 +91,7 @@ using namespace arg_router;
 
 int main() {
     const auto m = root(policy::custom_parser<int>{[](auto) { return false; }},
-                        flag(policy::long_name<S_("hello")>));
+                        flag(policy::long_name<AR_STRING("hello")>));
     return 0;
 }
     )",
@@ -109,7 +109,7 @@ using namespace arg_router;
 
 int main() {
     const auto m = root(policy::min_max_value<1, 3>(),
-                        flag(policy::long_name<S_("hello")>));
+                        flag(policy::long_name<AR_STRING("hello")>));
     return 0;
 }
     )",
@@ -127,7 +127,7 @@ using namespace arg_router;
 
 int main() {
     const auto m = root(policy::router{[](std::string_view) { return true; }},
-                        flag(policy::long_name<S_("hello")>));
+                        flag(policy::long_name<AR_STRING("hello")>));
     return 0;
 }
     )",
@@ -145,7 +145,7 @@ using namespace arg_router;
 
 int main() {
     const auto m = root(policy::required,
-                        flag(policy::long_name<S_("hello")>));
+                        flag(policy::long_name<AR_STRING("hello")>));
     return 0;
 }
     )",

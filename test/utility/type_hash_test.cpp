@@ -46,14 +46,14 @@ BOOST_AUTO_TEST_CASE(positive_primitives_test)
 
 BOOST_AUTO_TEST_CASE(node_test)
 {
-    const auto a = root(mode(arg<int>(policy::long_name<S_("hello")>,
+    const auto a = root(mode(arg<int>(policy::long_name<AR_STRING("hello")>,
                                       policy::required,
-                                      policy::description<S_("Hello description")>),
+                                      policy::description<AR_STRING("Hello description")>),
                              policy::router{[&](auto) {}}),
                         policy::validation::default_validator);
-    const auto b = root(mode(arg<int>(policy::long_name<S_("goodbye")>,
+    const auto b = root(mode(arg<int>(policy::long_name<AR_STRING("goodbye")>,
                                       policy::required,
-                                      policy::description<S_("Hello description")>),
+                                      policy::description<AR_STRING("Hello description")>),
                              policy::router{[&](auto) {}}),
                         policy::validation::default_validator);
 
