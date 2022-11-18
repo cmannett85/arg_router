@@ -180,6 +180,5 @@ include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/library.cmake")
 if(BUILD_UNIT_TESTS_AND_EXAMPLES)
     enable_testing()
     add_subdirectory(test)
-
     add_subdirectory(examples)
 endif()

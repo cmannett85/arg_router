@@ -6,7 +6,9 @@
 
 #include "arg_router/utility/tuple_iterator.hpp"
 
-#include <variant>
+#ifndef ENABLE_CPP20_STRINGS
+
+#    include <variant>
 
 /** Namespace for types and functions relating to runtime multi-language support.
  */
@@ -152,3 +154,5 @@ auto root_wrapper(std::string_view iso_language, Fn&& f)
     return root_wrapper_t<Fn, SupportedISOLanguageCodes...>{iso_language, std::forward<Fn>(f)};
 }
 }  // namespace arg_router::multi_lang
+
+#endif

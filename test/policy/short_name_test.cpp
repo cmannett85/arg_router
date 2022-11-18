@@ -28,7 +28,7 @@ BOOST_AUTO_TEST_CASE(constructor_and_get_test)
     constexpr auto c_4 = policy::short_name<'4'>;
     static_assert(c_4.short_name() == "4");
 
-    constexpr auto s_a = policy::short_name_t{S_("a"){}};
+    constexpr auto s_a = policy::short_name_t{AR_STRING("a"){}};
     static_assert(s_a.short_name() == "a");
 }
 
@@ -45,7 +45,7 @@ BOOST_AUTO_TEST_CASE(death_test)
     test::death_test_compile({{R"(
 #include "arg_router/policy/short_name.hpp"
 int main() {
-    const auto ln = arg_router::policy::short_name_utf8<S_("")>;
+    const auto ln = arg_router::policy::short_name_utf8<AR_STRING("")>;
     return 0;
 }
     )",

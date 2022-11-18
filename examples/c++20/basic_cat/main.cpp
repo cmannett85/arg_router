@@ -22,7 +22,7 @@ enum class theme_t { none, classic, solarized };
 
 enum class verbosity_level_t { error, warning, info, debug };
 
-constexpr auto version = "v3.14"sv;
+constexpr char version[] = "v3.14";
 constexpr auto no_line_limit = -1;
 
 constexpr auto tab_num = std::uint8_t{9};

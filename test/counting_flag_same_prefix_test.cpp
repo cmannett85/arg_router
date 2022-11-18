@@ -19,7 +19,7 @@ BOOST_AUTO_TEST_SUITE(counting_flag_suite)
 BOOST_AUTO_TEST_CASE(no_short_form_expander_test)
 {
     [[maybe_unused]] auto f =
-        counting_flag<int>(policy::long_name<S_("hello")>, policy::short_name<'H'>);
+        counting_flag<int>(policy::long_name<AR_STRING("hello")>, policy::short_name<'H'>);
     static_assert(f.long_name() == "hello"sv, "Long name test fail");
     static_assert(f.short_name() == "H", "Short name test fail");
     static_assert(f.minimum_count() == 0, "Minimum count test fail");

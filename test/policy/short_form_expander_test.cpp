@@ -115,7 +115,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                                                  {parsing::prefix_type::short_, "に"},
                                                  {parsing::prefix_type::short_, "ち"},
                                                  {parsing::prefix_type::short_, "は"}},
-                stub_node{policy::short_name_utf8<S_("こ")>}},
+                stub_node{policy::short_name_utf8<AR_STRING("こ")>}},
             std::tuple{std::vector<parsing::token_type>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "-hello"}},
                        std::vector<parsing::token_type>{{parsing::prefix_type::short_, "h"}},
@@ -123,7 +123,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                                                         {parsing::prefix_type::short_, "l"},
                                                         {parsing::prefix_type::short_, "l"},
                                                         {parsing::prefix_type::short_, "o"}},
-                       stub_node{policy::short_name_utf8<S_("h")>}},
+                       stub_node{policy::short_name_utf8<AR_STRING("h")>}},
             std::tuple{std::vector<parsing::token_type>{},
                        std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "-🙂b🇦🇬Δ猫"}},
@@ -132,7 +132,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                                                         {parsing::prefix_type::short_, "🇦🇬"},
                                                         {parsing::prefix_type::short_, "Δ"},
                                                         {parsing::prefix_type::short_, "猫"}},
-                       stub_node{policy::short_name_utf8<S_("🙂")>}},
+                       stub_node{policy::short_name_utf8<AR_STRING("🙂")>}},
         });
 }
 
@@ -237,7 +237,7 @@ public:
 
 int main() {
     const auto node = stub_node{policy::short_form_expander,
-                                policy::long_name<S_("hello")>,
+                                policy::long_name<AR_STRING("hello")>,
                                 policy::short_name<'H'>};
     auto tokens = vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "hello"}};

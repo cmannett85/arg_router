@@ -1,4 +1,4 @@
-![Documentation Generator](https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg) ![Unit test coverage](https://img.shields.io/badge/Unit_Test_Coverage-97.8%25-brightgreen)
+![Documentation Generator](https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg) ![Unit test coverage](https://img.shields.io/badge/Unit_Test_Coverage-97.7%25-brightgreen)
 
 # arg_router
 `arg_router` is a C++17 command line parser and router.  It uses policy-based objects hierarchically, so the parsing code is self-describing.  Rather than just providing a parsing service that returns a map of `variant`s/`any`s, it allows you to bind `Callable` instances to points in the parse structure, so complex command line arguments can directly call functions with the expected arguments - rather than you having to do this yourself.
@@ -12,7 +12,7 @@
 - Easy custom parsers by using `Callable`s inline for specific arguments, or you can implement a specialisation to cover all instances of that type
 - Unicode compliant by supporting UTF-8 encoded compile-time strings ([details](#unicode-compliance))
 - Support of runtime language selection
-- Uses a macro to ease compile-time string generation when using C++17; for C++20 and above, string literals can be used directly in constructors
+- Uses a macro to ease compile-time string generation when using C++17.  For C++20 and above, compile-time string literals can be used directly in constructors
 
 ## Basics
 Let's start simple, with this `cat`-like program:
@@ -670,7 +670,7 @@ The first argument to `multi_lang::root` is a string provided by the user that s
 
 The above code (which is available as a [buildable example](https://cmannett85.github.io/arg_router/c_09_0920_2simple_ml_2main_8cpp-example.html)) will yield the following help output:
 ```
-$ ./example_simple_ml -h
+$ ./example_simple_ml_cpp20 -h
 simple v0.1
 
 A simple file copier and mover.
@@ -740,7 +740,7 @@ An example program for arg_router.
 ```
 
 ### Note ###
-`multi_lang::root_wrapper` from v1.0 is still present and supported, but is now marked as deprecated - new code should use `multi_lang::root`.
+`multi_lang::root_wrapper` from v1.0 is still present and supported, but is now marked as deprecated - new code should use `multi_lang::root`.  It is not supported when using C++20 compile-time strings (see [compile-time string support](#compile-time-string-support)).
 
 ## Compile-time String Support
 In v1.0 the library exclusively used the `S_()` macro for compile-time string generation, this was an almost necessary convenience as that version of C++ had relatively poor NTTP support.  In v1.1 we added an alternative for those using C++20 and above, which is the `str` type and its `""_S` string literal.

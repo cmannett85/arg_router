@@ -17,14 +17,15 @@ BOOST_AUTO_TEST_SUITE(counting_flag_suite)
 
 BOOST_AUTO_TEST_CASE(is_tree_node_test)
 {
-    static_assert(is_tree_node_v<counting_flag_t<std::size_t, policy::long_name_t<S_("hello")>>>,
-                  "Tree node test has failed");
+    static_assert(
+        is_tree_node_v<counting_flag_t<std::size_t, policy::long_name_t<AR_STRING("hello")>>>,
+        "Tree node test has failed");
 }
 
 BOOST_AUTO_TEST_CASE(policies_test)
 {
     [[maybe_unused]] auto f =
-        counting_flag<int>(policy::long_name<S_("hello")>, policy::short_name<'H'>);
+        counting_flag<int>(policy::long_name<AR_STRING("hello")>, policy::short_name<'H'>);
     static_assert(f.long_name() == "hello"sv, "Long name test fail");
     static_assert(f.short_name() == "H", "Short name test fail");
     static_assert(f.minimum_count() == 0, "Minimum count test fail");
@@ -104,23 +105,24 @@ BOOST_AUTO_TEST_CASE(help_test)
         BOOST_CHECK_EQUAL(help_data::description::get(), expected_description);
     };
 
-    test::data_set(f,
-                   std::tuple{
-                       std::tuple{counting_flag<int>(policy::short_name<'h'>,
-                                                     policy::long_name<S_("hello")>,
-                                                     policy::description<S_("A counting flag!")>),
-                                  "--hello,-h",
-                                  "A counting flag!"},
-                       std::tuple{counting_flag<int>(policy::long_name<S_("hello")>,
-                                                     policy::description<S_("A counting flag!")>),
-                                  "--hello",
-                                  "A counting flag!"},
-                       std::tuple{counting_flag<int>(policy::short_name<'h'>,
-                                                     policy::description<S_("A counting flag!")>),
-                                  "-h",
-                                  "A counting flag!"},
-                       std::tuple{counting_flag<int>(policy::short_name<'h'>), "-h", ""},
-                   });
+    test::data_set(
+        f,
+        std::tuple{
+            std::tuple{counting_flag<int>(policy::short_name<'h'>,
+                                          policy::long_name<AR_STRING("hello")>,
+                                          policy::description<AR_STRING("A counting flag!")>),
+                       "--hello,-h",
+                       "A counting flag!"},
+            std::tuple{counting_flag<int>(policy::long_name<AR_STRING("hello")>,
+                                          policy::description<AR_STRING("A counting flag!")>),
+                       "--hello",
+                       "A counting flag!"},
+            std::tuple{counting_flag<int>(policy::short_name<'h'>,
+                                          policy::description<AR_STRING("A counting flag!")>),
+                       "-h",
+                       "A counting flag!"},
+            std::tuple{counting_flag<int>(policy::short_name<'h'>), "-h", ""},
+        });
 }
 
 BOOST_AUTO_TEST_CASE(death_test)
@@ -137,7 +139,7 @@ using namespace arg_router;
 
 int main() {
     auto f = counting_flag<int>(
-        policy::long_name<S_("hello")>,
+        policy::long_name<AR_STRING("hello")>,
         counting_flag<int>(policy::short_name<'b'>),
         policy::short_name<'H'>
     );
@@ -169,8 +171,8 @@ int main() {
 using namespace arg_router;
 
 int main() {
-    auto f = counting_flag<int>(policy::long_name<S_("hello")>,
-                                policy::display_name<S_("hello2")>);
+    auto f = counting_flag<int>(policy::long_name<AR_STRING("hello")>,
+                                policy::display_name<AR_STRING("hello2")>);
     return 0;
 }
     )",
@@ -186,8 +188,8 @@ int main() {
 using namespace arg_router;
 
 int main() {
-    auto f = counting_flag<int>(policy::long_name<S_("hello")>,
-                                policy::none_name<S_("hello2")>);
+    auto f = counting_flag<int>(policy::long_name<AR_STRING("hello")>,
+                                policy::none_name<AR_STRING("hello2")>);
     return 0;
 }
     )",
@@ -204,7 +206,7 @@ using namespace arg_router;
 
 int main() {
     auto f = counting_flag<int>(
-                policy::long_name<S_("hello")>,
+                policy::long_name<AR_STRING("hello")>,
                 policy::custom_parser<bool>{
                     [](std::string_view) { return true; }});
     return 0;
@@ -223,7 +225,7 @@ int main() {
 using namespace arg_router;
 
 int main() {
-    auto f = counting_flag<int>(policy::long_name<S_("hello")>,
+    auto f = counting_flag<int>(policy::long_name<AR_STRING("hello")>,
                                 policy::router{[](int) {}});
     return 0;
 }

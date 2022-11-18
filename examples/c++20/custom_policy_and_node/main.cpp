@@ -13,7 +13,7 @@ using namespace ar::literals;
 
 namespace
 {
-constexpr auto version = "v1.0.0"sv;
+constexpr auto version = std::span{"v1.0.0"};
 }  // namespace
 
 /* A ridiculous description policy implementation that appends a smiley face to the user supplied
@@ -104,7 +104,11 @@ public:
                 boost::mp11::mp_find_if<policies_type, ar::traits::has_display_name_method>::value;
             constexpr auto name = std::tuple_element_t<name_index, policies_type>::display_name();
 
-            return "<"_S + ar::str<name>{} + "> "_S +
+            // This is unfortunately necessary due to C++ language limitations, we can't pass
+            // a std::string_view directly to ar::str
+            constexpr auto name_span = std::span<const char, name.size()>{name};
+
+            return "<"_S + ar::str<name_span>{} + "> "_S +
                    parent_type::template default_leaf_help_data_type<Flatten>::count_suffix();
         }
 
@@ -207,7 +211,7 @@ int main(int argc, char* argv[])
              ar::flag(arp::long_name_t{"version"_S},
                       smiley_description_t{"Output version information and exit"_S},
                       arp::router{[](bool) {
-                          std::cout << version << std::endl;
+                          std::cout << version.data() << std::endl;
                           std::exit(EXIT_SUCCESS);
                       }}),
              ar::mode(single_positional_arg<int>(arp::required,

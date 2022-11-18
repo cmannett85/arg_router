@@ -18,29 +18,29 @@ BOOST_AUTO_TEST_SUITE(code_point_suite)
 BOOST_AUTO_TEST_CASE(count_test)
 {
     {
-        using str = S_("");
+        using str = AR_STRING("");
         static_assert(utf8::code_point::count(str::get()) == 0);
     }
     {
-        using str = S_("hello");
+        using str = AR_STRING("hello");
         static_assert(utf8::code_point::count(str::get()) == 5);
     }
     {
-        using str = S_("zß水🍌");
+        using str = AR_STRING("zß水🍌");
         static_assert(utf8::code_point::count(str::get()) == 4);
     }
     {
-        using str = S_("Δàrö");
+        using str = AR_STRING("Δàrö");
         static_assert(utf8::code_point::count(str::get()) == 4);
     }
 
     // That's right, code points are not the same as grapheme clusters!
     {
-        using str = S_("🇦🇬");
+        using str = AR_STRING("🇦🇬");
         static_assert(utf8::code_point::count(str::get()) == 2);
     }
     {
-        using str = S_("m̃");
+        using str = AR_STRING("m̃");
         static_assert(utf8::code_point::count(str::get()) == 2);
     }
 }
@@ -48,27 +48,27 @@ BOOST_AUTO_TEST_CASE(count_test)
 BOOST_AUTO_TEST_CASE(size_test)
 {
     {
-        using str = S_("");
+        using str = AR_STRING("");
         static_assert(utf8::code_point::size(str::get()) == 0);
     }
     {
-        using str = S_("h");
+        using str = AR_STRING("h");
         static_assert(utf8::code_point::size(str::get()) == 1);
     }
     {
-        using str = S_("hello");
+        using str = AR_STRING("hello");
         static_assert(utf8::code_point::size(str::get()) == 1);
     }
     {
-        using str = S_("Δ");
+        using str = AR_STRING("Δ");
         static_assert(utf8::code_point::size(str::get()) == 2);
     }
     {
-        using str = S_("猫");
+        using str = AR_STRING("猫");
         static_assert(utf8::code_point::size(str::get()) == 3);
     }
     {
-        using str = S_("🍌");
+        using str = AR_STRING("🍌");
         static_assert(utf8::code_point::size(str::get()) == 4);
     }
 }
@@ -76,36 +76,36 @@ BOOST_AUTO_TEST_CASE(size_test)
 BOOST_AUTO_TEST_CASE(decode_test)
 {
     {
-        using str = S_("");
+        using str = AR_STRING("");
         static_assert(!utf8::code_point::decode(str::get()).has_value());
     }
     {
-        using str = S_("g");
+        using str = AR_STRING("g");
         static_assert(utf8::code_point::decode(str::get()).has_value());
         static_assert(*utf8::code_point::decode(str::get()) == 103);
     }
     {
-        using str = S_("gh");
+        using str = AR_STRING("gh");
         static_assert(utf8::code_point::decode(str::get()).has_value());
         static_assert(*utf8::code_point::decode(str::get()) == 103);
     }
     {
-        using str = S_("Δ");
+        using str = AR_STRING("Δ");
         static_assert(utf8::code_point::decode(str::get()).has_value());
         static_assert(*utf8::code_point::decode(str::get()) == 916);
     }
     {
-        using str = S_("Δh");
+        using str = AR_STRING("Δh");
         static_assert(utf8::code_point::decode(str::get()).has_value());
         static_assert(*utf8::code_point::decode(str::get()) == 916);
     }
     {
-        using str = S_("gΔ");
+        using str = AR_STRING("gΔ");
         static_assert(utf8::code_point::decode(str::get()).has_value());
         static_assert(*utf8::code_point::decode(str::get()) == 103);
     }
     {
-        using str = S_("🙂");
+        using str = AR_STRING("🙂");
         static_assert(utf8::code_point::decode(str::get()).has_value());
         static_assert(*utf8::code_point::decode(str::get()) == 128578);
     }

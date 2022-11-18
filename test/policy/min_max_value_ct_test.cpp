@@ -100,58 +100,64 @@ BOOST_AUTO_TEST_CASE(validation_phase_test)
     test::data_set(
         f,
         std::tuple{
-            std::tuple{stub_node{policy::min_max_value<1, 4>(), policy::long_name<S_("node")>},
-                       2,
-                       true,
-                       ""},
-            std::tuple{stub_node{policy::min_max_value<1, 4>(), policy::long_name<S_("node")>},
-                       1,
-                       true,
-                       ""},
-            std::tuple{stub_node{policy::min_max_value<1, 4>(), policy::long_name<S_("node")>},
-                       4,
-                       true,
-                       ""},
-            std::tuple{stub_node{policy::min_max_value<1, 4>(), policy::long_name<S_("node")>},
-                       0,
-                       true,
-                       "Minimum value not reached: --node"},
-            std::tuple{stub_node{policy::min_max_value<1, 4>(), policy::long_name<S_("node")>},
-                       -5,
-                       true,
-                       "Minimum value not reached: --node"},
-            std::tuple{stub_node{policy::min_max_value<1, 4>(), policy::long_name<S_("node")>},
-                       6,
-                       true,
-                       "Maximum value exceeded: --node"},
+            std::tuple{
+                stub_node{policy::min_max_value<1, 4>(), policy::long_name<AR_STRING("node")>},
+                2,
+                true,
+                ""},
+            std::tuple{
+                stub_node{policy::min_max_value<1, 4>(), policy::long_name<AR_STRING("node")>},
+                1,
+                true,
+                ""},
+            std::tuple{
+                stub_node{policy::min_max_value<1, 4>(), policy::long_name<AR_STRING("node")>},
+                4,
+                true,
+                ""},
+            std::tuple{
+                stub_node{policy::min_max_value<1, 4>(), policy::long_name<AR_STRING("node")>},
+                0,
+                true,
+                "Minimum value not reached: --node"},
+            std::tuple{
+                stub_node{policy::min_max_value<1, 4>(), policy::long_name<AR_STRING("node")>},
+                -5,
+                true,
+                "Minimum value not reached: --node"},
+            std::tuple{
+                stub_node{policy::min_max_value<1, 4>(), policy::long_name<AR_STRING("node")>},
+                6,
+                true,
+                "Maximum value exceeded: --node"},
 
-            std::tuple{stub_node{policy::min_value<2>(), policy::long_name<S_("node")>},  //
+            std::tuple{stub_node{policy::min_value<2>(), policy::long_name<AR_STRING("node")>},  //
                        2,
                        true,
                        ""},
-            std::tuple{stub_node{policy::min_value<2>(), policy::long_name<S_("node")>},  //
+            std::tuple{stub_node{policy::min_value<2>(), policy::long_name<AR_STRING("node")>},  //
                        20,
                        true,
                        ""},
-            std::tuple{stub_node{policy::min_value<2>(), policy::long_name<S_("node")>},
+            std::tuple{stub_node{policy::min_value<2>(), policy::long_name<AR_STRING("node")>},
                        1,
                        true,
                        "Minimum value not reached: --node"},
 
-            std::tuple{stub_node{policy::max_value<2>(), policy::long_name<S_("node")>},  //
+            std::tuple{stub_node{policy::max_value<2>(), policy::long_name<AR_STRING("node")>},  //
                        2,
                        true,
                        ""},
-            std::tuple{stub_node{policy::max_value<2>(), policy::long_name<S_("node")>},  //
+            std::tuple{stub_node{policy::max_value<2>(), policy::long_name<AR_STRING("node")>},  //
                        1,
                        true,
                        ""},
-            std::tuple{stub_node{policy::max_value<2>(), policy::long_name<S_("node")>},
+            std::tuple{stub_node{policy::max_value<2>(), policy::long_name<AR_STRING("node")>},
                        20,
                        true,
                        "Maximum value exceeded: --node"},
 
-            std::tuple{stub_node{policy::long_name<S_("node")>}, 0, false, ""},
+            std::tuple{stub_node{policy::long_name<AR_STRING("node")>}, 0, false, ""},
         });
 }
 
@@ -192,7 +198,7 @@ public:
 }  // namespace
 
 int main() {
-    const auto node = stub_node{policy::long_name<S_("test")>,
+    const auto node = stub_node{policy::long_name<AR_STRING("test")>,
                                 policy::min_max_value<1, 4>()};
     node.validation_phase(2);
     return 0;
@@ -231,7 +237,7 @@ struct bad {
 }  // namespace
 
 int main() {
-    const auto node = stub_node{policy::long_name<S_("test")>,
+    const auto node = stub_node{policy::long_name<AR_STRING("test")>,
                                 policy::min_max_value_ct<void, void>()};
     return 0;
 }
@@ -265,7 +271,7 @@ public:
 }  // namespace
 
 int main() {
-    const auto node = stub_node{policy::long_name<S_("test")>,
+    const auto node = stub_node{policy::long_name<AR_STRING("test")>,
                                 policy::min_max_value_ct<int, void>()};
     return 0;
 }
@@ -299,7 +305,7 @@ public:
 }  // namespace
 
 int main() {
-    const auto node = stub_node{policy::long_name<S_("test")>,
+    const auto node = stub_node{policy::long_name<AR_STRING("test")>,
                                 policy::min_max_value_ct<void, int>()};
     return 0;
 }
@@ -337,7 +343,7 @@ struct bad {
 }  // namespace
 
 int main() {
-    const auto node = stub_node{policy::long_name<S_("test")>,
+    const auto node = stub_node{policy::long_name<AR_STRING("test")>,
                                 policy::min_max_value_ct<bad, void>()};
     return 0;
 }
@@ -375,7 +381,7 @@ struct bad {
 }  // namespace
 
 int main() {
-    const auto node = stub_node{policy::long_name<S_("test")>,
+    const auto node = stub_node{policy::long_name<AR_STRING("test")>,
                                 policy::min_max_value_ct<void, bad>()};
     return 0;
 }
@@ -409,7 +415,7 @@ public:
 }  // namespace
 
 int main() {
-    const auto node = stub_node{policy::long_name<S_("test")>,
+    const auto node = stub_node{policy::long_name<AR_STRING("test")>,
                                 policy::min_max_value<4, 1>()};
     return 0;
 }
@@ -443,7 +449,7 @@ public:
 }  // namespace
 
 int main() {
-    const auto node = stub_node{policy::long_name<S_("test")>,
+    const auto node = stub_node{policy::long_name<AR_STRING("test")>,
                                 policy::min_max_value<0u, 3>()};
     return 0;
 }
