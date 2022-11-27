@@ -30,7 +30,7 @@ BOOST_AUTO_TEST_CASE(policies_test)
 {
     [[maybe_unused]] auto f = arg<int>(policy::long_name<AR_STRING("hello")>,  //
                                        policy::short_name<'H'>);
-    static_assert(f.long_name() == "hello"sv, "Long name test fail");
+    static_assert(f.long_name() == "hello", "Long name test fail");
     static_assert(f.short_name() == "H", "Short name test fail");
 }
 
