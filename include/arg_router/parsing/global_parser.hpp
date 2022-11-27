@@ -37,11 +37,11 @@ struct parser<T, typename std::enable_if_t<std::is_arithmetic_v<T>>> {
     [[nodiscard]] static T parse(std::string_view token)
     {
         using namespace utility::string_view_ops;
-        using namespace std::string_literals;
+        using namespace std::string_view_literals;
 
         auto result = T{};
         if (!boost::conversion::try_lexical_convert(token, result)) {
-            throw parse_exception{"Failed to parse: "s + token};
+            throw parse_exception{"Failed to parse: "sv + token};
         }
 
         return result;
@@ -58,7 +58,6 @@ struct parser<bool> {
     [[nodiscard]] static inline bool parse(std::string_view token)
     {
         using namespace utility::string_view_ops;
-        using namespace std::string_literals;
         using namespace std::string_view_literals;
 
         constexpr auto true_tokens = std::array{
@@ -90,7 +89,7 @@ struct parser<bool> {
             return false;
         }
 
-        throw parse_exception{"Failed to parse: "s + token};
+        throw parse_exception{"Failed to parse: "sv + token};
     }
 };
 
