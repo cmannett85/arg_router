@@ -40,7 +40,7 @@ public:
     // NOLINTNEXTLINE(google-explicit-constructor,hicpp-explicit-conversions,*-c-arrays)
     constexpr compile_time_string_storage(const char (&str)[N])
     {
-        std::copy_n(str, N, value.begin());
+        std::copy_n(&str[0], N, value.begin());
     }
 
     // NOLINTNEXTLINE(google-explicit-constructor,hicpp-explicit-conversions)

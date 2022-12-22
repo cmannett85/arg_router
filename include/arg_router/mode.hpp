@@ -121,7 +121,7 @@ public:
      * @param pre_parse_data Pre-parse data aggregate
      * @param parents Parent node instances
      * @return Non-empty if the leading tokens in @a args are consumable by this node
-     * @exception parse_exception Thrown if a child node cannot be found, or a delegated child
+     * @exception multi_lang_exception Thrown if a child node cannot be found, or a delegated child
      * pre-parse policy throws
      */
     template <typename Validator, bool HasTarget, typename... Parents>
@@ -213,10 +213,10 @@ public:
 
             if (!match) {
                 if (matched.all()) {
-                    throw parse_exception{"Unhandled arguments", args};
+                    throw multi_lang_exception{error_code::unhandled_arguments, args};
                 }
 
-                throw parse_exception{"Unknown argument", front_token};
+                throw multi_lang_exception{error_code::unknown_argument, front_token};
             }
 
             // Flatten out nested sub-targets
@@ -240,7 +240,7 @@ public:
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
      * @param target Parse target
      * @param parents Parents instances pack
-     * @exception parse_exception Thrown if parsing failed
+     * @exception multi_lang_exception Thrown if parsing failed
      */
     template <typename... Parents>
     void parse(parsing::parse_target target, const Parents&... parents) const
@@ -314,7 +314,8 @@ public:
                           "Mode must have a router or all its children are modes");
         } else {
             // Mode guaranteed to be named here
-            throw parse_exception{"Mode requires arguments", parsing::node_token_type<mode_t>()};
+            throw multi_lang_exception{error_code::mode_requires_arguments,
+                                       parsing::node_token_type<mode_t>()};
         }
     }
 
@@ -372,7 +373,7 @@ private:
             // Child is named, but can only appear once on the command line, so perform the
             // pre-parse and if there is a match check it isn't already matched
             if (already_matched) {
-                throw parse_exception{"Argument has already been set", token};
+                throw multi_lang_exception{error_code::argument_has_already_been_set, token};
             }
         }
 
@@ -395,8 +396,8 @@ private:
                 child.merge(result, std::move(parse_result.get<result_type>()));
             } else {
                 if (result) {
-                    throw parse_exception{"Argument has already been set",
-                                          parsing::node_token_type<ChildType>()};
+                    throw multi_lang_exception{error_code::argument_has_already_been_set,
+                                               parsing::node_token_type<ChildType>()};
                 }
 
                 using result_type = decltype(std::declval<ChildType>().parse(

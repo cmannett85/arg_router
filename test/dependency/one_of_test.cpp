@@ -95,13 +95,14 @@ BOOST_AUTO_TEST_CASE(value_type_test)
     }
 }
 
-BOOST_AUTO_TEST_CASE(display_name_test)
+BOOST_AUTO_TEST_CASE(name_test)
 {
     {
         const auto of = ard::one_of(arg<int>(policy::long_name<AR_STRING("arg1")>),
                                     arg<double>(policy::long_name<AR_STRING("arg2")>),
                                     policy::required);
-        BOOST_CHECK_EQUAL(of.display_name(), "One of: --arg1,--arg2");
+        static_assert(of.display_name() == "One of: ");
+        static_assert(of.error_name() == "One of: --arg1,--arg2");
     }
 
     {
@@ -111,7 +112,8 @@ BOOST_AUTO_TEST_CASE(display_name_test)
                                     policy::alias(policy::long_name<AR_STRING("arg1")>)),
                         flag(policy::short_name<'f'>),
                         policy::required);
-        BOOST_CHECK_EQUAL(of.display_name(), "One of: --arg1,--arg2,-f");
+        static_assert(of.display_name() == "One of: ");
+        static_assert(of.error_name() == "One of: --arg1,--arg2,-f");
     }
 }
 
@@ -176,7 +178,7 @@ BOOST_AUTO_TEST_CASE(help_test)
         using help_data = typename node_type::template help_data_type<false>;
         using flattened_help_data = typename node_type::template help_data_type<true>;
 
-        static_assert(std::is_same_v<typename help_data::label, AR_STRING("One of:")>);
+        static_assert(help_data::label::get() == AR_STRING("One of: ")::get());
         static_assert(
             std::is_same_v<typename help_data::label, typename flattened_help_data::label>);
 
@@ -339,7 +341,7 @@ int main() {
     return 0;
 }
     )",
-             "All children must be named",
+             "Node does not have a name",
              "all_children_must_be_named_test"},
          {
              R"(

@@ -196,7 +196,7 @@ private:
             node.children());
 
         if (!result) {
-            throw parse_exception{"Unknown argument", token};
+            throw multi_lang_exception{error_code::unknown_argument, token};
         }
     }
 };

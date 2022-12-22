@@ -94,13 +94,14 @@ BOOST_AUTO_TEST_CASE(value_type_test)
     }
 }
 
-BOOST_AUTO_TEST_CASE(display_name_test)
+BOOST_AUTO_TEST_CASE(name_test)
 {
     {
         const auto ag = ard::alias_group(arg<double>(policy::long_name<AR_STRING("arg1")>),
                                          arg<double>(policy::long_name<AR_STRING("arg2")>),
                                          policy::required);
-        BOOST_CHECK_EQUAL(ag.display_name(), "Alias Group: --arg1,--arg2");
+        static_assert(ag.display_name() == "Alias Group: ");
+        static_assert(ag.error_name() == "Alias Group: --arg1,--arg2");
     }
 
     {
@@ -110,7 +111,8 @@ BOOST_AUTO_TEST_CASE(display_name_test)
                                        policy::alias(policy::long_name<AR_STRING("arg1")>)),
                              flag(policy::short_name<'f'>),
                              policy::required);
-        BOOST_CHECK_EQUAL(ag.display_name(), "Alias Group: --arg1,--arg2,-f");
+        static_assert(ag.display_name() == "Alias Group: ");
+        static_assert(ag.error_name() == "Alias Group: --arg1,--arg2,-f");
     }
 }
 
@@ -347,7 +349,7 @@ int main() {
     return 0;
 }
     )",
-             "All children must be named",
+             "Node does not have a name",
              "all_children_must_be_named_test"},
          {
              R"(

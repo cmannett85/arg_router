@@ -12,10 +12,7 @@
 #include "arg_router/help.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/alias.hpp"
-#include "arg_router/policy/custom_parser.hpp"
 #include "arg_router/policy/default_value.hpp"
-#include "arg_router/policy/dependent.hpp"
-#include "arg_router/policy/description.hpp"
 #include "arg_router/policy/display_name.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/none_name.hpp"
@@ -646,6 +643,10 @@ constexpr auto default_validator = validator<
     rule_q<common_rules::despecialised_any_of_rule<policy::router>,
            despecialised_unique_in_owner,
            parent_types<parent_index_pair_type<0, mode_t>, parent_index_pair_type<1, root_t>>>,
+    // Exception translator
+    rule_q<common_rules::despecialised_any_of_rule<policy::exception_translator_t>,
+           despecialised_unique_in_owner,
+           parent_types<parent_index_pair_type<0, root_t>>>,
     // Generic policy rule
     rule<policy::is_policy,  //
          despecialised_unique_in_owner>,

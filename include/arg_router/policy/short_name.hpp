@@ -9,13 +9,14 @@
 
 namespace arg_router::policy
 {
-/** Represents the short name of an argument.
+/** Represents the short name of a node.
  *
  * Although this type only accepts a single UTF-8 character, the parser expects it (or the short
  * name group it is a part of) to be preceded by the short prefix.
  *
- * If using C++17 then use the template variable helper with the <TT>S_</TT> macro; for C++20 and
- * higher, use the constructor directly with a compile-time string literal:
+ * If using C++17 then use the template variable helper with the <TT>S_</TT> macro or char; for
+ * C++20 and higher, use the char variable helper or the constructor directly with a compile-time
+ * string literal:
  * @code
  * constexpr auto a = ar::policy::short_name<'h'>;
  * constexpr auto b = ar::policy::short_name_utf8<S_("h")>;

@@ -150,7 +150,121 @@ int main() {
 }
     )",
                                   "Root does not support policies with any parsing phases",
-                                  "missing_phase_test"}});
+                                  "missing_phase_test"},
+                              {
+                                  R"(
+#include "arg_router/flag.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/validator.hpp"
+#include "arg_router/root.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    const auto m = root(policy::long_name<AR_STRING("root")>,
+                        policy::validation::default_validator,
+                        flag(policy::long_name<AR_STRING("hello")>));
+    return 0;
+}
+    )",
+                                  "Root cannot have name or description policies",
+                                  "long_name_test"},
+                              {
+                                  R"(
+#include "arg_router/flag.hpp"
+#include "arg_router/policy/short_name.hpp"
+#include "arg_router/policy/validator.hpp"
+#include "arg_router/root.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    const auto m = root(policy::short_name<'r'>,
+                        policy::validation::default_validator,
+                        flag(policy::long_name<AR_STRING("hello")>));
+    return 0;
+}
+    )",
+                                  "Root cannot have name or description policies",
+                                  "short_name_test"},
+                              {
+                                  R"(
+#include "arg_router/flag.hpp"
+#include "arg_router/policy/display_name.hpp"
+#include "arg_router/policy/validator.hpp"
+#include "arg_router/root.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    const auto m = root(policy::display_name<AR_STRING("root")>,
+                        policy::validation::default_validator,
+                        flag(policy::long_name<AR_STRING("hello")>));
+    return 0;
+}
+    )",
+                                  "Root cannot have name or description policies",
+                                  "display_name_test"},
+                              {
+                                  R"(
+#include "arg_router/flag.hpp"
+#include "arg_router/policy/none_name.hpp"
+#include "arg_router/policy/validator.hpp"
+#include "arg_router/root.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    const auto m = root(policy::none_name<AR_STRING("root")>,
+                        policy::validation::default_validator,
+                        flag(policy::long_name<AR_STRING("hello")>));
+    return 0;
+}
+    )",
+                                  "Root cannot have name or description policies",
+                                  "none_name_test"},
+                              {
+                                  R"(
+#include "arg_router/flag.hpp"
+#include "arg_router/policy/error_name.hpp"
+#include "arg_router/policy/validator.hpp"
+#include "arg_router/root.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    const auto m = root(policy::error_name<AR_STRING("root")>,
+                        policy::validation::default_validator,
+                        flag(policy::long_name<AR_STRING("hello")>));
+    return 0;
+}
+    )",
+                                  "Root cannot have name or description policies",
+                                  "error_name_test"},
+                              {
+                                  R"(
+#include "arg_router/flag.hpp"
+#include "arg_router/policy/description.hpp"
+#include "arg_router/policy/validator.hpp"
+#include "arg_router/root.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    const auto m = root(policy::description<AR_STRING("root")>,
+                        policy::validation::default_validator,
+                        flag(policy::long_name<AR_STRING("hello")>));
+    return 0;
+}
+    )",
+                                  "Root cannot have name or description policies",
+                                  "description_name_test"}});
 }
 
 BOOST_AUTO_TEST_SUITE_END()

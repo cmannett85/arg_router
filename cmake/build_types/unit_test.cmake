@@ -46,6 +46,8 @@ path_prefixer(TEST_SRCS
     policy/dependent_test.cpp
     policy/description_test.cpp
     policy/display_name_test.cpp
+    policy/error_name_test.cpp
+    policy/exception_translator_test.cpp
     policy/long_name_test.cpp
     policy/min_max_count_test.cpp
     policy/min_max_value_ct_test.cpp

@@ -30,8 +30,8 @@ class one_of_t : public detail::basic_one_of_t<AR_STRING("One of: "), Params...>
 
     static_assert(
         !parent_type::template any_phases_v<variant_type, policy::has_validation_phase_method>,
-        "one_of does not support policies with validation phases; as "
-        "it delegates those to its children");
+        "one_of does not support policies with validation phases; as it delegates those to its "
+        "children");
 
 public:
     using typename parent_type::children_type;
@@ -48,7 +48,7 @@ public:
     class help_data_type
     {
     public:
-        using label = AR_STRING("One of:");
+        using label = AR_STRING_SV(parent_type::display_name());
         using description = AR_STRING("");
         using children = typename parent_type::template  //
             children_help_data_type<Flatten>::children;
@@ -63,15 +63,13 @@ public:
     /** Propagates the pre-parse phase to the child, returns on a positive return from one of them.
      *
      * @tparam Validator Validator type
-     * @tparam HasTarget True if @a pre_parse_data contains the parent's
-     * parse_target
+     * @tparam HasTarget True if @a pre_parse_data contains the parent's parse_target
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
      * @param pre_parse_data Pre-parse data aggregate
      * @param parents Parent node instances
-     * @return Non-empty if the leading tokens in @a args are consumable by this
-     * node
-     * @exception parse_exception Thrown if any of the child pre-parse
-     * implementations have returned an exception
+     * @return Non-empty if the leading tokens in @a args are consumable by this node
+     * @exception multi_lang_exception Thrown if any of the child pre-parse implementations have
+     * returned an exception
      */
     template <typename Validator, bool HasTarget, typename... Parents>
     [[nodiscard]] std::optional<parsing::parse_target> pre_parse(

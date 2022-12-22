@@ -41,8 +41,8 @@ public:
      * is no non-root parent
      * @param target Pre-parse generated target
      * @param parents Parent node instances
-     * @return Either true if successful, or a parse_exception if a dependent
-     * argument is missing
+     * @return Either true if successful, or a multi_lang_exception if a dependent argument is
+     * missing
      */
     template <typename ProcessedTarget, typename... Parents>
     [[nodiscard]] parsing::pre_parse_result pre_parse_phase(
@@ -83,9 +83,8 @@ public:
                 }
             }
 
-            result = parse_exception{"Dependent argument missing (needs to be before the "
-                                     "requiring token on the command line)",
-                                     parsing::node_token_type<node_target>()};
+            result = multi_lang_exception{error_code::dependent_argument_missing,
+                                          parsing::node_token_type<node_target>()};
         });
 
         return result;

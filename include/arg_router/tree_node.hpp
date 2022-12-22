@@ -408,7 +408,7 @@ protected:
      * @param node This node instance
      * @param parents Parent node instances
      * @return Non-empty if the leading tokens in @a args are consumable by this node
-     * @exception parse_exception Thrown if any of the policies' pre-parse implementations have
+     * @exception multi_lang_exception Thrown if any of the policies' pre-parse implementations have
      * returned an exception
      */
     template <typename Validator, bool HasTarget, typename Node, typename... Parents>
@@ -512,7 +512,7 @@ protected:
      * @param token Token to parse
      * @param parents Parents instances pack
      * @return Parsed result
-     * @exception parse_exception Thrown if parsing failed
+     * @exception multi_lang_exception Thrown if parsing failed
      */
     template <typename ValueType, typename... Parents>
     [[nodiscard]] auto parse(std::string_view token, const Parents&... parents) const

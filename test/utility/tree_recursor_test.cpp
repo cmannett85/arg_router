@@ -256,7 +256,7 @@ BOOST_AUTO_TEST_CASE(tree_type_recursor_collector_test)
 
     using result_type = utility::tree_type_recursor_collector_t<tree_type_visitor, Root>;
 
-    static_assert(std::tuple_size_v<result_type> == 16, "Test failed");
+    static_assert(std::tuple_size_v<result_type> == 17, "Test failed");
     static_assert(std::is_same_v<std::tuple_element_t<0, result_type>,
                                  std::tuple<arg_router::policy::default_value<bool>,
                                             flag_t<policy::description_t<AR_STRING("test1")>,
@@ -290,7 +290,7 @@ BOOST_AUTO_TEST_CASE(tree_type_recursor_collector_test)
                                             Root>>,
                   "Test failed");
     static_assert(std::is_same_v<                             //
-                      std::tuple_element_t<15, result_type>,  //
+                      std::tuple_element_t<16, result_type>,  //
                       std::tuple<Root>>,
                   "Test failed");
 }

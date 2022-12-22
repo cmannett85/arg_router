@@ -19,7 +19,7 @@ BOOST_AUTO_TEST_SUITE(root_wrapper_suite)
 
 BOOST_AUTO_TEST_CASE(parse_test)
 {
-    auto f = [](auto lang, auto args, auto parse_result, std::string exception_message) {
+    auto f = [](auto lang, auto args, auto parse_result, auto ec) {
         auto result = std::optional<int>{};
         const auto r =
             multi_lang::root_wrapper<AR_STRING("en_GB"), AR_STRING("fr"), AR_STRING("es")>(
@@ -40,11 +40,13 @@ BOOST_AUTO_TEST_CASE(parse_test)
 
         try {
             r.parse(args.size(), const_cast<char**>(args.data()));
-            BOOST_CHECK(exception_message.empty());
+            BOOST_CHECK(!ec);
             BOOST_REQUIRE(!!result);
             BOOST_CHECK_EQUAL(*result, parse_result);
-        } catch (parse_exception& e) {
-            BOOST_CHECK_EQUAL(e.what(), exception_message);
+        } catch (multi_lang_exception& e) {
+            BOOST_REQUIRE(ec);
+            BOOST_CHECK_EQUAL(e.ec(), ec->ec());
+            BOOST_CHECK_EQUAL(e.tokens(), ec->tokens());
         }
     };
 
@@ -52,19 +54,37 @@ BOOST_AUTO_TEST_CASE(parse_test)
         f,
         {
             // English
-            std::tuple{"en_GB", std::vector{"foo", "--hello", "42"}, 42, ""},
+            std::tuple{"en_GB",
+                       std::vector{"foo", "--hello", "42"},
+                       42,
+                       std::optional<multi_lang_exception>{}},
             std::tuple{"en_GB",
                        std::vector{"foo", "--bonjour", "42"},
                        42,
-                       "Unknown argument: --bonjour"},
+                       std::optional<multi_lang_exception>{
+                           test::create_exception(error_code::unknown_argument, {"--bonjour"})}},
 
             // French
-            std::tuple{"fr", std::vector{"foo", "--bonjour", "42"}, 42, ""},
-            std::tuple{"fr", std::vector{"foo", "--hello", "42"}, 42, "Unknown argument: --hello"},
+            std::tuple{"fr",
+                       std::vector{"foo", "--bonjour", "42"},
+                       42,
+                       std::optional<multi_lang_exception>{}},
+            std::tuple{"fr",
+                       std::vector{"foo", "--hello", "42"},
+                       42,
+                       std::optional<multi_lang_exception>{
+                           test::create_exception(error_code::unknown_argument, {"--hello"})}},
 
             // Spanish
-            std::tuple{"es", std::vector{"foo", "--hola", "42"}, 42, ""},
-            std::tuple{"es", std::vector{"foo", "--hello", "42"}, 42, "Unknown argument: --hello"},
+            std::tuple{"es",
+                       std::vector{"foo", "--hola", "42"},
+                       42,
+                       std::optional<multi_lang_exception>{}},
+            std::tuple{"es",
+                       std::vector{"foo", "--hello", "42"},
+                       42,
+                       std::optional<multi_lang_exception>{
+                           test::create_exception(error_code::unknown_argument, {"--hello"})}},
         });
 }
 

@@ -64,7 +64,7 @@ public:
      * @param target Parse target
      * @param parents Parents instances pack
      * @return Parsed result
-     * @exception parse_exception Thrown if parsing failed
+     * @exception multi_lang_exception Thrown if parsing failed
      */
     template <typename... Parents>
     value_type parse(parsing::parse_target&& target, const Parents&... parents) const

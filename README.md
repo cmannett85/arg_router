@@ -687,7 +687,7 @@ A simple file copier and mover.
 
 An example program for arg_router.
 
-$ AR_LOCALE_OVERRIDE=fr ./example_simple_ml -h
+$ AR_LOCALE_OVERRIDE=fr ./example_simple_ml_cpp20 -h
 simple v0.1
 
 Un simple copieur et déménageur de fichiers.
@@ -704,7 +704,7 @@ Un simple copieur et déménageur de fichiers.
 
 Un exemple de programme pour arg_router.
 
-$ AR_LOCALE_OVERRIDE=ja ./example_simple_ml -h
+$ AR_LOCALE_OVERRIDE=ja ./example_simple_ml_cpp20 -h
 simple v0.1
 
 ファイルをコピーおよび移動するためのシンプルなプログラム。
@@ -721,7 +721,7 @@ simple v0.1
 
 「arg_router」のサンプルプログラム。
 
-$ AR_LOCALE_OVERRIDE=foo ./example_simple_ml -h
+$ AR_LOCALE_OVERRIDE=foo ./example_simple_ml_cpp20 -h
 simple v0.1
 
 A simple file copier and mover.
@@ -737,6 +737,46 @@ A simple file copier and mover.
         <SRC> [1]      Source file path
 
 An example program for arg_router.
+```
+Optionally, you can also provide translations for the exception messages by defining an `error_code_translations` subtype that consists of a tuple of pairs that form a mapping between the error code and translation string.  If this isn't provided then an internal `en_GB` one is automatically used instead.
+```cpp
+template <>
+class translation<str<"ja">>
+{
+public:
+    ...
+
+    using error_code_translations = std::tuple<
+        std::pair<traits::integral_constant<error_code::unknown_argument>, str<"不明な引数">>,
+        std::pair<traits::integral_constant<error_code::unhandled_arguments>, str<"未処理の引数">>,
+        std::pair<traits::integral_constant<error_code::argument_has_already_been_set>,
+                  str<"引数はすでに設定されています">>,
+        std::pair<traits::integral_constant<error_code::failed_to_parse>,
+                  str<"解析に失敗しました">>,
+        std::pair<traits::integral_constant<error_code::no_arguments_passed>,
+                  str<"引数が渡されませんでした">>,
+        std::pair<traits::integral_constant<error_code::minimum_value_not_reached>,
+                  str<"最小値に達していません">>,
+        std::pair<traits::integral_constant<error_code::maximum_value_exceeded>,
+                  str<"最大値を超えました">>,
+        std::pair<traits::integral_constant<error_code::minimum_count_not_reached>,
+                  str<"最小数に達していません">>,
+        std::pair<traits::integral_constant<error_code::mode_requires_arguments>,
+                  str<"モードには引数が必要です">>,
+        std::pair<traits::integral_constant<error_code::missing_required_argument>,
+                  str<"必要な引数がありません">>,
+        std::pair<traits::integral_constant<error_code::too_few_values_for_alias>,
+                  str<"エイリアス値が少なすぎる">>,
+        std::pair<
+            traits::integral_constant<error_code::dependent_argument_missing>,
+            str<"従属引数がありません (コマンドラインで必要なトークンの前に置く必要があります)">>>;
+};
+```
+Could yield:
+```
+$ AR_LOCALE_OVERRIDE=ja ./example_simple_ml_cpp20 -🐱
+terminate called after throwing an instance of 'arg_router::parse_exception'
+  what():  不明な引数: -🐱
 ```
 
 ### Note ###

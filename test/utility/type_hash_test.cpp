@@ -3,6 +3,7 @@
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #include "arg_router/utility/type_hash.hpp"
+#include "arg_router/policy/description.hpp"
 #include "arg_router/policy/validator.hpp"
 
 #include "test_helpers.hpp"
