@@ -95,6 +95,8 @@ path_prefixer(HEADERS
     include/arg_router/policy/dependent.hpp
     include/arg_router/policy/description.hpp
     include/arg_router/policy/display_name.hpp
+    include/arg_router/policy/error_name.hpp
+    include/arg_router/policy/exception_translator.hpp
     include/arg_router/policy/flatten_help.hpp
     include/arg_router/policy/long_name.hpp
     include/arg_router/policy/none_name.hpp

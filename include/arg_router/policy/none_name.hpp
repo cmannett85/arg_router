@@ -8,7 +8,7 @@
 
 namespace arg_router::policy
 {
-/** Represents the name of an argument that does not use any token prefix (i.e.
+/** Represents the name of a node that does not use any token prefix (i.e.
  * parsing::prefix_type == none).
  *
  * The only node that uses this in the library is mode_t.

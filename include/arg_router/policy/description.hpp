@@ -8,7 +8,7 @@
 
 namespace arg_router::policy
 {
-/** Represents the description of an argument.
+/** Represents the description of a node.
  *
  * If using C++17 then use the template variable helper with the <TT>S_</TT> macro; for C++20 and
  * higher, use the constructor directly with a compile-time string literal:

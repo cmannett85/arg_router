@@ -28,7 +28,7 @@ public:
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
      * @param parents Parents instances pack, not used in this method
      * @return Nothing, it will throw if called
-     * @exception parse_exception Thrown if this method is called
+     * @exception multi_lang_exception Thrown if this method is called
      */
     template <typename ValueType, typename... Parents>
     [[noreturn]] ValueType missing_phase([[maybe_unused]] const Parents&... parents) const
@@ -37,7 +37,8 @@ public:
 
         using node_type = boost::mp11::mp_first<std::tuple<Parents...>>;
 
-        throw parse_exception{"Missing required argument", parsing::node_token_type<node_type>()};
+        throw multi_lang_exception{error_code::missing_required_argument,
+                                   parsing::node_token_type<node_type>()};
     }
 };
 

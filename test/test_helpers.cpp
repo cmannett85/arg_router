@@ -151,6 +151,17 @@ void compile(std::uint8_t i,
 }
 }  // namespace
 
+multi_lang_exception test::create_exception(error_code ec,
+                                            std::initializer_list<std::string_view> tokens)
+{
+    auto t = std::vector<parsing::token_type>{};
+    for (auto token : tokens) {
+        t.push_back(parsing::get_token_type(token));
+    }
+
+    return multi_lang_exception{ec, std::move(t)};
+}
+
 void test::death_test_compile(std::forward_list<death_test_info> tests)
 {
     // Not re-entrant

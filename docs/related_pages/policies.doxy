@@ -18,8 +18,8 @@ namespace arg_router
  * policy::long_name_t is a simple example of this, the user provides a string which is then exposed
  * by the static method <TT>long_name()</TT>. <TT>long_name()</TT> is a 'common' method i.e. one
  * that is known by the library so any policy that has that method can be used to provide long
- * names to nodes.  Look in the @ref traits namespace for the <TT>has_*_method</TT> traits types for
- * all the common methods.
+ * names to nodes.  Look in the traits namespace for the <TT>has_*_method</TT> traits types for all
+ * the common methods.
  * 
  * @subsection policies_basic_tag_type Tag Type
  * Some policies are tag types, just their presence indicates that @em something needs to be done.

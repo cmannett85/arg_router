@@ -17,6 +17,7 @@ using namespace ar::utility::string_view_ops;
 
 namespace arg_router::multi_lang
 {
+// Apologies for any translation faux pas - Google Translate did it for me!
 template <>
 class translation<str<"en_GB">>
 {
@@ -57,6 +58,33 @@ public:
     using move = str<"déplacer">;
     using move_description = str<"Déplacer le fichier source vers la destination">;
     using source_description = str<"Chemin du fichier source">;
+
+    using error_code_translations = std::tuple<
+        std::pair<traits::integral_constant<error_code::unknown_argument>, str<"Argument inconnu">>,
+        std::pair<traits::integral_constant<error_code::unhandled_arguments>,
+                  str<"Arguments non gérés">>,
+        std::pair<traits::integral_constant<error_code::argument_has_already_been_set>,
+                  str<"L'argument a déjà été défini">>,
+        std::pair<traits::integral_constant<error_code::failed_to_parse>,
+                  str<"L'analyse a échoué">>,
+        std::pair<traits::integral_constant<error_code::no_arguments_passed>,
+                  str<"Aucun argument passé">>,
+        std::pair<traits::integral_constant<error_code::minimum_value_not_reached>,
+                  str<"Valeur minimale non atteinte">>,
+        std::pair<traits::integral_constant<error_code::maximum_value_exceeded>,
+                  str<"Valeur maximale dépassée">>,
+        std::pair<traits::integral_constant<error_code::minimum_count_not_reached>,
+                  str<"Nombre minimum non atteint">>,
+        std::pair<traits::integral_constant<error_code::mode_requires_arguments>,
+                  str<"Le mode nécessite des arguments">>,
+        std::pair<traits::integral_constant<error_code::missing_required_argument>,
+                  str<"Argument requis manquant">>,
+        std::pair<traits::integral_constant<error_code::too_few_values_for_alias>,
+                  str<"Trop peu de valeurs pour l'alias">>,
+        std::pair<
+            traits::integral_constant<error_code::dependent_argument_missing>,
+            str<"Argument dépendant manquant (doit être avant le jeton requis sur la ligne de "
+                "commande)">>>;
 };
 
 template <>
@@ -78,6 +106,31 @@ public:
     using move = str<"移動">;
     using move_description = str<"ソース ファイルを宛先に移動する">;
     using source_description = str<"ソース ファイル パス">;
+
+    using error_code_translations = std::tuple<
+        std::pair<traits::integral_constant<error_code::unknown_argument>, str<"不明な引数">>,
+        std::pair<traits::integral_constant<error_code::unhandled_arguments>, str<"未処理の引数">>,
+        std::pair<traits::integral_constant<error_code::argument_has_already_been_set>,
+                  str<"引数はすでに設定されています">>,
+        std::pair<traits::integral_constant<error_code::failed_to_parse>,
+                  str<"解析に失敗しました">>,
+        std::pair<traits::integral_constant<error_code::no_arguments_passed>,
+                  str<"引数が渡されませんでした">>,
+        std::pair<traits::integral_constant<error_code::minimum_value_not_reached>,
+                  str<"最小値に達していません">>,
+        std::pair<traits::integral_constant<error_code::maximum_value_exceeded>,
+                  str<"最大値を超えました">>,
+        std::pair<traits::integral_constant<error_code::minimum_count_not_reached>,
+                  str<"最小数に達していません">>,
+        std::pair<traits::integral_constant<error_code::mode_requires_arguments>,
+                  str<"モードには引数が必要です">>,
+        std::pair<traits::integral_constant<error_code::missing_required_argument>,
+                  str<"必要な引数がありません">>,
+        std::pair<traits::integral_constant<error_code::too_few_values_for_alias>,
+                  str<"エイリアス値が少なすぎる">>,
+        std::pair<
+            traits::integral_constant<error_code::dependent_argument_missing>,
+            str<"従属引数がありません (コマンドラインで必要なトークンの前に置く必要があります)">>>;
 };
 }  // namespace arg_router::multi_lang
 
@@ -120,7 +173,6 @@ void move_mode(bool force, fs::path&& dest, fs::path&& src)
 
 int main(int argc, char* argv[])
 {
-    // Apologies for any translation faux pas - Google Translate did it for me!
     ar::multi_lang::root<ar::str<"en_GB">, ar::str<"fr">, ar::str<"ja">>(  //
         ar::multi_lang::iso_locale(locale_name()),
         [&](auto tr_) {
@@ -137,6 +189,7 @@ int main(int argc, char* argv[])
 
             return ar::root(
                 arp::validation::default_validator,
+                arp::exception_translator<tr>,
                 ar::help(arp::long_name<typename tr::help>,
                          arp::short_name_t{"h"_S},
                          arp::description<typename tr::help_description>,

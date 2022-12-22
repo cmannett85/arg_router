@@ -13,6 +13,7 @@
 #include "arg_router/utility/compile_time_string.hpp"
 
 #include "test_helpers.hpp"
+#include "test_printers.hpp"
 
 using namespace arg_router;
 using namespace std::string_literals;
@@ -51,7 +52,7 @@ BOOST_AUTO_TEST_CASE(parse_test)
     auto f = [&](const auto& root,
                  auto help_index,
                  auto tokens,
-                 const auto& fail_message,
+                 const auto& ec,
                  const auto& expected_output) {
         output.clear();
 
@@ -60,10 +61,12 @@ BOOST_AUTO_TEST_CASE(parse_test)
             auto target = help_node.pre_parse(parsing::pre_parse_data{tokens}, root);
 
             help_node.parse(std::move(*target), root);
-            BOOST_CHECK(fail_message.empty());
+            BOOST_CHECK(!ec);
             BOOST_CHECK_EQUAL(output, expected_output);
-        } catch (parse_exception& e) {
-            BOOST_CHECK_EQUAL(e.what(), fail_message);
+        } catch (multi_lang_exception& e) {
+            BOOST_REQUIRE(ec);
+            BOOST_CHECK_EQUAL(e.ec(), ec->ec());
+            BOOST_CHECK_EQUAL(e.tokens(), ec->tokens());
         }
     };
 
@@ -85,7 +88,7 @@ BOOST_AUTO_TEST_CASE(parse_test)
                                       policy::router{[&](auto stream) { output = stream.str(); }})},
                        traits::integral_constant<3>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "--help"}},
-                       ""s,
+                       std::optional<multi_lang_exception>{},
                        R"(foo v3.14
 
 My foo is good for you
@@ -110,7 +113,7 @@ My foo is good for you
                                       policy::router{[&](auto stream) { output = stream.str(); }})},
                        traits::integral_constant<3>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "-h"}},
-                       ""s,
+                       std::optional<multi_lang_exception>{},
                        R"(foo v3.14
 
 My foo is good for you
@@ -142,7 +145,7 @@ My foo is good for you
                        traits::integral_constant<0>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "-h"},
                                                         {parsing::prefix_type::none, "mode1"}},
-                       ""s,
+                       std::optional<multi_lang_exception>{},
                        R"(foo v3.14
 
 My foo is good for you
@@ -174,7 +177,7 @@ mode1             Mode1 description
                        traits::integral_constant<0>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "-h"},
                                                         {parsing::prefix_type::none, "mode2"}},
-                       ""s,
+                       std::optional<multi_lang_exception>{},
                        R"(foo v3.14
 
 My foo is good for you
@@ -198,7 +201,7 @@ mode2
                        traits::integral_constant<3>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "--help"},
                                                         {parsing::prefix_type::none, "-b"}},
-                       ""s,
+                       std::optional<multi_lang_exception>{},
                        R"(foo v3.14
 
 My foo is good for you
@@ -228,7 +231,7 @@ My foo is good for you
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "-h"},
                                                         {parsing::prefix_type::none, "mode1"},
                                                         {parsing::prefix_type::none, "--flag2"}},
-                       ""s,
+                       std::optional<multi_lang_exception>{},
                        R"(foo v3.14
 
 My foo is good for you
@@ -251,7 +254,8 @@ My foo is good for you
                        traits::integral_constant<3>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "--help"},
                                                         {parsing::prefix_type::none, "--foo"}},
-                       "Unknown argument: --foo"s,
+                       std::optional<multi_lang_exception>{
+                           test::create_exception(error_code::unknown_argument, {"--foo"})},
                        ""s},
             std::tuple{mock_root{help(policy::long_name<AR_STRING("help")>,
                                       policy::short_name<'h'>,
@@ -276,7 +280,8 @@ My foo is good for you
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "-h"},
                                                         {parsing::prefix_type::none, "mode1"},
                                                         {parsing::prefix_type::none, "--foo"}},
-                       "Unknown argument: --foo"s,
+                       std::optional<multi_lang_exception>{
+                           test::create_exception(error_code::unknown_argument, {"--foo"})},
                        ""s},
         });
 }

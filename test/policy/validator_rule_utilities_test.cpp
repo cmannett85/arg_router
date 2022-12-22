@@ -27,14 +27,14 @@ BOOST_AUTO_TEST_CASE(find_index_of_rule_type_test)
         constexpr auto pos = arp::validation::utility::find_index_of_rule_type<
             arp::validation::common_rules::despecialised_any_of_rule<arg_t>,
             arp::validation::utility::default_rules>();
-        static_assert(pos == 8, "Test failed");
+        static_assert(pos == 9, "Test failed");
     }
 
     {
         constexpr auto pos = arp::validation::utility::find_index_of_rule_type<
             arp::validation::common_rules::despecialised_any_of_rule<std::vector>,
             arp::validation::utility::default_rules>();
-        static_assert(pos == 16, "Test failed");
+        static_assert(pos == 17, "Test failed");
     }
 }
 
@@ -129,12 +129,12 @@ BOOST_AUTO_TEST_CASE(remove_rule_test)
 
     {
         using new_rules =
-            arp::validation::utility::remove_rule_t<8, arp::validation::utility::default_rules>;
+            arp::validation::utility::remove_rule_t<9, arp::validation::utility::default_rules>;
         static_assert(std::tuple_size_v<new_rules> ==
                           (std::tuple_size_v<arp::validation::utility::default_rules> - 1),
                       "Test failed");
 
-        using next_rule = std::tuple_element_t<8, new_rules>;
+        using next_rule = std::tuple_element_t<9, new_rules>;
         static_assert(
             std::is_same_v<
                 next_rule,
@@ -181,7 +181,7 @@ BOOST_AUTO_TEST_CASE(remove_rule_by_type_test)
                           (std::tuple_size_v<arp::validation::utility::default_rules> - 1),
                       "Test failed");
 
-        using next_rule = std::tuple_element_t<8, new_rules>;
+        using next_rule = std::tuple_element_t<9, new_rules>;
         static_assert(
             std::is_same_v<
                 next_rule,
@@ -280,7 +280,7 @@ BOOST_AUTO_TEST_CASE(update_rule_by_type_test)
                           (std::tuple_size_v<arp::validation::utility::default_rules>),
                       "Test failed");
 
-        using updated_rule = std::tuple_element_t<8, new_rules>;
+        using updated_rule = std::tuple_element_t<9, new_rules>;
         static_assert(std::is_same_v<
                           updated_rule,
                           arp::validation::rule_q<
@@ -315,12 +315,12 @@ BOOST_AUTO_TEST_CASE(add_to_rule_types_test)
 
     {
         using new_rules = arp::validation::utility::
-            add_to_rule_types_t<8, std::vector, arp::validation::utility::default_rules>;
+            add_to_rule_types_t<9, std::vector, arp::validation::utility::default_rules>;
         static_assert(std::tuple_size_v<new_rules> ==
                           (std::tuple_size_v<arp::validation::utility::default_rules>),
                       "Test failed");
 
-        using updated_rule = std::tuple_element_t<8, new_rules>;
+        using updated_rule = std::tuple_element_t<9, new_rules>;
         static_assert(
             std::is_same_v<
                 updated_rule,
@@ -368,7 +368,7 @@ BOOST_AUTO_TEST_CASE(add_to_rule_types_by_rule_test)
                           (std::tuple_size_v<arp::validation::utility::default_rules>),
                       "Test failed");
 
-        using updated_rule = std::tuple_element_t<8, new_rules>;
+        using updated_rule = std::tuple_element_t<9, new_rules>;
         static_assert(
             std::is_same_v<
                 updated_rule,

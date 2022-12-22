@@ -22,6 +22,7 @@ enum class theme_t { none, classic, solarized };
 
 enum class verbosity_level_t { error, warning, info, debug };
 
+// NOLINTNEXTLINE(*-avoid-c-arrays)
 constexpr char version[] = "v3.14";
 constexpr auto no_line_limit = -1;
 
@@ -161,7 +162,7 @@ int main(int argc, char* argv[])
         ar::flag(arp::long_name_t{"version"_S},
                  arp::description_t{"Output version information and exit"_S},
                  arp::router{[](bool) {
-                     std::cout << version << std::endl;
+                     std::cout << &version[0] << std::endl;
                      std::exit(EXIT_SUCCESS);
                  }}),
         ar::mode(

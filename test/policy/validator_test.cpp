@@ -3,6 +3,7 @@
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #include "arg_router/policy/validator.hpp"
+#include "arg_router/policy/description.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 #include "test_helpers.hpp"
@@ -496,6 +497,7 @@ int main() {
              "no_parent_policy_parent_must_not_have_policy_test"},
          {
              R"(
+#include "arg_router/policy/description.hpp"
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 

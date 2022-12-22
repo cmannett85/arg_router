@@ -54,18 +54,18 @@ BOOST_AUTO_TEST_CASE(type_test)
 {
     {
         using router_type = policy::router<std::function<void()>>;
-        BOOST_CHECK((std::is_same_v<typename router_type::callable_type, std::function<void()>>));
+        static_assert(std::is_same_v<typename router_type::callable_type, std::function<void()>>);
     }
 
     {
         using router_type = policy::router<std::function<double()>>;
-        BOOST_CHECK((std::is_same_v<typename router_type::callable_type, std::function<double()>>));
+        static_assert(std::is_same_v<typename router_type::callable_type, std::function<double()>>);
     }
 
     {
         using router_type = policy::router<std::function<double(float, int)>>;
-        BOOST_CHECK((std::is_same_v<typename router_type::callable_type,
-                                    std::function<double(float, int)>>));
+        static_assert(
+            std::is_same_v<typename router_type::callable_type, std::function<double(float, int)>>);
     }
 }
 

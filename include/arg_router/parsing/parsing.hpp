@@ -23,7 +23,7 @@ enum class pre_parse_action : std::uint8_t {
 };
 
 /** Policy-level pre-parse phase result type. */
-using pre_parse_result = utility::result<pre_parse_action, parse_exception>;
+using pre_parse_result = utility::result<pre_parse_action, multi_lang_exception>;
 
 /** Matches @a token to @a T by comparing the token against the long, short, or none name traits.
  *
@@ -58,14 +58,17 @@ template <typename T>
 /** Returns the token_type of @a Node, the long form name is preferred if @a Node has both short and
  * long form names.
  *
- * @note If @a Node does not have a display, none, long, or short name; it is a compliation failure
+ * @note The error name is preferred over all others as this function is only used for exception
+ * string generation.  If no known name method is detected, it is a compilation error
  * @tparam Node Node type
  * @return token_type
  */
 template <typename Node>
 [[nodiscard]] constexpr token_type node_token_type() noexcept
 {
-    if constexpr (traits::has_display_name_method_v<Node>) {
+    if constexpr (traits::has_error_name_method_v<Node>) {
+        return {prefix_type::none, Node::error_name()};
+    } else if constexpr (traits::has_display_name_method_v<Node>) {
         return {prefix_type::none, Node::display_name()};
     } else if constexpr (traits::has_long_name_method_v<Node>) {
         return {prefix_type::long_, Node::long_name()};

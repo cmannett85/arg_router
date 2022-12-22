@@ -76,7 +76,7 @@ public:
      * @param target Parse target
      * @param parents Parents instances pack
      * @return Parsed result
-     * @exception parse_exception Thrown if routing phase failed
+     * @exception multi_lang_exception Thrown if routing phase failed
      */
     template <typename... Parents>
     value_type parse([[maybe_unused]] parsing::parse_target&& target,

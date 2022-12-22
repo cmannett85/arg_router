@@ -5,6 +5,7 @@
 #pragma once
 
 #include "arg_router/policy/display_name.hpp"
+#include "arg_router/policy/error_name.hpp"
 #include "arg_router/policy/no_result_value.hpp"
 #include "arg_router/tree_node.hpp"
 
@@ -12,7 +13,7 @@
 
 namespace arg_router::dependency::detail
 {
-// Collect the child names and concetenate into a compile time string for the one_of display name
+// Collect the child names and concetenate into a compile time string for the display name
 template <typename ParentDocName, typename... Params>
 struct generate_string_of_child_names {
 private:
@@ -30,32 +31,8 @@ private:
         // This is clunky, but it's still more readable than doing it with bare types
         constexpr static auto build()
         {
-            using policies = typename Child::policies_type;
-            constexpr auto num_policies = std::tuple_size_v<policies>;
-
-            // Find display name
-            constexpr auto display_index =
-                boost::mp11::mp_find_if<policies, traits::has_display_name_method>::value;
-            if constexpr (display_index >= num_policies) {
-                // Find long name
-                constexpr auto long_index =
-                    boost::mp11::mp_find_if<policies, traits::has_long_name_method>::value;
-                if constexpr (long_index >= num_policies) {
-                    // Find short name
-                    constexpr auto short_index =
-                        boost::mp11::mp_find_if<policies, traits::has_short_name_method>::value;
-
-                    static_assert(short_index < num_policies, "All children must be named");
-
-                    return AR_STRING_SV(config::short_prefix){} +
-                           typename std::tuple_element_t<short_index, policies>::string_type{};
-                } else {
-                    return AR_STRING_SV(config::long_prefix){} +
-                           typename std::tuple_element_t<long_index, policies>::string_type{};
-                }
-            } else {
-                return typename std::tuple_element_t<display_index, policies>::string_type{};
-            }
+            constexpr auto token = parsing::node_token_type<Child>();
+            return AR_STRING_SV(parsing::to_string(token.prefix)){} + AR_STRING_SV(token.name){};
         }
 
         using type = typename std::decay_t<decltype(build())>;
@@ -93,18 +70,54 @@ public:
 #endif
 };
 
-template <typename ParentDocName, typename... Params>
-class basic_one_of_t :
-    public tree_node<
-        policy::display_name_t<
-            typename generate_string_of_child_names<ParentDocName, std::decay_t<Params>...>::type>,
-        std::decay_t<Params>...>
+// If a display_name has been specified, then use that otherwise use the dev-provided default.
+// Always generate an error string referring to the children
+template <typename DefaultString, typename... Policies>
+class add_names
 {
-    // C++ really needs a super_type...
-    using parent_type = tree_node<
-        policy::display_name_t<
-            typename generate_string_of_child_names<ParentDocName, std::decay_t<Params>...>::type>,
-        std::decay_t<Params>...>;
+    template <typename Policy, typename Enable = void>
+    struct has_display_name_t : std::false_type {
+    };
+
+    template <typename Policy>
+    struct has_display_name_t<Policy, std::enable_if_t<policy::is_policy_v<Policy>>> {
+        constexpr static bool value = traits::has_display_name_method_v<Policy>;
+    };
+
+    using policies_tuple = std::tuple<std::decay_t<Policies>...>;
+
+    using display_index = boost::mp11::mp_find_if<policies_tuple, has_display_name_t>;
+
+    template <typename I>
+    using display_type = typename std::tuple_element_t<I::value, policies_tuple>::string_type;
+
+public:
+    constexpr static auto has_display_name =
+        display_index::value != std::tuple_size_v<policies_tuple>;
+
+private:
+    using display_string =
+        boost::mp11::mp_eval_if_c<!has_display_name, DefaultString, display_type, display_index>;
+
+    using policies_tuple_with_error_name =
+        boost::mp11::mp_push_front<policies_tuple,
+                                   policy::error_name_t<typename generate_string_of_child_names<
+                                       display_string,
+                                       std::decay_t<Policies>...>::type>>;
+
+public:
+    using type = std::conditional_t<
+        has_display_name,
+        boost::mp11::mp_rename<policies_tuple_with_error_name, tree_node>,
+        boost::mp11::mp_rename<boost::mp11::mp_push_front<policies_tuple_with_error_name,
+                                                          policy::display_name_t<DefaultString>>,
+                               tree_node>>;
+};
+
+template <typename ParentDocName, typename... Params>
+class basic_one_of_t : public add_names<ParentDocName, Params...>::type
+{
+    using parent_type = typename add_names<ParentDocName, Params...>::type;
 
     static_assert((std::tuple_size_v<typename parent_type::children_type> >= 2),
                   "basic_one_of_t must have at least one two child nodes");
@@ -169,8 +182,22 @@ protected:
             last_prefixer<boost::mp11::mp_back<children_type>>>;
     };
 
-    constexpr explicit basic_one_of_t(Params... params) noexcept :
-        parent_type{std::tuple_element_t<0, policies_type>{}, std::move(params)...}
+    template <auto has_display_name = add_names<ParentDocName, Params...>::has_display_name>
+    constexpr explicit basic_one_of_t(Params... params,
+                                      // NOLINTNEXTLINE(*-named-parameter)
+                                      std::enable_if_t<has_display_name>* = nullptr) noexcept :
+        parent_type{std::tuple_element_t<0, policies_type>{},  // Error name
+                    std::move(params)...}
+    {
+    }
+
+    template <auto has_display_name = add_names<ParentDocName, Params...>::has_display_name>
+    constexpr explicit basic_one_of_t(Params... params,
+                                      // NOLINTNEXTLINE(*-named-parameter)
+                                      std::enable_if_t<!has_display_name>* = nullptr) noexcept :
+        parent_type{std::tuple_element_t<0, policies_type>{},  // Display name
+                    std::tuple_element_t<1, policies_type>{},  // Error name
+                    std::move(params)...}
     {
     }
 };

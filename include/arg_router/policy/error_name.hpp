@@ -8,25 +8,23 @@
 
 namespace arg_router::policy
 {
-/** Represents the display name of a node.
+/** Represents the error name of an argument.
  *
- * A display name is a label given to a node that appears in the help output, but is not used in the
- * token parsing.
- *
- * In the default validator, this policy is not allowed to be used with long_name and short_name -
- * as we shouldn't be trying to confuse the user...
+ * An error name is a label given to a node such that when it throws an error, this label is used
+ * to represent the node.  This policy is typically not for use by users, it is for node
+ * developers to tune their node's representation in error output.
  *
  * If using C++17 then use the template variable helper with the <TT>S_</TT> macro; for C++20 and
  * higher, use the constructor directly with a compile-time string literal:
  * @code
- * constexpr auto a = ar::policy::display_name<S_("hello")>;
- * constexpr auto b = ar::policy::display_name_t{"hello"_S};
+ * constexpr auto a = ar::policy::error_name<S_("hello")>;
+ * constexpr auto b = ar::policy::error_name_t{"hello"_S};
  * @endcode
- * @note Display names must not be empty
+ * @note Error names must not be empty
  * @tparam S Compile-time string
  */
 template <typename S>
-class display_name_t
+class error_name_t
 {
 public:
     /** String type. */
@@ -36,16 +34,16 @@ public:
      *
      * @param str String instance
      */
-    constexpr explicit display_name_t([[maybe_unused]] S str = {}) noexcept {}
+    constexpr explicit error_name_t([[maybe_unused]] S str = {}) noexcept {}
 
     /** Returns the name.
      *
      * @return Display name
      */
-    [[nodiscard]] constexpr static std::string_view display_name() noexcept { return S::get(); }
+    [[nodiscard]] constexpr static std::string_view error_name() noexcept { return S::get(); }
 
 private:
-    static_assert(!display_name().empty(), "Display name must not be empty");
+    static_assert(!error_name().empty(), "Error name must not be empty");
 };
 
 /** Constant variable helper.
@@ -53,9 +51,9 @@ private:
  * @tparam S Compile-time string
  */
 template <typename S>
-constexpr auto display_name = display_name_t<S>{};
+constexpr auto error_name = error_name_t<S>{};
 
 template <typename S>
-struct is_policy<display_name_t<S>> : std::true_type {
+struct is_policy<error_name_t<S>> : std::true_type {
 };
 }  // namespace arg_router::policy

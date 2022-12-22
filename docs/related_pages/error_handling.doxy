@@ -1,0 +1,100 @@
+// Copyright (C) 2022 by Camden Mannett.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
+
+namespace arg_router
+{
+/** @page error_handling Error Handling
+ *
+ * Error handling in arg_router is exclusively done through exceptions.  The only exception the user
+ * will encounter is parse_exception.
+ *
+ * parse_exception is @em not used internally though, internally multi_lang_exception is used
+ * instead and this carries an error code rather than a string.  As the name suggests, this so it
+ * can be mapped (upon exit from the library) to a translated error message which is then re-thrown
+ * as a parse_exception.
+ *
+ * The translation mapping is done via a <TT>translation::error_code_translations</TT> subtype, for
+ * example:
+ * @code
+ template <>
+ class translation<str<"ja">>
+ {
+     public:
+       ...
+
+     using error_code_translations = std::tuple<
+         std::pair<traits::integral_constant<error_code::unknown_argument>, str<"不明な引数">>,
+         std::pair<traits::integral_constant<error_code::unhandled_arguments>, str<"未処理の引数">>,
+         std::pair<traits::integral_constant<error_code::argument_has_already_been_set>,
+                   str<"引数はすでに設定されています">>,
+         std::pair<traits::integral_constant<error_code::failed_to_parse>,
+                   str<"解析に失敗しました">>,
+         std::pair<traits::integral_constant<error_code::no_arguments_passed>,
+                   str<"引数が渡されませんでした">>,
+         std::pair<traits::integral_constant<error_code::minimum_value_not_reached>,
+                   str<"最小値に達していません">>,
+         std::pair<traits::integral_constant<error_code::maximum_value_exceeded>,
+                   str<"最大値を超えました">>,
+         std::pair<traits::integral_constant<error_code::minimum_count_not_reached>,
+                   str<"最小数に達していません">>,
+         std::pair<traits::integral_constant<error_code::mode_requires_arguments>,
+                   str<"モードには引数が必要です">>,
+         std::pair<traits::integral_constant<error_code::missing_required_argument>,
+                   str<"必要な引数がありません">>,
+         std::pair<traits::integral_constant<error_code::too_few_values_for_alias>,
+                   str<"エイリアス値が少なすぎる">>,
+         std::pair<
+             traits::integral_constant<error_code::dependent_argument_missing>,
+             str<"従属引数がありません (コマンドラインで必要なトークンの前に置く必要があります)">>>;
+ };
+ * @endcode
+ * If <TT>translation::error_code_translations</TT> is not provided for a language specialisation,
+ * then the library will fall back to the internal en_GB version.
+ *
+ * Node or policy developers will need to define their own error codes for errors specifc to their
+ * type.  Taking the <TT>is_even</TT> policy from the custom_node_and_policy example to demonstrate:
+ * @code
+constexpr auto not_even_ec = std::size_t{1000};
+
+namespace arg_router::multi_lang
+{
+template <>
+class translation<str<"ja">>
+{
+    public:
+    ...
+
+    using error_code_translations = std::tuple<
+        std::pair<traits::integral_constant<not_even_ec>, str<"非偶数値">>,
+        ...
+    >;
+};
+}
+
+template <typename ValueType>
+class is_even
+{
+    static_assert(std::is_integral_v<ValueType>, "ValueType must be an integer");
+
+public:
+    template <typename... Parents>
+    void validation_phase(const ValueType& value, [[maybe_unused]] const Parents&... parents) const
+    {
+        using node_type = boost::mp11::mp_first<std::tuple<Parents...>>;
+
+        if (value % 2 != 0) {
+            throw ar::multi_lang_exception{not_even_ec, parsing::node_token_type<node_type>()};
+        }
+    }
+};
+ * @endcode
+ * To avoid clashes upon upgrading the library, developers are encouraged to define their own error
+ * codes above 1000.  If a custom error code is not available in <TT>error_code_translations</TT>
+ * then the error string is:
+ * @code
+ * Untranslated error code (N): <tokens>
+ * @endcode
+ */
+}
+

@@ -130,7 +130,7 @@ BOOST_FIXTURE_TEST_CASE(root_test, allocator_fixture)
         } catch (parse_exception& e) {
             BOOST_CHECK(!router_hit);
             BOOST_CHECK_GE(allocator_fixture::allocated_bytes, 139u);
-            BOOST_CHECK_GE(allocator_fixture::current_bytes, 33u);
+            BOOST_CHECK_GE(allocator_fixture::current_bytes, 31u);
         }
     }
     BOOST_CHECK_EQUAL(allocator_fixture::current_bytes, 0u);

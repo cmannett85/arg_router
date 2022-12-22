@@ -54,8 +54,7 @@ public:
      * is no non-root parent
      * @param target Pre-parse generated target
      * @param parents Parent node instances
-     * @return Either true if successful, or a parse_exception if there too
-     * few value tokens
+     * @return Either true if successful, or a multi_lang_exception if there too few value tokens
      */
     template <typename ProcessedTarget, typename... Parents>
     [[nodiscard]] parsing::pre_parse_result pre_parse_phase(
@@ -90,8 +89,8 @@ public:
 
         // +1 because the node must be named
         if ((count + 1) > tokens.size()) {
-            return parse_exception{"Too few values for alias, needs " + std::to_string(count),
-                                   parsing::node_token_type<node_type>()};
+            return multi_lang_exception{error_code::too_few_values_for_alias,
+                                        parsing::node_token_type<node_type>()};
         }
 
         // Because this node's job is to create sub-targets, and therefore isn't a 'real' node in

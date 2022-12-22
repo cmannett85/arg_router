@@ -20,7 +20,7 @@ namespace arg_router
  * @tparam T Type to parse @a token into
  * @param token Command line token to parse
  * @return The parsed instance
- * @exception parse_exception Thrown if parsing failed
+ * @exception multi_lang_exception Thrown if parsing failed
  */
 template <typename T, typename Enable = void>
 struct parser {
@@ -41,7 +41,8 @@ struct parser<T, typename std::enable_if_t<std::is_arithmetic_v<T>>> {
 
         auto result = T{};
         if (!boost::conversion::try_lexical_convert(token, result)) {
-            throw parse_exception{"Failed to parse: "sv + token};
+            throw multi_lang_exception{error_code::failed_to_parse,
+                                       parsing::token_type{parsing::prefix_type::none, token}};
         }
 
         return result;
@@ -89,7 +90,8 @@ struct parser<bool> {
             return false;
         }
 
-        throw parse_exception{"Failed to parse: "sv + token};
+        throw multi_lang_exception{error_code::failed_to_parse,
+                                   parsing::token_type{parsing::prefix_type::none, token}};
     }
 };
 
