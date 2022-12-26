@@ -746,21 +746,19 @@ BOOST_AUTO_TEST_CASE(nested_mode_test)
 
 BOOST_AUTO_TEST_CASE(one_of_required_test)
 {
-    auto result = std::optional<std::tuple<int, std::variant<bool, int, std::string_view>>>{};
-
-    const auto r =
-        root(mode(arg<int>(policy::long_name<AR_STRING("arg1")>, policy::default_value{42}),
-                  ard::one_of(flag(policy::short_name<'f'>),
-                              arg<int>(policy::long_name<AR_STRING("arg2")>),
-                              arg<std::string_view>(policy::long_name<AR_STRING("arg3")>),
-                              policy::required),
-                  policy::router{[&](int arg1, std::variant<bool, int, std::string_view> of) {
-                      result = std::tuple{arg1, std::move(of)};
-                  }}),
-             policy::validation::default_validator);
-
     auto f = [&](auto args, auto arg1_expected, auto of_expected, std::string fail_message) {
-        result.reset();
+        auto result = std::optional<std::tuple<int, std::variant<bool, int, std::string_view>>>{};
+
+        const auto r =
+            root(mode(arg<int>(policy::long_name<AR_STRING("arg1")>, policy::default_value{42}),
+                      ard::one_of(flag(policy::short_name<'f'>),
+                                  arg<int>(policy::long_name<AR_STRING("arg2")>),
+                                  arg<std::string_view>(policy::long_name<AR_STRING("arg3")>),
+                                  policy::required),
+                      policy::router{[&](int arg1, std::variant<bool, int, std::string_view> of) {
+                          result = std::tuple{arg1, std::move(of)};
+                      }}),
+                 policy::validation::default_validator);
 
         try {
             r.parse(args.size(), const_cast<char**>(args.data()));
@@ -789,21 +787,19 @@ BOOST_AUTO_TEST_CASE(one_of_required_test)
 
 BOOST_AUTO_TEST_CASE(one_of_default_value_test)
 {
-    auto result = std::optional<std::tuple<int, std::variant<bool, int, std::string_view>>>{};
-
-    const auto r =
-        root(mode(arg<int>(policy::long_name<AR_STRING("arg1")>, policy::default_value{42}),
-                  ard::one_of(flag(policy::short_name<'f'>),
-                              arg<int>(policy::long_name<AR_STRING("arg2")>),
-                              arg<std::string_view>(policy::long_name<AR_STRING("arg3")>),
-                              policy::default_value{"goodbye"sv}),
-                  policy::router{[&](int arg1, std::variant<bool, int, std::string_view> of) {
-                      result = std::tuple{arg1, std::move(of)};
-                  }}),
-             policy::validation::default_validator);
-
     auto f = [&](auto args, auto arg1_expected, auto of_expected, std::string fail_message) {
-        result.reset();
+        auto result = std::optional<std::tuple<int, std::variant<bool, int, std::string_view>>>{};
+
+        const auto r =
+            root(mode(arg<int>(policy::long_name<AR_STRING("arg1")>, policy::default_value{42}),
+                      ard::one_of(flag(policy::short_name<'f'>),
+                                  arg<int>(policy::long_name<AR_STRING("arg2")>),
+                                  arg<std::string_view>(policy::long_name<AR_STRING("arg3")>),
+                                  policy::default_value{"goodbye"sv}),
+                      policy::router{[&](int arg1, std::variant<bool, int, std::string_view> of) {
+                          result = std::tuple{arg1, std::move(of)};
+                      }}),
+                 policy::validation::default_validator);
 
         try {
             r.parse(args.size(), const_cast<char**>(args.data()));

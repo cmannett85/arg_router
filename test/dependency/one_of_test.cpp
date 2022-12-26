@@ -170,6 +170,32 @@ BOOST_AUTO_TEST_CASE(pre_parse_test)
         });
 }
 
+BOOST_AUTO_TEST_CASE(one_of_fail_test)
+{
+    auto fake_parent = stub_node{policy::long_name<AR_STRING("parent")>};
+    auto node = ard::one_of(stub_node{policy::long_name<AR_STRING("arg1")>},
+                            stub_node{policy::long_name<AR_STRING("arg2")>},
+                            policy::required);
+
+    std::get<0>(node.children()).return_value = true;
+    std::get<1>(node.children()).return_value = false;
+    auto expected_args = std::vector<parsing::token_type>{{parsing::prefix_type::none, "hello"}};
+    auto result = node.pre_parse(parsing::pre_parse_data{expected_args}, fake_parent);
+    BOOST_CHECK(result);
+
+    std::get<0>(node.children()).return_value = false;
+    std::get<1>(node.children()).return_value = true;
+    BOOST_CHECK_EXCEPTION(  //
+        (void)node.pre_parse(parsing::pre_parse_data{expected_args}, fake_parent),
+        multi_lang_exception,
+        [](const auto& e) {
+            return (e.ec() == error_code::one_of_selected_type_mismatch) &&
+                   (e.tokens().size() == 1) &&
+                   (e.tokens().front() ==
+                    parsing::token_type{parsing::prefix_type::none, "One of: --arg1,--arg2"});
+        });
+}
+
 BOOST_AUTO_TEST_CASE(help_test)
 {
     auto f = [](const auto& node, auto expected_child_strings) {

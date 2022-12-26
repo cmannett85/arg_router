@@ -77,6 +77,8 @@ BOOST_AUTO_TEST_CASE(default_test)
             std::tuple{test::create_exception(error_code::dependent_argument_missing, {"--foo"}),
                        "Dependent argument missing (needs to be before the requiring token on the "
                        "command line): --foo"},
+            std::tuple{test::create_exception(error_code::one_of_selected_type_mismatch, {"--foo"}),
+                       "Only one argument from a \"One Of\" can be used at once: --foo"},
             std::tuple{test::create_exception(static_cast<error_code>(1048)),
                        "Untranslated error code (1048)"},
             std::tuple{test::create_exception(static_cast<error_code>(1048), {"--foo"}),

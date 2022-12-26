@@ -9,7 +9,7 @@
 
 namespace arg_router::dependency
 {
-/** Groups child nodes such that any @em one can be used on the command line.
+/** Groups child nodes such that any @em one can be used on the command line, but only one.
  *
  * The value_type is a variant of all the policies' value_types that are not derived from
  * policy::no_result_value.  If that list is only a single type, then it collapses into just that
@@ -69,24 +69,59 @@ public:
      * @param parents Parent node instances
      * @return Non-empty if the leading tokens in @a args are consumable by this node
      * @exception multi_lang_exception Thrown if any of the child pre-parse implementations have
-     * returned an exception
+     * returned an exception, or if called more than once resolving to different children (i.e.
+     * a "one of" violation)
      */
     template <typename Validator, bool HasTarget, typename... Parents>
     [[nodiscard]] std::optional<parsing::parse_target> pre_parse(
         parsing::pre_parse_data<Validator, HasTarget> pre_parse_data,
         const Parents&... parents) const
     {
+        // We need to wrap the pre_parse_data validator so that we can catch child type mismatches
+        // before the caller's validation, otherwise the user can get misleading error messages
+        const auto validator = [&](const auto& child, const auto&... parents) {
+            using child_type = std::decay_t<decltype(child)>;
+
+            auto type_hash = utility::type_hash<child_type>();
+            if (last_typeid_) {
+                if (type_hash != *last_typeid_) {
+                    throw multi_lang_exception{error_code::one_of_selected_type_mismatch,
+                                               parsing::node_token_type<one_of_t>()};
+                }
+            } else {
+                last_typeid_ = type_hash;
+            }
+
+            return pre_parse_data.validator()(child, parents...);
+        };
+        auto wrapper =
+            std::optional<parsing::pre_parse_data<std::decay_t<decltype(validator)>, HasTarget>>{};
+        if constexpr (pre_parse_data.has_target) {
+            wrapper =
+                parsing::pre_parse_data{pre_parse_data.args(), pre_parse_data.target(), validator};
+        } else {
+            wrapper = parsing::pre_parse_data{pre_parse_data.args(), validator};
+        }
+
         auto found = std::optional<parsing::parse_target>{};
         utility::tuple_iterator(
             [&](auto /*i*/, const auto& child) {
                 if (!found) {
-                    found = child.pre_parse(pre_parse_data, parents...);
+                    found = child.pre_parse(*wrapper, parents...);
+                    if (found) {
+                        // There is no requirement to use pre_parse_data validation, so we also
+                        // need to manually check here
+                        validator(child, parents...);
+                    }
                 }
             },
             this->children());
 
         return found;
     }
+
+private:
+    mutable std::optional<std::size_t> last_typeid_;
 };
 
 /** Constructs a one_of_t with the given policies and children.
