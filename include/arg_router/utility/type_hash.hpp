@@ -18,8 +18,8 @@ namespace detail
     static_assert((sizeof(std::size_t) == 4) || (sizeof(std::size_t) == 8),
                   "std::size_t must be 32 or 64 bits");
 
-    // Personally I hate this and previously had it as two separate overloads, but that caused
-    // ambiguity on AppleClang hence approach
+    // Personally, I hate this and previously had it as two separate overloads, but that caused
+    // ambiguity on AppleClang hence this approach
     if constexpr (sizeof(std::size_t) == 4) {
         constexpr auto c1 = std::uint32_t{0xcc9e2d51};
         constexpr auto c2 = std::uint32_t{0x1b873593};

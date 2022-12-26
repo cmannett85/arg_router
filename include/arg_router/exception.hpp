@@ -54,6 +54,8 @@ enum class error_code : std::size_t {
                                     ///< value tokens
     dependent_argument_missing,     ///< A node has dependency, but that dependency is not specified
                                     ///< on the command line
+    one_of_selected_type_mismatch,  ///< A one_of child node has already been selected, and it does
+                                    ///< not match the current selection
 };
 
 /** Default error code translations in en_GB.
@@ -84,7 +86,9 @@ struct default_error_code_translations {
                              AR_STRING("Too few values for alias")>,
                    std::pair<traits::integral_constant<error_code::dependent_argument_missing>,
                              AR_STRING("Dependent argument missing (needs to be before the "
-                                       "requiring token on the command line)")>>;
+                                       "requiring token on the command line)")>,
+                   std::pair<traits::integral_constant<error_code::one_of_selected_type_mismatch>,
+                             AR_STRING("Only one argument from a \"One Of\" can be used at once")>>;
 };
 
 /** Used internally by the library (and node developers) to indicate failure.

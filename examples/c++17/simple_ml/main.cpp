@@ -82,7 +82,9 @@ public:
                   S_("Trop peu de valeurs pour l'alias")>,
         std::pair<traits::integral_constant<error_code::dependent_argument_missing>,
                   S_("Argument dépendant manquant (doit être avant le jeton requis sur la ligne de "
-                     "commande)")>>;
+                     "commande)")>,
+        std::pair<traits::integral_constant<error_code::one_of_selected_type_mismatch>,
+                  S_("Un seul argument d'un \"One Of\" peut être utilisé à la fois")>>;
 };
 
 template <>
@@ -127,7 +129,9 @@ public:
                   S_("エイリアス値が少なすぎる")>,
         std::pair<
             traits::integral_constant<error_code::dependent_argument_missing>,
-            S_("従属引数がありません (コマンドラインで必要なトークンの前に置く必要があります)")>>;
+            S_("従属引数がありません (コマンドラインで必要なトークンの前に置く必要があります)")>,
+        std::pair<traits::integral_constant<error_code::one_of_selected_type_mismatch>,
+                  S_("一度に許可される「One Of」引数は1つだけです")>>;
 };
 }  // namespace arg_router::multi_lang
 
