@@ -69,7 +69,7 @@ jobs:
       run: |
         mkdir -p ${{ env.BUILD_DIR }}
         cd ${{ env.BUILD_DIR }}
-        cmake ${{ github.workspace }} -G "Ninja" -DCMAKE_CXX_COMPILER=clang++-14 -DENABLE_CLANG_TIDY=ON -DDEATH_TEST_PARALLEL=2
+        cmake ${{ github.workspace }} -G "Ninja" -DCMAKE_CXX_COMPILER=clang++-14 -DENABLE_CLANG_TIDY=ON -DDEATH_TEST_PARALLEL=2 -DENABLE_CLANG_FORMAT_CHECKS=ON
         cmake --build . --target arg_router_test_coverage cpp17_examples cpp20_examples
 
     # We run the tests under Valgrind rather than ASan/UBSan because when combined with coverage
