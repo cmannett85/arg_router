@@ -850,6 +850,8 @@ Disabling RTTI is rarely feasible for most projects, but it is possible to disab
 ## Extra Documentation
 Complete Doxygen-generated API documentation is available [here](https://cmannett85.github.io/arg_router/).  Examples are provided in the `examples` directory of the repo or online [here](https://cmannett85.github.io/arg_router/examples.html).
 
+The latest unit test coverage report is found [here](https://cmannett85.github.io/arg_router/gcov_html/).
+
 ## Future Work
 Take a look at the [issues](https://github.com/cmannett85/arg_router/issues) page for all upcoming features and fixes.  Highlights are:
 * Finally get it working on MSVC ([#102](https://github.com/cmannett85/arg_router/issues/102))

@@ -20,14 +20,46 @@ jobs:
 
     - name: Update packages
       run: |
-        sudo apt install doxygen graphviz
+        sudo apt update
+        sudo apt install lcov ninja-build doxygen graphviz
 
-    - name: Generate API documentation
+    - name: Bootstrap vcpkg to build the NuGet client
+      run: |
+        ./vcpkg/bootstrap-vcpkg.sh -disableMetrics
+
+    - name: Configure NuGet client
+      run: |
+        mono `./vcpkg/vcpkg fetch nuget | tail -n 1` \
+          sources add \
+          -source ${{ env.NUGET_SOURCE_URL }} \
+          -storepasswordincleartext \
+          -name "vcpkg-cache" \
+          -username "cmannett85" \
+          -password "${{ secrets.GITHUB_TOKEN }}"
+        mono `./vcpkg/vcpkg fetch nuget | tail -n 1` \
+          setapikey "${{ secrets.GITHUB_TOKEN }}" \
+          -source ${{ env.NUGET_SOURCE_URL }}
+
+    - name: Generate API documentation and build Unit Tests
       run: |
         mkdir -p ${{ env.BUILD_DIR }}
         cd ${{ env.BUILD_DIR }}
-        cmake ${{ github.workspace }} -DINSTALLATION_ONLY=ON
-        cmake --build . --target documentation
+        cmake ${{ github.workspace }} -G "Ninja" -DCMAKE_CXX_COMPILER=clang++-14 -DDEATH_TEST_PARALLEL=2
+        cmake --build . --target documentation arg_router_test_coverage
+
+    - name: Run unit tests to generate coverage data
+      timeout-minutes: 30
+      run: |
+        cd ${{ env.BUILD_DIR }}/test
+        ./arg_router_test_coverage -l test_suite
+
+    - name: Generate coverage report
+      run: |
+        cd ${{ github.workspace }}/scripts/ci
+        ./calculate_test_coverage.sh ${{ env.BUILD_DIR }}
+        cd ${{ env.BUILD_DIR }}
+        genhtml arg_router.info --no-function-coverage --title "arg_router Unit Test Code Coverage" --legend --highlight --output-directory gcov_html
+        cp -rf ./gcov_html ${GITHUB_WORKSPACE}/docs/doxygen/html/
 
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3

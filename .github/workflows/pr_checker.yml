@@ -74,7 +74,7 @@ jobs:
 
     # We run the tests under Valgrind rather than ASan/UBSan because when combined with coverage
     # causes hangs in the death tests
-    - name: Run unit tests under Valgrind
+    - name: Run unit tests under Valgrind and generate coverage data
       timeout-minutes: 30
       run: |
         cd ${{ env.BUILD_DIR }}/test
