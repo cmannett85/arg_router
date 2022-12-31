@@ -11,16 +11,16 @@ namespace arg_router
  * accessible globally (in a more C++ friendly way) in the @ref config namespace.  All are available
  * as CMake cache variables, minus the "AR_" prefix.
  * 
- * <TT>AR_MAX_CTS_SIZE</TT> is the maximum size a utility::compile_time_string can be, it defaults
- * to 128.  This is used by the @ref S_ macro.  Increasing the size won't increase your program
- * size, but will increase the build time
+ * <TT>AR_MAX_CTS_SIZE</TT> when using C++17 or if <TT>AR_DISABLE_CPP20_STRINGS=true</TT> is the
+ * maximum size an argument to <TT>S_</TT> can be, it defaults to 128.  Increasing the size won't
+ * increase your program size, but will increase the build time.
  * 
  * <TT>AR_LONG_PREFIX</TT> is the character string that defines the prefix of <I>long</I>-form token
- * labels e.g. "--help".  It defaults to two hyphens. If redefining, this must have more characters
- * that <TT>AR_SHORT_PREFIX</TT>.
+ * labels e.g. "--help".  It defaults to two hyphens. If redefining, this must have the same or more
+ * characters than <TT>AR_SHORT_PREFIX</TT>.
  * 
  * <TT>AR_SHORT_PREFIX</TT> is the character string that defines the prefix of <I>short</I>-form
- * token labels e.g. "-h".  It defaults to one hyphen.  It must have at least one character in it.
+ * token labels e.g. "-h".  It defaults to one hyphen.  It must have one character in it.
  * 
  * <TT>AR_ALLOCATOR</TT> sets the allocator for all allocating types in arg_router (e.g.
  * <TT>std::vector</TT>, <TT>std::string</TT>, etc.).  It defaults to <TT>std::allocator</TT>, i.e.
@@ -29,5 +29,8 @@ namespace arg_router
  * <TT>AR_UTF8_TRAILING_WINDOW_SIZE</TT> sets the Trailing window size for the grapheme cluster and
  * line break algorithms, defaults to 16.  Each entry in the trailing window is a break property of
  * a grapheme cluster ("user-perceived character"), not a byte.
+ *
+ * <TT>AR_DISABLE_CPP20_STRINGS</TT> is a boolean value that forcibly disables C++20 compile-time
+ * string support when set to true.
  */
 }

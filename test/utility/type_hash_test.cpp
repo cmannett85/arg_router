@@ -3,6 +3,7 @@
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #include "arg_router/utility/type_hash.hpp"
+#include "arg_router/policy/description.hpp"
 #include "arg_router/policy/validator.hpp"
 
 #include "test_helpers.hpp"
@@ -27,8 +28,10 @@ BOOST_AUTO_TEST_CASE(negative_primitives_test)
             using second_type = std::tuple_element_t<j.value, primitive_types>;
 
             if constexpr (i != j) {
-                static_assert(utility::type_hash<first_type>() != utility::type_hash<second_type>(),
-                              "Test failed");
+                BOOST_CHECK_NE(utility::type_hash<first_type>(), utility::type_hash<second_type>());
+            } else {
+                BOOST_CHECK_EQUAL(utility::type_hash<first_type>(),
+                                  utility::type_hash<second_type>());
             }
         });
     });
@@ -39,42 +42,45 @@ BOOST_AUTO_TEST_CASE(positive_primitives_test)
     utility::tuple_type_iterator<primitive_types>([](auto i) {
         using primitive_type = std::tuple_element_t<i, primitive_types>;
 
-        static_assert(utility::type_hash<primitive_type>() == utility::type_hash<primitive_type>(),
-                      "Test failed");
+        BOOST_CHECK_EQUAL(utility::type_hash<primitive_type>(),
+                          utility::type_hash<primitive_type>());
     });
 }
 
 BOOST_AUTO_TEST_CASE(node_test)
 {
-    const auto a = root(mode(arg<int>(policy::long_name<S_("hello")>,
+    const auto a = root(mode(arg<int>(policy::long_name<AR_STRING("hello")>,
                                       policy::required,
-                                      policy::description<S_("Hello description")>),
+                                      policy::description<AR_STRING("Hello description")>),
                              policy::router{[&](auto) {}}),
                         policy::validation::default_validator);
-    const auto b = root(mode(arg<int>(policy::long_name<S_("goodbye")>,
+    const auto b = root(mode(arg<int>(policy::long_name<AR_STRING("goodbye")>,
                                       policy::required,
-                                      policy::description<S_("Hello description")>),
+                                      policy::description<AR_STRING("Hello description")>),
                              policy::router{[&](auto) {}}),
                         policy::validation::default_validator);
 
-    static_assert(utility::type_hash<decltype(a)>() != utility::type_hash<decltype(b)>(),
-                  "Test failed");
-    static_assert(utility::type_hash<decltype(a)>() == utility::type_hash<decltype(a)>(),
-                  "Test failed");
-    static_assert(utility::type_hash<decltype(b)>() == utility::type_hash<decltype(b)>(),
-                  "Test failed");
+    BOOST_CHECK_NE(utility::type_hash<decltype(a)>(), utility::type_hash<decltype(b)>());
+    BOOST_CHECK_EQUAL(utility::type_hash<decltype(a)>(), utility::type_hash<decltype(a)>());
+    BOOST_CHECK_EQUAL(utility::type_hash<decltype(b)>(), utility::type_hash<decltype(b)>());
 }
 
 BOOST_AUTO_TEST_CASE(const_test)
 {
-    static_assert(utility::type_hash<const int>() != utility::type_hash<int>(), "Test failed");
+    BOOST_CHECK_NE(utility::type_hash<const int>(), utility::type_hash<int>());
 }
 
 BOOST_AUTO_TEST_CASE(alias_test)
 {
     using alias_type = std::uint64_t;
-    static_assert(utility::type_hash<alias_type>() == utility::type_hash<std::uint64_t>(),
-                  "Test failed");
+    BOOST_CHECK_EQUAL(utility::type_hash<alias_type>(), utility::type_hash<std::uint64_t>());
+}
+
+BOOST_AUTO_TEST_CASE(short_name_test)
+{
+    auto a = flag(policy::short_name<'a'>);
+    auto b = flag(policy::short_name<'b'>);
+    BOOST_CHECK_NE(utility::type_hash<decltype(a)>(), utility::type_hash<decltype(b)>());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

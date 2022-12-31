@@ -29,7 +29,11 @@ struct tuple_element<I, boost::mp11::mp_list<T...>> {
 }  // namespace std
 
 /** Namespace for all arg_router types and functions. */
-namespace arg_router::traits
+namespace arg_router
+{
+class multi_lang_exception;
+
+namespace traits
 {
 /** Regardless of @a T, always evaluates to false.
  *
@@ -354,6 +358,25 @@ struct has_none_name_method {
 template <typename T>
 constexpr bool has_none_name_method_v = has_none_name_method<T>::value;
 
+/** Determine if a type has a <TT>error_name()</TT> static method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+struct has_error_name_method {
+    template <typename U>
+    using type = decltype(U::error_name());
+
+    constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
+};
+
+/** Helper variable for has_error_name_method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+constexpr bool has_error_name_method_v = has_error_name_method<T>::value;
+
 /** Determine if a type has a <TT>description()</TT> static method.
  *
  * @tparam T Type to query
@@ -548,6 +571,45 @@ struct has_parse_method {
 template <typename T>
 constexpr static bool has_parse_method_v = has_parse_method<T>::value;
 
+/** Determine if a type has a <TT>translate_exception</TT> method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+struct has_translate_exception_method {
+    template <typename U>
+    using type = decltype(U::translate_exception(std::declval<const multi_lang_exception&>()));
+
+    constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
+};
+
+/** Helper variable for has_translate_exception_method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+constexpr static bool has_translate_exception_method_v = has_translate_exception_method<T>::value;
+
+/** Determine if a type has a <TT>error_code_translations</TT> nested type.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+struct has_error_code_translations_type {
+    template <typename U>
+    using type = typename U::error_code_translations;
+
+    constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
+};
+
+/** Helper variable for has_error_code_translations_type.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+constexpr static bool has_error_code_translations_type_v =
+    has_error_code_translations_type<T>::value;
+
 /** Evaluates to a <TT>std::tuple</TT> of the return and argument types the
  * <TT>Callable</TT> @a T has.
  *
@@ -605,4 +667,5 @@ constexpr std::size_t arity_v = std::tuple_size_v<arg_extractor_t<T>> - 1;
  */
 template <typename T, std::size_t I>
 using arg_type_at_index = std::tuple_element_t<I + 1, arg_extractor_t<T>>;
-}  // namespace arg_router::traits
+}  // namespace traits
+}  // namespace arg_router

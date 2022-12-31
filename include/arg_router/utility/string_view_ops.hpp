@@ -8,18 +8,18 @@
 
 #include <string_view>
 
-/** Namespace for std::string_view operators. */
+/** Namespace for string_view operators. */
 namespace arg_router::utility::string_view_ops
 {
-/** Concatentation operator between std::string and std::string_view.
+/** Concatentation operator between string and string_view.
  *
- * The returned std::string uses the library allocator (<TT>config::allocator</TT>) by default.
+ * The returned string uses the library allocator (<TT>config::allocator</TT>) by default.
  * @tparam CharT Character type
  * @tparam Traits Character traits
  * @tparam Allocator Allocator type
- * @param lhs std::string instance
- * @param rhs std::string_view instance
- * @return std::string of @a lhs and @a rhs concatenated together
+ * @param lhs string instance
+ * @param rhs string_view instance
+ * @return string of @a lhs and @a rhs concatenated together
  */
 template <typename CharT,
           typename Traits = std::char_traits<CharT>,
@@ -33,13 +33,13 @@ template <typename CharT,
 
 /** Overload that accepts reversed arguments.
  *
- * The returned std::string uses the library allocator (<TT>config::allocator</TT>) by default.
+ * The returned string uses the library allocator (<TT>config::allocator</TT>) by default.
  * @tparam CharT Character type
  * @tparam Traits Character traits
  * @tparam Allocator Allocator type
- * @param lhs std::string_view instance
- * @param rhs std::string instance
- * @return std::string of @a lhs and @a rhs concatenated together
+ * @param lhs string_view instance
+ * @param rhs string instance
+ * @return string of @a lhs and @a rhs concatenated together
  */
 template <typename CharT,
           typename Traits = std::char_traits<CharT>,
@@ -48,23 +48,24 @@ template <typename CharT,
     std::basic_string_view<CharT, Traits> lhs,
     std::basic_string<CharT, Traits, Allocator> rhs)
 {
-    return rhs.insert(0, lhs.data(), lhs.size());
+    rhs.insert(rhs.begin(), lhs.begin(), lhs.end());
+    return rhs;
 }
 
-/** Returns a std::string using two std::string_views.
+/** Returns a string using two string_views.
  *
- * The returned std::string uses the library allocator (<TT>config::allocator</TT>).
+ * The returned string uses the library allocator (<TT>config::allocator</TT>).
  * @tparam CharT Character type
  * @tparam Traits Character traits
- * @param lhs std::string_view instance
- * @param rhs std::string instance
- * @return std::string of @a lhs and @a rhs concatenated together
+ * @param lhs string_view instance
+ * @param rhs string instance
+ * @return string of @a lhs and @a rhs concatenated together
  */
 template <typename CharT, typename Traits = std::char_traits<CharT>>
 [[nodiscard]] constexpr std::basic_string<CharT, Traits, config::allocator<CharT>> operator+(
     std::basic_string_view<CharT, Traits> lhs,
     std::basic_string_view<CharT, Traits> rhs)
 {
-    return std::basic_string<CharT, Traits, config::allocator<CharT>>(lhs) + rhs;
+    return std::basic_string<CharT, Traits, config::allocator<CharT>>{lhs} += rhs;
 }
 }  // namespace arg_router::utility::string_view_ops

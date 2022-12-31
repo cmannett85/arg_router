@@ -127,9 +127,11 @@ private:
 template <typename T, typename... Policies>
 [[nodiscard]] constexpr auto counting_flag(Policies... policies) noexcept
 {
-    // Add the short-form expander if one of the policies implements the short name method
-    if constexpr (boost::mp11::mp_any_of<std::tuple<std::decay_t<Policies>...>,
-                                         traits::has_short_name_method>::value) {
+    // Add the short-form expander if one of the policies implements the short name method, and if
+    // the short and long prefix are not the same
+    constexpr auto has_short_name = boost::mp11::mp_any_of<std::tuple<std::decay_t<Policies>...>,
+                                                           traits::has_short_name_method>::value;
+    if constexpr ((config::long_prefix != config::short_prefix) && has_short_name) {
         return counting_flag_t<T, policy::short_form_expander_t<>, std::decay_t<Policies>...>{
             policy::short_form_expander,
             std::move(policies)...};

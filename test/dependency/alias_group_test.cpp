@@ -67,54 +67,59 @@ BOOST_AUTO_TEST_SUITE(alias_group_suite)
 
 BOOST_AUTO_TEST_CASE(is_tree_node_test)
 {
-    static_assert(is_tree_node_v<ard::alias_group_t<arg_t<double, policy::long_name_t<S_("arg1")>>,
-                                                    arg_t<double, policy::long_name_t<S_("arg2")>>,
-                                                    policy::default_value<int>>>,
-                  "Tree node test has failed");
+    static_assert(
+        is_tree_node_v<ard::alias_group_t<arg_t<double, policy::long_name_t<AR_STRING("arg1")>>,
+                                          arg_t<double, policy::long_name_t<AR_STRING("arg2")>>,
+                                          policy::default_value<int>>>,
+        "Tree node test has failed");
 }
 
 BOOST_AUTO_TEST_CASE(value_type_test)
 {
     {
-        using ag_type = ard::alias_group_t<arg_t<double, policy::long_name_t<S_("arg1")>>,
-                                           arg_t<double, policy::long_name_t<S_("arg2")>>,
+        using ag_type = ard::alias_group_t<arg_t<double, policy::long_name_t<AR_STRING("arg1")>>,
+                                           arg_t<double, policy::long_name_t<AR_STRING("arg2")>>,
                                            policy::default_value<int>>;
         static_assert(std::is_same_v<typename ag_type::value_type, double>, "value_type test fail");
     }
 
     {
-        using ag_type = ard::alias_group_t<arg_t<double, policy::long_name_t<S_("arg1")>>,
-                                           arg_t<double,
-                                                 policy::long_name_t<S_("arg2")>,
-                                                 policy::alias_t<policy::long_name_t<S_("arg1")>>>,
-                                           policy::default_value<int>>;
+        using ag_type =
+            ard::alias_group_t<arg_t<double, policy::long_name_t<AR_STRING("arg1")>>,
+                               arg_t<double,
+                                     policy::long_name_t<AR_STRING("arg2")>,
+                                     policy::alias_t<policy::long_name_t<AR_STRING("arg1")>>>,
+                               policy::default_value<int>>;
         static_assert(std::is_same_v<typename ag_type::value_type, double>, "value_type test fail");
     }
 }
 
-BOOST_AUTO_TEST_CASE(display_name_test)
+BOOST_AUTO_TEST_CASE(name_test)
 {
     {
-        const auto ag = ard::alias_group(arg<double>(policy::long_name<S_("arg1")>),
-                                         arg<double>(policy::long_name<S_("arg2")>),
+        const auto ag = ard::alias_group(arg<double>(policy::long_name<AR_STRING("arg1")>),
+                                         arg<double>(policy::long_name<AR_STRING("arg2")>),
                                          policy::required);
-        BOOST_CHECK_EQUAL(ag.display_name(), "Alias Group: --arg1,--arg2");
+        static_assert(ag.display_name() == "Alias Group: ");
+        static_assert(ag.error_name() == "Alias Group: --arg1,--arg2");
     }
 
     {
-        const auto ag = ard::alias_group(
-            arg<bool>(policy::long_name<S_("arg1")>),
-            arg<bool>(policy::long_name<S_("arg2")>, policy::alias(policy::long_name<S_("arg1")>)),
-            flag(policy::short_name<'f'>),
-            policy::required);
-        BOOST_CHECK_EQUAL(ag.display_name(), "Alias Group: --arg1,--arg2,-f");
+        const auto ag =
+            ard::alias_group(arg<bool>(policy::long_name<AR_STRING("arg1")>),
+                             arg<bool>(policy::long_name<AR_STRING("arg2")>,
+                                       policy::alias(policy::long_name<AR_STRING("arg1")>)),
+                             flag(policy::short_name<'f'>),
+                             policy::required);
+        static_assert(ag.display_name() == "Alias Group: ");
+        static_assert(ag.error_name() == "Alias Group: --arg1,--arg2,-f");
     }
 }
 
 BOOST_AUTO_TEST_CASE(pre_parse_test)
 {
     auto f = [](auto node, auto child_index, auto expected_args, auto expected_result) {
-        auto fake_parent = stub_node{policy::long_name<S_("parent")>};
+        auto fake_parent = stub_node{policy::long_name<AR_STRING("parent")>};
 
         auto& expected_child = std::get<child_index>(node.children());
         expected_child.return_value = expected_result;
@@ -143,20 +148,20 @@ BOOST_AUTO_TEST_CASE(pre_parse_test)
     test::data_set(
         f,
         std::tuple{
-            std::tuple{ard::alias_group(stub_node{policy::long_name<S_("arg1")>},
-                                        stub_node{policy::long_name<S_("arg2")>},
+            std::tuple{ard::alias_group(stub_node{policy::long_name<AR_STRING("arg1")>},
+                                        stub_node{policy::long_name<AR_STRING("arg2")>},
                                         policy::required),
                        traits::integral_constant<0>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "hello1"}},
                        true},
-            std::tuple{ard::alias_group(stub_node{policy::long_name<S_("arg1")>},
-                                        stub_node{policy::long_name<S_("arg2")>},
+            std::tuple{ard::alias_group(stub_node{policy::long_name<AR_STRING("arg1")>},
+                                        stub_node{policy::long_name<AR_STRING("arg2")>},
                                         policy::required),
                        traits::integral_constant<1>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "hello2"}},
                        true},
-            std::tuple{ard::alias_group(stub_node{policy::long_name<S_("arg1")>},
-                                        stub_node{policy::long_name<S_("arg2")>},
+            std::tuple{ard::alias_group(stub_node{policy::long_name<AR_STRING("arg1")>},
+                                        stub_node{policy::long_name<AR_STRING("arg2")>},
                                         policy::required),
                        traits::integral_constant<0>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "hello3"}},
@@ -172,11 +177,11 @@ BOOST_AUTO_TEST_CASE(help_test)
         using help_data = typename node_type::template help_data_type<false>;
         using flattened_help_data = typename node_type::template help_data_type<true>;
 
-        static_assert(std::is_same_v<typename help_data::label, S_("Alias Group: ")>);
+        static_assert(std::is_same_v<typename help_data::label, AR_STRING("Alias Group: ")>);
         static_assert(
             std::is_same_v<typename help_data::label, typename flattened_help_data::label>);
 
-        static_assert(std::is_same_v<typename help_data::description, S_("")>);
+        static_assert(std::is_same_v<typename help_data::description, AR_STRING("")>);
         static_assert(std::is_same_v<typename help_data::description,
                                      typename flattened_help_data::description>);
 
@@ -191,36 +196,37 @@ BOOST_AUTO_TEST_CASE(help_test)
         });
     };
 
-    test::data_set(f,
-                   std::tuple{
-                       std::tuple{ard::alias_group(arg<double>(policy::long_name<S_("arg1")>),
-                                                   arg<double>(policy::long_name<S_("arg2")>),
-                                                   policy::required),
-                                  std::vector{
-                                      std::pair{"┌ --arg1 <Value>", ""},
-                                      std::pair{"└ --arg2 <Value>", ""},
-                                  }},
-                       std::tuple{ard::alias_group(arg<double>(policy::long_name<S_("arg1")>),
-                                                   arg<double>(policy::short_name<'b'>,
-                                                               policy::description<S_("A desc")>),
-                                                   policy::required),
-                                  std::vector{
-                                      std::pair{"┌ --arg1 <Value>", ""},
-                                      std::pair{"└ -b <Value>", "A desc"},
-                                  }},
-                       std::tuple{ard::alias_group(arg<bool>(policy::long_name<S_("arg1")>),
-                                                   flag(policy::long_name<S_("flag")>,
-                                                        policy::short_name<'f'>,
-                                                        policy::description<S_("Hello")>),
-                                                   arg<bool>(policy::short_name<'b'>,
-                                                             policy::description<S_("A desc")>),
-                                                   policy::required),
-                                  std::vector{
-                                      std::pair{"┌ --arg1 <Value>", ""},
-                                      std::pair{"├ --flag,-f", "Hello"},
-                                      std::pair{"└ -b <Value>", "A desc"},
-                                  }},
-                   });
+    test::data_set(
+        f,
+        std::tuple{
+            std::tuple{ard::alias_group(arg<double>(policy::long_name<AR_STRING("arg1")>),
+                                        arg<double>(policy::long_name<AR_STRING("arg2")>),
+                                        policy::required),
+                       std::vector{
+                           std::pair{"┌ --arg1 <Value>", ""},
+                           std::pair{"└ --arg2 <Value>", ""},
+                       }},
+            std::tuple{ard::alias_group(arg<double>(policy::long_name<AR_STRING("arg1")>),
+                                        arg<double>(policy::short_name<'b'>,
+                                                    policy::description<AR_STRING("A desc")>),
+                                        policy::required),
+                       std::vector{
+                           std::pair{"┌ --arg1 <Value>", ""},
+                           std::pair{"└ -b <Value>", "A desc"},
+                       }},
+            std::tuple{ard::alias_group(arg<bool>(policy::long_name<AR_STRING("arg1")>),
+                                        flag(policy::long_name<AR_STRING("flag")>,
+                                             policy::short_name<'f'>,
+                                             policy::description<AR_STRING("Hello")>),
+                                        arg<bool>(policy::short_name<'b'>,
+                                                  policy::description<AR_STRING("A desc")>),
+                                        policy::required),
+                       std::vector{
+                           std::pair{"┌ --arg1 <Value>", ""},
+                           std::pair{"├ --flag,-f", "Hello"},
+                           std::pair{"└ -b <Value>", "A desc"},
+                       }},
+        });
 }
 
 BOOST_AUTO_TEST_CASE(death_test)
@@ -237,7 +243,7 @@ using namespace arg_router;
 namespace ard = arg_router::dependency;
 
 int main() {
-    auto f = ard::alias_group(arg<int>(policy::long_name<S_("arg1")>),
+    auto f = ard::alias_group(arg<int>(policy::long_name<AR_STRING("arg1")>),
                               policy::default_value{42});
     return 0;
 }
@@ -256,9 +262,9 @@ using namespace arg_router;
 namespace ard = arg_router::dependency;
 
 int main() {
-    auto f = ard::alias_group(arg<double>(policy::long_name<S_("arg1")>),
-                              arg<double>(policy::long_name<S_("arg2")>),
-                              policy::long_name<S_("one_of")>,
+    auto f = ard::alias_group(arg<double>(policy::long_name<AR_STRING("arg1")>),
+                              arg<double>(policy::long_name<AR_STRING("arg2")>),
+                              policy::long_name<AR_STRING("one_of")>,
                               policy::default_value{42});
     return 0;
 }
@@ -278,8 +284,8 @@ using namespace arg_router;
 namespace ard = arg_router::dependency;
 
 int main() {
-    auto f = ard::alias_group(arg<double>(policy::long_name<S_("arg1")>),
-                              arg<double>(policy::long_name<S_("arg2")>),
+    auto f = ard::alias_group(arg<double>(policy::long_name<AR_STRING("arg1")>),
+                              arg<double>(policy::long_name<AR_STRING("arg2")>),
                               policy::short_name<'o'>,
                               policy::default_value{42});
     return 0;
@@ -300,9 +306,9 @@ using namespace arg_router;
 namespace ard = arg_router::dependency;
 
 int main() {
-    auto f = ard::alias_group(arg<double>(policy::long_name<S_("arg1")>),
-                              arg<double>(policy::long_name<S_("arg2")>),
-                              policy::none_name<S_("none")>,
+    auto f = ard::alias_group(arg<double>(policy::long_name<AR_STRING("arg1")>),
+                              arg<double>(policy::long_name<AR_STRING("arg2")>),
+                              policy::none_name<AR_STRING("none")>,
                               policy::default_value{42});
     return 0;
 }
@@ -336,14 +342,14 @@ public:
 } // namespace
 
 int main() {
-    auto f = ard::alias_group(arg<bool>(policy::long_name<S_("arg1")>),
+    auto f = ard::alias_group(arg<bool>(policy::long_name<AR_STRING("arg1")>),
                               arg<bool>(policy::short_name<'b'>),
                               stub_node{},
                               policy::default_value{42});
     return 0;
 }
     )",
-             "All children must be named",
+             "Node does not have a name",
              "all_children_must_be_named_test"},
          {
              R"(
@@ -358,10 +364,10 @@ using namespace arg_router;
 namespace ard = arg_router::dependency;
 
 int main() {
-    auto f = ard::alias_group(arg<double>(policy::long_name<S_("arg1")>,
-                                  policy::alias(policy::long_name<S_("arg2")>)),
-                              arg<double>(policy::long_name<S_("arg2")>,
-                                  policy::alias(policy::long_name<S_("arg1")>)),
+    auto f = ard::alias_group(arg<double>(policy::long_name<AR_STRING("arg1")>,
+                                  policy::alias(policy::long_name<AR_STRING("arg2")>)),
+                              arg<double>(policy::long_name<AR_STRING("arg2")>,
+                                  policy::alias(policy::long_name<AR_STRING("arg1")>)),
                               policy::default_value{42});
     return 0;
 }
@@ -379,8 +385,8 @@ using namespace arg_router;
 namespace ard = arg_router::dependency;
 
 int main() {
-    auto f = ard::alias_group(arg<double>(policy::long_name<S_("arg1")>),
-                              arg<double>(policy::long_name<S_("arg2")>));
+    auto f = ard::alias_group(arg<double>(policy::long_name<AR_STRING("arg1")>),
+                              arg<double>(policy::long_name<AR_STRING("arg2")>));
     return 0;
 }
     )",
@@ -401,10 +407,10 @@ namespace ard = arg_router::dependency;
 
 int main() {
     const auto ag = ard::alias_group(
-        arg<double>(policy::long_name<S_("arg1")>),
-        arg<double>(policy::long_name<S_("arg2")>),
+        arg<double>(policy::long_name<AR_STRING("arg1")>),
+        arg<double>(policy::long_name<AR_STRING("arg2")>),
         policy::required,
-        policy::alias(policy::long_name<S_("arg3")>));
+        policy::alias(policy::long_name<AR_STRING("arg3")>));
     return 0;
 }
     )",
@@ -425,8 +431,8 @@ namespace ard = arg_router::dependency;
 
 int main() {
     const auto ag = ard::alias_group(
-        arg<double>(policy::long_name<S_("arg1")>),
-        arg<double>(policy::long_name<S_("arg2")>),
+        arg<double>(policy::long_name<AR_STRING("arg1")>),
+        arg<double>(policy::long_name<AR_STRING("arg2")>),
         policy::required,
         policy::custom_parser<std::variant<int, double>>{[](std::string_view) {
             return std::variant<int, double>{}; }});
@@ -450,8 +456,8 @@ namespace ard = arg_router::dependency;
 
 int main() {
     const auto ag = ard::alias_group(
-        arg<double>(policy::long_name<S_("arg1")>),
-        arg<double>(policy::long_name<S_("arg2")>),
+        arg<double>(policy::long_name<AR_STRING("arg1")>),
+        arg<double>(policy::long_name<AR_STRING("arg2")>),
         policy::required,
         policy::router{[](std::variant<int, double>) {}});
     return 0;
@@ -472,8 +478,8 @@ using namespace arg_router;
 namespace ard = arg_router::dependency;
 
 int main() {
-    auto f = ard::alias_group(arg<double>(policy::long_name<S_("arg1")>),
-                              arg<int>(policy::long_name<S_("arg2")>),
+    auto f = ard::alias_group(arg<double>(policy::long_name<AR_STRING("arg1")>),
+                              arg<int>(policy::long_name<AR_STRING("arg2")>),
                               policy::default_value{42});
     return 0;
 }
@@ -495,9 +501,9 @@ using namespace arg_router;
 namespace ard = arg_router::dependency;
 
 int main() {
-    auto f = ard::alias_group(arg<int>(policy::long_name<S_("arg1")>),
+    auto f = ard::alias_group(arg<int>(policy::long_name<AR_STRING("arg1")>),
                               counting_flag<int>(
-                                 policy::long_name<S_("arg2")>,
+                                 policy::long_name<AR_STRING("arg2")>,
                                  policy::min_max_value<2, 3>()),                  
                               policy::required);
     return 0;

@@ -5,14 +5,19 @@
 #pragma once
 
 #include "arg_router/policy/policy.hpp"
-#include "arg_router/utility/utf8.hpp"
 
 namespace arg_router::policy
 {
-/** Represents the long name of an argument.
+/** Represents the long name of a node.
  *
+ * If using C++17 then use the template variable helper with the <TT>S_</TT> macro; for C++20 and
+ * higher, use the constructor directly with a compile-time string literal:
+ * @code
+ * constexpr auto a = ar::policy::long_name<S_("hello")>;
+ * constexpr auto b = ar::policy::long_name_t{"hello"_S};
+ * @endcode
  * @note Long names must be greater than one character and cannot contain any whitespace characters
- * @tparam S compile_time_string
+ * @tparam S Compile-time string
  */
 template <typename S>
 class long_name_t
@@ -20,6 +25,12 @@ class long_name_t
 public:
     /** String type. */
     using string_type = S;
+
+    /** Constructor.
+     *
+     * @param str String instance
+     */
+    constexpr explicit long_name_t([[maybe_unused]] S str = {}) noexcept {}
 
     /** Returns the name.
      *

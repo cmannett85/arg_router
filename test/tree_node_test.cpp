@@ -92,37 +92,38 @@ BOOST_AUTO_TEST_SUITE(tree_node_suite)
 
 BOOST_AUTO_TEST_CASE(mixed_tree_node_types_test)
 {
-    using tn = tree_node<policy::long_name_t<S_("hello")>,
-                         tree_node<policy::long_name_t<S_("child")>>,
-                         policy::short_name_t<S_('A')>>;
+    using tn = tree_node<policy::long_name_t<AR_STRING("hello")>,
+                         tree_node<policy::long_name_t<AR_STRING("child")>>,
+                         policy::short_name_t<AR_STRING('A')>>;
     static_assert(std::is_same_v<typename tn::parameters_type,
-                                 std::tuple<policy::long_name_t<S_("hello")>,
-                                            tree_node<policy::long_name_t<S_("child")>>,
-                                            policy::short_name_t<S_('A')>>>,
+                                 std::tuple<policy::long_name_t<AR_STRING("hello")>,
+                                            tree_node<policy::long_name_t<AR_STRING("child")>>,
+                                            policy::short_name_t<AR_STRING('A')>>>,
                   "parameters_type does not match");
 
-    static_assert(
-        std::is_same_v<typename tn::policies_type,
-                       std::tuple<policy::long_name_t<S_("hello")>, policy::short_name_t<S_('A')>>>,
-        "policies_type does not match");
+    static_assert(std::is_same_v<typename tn::policies_type,
+                                 std::tuple<policy::long_name_t<AR_STRING("hello")>,
+                                            policy::short_name_t<AR_STRING('A')>>>,
+                  "policies_type does not match");
 
     static_assert(std::is_same_v<typename tn::children_type,
-                                 std::tuple<tree_node<policy::long_name_t<S_("child")>>>>,
+                                 std::tuple<tree_node<policy::long_name_t<AR_STRING("child")>>>>,
                   "children_type does not match");
 }
 
 BOOST_AUTO_TEST_CASE(only_policies_tree_node_types_test)
 {
-    using tn = tree_node<policy::long_name_t<S_("hello")>, policy::short_name_t<S_('A')>>;
-    static_assert(
-        std::is_same_v<typename tn::parameters_type,
-                       std::tuple<policy::long_name_t<S_("hello")>, policy::short_name_t<S_('A')>>>,
-        "parameters_type does not match");
+    using tn =
+        tree_node<policy::long_name_t<AR_STRING("hello")>, policy::short_name_t<AR_STRING('A')>>;
+    static_assert(std::is_same_v<typename tn::parameters_type,
+                                 std::tuple<policy::long_name_t<AR_STRING("hello")>,
+                                            policy::short_name_t<AR_STRING('A')>>>,
+                  "parameters_type does not match");
 
-    static_assert(
-        std::is_same_v<typename tn::policies_type,
-                       std::tuple<policy::long_name_t<S_("hello")>, policy::short_name_t<S_('A')>>>,
-        "policies_type does not match");
+    static_assert(std::is_same_v<typename tn::policies_type,
+                                 std::tuple<policy::long_name_t<AR_STRING("hello")>,
+                                            policy::short_name_t<AR_STRING('A')>>>,
+                  "policies_type does not match");
 
     static_assert(std::is_same_v<typename tn::children_type, std::tuple<>>,
                   "children_type does not match");
@@ -130,43 +131,41 @@ BOOST_AUTO_TEST_CASE(only_policies_tree_node_types_test)
 
 BOOST_AUTO_TEST_CASE(one_child_tree_node_types_test)
 {
-    using tn = tree_node<flag_t<policy::long_name_t<S_("hello")>, policy::short_name_t<S_('A')>>>;
-    static_assert(
-        std::is_same_v<
-            typename tn::parameters_type,
-            std::tuple<flag_t<policy::long_name_t<S_("hello")>, policy::short_name_t<S_('A')>>>>,
-        "parameters_type does not match");
+    using tn = tree_node<
+        flag_t<policy::long_name_t<AR_STRING("hello")>, policy::short_name_t<AR_STRING('A')>>>;
+    static_assert(std::is_same_v<typename tn::parameters_type,
+                                 std::tuple<flag_t<policy::long_name_t<AR_STRING("hello")>,
+                                                   policy::short_name_t<AR_STRING('A')>>>>,
+                  "parameters_type does not match");
 
     static_assert(std::is_same_v<typename tn::policies_type, std::tuple<>>,
                   "policies_type does not match");
 
-    static_assert(
-        std::is_same_v<
-            typename tn::children_type,
-            std::tuple<flag_t<policy::long_name_t<S_("hello")>, policy::short_name_t<S_('A')>>>>,
-        "children_type does not match");
+    static_assert(std::is_same_v<typename tn::children_type,
+                                 std::tuple<flag_t<policy::long_name_t<AR_STRING("hello")>,
+                                                   policy::short_name_t<AR_STRING('A')>>>>,
+                  "children_type does not match");
 }
 
 BOOST_AUTO_TEST_CASE(two_children_tree_node_types_test)
 {
-    using tn = tree_node<flag_t<policy::long_name_t<S_("hello")>, policy::short_name_t<S_('A')>>,
-                         flag_t<policy::short_name_t<S_('B')>>>;
-    static_assert(
-        std::is_same_v<
-            typename tn::parameters_type,
-            std::tuple<flag_t<policy::long_name_t<S_("hello")>, policy::short_name_t<S_('A')>>,
-                       flag_t<policy::short_name_t<S_('B')>>>>,
-        "parameters_type does not match");
+    using tn = tree_node<
+        flag_t<policy::long_name_t<AR_STRING("hello")>, policy::short_name_t<AR_STRING('A')>>,
+        flag_t<policy::short_name_t<AR_STRING('B')>>>;
+    static_assert(std::is_same_v<typename tn::parameters_type,
+                                 std::tuple<flag_t<policy::long_name_t<AR_STRING("hello")>,
+                                                   policy::short_name_t<AR_STRING('A')>>,
+                                            flag_t<policy::short_name_t<AR_STRING('B')>>>>,
+                  "parameters_type does not match");
 
     static_assert(std::is_same_v<typename tn::policies_type, std::tuple<>>,
                   "policies_type does not match");
 
-    static_assert(
-        std::is_same_v<
-            typename tn::children_type,
-            std::tuple<flag_t<policy::long_name_t<S_("hello")>, policy::short_name_t<S_('A')>>,
-                       flag_t<policy::short_name_t<S_('B')>>>>,
-        "children_type does not match");
+    static_assert(std::is_same_v<typename tn::children_type,
+                                 std::tuple<flag_t<policy::long_name_t<AR_STRING("hello")>,
+                                                   policy::short_name_t<AR_STRING('A')>>,
+                                            flag_t<policy::short_name_t<AR_STRING('B')>>>>,
+                  "children_type does not match");
 }
 
 BOOST_AUTO_TEST_CASE(empty_tree_node_types_test)
@@ -190,26 +189,25 @@ BOOST_AUTO_TEST_CASE(is_tree_node_test)
     static_assert(is_tree_node_v<tree_node<float>>, "Should be a tree_node");
     static_assert(is_tree_node_v<tree_node<float, int, double>>, "Should be a tree_node");
     static_assert(is_tree_node_v<tree_node<float, int, double>>, "Should be a tree_node");
-    static_assert(is_tree_node_v<tree_node<policy::long_name_t<S_("hello")>>>,
+    static_assert(is_tree_node_v<tree_node<policy::long_name_t<AR_STRING("hello")>>>,
                   "Should be a tree_node");
-    static_assert(
-        is_tree_node_v<
-            tree_node<policy::long_name_t<S_("hello")>, policy::long_name_t<S_("goodbye")>>>,
-        "Should be a tree_node");
+    static_assert(is_tree_node_v<tree_node<policy::long_name_t<AR_STRING("hello")>,
+                                           policy::long_name_t<AR_STRING("goodbye")>>>,
+                  "Should be a tree_node");
 }
 
 BOOST_AUTO_TEST_CASE(priority_ordered_policies_type_test)
 {
-    using tn = tree_node<policy::long_name_t<S_("hello")>,
-                         policy::alias_t<policy::short_name_t<S_('A')>>,
-                         policy::short_name_t<S_('A')>,
+    using tn = tree_node<policy::long_name_t<AR_STRING("hello")>,
+                         policy::alias_t<policy::short_name_t<AR_STRING('A')>>,
+                         policy::short_name_t<AR_STRING('A')>,
                          policy::default_value<int>>;
 
     static_assert(std::is_same_v<typename tn::priority_ordered_policies_type,
                                  std::tuple<policy::default_value<int>,
-                                            policy::alias_t<policy::short_name_t<S_('A')>>,
-                                            policy::long_name_t<S_("hello")>,
-                                            policy::short_name_t<S_('A')>>>,
+                                            policy::alias_t<policy::short_name_t<AR_STRING('A')>>,
+                                            policy::long_name_t<AR_STRING("hello")>,
+                                            policy::short_name_t<AR_STRING('A')>>>,
                   "parameters_type does not match");
 }
 
@@ -221,11 +219,11 @@ BOOST_AUTO_TEST_CASE(pre_parse_test)
                 auto expected_sub_target_data,
                 auto expected_args,
                 auto match,
-                std::string fail_message,
+                auto ec,
                 const auto&... parents) {
         try {
             auto result = node.pre_parse(parsing::pre_parse_data{args}, parents.get()...);
-            BOOST_CHECK(fail_message.empty());
+            BOOST_CHECK(!ec);
 
             BOOST_CHECK_EQUAL(!match, !result);
             BOOST_CHECK_EQUAL(args, expected_args);
@@ -252,61 +250,63 @@ BOOST_AUTO_TEST_CASE(pre_parse_test)
                 (*result)();
                 BOOST_CHECK(!*result);
             }
-        } catch (parse_exception& e) {
-            BOOST_CHECK_EQUAL(e.what(), fail_message);
+        } catch (multi_lang_exception& e) {
+            BOOST_REQUIRE(ec);
+            BOOST_CHECK_EQUAL(e.ec(), ec->ec());
+            BOOST_CHECK_EQUAL(e.tokens(), ec->tokens());
         }
     };
 
     const auto alias_parent =
         stub_node{policy::router{[](auto, auto) {}},
-                  stub_node{policy::long_name<S_("hello")>,
+                  stub_node{policy::long_name<AR_STRING("hello")>,
                             policy::value_separator<'='>,
                             policy::fixed_count<1>,
-                            policy::alias(policy::long_name<S_("foo")>)},
-                  stub_node{policy::long_name<S_("foo")>, policy::fixed_count<1>}};
+                            policy::alias(policy::long_name<AR_STRING("foo")>)},
+                  stub_node{policy::long_name<AR_STRING("foo")>, policy::fixed_count<1>}};
 
     test::data_set(
         f,
         std::tuple{
             // Basic name matching
-            std::tuple{stub_node{policy::long_name<S_("hello")>},
+            std::tuple{stub_node{policy::long_name<AR_STRING("hello")>},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"}},
                        std::vector<parsing::token_type>{},
                        std::vector<pre_parse_test_data>{},
                        std::vector<parsing::token_type>{},
                        true,
-                       ""},
+                       std::optional<multi_lang_exception>{}},
             std::tuple{stub_node{policy::short_name<'h'>},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "-h"}},
                        std::vector<parsing::token_type>{},
                        std::vector<pre_parse_test_data>{},
                        std::vector<parsing::token_type>{},
                        true,
-                       ""},
-            std::tuple{stub_node{policy::none_name<S_("hello")>},
+                       std::optional<multi_lang_exception>{}},
+            std::tuple{stub_node{policy::none_name<AR_STRING("hello")>},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "hello"}},
                        std::vector<parsing::token_type>{},
                        std::vector<pre_parse_test_data>{},
                        std::vector<parsing::token_type>{},
                        true,
-                       ""},
+                       std::optional<multi_lang_exception>{}},
             std::tuple{stub_node{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "hello"}},
                        std::vector<parsing::token_type>{},
                        std::vector<pre_parse_test_data>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "hello"}},
                        false,
-                       ""},
-            std::tuple{stub_node{policy::long_name<S_("hello")>},
+                       std::optional<multi_lang_exception>{}},
+            std::tuple{stub_node{policy::long_name<AR_STRING("hello")>},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "--foo"}},
                        std::vector<parsing::token_type>{},
                        std::vector<pre_parse_test_data>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "--foo"}},
                        false,
-                       ""},
+                       std::optional<multi_lang_exception>{}},
 
             // Policies
-            std::tuple{stub_node{policy::long_name<S_("hello")>,
+            std::tuple{stub_node{policy::long_name<AR_STRING("hello")>,
                                  policy::value_separator<'='>,
                                  policy::fixed_count<1>},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello=42"}},
@@ -314,8 +314,8 @@ BOOST_AUTO_TEST_CASE(pre_parse_test)
                        std::vector<pre_parse_test_data>{},
                        std::vector<parsing::token_type>{},
                        true,
-                       ""},
-            std::tuple{stub_node{policy::long_name<S_("hello")>,
+                       std::optional<multi_lang_exception>{}},
+            std::tuple{stub_node{policy::long_name<AR_STRING("hello")>,
                                  policy::value_separator<'='>,
                                  policy::fixed_count<1>},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"}},
@@ -323,7 +323,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_test)
                        std::vector<pre_parse_test_data>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"}},
                        false,
-                       ""},
+                       std::optional<multi_lang_exception>{}},
             std::tuple{
                 test::get_node<0>(alias_parent),
                 std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello=42"}},
@@ -333,9 +333,9 @@ BOOST_AUTO_TEST_CASE(pre_parse_test)
                 },
                 std::vector<parsing::token_type>{},
                 true,
-                "",
+                std::optional<multi_lang_exception>{},
                 std::cref(alias_parent)},
-            std::tuple{stub_node{policy::long_name<S_("hello")>,
+            std::tuple{stub_node{policy::long_name<AR_STRING("hello")>,
                                  policy::short_name<'h'>,
                                  policy::short_form_expander,
                                  policy::value_separator<'='>,
@@ -346,8 +346,8 @@ BOOST_AUTO_TEST_CASE(pre_parse_test)
                        std::vector<parsing::token_type>{{parsing::prefix_type::short_, "a"},
                                                         {parsing::prefix_type::short_, "s"}},
                        true,
-                       ""},
-            std::tuple{stub_node{policy::long_name<S_("hello")>,
+                       std::optional<multi_lang_exception>{}},
+            std::tuple{stub_node{policy::long_name<AR_STRING("hello")>,
                                  policy::short_name<'h'>,
                                  policy::short_form_expander,
                                  policy::value_separator<'='>,
@@ -357,18 +357,18 @@ BOOST_AUTO_TEST_CASE(pre_parse_test)
                        std::vector<pre_parse_test_data>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "-ash=42"}},
                        false,
-                       ""},
-            std::tuple{stub_node{policy::long_name<S_("hello")>, policy::fixed_count<1>},
+                       std::optional<multi_lang_exception>{}},
+            std::tuple{stub_node{policy::long_name<AR_STRING("hello")>, policy::fixed_count<1>},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"},
                                                         {parsing::prefix_type::none, "42"}},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "42"}},
                        std::vector<pre_parse_test_data>{},
                        std::vector<parsing::token_type>{},
                        true,
-                       ""},
+                       std::optional<multi_lang_exception>{}},
 
             // Overflow
-            std::tuple{stub_node{policy::long_name<S_("hello")>, policy::fixed_count<1>},
+            std::tuple{stub_node{policy::long_name<AR_STRING("hello")>, policy::fixed_count<1>},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"},
                                                         {parsing::prefix_type::none, "42"},
                                                         {parsing::prefix_type::none, "foo"}},
@@ -376,16 +376,18 @@ BOOST_AUTO_TEST_CASE(pre_parse_test)
                        std::vector<pre_parse_test_data>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "foo"}},
                        true,
-                       ""},
+                       std::optional<multi_lang_exception>{}},
 
             // Exception
-            std::tuple{stub_node{policy::long_name<S_("hello")>, policy::fixed_count<1>},
-                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"}},
-                       std::vector<parsing::token_type>{},
-                       std::vector<pre_parse_test_data>{},
-                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"}},
-                       false,
-                       "Minimum count not reached: --hello"},
+            std::tuple{
+                stub_node{policy::long_name<AR_STRING("hello")>, policy::fixed_count<1>},
+                std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"}},
+                std::vector<parsing::token_type>{},
+                std::vector<pre_parse_test_data>{},
+                std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"}},
+                false,
+                std::optional<multi_lang_exception>{
+                    test::create_exception(error_code::minimum_count_not_reached, {"--hello"})}},
         });
 }
 
@@ -399,19 +401,19 @@ BOOST_AUTO_TEST_CASE(death_test)
 
 using namespace arg_router;
 
-using tn = tree_node<policy::long_name_t<S_("hello")>,
-                     tree_node<policy::long_name_t<S_("child")>>,
+using tn = tree_node<policy::long_name_t<AR_STRING("hello")>,
+                     tree_node<policy::long_name_t<AR_STRING("child")>>,
                      double,
-                     policy::short_name_t<S_('A')>>;
+                     policy::short_name_t<AR_STRING('A')>>;
 
 int main() {
     static_assert(
         std::is_same_v<
             typename tn::parameters_type,
-            std::tuple<policy::long_name_t<S_("hello")>,
-                       tree_node<policy::long_name_t<S_("child")>>,
+            std::tuple<policy::long_name_t<AR_STRING("hello")>,
+                       tree_node<policy::long_name_t<AR_STRING("child")>>,
                        double,
-                       policy::short_name_t<S_('A')>>>);
+                       policy::short_name_t<AR_STRING('A')>>>);
     return 0;
 }
     )",

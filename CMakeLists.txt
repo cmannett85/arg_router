@@ -9,12 +9,15 @@ include(CMakeDependentOption)
 option(INSTALLATION_ONLY "Just 'build' for installation" OFF)
 cmake_dependent_option(BUILD_UNIT_TESTS_AND_EXAMPLES "Build the unit tests and examples" ON
                        "NOT INSTALLATION_ONLY" OFF)
+cmake_dependent_option(BUILD_CPP20_EXAMPLES "Build the C++20 and above examples" ON
+                       "BUILD_UNIT_TESTS_AND_EXAMPLES" OFF)
 cmake_dependent_option(ENABLE_CLANG_TIDY "Enable clang-tidy warnings for unit tests and examples" OFF
                       "NOT INSTALLATION_ONLY" OFF)
 cmake_dependent_option(ENABLE_SANITIZERS "Enable ASan/UBSan for unit tests and examples" OFF
                        "NOT INSTALLATION_ONLY" OFF)
 cmake_dependent_option(DISABLE_VCPKG "Disable vcpkg, use system libraries" OFF
                        "NOT INSTALLATION_ONLY" OFF)
+option(ENABLE_CLANG_FORMAT_CHECKS "Enable clang-format checks, fails build in case of formatting error" OFF)
 
 # Use the libraries brought in from vcpkg rather than the system ones, unless overridden
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/path_prefixer.cmake")
@@ -72,11 +75,13 @@ path_prefixer(HEADERS
     include/arg_router/flag.hpp
     include/arg_router/help.hpp
     include/arg_router/list.hpp
+    include/arg_router/literals.hpp
     include/arg_router/math.hpp
     include/arg_router/mode.hpp
     include/arg_router/multi_lang/iso_locale.hpp
     include/arg_router/multi_lang/root_wrapper.hpp
     include/arg_router/multi_lang/string_selector.hpp
+    include/arg_router/multi_lang/translation.hpp
     include/arg_router/parsing/dynamic_token_adapter.hpp
     include/arg_router/parsing/global_parser.hpp
     include/arg_router/parsing/parse_target.hpp
@@ -91,6 +96,8 @@ path_prefixer(HEADERS
     include/arg_router/policy/dependent.hpp
     include/arg_router/policy/description.hpp
     include/arg_router/policy/display_name.hpp
+    include/arg_router/policy/error_name.hpp
+    include/arg_router/policy/exception_translator.hpp
     include/arg_router/policy/flatten_help.hpp
     include/arg_router/policy/long_name.hpp
     include/arg_router/policy/none_name.hpp
@@ -176,6 +183,5 @@ include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/library.cmake")
 if(BUILD_UNIT_TESTS_AND_EXAMPLES)
     enable_testing()
     add_subdirectory(test)
-
     add_subdirectory(examples)
 endif()

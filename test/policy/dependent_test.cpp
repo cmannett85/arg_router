@@ -82,114 +82,118 @@ BOOST_AUTO_TEST_CASE(is_policy_test)
 BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
 {
     const auto root = stub_node{
-        policy::long_name<S_("test_root")>,
-        stub_node{policy::long_name<S_("test1")>,
-                  stub_node{policy::long_name<S_("flag1")>,
-                            policy::dependent(policy::long_name<S_("flag2")>)},
-                  stub_node{policy::long_name<S_("flag2")>},
-                  stub_node{policy::long_name<S_("flag3")>},
+        policy::long_name<AR_STRING("test_root")>,
+        stub_node{policy::long_name<AR_STRING("test1")>,
+                  stub_node{policy::long_name<AR_STRING("flag1")>,
+                            policy::dependent(policy::long_name<AR_STRING("flag2")>)},
+                  stub_node{policy::long_name<AR_STRING("flag2")>},
+                  stub_node{policy::long_name<AR_STRING("flag3")>},
                   policy::router{[](bool, bool, bool) {}}},
-        stub_node{policy::long_name<S_("test2")>,
-                  stub_node{policy::long_name<S_("one_of")>,
-                            stub_node{policy::long_name<S_("flag1")>,
-                                      policy::dependent(policy::long_name<S_("flag2")>)},
-                            stub_node{policy::long_name<S_("flag3")>}},
-                  stub_node{policy::long_name<S_("flag2")>},
+        stub_node{policy::long_name<AR_STRING("test2")>,
+                  stub_node{policy::long_name<AR_STRING("one_of")>,
+                            stub_node{policy::long_name<AR_STRING("flag1")>,
+                                      policy::dependent(policy::long_name<AR_STRING("flag2")>)},
+                            stub_node{policy::long_name<AR_STRING("flag3")>}},
+                  stub_node{policy::long_name<AR_STRING("flag2")>},
                   policy::router{[](bool, bool, bool) {}}},
-        stub_node{policy::long_name<S_("test4")>,
-                  stub_node{policy::long_name<S_("flag1")>,
-                            policy::dependent(policy::long_name<S_("flag2")>),
-                            policy::dependent(policy::long_name<S_("flag3")>)},
-                  stub_node{policy::long_name<S_("flag2")>},
-                  stub_node{policy::long_name<S_("flag3")>},
+        stub_node{policy::long_name<AR_STRING("test4")>,
+                  stub_node{policy::long_name<AR_STRING("flag1")>,
+                            policy::dependent(policy::long_name<AR_STRING("flag2")>),
+                            policy::dependent(policy::long_name<AR_STRING("flag3")>)},
+                  stub_node{policy::long_name<AR_STRING("flag2")>},
+                  stub_node{policy::long_name<AR_STRING("flag3")>},
                   policy::router{[](bool, bool, bool) {}}},
-        stub_node{policy::long_name<S_("test5")>,
-                  stub_node{policy::long_name<S_("flag1")>,
-                            policy::dependent(policy::long_name<S_("flag2")>)},
-                  stub_node{policy::long_name<S_("flag2")>,
-                            policy::dependent(policy::long_name<S_("flag3")>)},
-                  stub_node{policy::long_name<S_("flag3")>},
+        stub_node{policy::long_name<AR_STRING("test5")>,
+                  stub_node{policy::long_name<AR_STRING("flag1")>,
+                            policy::dependent(policy::long_name<AR_STRING("flag2")>)},
+                  stub_node{policy::long_name<AR_STRING("flag2")>,
+                            policy::dependent(policy::long_name<AR_STRING("flag3")>)},
+                  stub_node{policy::long_name<AR_STRING("flag3")>},
                   policy::router{[](bool, bool, bool) {}}},
-        stub_node{policy::long_name<S_("test6")>,
-                  stub_node{policy::long_name<S_("flag1")>,
-                            policy::dependent(policy::long_name<S_("パラメータニ")>)},
-                  stub_node{policy::long_name<S_("パラメータニ")>},
-                  stub_node{policy::long_name<S_("flag3")>},
+        stub_node{policy::long_name<AR_STRING("test6")>,
+                  stub_node{policy::long_name<AR_STRING("flag1")>,
+                            policy::dependent(policy::long_name<AR_STRING("パラメータニ")>)},
+                  stub_node{policy::long_name<AR_STRING("パラメータニ")>},
+                  stub_node{policy::long_name<AR_STRING("flag3")>},
                   policy::router{[](bool, bool, bool) {}}},
     };
 
-    auto f =
-        [&](const auto& sub_targets_tuple, const auto& parents_tuple, std::string fail_message) {
-            auto result = std::vector<parsing::token_type>{};
-            auto args = std::vector<parsing::token_type>{};
-            auto adapter = parsing::dynamic_token_adapter{result, args};
+    auto f = [&](const auto& sub_targets_tuple, const auto& parents_tuple, auto ec) {
+        auto result = std::vector<parsing::token_type>{};
+        auto args = std::vector<parsing::token_type>{};
+        auto adapter = parsing::dynamic_token_adapter{result, args};
 
-            try {
-                const auto match = std::apply(
-                    [&](auto&& node, auto&&... parents) {
-                        auto target = parsing::parse_target{node.get(), (parents.get())...};
-                        auto processed_target =
-                            utility::compile_time_optional{parsing::parse_target{parents.get()...}};
-                        add_sub_targets(*processed_target, sub_targets_tuple);
+        try {
+            const auto match = std::apply(
+                [&](auto&& node, auto&&... parents) {
+                    auto target = parsing::parse_target{node.get(), (parents.get())...};
+                    auto processed_target =
+                        utility::compile_time_optional{parsing::parse_target{parents.get()...}};
+                    add_sub_targets(*processed_target, sub_targets_tuple);
 
-                        const auto result = node.get().pre_parse_phase(adapter,
-                                                                       processed_target,
-                                                                       target,
-                                                                       node.get(),
-                                                                       (parents.get())...,
-                                                                       root);
-                        BOOST_CHECK(target);
-                        return result;
-                    },
-                    parents_tuple);
+                    const auto result = node.get().pre_parse_phase(adapter,
+                                                                   processed_target,
+                                                                   target,
+                                                                   node.get(),
+                                                                   (parents.get())...,
+                                                                   root);
+                    BOOST_CHECK(target);
+                    return result;
+                },
+                parents_tuple);
 
-                // No-op if no exception
-                match.throw_exception();
+            // No-op if no exception
+            match.throw_exception();
 
-                BOOST_CHECK_EQUAL(match, parsing::pre_parse_action::valid_node);
-                BOOST_CHECK(fail_message.empty());
-                BOOST_CHECK(result.empty());
-                BOOST_CHECK(args.empty());
-            } catch (parse_exception& e) {
-                BOOST_CHECK_EQUAL(e.what(), fail_message);
-            }
-        };
+            BOOST_CHECK_EQUAL(match, parsing::pre_parse_action::valid_node);
+            BOOST_CHECK(!ec);
+            BOOST_CHECK(result.empty());
+            BOOST_CHECK(args.empty());
+        } catch (multi_lang_exception& e) {
+            BOOST_REQUIRE(ec);
+            BOOST_CHECK_EQUAL(e.ec(), ec->ec());
+            BOOST_CHECK_EQUAL(e.tokens(), ec->tokens());
+        }
+    };
 
-    test::data_set(f,
-                   std::tuple{
-                       std::tuple{std::tuple{
-                                      test::get_parents<0, 1>(root),
-                                      test::get_parents<0, 2>(root),
-                                  },
-                                  test::get_parents<0, 0>(root),
-                                  ""},
-                       std::tuple{std::make_tuple(test::get_parents<0, 2>(root)),
-                                  test::get_parents<0, 0>(root),
-                                  "Dependent argument missing (needs to be before the requiring "
-                                  "token on the command line): --flag2"},
-                       std::tuple{std::tuple{
-                                      test::get_parents<1, 0, 1>(root),
-                                      test::get_parents<1, 1>(root),
-                                  },
-                                  test::get_parents<1, 0, 0>(root),
-                                  ""},
-                       std::tuple{std::tuple{
-                                      test::get_parents<2, 1>(root),
-                                      test::get_parents<2, 2>(root),
-                                  },
-                                  test::get_parents<2, 0>(root),
-                                  ""},
-                       std::tuple{std::make_tuple(test::get_parents<2, 1>(root)),
-                                  test::get_parents<2, 0>(root),
-                                  "Dependent argument missing (needs to be before the requiring "
-                                  "token on the command line): --flag3"},
-                       std::tuple{std::tuple{
-                                      test::get_parents<3, 1>(root),
-                                      test::get_parents<3, 2>(root),
-                                  },
-                                  test::get_parents<3, 0>(root),
-                                  ""},
-                   });
+    test::data_set(
+        f,
+        std::tuple{
+            std::tuple{std::tuple{
+                           test::get_parents<0, 1>(root),
+                           test::get_parents<0, 2>(root),
+                       },
+                       test::get_parents<0, 0>(root),
+                       std::optional<multi_lang_exception>{}},
+            std::tuple{
+                std::make_tuple(test::get_parents<0, 2>(root)),
+                test::get_parents<0, 0>(root),
+                std::optional<multi_lang_exception>{
+                    test::create_exception(error_code::dependent_argument_missing, {"--flag2"})}},
+            std::tuple{std::tuple{
+                           test::get_parents<1, 0, 1>(root),
+                           test::get_parents<1, 1>(root),
+                       },
+                       test::get_parents<1, 0, 0>(root),
+                       std::optional<multi_lang_exception>{}},
+            std::tuple{std::tuple{
+                           test::get_parents<2, 1>(root),
+                           test::get_parents<2, 2>(root),
+                       },
+                       test::get_parents<2, 0>(root),
+                       std::optional<multi_lang_exception>{}},
+            std::tuple{
+                std::make_tuple(test::get_parents<2, 1>(root)),
+                test::get_parents<2, 0>(root),
+                std::optional<multi_lang_exception>{
+                    test::create_exception(error_code::dependent_argument_missing, {"--flag3"})}},
+            std::tuple{std::tuple{
+                           test::get_parents<3, 1>(root),
+                           test::get_parents<3, 2>(root),
+                       },
+                       test::get_parents<3, 0>(root),
+                       std::optional<multi_lang_exception>{}},
+        });
 }
 
 BOOST_AUTO_TEST_CASE(death_test)
@@ -217,7 +221,7 @@ int main() {
 using namespace arg_router;
 
 int main() {
-    auto a = policy::dependent(flag(policy::long_name<S_("flag1")>));
+    auto a = policy::dependent(flag(policy::long_name<AR_STRING("flag1")>));
     return 0;
 }
     )",
@@ -232,7 +236,7 @@ int main() {
 using namespace arg_router;
 
 int main() {
-    auto a = policy::dependent(policy::display_name<S_("hello")>);
+    auto a = policy::dependent(policy::display_name<AR_STRING("hello")>);
     return 0;
 }
     )",
@@ -280,7 +284,7 @@ public:
 
 int main() {
     const auto root = stub_node{
-        policy::dependent(policy::long_name<S_("flag2")>)};
+        policy::dependent(policy::long_name<AR_STRING("flag2")>)};
 
     auto tokens = vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "flag2"},
@@ -334,11 +338,11 @@ public:
 
 int main() {
     const auto root =
-        stub_node{policy::long_name<S_("mode")>,
-              stub_node{policy::long_name<S_("flag1")>,
-                        policy::dependent(policy::long_name<S_("flag2")>)},
-              stub_node{policy::long_name<S_("flag2")>},
-              stub_node{policy::long_name<S_("flag3")>}};
+        stub_node{policy::long_name<AR_STRING("mode")>,
+              stub_node{policy::long_name<AR_STRING("flag1")>,
+                        policy::dependent(policy::long_name<AR_STRING("flag2")>)},
+              stub_node{policy::long_name<AR_STRING("flag2")>},
+              stub_node{policy::long_name<AR_STRING("flag3")>}};
 
     auto tokens = vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "flag2"},
@@ -394,11 +398,11 @@ public:
 
 int main() {
     const auto root =
-        stub_node{policy::long_name<S_("mode")>,
-                  stub_node{policy::long_name<S_("flag1")>,
-                            policy::dependent(policy::long_name<S_("flag2")>)},
-                  stub_node{policy::long_name<S_("flag2")>},
-                  stub_node{policy::long_name<S_("flag3")>},
+        stub_node{policy::long_name<AR_STRING("mode")>,
+                  stub_node{policy::long_name<AR_STRING("flag1")>,
+                            policy::dependent(policy::long_name<AR_STRING("flag2")>)},
+                  stub_node{policy::long_name<AR_STRING("flag2")>},
+                  stub_node{policy::long_name<AR_STRING("flag3")>},
                   policy::router{[](bool, bool, bool) {}}};
 
     auto tokens = vector<parsing::token_type>{
@@ -456,13 +460,13 @@ public:
 
 int main() {
     const auto root =
-        stub_node{policy::long_name<S_("mode")>,
-                  stub_node{policy::long_name<S_("flag1")>,
-                            policy::dependent(policy::long_name<S_("flag2")>)},
-                  stub_node{policy::long_name<S_("flag2")>,
-                            policy::dependent(policy::long_name<S_("flag3")>)},
-                  stub_node{policy::long_name<S_("flag3")>,
-                            policy::dependent(policy::long_name<S_("flag1")>)},
+        stub_node{policy::long_name<AR_STRING("mode")>,
+                  stub_node{policy::long_name<AR_STRING("flag1")>,
+                            policy::dependent(policy::long_name<AR_STRING("flag2")>)},
+                  stub_node{policy::long_name<AR_STRING("flag2")>,
+                            policy::dependent(policy::long_name<AR_STRING("flag3")>)},
+                  stub_node{policy::long_name<AR_STRING("flag3")>,
+                            policy::dependent(policy::long_name<AR_STRING("flag1")>)},
                   policy::router{[](bool, bool, bool) {}}};
 
     auto tokens = vector<parsing::token_type>{
@@ -520,11 +524,11 @@ public:
 
 int main() {
     const auto root =
-        stub_node{policy::long_name<S_("mode")>,
-                  stub_node{policy::long_name<S_("flag1")>,
-                            policy::dependent(policy::long_name<S_("flag4")>)},
-                  stub_node{policy::long_name<S_("flag2")>},
-                  stub_node{policy::long_name<S_("flag3")>},
+        stub_node{policy::long_name<AR_STRING("mode")>,
+                  stub_node{policy::long_name<AR_STRING("flag1")>,
+                            policy::dependent(policy::long_name<AR_STRING("flag4")>)},
+                  stub_node{policy::long_name<AR_STRING("flag2")>},
+                  stub_node{policy::long_name<AR_STRING("flag3")>},
                   policy::router{[](bool, bool, bool) {}}};
 
     auto tokens = vector<parsing::token_type>{
@@ -582,12 +586,12 @@ public:
 
 int main() {
     const auto root =
-        stub_node{policy::long_name<S_("mode")>,
-                  stub_node{policy::long_name<S_("flag1")>,
-                            policy::dependent(policy::long_name<S_("flag2")>,
-                                              policy::long_name<S_("flag2")>)},
-                  stub_node{policy::long_name<S_("flag2")>},
-                  stub_node{policy::long_name<S_("flag3")>},
+        stub_node{policy::long_name<AR_STRING("mode")>,
+                  stub_node{policy::long_name<AR_STRING("flag1")>,
+                            policy::dependent(policy::long_name<AR_STRING("flag2")>,
+                                              policy::long_name<AR_STRING("flag2")>)},
+                  stub_node{policy::long_name<AR_STRING("flag2")>},
+                  stub_node{policy::long_name<AR_STRING("flag3")>},
                   policy::router{[](bool, bool, bool) {}}};
 
     auto tokens = vector<parsing::token_type>{
@@ -646,13 +650,13 @@ public:
 
 int main() {
     const auto root =
-        stub_node{policy::long_name<S_("mode")>,
-                  stub_node{policy::long_name<S_("flag1")>,
-                            policy::dependent(policy::long_name<S_("flag2")>,
+        stub_node{policy::long_name<AR_STRING("mode")>,
+                  stub_node{policy::long_name<AR_STRING("flag1")>,
+                            policy::dependent(policy::long_name<AR_STRING("flag2")>,
                                               policy::short_name<'a'>)},
-                  stub_node{policy::long_name<S_("flag2")>,
+                  stub_node{policy::long_name<AR_STRING("flag2")>,
                             policy::short_name<'a'>},
-                  stub_node{policy::long_name<S_("flag3")>},
+                  stub_node{policy::long_name<AR_STRING("flag3")>},
                   policy::router{[](bool, bool, bool) {}}};
 
     auto tokens = vector<parsing::token_type>{

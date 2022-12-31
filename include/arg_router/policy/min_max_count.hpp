@@ -63,7 +63,8 @@ public:
      * is no non-root parent
      * @param target Pre-parse generated target
      * @param parents Parent node instances
-     * @return Either true if successful, or a parse_exception if the minimum count is not reached
+     * @return Either true if successful, or a multi_lang_exception if the minimum count is not
+     * reached
      */
     template <typename ProcessedTarget, typename... Parents>
     [[nodiscard]] parsing::pre_parse_result pre_parse_phase(
@@ -100,8 +101,8 @@ public:
         // maximum (potentially) and any left over tokens will be trigger an error later in the
         // processing
         if (tokens.size() < min_count) {
-            return parse_exception{"Minimum count not reached",
-                                   parsing::node_token_type<owner_type>()};
+            return multi_lang_exception{error_code::minimum_count_not_reached,
+                                        parsing::node_token_type<owner_type>()};
         }
 
         // Transfer any remaining up to the maximum count

@@ -55,6 +55,11 @@ std::ostream& operator<<(std::ostream& stream, span<T> v)
     }
     return stream << "}";
 }
+
+inline std::ostream& operator<<(std::ostream& stream, error_code ec)
+{
+    return stream << static_cast<std::underlying_type_t<error_code>>(ec);
+}
 }  // namespace arg_router
 
 // Naughty, but only used in the test code

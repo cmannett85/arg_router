@@ -4,9 +4,7 @@
 
 #pragma once
 
-#include <cstddef>
-#include <memory>
-#include <string_view>
+#include "arg_router/utility/utf8.hpp"
 
 /** Build configuration-defined constants.
  *
@@ -15,18 +13,22 @@
  */
 namespace arg_router::config
 {
-/** Long form argument prefix. */
+/** Long form argument prefix.
+ *
+ * UTF-8 supporting.  Must be the same or longer than short_prefix (in terms of characters).
+ */
 constexpr auto long_prefix = std::string_view{AR_LONG_PREFIX};
 
-/** Short form argument prefix. */
+/** Short form argument prefix.
+ *
+ * UTF-8 supporting.  Must be one characters long.
+ */
 constexpr auto short_prefix = std::string_view{AR_SHORT_PREFIX};
 
-static_assert(short_prefix.size() == 1, "Short prefix must be one character");
+static_assert(utility::utf8::count(short_prefix) == 1, "Short prefix must be one character");
 
-static_assert(long_prefix.size() >= short_prefix.size(),
+static_assert(utility::utf8::count(long_prefix) >= utility::utf8::count(short_prefix),
               "Long prefix must be longer or the same as short prefix");
-
-static_assert(short_prefix != long_prefix, "Short and long prefixes cannot be the same");
 
 /** Allocator for all STL types.
  *
@@ -34,4 +36,8 @@ static_assert(short_prefix != long_prefix, "Short and long prefixes cannot be th
  */
 template <typename T>
 using allocator = AR_ALLOCATOR<T>;
+
+#if (__cplusplus >= 202002L) && !AR_DISABLE_CPP20_STRINGS
+#    define ENABLE_CPP20_STRINGS
+#endif
 }  // namespace arg_router::config

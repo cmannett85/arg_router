@@ -112,59 +112,60 @@ BOOST_AUTO_TEST_CASE(is_policy_test)
 BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
 {
     const auto root = stub_node{
-        policy::long_name<S_("test_root")>,
-        stub_node{policy::long_name<S_("test1")>,
-                  stub_node{policy::long_name<S_("flag1")>,
+        policy::long_name<AR_STRING("test_root")>,
+        stub_node{policy::long_name<AR_STRING("test1")>,
+                  stub_node{policy::long_name<AR_STRING("flag1")>,
                             policy::fixed_count<0>,
-                            policy::alias(policy::long_name<S_("flag2")>)},
-                  stub_node{policy::long_name<S_("flag2")>, policy::fixed_count<0>},
-                  stub_node{policy::long_name<S_("flag3")>},
+                            policy::alias(policy::long_name<AR_STRING("flag2")>)},
+                  stub_node{policy::long_name<AR_STRING("flag2")>, policy::fixed_count<0>},
+                  stub_node{policy::long_name<AR_STRING("flag3")>},
                   policy::router{[](bool, bool, bool) {}}},
-        stub_node{policy::long_name<S_("test2")>,
-                  stub_node{policy::long_name<S_("arg1")>,
+        stub_node{policy::long_name<AR_STRING("test2")>,
+                  stub_node{policy::long_name<AR_STRING("arg1")>,
                             policy::fixed_count<1>,
-                            policy::alias(policy::long_name<S_("arg3")>)},
-                  stub_node{policy::long_name<S_("arg2")>},
-                  stub_node{policy::long_name<S_("arg3")>, policy::fixed_count<1>},
+                            policy::alias(policy::long_name<AR_STRING("arg3")>)},
+                  stub_node{policy::long_name<AR_STRING("arg2")>},
+                  stub_node{policy::long_name<AR_STRING("arg3")>, policy::fixed_count<1>},
                   policy::router{[](bool, bool, bool) {}}},
-        stub_node{policy::long_name<S_("test3")>,
-                  stub_node{policy::long_name<S_("flag1")>,
+        stub_node{policy::long_name<AR_STRING("test3")>,
+                  stub_node{policy::long_name<AR_STRING("flag1")>,
                             policy::fixed_count<0>,
-                            policy::alias(policy::long_name<S_("flag2")>,
-                                          policy::long_name<S_("flag3")>)},
-                  stub_node{policy::long_name<S_("flag2")>, policy::fixed_count<0>},
-                  stub_node{policy::long_name<S_("flag3")>, policy::fixed_count<0>},
+                            policy::alias(policy::long_name<AR_STRING("flag2")>,
+                                          policy::long_name<AR_STRING("flag3")>)},
+                  stub_node{policy::long_name<AR_STRING("flag2")>, policy::fixed_count<0>},
+                  stub_node{policy::long_name<AR_STRING("flag3")>, policy::fixed_count<0>},
+                  policy::router{[](bool, bool, bool) {}}},
+        stub_node{policy::long_name<AR_STRING("test4")>,
+                  stub_node{policy::long_name<AR_STRING("arg1")>,
+                            policy::fixed_count<3>,
+                            policy::alias(policy::long_name<AR_STRING("arg2")>,
+                                          policy::long_name<AR_STRING("arg3")>)},
+                  stub_node{policy::long_name<AR_STRING("arg2")>, policy::fixed_count<3>},
+                  stub_node{policy::long_name<AR_STRING("arg3")>, policy::fixed_count<3>},
                   policy::router{[](bool, bool, bool) {}}},
         stub_node{
-            policy::long_name<S_("test4")>,
-            stub_node{policy::long_name<S_("arg1")>,
-                      policy::fixed_count<3>,
-                      policy::alias(policy::long_name<S_("arg2")>, policy::long_name<S_("arg3")>)},
-            stub_node{policy::long_name<S_("arg2")>, policy::fixed_count<3>},
-            stub_node{policy::long_name<S_("arg3")>, policy::fixed_count<3>},
-            policy::router{[](bool, bool, bool) {}}},
-        stub_node{policy::long_name<S_("test5")>,
-                  stub_node{policy::long_name<S_("one_of")>,
-                            stub_node{policy::long_name<S_("flag1")>,
+            policy::long_name<AR_STRING("test5")>,
+            stub_node{policy::long_name<AR_STRING("one_of")>,
+                      stub_node{policy::long_name<AR_STRING("flag1")>,
+                                policy::fixed_count<0>,
+                                policy::alias(policy::long_name<AR_STRING("flag2")>)},
+                      stub_node{policy::long_name<AR_STRING("flag2")>, policy::fixed_count<0>}},
+            stub_node{policy::long_name<AR_STRING("flag3")>},
+            policy::router{[](bool, bool) {}}},
+        stub_node{policy::long_name<AR_STRING("test6")>,
+                  stub_node{policy::long_name<AR_STRING("one_of")>,
+                            stub_node{policy::long_name<AR_STRING("flag1")>,
                                       policy::fixed_count<0>,
-                                      policy::alias(policy::long_name<S_("flag2")>)},
-                            stub_node{policy::long_name<S_("flag2")>, policy::fixed_count<0>}},
-                  stub_node{policy::long_name<S_("flag3")>},
+                                      policy::alias(policy::long_name<AR_STRING("flag3")>)},
+                            stub_node{policy::long_name<AR_STRING("flag2")>}},
+                  stub_node{policy::long_name<AR_STRING("flag3")>, policy::fixed_count<0>},
                   policy::router{[](bool, bool) {}}},
-        stub_node{policy::long_name<S_("test6")>,
-                  stub_node{policy::long_name<S_("one_of")>,
-                            stub_node{policy::long_name<S_("flag1")>,
-                                      policy::fixed_count<0>,
-                                      policy::alias(policy::long_name<S_("flag3")>)},
-                            stub_node{policy::long_name<S_("flag2")>}},
-                  stub_node{policy::long_name<S_("flag3")>, policy::fixed_count<0>},
-                  policy::router{[](bool, bool) {}}},
-        stub_node{policy::long_name<S_("test7")>,
-                  stub_node{policy::long_name<S_("flag1")>,
+        stub_node{policy::long_name<AR_STRING("test7")>,
+                  stub_node{policy::long_name<AR_STRING("flag1")>,
                             policy::fixed_count<0>,
-                            policy::alias(policy::long_name<S_("パラメータ一")>)},
-                  stub_node{policy::long_name<S_("パラメータ一")>, policy::fixed_count<0>},
-                  stub_node{policy::long_name<S_("flag3")>},
+                            policy::alias(policy::long_name<AR_STRING("パラメータ一")>)},
+                  stub_node{policy::long_name<AR_STRING("パラメータ一")>, policy::fixed_count<0>},
+                  stub_node{policy::long_name<AR_STRING("flag3")>},
                   policy::router{[](bool, bool, bool) {}}},
     };
 
@@ -259,13 +260,14 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
 
 BOOST_AUTO_TEST_CASE(pre_parse_phase_too_small_view_test)
 {
-    const auto root = stub_node{policy::long_name<S_("root")>,
-                                stub_node{policy::long_name<S_("arg1")>,
-                                          policy::fixed_count<2>,
-                                          policy::alias(policy::long_name<S_("arg2")>)},
-                                stub_node{policy::long_name<S_("arg2")>, policy::fixed_count<2>},
-                                stub_node{policy::long_name<S_("arg3")>},
-                                policy::router{[](bool, bool, bool) {}}};
+    const auto root =
+        stub_node{policy::long_name<AR_STRING("root")>,
+                  stub_node{policy::long_name<AR_STRING("arg1")>,
+                            policy::fixed_count<2>,
+                            policy::alias(policy::long_name<AR_STRING("arg2")>)},
+                  stub_node{policy::long_name<AR_STRING("arg2")>, policy::fixed_count<2>},
+                  stub_node{policy::long_name<AR_STRING("arg3")>},
+                  policy::router{[](bool, bool, bool) {}}};
 
     auto result = std::vector<parsing::token_type>{{parsing::prefix_type::long_, "arg1"},
                                                    {parsing::prefix_type::none, "42"}};
@@ -277,8 +279,9 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_too_small_view_test)
     const auto match =
         owner.pre_parse_phase(adapter, utility::compile_time_optional{}, target, owner, root);
 
-    BOOST_CHECK_EXCEPTION((void)match.get(), parse_exception, [](const auto& e) {
-        return e.what() == "Too few values for alias, needs 2: --arg1"s;
+    BOOST_CHECK_EXCEPTION((void)match.get(), multi_lang_exception, [](const auto& e) {
+        return (e.ec() == error_code::too_few_values_for_alias) && (e.tokens().size() == 1) &&
+               (e.tokens().front() == parsing::token_type{parsing::prefix_type::long_, "arg1"});
     });
 }
 
@@ -307,7 +310,7 @@ int main() {
 using namespace arg_router;
 
 int main() {
-    auto a = policy::alias(flag(policy::long_name<S_("flag1")>));
+    auto a = policy::alias(flag(policy::long_name<AR_STRING("flag1")>));
     return 0;
 }
     )",
@@ -322,7 +325,7 @@ int main() {
 using namespace arg_router;
 
 int main() {
-    auto a = policy::alias(policy::display_name<S_("hello")>);
+    auto a = policy::alias(policy::display_name<AR_STRING("hello")>);
     return 0;
 }
     )",
@@ -371,7 +374,7 @@ public:
 }  // namespace
 
 int main() {
-    const auto root = stub_node{policy::alias(policy::long_name<S_("flag2")>),
+    const auto root = stub_node{policy::alias(policy::long_name<AR_STRING("flag2")>),
                                 policy::fixed_count<0>};
 
     auto result = vector<parsing::token_type>{
@@ -426,10 +429,10 @@ public:
 
 int main() {
     const auto root =
-        stub_node{policy::long_name<S_("mode")>,
-              stub_node{policy::long_name<S_("flag1")>,
-                        policy::alias(policy::long_name<S_("flag2")>)},
-              stub_node{policy::long_name<S_("flag2")>}};;
+        stub_node{policy::long_name<AR_STRING("mode")>,
+              stub_node{policy::long_name<AR_STRING("flag1")>,
+                        policy::alias(policy::long_name<AR_STRING("flag2")>)},
+              stub_node{policy::long_name<AR_STRING("flag2")>}};;
 
     auto result = vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "flag2"}};
@@ -485,11 +488,11 @@ public:
 
 int main() {
     const auto root =
-        stub_node{policy::long_name<S_("mode")>,
-              stub_node{policy::long_name<S_("flag1")>,
+        stub_node{policy::long_name<AR_STRING("mode")>,
+              stub_node{policy::long_name<AR_STRING("flag1")>,
                         policy::min_count<2>,
-                        policy::alias(policy::long_name<S_("flag2")>)},
-              stub_node{policy::long_name<S_("flag2")>}};;
+                        policy::alias(policy::long_name<AR_STRING("flag2")>)},
+              stub_node{policy::long_name<AR_STRING("flag2")>}};;
 
     auto result = vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "flag2"}};
@@ -544,11 +547,11 @@ public:
 
 int main() {
     const auto root =
-        stub_node{policy::long_name<S_("mode")>,
-              stub_node{policy::long_name<S_("flag1")>,
-                        policy::alias(policy::long_name<S_("flag2")>)},
-              stub_node{policy::long_name<S_("flag2")>},
-              stub_node{policy::long_name<S_("flag3")>}};
+        stub_node{policy::long_name<AR_STRING("mode")>,
+              stub_node{policy::long_name<AR_STRING("flag1")>,
+                        policy::alias(policy::long_name<AR_STRING("flag2")>)},
+              stub_node{policy::long_name<AR_STRING("flag2")>},
+              stub_node{policy::long_name<AR_STRING("flag3")>}};
 
     auto result = vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "flag2"},
@@ -606,15 +609,15 @@ public:
 
 int main() {
     const auto root =
-        stub_node{policy::long_name<S_("mode")>,
-                  stub_node{policy::long_name<S_("flag1")>,
-                            policy::alias(policy::long_name<S_("flag2")>),
+        stub_node{policy::long_name<AR_STRING("mode")>,
+                  stub_node{policy::long_name<AR_STRING("flag1")>,
+                            policy::alias(policy::long_name<AR_STRING("flag2")>),
                             policy::fixed_count<1>},
-                  stub_node{policy::long_name<S_("flag2")>,
-                            policy::alias(policy::long_name<S_("flag3")>),
+                  stub_node{policy::long_name<AR_STRING("flag2")>,
+                            policy::alias(policy::long_name<AR_STRING("flag3")>),
                             policy::fixed_count<1>},
-                  stub_node{policy::long_name<S_("flag3")>,
-                            policy::alias(policy::long_name<S_("flag1")>),
+                  stub_node{policy::long_name<AR_STRING("flag3")>,
+                            policy::alias(policy::long_name<AR_STRING("flag1")>),
                             policy::fixed_count<1>},
                   policy::router{[](bool, bool, bool) {}}};
 
@@ -674,12 +677,12 @@ public:
 
 int main() {
     const auto root =
-        stub_node{policy::long_name<S_("mode")>,
-                  stub_node{policy::long_name<S_("flag1")>,
-                            policy::alias(policy::long_name<S_("flag4")>),
+        stub_node{policy::long_name<AR_STRING("mode")>,
+                  stub_node{policy::long_name<AR_STRING("flag1")>,
+                            policy::alias(policy::long_name<AR_STRING("flag4")>),
                             policy::fixed_count<1>},
-                  stub_node{policy::long_name<S_("flag2")>},
-                  stub_node{policy::long_name<S_("flag3")>},
+                  stub_node{policy::long_name<AR_STRING("flag2")>},
+                  stub_node{policy::long_name<AR_STRING("flag3")>},
                   policy::router{[](bool, bool, bool) {}}};
 
     auto result = vector<parsing::token_type>{
@@ -738,13 +741,13 @@ public:
 
 int main() {
     const auto root =
-        stub_node{policy::long_name<S_("mode")>,
-                  stub_node{policy::long_name<S_("flag1")>,
-                            policy::alias(policy::long_name<S_("flag2")>,
-                                          policy::long_name<S_("flag2")>),
+        stub_node{policy::long_name<AR_STRING("mode")>,
+                  stub_node{policy::long_name<AR_STRING("flag1")>,
+                            policy::alias(policy::long_name<AR_STRING("flag2")>,
+                                          policy::long_name<AR_STRING("flag2")>),
                             policy::fixed_count<1>},
-                  stub_node{policy::long_name<S_("flag2")>},
-                  stub_node{policy::long_name<S_("flag3")>},
+                  stub_node{policy::long_name<AR_STRING("flag2")>},
+                  stub_node{policy::long_name<AR_STRING("flag3")>},
                   policy::router{[](bool, bool, bool) {}}};
 
     auto result = vector<parsing::token_type>{
@@ -804,14 +807,14 @@ public:
 
 int main() {
     const auto root =
-        stub_node{policy::long_name<S_("mode")>,
-                  stub_node{policy::long_name<S_("flag1")>,
-                            policy::alias(policy::long_name<S_("flag2")>,
+        stub_node{policy::long_name<AR_STRING("mode")>,
+                  stub_node{policy::long_name<AR_STRING("flag1")>,
+                            policy::alias(policy::long_name<AR_STRING("flag2")>,
                                           policy::short_name<'a'>),
                             policy::fixed_count<1>},
-                  stub_node{policy::long_name<S_("flag2")>,
+                  stub_node{policy::long_name<AR_STRING("flag2")>,
                             policy::short_name<'a'>},
-                  stub_node{policy::long_name<S_("flag3")>},
+                  stub_node{policy::long_name<AR_STRING("flag3")>},
                   policy::router{[](bool, bool, bool) {}}};
 
     auto result = vector<parsing::token_type>{
@@ -869,8 +872,8 @@ public:
 }  // namespace
 
 int main() {
-    const auto root = stub_node{policy::long_name<S_("flag1")>,
-                                policy::alias(policy::long_name<S_("flag2")>),
+    const auto root = stub_node{policy::long_name<AR_STRING("flag1")>,
+                                policy::alias(policy::long_name<AR_STRING("flag2")>),
                                 policy::custom_parser<bool>{
                                     [](std::string_view) { return false; }}};
 
@@ -928,8 +931,8 @@ public:
 }  // namespace
 
 int main() {
-    const auto root = stub_node{policy::long_name<S_("flag1")>,
-                                policy::alias(policy::long_name<S_("flag2")>),
+    const auto root = stub_node{policy::long_name<AR_STRING("flag1")>,
+                                policy::alias(policy::long_name<AR_STRING("flag2")>),
                                 policy::min_max_value<3, 6>()};
 
     auto result = vector<parsing::token_type>{
@@ -986,8 +989,8 @@ public:
 }  // namespace
 
 int main() {
-    const auto root = stub_node{policy::long_name<S_("flag1")>,
-                                policy::alias(policy::long_name<S_("flag2")>),
+    const auto root = stub_node{policy::long_name<AR_STRING("flag1")>,
+                                policy::alias(policy::long_name<AR_STRING("flag2")>),
                                 policy::router{[](bool) {}}};
 
     auto result = vector<parsing::token_type>{
@@ -1046,11 +1049,11 @@ public:
 
 int main() {
     const auto root =
-        stub_node{policy::long_name<S_("mode")>,
-                  stub_node{policy::long_name<S_("flag1")>,
-                            policy::alias(policy::long_name<S_("flag2")>),
+        stub_node{policy::long_name<AR_STRING("mode")>,
+                  stub_node{policy::long_name<AR_STRING("flag1")>,
+                            policy::alias(policy::long_name<AR_STRING("flag2")>),
                             policy::fixed_count<1>},
-                  stub_node{policy::long_name<S_("flag2")>,
+                  stub_node{policy::long_name<AR_STRING("flag2")>,
                             policy::fixed_count<2>},
                   policy::router{[](bool, bool) {}}};
 

@@ -68,11 +68,12 @@ public:
         using node_type = boost::mp11::mp_first<std::tuple<Parents...>>;
 
         if (min_ && comp_(value, *min_)) {
-            throw parse_exception{"Minimum value not reached",
-                                  parsing::node_token_type<node_type>()};
+            throw multi_lang_exception{error_code::minimum_value_not_reached,
+                                       parsing::node_token_type<node_type>()};
         }
         if (max_ && comp_(*max_, value)) {
-            throw parse_exception{"Maximum value exceeded", parsing::node_token_type<node_type>()};
+            throw multi_lang_exception{error_code::maximum_value_exceeded,
+                                       parsing::node_token_type<node_type>()};
         }
     }
 
@@ -157,6 +158,7 @@ public:
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
      * @param value Parsed input value to check
      * @param parents Parents instances pack
+     * @exception multi_lang_exception Thrown if the value is out of bounds
      */
     template <typename InputValueType, typename... Parents>
     void validation_phase(const InputValueType& value,
@@ -168,14 +170,14 @@ public:
 
         if constexpr (!std::is_void_v<MinType>) {
             if (value < minimum_value()) {
-                throw parse_exception{"Minimum value not reached",
-                                      parsing::node_token_type<node_type>()};
+                throw multi_lang_exception{error_code::minimum_value_not_reached,
+                                           parsing::node_token_type<node_type>()};
             }
         }
         if constexpr (!std::is_void_v<MaxType>) {
             if (value > maximum_value()) {
-                throw parse_exception{"Maximum value exceeded",
-                                      parsing::node_token_type<node_type>()};
+                throw multi_lang_exception{error_code::maximum_value_exceeded,
+                                           parsing::node_token_type<node_type>()};
             }
         }
     }

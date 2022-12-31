@@ -8,6 +8,7 @@
 #include "arg_router/utility/compile_time_string.hpp"
 
 #include "test_helpers.hpp"
+#include "test_printers.hpp"
 
 using namespace arg_router;
 
@@ -52,21 +53,27 @@ BOOST_AUTO_TEST_CASE(is_policy_test)
 BOOST_AUTO_TEST_CASE(missing_phase_test)
 {
     const auto root =
-        stub_node{stub_node{policy::long_name<S_("test")>, policy::required}, stub_node{}};
+        stub_node{stub_node{policy::long_name<AR_STRING("test")>, policy::required}, stub_node{}};
 
-    auto f = [&](const auto& owner, std::string fail_message) {
+    auto f = [&](const auto& owner, auto ec) {
         try {
             owner.template missing_phase<int>(owner, root);
-            BOOST_CHECK(fail_message.empty());
-        } catch (parse_exception& e) {
-            BOOST_CHECK_EQUAL(e.what(), fail_message);
+            BOOST_CHECK(!ec);
+        } catch (multi_lang_exception& e) {
+            BOOST_REQUIRE(ec);
+            BOOST_CHECK_EQUAL(e.ec(), ec->ec());
+            BOOST_CHECK_EQUAL(e.tokens(), ec->tokens());
         }
     };
 
     test::data_set(
         f,
-        std::tuple{std::tuple{std::get<0>(root.children()), "Missing required argument: --test"},
-                   std::tuple{std::get<1>(root.children()), ""}});
+        std::tuple{
+            std::tuple{
+                std::get<0>(root.children()),
+                std::optional<multi_lang_exception>{
+                    test::create_exception(error_code::missing_required_argument, {"--test"})}},
+            std::tuple{std::get<1>(root.children()), std::optional<multi_lang_exception>{}}});
 }
 
 BOOST_AUTO_TEST_SUITE(death_suite)
@@ -105,7 +112,7 @@ public:
 }  // namespace
 
 int main() {
-    const auto node = stub_node{policy::long_name<S_("test")>,
+    const auto node = stub_node{policy::long_name<AR_STRING("test")>,
                                 policy::required};
     node.template missing_phase<int>();
     return 0;

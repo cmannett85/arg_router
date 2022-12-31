@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "arg_router/exception.hpp"
 #include "arg_router/utility/tuple_iterator.hpp"
 #include "arg_router/utility/type_hash.hpp"
 
@@ -30,7 +31,7 @@ namespace test
  * @return Reference to node at the specified child indices
  */
 template <std::size_t I, std::size_t... Is, typename Root>
-constexpr auto& get_node(Root& root) noexcept
+[[nodiscard]] constexpr auto& get_node(Root& root) noexcept
 {
     auto& child = std::get<I>(root.children());
 
@@ -50,7 +51,7 @@ constexpr auto& get_node(Root& root) noexcept
  * @return Hash code of node at the specified child indices
  */
 template <std::size_t I, std::size_t... Is, typename Root>
-std::size_t get_type_index(const Root& root) noexcept
+[[nodiscard]] std::size_t get_type_index(const Root& root) noexcept
 {
     const auto& child = get_node<I, Is...>(root);
     return utility::type_hash<std::decay_t<decltype(child)>>();
@@ -73,7 +74,7 @@ std::size_t get_type_index(const Root& root) noexcept
  * @return Tuple of parent references
  */
 template <std::size_t I, std::size_t... Is, typename Root>
-constexpr auto get_parents(const Root& root) noexcept
+[[nodiscard]] constexpr auto get_parents(const Root& root) noexcept
 {
     auto result = std::tuple{std::cref(get_node<I, Is...>(root))};
 
@@ -88,6 +89,16 @@ constexpr auto get_parents(const Root& root) noexcept
         return std::tuple_cat(result, std::tuple{std::cref(root)});
     }
 }
+
+/** Returns an exception instance built from the error code and tokens (with prefix).
+ *
+ * @param ec Error code
+ * @param tokens Token lists with prefix (as they would appear on the command line)
+ * @return Exception
+ */
+[[nodiscard]] multi_lang_exception create_exception(
+    error_code ec,
+    std::initializer_list<std::string_view> tokens = {});
 
 /** Loops through the list of argument sets in @a args and executes the test function object @a f
  * with them.
@@ -208,6 +219,5 @@ void death_test_compile(std::forward_list<death_test_info> tests);
  * @param expected_error Error string to search for in output
  */
 void death_test_compile(std::string_view code, std::string_view expected_error);
-
 }  // namespace test
 }  // namespace arg_router

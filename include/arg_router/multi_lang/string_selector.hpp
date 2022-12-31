@@ -6,7 +6,9 @@
 
 #include "arg_router/utility/compile_time_string.hpp"
 
-#include <boost/preprocessor/variadic.hpp>
+#ifndef ENABLE_CPP20_STRINGS
+
+#    include <boost/preprocessor/variadic.hpp>
 
 /** @file
  */
@@ -23,7 +25,7 @@ template <std::size_t I, typename... S>
 using string_selector = std::tuple_element_t<I, std::tuple<S...>>;
 }  // namespace arg_router::multi_lang
 
-#define AR_SM_UNPACK(z, n, var_list) S_(BOOST_PP_ARRAY_ELEM(n, var_list))
+#    define AR_SM_UNPACK(z, n, var_list) AR_STRING(BOOST_PP_ARRAY_ELEM(n, var_list))
 
 /** A multi-language equivalent to <TT>S_</TT>, only for use within a multi_lang::root call.
  *
@@ -33,13 +35,17 @@ using string_selector = std::tuple_element_t<I, std::tuple<S...>>;
  * arp::long_name<SM_("help", "aider", "ayuda")>
  * @endcode
  *
+ * @note This has now been superceded by multi_lang::root_t, and will be removed in v2
+ *
  * The macro creates compile_time_string types from the inputs and puts them into a string_selector.
  * There is no requirement to use this macro, it's just a convenience.
  * @param I Index to select
  */
-#define SM_(I, ...)                                                                  \
-    arg_router::multi_lang::string_selector<I,                                       \
-                                            BOOST_PP_ENUM(                           \
-                                                BOOST_PP_VARIADIC_SIZE(__VA_ARGS__), \
-                                                AR_SM_UNPACK,                        \
-                                                BOOST_PP_VARIADIC_TO_ARRAY(__VA_ARGS__))>
+#    define SM_(I, ...)                                                                  \
+        arg_router::multi_lang::string_selector<I,                                       \
+                                                BOOST_PP_ENUM(                           \
+                                                    BOOST_PP_VARIADIC_SIZE(__VA_ARGS__), \
+                                                    AR_SM_UNPACK,                        \
+                                                    BOOST_PP_VARIADIC_TO_ARRAY(__VA_ARGS__))>
+
+#endif

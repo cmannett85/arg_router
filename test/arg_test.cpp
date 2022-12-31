@@ -22,15 +22,15 @@ BOOST_AUTO_TEST_SUITE(arg_suite)
 
 BOOST_AUTO_TEST_CASE(is_tree_node_test)
 {
-    static_assert(is_tree_node_v<arg_t<int, policy::long_name_t<S_("hello")>>>,
+    static_assert(is_tree_node_v<arg_t<int, policy::long_name_t<AR_STRING("hello")>>>,
                   "Tree node test has failed");
 }
 
 BOOST_AUTO_TEST_CASE(policies_test)
 {
-    [[maybe_unused]] auto f = arg<int>(policy::long_name<S_("hello")>,  //
+    [[maybe_unused]] auto f = arg<int>(policy::long_name<AR_STRING("hello")>,  //
                                        policy::short_name<'H'>);
-    static_assert(f.long_name() == "hello"sv, "Long name test fail");
+    static_assert(f.long_name() == "hello", "Long name test fail");
     static_assert(f.short_name() == "H", "Short name test fail");
 }
 
@@ -52,18 +52,18 @@ BOOST_AUTO_TEST_CASE(parse_test)
 
     test::data_set(
         f,
-        std::tuple{
-            std::tuple{arg<int>(policy::long_name<S_("test")>),
-                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "42"}},
-                       42,
-                       false},
-            std::tuple{arg<int>(policy::long_name<S_("test")>, policy::router{[&](int result) {
-                                    BOOST_CHECK_EQUAL(result, 42);
-                                    router_hit = true;
-                                }}),
-                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "42"}},
-                       42,
-                       true}});
+        std::tuple{std::tuple{arg<int>(policy::long_name<AR_STRING("test")>),
+                              std::vector<parsing::token_type>{{parsing::prefix_type::none, "42"}},
+                              42,
+                              false},
+                   std::tuple{arg<int>(policy::long_name<AR_STRING("test")>,
+                                       policy::router{[&](int result) {
+                                           BOOST_CHECK_EQUAL(result, 42);
+                                           router_hit = true;
+                                       }}),
+                              std::vector<parsing::token_type>{{parsing::prefix_type::none, "42"}},
+                              42,
+                              true}});
 }
 
 BOOST_AUTO_TEST_CASE(help_test)
@@ -89,14 +89,15 @@ BOOST_AUTO_TEST_CASE(help_test)
         f,
         std::tuple{
             std::tuple{arg<int>(policy::short_name<'h'>,
-                                policy::long_name<S_("hello")>,
-                                policy::description<S_("An arg!")>),
+                                policy::long_name<AR_STRING("hello")>,
+                                policy::description<AR_STRING("An arg!")>),
                        "--hello,-h <Value>",
                        "An arg!"},
-            std::tuple{arg<int>(policy::long_name<S_("hello")>, policy::description<S_("An arg!")>),
+            std::tuple{arg<int>(policy::long_name<AR_STRING("hello")>,
+                                policy::description<AR_STRING("An arg!")>),
                        "--hello <Value>",
                        "An arg!"},
-            std::tuple{arg<int>(policy::short_name<'h'>, policy::description<S_("An arg!")>),
+            std::tuple{arg<int>(policy::short_name<'h'>, policy::description<AR_STRING("An arg!")>),
                        "-h <Value>",
                        "An arg!"},
             std::tuple{arg<int>(policy::short_name<'h'>), "-h <Value>", ""},
@@ -117,7 +118,7 @@ using namespace arg_router;
 
 int main() {
     auto f = arg<int>(
-        policy::long_name<S_("hello")>,
+        policy::long_name<AR_STRING("hello")>,
         flag(policy::short_name<'b'>),
         policy::short_name<'H'>
     );
@@ -149,8 +150,8 @@ int main() {
 using namespace arg_router;
 
 int main() {
-    auto f = arg<int>(policy::long_name<S_("hello")>,
-                      policy::display_name<S_("hello2")>);
+    auto f = arg<int>(policy::long_name<AR_STRING("hello")>,
+                      policy::display_name<AR_STRING("hello2")>);
     return 0;
 }
     )",
@@ -166,8 +167,8 @@ int main() {
 using namespace arg_router;
 
 int main() {
-    auto f = arg<int>(policy::long_name<S_("hello")>,
-                      policy::none_name<S_("hello2")>);
+    auto f = arg<int>(policy::long_name<AR_STRING("hello")>,
+                      policy::none_name<AR_STRING("hello2")>);
     return 0;
 }
     )",

@@ -69,12 +69,12 @@ jobs:
       run: |
         mkdir -p ${{ env.BUILD_DIR }}
         cd ${{ env.BUILD_DIR }}
-        cmake ${{ github.workspace }} -G "Ninja" -DCMAKE_CXX_COMPILER=clang++-14 -DENABLE_CLANG_TIDY=ON -DDEATH_TEST_PARALLEL=2
-        cmake --build . --target arg_router_test_coverage example_simple example_custom_policy_and_node example_basic_cat example_just_cats
+        cmake ${{ github.workspace }} -G "Ninja" -DCMAKE_CXX_COMPILER=clang++-14 -DENABLE_CLANG_TIDY=ON -DDEATH_TEST_PARALLEL=2 -DENABLE_CLANG_FORMAT_CHECKS=ON
+        cmake --build . --target arg_router_test_coverage cpp17_examples cpp20_examples
 
     # We run the tests under Valgrind rather than ASan/UBSan because when combined with coverage
     # causes hangs in the death tests
-    - name: Run unit tests under Valgrind
+    - name: Run unit tests under Valgrind and generate coverage data
       timeout-minutes: 30
       run: |
         cd ${{ env.BUILD_DIR }}/test
@@ -146,7 +146,7 @@ jobs:
         mkdir ${{ env.CMD_BUILD_DIR }}
         cd ${{ env.CMD_BUILD_DIR }}
         "${{ env.CMAKE_EXE }}" ${{ github.workspace }} -G "Ninja" -DVCPKG_TARGET_TRIPLET:STRING="x64-windows-static" -DCMAKE_CXX_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe" -DDEATH_TEST_PARALLEL=2
-        "${{ env.CMAKE_EXE }}" --build .
+        "${{ env.CMAKE_EXE }}" --build . --target arg_router_test cpp17_examples cpp20_examples
 
     - name: Run unit tests
       timeout-minutes: 20

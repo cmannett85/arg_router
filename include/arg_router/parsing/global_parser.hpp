@@ -20,7 +20,7 @@ namespace arg_router
  * @tparam T Type to parse @a token into
  * @param token Command line token to parse
  * @return The parsed instance
- * @exception parse_exception Thrown if parsing failed
+ * @exception multi_lang_exception Thrown if parsing failed
  */
 template <typename T, typename Enable = void>
 struct parser {
@@ -37,23 +37,21 @@ struct parser<T, typename std::enable_if_t<std::is_arithmetic_v<T>>> {
     [[nodiscard]] static T parse(std::string_view token)
     {
         using namespace utility::string_view_ops;
-        using namespace std::string_literals;
+        using namespace std::string_view_literals;
 
         auto result = T{};
         if (!boost::conversion::try_lexical_convert(token, result)) {
-            throw parse_exception{"Failed to parse: "s + token};
+            throw multi_lang_exception{error_code::failed_to_parse,
+                                       parsing::token_type{parsing::prefix_type::none, token}};
         }
 
         return result;
     }
 };
 
-template <>
-struct parser<std::string_view> {
-    [[nodiscard]] constexpr static inline std::string_view parse(std::string_view token) noexcept
-    {
-        return token;
-    }
+template <typename T>
+struct parser<T, typename std::enable_if_t<std::is_constructible_v<T, std::string_view>>> {
+    [[nodiscard]] static T parse(std::string_view token) { return T{token}; }
 };
 
 template <>
@@ -61,7 +59,6 @@ struct parser<bool> {
     [[nodiscard]] static inline bool parse(std::string_view token)
     {
         using namespace utility::string_view_ops;
-        using namespace std::string_literals;
         using namespace std::string_view_literals;
 
         constexpr auto true_tokens = std::array{
@@ -93,7 +90,8 @@ struct parser<bool> {
             return false;
         }
 
-        throw parse_exception{"Failed to parse: "s + token};
+        throw multi_lang_exception{error_code::failed_to_parse,
+                                   parsing::token_type{parsing::prefix_type::none, token}};
     }
 };
 
@@ -109,7 +107,9 @@ struct parser<std::optional<T>> {
 // because an argument that can be parsed as a complete container will need a custom parser.  In
 // other words, this is only used for positional arg parsing
 template <typename T>
-struct parser<T, typename std::enable_if_t<traits::has_push_back_method_v<T>>> {
+struct parser<
+    T,
+    typename std::enable_if_t<traits::has_push_back_method_v<T> && !std::is_same_v<T, string>>> {
     [[nodiscard]] static typename T::value_type parse(std::string_view token)
     {
         return parser<typename T::value_type>::parse(token);

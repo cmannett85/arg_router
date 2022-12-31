@@ -31,9 +31,9 @@ namespace arg_router::dependency
  * @tparam Params Policies and child node types for the mode
  */
 template <typename... Params>
-class alias_group_t : public detail::basic_one_of_t<S_("Alias Group: "), Params...>
+class alias_group_t : public detail::basic_one_of_t<AR_STRING("Alias Group: "), Params...>
 {
-    using parent_type = detail::basic_one_of_t<S_("Alias Group: "), Params...>;
+    using parent_type = detail::basic_one_of_t<AR_STRING("Alias Group: "), Params...>;
 
 public:
     using typename parent_type::children_type;
@@ -71,9 +71,9 @@ public:
     {
     public:
         using label =
-            decltype(S_("Alias Group: "){} +
+            decltype(AR_STRING_SV(parent_type::display_name()){} +
                      parent_type::template default_leaf_help_data_type<Flatten>::value_suffix());
-        using description = S_("");
+        using description = AR_STRING("");
         using children = typename parent_type::template  //
             children_help_data_type<Flatten>::children;
     };
@@ -96,8 +96,8 @@ public:
      * @param parents Parent node instances
      * @return Non-empty if the leading tokens in @a args are consumable by this
      * node
-     * @exception parse_exception Thrown if any of the child pre-parse
-     * implementations have returned an exception
+     * @exception multi_lang_exception Thrown if any of the child pre-parse implementations have
+     * returned an exception
      */
     template <typename Validator, bool HasTarget, typename... Parents>
     [[nodiscard]] std::optional<parsing::parse_target> pre_parse(

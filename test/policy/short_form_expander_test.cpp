@@ -115,7 +115,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                                                  {parsing::prefix_type::short_, "に"},
                                                  {parsing::prefix_type::short_, "ち"},
                                                  {parsing::prefix_type::short_, "は"}},
-                stub_node{policy::short_name_utf8<S_("こ")>}},
+                stub_node{policy::short_name_utf8<AR_STRING("こ")>}},
             std::tuple{std::vector<parsing::token_type>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "-hello"}},
                        std::vector<parsing::token_type>{{parsing::prefix_type::short_, "h"}},
@@ -123,7 +123,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                                                         {parsing::prefix_type::short_, "l"},
                                                         {parsing::prefix_type::short_, "l"},
                                                         {parsing::prefix_type::short_, "o"}},
-                       stub_node{policy::short_name_utf8<S_("h")>}},
+                       stub_node{policy::short_name_utf8<AR_STRING("h")>}},
             std::tuple{std::vector<parsing::token_type>{},
                        std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "-🙂b🇦🇬Δ猫"}},
@@ -132,16 +132,14 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                                                         {parsing::prefix_type::short_, "🇦🇬"},
                                                         {parsing::prefix_type::short_, "Δ"},
                                                         {parsing::prefix_type::short_, "猫"}},
-                       stub_node{policy::short_name_utf8<S_("🙂")>}},
+                       stub_node{policy::short_name_utf8<AR_STRING("🙂")>}},
         });
 }
 
-BOOST_AUTO_TEST_SUITE(death_suite)
-
-BOOST_AUTO_TEST_CASE(owner_must_have_short_name_test)
+BOOST_AUTO_TEST_CASE(death_test)
 {
-    test::death_test_compile(
-        R"(
+    test::death_test_compile({{
+                                  R"(
 #include "arg_router/policy/short_form_expander.hpp"
 #include "arg_router/tree_node.hpp"
 
@@ -189,10 +187,67 @@ int main() {
     return 0;
 }
     )",
-        "Short-form expansion support requires a short name policy");
-}
+                                  "Short-form expansion support requires a short name policy",
+                                  "short_form_expansion_support_requires_short_name_policy"},
+                              {
+                                  R"(
+#undef AR_LONG_PREFIX
+#define AR_LONG_PREFIX "-"
 
-BOOST_AUTO_TEST_SUITE_END()
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/short_form_expander.hpp"
+#include "arg_router/policy/short_name.hpp"
+#include "arg_router/tree_node.hpp"
+
+using namespace arg_router;
+
+namespace
+{
+template <typename... Policies>
+class stub_node : public tree_node<Policies...>
+{
+public:
+    using value_type = bool;
+
+    constexpr explicit stub_node(Policies... policies) :
+        tree_node<Policies...>{std::move(policies)...}
+    {
+    }
+
+    template <typename... Parents>
+    void pre_parse_phase(
+        vector<parsing::token_type>& result,
+        [[maybe_unused]] const Parents&... parents) const
+    {
+        using this_policy =
+            std::tuple_element_t<0, typename stub_node::policies_type>;
+
+        auto args = vector<parsing::token_type>{};
+        auto adapter = parsing::dynamic_token_adapter{result, args};
+        auto processed_target = utility::compile_time_optional{};
+        auto target = parsing::parse_target{*this, parents...};
+        (void)this->this_policy::pre_parse_phase(adapter,
+                                                 processed_target,
+                                                 target,
+                                                 *this,
+                                                 parents...);
+    }
+};
+}  // namespace
+
+int main() {
+    const auto node = stub_node{policy::short_form_expander,
+                                policy::long_name<AR_STRING("hello")>,
+                                policy::short_name<'H'>};
+    auto tokens = vector<parsing::token_type>{
+                    {parsing::prefix_type::long_, "hello"}};
+    node.pre_parse_phase(tokens);
+    return 0;
+}
+    )",
+                                  "Short and long prefixes cannot be the same",
+                                  "short_and_long_prefixes_not_equal"}});
+}
 
 BOOST_AUTO_TEST_SUITE_END()
 

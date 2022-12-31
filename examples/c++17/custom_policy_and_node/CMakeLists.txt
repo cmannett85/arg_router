@@ -21,3 +21,5 @@ add_clangtidy_to_target(example_custom_policy_and_node)
 target_include_directories(example_custom_policy_and_node
     PUBLIC "${CMAKE_SOURCE_DIR}/include"
 )
+
+add_dependencies(cpp17_examples example_custom_policy_and_node)

@@ -39,7 +39,7 @@ public:
      * @param token Token to parse
      * @param parents Parents instances pack
      * @return Parsed value
-     * @exception parse_exception Thrown if parsing failed
+     * @exception multi_lang_exception Thrown if parsing failed
      */
     template <typename ValueType, typename... Parents>
     [[nodiscard]] constexpr ValueType parse_phase(std::string_view token,

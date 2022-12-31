@@ -6,7 +6,9 @@
 
 #include "arg_router/utility/tuple_iterator.hpp"
 
-#include <variant>
+#ifndef ENABLE_CPP20_STRINGS
+
+#    include <variant>
 
 /** Namespace for types and functions relating to runtime multi-language support.
  */
@@ -54,6 +56,8 @@ namespace arg_router::multi_lang
  * compared against an input that would @em usually come from a <TT>std::locale()</TT> call, then
  * ISO language codes are least troublesome and easiest to read.
  *
+ * @note This has now been superceded by multi_lang::root_t, and will be removed in v2
+ *
  * @tparam Fn Function object type that accepts an integral constant (the supported language index)
  * and returns a root instance
  * @tparam SupportedISOLanguageCodes The supported ISO language codes as compile time strings
@@ -83,6 +87,7 @@ public:
      * SupportedISOLanguageCodes, then the first language in SupportedISOLanguageCodes is used
      * @param f Function object that returns the root instance for a given supported language index
      */
+    [[deprecated("Superceded by multi_lang::root_t, will be removed in v2")]]  //
     explicit root_wrapper_t(std::string_view iso_language, Fn&& f)
     {
         utility::tuple_type_iterator<boost::mp11::mp_iota_c<num_supported_codes>>([&](auto I) {
@@ -143,8 +148,11 @@ private:
  * @return root_wrapper_t instance
  */
 template <typename... SupportedISOLanguageCodes, typename Fn>
-[[nodiscard]] auto root_wrapper(std::string_view iso_language, Fn&& f)
+[[nodiscard, deprecated("Superceded by multi_lang::root, will be removed in v2")]] //
+auto root_wrapper(std::string_view iso_language, Fn&& f)
 {
     return root_wrapper_t<Fn, SupportedISOLanguageCodes...>{iso_language, std::forward<Fn>(f)};
 }
 }  // namespace arg_router::multi_lang
+
+#endif

@@ -5,16 +5,22 @@
 #pragma once
 
 #include "arg_router/policy/policy.hpp"
-#include "arg_router/utility/utf8.hpp"
 
 namespace arg_router::policy
 {
-/** Represents the name of an argument that does not use any token prefix (i.e.
+/** Represents the name of a node that does not use any token prefix (i.e.
  * parsing::prefix_type == none).
  *
  * The only node that uses this in the library is mode_t.
+ *
+ * If using C++17 then use the template variable helper with the <TT>S_</TT> macro; for C++20 and
+ * higher, use the constructor directly with a compile-time string literal:
+ * @code
+ * constexpr auto a = ar::policy::none_name<S_("hello")>;
+ * constexpr auto b = ar::policy::none_name_t{"hello"_S};
+ * @endcode
  * @note Display names must not be empty
- * @tparam S compile_time_string
+ * @tparam S Compile-time string
  */
 template <typename S>
 class none_name_t
@@ -22,6 +28,12 @@ class none_name_t
 public:
     /** String type. */
     using string_type = S;
+
+    /** Constructor.
+     *
+     * @param str String instance
+     */
+    constexpr explicit none_name_t([[maybe_unused]] S str = {}) noexcept {}
 
     /** Returns the name.
      *
@@ -38,7 +50,7 @@ private:
 
 /** Constant variable helper.
  *
- * @tparam S compile_time_string
+ * @tparam S Compile-time string
  */
 template <typename S>
 constexpr auto none_name = none_name_t<S>{};

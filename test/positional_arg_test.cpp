@@ -19,8 +19,8 @@ BOOST_AUTO_TEST_SUITE(positional_arg_suite)
 BOOST_AUTO_TEST_CASE(is_tree_node_test)
 {
     static_assert(
-        is_tree_node_v<
-            arg_router::positional_arg_t<std::vector<int>, policy::display_name_t<S_("hello")>>>,
+        is_tree_node_v<arg_router::positional_arg_t<std::vector<int>,
+                                                    policy::display_name_t<AR_STRING("hello")>>>,
         "Tree node test has failed");
 }
 
@@ -35,26 +35,26 @@ BOOST_AUTO_TEST_CASE(parse_test)
     test::data_set(
         f,
         std::tuple{
-            std::tuple{
-                positional_arg<int>(policy::display_name<S_("node")>, policy::fixed_count<1>),
-                std::vector<parsing::token_type>{{parsing::prefix_type::none, "13"}},
-                13},
-            std::tuple{positional_arg<std::vector<int>>(policy::display_name<S_("node")>),
+            std::tuple{positional_arg<int>(policy::display_name<AR_STRING("node")>,
+                                           policy::fixed_count<1>),
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "13"}},
+                       13},
+            std::tuple{positional_arg<std::vector<int>>(policy::display_name<AR_STRING("node")>),
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "1"},
                                                         {parsing::prefix_type::none, "2"},
                                                         {parsing::prefix_type::none, "3"}},
                        std::vector{1, 2, 3}},
-            std::tuple{positional_arg<std::vector<int>>(policy::display_name<S_("node")>,
+            std::tuple{positional_arg<std::vector<int>>(policy::display_name<AR_STRING("node")>,
                                                         policy::min_count<2>),
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "1"},
                                                         {parsing::prefix_type::none, "2"}},
                        std::vector{1, 2}},
-            std::tuple{positional_arg<std::vector<int>>(policy::display_name<S_("node")>,
+            std::tuple{positional_arg<std::vector<int>>(policy::display_name<AR_STRING("node")>,
                                                         policy::max_count<2>),
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "1"},
                                                         {parsing::prefix_type::none, "2"}},
                        std::vector{1, 2}},
-            std::tuple{positional_arg<std::vector<int>>(policy::display_name<S_("node")>,
+            std::tuple{positional_arg<std::vector<int>>(policy::display_name<AR_STRING("node")>,
                                                         policy::max_count<2>),
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "1"},
                                                         {parsing::prefix_type::none, "2"}},
@@ -84,33 +84,33 @@ BOOST_AUTO_TEST_CASE(help_test)
     test::data_set(
         f,
         std::tuple{
-            std::tuple{
-                positional_arg<std::vector<int>>(policy::display_name<S_("pos-arg")>,
-                                                 policy::description<S_("A positional arg!")>),
-                "<pos-arg> [0,N]",
-                "A positional arg!"},
-            std::tuple{
-                positional_arg<std::vector<int>>(policy::display_name<S_("pos-arg")>,
-                                                 policy::description<S_("A positional arg!")>),
-                "<pos-arg> [0,N]",
-                "A positional arg!"},
-            std::tuple{
-                positional_arg<std::vector<int>>(policy::display_name<S_("pos-arg")>,
-                                                 policy::description<S_("A positional arg!")>),
-                "<pos-arg> [0,N]",
-                "A positional arg!"},
-            std::tuple{positional_arg<std::vector<int>>(policy::display_name<S_("pos-arg")>),
+            std::tuple{positional_arg<std::vector<int>>(
+                           policy::display_name<AR_STRING("pos-arg")>,
+                           policy::description<AR_STRING("A positional arg!")>),
+                       "<pos-arg> [0,N]",
+                       "A positional arg!"},
+            std::tuple{positional_arg<std::vector<int>>(
+                           policy::display_name<AR_STRING("pos-arg")>,
+                           policy::description<AR_STRING("A positional arg!")>),
+                       "<pos-arg> [0,N]",
+                       "A positional arg!"},
+            std::tuple{positional_arg<std::vector<int>>(
+                           policy::display_name<AR_STRING("pos-arg")>,
+                           policy::description<AR_STRING("A positional arg!")>),
+                       "<pos-arg> [0,N]",
+                       "A positional arg!"},
+            std::tuple{positional_arg<std::vector<int>>(policy::display_name<AR_STRING("pos-arg")>),
                        "<pos-arg> [0,N]",
                        ""},
-            std::tuple{positional_arg<std::vector<int>>(policy::display_name<S_("pos-arg")>,
+            std::tuple{positional_arg<std::vector<int>>(policy::display_name<AR_STRING("pos-arg")>,
                                                         policy::min_max_count<1, 3>),
                        "<pos-arg> [1,3]",
                        ""},
-            std::tuple{positional_arg<std::vector<int>>(policy::display_name<S_("pos-arg")>,
+            std::tuple{positional_arg<std::vector<int>>(policy::display_name<AR_STRING("pos-arg")>,
                                                         policy::min_count<3>),
                        "<pos-arg> [3,N]",
                        ""},
-            std::tuple{positional_arg<std::vector<int>>(policy::display_name<S_("pos-arg")>,
+            std::tuple{positional_arg<std::vector<int>>(policy::display_name<AR_STRING("pos-arg")>,
                                                         policy::max_count<3>),
                        "<pos-arg> [0,3]",
                        ""},
@@ -130,7 +130,7 @@ using namespace arg_router;
 
 int main() {
     auto p = positional_arg<std::vector<int>>(
-        policy::display_name<S_("hello")>,
+        policy::display_name<AR_STRING("hello")>,
         flag(policy::short_name<'b'>)
     );
     return 0;
@@ -147,7 +147,7 @@ int main() {
 using namespace arg_router;
 
 int main() {
-    auto p = positional_arg<int>(policy::display_name<S_("hello")>);
+    auto p = positional_arg<int>(policy::display_name<AR_STRING("hello")>);
     return 0;
 }
     )",
@@ -176,8 +176,8 @@ int main() {
 using namespace arg_router;
 
 int main() {
-    auto p = positional_arg<std::vector<int>>(policy::display_name<S_("hello")>,
-                                              policy::long_name<S_("hello2")>);
+    auto p = positional_arg<std::vector<int>>(policy::display_name<AR_STRING("hello")>,
+                                              policy::long_name<AR_STRING("hello2")>);
     return 0;
 }
     )",
@@ -193,7 +193,7 @@ int main() {
 using namespace arg_router;
 
 int main() {
-    auto p = positional_arg<std::vector<int>>(policy::display_name<S_("hello")>,
+    auto p = positional_arg<std::vector<int>>(policy::display_name<AR_STRING("hello")>,
                                               policy::short_name<'l'>);
     return 0;
 }
@@ -210,8 +210,8 @@ int main() {
 using namespace arg_router;
 
 int main() {
-    auto p = positional_arg<std::vector<int>>(policy::display_name<S_("hello")>,
-                                              policy::none_name<S_("hello2")>);
+    auto p = positional_arg<std::vector<int>>(policy::display_name<AR_STRING("hello")>,
+                                              policy::none_name<AR_STRING("hello2")>);
     return 0;
 }
     )",
@@ -227,7 +227,7 @@ int main() {
 using namespace arg_router;
 
 int main() {
-    auto p = positional_arg<std::vector<int>>(policy::display_name<S_("hello")>,
+    auto p = positional_arg<std::vector<int>>(policy::display_name<AR_STRING("hello")>,
                                               policy::min_max_count<3, 1>);
     return 0;
 }
@@ -244,7 +244,7 @@ int main() {
 using namespace arg_router;
 
 int main() {
-    auto p = positional_arg<std::vector<int>>(policy::display_name<S_("hello")>,
+    auto p = positional_arg<std::vector<int>>(policy::display_name<AR_STRING("hello")>,
                                               policy::fixed_count<0>);
     return 0;
 }
@@ -261,7 +261,7 @@ int main() {
 using namespace arg_router;
 
 int main() {
-    auto f = positional_arg<std::vector<int>>(policy::display_name<S_("hello")>,
+    auto f = positional_arg<std::vector<int>>(policy::display_name<AR_STRING("hello")>,
                                 policy::router{[](int) {}});
     return 0;
 }

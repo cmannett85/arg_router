@@ -1,5 +1,5 @@
-# This workflow runs a barrage of tests in order to validate a PR
-name: Pull Request Checker
+# Runs more expensive, less likely to fail tests, when merging to main
+name: Merge to main Checker
 
 on:
   pull_request:
@@ -94,7 +94,7 @@ jobs:
         mkdir -p ${{ env.BUILD_DIR }}
         cd ${{ env.BUILD_DIR }}
         cmake ${{ github.workspace }} -G "Ninja" -DCMAKE_CXX_COMPILER=g++-11 -DDEATH_TEST_PARALLEL=2
-        cmake --build . --target arg_router_test
+        cmake --build . --target arg_router_test cpp17_examples cpp20_examples
 
     - name: Run unit tests
       timeout-minutes: 30
@@ -136,8 +136,8 @@ jobs:
       run: |
         mkdir -p ${{ env.BUILD_DIR }}
         cd ${{ env.BUILD_DIR }}
-        cmake ${{ github.workspace }} -G "Ninja" -DCMAKE_CXX_COMPILER=g++-9 -DDEATH_TEST_PARALLEL=2
-        cmake --build . --target arg_router_test
+        cmake ${{ github.workspace }} -G "Ninja" -DCMAKE_CXX_COMPILER=g++-9 -DDEATH_TEST_PARALLEL=2 -DCMAKE_CXX_STANDARD=17
+        cmake --build . --target arg_router_test cpp17_examples
 
     - name: Run unit tests
       timeout-minutes: 30
@@ -179,7 +179,7 @@ jobs:
         mkdir -p ${{ env.BUILD_DIR }}
         cd ${{ env.BUILD_DIR }}
         cmake ${{ github.workspace }} -DDEATH_TEST_PARALLEL=3
-        cmake --build . --target arg_router_test -j3
+        cmake --build . --target arg_router_test cpp17_examples cpp20_examples -j3
 
     - name: Run unit tests
       timeout-minutes: 30
@@ -279,7 +279,7 @@ jobs:
         mkdir -p ${{ env.BUILD_DIR }}
         cd ${{ env.BUILD_DIR }}
         cmake ${{ github.workspace }} -G "Ninja" -DCMAKE_CXX_COMPILER=g++-11 -DCMAKE_CXX_FLAGS=-m32 -DCMAKE_EXE_LINKER_FLAGS=-m32 -DVCPKG_OVERLAY_TRIPLETS=${{ github.workspace }}/cmake/triplets -DVCPKG_TARGET_TRIPLET=x86-linux -DDEATH_TEST_PARALLEL=2
-        cmake --build . --target arg_router_test example_simple example_custom_policy_and_node example_basic_cat example_just_cats
+        cmake --build . --target arg_router_test cpp17_examples cpp20_examples
 
     - name: Run unit tests
       timeout-minutes: 30

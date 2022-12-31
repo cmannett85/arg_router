@@ -17,8 +17,8 @@ BOOST_AUTO_TEST_CASE(death_test)
 int main() {
     arg_router::root_t<
         arg_router::flag_t<
-            arg_router::policy::short_name_t<S_('a')>,
-            arg_router::policy::long_name_t<S_("test")>,
+            arg_router::policy::short_name_t<AR_STRING('a')>,
+            arg_router::policy::long_name_t<AR_STRING("test")>,
             arg_router::policy::router<std::less<>>>>();
     return 0;
 }
@@ -55,7 +55,7 @@ using default_validator_type =
 
 int main() {
     arg_router::root_t<default_validator_type,
-                       flag_t<policy::long_name_t<S_("f1")>>>();
+                       flag_t<policy::long_name_t<AR_STRING("f1")>>>();
     return 0;
 }
     )",
@@ -72,8 +72,8 @@ int main() {
 using namespace arg_router;
 
 int main() {
-    const auto m = root(policy::alias(policy::long_name<S_("foo")>),
-                        flag(policy::long_name<S_("hello")>));
+    const auto m = root(policy::alias(policy::long_name<AR_STRING("foo")>),
+                        flag(policy::long_name<AR_STRING("hello")>));
     return 0;
 }
     )",
@@ -91,7 +91,7 @@ using namespace arg_router;
 
 int main() {
     const auto m = root(policy::custom_parser<int>{[](auto) { return false; }},
-                        flag(policy::long_name<S_("hello")>));
+                        flag(policy::long_name<AR_STRING("hello")>));
     return 0;
 }
     )",
@@ -109,7 +109,7 @@ using namespace arg_router;
 
 int main() {
     const auto m = root(policy::min_max_value<1, 3>(),
-                        flag(policy::long_name<S_("hello")>));
+                        flag(policy::long_name<AR_STRING("hello")>));
     return 0;
 }
     )",
@@ -127,7 +127,7 @@ using namespace arg_router;
 
 int main() {
     const auto m = root(policy::router{[](std::string_view) { return true; }},
-                        flag(policy::long_name<S_("hello")>));
+                        flag(policy::long_name<AR_STRING("hello")>));
     return 0;
 }
     )",
@@ -145,12 +145,126 @@ using namespace arg_router;
 
 int main() {
     const auto m = root(policy::required,
-                        flag(policy::long_name<S_("hello")>));
+                        flag(policy::long_name<AR_STRING("hello")>));
     return 0;
 }
     )",
                                   "Root does not support policies with any parsing phases",
-                                  "missing_phase_test"}});
+                                  "missing_phase_test"},
+                              {
+                                  R"(
+#include "arg_router/flag.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/validator.hpp"
+#include "arg_router/root.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    const auto m = root(policy::long_name<AR_STRING("root")>,
+                        policy::validation::default_validator,
+                        flag(policy::long_name<AR_STRING("hello")>));
+    return 0;
+}
+    )",
+                                  "Root cannot have name or description policies",
+                                  "long_name_test"},
+                              {
+                                  R"(
+#include "arg_router/flag.hpp"
+#include "arg_router/policy/short_name.hpp"
+#include "arg_router/policy/validator.hpp"
+#include "arg_router/root.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    const auto m = root(policy::short_name<'r'>,
+                        policy::validation::default_validator,
+                        flag(policy::long_name<AR_STRING("hello")>));
+    return 0;
+}
+    )",
+                                  "Root cannot have name or description policies",
+                                  "short_name_test"},
+                              {
+                                  R"(
+#include "arg_router/flag.hpp"
+#include "arg_router/policy/display_name.hpp"
+#include "arg_router/policy/validator.hpp"
+#include "arg_router/root.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    const auto m = root(policy::display_name<AR_STRING("root")>,
+                        policy::validation::default_validator,
+                        flag(policy::long_name<AR_STRING("hello")>));
+    return 0;
+}
+    )",
+                                  "Root cannot have name or description policies",
+                                  "display_name_test"},
+                              {
+                                  R"(
+#include "arg_router/flag.hpp"
+#include "arg_router/policy/none_name.hpp"
+#include "arg_router/policy/validator.hpp"
+#include "arg_router/root.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    const auto m = root(policy::none_name<AR_STRING("root")>,
+                        policy::validation::default_validator,
+                        flag(policy::long_name<AR_STRING("hello")>));
+    return 0;
+}
+    )",
+                                  "Root cannot have name or description policies",
+                                  "none_name_test"},
+                              {
+                                  R"(
+#include "arg_router/flag.hpp"
+#include "arg_router/policy/error_name.hpp"
+#include "arg_router/policy/validator.hpp"
+#include "arg_router/root.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    const auto m = root(policy::error_name<AR_STRING("root")>,
+                        policy::validation::default_validator,
+                        flag(policy::long_name<AR_STRING("hello")>));
+    return 0;
+}
+    )",
+                                  "Root cannot have name or description policies",
+                                  "error_name_test"},
+                              {
+                                  R"(
+#include "arg_router/flag.hpp"
+#include "arg_router/policy/description.hpp"
+#include "arg_router/policy/validator.hpp"
+#include "arg_router/root.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    const auto m = root(policy::description<AR_STRING("root")>,
+                        policy::validation::default_validator,
+                        flag(policy::long_name<AR_STRING("hello")>));
+    return 0;
+}
+    )",
+                                  "Root cannot have name or description policies",
+                                  "description_name_test"}});
 }
 
 BOOST_AUTO_TEST_SUITE_END()

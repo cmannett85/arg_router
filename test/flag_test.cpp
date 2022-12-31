@@ -3,8 +3,6 @@
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #include "arg_router/flag.hpp"
-#include "arg_router/mode.hpp"
-#include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/description.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/router.hpp"
@@ -12,7 +10,6 @@
 #include "arg_router/utility/compile_time_string.hpp"
 
 #include "test_helpers.hpp"
-#include "test_printers.hpp"
 
 using namespace arg_router;
 using namespace std::string_view_literals;
@@ -21,17 +18,24 @@ BOOST_AUTO_TEST_SUITE(flag_suite)
 
 BOOST_AUTO_TEST_CASE(is_tree_node_test)
 {
-    static_assert(is_tree_node_v<flag_t<policy::long_name_t<S_("hello")>>>,
+    static_assert(is_tree_node_v<flag_t<policy::long_name_t<AR_STRING("hello")>>>,
                   "Tree node test has failed");
 }
 
 BOOST_AUTO_TEST_CASE(policies_test)
 {
-    [[maybe_unused]] auto f = flag(policy::long_name<S_("hello")>, policy::short_name<'H'>);
+    [[maybe_unused]] auto f = flag(policy::long_name<AR_STRING("hello")>, policy::short_name<'H'>);
     static_assert(f.long_name() == "hello"sv, "Long name test fail");
     static_assert(f.short_name() == "H", "Short name test fail");
     static_assert(f.minimum_count() == 0, "Minimum count test fail");
     static_assert(f.maximum_count() == 0, "Maximum count test fail");
+
+    static_assert(
+        boost::mp11::mp_any_of_q<typename std::decay_t<decltype(f)>::policies_type,
+                                 boost::mp11::mp_bind<traits::is_same_when_despecialised,
+                                                      boost::mp11::_1,
+                                                      policy::short_form_expander_t<>>>::value,
+        "Expected short_form_expander policy");
 }
 
 BOOST_AUTO_TEST_CASE(parse_test)
@@ -78,14 +82,15 @@ BOOST_AUTO_TEST_CASE(help_test)
         f,
         std::tuple{
             std::tuple{flag(policy::short_name<'h'>,
-                            policy::long_name<S_("hello")>,
-                            policy::description<S_("A flag!")>),
+                            policy::long_name<AR_STRING("hello")>,
+                            policy::description<AR_STRING("A flag!")>),
                        "--hello,-h",
                        "A flag!"},
-            std::tuple{flag(policy::long_name<S_("hello")>, policy::description<S_("A flag!")>),
+            std::tuple{flag(policy::long_name<AR_STRING("hello")>,
+                            policy::description<AR_STRING("A flag!")>),
                        "--hello",
                        "A flag!"},
-            std::tuple{flag(policy::short_name<'h'>, policy::description<S_("A flag!")>),
+            std::tuple{flag(policy::short_name<'h'>, policy::description<AR_STRING("A flag!")>),
                        "-h",
                        "A flag!"},
             std::tuple{flag(policy::short_name<'h'>), "-h", ""},
@@ -104,7 +109,7 @@ using namespace arg_router;
 
 int main() {
     auto f = flag(
-        policy::long_name<S_("hello")>,
+        policy::long_name<AR_STRING("hello")>,
         flag(policy::short_name<'b'>),
         policy::short_name<'H'>
     );
@@ -136,8 +141,8 @@ int main() {
 using namespace arg_router;
 
 int main() {
-    auto f = flag(policy::long_name<S_("hello")>,
-                  policy::display_name<S_("hello2")>);
+    auto f = flag(policy::long_name<AR_STRING("hello")>,
+                  policy::display_name<AR_STRING("hello2")>);
     return 0;
 }
     )",
@@ -153,8 +158,8 @@ int main() {
 using namespace arg_router;
 
 int main() {
-    auto f = flag(policy::long_name<S_("hello")>,
-                  policy::none_name<S_("hello2")>);
+    auto f = flag(policy::long_name<AR_STRING("hello")>,
+                  policy::none_name<AR_STRING("hello2")>);
     return 0;
 }
     )",
@@ -170,7 +175,7 @@ int main() {
 using namespace arg_router;
 
 int main() {
-    auto f = flag(policy::long_name<S_("hello")>,
+    auto f = flag(policy::long_name<AR_STRING("hello")>,
                   policy::custom_parser<bool>{[](std::string_view) { return true; }});
     return 0;
 }
@@ -188,7 +193,7 @@ int main() {
 using namespace arg_router;
 
 int main() {
-    auto f = flag(policy::long_name<S_("hello")>,
+    auto f = flag(policy::long_name<AR_STRING("hello")>,
                   policy::min_max_value<true, true>());
     return 0;
 }

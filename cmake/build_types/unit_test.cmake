@@ -17,16 +17,20 @@ path_prefixer(TEST_HEADERS
 path_prefixer(TEST_SRCS
     main_test.cpp
     algorithm_test.cpp
+    allocator_test.cpp
     arg_test.cpp
     counting_flag_test.cpp
+    counting_flag_same_prefix_test.cpp
     dependency/alias_group_test.cpp
     dependency/one_of_test.cpp
+    flag_same_prefix_test.cpp
     flag_test.cpp
     help_test.cpp
     list_test.cpp
     math_test.cpp
     mode_test.cpp
     multi_lang/iso_locale_test.cpp
+    multi_lang/root_test.cpp
     multi_lang/root_wrapper_test.cpp
     multi_lang/string_selector_test.cpp
     parsing/dynamic_token_adapter_test.cpp
@@ -42,6 +46,8 @@ path_prefixer(TEST_SRCS
     policy/dependent_test.cpp
     policy/description_test.cpp
     policy/display_name_test.cpp
+    policy/error_name_test.cpp
+    policy/exception_translator_test.cpp
     policy/long_name_test.cpp
     policy/min_max_count_test.cpp
     policy/min_max_value_ct_test.cpp
@@ -83,9 +89,13 @@ create_clangformat_target(
 add_executable(arg_router_test ${TEST_HEADERS} ${TEST_SRCS})
 add_dependencies(arg_router_test clangformat_test arg_router)
 
-target_compile_features(arg_router_test PUBLIC cxx_std_17)
 set_target_properties(arg_router_test PROPERTIES CXX_EXTENSIONS OFF)
 target_compile_definitions(arg_router_test PRIVATE UNIT_TEST_BUILD)
+
+# Default to C++20
+if(NOT DEFINED CMAKE_CXX_STANDARD)
+    target_compile_features(arg_router_test PUBLIC cxx_std_20)
+endif()
 
 set(DEATH_TEST_PARALLEL 8 CACHE STRING "Maximum number of parallel death tests to perform per suite")
 
@@ -104,7 +114,8 @@ function(configure_test_build TARGET)
             set(EXTRA_FLAGS /clang:-fconstexpr-steps=10000000)
         endif()
     else()
-        set(EXTRA_FLAGS -Werror -Wall -Wextra -ftemplate-backtrace-limit=0 -fno-rtti ${ARGN})
+        set(EXTRA_FLAGS -Werror -Wall -Wextra -ftemplate-backtrace-limit=0 -fno-rtti
+            -Wno-deprecated-declarations ${ARGN})
         set(EXTRA_DEFINES "")
     endif()
     target_compile_options(${TARGET} PRIVATE ${EXTRA_FLAGS})
