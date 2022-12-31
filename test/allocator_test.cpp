@@ -116,7 +116,11 @@ BOOST_FIXTURE_TEST_CASE(root_test, allocator_fixture)
             auto args = std::vector{"foo", "--hello"};
             r.parse(args.size(), const_cast<char**>(args.data()));
             BOOST_CHECK(router_hit);
-            BOOST_CHECK_GE(allocator_fixture::allocated_bytes, 160u);
+            if constexpr (sizeof(std::uintptr_t) == 8) {
+                BOOST_CHECK_GE(allocator_fixture::allocated_bytes, 160u);
+            } else {
+                BOOST_CHECK_GE(allocator_fixture::allocated_bytes, 80u);
+            }
             BOOST_CHECK_EQUAL(allocator_fixture::current_bytes, 0u);
         }
 
@@ -129,7 +133,11 @@ BOOST_FIXTURE_TEST_CASE(root_test, allocator_fixture)
             BOOST_CHECK(false);
         } catch (parse_exception& e) {
             BOOST_CHECK(!router_hit);
-            BOOST_CHECK_GE(allocator_fixture::allocated_bytes, 139u);
+            if constexpr (sizeof(std::uintptr_t) == 8) {
+                BOOST_CHECK_GE(allocator_fixture::allocated_bytes, 139u);
+            } else {
+                BOOST_CHECK_GE(allocator_fixture::allocated_bytes, 96u);
+            }
             BOOST_CHECK_GE(allocator_fixture::current_bytes, 31u);
         }
     }

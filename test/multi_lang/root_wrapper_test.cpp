@@ -2,13 +2,17 @@
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
-#include "arg_router/multi_lang/root_wrapper.hpp"
-#include "arg_router/multi_lang/string_selector.hpp"
-#include "arg_router/policy/validator.hpp"
+#include "arg_router/config.hpp"
 
 #ifndef ENABLE_CPP20_STRINGS
 
+#    include "arg_router/multi_lang/root_wrapper.hpp"
+#    include "arg_router/multi_lang/string_selector.hpp"
+#    include "arg_router/policy/description.hpp"
+#    include "arg_router/policy/validator.hpp"
+
 #    include "test_helpers.hpp"
+#    include "test_printers.hpp"
 
 using namespace arg_router;
 using namespace std::string_view_literals;
@@ -19,7 +23,7 @@ BOOST_AUTO_TEST_SUITE(root_wrapper_suite)
 
 BOOST_AUTO_TEST_CASE(parse_test)
 {
-    auto f = [](auto lang, auto args, auto parse_result, auto ec) {
+    auto f = [](auto lang, auto args, auto parse_result, std::string exception_message) {
         auto result = std::optional<int>{};
         const auto r =
             multi_lang::root_wrapper<AR_STRING("en_GB"), AR_STRING("fr"), AR_STRING("es")>(
@@ -40,13 +44,11 @@ BOOST_AUTO_TEST_CASE(parse_test)
 
         try {
             r.parse(args.size(), const_cast<char**>(args.data()));
-            BOOST_CHECK(!ec);
+            BOOST_CHECK(exception_message.empty());
             BOOST_REQUIRE(!!result);
             BOOST_CHECK_EQUAL(*result, parse_result);
-        } catch (multi_lang_exception& e) {
-            BOOST_REQUIRE(ec);
-            BOOST_CHECK_EQUAL(e.ec(), ec->ec());
-            BOOST_CHECK_EQUAL(e.tokens(), ec->tokens());
+        } catch (parse_exception& e) {
+            BOOST_CHECK_EQUAL(e.what(), exception_message);
         }
     };
 
@@ -54,37 +56,19 @@ BOOST_AUTO_TEST_CASE(parse_test)
         f,
         {
             // English
-            std::tuple{"en_GB",
-                       std::vector{"foo", "--hello", "42"},
-                       42,
-                       std::optional<multi_lang_exception>{}},
+            std::tuple{"en_GB", std::vector{"foo", "--hello", "42"}, 42, ""},
             std::tuple{"en_GB",
                        std::vector{"foo", "--bonjour", "42"},
                        42,
-                       std::optional<multi_lang_exception>{
-                           test::create_exception(error_code::unknown_argument, {"--bonjour"})}},
+                       "Unknown argument: --bonjour"},
 
             // French
-            std::tuple{"fr",
-                       std::vector{"foo", "--bonjour", "42"},
-                       42,
-                       std::optional<multi_lang_exception>{}},
-            std::tuple{"fr",
-                       std::vector{"foo", "--hello", "42"},
-                       42,
-                       std::optional<multi_lang_exception>{
-                           test::create_exception(error_code::unknown_argument, {"--hello"})}},
+            std::tuple{"fr", std::vector{"foo", "--bonjour", "42"}, 42, ""},
+            std::tuple{"fr", std::vector{"foo", "--hello", "42"}, 42, "Unknown argument: --hello"},
 
             // Spanish
-            std::tuple{"es",
-                       std::vector{"foo", "--hola", "42"},
-                       42,
-                       std::optional<multi_lang_exception>{}},
-            std::tuple{"es",
-                       std::vector{"foo", "--hello", "42"},
-                       42,
-                       std::optional<multi_lang_exception>{
-                           test::create_exception(error_code::unknown_argument, {"--hello"})}},
+            std::tuple{"es", std::vector{"foo", "--hola", "42"}, 42, ""},
+            std::tuple{"es", std::vector{"foo", "--hello", "42"}, 42, "Unknown argument: --hello"},
         });
 }
 

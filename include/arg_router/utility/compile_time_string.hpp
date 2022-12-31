@@ -475,13 +475,16 @@ struct builder {
 
     using type = decltype(list_to_string(strip_null{}));
 };
+
+template <char... Cs>
+using builder_t = typename builder<Cs...>::type;
 }  // namespace cts_detail
 }  // namespace arg_router::utility
 
 #    define AR_STR_CHAR(z, n, tok) arg_router::utility::cts_detail::get(tok, n)
 
 #    define AR_STR_N(n, tok) \
-        typename arg_router::utility::cts_detail::builder<BOOST_PP_ENUM(n, AR_STR_CHAR, tok)>::type
+        arg_router::utility::cts_detail::builder_t<BOOST_PP_ENUM(n, AR_STR_CHAR, tok)>
 
 /** Macro that represents the type of a compile-time string, useful for policies that require a
  * compile string.
