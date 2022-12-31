@@ -1,12 +1,23 @@
 var searchData=
 [
-  ['range_564',['range',['../classarg__router_1_1utility_1_1utf8_1_1code__point_1_1range.html',1,'arg_router::utility::utf8::code_point']]],
-  ['range_5ft_565',['range_t',['../classarg__router_1_1utility_1_1utf8_1_1iterator_1_1range__t.html',1,'arg_router::utility::utf8::iterator::range_t'],['../classarg__router_1_1utility_1_1utf8_1_1code__point_1_1iterator_1_1range__t.html',1,'arg_router::utility::utf8::code_point::iterator::range_t']]],
-  ['remove_5frule_566',['remove_rule',['../structarg__router_1_1policy_1_1validation_1_1utility_1_1remove__rule.html',1,'arg_router::policy::validation::utility']]],
-  ['remove_5frule_5fby_5ftype_567',['remove_rule_by_type',['../classarg__router_1_1policy_1_1validation_1_1utility_1_1remove__rule__by__type.html',1,'arg_router::policy::validation::utility']]],
-  ['required_5ft_568',['required_t',['../classarg__router_1_1policy_1_1required__t.html',1,'arg_router::policy']]],
-  ['result_569',['result',['../classarg__router_1_1utility_1_1result.html',1,'arg_router::utility']]],
-  ['root_5ft_570',['root_t',['../classarg__router_1_1root__t.html',1,'arg_router']]],
-  ['root_5fwrapper_5ft_571',['root_wrapper_t',['../classarg__router_1_1multi__lang_1_1root__wrapper__t.html',1,'arg_router::multi_lang']]],
-  ['router_572',['router',['../classarg__router_1_1policy_1_1router.html',1,'arg_router::policy']]]
+  ['parent_5findex_5fpair_5ftype_528',['parent_index_pair_type',['../structarg__router_1_1policy_1_1validation_1_1parent__index__pair__type.html',1,'arg_router::policy::validation']]],
+  ['parent_5ftypes_529',['parent_types',['../structarg__router_1_1policy_1_1validation_1_1parent__types.html',1,'arg_router::policy::validation']]],
+  ['parse_5fexception_530',['parse_exception',['../classarg__router_1_1parse__exception.html',1,'arg_router']]],
+  ['parse_5ftarget_531',['parse_target',['../classarg__router_1_1parsing_1_1parse__target.html',1,'arg_router::parsing']]],
+  ['parser_532',['parser',['../structarg__router_1_1parser.html',1,'arg_router']]],
+  ['phase_5ffinder_533',['phase_finder',['../structarg__router_1_1tree__node_1_1phase__finder.html',1,'arg_router::tree_node']]],
+  ['policy_5fparent_5fmust_5fnot_5fhave_5fpolicy_534',['policy_parent_must_not_have_policy',['../structarg__router_1_1policy_1_1validation_1_1policy__parent__must__not__have__policy.html',1,'arg_router::policy::validation']]],
+  ['policy_5funique_5ffrom_5fowner_5fparent_5fto_5fmode_5for_5froot_535',['policy_unique_from_owner_parent_to_mode_or_root',['../structarg__router_1_1policy_1_1validation_1_1policy__unique__from__owner__parent__to__mode__or__root.html',1,'arg_router::policy::validation']]],
+  ['positional_5farg_5ft_536',['positional_arg_t',['../classarg__router_1_1positional__arg__t.html',1,'arg_router']]],
+  ['positional_5fargs_5fmust_5fhave_5ffixed_5fcount_5fif_5fnot_5fat_5fend_537',['positional_args_must_have_fixed_count_if_not_at_end',['../structarg__router_1_1policy_1_1validation_1_1positional__args__must__have__fixed__count__if__not__at__end.html',1,'arg_router::policy::validation']]],
+  ['pre_5fparse_5fdata_538',['pre_parse_data',['../classarg__router_1_1parsing_1_1pre__parse__data.html',1,'arg_router::parsing']]],
+  ['pre_5fparse_5fdata_3c_20validator_2c_20false_20_3e_539',['pre_parse_data&lt; Validator, false &gt;',['../classarg__router_1_1parsing_1_1pre__parse__data_3_01Validator_00_01false_01_4.html',1,'arg_router::parsing']]],
+  ['pre_5fparse_5fdata_3c_20validator_2c_20true_20_3e_540',['pre_parse_data&lt; Validator, true &gt;',['../classarg__router_1_1parsing_1_1pre__parse__data_3_01Validator_00_01true_01_4.html',1,'arg_router::parsing']]],
+  ['pre_5fparse_5fdata_5fbase_541',['pre_parse_data_base',['../classarg__router_1_1parsing_1_1pre__parse__data__base.html',1,'arg_router::parsing']]],
+  ['pre_5fparse_5fdata_5fbase_3c_20validator_2c_20false_20_3e_542',['pre_parse_data_base&lt; Validator, false &gt;',['../classarg__router_1_1parsing_1_1pre__parse__data__base.html',1,'arg_router::parsing']]],
+  ['pre_5fparse_5fdata_5fbase_3c_20validator_2c_20true_20_3e_543',['pre_parse_data_base&lt; Validator, true &gt;',['../classarg__router_1_1parsing_1_1pre__parse__data__base.html',1,'arg_router::parsing']]],
+  ['program_5faddendum_5ft_544',['program_addendum_t',['../classarg__router_1_1policy_1_1program__addendum__t.html',1,'arg_router::policy']]],
+  ['program_5fintro_5ft_545',['program_intro_t',['../classarg__router_1_1policy_1_1program__intro__t.html',1,'arg_router::policy']]],
+  ['program_5fname_5ft_546',['program_name_t',['../classarg__router_1_1policy_1_1program__name__t.html',1,'arg_router::policy']]],
+  ['program_5fversion_5ft_547',['program_version_t',['../classarg__router_1_1policy_1_1program__version__t.html',1,'arg_router::policy']]]
 ];

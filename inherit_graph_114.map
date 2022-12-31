@@ -1,17 +1,3 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classarg__router_1_1traits_1_1unpack__and__derive.html" title=" " alt="" coords="5,465,225,565"/>
-<area shape="rect" id="node2" href="$classarg__router_1_1tree__node.html" title=" " alt="" coords="333,5,495,47"/>
-<area shape="rect" id="node3" href="$classarg__router_1_1tree__node.html" title=" " alt="" coords="317,71,511,171"/>
-<area shape="rect" id="node5" href="$classarg__router_1_1tree__node.html" title=" " alt="" coords="273,195,555,295"/>
-<area shape="rect" id="node6" href="$classarg__router_1_1tree__node.html" title=" " alt="" coords="311,319,517,434"/>
-<area shape="rect" id="node7" href="$classarg__router_1_1tree__node.html" title=" " alt="" coords="317,458,511,573"/>
-<area shape="rect" id="node8" href="$classarg__router_1_1tree__node.html" title=" " alt="" coords="316,597,512,697"/>
-<area shape="rect" id="node10" href="$classarg__router_1_1tree__node.html" title=" " alt="" coords="296,722,532,778"/>
-<area shape="rect" id="node12" href="$classarg__router_1_1tree__node.html" title=" " alt="" coords="291,803,537,873"/>
-<area shape="rect" id="node14" href="$classarg__router_1_1tree__node.html" title=" " alt="" coords="325,898,503,954"/>
-<area shape="rect" id="node4" href="$classarg__router_1_1flag__t.html" title=" " alt="" coords="617,100,750,141"/>
-<area shape="rect" id="node9" href="$classarg__router_1_1counting__flag__t.html" title=" " alt="" coords="603,627,764,668"/>
-<area shape="rect" id="node11" href="$classarg__router_1_1mode__t.html" title=" " alt="" coords="610,729,757,771"/>
-<area shape="rect" id="node13" href="$classarg__router_1_1arg__t.html" title=" " alt="" coords="613,817,754,859"/>
-<area shape="rect" id="node15" href="$classarg__router_1_1root__t.html" title=" " alt="" coords="616,905,751,947"/>
+<area shape="rect" id="node1" href="$structarg__router_1_1traits_1_1is__specialisation.html" title=" " alt="" coords="5,5,181,47"/>
 </map>

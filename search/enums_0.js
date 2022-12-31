@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['grapheme_5fcluster_5fbreak_5fclass_933',['grapheme_cluster_break_class',['../namespacearg__router_1_1utility_1_1utf8.html#a8ce36159ae36207ddedbcf9ad6a02a31',1,'arg_router::utility::utf8']]]
+  ['error_5fcode_895',['error_code',['../namespacearg__router.html#ab3c79c3c1cb22d86d1dac370a8733e56',1,'arg_router']]]
 ];
