@@ -1,4 +1,4 @@
-### Copyright (C) 2022 by Camden Mannett.
+### Copyright (C) 2023 by Camden Mannett.
 ### Distributed under the Boost Software License, Version 1.0.
 ### (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -22,7 +22,7 @@ option(ENABLE_CLANG_FORMAT_CHECKS "Enable clang-format checks, fails build in ca
 # Use the libraries brought in from vcpkg rather than the system ones, unless overridden
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/path_prefixer.cmake")
 if((NOT INSTALLATION_ONLY) AND (NOT DISABLE_VCPKG))
-    path_prefixer(CMAKE_TOOLCHAIN_FILE vcpkg/scripts/buildsystems/vcpkg.cmake)
+    path_prefixer(CMAKE_TOOLCHAIN_FILE external/vcpkg/scripts/buildsystems/vcpkg.cmake)
 endif()
 
 project(arg_router

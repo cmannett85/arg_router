@@ -848,7 +848,7 @@ Despite not using `typeid` or `dynamic_cast` in the library, compilers will stil
 Disabling RTTI is rarely feasible for most projects, but it is possible to disable RTTI for a single CMake target.  So if it was deemed worth it for the size reduction, the command line parsing could be the application's executable (compiled without RTTI) and then the wider application logic could be in a static library (compiled with RTTI).  This does not affect exceptions, as their type information is always added by the compiler regardless of RTTI status.
 
 ## Extra Documentation
-Complete Doxygen-generated API documentation is available [here](https://cmannett85.github.io/arg_router/).  Examples are provided in the `examples` directory of the repo or online [here](https://cmannett85.github.io/arg_router/examples.html).
+Complete Doxygen-generated API documentation is available [here](https://cmannett85.github.io/arg_router/).  Examples are provided in the `examples` directory of the repo or online [here](https://cmannett85.github.io/arg_router/examples.html).  Doxygen theming is provided by [Doxygen Awesome CSS](https://github.com/jothepro/doxygen-awesome-css).
 
 The latest unit test coverage report is found [here](https://cmannett85.github.io/arg_router/gcov_html/).
 
