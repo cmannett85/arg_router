@@ -10,7 +10,7 @@ set(ROOT_DIR "${CMAKE_SOURCE_DIR}/../../..")
 include("${ROOT_DIR}/cmake/config.cmake")
 
 if (NOT DISABLE_VCPKG)
-    set(CMAKE_TOOLCHAIN_FILE "${ROOT_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake")
+    set(CMAKE_TOOLCHAIN_FILE "${ROOT_DIR}/external/vcpkg/scripts/buildsystems/vcpkg.cmake")
 endif()
 
 project(package_test_project
