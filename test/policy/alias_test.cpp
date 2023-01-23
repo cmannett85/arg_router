@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -1044,6 +1044,10 @@ public:
                                                  *this,
                                                  parents...);
     }
+
+    template <typename... Parents>
+    void parse([[maybe_unused]] parsing::parse_target&& target,
+               [[maybe_unused]] const Parents&... parents) const {}
 };
 }  // namespace
 

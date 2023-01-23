@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -116,7 +116,7 @@ public:
         tokens.transfer(tokens.begin() + count);
 
         // Now do the runtime target building
-        const auto visitor = [&](const auto& current, const auto&... parents) {
+        const auto visitor = [&](const auto& current, [[maybe_unused]] const auto&... parents) {
             using policies_type = typename std::decay_t<decltype(current)>::policies_type;
 
             using intersection =

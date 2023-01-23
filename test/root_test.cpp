@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -35,7 +35,7 @@ BOOST_AUTO_TEST_CASE(anonymous_mode_single_flag_parse_test)
                         policy::validation::default_validator);
 
     auto args = std::vector{"foo", "--hello"};
-    r.parse(args.size(), const_cast<char**>(args.data()));
+    r.parse(static_cast<int>(static_cast<int>(args.size())), const_cast<char**>(args.data()));
     BOOST_CHECK(router_hit);
 }
 
@@ -52,7 +52,7 @@ BOOST_AUTO_TEST_CASE(anonymous_mode_single_arg_parse_test)
                         policy::validation::default_validator);
 
     auto args = std::vector{"foo", "--hello", "42"};
-    r.parse(args.size(), const_cast<char**>(args.data()));
+    r.parse(static_cast<int>(static_cast<int>(args.size())), const_cast<char**>(args.data()));
     BOOST_REQUIRE(!!result);
     BOOST_CHECK_EQUAL(*result, 42);
 }
@@ -71,7 +71,7 @@ BOOST_AUTO_TEST_CASE(required_arg_parse_test)
 
     auto args = std::vector{"foo", "--hello"};
     BOOST_CHECK_EXCEPTION(
-        r.parse(args.size(), const_cast<char**>(args.data())),
+        r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data())),
         parse_exception,
         [](const auto& e) { return e.what() == "Missing required argument: --arg"s; });
 }
@@ -98,7 +98,7 @@ BOOST_AUTO_TEST_CASE(anonymous_mode_single_arg_default_parse_test)
         result = decltype(result){};
         router_hit = false;
 
-        r.parse(args.size(), const_cast<char**>(args.data()));
+        r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data()));
         BOOST_CHECK(router_hit);
 
         BOOST_CHECK_EQUAL(std::get<0>(result), std::get<0>(expected_value));
@@ -137,7 +137,7 @@ BOOST_AUTO_TEST_CASE(anonymous_mode_no_tokens_parse_test)
     router_hit = false;
 
     auto args = std::vector{"foo"};
-    r.parse(args.size(), const_cast<char**>(args.data()));
+    r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data()));
     BOOST_CHECK(router_hit);
 
     BOOST_CHECK_EQUAL(std::get<0>(result), false);
@@ -163,7 +163,7 @@ BOOST_AUTO_TEST_CASE(no_tokens_parse_test)
 
     auto args = std::vector{"foo"};
     BOOST_CHECK_EXCEPTION(  //
-        r.parse(args.size(), const_cast<char**>(args.data())),
+        r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data())),
         parse_exception,
         [](const auto& e) { return e.what() == "No arguments passed"s; });
     BOOST_CHECK(!router_hit);
@@ -186,7 +186,7 @@ BOOST_AUTO_TEST_CASE(multiple_required_arg_parse_test)
 
     auto args = std::vector{"foo", "--hello", "--arg2", "42"};
     BOOST_CHECK_EXCEPTION(
-        r.parse(args.size(), const_cast<char**>(args.data())),
+        r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data())),
         parse_exception,
         [](const auto& e) { return e.what() == "Missing required argument: --arg1"s; });
 }
@@ -212,7 +212,7 @@ BOOST_AUTO_TEST_CASE(anonymous_triple_flag_parse_test)
         router_hit = false;
 
         try {
-            r.parse(args.size(), const_cast<char**>(args.data()));
+            r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data()));
             BOOST_CHECK(fail_message.empty());
             BOOST_CHECK(router_hit);
             BOOST_CHECK_EQUAL(result[0], expected[0]);
@@ -284,7 +284,7 @@ BOOST_AUTO_TEST_CASE(named_single_mode_parse_test)
         router_hit = false;
 
         try {
-            r.parse(args.size(), const_cast<char**>(args.data()));
+            r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data()));
             BOOST_CHECK(fail_message.empty());
             BOOST_CHECK(router_hit);
             BOOST_CHECK_EQUAL(result[0], expected[0]);
@@ -383,7 +383,7 @@ BOOST_AUTO_TEST_CASE(named_multi_mode_parse_test)
         result2.fill(false);
 
         try {
-            r.parse(args.size(), const_cast<char**>(args.data()));
+            r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data()));
             BOOST_CHECK(fail_message.empty());
 
             if (router_index == 0) {
@@ -457,7 +457,7 @@ BOOST_AUTO_TEST_CASE(named_multi_mode_using_list_parse_test)
         result2.fill(false);
 
         try {
-            r.parse(args.size(), const_cast<char**>(args.data()));
+            r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data()));
             BOOST_CHECK(fail_message.empty());
 
             if (router_index == 0) {
@@ -520,7 +520,7 @@ BOOST_AUTO_TEST_CASE(alias_flag_parse_test)
         router_hit = false;
 
         try {
-            r.parse(args.size(), const_cast<char**>(args.data()));
+            r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data()));
             BOOST_CHECK(fail_message.empty());
             BOOST_CHECK(router_hit);
             BOOST_CHECK_EQUAL(result[0], expected[0]);
@@ -575,7 +575,7 @@ BOOST_AUTO_TEST_CASE(alias_arg_parse_test)
         router_hit = false;
 
         try {
-            r.parse(args.size(), const_cast<char**>(args.data()));
+            r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data()));
             BOOST_CHECK(fail_message.empty());
             BOOST_CHECK(router_hit);
             BOOST_CHECK_EQUAL(std::get<0>(result), std::get<0>(expected));
@@ -685,7 +685,7 @@ BOOST_AUTO_TEST_CASE(nested_mode_test)
         router_hit.reset();
 
         try {
-            r.parse(args.size(), const_cast<char**>(args.data()));
+            r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data()));
             BOOST_CHECK(fail_message.empty());
             BOOST_CHECK_EQUAL(router_hit.count(), 1);
             BOOST_CHECK(router_hit[expected_index]);
@@ -761,7 +761,7 @@ BOOST_AUTO_TEST_CASE(one_of_required_test)
                  policy::validation::default_validator);
 
         try {
-            r.parse(args.size(), const_cast<char**>(args.data()));
+            r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data()));
             BOOST_CHECK(fail_message.empty());
             BOOST_REQUIRE(!!result);
 
@@ -802,7 +802,7 @@ BOOST_AUTO_TEST_CASE(one_of_default_value_test)
                  policy::validation::default_validator);
 
         try {
-            r.parse(args.size(), const_cast<char**>(args.data()));
+            r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data()));
             BOOST_CHECK(fail_message.empty());
             BOOST_REQUIRE(!!result);
 
@@ -856,7 +856,7 @@ BOOST_AUTO_TEST_CASE(counting_flag_test)
         result.reset();
 
         try {
-            r.parse(args.size(), const_cast<char**>(args.data()));
+            r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data()));
             BOOST_CHECK(fail_message.empty());
 
             BOOST_REQUIRE(!!result);

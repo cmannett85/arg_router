@@ -828,31 +828,28 @@ Low-level tweaking of the library is achieved via some defines and/or CMake vari
 
 ## Supported Compilers/Platforms
 The CI system attached to this repo builds the unit tests and examples with:
-* Ubuntu 22.04 (Ninja), Clang 14/gcc-9
-* Windows Server 2022 (Ninja, MSBuild), Clang 14.0.5
-* MacOS 12 (Ninja), Apple Clang 13.1.6
+* Ubuntu 22.04 (Ninja), Clang 14, gcc-12, gcc-9, gcc-9 32bit
+* Windows Server 2022 (Ninja, MSBuild), Clang 14.0.5, MSVC 19.34(C++20 only)
+* MacOS 12 (Ninja), Clang 14
+
+You can build on Windows with using MSBuild but you must set the CMake variable `DEATH_TEST_PARALLEL` to 1 otherwise the parallel tests will attempt to write to the project-wide `lastSuccessfulBuild` file simultaneously, which causes the build to fail. MSVC is supported but only when using the C++20-style compile-time strings due [this](https://developercommunity.visualstudio.com/t/1395099) MSVC bug.
 
 Other compiler versions and platform combinations may work, but I'm currently limited by the built-in GitHub runners and how much I'm willing to spend on Actions!
-
-You can build on Windows with the VS 2022 generator (MSBuild) but you must set the CMake variable `DEATH_TEST_PARALLEL` to 1 otherwise the parallel tests will attempt to write to the project-wide `lastSuccessfulBuild` file simultaneously, which causes the build to fail.
-
-You'll notice the big omission: No MSVC.  That's because even with the latest version, I get nothing but ICEs out of it with no useful diagnostics making fixing the issues close to impossible.
 
 ## Tips for Users
 ### Do **NOT** Make the Parse Tree Type Accessible
 The parse tree is _very_ expensive to construct due to all the compile-time checking and meta-programming shennanigans, so do **NOT** define it in a header and have multiple source files include it - it will cause the tree to be built/checked in every source file it is included in.
 
 ### Minimise Static Storage Bloat
-Despite not using `typeid` or `dynamic_cast` in the library, compilers will still generate class name data if RTTI is enabled.  Due to the highly nested templates that make up the parse tree, these class names can become huge and occupy large amount of static storage in the executable.  As an example, the `basic_cat` project in the repo will create ~100KB of class name data in the binary - this data is not used and cannot be stripped out.
+Despite not using `typeid` or `dynamic_cast` in the library, compilers will still generate class name data if RTTI is enabled, because it is used in the standard library implementations (e.g. `std::function` on Clang).  Due to the highly nested templates that make up the parse tree, these class names can become huge and occupy large amount of static storage in the executable.  As an example, the `basic_cat` project in the repo will create ~100KB of class name data in the binary - this data is not used and cannot be stripped out.
 
 Disabling RTTI is rarely feasible for most projects, but it is possible to disable RTTI for a single CMake target.  So if it was deemed worth it for the size reduction, the command line parsing could be the application's executable (compiled without RTTI) and then the wider application logic could be in a static library (compiled with RTTI).  This does not affect exceptions, as their type information is always added by the compiler regardless of RTTI status.
 
 ## Extra Documentation
-Complete Doxygen-generated API documentation is available [here](https://cmannett85.github.io/arg_router/).  Examples are provided in the `examples` directory of the repo or online [here](https://cmannett85.github.io/arg_router/examples.html).
+Complete Doxygen-generated API documentation is available [here](https://cmannett85.github.io/arg_router/).  Examples are provided in the `examples` directory of the repo or online [here](https://cmannett85.github.io/arg_router/examples.html).  Doxygen theming is provided by [Doxygen Awesome CSS](https://github.com/jothepro/doxygen-awesome-css).
 
 The latest unit test coverage report is found [here](https://cmannett85.github.io/arg_router/gcov_html/).
 
 ## Future Work
 Take a look at the [issues](https://github.com/cmannett85/arg_router/issues) page for all upcoming features and fixes.  Highlights are:
-* Finally get it working on MSVC ([#102](https://github.com/cmannett85/arg_router/issues/102))
 * Add to vcpkg ([#8](https://github.com/cmannett85/arg_router/issues/8))

@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -71,12 +71,17 @@ struct arp::is_policy<is_even<ValueType>> : std::true_type {
 // This is really just a simplified positional_arg_t that only supports a single argument
 template <typename T, typename... Policies>
 class single_positional_arg_t :
-    public ar::tree_node<std::decay_t<decltype(arp::fixed_count<1>)>, Policies...>
+    public ar::tree_node<arp::min_max_count_t<ar::traits::integral_constant<std::size_t{1}>,
+                                              ar::traits::integral_constant<std::size_t{1}>>,
+                         Policies...>
 {
     static_assert(arp::is_all_policies_v<std::tuple<Policies...>>,
                   "Positional args must only contain policies (not other nodes)");
 
-    using parent_type = ar::tree_node<std::decay_t<decltype(arp::fixed_count<1>)>, Policies...>;
+    using parent_type =
+        ar::tree_node<arp::min_max_count_t<ar::traits::integral_constant<std::size_t{1}>,
+                                           ar::traits::integral_constant<std::size_t{1}>>,
+                      Policies...>;
 
     static_assert(ar::traits::has_display_name_method_v<single_positional_arg_t>,
                   "Positional arg must have a display name policy");
@@ -117,7 +122,9 @@ public:
     };
 
     constexpr explicit single_positional_arg_t(Policies... policies) noexcept :
-        parent_type{arp::fixed_count<1>, std::move(policies)...}
+        parent_type{arp::min_max_count_t<ar::traits::integral_constant<std::size_t{1}>,
+                                         ar::traits::integral_constant<std::size_t{1}>>{},
+                    std::move(policies)...}
     {
     }
 

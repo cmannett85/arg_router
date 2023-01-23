@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -114,7 +114,7 @@ BOOST_FIXTURE_TEST_CASE(root_test, allocator_fixture)
 
         {
             auto args = std::vector{"foo", "--hello"};
-            r.parse(args.size(), const_cast<char**>(args.data()));
+            r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data()));
             BOOST_CHECK(router_hit);
             if constexpr (sizeof(std::uintptr_t) == 8) {
                 BOOST_CHECK_GE(allocator_fixture::allocated_bytes, 160u);
@@ -129,9 +129,9 @@ BOOST_FIXTURE_TEST_CASE(root_test, allocator_fixture)
 
         try {
             auto args = std::vector{"foo", "--goodbye"};
-            r.parse(args.size(), const_cast<char**>(args.data()));
+            r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data()));
             BOOST_CHECK(false);
-        } catch (parse_exception& e) {
+        } catch (parse_exception&) {
             BOOST_CHECK(!router_hit);
             if constexpr (sizeof(std::uintptr_t) == 8) {
                 BOOST_CHECK_GE(allocator_fixture::allocated_bytes, 139u);

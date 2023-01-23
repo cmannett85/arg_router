@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -43,9 +43,11 @@ public:
  */
 template <typename... Policies>
 class help_t :
-    public detail::add_missing_formatter_policy<policy::no_result_value<>,
-                                                std::decay_t<decltype(policy::min_count<0>)>,
-                                                std::decay_t<Policies>...>::type
+    public detail::add_missing_formatter_policy<
+        policy::no_result_value<>,
+        policy::min_max_count_t<traits::integral_constant<std::size_t{0}>,
+                                traits::integral_constant<std::numeric_limits<std::size_t>::max()>>,
+        std::decay_t<Policies>...>::type
 {
 private:
     static_assert(policy::is_all_policies_v<std::tuple<std::decay_t<Policies>...>>,
@@ -57,10 +59,11 @@ private:
                   "Help must not have a display name policy");
     static_assert(!traits::has_none_name_method_v<help_t>, "Help must not have a none name policy");
 
-    using parent_type =
-        typename detail::add_missing_formatter_policy<policy::no_result_value<>,
-                                                      std::decay_t<decltype(policy::min_count<0>)>,
-                                                      std::decay_t<Policies>...>::type;
+    using parent_type = typename detail::add_missing_formatter_policy<
+        policy::no_result_value<>,
+        policy::min_max_count_t<traits::integral_constant<std::size_t{0}>,
+                                traits::integral_constant<std::numeric_limits<std::size_t>::max()>>,
+        std::decay_t<Policies>...>::type;
 
     constexpr static auto formatter_index =
         boost::mp11::mp_find_if<typename parent_type::policies_type,
@@ -89,7 +92,11 @@ public:
     constexpr explicit help_t(Policies... policies,
                               // NOLINTNEXTLINE(*-named-parameter)
                               std::enable_if_t<has_formatter>* = nullptr) noexcept :
-        parent_type{policy::no_result_value<>{}, policy::min_count<0>, std::move(policies)...}
+        parent_type{policy::no_result_value<>{},
+                    policy::min_max_count_t<
+                        traits::integral_constant<std::size_t{0}>,
+                        traits::integral_constant<std::numeric_limits<std::size_t>::max()>>{},
+                    std::move(policies)...}
     {
     }
 
@@ -99,7 +106,9 @@ public:
                               std::enable_if_t<!has_formatter>* = nullptr) noexcept :
         parent_type{policy::default_help_formatter,
                     policy::no_result_value<>{},
-                    policy::min_count<0>,
+                    policy::min_max_count_t<
+                        traits::integral_constant<std::size_t{0}>,
+                        traits::integral_constant<std::numeric_limits<std::size_t>::max()>>{},
                     std::move(policies)...}
     {
     }

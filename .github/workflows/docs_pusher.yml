@@ -28,18 +28,18 @@ jobs:
 
     - name: Bootstrap vcpkg to build the NuGet client
       run: |
-        ./vcpkg/bootstrap-vcpkg.sh -disableMetrics
+        ./external/vcpkg/bootstrap-vcpkg.sh -disableMetrics
 
     - name: Configure NuGet client
       run: |
-        mono `./vcpkg/vcpkg fetch nuget | tail -n 1` \
+        mono `./external/vcpkg/vcpkg fetch nuget | tail -n 1` \
           sources add \
           -source ${{ env.NUGET_SOURCE_URL }} \
           -storepasswordincleartext \
           -name "vcpkg-cache" \
           -username "cmannett85" \
           -password "${{ secrets.GITHUB_TOKEN }}"
-        mono `./vcpkg/vcpkg fetch nuget | tail -n 1` \
+        mono `./external/vcpkg/vcpkg fetch nuget | tail -n 1` \
           setapikey "${{ secrets.GITHUB_TOKEN }}" \
           -source ${{ env.NUGET_SOURCE_URL }}
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -44,7 +44,7 @@ BOOST_AUTO_TEST_CASE(single_positional_arg_parse_test)
         router_hit = false;
 
         try {
-            r.parse(args.size(), const_cast<char**>(args.data()));
+            r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data()));
             BOOST_CHECK(fail_message.empty());
             BOOST_CHECK(router_hit);
             BOOST_CHECK_EQUAL(std::get<0>(result), std::get<0>(expected));
@@ -132,7 +132,7 @@ BOOST_AUTO_TEST_CASE(two_positional_arg_parse_test)
         router_hit = false;
 
         try {
-            r.parse(args.size(), const_cast<char**>(args.data()));
+            r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data()));
             BOOST_CHECK(fail_message.empty());
             BOOST_CHECK(router_hit);
             BOOST_CHECK_EQUAL(std::get<0>(result), std::get<0>(expected));

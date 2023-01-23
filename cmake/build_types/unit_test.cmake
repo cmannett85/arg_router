@@ -1,4 +1,4 @@
-### Copyright (C) 2022 by Camden Mannett.
+### Copyright (C) 2022-2023 by Camden Mannett.
 ### Distributed under the Boost Software License, Version 1.0.
 ### (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -103,7 +103,7 @@ function(configure_test_build TARGET)
     # Clang can run in different command line argument modes to mimic gcc or cl.exe,
     # so we have to test for a 'frontent variant' too
     if (MSVC_FRONTEND)
-        set(EXTRA_FLAGS /W4 /Z7 /GR- /permissive- ${ARGN} )
+        set(EXTRA_FLAGS /Zc:__cplusplus /W4 /Z7 /GR- /permissive- /bigobj ${ARGN} )
         set(EXTRA_DEFINES NOMINMAX BOOST_USE_WINDOWS_H WIN32_LEAN_AND_MEAN _CRT_SECURE_NO_WARNINGS)
 
         # /MT by default as it simplifies the running of the unit tests
