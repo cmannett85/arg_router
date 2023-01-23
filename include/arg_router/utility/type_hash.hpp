@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -19,8 +19,9 @@ namespace arg_router::utility
  * Anyone reading the implementation will see that this is @em not a hash function, it just takes
  * the address of the instantiated function.  Originally this used the hash of the
  * <TT>__PRETTY_FUNCTION__</TT> output and therefore could be used at compile-time.  Unfortunately
- * that was ruined when C++20 compile-time string support was added, due to a bug in gcc which
- * produced incorrect output when <TT>std::array</TT> was used inside an NTTP.
+ * that was ruined when C++20 compile-time string support was added, due to a bug in gcc
+ * (https://gcc.gnu.org/bugzilla/show_bug.cgi?id=108269) which produced incorrect output when
+ * <TT>std::array</TT> was used inside an NTTP.
  * @param T Type to generate a hash code for
  * @return Hash code of @a T
  */

@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -16,13 +16,17 @@ namespace arg_router
  */
 template <typename T, typename... Policies>
 class arg_t :
-    public tree_node<std::decay_t<decltype(policy::fixed_count<1>)>, std::decay_t<Policies>...>
+    public tree_node<policy::min_max_count_t<traits::integral_constant<std::size_t{1}>,
+                                             traits::integral_constant<std::size_t{1}>>,
+                     std::decay_t<Policies>...>
 {
     static_assert(policy::is_all_policies_v<std::tuple<std::decay_t<Policies>...>>,
                   "Args must only contain policies (not other nodes)");
 
     using parent_type =
-        tree_node<std::decay_t<decltype(policy::fixed_count<1>)>, std::decay_t<Policies>...>;
+        tree_node<policy::min_max_count_t<traits::integral_constant<std::size_t{1}>,
+                                          traits::integral_constant<std::size_t{1}>>,
+                  std::decay_t<Policies>...>;
 
     static_assert(traits::has_long_name_method_v<arg_t> || traits::has_short_name_method_v<arg_t>,
                   "Arg must have a long and/or short name policy");
@@ -45,7 +49,9 @@ public:
      * @param policies Policy instances
      */
     constexpr explicit arg_t(Policies... policies) noexcept :
-        parent_type{policy::fixed_count<1>, std::move(policies)...}
+        parent_type{policy::min_max_count_t<traits::integral_constant<std::size_t{1}>,
+                                            traits::integral_constant<std::size_t{1}>>{},
+                    std::move(policies)...}
     {
     }
 

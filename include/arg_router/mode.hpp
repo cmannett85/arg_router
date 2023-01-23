@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -72,22 +72,27 @@ public:
     template <bool Flatten>
     class help_data_type
     {
+        // The template param shouldn't be necessary, but without it MSVC will always evaluate the
+        // false branch of the if constexpr block
+        template <typename T>
         [[nodiscard]] constexpr auto static label_generator() noexcept
         {
-            if constexpr (is_anonymous) {
+            if constexpr (T::is_anonymous) {
                 return AR_STRING(""){};
             } else {
                 constexpr auto none_index =
-                    boost::mp11::mp_find_if<policies_type, traits::has_none_name_method>::value;
+                    boost::mp11::mp_find_if<typename T::policies_type,
+                                            traits::has_none_name_method>::value;
                 using none_type =
-                    typename std::tuple_element_t<none_index, policies_type>::string_type;
+                    typename std::tuple_element_t<none_index,
+                                                  typename T::policies_type>::string_type;
 
                 return none_type{};
             }
         }
 
     public:
-        using label = decltype(label_generator());
+        using label = decltype(label_generator<mode_t>());
 
         using description = std::conditional_t<
             is_anonymous,
@@ -303,8 +308,7 @@ public:
 
             std::apply(
                 [&](auto&&... args) {
-                    this->routing_policy::routing_phase(
-                        std::forward<std::decay_t<decltype(*args)>>(*args)...);
+                    this->routing_phase(std::forward<std::decay_t<decltype(*args)>>(*args)...);
                 },
                 std::move(stripped_results));
         } else if constexpr (is_anonymous) {
@@ -363,7 +367,8 @@ private:
     }
 
     template <typename Child>
-    static bool verify_match(bool already_matched, [[maybe_unused]] parsing::token_type token)
+    [[nodiscard]] static bool verify_match(bool already_matched,
+                                           [[maybe_unused]] parsing::token_type token)
     {
         if constexpr (!Child::is_named && !policy::has_multi_stage_value_v<Child>) {
             // Child is not named and can only appear on the command line once, so only perform the

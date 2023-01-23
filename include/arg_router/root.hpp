@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -95,9 +95,6 @@ private:
     static_assert(boost::mp11::mp_all_of<children_type, router_checker>::value,
                   "All root children must have routers, unless they have no value");
 
-    constexpr static auto help_index =
-        boost::mp11::mp_find_if<children_type, traits::has_generate_help_method>::value;
-
 public:
     /** Validator type. */
     // Initially I wanted the default_validator to be used if one isn't user specified, but you get
@@ -190,23 +187,35 @@ public:
 
     /** Generates a root-level help string and writes it into @a stream.
      *
+     * Does nothing if a help node is not present.
      * @param stream Output stream to write into
      */
     void help([[maybe_unused]] std::ostream& stream) const
     {
-        if constexpr (help_index < std::tuple_size_v<children_type>) {
-            using help_type = std::tuple_element_t<help_index, children_type>;
-            constexpr auto flatten =
-                algorithm::has_specialisation_v<policy::flatten_help_t,
-                                                typename help_type::policies_type>;
+        // Have to lambda wrap here due to an MSVC bug where the false if constexpr branch is
+        // evaluated
+        [&](auto* type_ptr) {
+            using root_type = std::remove_pointer_t<decltype(type_ptr)>;
 
-            try {
-                std::get<help_index>(this->children())
-                    .template generate_help<root_t, help_type, flatten>(stream);
-            } catch (multi_lang_exception& e) {
-                this->translate_exception(e);
+            constexpr static auto help_index =
+                boost::mp11::mp_find_if<typename root_type::children_type,
+                                        traits::has_generate_help_method>::value;
+
+            if constexpr (help_index < std::tuple_size_v<typename root_type::children_type>) {
+                using help_type =
+                    std::tuple_element_t<help_index, typename root_type::children_type>;
+                constexpr auto flatten =
+                    algorithm::has_specialisation_v<policy::flatten_help_t,
+                                                    typename help_type::policies_type>;
+
+                try {
+                    std::get<help_index>(this->children())
+                        .template generate_help<root_type, help_type, flatten>(stream);
+                } catch (multi_lang_exception& e) {
+                    this->translate_exception(e);
+                }
             }
-        }
+        }(static_cast<root_t*>(nullptr));
     }
 
     /** Overload that writes into a string and returns it.

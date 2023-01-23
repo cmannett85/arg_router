@@ -59,8 +59,9 @@ jobs:
         cd ${{ env.BUILD_DIR }}/test
         ./arg_router_test -l test_suite
 
-  new_gcc_test:
+  gcc_compiler_test:
     runs-on: ubuntu-22.04
+    needs: purge_old_packages
 
     steps:
     - uses: actions/checkout@v2
@@ -93,7 +94,7 @@ jobs:
       run: |
         mkdir -p ${{ env.BUILD_DIR }}
         cd ${{ env.BUILD_DIR }}
-        cmake ${{ github.workspace }} -G "Ninja" -DCMAKE_CXX_COMPILER=g++-11 -DDEATH_TEST_PARALLEL=2
+        cmake ${{ github.workspace }} -G "Ninja" -DCMAKE_CXX_COMPILER=g++-12 -DDEATH_TEST_PARALLEL=2
         cmake --build . --target arg_router_test cpp17_examples cpp20_examples
 
     - name: Run unit tests
@@ -144,6 +145,107 @@ jobs:
       run: |
         cd ${{ env.BUILD_DIR }}/test
         ./arg_router_test -l test_suite
+
+  thirtytwobit_gcc_test:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - name: Update packages
+      run: |
+        sudo apt update
+        sudo apt install ninja-build g++-multilib
+
+    - name: Bootstrap vcpkg to build the NuGet client
+      run: |
+        ./external/vcpkg/bootstrap-vcpkg.sh -disableMetrics
+
+    - name: Configure NuGet client
+      run: |
+        mono `./external/vcpkg/vcpkg fetch nuget | tail -n 1` \
+          sources add \
+          -source ${{ env.NUGET_SOURCE_URL }} \
+          -storepasswordincleartext \
+          -name "vcpkg-cache" \
+          -username "cmannett85" \
+          -password "${{ secrets.GITHUB_TOKEN }}"
+        mono `./external/vcpkg/vcpkg fetch nuget | tail -n 1` \
+          setapikey "${{ secrets.GITHUB_TOKEN }}" \
+          -source ${{ env.NUGET_SOURCE_URL }}
+
+    - name: Build
+      run: |
+        mkdir -p ${{ env.BUILD_DIR }}
+        cd ${{ env.BUILD_DIR }}
+        cmake ${{ github.workspace }} -G "Ninja" -DCMAKE_CXX_COMPILER=g++-11 -DCMAKE_CXX_FLAGS=-m32 -DCMAKE_EXE_LINKER_FLAGS=-m32 -DVCPKG_OVERLAY_TRIPLETS=${{ github.workspace }}/cmake/triplets -DVCPKG_TARGET_TRIPLET=x86-linux -DDEATH_TEST_PARALLEL=2
+        cmake --build . --target arg_router_test cpp17_examples cpp20_examples
+
+    - name: Run unit tests
+      timeout-minutes: 30
+      run: |
+        cd ${{ env.BUILD_DIR }}/test
+        ./arg_router_test -l test_suite
+
+  windows_cl_compiler_tests:
+    runs-on: windows-2022
+
+    # Use the CMake that ships with VS to match locally built versions
+    env:
+      CMAKE_EXE: "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe"
+      CMD_BUILD_DIR: ${{ github.workspace }}\\build
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - name: Bootstrap vcpkg to build the NuGet client
+      run: |
+        ./external/vcpkg/bootstrap-vcpkg.bat -disableMetrics
+
+    - name: Configure NuGet client
+      run: |
+        [array] $output = ./external/vcpkg/vcpkg.exe fetch nuget
+        & $output[-1] sources add -source ${{ env.NUGET_SOURCE_URL }} -storepasswordincleartext -name "vcpkg-cache" -username "cmannett85" -password "${{ secrets.GITHUB_TOKEN }}"
+        & $output[-1] setapikey "${{ secrets.GITHUB_TOKEN }}" -source ${{ env.NUGET_SOURCE_URL }}
+
+    - name: Build
+      shell: cmd
+      run: |
+        call "C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Auxiliary/Build/vcvarsall.bat" x64
+        mkdir ${{ env.CMD_BUILD_DIR }}
+        cd ${{ env.CMD_BUILD_DIR }}
+        "${{ env.CMAKE_EXE }}" ${{ github.workspace }} -G "Ninja" -DVCPKG_TARGET_TRIPLET:STRING="x64-windows-static" -DCMAKE_CXX_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe" -DDEATH_TEST_PARALLEL=2
+        "${{ env.CMAKE_EXE }}" --build . --target arg_router_test cpp17_examples cpp20_examples
+
+    - name: Run unit tests
+      timeout-minutes: 20
+      run: |
+        cd ${{ env.BUILD_DIR }}/test
+        ./arg_router_test.exe -l test_suite
+
+    - name: Test install
+      run: |
+        & "C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Auxiliary/Build/vcvarsall.bat" x64
+        cd ${{ env.BUILD_DIR }}
+        & "${{ env.CMAKE_EXE }}" --install . --prefix ${{ env.INSTALL_DIR }}
+        cd ${{ env.INSTALL_DIR }}
+        Test-Path -Path "${{ env.INSTALL_DIR }}/include/arg_router/version.hpp" -PathType Leaf
+        Test-Path -Path "${{ env.INSTALL_DIR }}/include/arg_router/README.md" -PathType Leaf
+        Test-Path -Path "${{ env.INSTALL_DIR }}/include/arg_router/LICENSE" -PathType Leaf
+        Test-Path -Path "${{ env.INSTALL_DIR }}/include/arg_router/arg_router-config.cmake" -PathType Leaf
+        Test-Path -Path "${{ env.INSTALL_DIR }}/include/arg_router/arg_router-config-version.cmake" -PathType Leaf
+
+    - name: Test CMake package integrity
+      run: |
+        & "C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Auxiliary/Build/vcvarsall.bat" x64
+        mkdir ${{ env.PACKAGE_BUILD_DIR }}
+        cd ${{ env.PACKAGE_BUILD_DIR }}
+        & "${{ env.CMAKE_EXE }}" ${{ github.workspace }}/scripts/ci/package_test_project -G "Visual Studio 17 2022" -A x64 -T "ClangCl" -DVCPKG_TARGET_TRIPLET:STRING="x64-windows-static" -DCMAKE_CXX_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe" -DCMAKE_C_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe" -DCMAKE_RC_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/llvm-rc.exe" -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}/include
+        & "${{ env.CMAKE_EXE }}" --build . -- /v:n
 
   macos_compiler_tests:
     runs-on: macos-12
@@ -243,46 +345,3 @@ jobs:
         cd ${{ env.PACKAGE_BUILD_DIR }}
         cmake ${{ github.workspace }}/scripts/ci/package_test_project -DCMAKE_CXX_STANDARD=20 -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}/include -DDISABLE_VCPKG=ON
         cmake --build .
-
-  thirtytwobit_gcc_test:
-    runs-on: ubuntu-22.04
-
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        submodules: true
-
-    - name: Update packages
-      run: |
-        sudo apt update
-        sudo apt install ninja-build g++-multilib
-
-    - name: Bootstrap vcpkg to build the NuGet client
-      run: |
-        ./external/vcpkg/bootstrap-vcpkg.sh -disableMetrics
-
-    - name: Configure NuGet client
-      run: |
-        mono `./external/vcpkg/vcpkg fetch nuget | tail -n 1` \
-          sources add \
-          -source ${{ env.NUGET_SOURCE_URL }} \
-          -storepasswordincleartext \
-          -name "vcpkg-cache" \
-          -username "cmannett85" \
-          -password "${{ secrets.GITHUB_TOKEN }}"
-        mono `./external/vcpkg/vcpkg fetch nuget | tail -n 1` \
-          setapikey "${{ secrets.GITHUB_TOKEN }}" \
-          -source ${{ env.NUGET_SOURCE_URL }}
-
-    - name: Build
-      run: |
-        mkdir -p ${{ env.BUILD_DIR }}
-        cd ${{ env.BUILD_DIR }}
-        cmake ${{ github.workspace }} -G "Ninja" -DCMAKE_CXX_COMPILER=g++-11 -DCMAKE_CXX_FLAGS=-m32 -DCMAKE_EXE_LINKER_FLAGS=-m32 -DVCPKG_OVERLAY_TRIPLETS=${{ github.workspace }}/cmake/triplets -DVCPKG_TARGET_TRIPLET=x86-linux -DDEATH_TEST_PARALLEL=2
-        cmake --build . --target arg_router_test cpp17_examples cpp20_examples
-
-    - name: Run unit tests
-      timeout-minutes: 30
-      run: |
-        cd ${{ env.BUILD_DIR }}/test
-        ./arg_router_test -l test_suite

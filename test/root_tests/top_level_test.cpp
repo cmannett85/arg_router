@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -81,7 +81,7 @@ BOOST_AUTO_TEST_CASE(unknown_argument_parse_test)
                         policy::validation::default_validator);
 
     auto args = std::vector{"foo", "--foo"};
-    BOOST_CHECK_EXCEPTION(r.parse(args.size(), const_cast<char**>(args.data())),
+    BOOST_CHECK_EXCEPTION(r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data())),
                           parse_exception,
                           [](const auto& e) { return e.what() == "Unknown argument: --foo"s; });
     BOOST_CHECK(!router_hit);
@@ -96,7 +96,7 @@ BOOST_AUTO_TEST_CASE(unhandled_parse_test)
                         policy::validation::default_validator);
 
     auto args = std::vector{"foo", "--hello", "--foo"};
-    BOOST_CHECK_EXCEPTION(r.parse(args.size(), const_cast<char**>(args.data())),
+    BOOST_CHECK_EXCEPTION(r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data())),
                           parse_exception,
                           [](const auto& e) { return e.what() == "Unhandled arguments: --foo"s; });
     BOOST_CHECK(!router_hit);
@@ -111,7 +111,7 @@ BOOST_AUTO_TEST_CASE(single_flag_parse_test)
                         policy::validation::default_validator);
 
     auto args = std::vector{"foo", "--こんにちは"};
-    r.parse(args.size(), const_cast<char**>(args.data()));
+    r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data()));
     BOOST_CHECK(router_hit);
 }
 
@@ -127,7 +127,7 @@ BOOST_AUTO_TEST_CASE(single_arg_parse_test)
                         policy::validation::default_validator);
 
     auto args = std::vector{"foo", "--hello", "42"};
-    r.parse(args.size(), const_cast<char**>(args.data()));
+    r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data()));
     BOOST_REQUIRE(!!result);
     BOOST_CHECK_EQUAL(*result, 42);
 }
@@ -148,7 +148,7 @@ BOOST_AUTO_TEST_CASE(single_arg_separator_parse_test)
         result.reset();
 
         try {
-            r.parse(args.size(), const_cast<char**>(args.data()));
+            r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data()));
             BOOST_CHECK(fail_message.empty());
             BOOST_REQUIRE(!!result);
             BOOST_CHECK_EQUAL(*result, expected);
@@ -180,7 +180,7 @@ BOOST_AUTO_TEST_CASE(single_string_arg_parse_test)
     auto f = [&](auto args, auto expected) {
         result.reset();
 
-        r.parse(args.size(), const_cast<char**>(args.data()));
+        r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data()));
         BOOST_REQUIRE(!!result);
         BOOST_CHECK_EQUAL(*result, expected);
     };
@@ -211,7 +211,7 @@ BOOST_AUTO_TEST_CASE(triple_flag_parse_test)
     auto f = [&](auto args, auto expected) {
         result.fill(false);
 
-        r.parse(args.size(), const_cast<char**>(args.data()));
+        r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data()));
         BOOST_CHECK_EQUAL(result[0], expected[0]);
         BOOST_CHECK_EQUAL(result[1], expected[1]);
         BOOST_CHECK_EQUAL(result[2], expected[2]);
@@ -254,7 +254,7 @@ BOOST_AUTO_TEST_CASE(triple_arg_parse_test)
         result = decltype(result){};
         hit.fill(false);
 
-        r.parse(args.size(), const_cast<char**>(args.data()));
+        r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data()));
         BOOST_CHECK_EQUAL(hit[0], expected_hit[0]);
         BOOST_CHECK_EQUAL(hit[1], expected_hit[1]);
         BOOST_CHECK_EQUAL(hit[2], expected_hit[2]);
@@ -304,7 +304,7 @@ BOOST_AUTO_TEST_CASE(custom_parser_test)
         result = decltype(result){A{}, B{}, B{}};
         parser_hit = false;
 
-        r.parse(args.size(), const_cast<char**>(args.data()));
+        r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data()));
         BOOST_CHECK_EQUAL(parser_hit, expected_hit);
 
         BOOST_CHECK_EQUAL(std::get<0>(result).value, std::get<0>(expected_value).value);

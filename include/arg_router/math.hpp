@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -20,7 +20,11 @@ template <typename T>
 [[nodiscard]] constexpr T abs(T value) noexcept
 {
     static_assert(std::is_integral_v<T>, "T must be an integral");
-    return value < T{0} ? -value : value;
+    if constexpr (std::is_signed_v<T>) {
+        return value < T{0} ? -value : value;
+    } else {
+        return value;
+    }
 }
 
 /** Returns the number of digits in @a value.

@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -176,44 +176,48 @@ protected:
          */
         [[nodiscard]] constexpr static auto value_suffix() noexcept
         {
-            if constexpr (traits::has_minimum_value_method_v<tree_node> ||
-                          traits::has_maximum_value_method_v<tree_node>) {
-                constexpr auto prefix = AR_STRING("<"){};
+            constexpr auto has_min_value = traits::has_minimum_value_method_v<tree_node>;
+            constexpr auto has_max_value = traits::has_maximum_value_method_v<tree_node>;
 
-                constexpr auto min_value = []() {
-                    if constexpr (traits::has_minimum_value_method_v<tree_node>) {
-                        constexpr auto value = tree_node::minimum_value();
-                        return utility::convert_integral_to_cts_t<
-                            static_cast<traits::underlying_type_t<decltype(value)>>(value)>{};
+            if constexpr (has_min_value || has_max_value) {
+                // This pointless-looking way of invoking a lambda and providing a null tree_node
+                // type is all to get round an MSVC bug whereby the false constexpr if branch was
+                // being evaluated
+                constexpr auto min_value = [](auto* type_ptr) {
+                    using node_type = std::remove_pointer_t<decltype(type_ptr)>;
+
+                    if constexpr (has_min_value) {
+                        constexpr auto value = node_type::minimum_value();
+                        return utility::convert_integral_to_cts_t<static_cast<
+                            traits::underlying_type_t<std::decay_t<decltype(value)>>>(value)>{};
                     } else {
-                        // If we have got this far, then we must a maximum value, we can use that
-                        // type to determine if the lowest bound is 0 or -N depending on whether or
-                        // not the type is signed
-                        using max_value_type =
-                            traits::underlying_type_t<decltype(tree_node::maximum_value())>;
+                        // If we have got this far, then we must have a maximum value, we can use
+                        // that type to determine if the lowest bound is 0 or -N depending on
+                        // whether or not the type is signed
+                        using max_value_type = traits::underlying_type_t<
+                            std::decay_t<decltype(node_type::maximum_value())>>;
                         if constexpr (std::is_unsigned_v<max_value_type>) {
                             return AR_STRING("0"){};
                         } else {
                             return AR_STRING("-N"){};
                         }
                     }
-                }();
+                }(static_cast<tree_node*>(nullptr));
 
-                constexpr auto max_value = []() {
-                    if constexpr (traits::has_maximum_value_method_v<tree_node>) {
-                        constexpr auto value = tree_node::maximum_value();
-                        if constexpr (std::is_enum_v<std::decay_t<decltype(value)>>) {
-                            return utility::convert_integral_to_cts_t<
-                                static_cast<std::underlying_type_t<decltype(value)>>(value)>{};
-                        } else {
-                            return utility::convert_integral_to_cts_t<value>{};
-                        }
+                constexpr auto max_value = [](auto* type_ptr) {
+                    using node_type = std::remove_pointer_t<decltype(type_ptr)>;
+
+                    if constexpr (has_max_value) {
+                        constexpr auto value = node_type::maximum_value();
+                        return utility::convert_integral_to_cts_t<static_cast<
+                            traits::underlying_type_t<std::decay_t<decltype(value)>>>(value)>{};
                     } else {
                         return AR_STRING("N"){};
                     }
-                }();
+                }(static_cast<tree_node*>(nullptr));
 
-                return prefix + min_value + AR_STRING("-"){} + max_value + AR_STRING(">"){};
+                return AR_STRING("<"){} + min_value + AR_STRING("-"){} + max_value +
+                       AR_STRING(">"){};
             } else {
                 return AR_STRING(""){};
             }
@@ -243,14 +247,12 @@ protected:
                 }
             }();
 
-            [[maybe_unused]] constexpr auto separator_index =
-                boost::mp11::mp_find_if<policies_type, traits::has_value_separator_method>::value;
+            [[maybe_unused]] constexpr auto has_separator =
+                boost::mp11::mp_find_if<policies_type, traits::has_value_separator_method>::value !=
+                num_policies;
 
-            if constexpr (separator_index != num_policies) {
-                constexpr auto value_separator =
-                    std::tuple_element_t<separator_index, policies_type>::value_separator();
-
-                return AR_STRING_SV(value_separator){} + value_str;
+            if constexpr (has_separator) {
+                return AR_STRING_SV(tree_node::value_separator()){} + value_str;
             } else if constexpr (fixed_count_of_one) {
                 return AR_STRING(" "){} + value_str;
             } else {
@@ -263,32 +265,24 @@ protected:
          */
         [[nodiscard]] constexpr static auto label_generator() noexcept
         {
-            [[maybe_unused]] constexpr auto long_name_index =
-                boost::mp11::mp_find_if<policies_type, traits::has_long_name_method>::value;
-            [[maybe_unused]] constexpr auto short_name_index =
-                boost::mp11::mp_find_if<policies_type, traits::has_short_name_method>::value;
+            [[maybe_unused]] constexpr auto has_long_name =
+                boost::mp11::mp_find_if<policies_type, traits::has_long_name_method>::value !=
+                num_policies;
+            [[maybe_unused]] constexpr auto has_short_name =
+                boost::mp11::mp_find_if<policies_type, traits::has_short_name_method>::value !=
+                num_policies;
 
-            if constexpr ((long_name_index != num_policies) && (short_name_index != num_policies)) {
-                constexpr auto long_name =
-                    std::tuple_element_t<long_name_index, policies_type>::long_name();
-                constexpr auto short_name =
-                    std::tuple_element_t<short_name_index, policies_type>::short_name();
-
-                return AR_STRING_SV(config::long_prefix){} + AR_STRING_SV(long_name){} +
-                       AR_STRING(","){} + AR_STRING_SV(config::short_prefix){} +
-                       AR_STRING_SV(short_name){} + value_separator_suffix();
-            } else if constexpr (long_name_index != num_policies) {
-                constexpr auto long_name =
-                    std::tuple_element_t<long_name_index, policies_type>::long_name();
-
-                return AR_STRING_SV(config::long_prefix){} + AR_STRING_SV(long_name){} +
-                       value_separator_suffix();
-            } else if constexpr (short_name_index != num_policies) {
-                constexpr auto short_name =
-                    std::tuple_element_t<short_name_index, policies_type>::short_name();
-
-                return AR_STRING_SV(config::short_prefix){} + AR_STRING_SV(short_name){} +
-                       value_separator_suffix();
+            if constexpr (has_long_name && has_short_name) {
+                return AR_STRING_SV(config::long_prefix){} +
+                       AR_STRING_SV(tree_node::long_name()){} + AR_STRING(","){} +
+                       AR_STRING_SV(config::short_prefix){} +
+                       AR_STRING_SV(tree_node::short_name()){} + value_separator_suffix();
+            } else if constexpr (has_long_name) {
+                return AR_STRING_SV(config::long_prefix){} +
+                       AR_STRING_SV(tree_node::long_name()){} + value_separator_suffix();
+            } else if constexpr (has_short_name) {
+                return AR_STRING_SV(config::short_prefix){} +
+                       AR_STRING_SV(tree_node::short_name()){} + value_separator_suffix();
             } else {
                 return AR_STRING(""){};
             }
@@ -298,12 +292,12 @@ protected:
          */
         [[nodiscard]] constexpr static auto description_generator() noexcept
         {
-            constexpr auto description_index =
-                boost::mp11::mp_find_if<policies_type, traits::has_description_method>::value;
+            [[maybe_unused]] constexpr auto has_description =
+                boost::mp11::mp_find_if<policies_type, traits::has_description_method>::value !=
+                num_policies;
 
-            if constexpr (description_index != num_policies) {
-                return AR_STRING_SV(
-                    (std::tuple_element_t<description_index, policies_type>::description())){};
+            if constexpr (has_description) {
+                return AR_STRING_SV(tree_node::description()){};
             } else {
                 return AR_STRING(""){};
             }
@@ -313,7 +307,7 @@ protected:
          */
         [[nodiscard]] constexpr static auto count_suffix() noexcept
         {
-            constexpr bool fixed_count = []() {
+            [[maybe_unused]] constexpr bool fixed_count = []() {
                 if constexpr (traits::has_minimum_count_method_v<tree_node> &&
                               traits::has_maximum_count_method_v<tree_node>) {
                     return tree_node::minimum_count() == tree_node::maximum_count();
@@ -496,8 +490,10 @@ protected:
         pre_parse_data.args() = tmp_args;
 
         // Update the target with the pre-parsed tokens.  Remove the label token if present
-        if (is_named && !result.empty()) {
-            result.erase(result.begin());
+        if constexpr (is_named) {
+            if (!result.empty()) {
+                result.erase(result.begin());
+            }
         }
         target.tokens(std::move(result));
 
