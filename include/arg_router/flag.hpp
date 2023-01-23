@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -24,15 +24,18 @@ namespace arg_router
 template <typename... Policies>
 class flag_t :
     public tree_node<policy::default_value<bool>,
-                     std::decay_t<decltype(policy::fixed_count<0>)>,
+                     policy::min_max_count_t<traits::integral_constant<std::size_t{0}>,
+                                             traits::integral_constant<std::size_t{0}>>,
                      std::decay_t<Policies>...>
 {
     static_assert(policy::is_all_policies_v<std::tuple<std::decay_t<Policies>...>>,
                   "Flags must only contain policies (not other nodes)");
 
-    using parent_type = tree_node<policy::default_value<bool>,
-                                  std::decay_t<decltype(policy::fixed_count<0>)>,
-                                  std::decay_t<Policies>...>;
+    using parent_type =
+        tree_node<policy::default_value<bool>,
+                  policy::min_max_count_t<traits::integral_constant<std::size_t{0}>,
+                                          traits::integral_constant<std::size_t{0}>>,
+                  std::decay_t<Policies>...>;
 
     static_assert(traits::has_long_name_method_v<flag_t> || traits::has_short_name_method_v<flag_t>,
                   "Flag must have a long and/or short name policy");
@@ -56,7 +59,8 @@ public:
      */
     constexpr explicit flag_t(Policies... policies) noexcept :
         parent_type{policy::default_value<bool>{false},
-                    policy::fixed_count<0>,
+                    policy::min_max_count_t<traits::integral_constant<std::size_t{0}>,
+                                            traits::integral_constant<std::size_t{0}>>{},
                     std::move(policies)...}
     {
     }

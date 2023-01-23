@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -40,10 +40,7 @@ public:
         static_assert(is_tree_node_v<Node>, "Target must be a tree_node");
 
         parse_ = [&node, &parents...](parse_target target) -> utility::unsafe_any {
-            constexpr bool no_parse_value =
-                std::is_void_v<decltype(node.parse(std::move(target), parents...))>;
-
-            if constexpr (no_parse_value) {
+            if constexpr (std::is_void_v<decltype(node.parse(std::move(target), parents...))>) {
                 node.parse(std::move(target), parents...);
                 return {};
             } else {

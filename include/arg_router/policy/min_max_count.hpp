@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -79,10 +79,10 @@ public:
 
         // The min/max values are for argument counts, and so need adjusting to accomodate the label
         // tokens
-        constexpr auto min_count = minimum_count() + (owner_type::is_named ? 1 : 0);
-        constexpr auto max_count = maximum_count() == 0 ?
-                                       maximum_count() :
-                                       (maximum_count() - (owner_type::is_named ? 0 : 1));
+        constexpr auto mn_count = minimum_count() + (owner_type::is_named ? 1 : 0);
+        constexpr auto mx_count = maximum_count() == 0 ?
+                                      maximum_count() :
+                                      (maximum_count() - (owner_type::is_named ? 0 : 1));
 
         // If we are unnamed then check that tokens haven't already been parsed for the owner.  This
         // is for the scenario where there are multiple positional arg-like types under a mode, and
@@ -91,7 +91,7 @@ public:
         if constexpr (!owner_type::is_named) {
             static_assert(!processed_target.empty, "processed_target cannot be empty");
 
-            if (has_filled_tokens(*processed_target, utility::type_hash<owner_type>(), max_count)) {
+            if (has_filled_tokens(*processed_target, utility::type_hash<owner_type>(), mx_count)) {
                 return parsing::pre_parse_action::skip_node;
             }
         }
@@ -100,13 +100,13 @@ public:
         // because there may be other nodes that will consume tokens, so this node will take its
         // maximum (potentially) and any left over tokens will be trigger an error later in the
         // processing
-        if (tokens.size() < min_count) {
+        if (tokens.size() < mn_count) {
             return multi_lang_exception{error_code::minimum_count_not_reached,
                                         parsing::node_token_type<owner_type>()};
         }
 
         // Transfer any remaining up to the maximum count
-        tokens.transfer(tokens.begin() + std::min(max_count, tokens.size()));
+        tokens.transfer(tokens.begin() + std::min(mx_count, tokens.size()));
 
         return parsing::pre_parse_action::valid_node;
     }
@@ -114,14 +114,14 @@ public:
 private:
     [[nodiscard]] static bool has_filled_tokens(const parsing::parse_target& target,
                                                 std::size_t owner_hash_code,
-                                                std::size_t max_count) noexcept
+                                                std::size_t mx_count) noexcept
     {
         if (target.node_type() == owner_hash_code) {
-            return target.tokens().size() >= max_count;
+            return target.tokens().size() >= mx_count;
         }
 
         for (const auto& sub_target : target.sub_targets()) {
-            if (has_filled_tokens(sub_target, owner_hash_code, max_count)) {
+            if (has_filled_tokens(sub_target, owner_hash_code, mx_count)) {
                 return true;
             }
         }

@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -25,7 +25,8 @@ namespace arg_router
 template <typename T, typename... Policies>
 class counting_flag_t :
     public tree_node<policy::multi_stage_value<T, bool>,
-                     std::decay_t<decltype(policy::fixed_count<0>)>,
+                     policy::min_max_count_t<traits::integral_constant<std::size_t{0}>,
+                                             traits::integral_constant<std::size_t{0}>>,
                      std::decay_t<Policies>...>
 {
     static_assert(policy::is_all_policies_v<std::tuple<std::decay_t<Policies>...>>,
@@ -40,9 +41,11 @@ class counting_flag_t :
     static_assert(traits::supports_static_cast_conversion_v<T, std::size_t>,
                   "T must be explicitly convertible to std::size_t");
 
-    using parent_type = tree_node<policy::multi_stage_value<T, bool>,
-                                  std::decay_t<decltype(policy::fixed_count<0>)>,
-                                  std::decay_t<Policies>...>;
+    using parent_type =
+        tree_node<policy::multi_stage_value<T, bool>,
+                  policy::min_max_count_t<traits::integral_constant<std::size_t{0}>,
+                                          traits::integral_constant<std::size_t{0}>>,
+                  std::decay_t<Policies>...>;
 
 public:
     using typename parent_type::policies_type;
@@ -60,7 +63,8 @@ public:
      */
     constexpr explicit counting_flag_t(Policies... policies) noexcept :
         parent_type{policy::multi_stage_value<T, bool>{merge_impl},
-                    policy::fixed_count<0>,
+                    policy::min_max_count_t<traits::integral_constant<std::size_t{0}>,
+                                            traits::integral_constant<std::size_t{0}>>{},
                     std::move(policies)...}
     {
     }

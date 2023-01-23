@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -21,7 +21,9 @@ class add_missing_min_max_policy
     };
 
     using policies_tuple = std::tuple<std::decay_t<Policies>...>;
-    using unbounded_policy_type = std::decay_t<decltype(policy::min_count<0>)>;
+    using unbounded_policy_type =
+        policy::min_max_count_t<traits::integral_constant<0>,
+                                traits::integral_constant<std::numeric_limits<std::size_t>::max()>>;
 
 public:
     constexpr static auto has_min_max =
@@ -114,7 +116,10 @@ public:
     constexpr explicit positional_arg_t(Policies... policies,
                                         // NOLINTNEXTLINE(*-named-parameter)
                                         std::enable_if_t<!has_min_max>* = nullptr) noexcept :
-        parent_type{policy::min_count<0>, std::move(policies)...}
+        parent_type{policy::min_max_count_t<
+                        traits::integral_constant<0>,
+                        traits::integral_constant<std::numeric_limits<std::size_t>::max()>>{},
+                    std::move(policies)...}
     {
     }
 
@@ -122,7 +127,6 @@ public:
     [[nodiscard]] std::optional<parsing::parse_target> pre_parse(
         parsing::pre_parse_data<Validator, HasTarget> pre_parse_data,
         const Parents&... parents) const
-
     {
         return parent_type::pre_parse(pre_parse_data, *this, parents...);
     }

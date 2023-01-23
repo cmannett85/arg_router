@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -123,7 +123,7 @@ BOOST_AUTO_TEST_CASE(parse_test)
             });
 
         try {
-            r.parse(args.size(), const_cast<char**>(args.data()));
+            r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data()));
             BOOST_CHECK(exception_message.empty());
             BOOST_REQUIRE(!!result);
             BOOST_CHECK_EQUAL(*result, parse_result);
@@ -175,7 +175,7 @@ BOOST_AUTO_TEST_CASE(default_parse_test)
             });
 
         auto args = std::vector{"foo", "--hello", "42"};
-        r.parse(args.size(), const_cast<char**>(args.data()));
+        r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data()));
         BOOST_REQUIRE(!!result);
         BOOST_CHECK_EQUAL(*result, 42);
     }

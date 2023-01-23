@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -152,6 +152,12 @@ template <typename Current, typename... Parents>
 struct tree_type_visitor {
     using type = std::tuple<Current, Parents...>;
 };
+
+template <typename T, typename U>
+[[nodiscard]] constexpr bool matcher() noexcept
+{
+    return std::is_same_v<std::decay_t<T>, std::decay_t<U>>;
+}
 }  // namespace
 
 BOOST_AUTO_TEST_SUITE(utility_suite)
@@ -198,10 +204,6 @@ BOOST_AUTO_TEST_CASE(tree_recursor_instance_test)
     const auto visitor = [&](const auto& current, const auto&... parents) {
         using current_type = std::decay_t<decltype(current)>;
 
-        constexpr auto matcher = [](const auto& node) {
-            return std::is_same_v<current_type, std::decay_t<decltype(node)>>;
-        };
-
         const auto address_checker = [&](auto expected_nodes) {
             const auto parents_tuple = std::tuple{std::cref(current), std::cref(parents)...};
 
@@ -225,13 +227,13 @@ BOOST_AUTO_TEST_CASE(tree_recursor_instance_test)
                 expected_nodes);
         };
 
-        if constexpr (matcher(r)) {
+        if constexpr (matcher<current_type, decltype(r)>()) {
             address_checker(std::tuple{std::cref(r)});
-        } else if constexpr (matcher(test::get_node<0>(r))) {
+        } else if constexpr (matcher<current_type, decltype(test::get_node<0>(r))>()) {
             address_checker(test::get_parents<0>(r));
-        } else if constexpr (matcher(test::get_node<0, 0>(r))) {
+        } else if constexpr (matcher<current_type, decltype(test::get_node<0, 0>(r))>()) {
             address_checker(test::get_parents<0, 0>(r));
-        } else if constexpr (matcher(test::get_node<0, 1>(r))) {
+        } else if constexpr (matcher<current_type, decltype(test::get_node<0, 1>(r))>()) {
             address_checker(test::get_parents<0, 1>(r));
         }
 
