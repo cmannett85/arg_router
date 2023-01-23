@@ -1,0 +1,6 @@
+var namespacearg__router_1_1policy_1_1help__formatter__component =
+[
+    [ "default_line_formatter", "classarg__router_1_1policy_1_1help__formatter__component_1_1default__line__formatter.html", "classarg__router_1_1policy_1_1help__formatter__component_1_1default__line__formatter" ],
+    [ "default_preamble_formatter", "classarg__router_1_1policy_1_1help__formatter__component_1_1default__preamble__formatter.html", "classarg__router_1_1policy_1_1help__formatter__component_1_1default__preamble__formatter" ],
+    [ "default_addendum_formatter", "classarg__router_1_1policy_1_1help__formatter__component_1_1default__addendum__formatter.html", "classarg__router_1_1policy_1_1help__formatter__component_1_1default__addendum__formatter" ]
+];

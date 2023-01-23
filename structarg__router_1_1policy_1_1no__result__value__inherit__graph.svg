@@ -8,7 +8,6 @@
  viewBox="0.00 0.00 180.00 106.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 102)">
 <title>arg_router::policy::no_result_value&lt; typename &gt;</title>
-<polygon fill="white" stroke="transparent" points="-4,4 -4,-102 176,-102 176,4 -4,4"/>
 <!-- Node1 -->
 <g id="node1" class="node">
 <title>Node1</title>
@@ -23,7 +22,7 @@
 <g id="node2" class="node">
 <title>Node2</title>
 <g id="a_node2"><a xlink:href="classarg__router_1_1policy_1_1alias__t.html" target="_top" xlink:title=" ">
-<polygon fill="white" stroke="black" points="10.5,-0.5 10.5,-30.5 161.5,-30.5 161.5,-0.5 10.5,-0.5"/>
+<polygon fill="none" stroke="black" points="10.5,-0.5 10.5,-30.5 161.5,-30.5 161.5,-0.5 10.5,-0.5"/>
 <text text-anchor="start" x="18.5" y="-18.5" font-family="Helvetica,sans-Serif" font-size="10.00">arg_router::policy</text>
 <text text-anchor="middle" x="86" y="-7.5" font-family="Helvetica,sans-Serif" font-size="10.00">::alias_t&lt; AliasedPolicies &gt;</text>
 </a>

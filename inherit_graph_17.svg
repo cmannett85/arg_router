@@ -8,12 +8,11 @@
  viewBox="0.00 0.00 283.00 77.50" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 73.5)">
 <title>Graphical Class Hierarchy</title>
-<polygon fill="white" stroke="transparent" points="-4,4 -4,-73.5 279,-73.5 279,4 -4,4"/>
 <!-- Node33 -->
 <g id="node1" class="node">
 <title>Node33</title>
 <g id="a_node1"><a xlink:title=" ">
-<polygon fill="white" stroke="#bfbfbf" points="0,-22.5 0,-41.5 86,-41.5 86,-22.5 0,-22.5"/>
+<polygon fill="none" stroke="#bfbfbf" points="0,-22.5 0,-41.5 86,-41.5 86,-22.5 0,-22.5"/>
 <text text-anchor="middle" x="43" y="-29.5" font-family="Helvetica,sans-Serif" font-size="10.00">std::exception</text>
 </a>
 </g>
@@ -22,7 +21,7 @@
 <g id="node2" class="node">
 <title>Node0</title>
 <g id="a_node2"><a xlink:href="classarg__router_1_1multi__lang__exception.html" target="_top" xlink:title=" ">
-<polygon fill="white" stroke="black" points="136,-39 136,-69 261,-69 261,-39 136,-39"/>
+<polygon fill="none" stroke="black" points="136,-39 136,-69 261,-69 261,-39 136,-39"/>
 <text text-anchor="start" x="144" y="-57" font-family="Helvetica,sans-Serif" font-size="10.00">arg_router::multi_lang</text>
 <text text-anchor="middle" x="198.5" y="-46" font-family="Helvetica,sans-Serif" font-size="10.00">_exception</text>
 </a>
@@ -38,7 +37,7 @@
 <g id="node3" class="node">
 <title>Node35</title>
 <g id="a_node3"><a xlink:href="classarg__router_1_1parse__exception.html" target="_top" xlink:title=" ">
-<polygon fill="white" stroke="black" points="122,-0.5 122,-19.5 275,-19.5 275,-0.5 122,-0.5"/>
+<polygon fill="none" stroke="black" points="122,-0.5 122,-19.5 275,-19.5 275,-0.5 122,-0.5"/>
 <text text-anchor="middle" x="198.5" y="-7.5" font-family="Helvetica,sans-Serif" font-size="10.00">arg_router::parse_exception</text>
 </a>
 </g>
