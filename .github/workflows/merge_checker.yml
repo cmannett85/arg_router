@@ -61,7 +61,6 @@ jobs:
 
   gcc_compiler_test:
     runs-on: ubuntu-22.04
-    needs: purge_old_packages
 
     steps:
     - uses: actions/checkout@v2
