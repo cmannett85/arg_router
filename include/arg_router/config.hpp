@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -38,6 +38,6 @@ template <typename T>
 using allocator = AR_ALLOCATOR<T>;
 
 #if (__cplusplus >= 202002L) && !AR_DISABLE_CPP20_STRINGS
-#    define ENABLE_CPP20_STRINGS
+#    define AR_ENABLE_CPP20_STRINGS
 #endif
 }  // namespace arg_router::config

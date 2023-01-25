@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -14,7 +14,7 @@ BOOST_AUTO_TEST_SUITE(utility_suite)
 
 BOOST_AUTO_TEST_SUITE(compile_time_string_suite)
 
-#ifdef ENABLE_CPP20_STRINGS
+#ifdef AR_ENABLE_CPP20_STRINGS
 BOOST_AUTO_TEST_CASE(empty_test)
 {
     using empty_str = utility::str<>;

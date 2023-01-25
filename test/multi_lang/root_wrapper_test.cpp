@@ -4,7 +4,7 @@
 
 #include "arg_router/config.hpp"
 
-#ifndef ENABLE_CPP20_STRINGS
+#ifndef AR_ENABLE_CPP20_STRINGS
 
 #    include "arg_router/multi_lang/root_wrapper.hpp"
 #    include "arg_router/multi_lang/string_selector.hpp"
