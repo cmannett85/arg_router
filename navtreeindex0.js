@@ -1,5 +1,7 @@
 var NAVTREEINDEX0 =
 {
+"":[7,0,0,6,1,1],
+"":[7,0,0,7],
 "algorithm_8hpp_source.html":[9,0,0,5],
 "alias_8hpp_source.html":[9,0,0,3,0],
 "alias__group_8hpp_source.html":[9,0,0,0,0],
@@ -247,7 +249,5 @@ var NAVTREEINDEX0 =
 "classarg__router_1_1positional__arg__t_1_1help__data__type.html":[8,0,0,17,0],
 "classarg__router_1_1root__t.html":[8,0,0,18],
 "classarg__router_1_1root__t.html#a435e841c0c7edb67dbe1dd22a2e9fc40":[8,0,0,18,4],
-"classarg__router_1_1root__t.html#a91fa95bf1546f47836de9c37a8486325":[8,0,0,18,3],
-"classarg__router_1_1root__t.html#ad1e58e6fdddf15f4a38081e0777abbe1":[8,0,0,18,5],
-"classarg__router_1_1root__t.html#adada7e905b970cdfaaf66668d0b7027f":[8,0,0,18,1]
+"classarg__router_1_1root__t.html#a91fa95bf1546f47836de9c37a8486325":[8,0,0,18,3]
 };

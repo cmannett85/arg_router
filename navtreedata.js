@@ -100,10 +100,10 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"algorithm_8hpp_source.html",
-"classarg__router_1_1root__t.html#ae03c8f5d92f81a5b04988426aa3a7438",
-"namespacearg__router.html#ab3c79c3c1cb22d86d1dac370a8733e56ad0a9afc920cb61e9af48d1d5b9f78c14",
-"structarg__router_1_1policy_1_1validation_1_1node__types__must__be__at__end.html"
+"",
+"classarg__router_1_1root__t.html#ad1e58e6fdddf15f4a38081e0777abbe1",
+"namespacearg__router.html#ab3c79c3c1cb22d86d1dac370a8733e56aa257390eee114ba8b358013110d4192d",
+"structarg__router_1_1policy_1_1validation_1_1must__have__policies.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
