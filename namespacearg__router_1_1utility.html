@@ -115,9 +115,11 @@ Namespaces</h2></td></tr>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1utility_1_1compile__time__optional.html">compile_time_optional</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1utility_1_1str.html">str</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1utility_1_1compile__time__string.html">compile_time_string</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1utility_1_1create__sequence__cts.html">create_sequence_cts</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structarg__router_1_1utility_1_1convert__to__cts.html">convert_to_cts</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structarg__router_1_1utility_1_1convert__integral__to__cts.html">convert_integral_to_cts</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -130,12 +132,12 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:ab5ec19e24abd169b0d104ea46e7ad9d7"><td class="memTemplParams" colspan="2">template&lt;typename S1 , typename S2 &gt; </td></tr>
-<tr class="memitem:ab5ec19e24abd169b0d104ea46e7ad9d7"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1utility.html#ab5ec19e24abd169b0d104ea46e7ad9d7">str_concat</a> = typename S1::template append_t&lt; S2 &gt;</td></tr>
-<tr class="separator:ab5ec19e24abd169b0d104ea46e7ad9d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1969b9a6d6dab3984d8f2a2119c08937"><td class="memTemplParams" colspan="2">template&lt;std::size_t N, char C&gt; </td></tr>
 <tr class="memitem:a1969b9a6d6dab3984d8f2a2119c08937"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1utility.html#a1969b9a6d6dab3984d8f2a2119c08937">create_sequence_cts_t</a> = typename <a class="el" href="classarg__router_1_1utility_1_1create__sequence__cts.html">create_sequence_cts</a>&lt; N, C &gt;::type</td></tr>
 <tr class="separator:a1969b9a6d6dab3984d8f2a2119c08937"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac1a030095dca0eefcac3295e612ffbbc"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ac1a030095dca0eefcac3295e612ffbbc"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1utility.html#ac1a030095dca0eefcac3295e612ffbbc">convert_to_cts_t</a> = typename <a class="el" href="structarg__router_1_1utility_1_1convert__to__cts.html">convert_to_cts</a>&lt; T &gt;::type</td></tr>
+<tr class="separator:ac1a030095dca0eefcac3295e612ffbbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a432ca5a24df3c55882c383f01f597c24"><td class="memTemplParams" colspan="2">template&lt;auto Value&gt; </td></tr>
 <tr class="memitem:a432ca5a24df3c55882c383f01f597c24"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1utility.html#a432ca5a24df3c55882c383f01f597c24">convert_integral_to_cts_t</a> = typename <a class="el" href="structarg__router_1_1utility_1_1convert__integral__to__cts.html">convert_integral_to_cts</a>&lt; Value &gt;::type</td></tr>
 <tr class="separator:a432ca5a24df3c55882c383f01f597c24"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -193,7 +195,32 @@ template&lt;auto Value&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="compile__time__string_8hpp_source.html#l00245">245</a> of file <a class="el" href="compile__time__string_8hpp_source.html">compile_time_string.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="compile__time__string_8hpp_source.html#l00433">433</a> of file <a class="el" href="compile__time__string_8hpp_source.html">compile_time_string.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ac1a030095dca0eefcac3295e612ffbbc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac1a030095dca0eefcac3295e612ffbbc">&#9670;&nbsp;</a></span>convert_to_cts_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="namespacearg__router_1_1utility.html#ac1a030095dca0eefcac3295e612ffbbc">arg_router::utility::convert_to_cts_t</a> = typedef typename <a class="el" href="structarg__router_1_1utility_1_1convert__to__cts.html">convert_to_cts</a>&lt;T&gt;::type</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Helper alias</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>Char integral constant array-like type </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="compile__time__string_8hpp_source.html#l00392">392</a> of file <a class="el" href="compile__time__string_8hpp_source.html">compile_time_string.hpp</a>.</p>
 
 </div>
 </div>
@@ -219,33 +246,7 @@ template&lt;std::size_t N, char C&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="compile__time__string_8hpp_source.html#l00206">206</a> of file <a class="el" href="compile__time__string_8hpp_source.html">compile_time_string.hpp</a>.</p>
-
-</div>
-</div>
-<a id="ab5ec19e24abd169b0d104ea46e7ad9d7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab5ec19e24abd169b0d104ea46e7ad9d7">&#9670;&nbsp;</a></span>str_concat</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename S1 , typename S2 &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">using <a class="el" href="namespacearg__router_1_1utility.html#ab5ec19e24abd169b0d104ea46e7ad9d7">arg_router::utility::str_concat</a> = typedef typename S1::template append_t&lt;S2&gt;</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>TMP helper for concatenating two compile-time strings together.</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">S1</td><td>Prefix </td></tr>
-    <tr><td class="paramname">S2</td><td>Suffix </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="definition">Definition at line <a class="el" href="compile__time__string_8hpp_source.html#l00173">173</a> of file <a class="el" href="compile__time__string_8hpp_source.html">compile_time_string.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="compile__time__string_8hpp_source.html#l00373">373</a> of file <a class="el" href="compile__time__string_8hpp_source.html">compile_time_string.hpp</a>.</p>
 
 </div>
 </div>

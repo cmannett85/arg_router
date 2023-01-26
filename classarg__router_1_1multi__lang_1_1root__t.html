@@ -125,34 +125,34 @@ class arg_router::multi_lang::root_t&lt; RootFactory, DefaultLanguageID, Support
 <div class="line"><span class="keyword">namespace </span>ar::multi_lang</div>
 <div class="line">{</div>
 <div class="line"><span class="keyword">template</span> &lt;&gt;</div>
-<div class="line"><span class="keyword">class </span>translation&lt;S_(&quot;en_GB&quot;)&gt;</div>
+<div class="line"><span class="keyword">class </span>translation&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(&quot;en_GB&quot;)&gt;</div>
 <div class="line">{</div>
 <div class="line"><span class="keyword">public</span>:</div>
-<div class="line">    <span class="keyword">using</span> force = S_(<span class="stringliteral">&quot;force&quot;</span>);</div>
-<div class="line">    <span class="keyword">using</span> force_description = S_(<span class="stringliteral">&quot;Force overwrite existing files&quot;</span>);</div>
+<div class="line">    <span class="keyword">using</span> force = <a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;force&quot;</span>);</div>
+<div class="line">    <span class="keyword">using</span> force_description = <a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Force overwrite existing files&quot;</span>);</div>
 <div class="line">    ...</div>
 <div class="line">};</div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">template</span> &lt;&gt;</div>
-<div class="line"><span class="keyword">class </span>translation&lt;S_(&quot;fr&quot;)&gt;</div>
+<div class="line"><span class="keyword">class </span>translation&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(&quot;fr&quot;)&gt;</div>
 <div class="line">{</div>
 <div class="line"><span class="keyword">public</span>:</div>
-<div class="line">    <span class="keyword">using</span> force = S_(<span class="stringliteral">&quot;forcer&quot;</span>);</div>
-<div class="line">    <span class="keyword">using</span> force_description = S_(<span class="stringliteral">&quot;Forcer l&#39;écrasement des fichiers existants&quot;</span>);</div>
+<div class="line">    <span class="keyword">using</span> force = <a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;forcer&quot;</span>);</div>
+<div class="line">    <span class="keyword">using</span> force_description = <a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Forcer l&#39;écrasement des fichiers existants&quot;</span>);</div>
 <div class="line">    ...</div>
 <div class="line">};</div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">template</span> &lt;&gt;</div>
-<div class="line"><span class="keyword">class </span>translation&lt;S_(&quot;ja&quot;)&gt;</div>
+<div class="line"><span class="keyword">class </span>translation&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(&quot;ja&quot;)&gt;</div>
 <div class="line">{</div>
 <div class="line"><span class="keyword">public</span>:</div>
-<div class="line">    <span class="keyword">using</span> force = S_(<span class="stringliteral">&quot;強制&quot;</span>);</div>
-<div class="line">    <span class="keyword">using</span> force_description = S_(<span class="stringliteral">&quot;既存のファイルを強制的に上書きする&quot;</span>);</div>
+<div class="line">    <span class="keyword">using</span> force = <a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;強制&quot;</span>);</div>
+<div class="line">    <span class="keyword">using</span> force_description = <a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;既存のファイルを強制的に上書きする&quot;</span>);</div>
 <div class="line">    ...</div>
 <div class="line">};</div>
 <div class="line">} <span class="comment">// namespace ar::multi_lang</span></div>
 <div class="line"> </div>
-<div class="line">ar::multi_lang::root&lt;S_(<span class="stringliteral">&quot;en_GB&quot;</span>), S_(<span class="stringliteral">&quot;fr&quot;</span>), S_(<span class="stringliteral">&quot;ja&quot;</span>)&gt;(  <span class="comment">//</span></div>
+<div class="line">ar::multi_lang::root&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;en_GB&quot;</span>), <a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;fr&quot;</span>), <a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;ja&quot;</span>)&gt;(  <span class="comment">//</span></div>
 <div class="line">    ar::multi_lang::iso_locale(std::locale(<span class="stringliteral">&quot;&quot;</span>).name()),</div>
 <div class="line">    [&amp;](<span class="keyword">auto</span> tr_) {</div>
 <div class="line">        <span class="keyword">using</span> tr = decltype(tr_);</div>
@@ -162,6 +162,7 @@ class arg_router::multi_lang::root_t&lt; RootFactory, DefaultLanguageID, Support
 <div class="line">                     arp::short_name&lt;&#39;f&#39;&gt;,</div>
 <div class="line">                     arp::description&lt;typename tr::force_description&gt;),</div>
 <div class="line">        ...</div>
+<div class="ttc" id="acompile__time__string_8hpp_html_a741f251b243f90ef2b4d915e50d40bac"><div class="ttname"><a href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a></div><div class="ttdeci">#define S_(tok)</div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00499">compile_time_string.hpp:499</a></div></div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00015">algorithm.hpp:16</a></div></div>
 </div><!-- fragment --><p> As shown by the above example, the supported translation object is given to the function object that returns the root instance. This means that each use of translation specialisation must have the same number of language-specific compile-time strings.</p>
 <p><em>RootFactory</em> is a function object used to return a given root type from a supported language ID, its signature must be equivalent to: </p><div class="fragment"><div class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> ID&gt;</div>
@@ -353,7 +354,7 @@ template&lt;typename RootFactory , typename DefaultLanguageID , typename... Supp
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="namespacearg__router.html">arg_router</a></li><li class="navelem"><b>multi_lang</b></li><li class="navelem"><a class="el" href="classarg__router_1_1multi__lang_1_1root__t.html">root_t</a></li>
+    <li class="navelem"><a class="el" href="namespacearg__router.html">arg_router</a></li><li class="navelem"><a class="el" href="namespacearg__router_1_1multi__lang.html">multi_lang</a></li><li class="navelem"><a class="el" href="classarg__router_1_1multi__lang_1_1root__t.html">root_t</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>

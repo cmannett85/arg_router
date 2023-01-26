@@ -13,8 +13,9 @@ var annotated_dup =
         [ "alias_group_t", "classarg__router_1_1dependency_1_1alias__group__t.html", "classarg__router_1_1dependency_1_1alias__group__t" ],
         [ "one_of_t", "classarg__router_1_1dependency_1_1one__of__t.html", "classarg__router_1_1dependency_1_1one__of__t" ]
       ] ],
-      [ "multi_lang", null, [
+      [ "multi_lang", "namespacearg__router_1_1multi__lang.html", [
         [ "root_t", "classarg__router_1_1multi__lang_1_1root__t.html", "classarg__router_1_1multi__lang_1_1root__t" ],
+        [ "root_wrapper_t", "classarg__router_1_1multi__lang_1_1root__wrapper__t.html", "classarg__router_1_1multi__lang_1_1root__wrapper__t" ],
         [ "translation", "classarg__router_1_1multi__lang_1_1translation.html", null ]
       ] ],
       [ "parsing", "namespacearg__router_1_1parsing.html", [
@@ -138,8 +139,9 @@ var annotated_dup =
           [ "line_iterator", "classarg__router_1_1utility_1_1utf8_1_1line__iterator.html", "classarg__router_1_1utility_1_1utf8_1_1line__iterator" ]
         ] ],
         [ "compile_time_optional", "classarg__router_1_1utility_1_1compile__time__optional.html", "classarg__router_1_1utility_1_1compile__time__optional" ],
-        [ "str", "classarg__router_1_1utility_1_1str.html", "classarg__router_1_1utility_1_1str" ],
+        [ "compile_time_string", "classarg__router_1_1utility_1_1compile__time__string.html", "classarg__router_1_1utility_1_1compile__time__string" ],
         [ "create_sequence_cts", "classarg__router_1_1utility_1_1create__sequence__cts.html", null ],
+        [ "convert_to_cts", "structarg__router_1_1utility_1_1convert__to__cts.html", null ],
         [ "convert_integral_to_cts", "structarg__router_1_1utility_1_1convert__integral__to__cts.html", null ],
         [ "result", "classarg__router_1_1utility_1_1result.html", "classarg__router_1_1utility_1_1result" ],
         [ "tree_type_recursor_collector", "structarg__router_1_1utility_1_1tree__type__recursor__collector.html", "structarg__router_1_1utility_1_1tree__type__recursor__collector" ],

@@ -96,27 +96,27 @@ $(document).ready(function(){initNavTree('string__selector_8hpp_source.html','')
 <div class="title">string_selector.hpp</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">// Copyright (C) 2022 by Camden Mannett.</span></div>
+<a href="string__selector_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">// Copyright (C) 2022-2023 by Camden Mannett.</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">// Distributed under the Boost Software License, Version 1.0.</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">// (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;arg_router/utility/compile_time_string.hpp&quot;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="compile__time__string_8hpp.html">arg_router/utility/compile_time_string.hpp</a>&quot;</span></div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#ifndef ENABLE_CPP20_STRINGS</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#ifndef AR_ENABLE_CPP20_STRINGS</span></div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#    include &lt;boost/preprocessor/variadic.hpp&gt;</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">namespace </span>arg_router::multi_lang</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacearg__router_1_1multi__lang.html">arg_router::multi_lang</a></div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;{</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">template</span> &lt;std::size_t I, <span class="keyword">typename</span>... S&gt;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">using</span> string_selector = std::tuple_element_t&lt;I, std::tuple&lt;S...&gt;&gt;;</div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1multi__lang.html#af248e7bc35641fdca7f234112fd2140c">   25</a></span>&#160;<span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1multi__lang.html#af248e7bc35641fdca7f234112fd2140c">string_selector</a> = std::tuple_element_t&lt;I, std::tuple&lt;S...&gt;&gt;;</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;}  <span class="comment">// namespace arg_router::multi_lang</span></div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#    define AR_SM_UNPACK(z, n, var_list) AR_STRING(BOOST_PP_ARRAY_ELEM(n, var_list))</span></div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor">#    define SM_(I, ...)                                                                  \</span></div>
+<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="string__selector_8hpp.html#aea4993c6e0aa1248b53d9c42ea4c8df4">   44</a></span>&#160;<span class="preprocessor">#    define SM_(I, ...)                                                                  \</span></div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor">        arg_router::multi_lang::string_selector&lt;I,                                       \</span></div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor">                                                BOOST_PP_ENUM(                           \</span></div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor">                                                    BOOST_PP_VARIADIC_SIZE(__VA_ARGS__), \</span></div>
@@ -124,12 +124,15 @@ $(document).ready(function(){initNavTree('string__selector_8hpp_source.html','')
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor">                                                    BOOST_PP_VARIADIC_TO_ARRAY(__VA_ARGS__))&gt;</span></div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="acompile__time__string_8hpp_html"><div class="ttname"><a href="compile__time__string_8hpp.html">compile_time_string.hpp</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1multi__lang_html"><div class="ttname"><a href="namespacearg__router_1_1multi__lang.html">arg_router::multi_lang</a></div><div class="ttdef"><b>Definition:</b> <a href="iso__locale_8hpp_source.html#l00009">iso_locale.hpp:10</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1multi__lang_html_af248e7bc35641fdca7f234112fd2140c"><div class="ttname"><a href="namespacearg__router_1_1multi__lang.html#af248e7bc35641fdca7f234112fd2140c">arg_router::multi_lang::string_selector</a></div><div class="ttdeci">std::tuple_element_t&lt; I, std::tuple&lt; S... &gt; &gt; string_selector</div><div class="ttdef"><b>Definition:</b> <a href="string__selector_8hpp_source.html#l00025">string_selector.hpp:25</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_529fe8366846da263013841a2c49df49.html">arg_router</a></li><li class="navelem"><a class="el" href="dir_0881c44fc01920ad4b8f5241bef071dc.html">multi_lang</a></li><li class="navelem"><b>string_selector.hpp</b></li>
+    <li class="navelem"><a class="el" href="dir_529fe8366846da263013841a2c49df49.html">arg_router</a></li><li class="navelem"><a class="el" href="dir_0881c44fc01920ad4b8f5241bef071dc.html">multi_lang</a></li><li class="navelem"><a class="el" href="string__selector_8hpp.html">string_selector.hpp</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>

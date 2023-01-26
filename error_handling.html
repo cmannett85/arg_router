@@ -99,50 +99,49 @@ $(document).ready(function(){initNavTree('error_handling.html',''); initResizabl
 <div class="textblock"><p>Error handling in <a class="el" href="namespacearg__router.html">arg_router</a> is exclusively done through exceptions. The only exception the user will encounter is <a class="el" href="classarg__router_1_1parse__exception.html">parse_exception</a>.</p>
 <p><a class="el" href="classarg__router_1_1parse__exception.html">parse_exception</a> is <em>not</em> used internally though, internally <a class="el" href="classarg__router_1_1multi__lang__exception.html">multi_lang_exception</a> is used instead and this carries an error code rather than a string. As the name suggests, this so it can be mapped (upon exit from the library) to a translated error message which is then re-thrown as a <a class="el" href="classarg__router_1_1parse__exception.html">parse_exception</a>.</p>
 <p>The translation mapping is done via a <code>translation::error_code_translations</code> subtype, for example: </p><div class="fragment"><div class="line"><span class="keyword">template</span> &lt;&gt;</div>
-<div class="line"><span class="keyword">class </span>translation&lt;<a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;&quot;ja&quot;&gt;&gt;</div>
+<div class="line"><span class="keyword">class </span>translation&lt;str&lt;&quot;ja&quot;&gt;&gt;</div>
 <div class="line">{</div>
 <div class="line">    <span class="keyword">public</span>:</div>
 <div class="line">      ...</div>
 <div class="line"> </div>
 <div class="line">    <span class="keyword">using</span> error_code_translations = std::tuple&lt;</div>
-<div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::unknown_argument&gt;, <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;不明な引数&quot;</span>&gt;&gt;,</div>
-<div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::unhandled_arguments&gt;, <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;未処理の引数&quot;</span>&gt;&gt;,</div>
+<div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::unknown_argument&gt;, str&lt;<span class="stringliteral">&quot;不明な引数&quot;</span>&gt;&gt;,</div>
+<div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::unhandled_arguments&gt;, str&lt;<span class="stringliteral">&quot;未処理の引数&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::argument_has_already_been_set&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;引数はすでに設定されています&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;引数はすでに設定されています&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::failed_to_parse&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;解析に失敗しました&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;解析に失敗しました&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::no_arguments_passed&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;引数が渡されませんでした&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;引数が渡されませんでした&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::minimum_value_not_reached&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;最小値に達していません&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;最小値に達していません&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::maximum_value_exceeded&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;最大値を超えました&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;最大値を超えました&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::minimum_count_not_reached&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;最小数に達していません&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;最小数に達していません&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::mode_requires_arguments&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;モードには引数が必要です&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;モードには引数が必要です&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::missing_required_argument&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;必要な引数がありません&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;必要な引数がありません&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::too_few_values_for_alias&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;エイリアス値が少なすぎる&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;エイリアス値が少なすぎる&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;</div>
 <div class="line">            traits::integral_constant&lt;error_code::dependent_argument_missing&gt;,</div>
-<div class="line">            <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;従属引数がありません (コマンドラインで必要なトークンの前に置く必要があります)&quot;</span>&gt;&gt;&gt;;</div>
+<div class="line">            str&lt;<span class="stringliteral">&quot;従属引数がありません (コマンドラインで必要なトークンの前に置く必要があります)&quot;</span>&gt;&gt;&gt;;</div>
 <div class="line">};</div>
-<div class="ttc" id="anamespacearg__router_html_a71caf6738d8778a9f0a7b8946e761a5f"><div class="ttname"><a href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">arg_router::str</a></div><div class="ttdeci">utility::str&lt; S &gt; str</div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00253">compile_time_string.hpp:253</a></div></div>
 </div><!-- fragment --><p> If <code>translation::error_code_translations</code> is not provided for a language specialisation, then the library will fall back to the internal en_GB version.</p>
 <p>Node or policy developers will need to define their own error codes for errors specifc to their type. Taking the <code>is_even</code> policy from the custom_node_and_policy example to demonstrate: </p><div class="fragment"><div class="line">constexpr <span class="keyword">auto</span> not_even_ec = std::size_t{1000};</div>
 <div class="line"> </div>
-<div class="line"><span class="keyword">namespace </span>arg_router::multi_lang</div>
+<div class="line"><span class="keyword">namespace </span><a class="code" href="namespacearg__router_1_1multi__lang.html">arg_router::multi_lang</a></div>
 <div class="line">{</div>
 <div class="line"><span class="keyword">template</span> &lt;&gt;</div>
-<div class="line"><span class="keyword">class </span>translation&lt;<a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;&quot;ja&quot;&gt;&gt;</div>
+<div class="line"><span class="keyword">class </span>translation&lt;str&lt;&quot;ja&quot;&gt;&gt;</div>
 <div class="line">{</div>
 <div class="line">    <span class="keyword">public</span>:</div>
 <div class="line">    ...</div>
 <div class="line"> </div>
 <div class="line">    <span class="keyword">using</span> error_code_translations = std::tuple&lt;</div>
-<div class="line">        std::pair&lt;traits::integral_constant&lt;not_even_ec&gt;, <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;非偶数値&quot;</span>&gt;&gt;,</div>
+<div class="line">        std::pair&lt;traits::integral_constant&lt;not_even_ec&gt;, str&lt;<span class="stringliteral">&quot;非偶数値&quot;</span>&gt;&gt;,</div>
 <div class="line">        ...</div>
 <div class="line">    &gt;;</div>
 <div class="line">};</div>
@@ -164,6 +163,7 @@ $(document).ready(function(){initNavTree('error_handling.html',''); initResizabl
 <div class="line">        }</div>
 <div class="line">    }</div>
 <div class="line">};</div>
+<div class="ttc" id="anamespacearg__router_1_1multi__lang_html"><div class="ttname"><a href="namespacearg__router_1_1multi__lang.html">arg_router::multi_lang</a></div><div class="ttdef"><b>Definition:</b> <a href="iso__locale_8hpp_source.html#l00009">iso_locale.hpp:10</a></div></div>
 </div><!-- fragment --><p> To avoid clashes upon upgrading the library, developers are encouraged to define their own error codes above 1000. If a custom error code is not available in <code>error_code_translations</code> then the error string is: </p><div class="fragment"><div class="line">Untranslated error code (N): &lt;tokens&gt;</div>
 </div><!-- fragment --> </div></div><!-- contents -->
 </div><!-- PageDoc -->

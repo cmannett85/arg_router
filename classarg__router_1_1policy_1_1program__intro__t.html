@@ -111,7 +111,7 @@ Public Types</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a60eaf7b606d2e3a62b65dff047f235c9"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1program__intro__t.html#a60eaf7b606d2e3a62b65dff047f235c9">program_intro_t</a> ([[maybe_unused]] S <a class="el" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>={}) noexcept</td></tr>
+<tr class="memitem:a60eaf7b606d2e3a62b65dff047f235c9"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1program__intro__t.html#a60eaf7b606d2e3a62b65dff047f235c9">program_intro_t</a> ([[maybe_unused]] S str={}) noexcept</td></tr>
 <tr class="separator:a60eaf7b606d2e3a62b65dff047f235c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
@@ -125,8 +125,9 @@ class arg_router::policy::program_intro_t&lt; S &gt;</h3>
 
 <p>Represents the program introduction.</p>
 <p>Used by help nodes to display a brief description about the program.</p>
-<p>If using C++17 then use the template variable helper with the <code>S_</code> macro; for C++20 and higher, use the constructor directly with a compile-time string literal: </p><div class="fragment"><div class="line">constexpr <span class="keyword">auto</span> a = ar::policy::program_intro&lt;S_(<span class="stringliteral">&quot;hello&quot;</span>)&gt;;</div>
+<p>If using C++17 then use the template variable helper with the <code>S_</code> macro; for C++20 and higher, use the constructor directly with a compile-time string literal: </p><div class="fragment"><div class="line">constexpr <span class="keyword">auto</span> a = ar::policy::program_intro&lt;<a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;hello&quot;</span>)&gt;;</div>
 <div class="line">constexpr <span class="keyword">auto</span> b = ar::policy::program_intro_t{<span class="stringliteral">&quot;hello&quot;</span>_S};</div>
+<div class="ttc" id="acompile__time__string_8hpp_html_a741f251b243f90ef2b4d915e50d40bac"><div class="ttname"><a href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a></div><div class="ttdeci">#define S_(tok)</div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00499">compile_time_string.hpp:499</a></div></div>
 </div><!-- fragment --> <dl class="section note"><dt>Note</dt><dd>Must be greater than one character </dd></dl>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">

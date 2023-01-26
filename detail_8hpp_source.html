@@ -117,9 +117,9 @@ $(document).ready(function(){initNavTree('detail_8hpp_source.html',''); initResi
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">private</span>:</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Prefix, <span class="keyword">typename</span> Strings&gt;</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keyword">using</span> prepend_prefix =</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#ifdef ENABLE_CPP20_STRINGS</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#ifdef AR_ENABLE_CPP20_STRINGS</span></div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        std::decay_t&lt;decltype(</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;            Prefix{} + boost::mp11::mp_fold&lt;Strings, utility::str&lt;&gt;, <a class="code" href="namespacearg__router_1_1utility.html#ab5ec19e24abd169b0d104ea46e7ad9d7">utility::str_concat</a>&gt;{})&gt;;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;            Prefix{} + boost::mp11::mp_fold&lt;Strings, utility::str&lt;&gt;, utility::str_concat&gt;{})&gt;;</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#else</span></div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        boost::mp11::mp_flatten&lt;boost::mp11::mp_insert_c&lt;Strings, 0, typename Prefix::array_type&gt;&gt;;</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#endif</span></div>
@@ -138,7 +138,7 @@ $(document).ready(function(){initNavTree('detail_8hpp_source.html',''); initResi
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> ChildName&gt;</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keyword">using</span> joiner =</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#ifdef ENABLE_CPP20_STRINGS</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#ifdef AR_ENABLE_CPP20_STRINGS</span></div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keyword">typename</span> ChildName::template append_t&lt;utility::str&lt;&#39;,&#39;&gt;&gt;;</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor">#else</span></div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        boost::mp11::mp_push_back&lt;typename ChildName::array_type, traits::integral_constant&lt;&#39;,&#39;&gt;&gt;;</div>
@@ -159,11 +159,11 @@ $(document).ready(function(){initNavTree('detail_8hpp_source.html',''); initResi
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="comment">// We only take the first N-1 characters to strip off the trailing comma</span></div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="preprocessor">#ifdef ENABLE_CPP20_STRINGS</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="preprocessor">#ifdef AR_ENABLE_CPP20_STRINGS</span></div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1utility_1_1utf8_1_1code__point.html#aa459732c88d21437e661f1468041a19b">type</a> = std::decay_t&lt;decltype(</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        concatenated_string{}.template substr&lt;0, concatenated_string::size() - 1&gt;())&gt;;</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1utility_1_1utf8_1_1code__point.html#aa459732c88d21437e661f1468041a19b">type</a> = utility::convert_to_cts_t&lt;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1utility_1_1utf8_1_1code__point.html#aa459732c88d21437e661f1468041a19b">type</a> = <a class="code" href="namespacearg__router_1_1utility.html#ac1a030095dca0eefcac3295e612ffbbc">utility::convert_to_cts_t</a>&lt;</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        boost::mp11::mp_take_c&lt;concatenated_string, std::tuple_size_v&lt;concatenated_string&gt; - 1&gt;&gt;;</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;};</div>
@@ -304,7 +304,7 @@ $(document).ready(function(){initNavTree('detail_8hpp_source.html',''); initResi
 <div class="ttc" id="anamespacearg__router_1_1policy_html_a985a31d1991b66211625593d1b07dff9"><div class="ttname"><a href="namespacearg__router_1_1policy.html#a985a31d1991b66211625593d1b07dff9">arg_router::policy::has_no_result_value</a></div><div class="ttdeci">std::is_base_of&lt; no_result_value&lt;&gt;, T &gt; has_no_result_value</div><div class="ttdef"><b>Definition:</b> <a href="no__result__value_8hpp_source.html#l00025">no_result_value.hpp:25</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1policy_html_adeab7d3692839fb3dcc864b5cc1730b7"><div class="ttname"><a href="namespacearg__router_1_1policy.html#adeab7d3692839fb3dcc864b5cc1730b7">arg_router::policy::description</a></div><div class="ttdeci">constexpr auto description</div><div class="ttdef"><b>Definition:</b> <a href="description_8hpp_source.html#l00050">description.hpp:50</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1utility_1_1utf8_1_1code__point_html_aa459732c88d21437e661f1468041a19b"><div class="ttname"><a href="namespacearg__router_1_1utility_1_1utf8_1_1code__point.html#aa459732c88d21437e661f1468041a19b">arg_router::utility::utf8::code_point::type</a></div><div class="ttdeci">std::uint32_t type</div><div class="ttdef"><b>Definition:</b> <a href="code__point_8hpp_source.html#l00016">code_point.hpp:16</a></div></div>
-<div class="ttc" id="anamespacearg__router_1_1utility_html_ab5ec19e24abd169b0d104ea46e7ad9d7"><div class="ttname"><a href="namespacearg__router_1_1utility.html#ab5ec19e24abd169b0d104ea46e7ad9d7">arg_router::utility::str_concat</a></div><div class="ttdeci">typename S1::template append_t&lt; S2 &gt; str_concat</div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00173">compile_time_string.hpp:173</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1utility_html_ac1a030095dca0eefcac3295e612ffbbc"><div class="ttname"><a href="namespacearg__router_1_1utility.html#ac1a030095dca0eefcac3295e612ffbbc">arg_router::utility::convert_to_cts_t</a></div><div class="ttdeci">typename convert_to_cts&lt; T &gt;::type convert_to_cts_t</div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00392">compile_time_string.hpp:392</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

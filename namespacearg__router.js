@@ -7,20 +7,12 @@ var namespacearg__router =
       [ "short_prefix", "namespacearg__router_1_1config.html#a46080eba5c23480d20901c2c412a8eed", null ]
     ] ],
     [ "dependency", "namespacearg__router_1_1dependency.html", "namespacearg__router_1_1dependency" ],
-    [ "literals", null, [
-      [ "operator\"\"_S", "literals_8hpp.html#ac9ae72d08a99171018af86920c8f0168", null ]
-    ] ],
     [ "math", "namespacearg__router_1_1math.html", [
       [ "abs", "namespacearg__router_1_1math.html#aed9a63d0b46e824c24e3cdf7e40af70f", null ],
       [ "num_digits", "namespacearg__router_1_1math.html#a7685a22f45fc1767d3f0ab8db5a85bd6", null ],
       [ "pow", "namespacearg__router_1_1math.html#abb7492b83470e9766c0052d99f502d13", null ]
     ] ],
-    [ "multi_lang", null, [
-      [ "root_t", "classarg__router_1_1multi__lang_1_1root__t.html", "classarg__router_1_1multi__lang_1_1root__t" ],
-      [ "translation", "classarg__router_1_1multi__lang_1_1translation.html", null ],
-      [ "iso_locale", "iso__locale_8hpp.html#a306df8264ecd85408a572e574a6560c4", null ],
-      [ "root", "multi__lang_2root_8hpp.html#a7bbacbf82216a1dce73616347938f1da", null ]
-    ] ],
+    [ "multi_lang", "namespacearg__router_1_1multi__lang.html", "namespacearg__router_1_1multi__lang" ],
     [ "parsing", "namespacearg__router_1_1parsing.html", "namespacearg__router_1_1parsing" ],
     [ "policy", "namespacearg__router_1_1policy.html", "namespacearg__router_1_1policy" ],
     [ "traits", null, [
@@ -99,7 +91,6 @@ var namespacearg__router =
     [ "is_tree_node", "structarg__router_1_1is__tree__node.html", null ],
     [ "ostringstream", "namespacearg__router.html#a6944ca001b050158bb79759503fbf6d6", null ],
     [ "span", "namespacearg__router.html#a6e05967fd7ae36c31f67ff016576619d", null ],
-    [ "str", "namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f", null ],
     [ "string", "namespacearg__router.html#abafabad5af18e8dda89e6b568b594738", null ],
     [ "vector", "namespacearg__router.html#a3d789cf2175008b4124de867a13a2edf", null ],
     [ "error_code", "namespacearg__router.html#ab3c79c3c1cb22d86d1dac370a8733e56", [

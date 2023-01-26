@@ -113,126 +113,126 @@ $(document).ready(function(){initNavTree('c_09_0920_2simple_ml_2main_8cpp-exampl
 <div class="line"><span class="keyword">using namespace </span>ar::literals;</div>
 <div class="line"><span class="keyword">using namespace </span>ar::utility::string_view_ops;</div>
 <div class="line"> </div>
-<div class="line"><span class="keyword">namespace </span>arg_router::multi_lang</div>
+<div class="line"><span class="keyword">namespace </span><a class="code" href="namespacearg__router_1_1multi__lang.html">arg_router::multi_lang</a></div>
 <div class="line">{</div>
 <div class="line"><span class="comment">// Apologies for any translation faux pas - Google Translate did it for me!</span></div>
 <div class="line"><span class="keyword">template</span> &lt;&gt;</div>
-<div class="line"><span class="keyword">class </span>translation&lt;<a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;&quot;en_GB&quot;&gt;&gt;</div>
+<div class="line"><span class="keyword">class </span>translation&lt;str&lt;&quot;en_GB&quot;&gt;&gt;</div>
 <div class="line">{</div>
 <div class="line"><span class="keyword">public</span>:</div>
-<div class="line">    <span class="keyword">using</span> force = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;force&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> force_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Force overwrite existing files&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> destination = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;DST&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> destination_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Destination directory&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router.html#a1eb8c408da38619d624f435441efac48">help</a> = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;help&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> help_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Display this help and exit&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1policy.html#ae4c0515ad6d58ea37fe121ee3f4a9861">program_intro</a> = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;A simple file copier and mover.&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1policy.html#a50ebcd2455ba90ecbbcaf7d6aab2dc16">program_addendum</a> = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;An example program for arg_router.&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> copy = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;copy&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> copy_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Copy source files to destination&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> source = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;SRC&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> sources_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Source file paths&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> move = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;move&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> move_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Move source file to destination&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> source_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Source file path&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> force = str&lt;<span class="stringliteral">&quot;force&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> force_description = str&lt;<span class="stringliteral">&quot;Force overwrite existing files&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> destination = str&lt;<span class="stringliteral">&quot;DST&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> destination_description = str&lt;<span class="stringliteral">&quot;Destination directory&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router.html#a1eb8c408da38619d624f435441efac48">help</a> = str&lt;<span class="stringliteral">&quot;help&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> help_description = str&lt;<span class="stringliteral">&quot;Display this help and exit&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1policy.html#ae4c0515ad6d58ea37fe121ee3f4a9861">program_intro</a> = str&lt;<span class="stringliteral">&quot;A simple file copier and mover.&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1policy.html#a50ebcd2455ba90ecbbcaf7d6aab2dc16">program_addendum</a> = str&lt;<span class="stringliteral">&quot;An example program for arg_router.&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> copy = str&lt;<span class="stringliteral">&quot;copy&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> copy_description = str&lt;<span class="stringliteral">&quot;Copy source files to destination&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> source = str&lt;<span class="stringliteral">&quot;SRC&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> sources_description = str&lt;<span class="stringliteral">&quot;Source file paths&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> move = str&lt;<span class="stringliteral">&quot;move&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> move_description = str&lt;<span class="stringliteral">&quot;Move source file to destination&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> source_description = str&lt;<span class="stringliteral">&quot;Source file path&quot;</span>&gt;;</div>
 <div class="line">};</div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">template</span> &lt;&gt;</div>
-<div class="line"><span class="keyword">class </span>translation&lt;<a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;&quot;fr&quot;&gt;&gt;</div>
+<div class="line"><span class="keyword">class </span>translation&lt;str&lt;&quot;fr&quot;&gt;&gt;</div>
 <div class="line">{</div>
 <div class="line"><span class="keyword">public</span>:</div>
-<div class="line">    <span class="keyword">using</span> force = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;forcer&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> force_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Forcer l&#39;écrasement des fichiers existants&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> destination = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;DST&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> destination_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Répertoire de destination&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router.html#a1eb8c408da38619d624f435441efac48">help</a> = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;aider&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> help_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Afficher cette aide et quitter&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1policy.html#ae4c0515ad6d58ea37fe121ee3f4a9861">program_intro</a> = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Un simple copieur et déménageur de fichiers.&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1policy.html#a50ebcd2455ba90ecbbcaf7d6aab2dc16">program_addendum</a> = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Un exemple de programme pour arg_router.&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> copy = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;copier&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> copy_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Copier les fichiers source vers la destination&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> source = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;SRC&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> sources_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Chemins des fichiers sources&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> move = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;déplacer&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> move_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Déplacer le fichier source vers la destination&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> source_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Chemin du fichier source&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> force = str&lt;<span class="stringliteral">&quot;forcer&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> force_description = str&lt;<span class="stringliteral">&quot;Forcer l&#39;écrasement des fichiers existants&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> destination = str&lt;<span class="stringliteral">&quot;DST&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> destination_description = str&lt;<span class="stringliteral">&quot;Répertoire de destination&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router.html#a1eb8c408da38619d624f435441efac48">help</a> = str&lt;<span class="stringliteral">&quot;aider&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> help_description = str&lt;<span class="stringliteral">&quot;Afficher cette aide et quitter&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1policy.html#ae4c0515ad6d58ea37fe121ee3f4a9861">program_intro</a> = str&lt;<span class="stringliteral">&quot;Un simple copieur et déménageur de fichiers.&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1policy.html#a50ebcd2455ba90ecbbcaf7d6aab2dc16">program_addendum</a> = str&lt;<span class="stringliteral">&quot;Un exemple de programme pour arg_router.&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> copy = str&lt;<span class="stringliteral">&quot;copier&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> copy_description = str&lt;<span class="stringliteral">&quot;Copier les fichiers source vers la destination&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> source = str&lt;<span class="stringliteral">&quot;SRC&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> sources_description = str&lt;<span class="stringliteral">&quot;Chemins des fichiers sources&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> move = str&lt;<span class="stringliteral">&quot;déplacer&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> move_description = str&lt;<span class="stringliteral">&quot;Déplacer le fichier source vers la destination&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> source_description = str&lt;<span class="stringliteral">&quot;Chemin du fichier source&quot;</span>&gt;;</div>
 <div class="line"> </div>
 <div class="line">    <span class="keyword">using</span> error_code_translations = std::tuple&lt;</div>
-<div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::unknown_argument&gt;, <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Argument inconnu&quot;</span>&gt;&gt;,</div>
+<div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::unknown_argument&gt;, str&lt;<span class="stringliteral">&quot;Argument inconnu&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::unhandled_arguments&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Arguments non gérés&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;Arguments non gérés&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::argument_has_already_been_set&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;L&#39;argument a déjà été défini&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;L&#39;argument a déjà été défini&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::failed_to_parse&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;L&#39;analyse a échoué&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;L&#39;analyse a échoué&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::no_arguments_passed&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Aucun argument passé&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;Aucun argument passé&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::minimum_value_not_reached&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Valeur minimale non atteinte&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;Valeur minimale non atteinte&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::maximum_value_exceeded&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Valeur maximale dépassée&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;Valeur maximale dépassée&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::minimum_count_not_reached&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Nombre minimum non atteint&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;Nombre minimum non atteint&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::mode_requires_arguments&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Le mode nécessite des arguments&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;Le mode nécessite des arguments&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::missing_required_argument&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Argument requis manquant&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;Argument requis manquant&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::too_few_values_for_alias&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Trop peu de valeurs pour l&#39;alias&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;Trop peu de valeurs pour l&#39;alias&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;</div>
 <div class="line">            traits::integral_constant&lt;error_code::dependent_argument_missing&gt;,</div>
-<div class="line">            <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Argument dépendant manquant (doit être avant le jeton requis sur la ligne de &quot;</span></div>
+<div class="line">            str&lt;<span class="stringliteral">&quot;Argument dépendant manquant (doit être avant le jeton requis sur la ligne de &quot;</span></div>
 <div class="line">                <span class="stringliteral">&quot;commande)&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::one_of_selected_type_mismatch&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Un seul argument d&#39;un \&quot;One Of\&quot; peut être utilisé à la fois&quot;</span>&gt;&gt;&gt;;</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;Un seul argument d&#39;un \&quot;One Of\&quot; peut être utilisé à la fois&quot;</span>&gt;&gt;&gt;;</div>
 <div class="line">};</div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">template</span> &lt;&gt;</div>
-<div class="line"><span class="keyword">class </span>translation&lt;<a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;&quot;ja&quot;&gt;&gt;</div>
+<div class="line"><span class="keyword">class </span>translation&lt;str&lt;&quot;ja&quot;&gt;&gt;</div>
 <div class="line">{</div>
 <div class="line"><span class="keyword">public</span>:</div>
-<div class="line">    <span class="keyword">using</span> force = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;強制&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> force_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;既存のファイルを強制的に上書きする&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> destination = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;先&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> destination_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;宛先ディレクトリ&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router.html#a1eb8c408da38619d624f435441efac48">help</a> = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;ヘルプ&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> help_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;このヘルプを表示して終了&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1policy.html#ae4c0515ad6d58ea37fe121ee3f4a9861">program_intro</a> = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;ファイルをコピーおよび移動するためのシンプルなプログラム。&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1policy.html#a50ebcd2455ba90ecbbcaf7d6aab2dc16">program_addendum</a> = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;「arg_router」のサンプルプログラム。&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> copy = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;コピー&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> copy_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;ソース ファイルを宛先にコピーする&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> source = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;出典&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> sources_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;ソース ファイルのパス&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> move = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;移動&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> move_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;ソース ファイルを宛先に移動する&quot;</span>&gt;;</div>
-<div class="line">    <span class="keyword">using</span> source_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;ソース ファイル パス&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> force = str&lt;<span class="stringliteral">&quot;強制&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> force_description = str&lt;<span class="stringliteral">&quot;既存のファイルを強制的に上書きする&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> destination = str&lt;<span class="stringliteral">&quot;先&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> destination_description = str&lt;<span class="stringliteral">&quot;宛先ディレクトリ&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router.html#a1eb8c408da38619d624f435441efac48">help</a> = str&lt;<span class="stringliteral">&quot;ヘルプ&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> help_description = str&lt;<span class="stringliteral">&quot;このヘルプを表示して終了&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1policy.html#ae4c0515ad6d58ea37fe121ee3f4a9861">program_intro</a> = str&lt;<span class="stringliteral">&quot;ファイルをコピーおよび移動するためのシンプルなプログラム。&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1policy.html#a50ebcd2455ba90ecbbcaf7d6aab2dc16">program_addendum</a> = str&lt;<span class="stringliteral">&quot;「arg_router」のサンプルプログラム。&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> copy = str&lt;<span class="stringliteral">&quot;コピー&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> copy_description = str&lt;<span class="stringliteral">&quot;ソース ファイルを宛先にコピーする&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> source = str&lt;<span class="stringliteral">&quot;出典&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> sources_description = str&lt;<span class="stringliteral">&quot;ソース ファイルのパス&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> move = str&lt;<span class="stringliteral">&quot;移動&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> move_description = str&lt;<span class="stringliteral">&quot;ソース ファイルを宛先に移動する&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> source_description = str&lt;<span class="stringliteral">&quot;ソース ファイル パス&quot;</span>&gt;;</div>
 <div class="line"> </div>
 <div class="line">    <span class="keyword">using</span> error_code_translations = std::tuple&lt;</div>
-<div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::unknown_argument&gt;, <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;不明な引数&quot;</span>&gt;&gt;,</div>
-<div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::unhandled_arguments&gt;, <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;未処理の引数&quot;</span>&gt;&gt;,</div>
+<div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::unknown_argument&gt;, str&lt;<span class="stringliteral">&quot;不明な引数&quot;</span>&gt;&gt;,</div>
+<div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::unhandled_arguments&gt;, str&lt;<span class="stringliteral">&quot;未処理の引数&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::argument_has_already_been_set&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;引数はすでに設定されています&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;引数はすでに設定されています&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::failed_to_parse&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;解析に失敗しました&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;解析に失敗しました&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::no_arguments_passed&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;引数が渡されませんでした&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;引数が渡されませんでした&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::minimum_value_not_reached&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;最小値に達していません&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;最小値に達していません&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::maximum_value_exceeded&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;最大値を超えました&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;最大値を超えました&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::minimum_count_not_reached&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;最小数に達していません&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;最小数に達していません&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::mode_requires_arguments&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;モードには引数が必要です&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;モードには引数が必要です&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::missing_required_argument&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;必要な引数がありません&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;必要な引数がありません&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::too_few_values_for_alias&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;エイリアス値が少なすぎる&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;エイリアス値が少なすぎる&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;</div>
 <div class="line">            traits::integral_constant&lt;error_code::dependent_argument_missing&gt;,</div>
-<div class="line">            <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;従属引数がありません (コマンドラインで必要なトークンの前に置く必要があります)&quot;</span>&gt;&gt;,</div>
+<div class="line">            str&lt;<span class="stringliteral">&quot;従属引数がありません (コマンドラインで必要なトークンの前に置く必要があります)&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::one_of_selected_type_mismatch&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;一度に許可される「One Of」引数は1つだけです&quot;</span>&gt;&gt;&gt;;</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;一度に許可される「One Of」引数は1つだけです&quot;</span>&gt;&gt;&gt;;</div>
 <div class="line">};</div>
 <div class="line">}  <span class="comment">// namespace arg_router::multi_lang</span></div>
 <div class="line"> </div>
@@ -326,12 +326,12 @@ $(document).ready(function(){initNavTree('c_09_0920_2simple_ml_2main_8cpp-exampl
 <div class="line">        })</div>
 <div class="line">        .parse(argc, argv);</div>
 <div class="line">}</div>
+<div class="ttc" id="anamespacearg__router_1_1multi__lang_html"><div class="ttname"><a href="namespacearg__router_1_1multi__lang.html">arg_router::multi_lang</a></div><div class="ttdef"><b>Definition:</b> <a href="iso__locale_8hpp_source.html#l00009">iso_locale.hpp:10</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1policy_html_a50ebcd2455ba90ecbbcaf7d6aab2dc16"><div class="ttname"><a href="namespacearg__router_1_1policy.html#a50ebcd2455ba90ecbbcaf7d6aab2dc16">arg_router::policy::program_addendum</a></div><div class="ttdeci">constexpr auto program_addendum</div><div class="ttdef"><b>Definition:</b> <a href="program__addendum_8hpp_source.html#l00053">program_addendum.hpp:53</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1policy_html_ae4c0515ad6d58ea37fe121ee3f4a9861"><div class="ttname"><a href="namespacearg__router_1_1policy.html#ae4c0515ad6d58ea37fe121ee3f4a9861">arg_router::policy::program_intro</a></div><div class="ttdeci">constexpr auto program_intro</div><div class="ttdef"><b>Definition:</b> <a href="program__intro_8hpp_source.html#l00053">program_intro.hpp:53</a></div></div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00015">algorithm.hpp:16</a></div></div>
 <div class="ttc" id="anamespacearg__router_html_a1eb8c408da38619d624f435441efac48"><div class="ttname"><a href="namespacearg__router.html#a1eb8c408da38619d624f435441efac48">arg_router::help</a></div><div class="ttdeci">constexpr auto help(Policies... policies) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="help_8hpp_source.html#l00221">help.hpp:221</a></div></div>
 <div class="ttc" id="anamespacearg__router_html_a29537daeb3ba7d1b8749d3e1e9d83f1b"><div class="ttname"><a href="namespacearg__router.html#a29537daeb3ba7d1b8749d3e1e9d83f1b">arg_router::arg</a></div><div class="ttdeci">constexpr auto arg(Policies... policies) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="arg_8hpp_source.html#l00113">arg.hpp:113</a></div></div>
-<div class="ttc" id="anamespacearg__router_html_a71caf6738d8778a9f0a7b8946e761a5f"><div class="ttname"><a href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">arg_router::str</a></div><div class="ttdeci">utility::str&lt; S &gt; str</div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00253">compile_time_string.hpp:253</a></div></div>
 </div><!-- fragment --> </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

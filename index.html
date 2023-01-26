@@ -110,10 +110,10 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <li>Uses a macro to ease compile-time string generation when using C++17. For C++20 and above, compile-time string literals can be used directly in constructors</li>
 </ul>
 <h1>Basics</h1>
-<p>Let's start simple, with this <code>cat</code>-like program: </p><div class="fragment"><div class="line"><span class="keyword">namespace </span>ar = <a class="code" href="namespacearg__router.html">arg_router</a></div>
+<p>Let's start simple, with this <code>cat</code>-like program: </p><div class="fragment"><div class="line"><span class="keyword">namespace </span>ar = <a class="code" href="namespacearg__router.html">arg_router</a>;</div>
 <div class="line"><span class="keyword">namespace </span>arp = ar::policy</div>
 <div class="line"> </div>
-<div class="line"><span class="keyword">using namespace </span>ar::literals</div>
+<div class="line"><span class="keyword">using namespace </span>ar::literals;</div>
 <div class="line"> </div>
 <div class="line">ar::root(</div>
 <div class="line">    arp::validation::default_validator,</div>
@@ -155,7 +155,7 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="line">                       <span class="keywordtype">bool</span> show_non_printing,</div>
 <div class="line">                       <span class="keywordtype">int</span> max_lines,</div>
 <div class="line">                       std::vector&lt;std::string_view&gt; files) { ... }})).</div>
-<div class="line">    parse(argc, argv)</div>
+<div class="line">    parse(argc, argv);</div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00015">algorithm.hpp:16</a></div></div>
 </div><!-- fragment --><p> Let's start from the top, as the name suggests <code>root</code> is the root of the parse tree and provides the <code>parse(argc, argv)</code> method. Only children of the root can (and must) have a <code>router</code> policy (except for nested <code>mode</code>s, more <a href="#modes">on that later</a>) and therefore act as access points into the program. The root's children are implicitly mutually exclusive, so trying to pass <code>--version --help</code> in the command line is a runtime error.</p>
 <p>The <code>arp::validation::default_validator</code> instance provides the default validator that the root uses to validate the parse tree at compile-time. It is a required policy of the <code>root</code>. Unless you have implemented your own policy or tree node you will never need to specify anything else.</p>
@@ -167,11 +167,11 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <p>A <code>flag</code> is essentially an <code>arg&lt;bool&gt;{default_value{false}}</code>, except that it doesn't expect an argument value to follow on the command line as it <em>is</em> the value. Flags cannot have default arguments or be marked as required.</p>
 <p>An <code>alias</code> policy allows you to define an argument that acts as a link to other arguments, so in our example above passing <code>-A</code> on the command line would actually set the <code>-E</code> and <code>-n</code> flags to true. You can use either the long or short name of the aliased flag, but the <code>value_type</code>s (<code>bool</code> for a flag) must be the same.</p>
 <p>By default whitespace is used to separate out the command line tokens, this is done by the terminal/OS invoking the program, but often '=' is used a name/value token separator. <code><a class="el" href="namespacearg__router.html">arg_router</a></code> supports this with the <code>value_separator_t</code> policy as used in the <code>arg&lt;int&gt;</code> node in the example.</p>
-<p><code>positional_arg&lt;T&gt;</code> does not use a 'marker' token on the command line for which its value follows, the value's position in the command line arguments determines what it is for. The order that arguments are specified on the command line normally don't matter, but for positional arguments they do for example in our cat program the files must be specified after the arguments so passing <code>myfile.hpp -n</code> would trigger the parser to land on the <code>positional_arg</code> for <code>myfile.hpp</code> which would then greedily consume the <code>-n</code> causing the application to try to open the file <code>-n</code>... We'll cover constrained <code>positional_arg</code>s in later examples. The <code>display_name_t</code> policy is used when generating help or error output - it is not used when parsing.</p>
+<p><code>positional_arg&lt;T&gt;</code> does not use a 'marker' token on the command line for which its value follows, the value's position in the command line arguments determines what it is for. The order that arguments are specified on the command line normally don't matter, but for positional arguments they do; for example in our cat program the files must be specified after the arguments so passing <code>myfile.hpp -n</code> would trigger the parser to land on the <code>positional_arg</code> for <code>myfile.hpp</code> which would then greedily consume the <code>-n</code> causing the application to try to open the file <code>-n</code>... We'll cover constrained <code>positional_arg</code>s in later examples. The <code>display_name_t</code> policy is used when generating help or error output - it is not used when parsing.</p>
 <p>Assuming parsing was successful, the final <code>router</code> is called with the parsed argument e.g. if the user passed <code>-E file1 file2</code> then the <code>router</code> is passed <code>(true, false, -1, {"file1", "file2"})</code>.</p>
 <p>You may have noticed that the nodes are constructed with parentheses whilst the policies use braces, this is necessary due to CTAD rules that affect nodes which return a user-defined value type. This can be circumvented using a function to return the required instance, for example the actual type of a flag is <code>flag_t</code>, <code>flag(...)</code> is a function that creates one for you.</p>
 <h1>Conditional Arguments</h1>
-<p>Let's add another feature to our cat program where we can handle lines over a certain length differently. </p><div class="fragment"><div class="line"><span class="keyword">namespace </span>ard = ar::dependency</div>
+<p>Let's add another feature to our cat program where we can handle lines over a certain length differently. </p><div class="fragment"><div class="line"><span class="keyword">namespace </span>ard = ar::dependency;</div>
 <div class="line">ar::mode(</div>
 <div class="line">    ...</div>
 <div class="line">    ar::arg&lt;std::optional&lt;std::size_t&gt;&gt;(</div>
@@ -211,7 +211,7 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="line">    NONE,</div>
 <div class="line">    CLASSIC,</div>
 <div class="line">    SOLARIZED</div>
-<div class="line">}</div>
+<div class="line">};</div>
 <div class="line"> </div>
 <div class="line">ar::mode(</div>
 <div class="line">    ...</div>
@@ -221,7 +221,7 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="line">        arp::value_separator_t{<span class="stringliteral">&quot;=&quot;</span>_S},</div>
 <div class="line">        arp::default_value{theme_t::NONE},</div>
 <div class="line">        arp::custom_parser&lt;theme_t&gt;{[](std::string_view <a class="code" href="namespacearg__router.html#a29537daeb3ba7d1b8749d3e1e9d83f1b">arg</a>) {</div>
-<div class="line">            <span class="keywordflow">return</span> theme_from_string(arg) }})</div>
+<div class="line">            <span class="keywordflow">return</span> theme_from_string(arg); }})</div>
 <div class="line">    ...</div>
 <div class="line">    arp::router{[](<span class="keywordtype">bool</span> show_all,</div>
 <div class="line">        <span class="keywordtype">bool</span> show_ends,</div>
@@ -237,16 +237,16 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="line">    [[nodiscard]] <span class="keyword">static</span> <span class="keyword">inline</span> theme_t parse(std::string_view <a class="code" href="namespacearg__router.html#a29537daeb3ba7d1b8749d3e1e9d83f1b">arg</a>)</div>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordflow">if</span> (<a class="code" href="namespacearg__router.html#a29537daeb3ba7d1b8749d3e1e9d83f1b">arg</a> == <span class="stringliteral">&quot;NONE&quot;</span>) {</div>
-<div class="line">            <span class="keywordflow">return</span> theme_t::NONE</div>
+<div class="line">            <span class="keywordflow">return</span> theme_t::NONE;</div>
 <div class="line">        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="namespacearg__router.html#a29537daeb3ba7d1b8749d3e1e9d83f1b">arg</a> == <span class="stringliteral">&quot;CLASSIC&quot;</span>) {</div>
-<div class="line">            <span class="keywordflow">return</span> theme_t::CLASSIC</div>
+<div class="line">            <span class="keywordflow">return</span> theme_t::CLASSIC;</div>
 <div class="line">        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="namespacearg__router.html#a29537daeb3ba7d1b8749d3e1e9d83f1b">arg</a> == <span class="stringliteral">&quot;SOLARIZED&quot;</span>) {</div>
-<div class="line">            <span class="keywordflow">return</span> theme_t::SOLARIZED</div>
+<div class="line">            <span class="keywordflow">return</span> theme_t::SOLARIZED;</div>
 <div class="line">        }</div>
 <div class="line">    </div>
-<div class="line">        <span class="keywordflow">throw</span> parse_exception{<span class="stringliteral">&quot;Unknown theme argument: &quot;</span>s + <a class="code" href="namespacearg__router.html#a29537daeb3ba7d1b8749d3e1e9d83f1b">arg</a>}</div>
+<div class="line">        <span class="keywordflow">throw</span> parse_exception{<span class="stringliteral">&quot;Unknown theme argument: &quot;</span>s + <a class="code" href="namespacearg__router.html#a29537daeb3ba7d1b8749d3e1e9d83f1b">arg</a>};</div>
 <div class="line">    }</div>
-<div class="line">}</div>
+<div class="line">};</div>
 <div class="ttc" id="astructarg__router_1_1parser_html"><div class="ttname"><a href="structarg__router_1_1parser.html">arg_router::parser</a></div><div class="ttdef"><b>Definition:</b> <a href="global__parser_8hpp_source.html#l00026">global_parser.hpp:26</a></div></div>
 </div><!-- fragment --><p> With this declared in a place visible to the parse tree declaration, <code>theme_t</code> can be converted from a string without the need for a <code>custom_parser</code>. It should be noted that <code>custom_parser</code> can still be used, and will be preferred over the <code>parse()</code> specialisation.</p>
 <h1>Counting Flags</h1>
@@ -255,7 +255,7 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="line">    WARNING,</div>
 <div class="line">    INFO,</div>
 <div class="line">    DEBUG</div>
-<div class="line">}</div>
+<div class="line">};</div>
 <div class="line"> </div>
 <div class="line">ar::mode(</div>
 <div class="line">    ...</div>
@@ -308,7 +308,7 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="line">    {</div>
 <div class="line">        ...</div>
 <div class="line">    }</div>
-<div class="line">}</div>
+<div class="line">};</div>
 </div><!-- fragment --><p> We can declare a new <code>arg</code> that takes a string equivalent of the enum and put them both into an <code>alias_group</code>, so now you can use <code>--verbose=INFO</code> or <code>-vv</code>. Short name collapsing still works as expected.</p>
 <p>What's this new <code>alias_group</code>? <code>policy::alias</code> is an <em>input</em> alias, it works by duplicating the value tokens to each of the aliased nodes it refers to i.e. it forms a one-to-many aliasing relationship. The limitations of that are:</p><ul>
 <li>All aliased nodes must have the same value token count (could be zero in the case of a flag)</li>
@@ -346,7 +346,7 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <p>Only the last <code>positional_arg</code> may be of variable length. A runtime error will only occur if there are no unbounded variable length <code>postional_arg</code>s and there are more arguments than the maximum or less than the minimum.</p>
 <p>It should be noted that setting a non-zero minimum count (<code>min_count</code>, <code>fixed_count</code>, or <code>min_max_count</code>) does <em>not</em> imply a requirement, the minimum count check only applies when there is at least one argument for the node to process. So as with an <code>arg</code>, you should use a <code>required</code> policy to explicitly state that at least one argument needs to be present, or a <code>default_value</code> policy - otherwise a default initialised value will be used instead. For <code>positional_arg</code> nodes that are marked as <code>required</code>, it is a compile-time error to have a minimum count policy value of 0.</p>
 <h1>Modes</h1>
-<p>As noted in <a href="#basics">Basics</a>, <code>mode</code>s allow you to group command line components under an initial token on the command line. A common example of this developers will be aware of is <code>git</code>, for example in our parlance <code>git clean -ffxd</code> <code>clean</code> would be the mode and <code>ffxd</code> would be be the flags that are available under that mode.</p>
+<p>As noted in <a href="#basics">Basics</a>, <code>mode</code>s allow you to group command line components under an initial token on the command line. A common example of this developers will be aware of is <code>git</code>, for example in our parlance <code>git clean -ffxd</code>; <code>clean</code> would be the mode and <code>ffxd</code> would be be the flags that are available under that mode.</p>
 <p>As an example, let's take the <code>simple-copy</code> above and split it into two modes: </p><div class="fragment"><div class="line">$ simple copy -f dest-dir source-path-1 source-path-2</div>
 <div class="line">$ simple move -f dest-dir source-path-1</div>
 </div><!-- fragment --> <div class="fragment"><div class="line">ar::root(</div>
@@ -408,7 +408,7 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="line">        arp::required,</div>
 <div class="line">        arp::display_name_t{<span class="stringliteral">&quot;DST&quot;</span>_S},</div>
 <div class="line">        arp::description_t{<span class="stringliteral">&quot;Destination directory&quot;</span>_S},</div>
-<div class="line">        arp::fixed_count&lt;1&gt;)}</div>
+<div class="line">        arp::fixed_count&lt;1&gt;)};</div>
 <div class="line"> </div>
 <div class="line">ar::root(</div>
 <div class="line">    arp::validation::default_validator,</div>
@@ -456,7 +456,7 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="line">        arp::required,</div>
 <div class="line">        arp::display_name_t{<span class="stringliteral">&quot;DST&quot;</span>_S},</div>
 <div class="line">        arp::description_t{<span class="stringliteral">&quot;Destination directory&quot;</span>_S},</div>
-<div class="line">        arp::fixed_count&lt;1&gt;)}</div>
+<div class="line">        arp::fixed_count&lt;1&gt;)};</div>
 <div class="line"> </div>
 <div class="line">ar::root(</div>
 <div class="line">    arp::validation::default_validator,</div>
@@ -567,75 +567,75 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <h2>Why have you written your own Unicode algorithms!?</h2>
 <p>We didn't want to... Normally an application will link to ICU for its Unicode needs, but unfortunately we can't do that here as ICU is not <code>constexpr</code> and therefore cannot be used for our compile-time needs - so we need to roll our own.</p>
 <h1>Runtime Language Selection</h1>
-<p><code><a class="el" href="namespacearg__router.html">arg_router</a></code> has support for runtime language selection, using <code>multi_lang::root</code>. This wraps around a <code>Callable</code> that returns a <code>root</code> instance 'tweaked' for a given language. Let's take the start of the simple file copier/mover application and convert it to use <code>multi_lang::root</code> - start by defining translations of the tree's strings: </p><div class="fragment"><div class="line"><span class="keyword">namespace </span>arg_router::multi_lang</div>
+<p><code><a class="el" href="namespacearg__router.html">arg_router</a></code> has support for runtime language selection, using <code>multi_lang::root</code>. This wraps around a <code>Callable</code> that returns a <code>root</code> instance 'tweaked' for a given language. Let's take the start of the simple file copier/mover application and convert it to use <code>multi_lang::root</code> - start by defining translations of the tree's strings: </p><div class="fragment"><div class="line"><span class="keyword">namespace </span><a class="code" href="namespacearg__router_1_1multi__lang.html">arg_router::multi_lang</a></div>
 <div class="line">{</div>
 <div class="line"><span class="keyword">template</span> &lt;&gt;</div>
-<div class="line"><span class="keyword">class </span>translation&lt;<a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;&quot;en_GB&quot;&gt;&gt;</div>
+<div class="line"><span class="keyword">class </span>translation&lt;str&lt;&quot;en_GB&quot;&gt;&gt;</div>
 <div class="line">{</div>
 <div class="line"><span class="keyword">public</span>:</div>
-<div class="line">    <span class="keyword">using</span> force = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;force&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> force_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Force overwrite existing files&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> destination = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;DST&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> destination_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Destination directory&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router.html#a1eb8c408da38619d624f435441efac48">help</a> = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;help&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> help_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Display this help and exit&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1policy.html#ae4c0515ad6d58ea37fe121ee3f4a9861">program_intro</a> = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;A simple file copier and mover.&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1policy.html#a50ebcd2455ba90ecbbcaf7d6aab2dc16">program_addendum</a> = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;An example program for arg_router.&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> copy = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;copy&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> copy_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Copy source files to destination&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> source = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;SRC&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> sources_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Source file paths&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> move = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;move&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> move_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Move source file to destination&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> source_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Source file path&quot;</span>&gt;</div>
-<div class="line">}</div>
+<div class="line">    <span class="keyword">using</span> force = str&lt;<span class="stringliteral">&quot;force&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> force_description = str&lt;<span class="stringliteral">&quot;Force overwrite existing files&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> destination = str&lt;<span class="stringliteral">&quot;DST&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> destination_description = str&lt;<span class="stringliteral">&quot;Destination directory&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router.html#a1eb8c408da38619d624f435441efac48">help</a> = str&lt;<span class="stringliteral">&quot;help&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> help_description = str&lt;<span class="stringliteral">&quot;Display this help and exit&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1policy.html#ae4c0515ad6d58ea37fe121ee3f4a9861">program_intro</a> = str&lt;<span class="stringliteral">&quot;A simple file copier and mover.&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1policy.html#a50ebcd2455ba90ecbbcaf7d6aab2dc16">program_addendum</a> = str&lt;<span class="stringliteral">&quot;An example program for arg_router.&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> copy = str&lt;<span class="stringliteral">&quot;copy&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> copy_description = str&lt;<span class="stringliteral">&quot;Copy source files to destination&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> source = str&lt;<span class="stringliteral">&quot;SRC&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> sources_description = str&lt;<span class="stringliteral">&quot;Source file paths&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> move = str&lt;<span class="stringliteral">&quot;move&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> move_description = str&lt;<span class="stringliteral">&quot;Move source file to destination&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> source_description = str&lt;<span class="stringliteral">&quot;Source file path&quot;</span>&gt;;</div>
+<div class="line">};</div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">template</span> &lt;&gt;</div>
-<div class="line"><span class="keyword">class </span>translation&lt;<a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;&quot;fr&quot;&gt;&gt;</div>
+<div class="line"><span class="keyword">class </span>translation&lt;str&lt;&quot;fr&quot;&gt;&gt;</div>
 <div class="line">{</div>
 <div class="line"><span class="keyword">public</span>:</div>
-<div class="line">    <span class="keyword">using</span> force = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;forcer&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> force_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Forcer l&#39;écrasement des fichiers existants&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> destination = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;DST&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> destination_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Répertoire de destination&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router.html#a1eb8c408da38619d624f435441efac48">help</a> = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;aider&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> help_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Afficher cette aide et quitter&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1policy.html#ae4c0515ad6d58ea37fe121ee3f4a9861">program_intro</a> = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Un simple copieur et déménageur de fichiers.&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1policy.html#a50ebcd2455ba90ecbbcaf7d6aab2dc16">program_addendum</a> = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Un exemple de programme pour arg_router.&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> copy = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;copier&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> copy_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Copier les fichiers source vers la destination&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> source = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;SRC&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> sources_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Chemins des fichiers sources&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> move = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;déplacer&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> move_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Déplacer le fichier source vers la destination&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> source_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;Chemin du fichier source&quot;</span>&gt;</div>
-<div class="line">}</div>
+<div class="line">    <span class="keyword">using</span> force = str&lt;<span class="stringliteral">&quot;forcer&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> force_description = str&lt;<span class="stringliteral">&quot;Forcer l&#39;écrasement des fichiers existants&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> destination = str&lt;<span class="stringliteral">&quot;DST&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> destination_description = str&lt;<span class="stringliteral">&quot;Répertoire de destination&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router.html#a1eb8c408da38619d624f435441efac48">help</a> = str&lt;<span class="stringliteral">&quot;aider&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> help_description = str&lt;<span class="stringliteral">&quot;Afficher cette aide et quitter&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1policy.html#ae4c0515ad6d58ea37fe121ee3f4a9861">program_intro</a> = str&lt;<span class="stringliteral">&quot;Un simple copieur et déménageur de fichiers.&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1policy.html#a50ebcd2455ba90ecbbcaf7d6aab2dc16">program_addendum</a> = str&lt;<span class="stringliteral">&quot;Un exemple de programme pour arg_router.&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> copy = str&lt;<span class="stringliteral">&quot;copier&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> copy_description = str&lt;<span class="stringliteral">&quot;Copier les fichiers source vers la destination&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> source = str&lt;<span class="stringliteral">&quot;SRC&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> sources_description = str&lt;<span class="stringliteral">&quot;Chemins des fichiers sources&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> move = str&lt;<span class="stringliteral">&quot;déplacer&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> move_description = str&lt;<span class="stringliteral">&quot;Déplacer le fichier source vers la destination&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> source_description = str&lt;<span class="stringliteral">&quot;Chemin du fichier source&quot;</span>&gt;;</div>
+<div class="line">};</div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">template</span> &lt;&gt;</div>
-<div class="line"><span class="keyword">class </span>translation&lt;<a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;&quot;ja&quot;&gt;&gt;</div>
+<div class="line"><span class="keyword">class </span>translation&lt;str&lt;&quot;ja&quot;&gt;&gt;</div>
 <div class="line">{</div>
 <div class="line"><span class="keyword">public</span>:</div>
-<div class="line">    <span class="keyword">using</span> force = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;強制&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> force_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;既存のファイルを強制的に上書きする&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> destination = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;先&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> destination_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;宛先ディレクトリ&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router.html#a1eb8c408da38619d624f435441efac48">help</a> = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;ヘルプ&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> help_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;このヘルプを表示して終了&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1policy.html#ae4c0515ad6d58ea37fe121ee3f4a9861">program_intro</a> = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;ファイルをコピーおよび移動するためのシンプルなプログラム。&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1policy.html#a50ebcd2455ba90ecbbcaf7d6aab2dc16">program_addendum</a> = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;「arg_router」のサンプルプログラム。&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> copy = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;コピー&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> copy_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;ソース ファイルを宛先にコピーする&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> source = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;出典&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> sources_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;ソース ファイルのパス&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> move = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;移動&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> move_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;ソース ファイルを宛先に移動する&quot;</span>&gt;</div>
-<div class="line">    <span class="keyword">using</span> source_description = <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;ソース ファイル パス&quot;</span>&gt;</div>
-<div class="line">}</div>
+<div class="line">    <span class="keyword">using</span> force = str&lt;<span class="stringliteral">&quot;強制&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> force_description = str&lt;<span class="stringliteral">&quot;既存のファイルを強制的に上書きする&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> destination = str&lt;<span class="stringliteral">&quot;先&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> destination_description = str&lt;<span class="stringliteral">&quot;宛先ディレクトリ&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router.html#a1eb8c408da38619d624f435441efac48">help</a> = str&lt;<span class="stringliteral">&quot;ヘルプ&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> help_description = str&lt;<span class="stringliteral">&quot;このヘルプを表示して終了&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1policy.html#ae4c0515ad6d58ea37fe121ee3f4a9861">program_intro</a> = str&lt;<span class="stringliteral">&quot;ファイルをコピーおよび移動するためのシンプルなプログラム。&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1policy.html#a50ebcd2455ba90ecbbcaf7d6aab2dc16">program_addendum</a> = str&lt;<span class="stringliteral">&quot;「arg_router」のサンプルプログラム。&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> copy = str&lt;<span class="stringliteral">&quot;コピー&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> copy_description = str&lt;<span class="stringliteral">&quot;ソース ファイルを宛先にコピーする&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> source = str&lt;<span class="stringliteral">&quot;出典&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> sources_description = str&lt;<span class="stringliteral">&quot;ソース ファイルのパス&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> move = str&lt;<span class="stringliteral">&quot;移動&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> move_description = str&lt;<span class="stringliteral">&quot;ソース ファイルを宛先に移動する&quot;</span>&gt;;</div>
+<div class="line">    <span class="keyword">using</span> source_description = str&lt;<span class="stringliteral">&quot;ソース ファイル パス&quot;</span>&gt;;</div>
+<div class="line">};</div>
 <div class="line">}  <span class="comment">// namespace arg_router::multi_lang</span></div>
+<div class="ttc" id="anamespacearg__router_1_1multi__lang_html"><div class="ttname"><a href="namespacearg__router_1_1multi__lang.html">arg_router::multi_lang</a></div><div class="ttdef"><b>Definition:</b> <a href="iso__locale_8hpp_source.html#l00009">iso_locale.hpp:10</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1policy_html_a50ebcd2455ba90ecbbcaf7d6aab2dc16"><div class="ttname"><a href="namespacearg__router_1_1policy.html#a50ebcd2455ba90ecbbcaf7d6aab2dc16">arg_router::policy::program_addendum</a></div><div class="ttdeci">constexpr auto program_addendum</div><div class="ttdef"><b>Definition:</b> <a href="program__addendum_8hpp_source.html#l00053">program_addendum.hpp:53</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1policy_html_ae4c0515ad6d58ea37fe121ee3f4a9861"><div class="ttname"><a href="namespacearg__router_1_1policy.html#ae4c0515ad6d58ea37fe121ee3f4a9861">arg_router::policy::program_intro</a></div><div class="ttdeci">constexpr auto program_intro</div><div class="ttdef"><b>Definition:</b> <a href="program__intro_8hpp_source.html#l00053">program_intro.hpp:53</a></div></div>
 <div class="ttc" id="anamespacearg__router_html_a1eb8c408da38619d624f435441efac48"><div class="ttname"><a href="namespacearg__router.html#a1eb8c408da38619d624f435441efac48">arg_router::help</a></div><div class="ttdeci">constexpr auto help(Policies... policies) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="help_8hpp_source.html#l00221">help.hpp:221</a></div></div>
-<div class="ttc" id="anamespacearg__router_html_a71caf6738d8778a9f0a7b8946e761a5f"><div class="ttname"><a href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">arg_router::str</a></div><div class="ttdeci">utility::str&lt; S &gt; str</div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00253">compile_time_string.hpp:253</a></div></div>
 </div><!-- fragment --><p> There is nothing special about the <code>translation</code> type, the unspecialised version will simply static assert if used to remind you to implement specialisations for all language IDs (the template parameter type) - otherwise it is just an empty type. Its use is still recommended though as functionality may be added to it in the future. </p><div class="fragment"><div class="line"><span class="keywordtype">int</span> main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>* argv[])</div>
 <div class="line">{</div>
 <div class="line">    <span class="comment">// Apologies for any translation faux pas - Google Translate did it for me!</span></div>
@@ -643,7 +643,7 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="line">        ar::multi_lang::iso_locale(locale_name()),</div>
 <div class="line">        [&amp;](<span class="keyword">auto</span> tr_) {</div>
 <div class="line">            <span class="comment">// This isn&#39;t necessary with C++20 lambda template params</span></div>
-<div class="line">            <span class="keyword">using</span> tr = decltype(tr_)</div>
+<div class="line">            <span class="keyword">using</span> tr = decltype(tr_);</div>
 <div class="line"> </div>
 <div class="line">            <span class="keyword">const</span> <span class="keyword">auto</span> common_args = ar::list{</div>
 <div class="line">                ar::flag(arp::long_name&lt;typename tr::force&gt;,</div>
@@ -652,7 +652,7 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="line">                ar::positional_arg&lt;fs::path&gt;(arp::required,</div>
 <div class="line">                                             arp::display_name&lt;typename tr::destination&gt;,</div>
 <div class="line">                                             arp::description&lt;typename tr::destination_description&gt;,</div>
-<div class="line">                                             arp::fixed_count&lt;1&gt;)}</div>
+<div class="line">                                             arp::fixed_count&lt;1&gt;)};</div>
 <div class="line"> </div>
 <div class="line">            <span class="keywordflow">return</span> ar::root(</div>
 <div class="line">                arp::validation::default_validator,</div>
@@ -666,8 +666,8 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="line">                         arp::flatten_help,</div>
 <div class="line">                         arp::colour_help_formatter),</div>
 <div class="line">                ...</div>
-<div class="line">        )</div>
-<div class="line">    }).parse(argc, argv)</div>
+<div class="line">        );</div>
+<div class="line">    }).parse(argc, argv);</div>
 </div><!-- fragment --><p> <code>multi_lang::root</code> takes a set of supported language identifiers (ISO language/country codes are recommended for readability/ease, but not required), these are used as the language IDs for <code>translation</code> specialisation. The runtime-selected <code>translation</code> instance is then passed to the <code>Callable</code> provided to <code>multi_lang::root</code>, the type of which is then used to access the translated compile-time string. Any missing string translation will cause a compilation error.</p>
 <p>The first argument to <code>multi_lang::root</code> is a string provided by the user that should match one of the language identifiers, if it doesn't <code><a class="el" href="namespacearg__router.html">arg_router</a></code> will fall back to using the first defined language (UK English in this case). As a convenience <code><a class="el" href="namespacearg__router.html">arg_router</a></code> provides a simple function that takes the OS locale name and standardises it to an ISO language/country identifier.</p>
 <p><code>multi_lang::root</code>'s interface is designed to mimic <code>ar::root</code>, so it can be used as a drop in replacement.</p>
@@ -739,43 +739,43 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="line"> </div>
 <div class="line">An example program for arg_router.</div>
 </div><!-- fragment --><p> Optionally, you can also provide translations for the exception messages by defining an <code>error_code_translations</code> subtype that consists of a tuple of pairs that form a mapping between the error code and translation string. If this isn't provided then an internal <code>en_GB</code> one is automatically used instead. </p><div class="fragment"><div class="line"><span class="keyword">template</span> &lt;&gt;</div>
-<div class="line"><span class="keyword">class </span>translation&lt;<a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;&quot;ja&quot;&gt;&gt;</div>
+<div class="line"><span class="keyword">class </span>translation&lt;str&lt;&quot;ja&quot;&gt;&gt;</div>
 <div class="line">{</div>
 <div class="line"><span class="keyword">public</span>:</div>
 <div class="line">    ...</div>
 <div class="line"> </div>
 <div class="line">    <span class="keyword">using</span> error_code_translations = std::tuple&lt;</div>
-<div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::unknown_argument&gt;, <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;不明な引数&quot;</span>&gt;&gt;,</div>
-<div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::unhandled_arguments&gt;, <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;未処理の引数&quot;</span>&gt;&gt;,</div>
+<div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::unknown_argument&gt;, str&lt;<span class="stringliteral">&quot;不明な引数&quot;</span>&gt;&gt;,</div>
+<div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::unhandled_arguments&gt;, str&lt;<span class="stringliteral">&quot;未処理の引数&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::argument_has_already_been_set&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;引数はすでに設定されています&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;引数はすでに設定されています&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::failed_to_parse&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;解析に失敗しました&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;解析に失敗しました&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::no_arguments_passed&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;引数が渡されませんでした&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;引数が渡されませんでした&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::minimum_value_not_reached&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;最小値に達していません&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;最小値に達していません&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::maximum_value_exceeded&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;最大値を超えました&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;最大値を超えました&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::minimum_count_not_reached&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;最小数に達していません&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;最小数に達していません&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::mode_requires_arguments&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;モードには引数が必要です&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;モードには引数が必要です&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::missing_required_argument&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;必要な引数がありません&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;必要な引数がありません&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::too_few_values_for_alias&gt;,</div>
-<div class="line">                  <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;エイリアス値が少なすぎる&quot;</span>&gt;&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;エイリアス値が少なすぎる&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;</div>
 <div class="line">            traits::integral_constant&lt;error_code::dependent_argument_missing&gt;,</div>
-<div class="line">            <a class="code" href="namespacearg__router.html#a71caf6738d8778a9f0a7b8946e761a5f">str</a>&lt;<span class="stringliteral">&quot;従属引数がありません (コマンドラインで必要なトークンの前に置く必要があります)&quot;</span>&gt;&gt;&gt;</div>
-<div class="line">}</div>
+<div class="line">            str&lt;<span class="stringliteral">&quot;従属引数がありません (コマンドラインで必要なトークンの前に置く必要があります)&quot;</span>&gt;&gt;&gt;;</div>
+<div class="line">};</div>
 </div><!-- fragment --><p> Could yield: </p><div class="fragment"><div class="line">$ AR_LOCALE_OVERRIDE=ja ./example_simple_ml_cpp20 -🐱</div>
 <div class="line">terminate called after throwing an instance of &#39;arg_router::parse_exception&#39;</div>
 <div class="line">  what():  不明な引数: -🐱</div>
 </div><!-- fragment --><h2>Note</h2>
 <p><code>multi_lang::root_wrapper</code> from v1.0 is still present and supported, but is now marked as deprecated - new code should use <code>multi_lang::root</code>. It is not supported when using C++20 compile-time strings (see <a href="#compile-time-string-support">compile-time string support</a>).</p>
 <h1>Compile-time String Support</h1>
-<p>In v1.0 the library exclusively used the <code>S_()</code> macro for compile-time string generation, this was an almost necessary convenience as that version of C++ had relatively poor NTTP support. In v1.1 we added an alternative for those using C++20 and above, which is the <code>str</code> type and its <code>""_S</code> string literal.</p>
+<p>In v1.0 the library exclusively used the <code><a class="el" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_()</a></code> macro for compile-time string generation, this was an almost necessary convenience as that version of C++ had relatively poor NTTP support. In v1.1 we added an alternative for those using C++20 and above, which is the <code>str</code> type and its <code>""_S</code> string literal.</p>
 <p>For those targetting C++20 with existing v1.0 code, upgrading to a newer library version will cause a compilation failure as the two methods are not compatible. But don't worry! Code changes aren't ncessary, but you will need to add the define <code>AR_DISABLE_CPP20_STRINGS=true</code> to your build. Those still targetting C++17 will not need to do anything.</p>
 <p><b>Note</b> C++17 will be supported as a first class citizen until v2.0, after that C++20 will be the minimum so I can strip out a ton of code and get better diagnostics by using concepts.</p>
 <h1>Error Handling</h1>
