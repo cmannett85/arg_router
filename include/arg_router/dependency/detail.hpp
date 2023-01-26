@@ -19,7 +19,7 @@ struct generate_string_of_child_names {
 private:
     template <typename Prefix, typename Strings>
     using prepend_prefix =
-#ifdef ENABLE_CPP20_STRINGS
+#ifdef AR_ENABLE_CPP20_STRINGS
         std::decay_t<decltype(
             Prefix{} + boost::mp11::mp_fold<Strings, utility::str<>, utility::str_concat>{})>;
 #else
@@ -40,7 +40,7 @@ private:
 
     template <typename ChildName>
     using joiner =
-#ifdef ENABLE_CPP20_STRINGS
+#ifdef AR_ENABLE_CPP20_STRINGS
         typename ChildName::template append_t<utility::str<','>>;
 #else
         boost::mp11::mp_push_back<typename ChildName::array_type, traits::integral_constant<','>>;
@@ -61,7 +61,7 @@ private:
 
 public:
 // We only take the first N-1 characters to strip off the trailing comma
-#ifdef ENABLE_CPP20_STRINGS
+#ifdef AR_ENABLE_CPP20_STRINGS
     using type = std::decay_t<decltype(
         concatenated_string{}.template substr<0, concatenated_string::size() - 1>())>;
 #else

@@ -1,4 +1,4 @@
-### Copyright (C) 2022 by Camden Mannett.
+### Copyright (C) 2022-2023 by Camden Mannett.
 ### Distributed under the Boost Software License, Version 1.0.
 ### (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -21,18 +21,19 @@ set(NEW_API_MD_PATH "${ROOT}/docs/README_API.md")
 
 file(READ ${API_MD_PATH} MD_DATA)
 
-# Remove the badges
-string(
-    REGEX REPLACE
-    "^(!\\[[a-zA-Z0-9 ]+\\]\\([a-zA-Z0-9:\\/\\/\\.%-_]+\\) ?)+\n\n"
-    ""
-    UPDATED_MD_DATA
-    "${MD_DATA}"
-)
+# Remove the badges, by simply removing the couple of lines
+string(FIND "${MD_DATA}" "\n\n" NL_IDX)
+if(${NL_IDX} EQUAL -1)
+    message(FATAL "Cannot find README.md first newline")
+endif()
+math(EXPR NL_IDX "${NL_IDX} + 2")
+string(SUBSTRING "${MD_DATA}" ${NL_IDX} -1 UPDATED_MD_DATA)
 
 if(NOT "${MD_DATA}" STREQUAL "${UPDATED_MD_DATA}")
     message(STATUS "Updating Doxygen README.md")
-    file(WRITE ${NEW_API_MD_PATH} ${UPDATED_MD_DATA})
+    file(WRITE ${NEW_API_MD_PATH} "${UPDATED_MD_DATA}")
+else()
+    message(STATUS "README.md up to date")
 endif()
 
 execute_process(

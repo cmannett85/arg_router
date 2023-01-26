@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -8,7 +8,7 @@
 
 namespace arg_router::literals
 {
-#ifdef ENABLE_CPP20_STRINGS
+#ifdef AR_ENABLE_CPP20_STRINGS
 /** String literal to generate a C++20 compile-time string instance.
  *
  * @tparam S Internal storage type
