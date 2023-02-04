@@ -344,3 +344,41 @@ jobs:
         cd ${{ env.PACKAGE_BUILD_DIR }}
         cmake ${{ github.workspace }}/scripts/ci/package_test_project -DCMAKE_CXX_STANDARD=20 -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}/include -DDISABLE_VCPKG=ON
         cmake --build .
+
+  # Test vcpkg package is acquired and accessible
+  vcpkg_test_package:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - name: Update packages
+      run: |
+        sudo apt update
+        sudo apt install ninja-build
+
+    - name: Bootstrap vcpkg to build the NuGet client
+      run: |
+        ./external/vcpkg/bootstrap-vcpkg.sh -disableMetrics
+
+    - name: Configure NuGet client
+      run: |
+        mono `./external/vcpkg/vcpkg fetch nuget | tail -n 1` \
+          sources add \
+          -source ${{ env.NUGET_SOURCE_URL }} \
+          -storepasswordincleartext \
+          -name "vcpkg-cache" \
+          -username "cmannett85" \
+          -password "${{ secrets.GITHUB_TOKEN }}"
+        mono `./external/vcpkg/vcpkg fetch nuget | tail -n 1` \
+          setapikey "${{ secrets.GITHUB_TOKEN }}" \
+          -source ${{ env.NUGET_SOURCE_URL }}
+
+    - name: Build
+      run: |
+        mkdir -p ${{ env.BUILD_DIR }}
+        cd ${{ env.BUILD_DIR }}
+        cmake ${{ github.workspace }}/scripts/ci/vcpkg_test_project -G "Ninja" -DCMAKE_CXX_STANDARD=20
+        cmake --build .
