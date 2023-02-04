@@ -1,0 +1,7 @@
+{
+  "name": "vcpkg-test-project",
+  "version": "0.0.1",
+  "dependencies": [
+    "arg-router"
+  ]
+}
