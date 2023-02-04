@@ -13,6 +13,7 @@
 - Unicode compliant by supporting UTF-8 encoded compile-time strings ([details](#unicode-compliance))
 - Support of runtime language selection
 - Uses a macro to ease compile-time string generation when using C++17.  For C++20 and above, compile-time string literals can be used directly in constructors
+- Available on vcpkg!
 
 ## Basics
 Let's start simple, with this `cat`-like program:
@@ -851,5 +852,4 @@ Complete Doxygen-generated API documentation is available [here](https://cmannet
 The latest unit test coverage report is found [here](https://cmannett85.github.io/arg_router/gcov_html/).
 
 ## Future Work
-Take a look at the [issues](https://github.com/cmannett85/arg_router/issues) page for all upcoming features and fixes.  Highlights are:
-* Add to vcpkg ([#8](https://github.com/cmannett85/arg_router/issues/8))
+Take a look at the [issues](https://github.com/cmannett85/arg_router/issues) page for all upcoming features and fixes.
