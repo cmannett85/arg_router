@@ -306,45 +306,6 @@ jobs:
         cmake ${{ github.workspace }}/scripts/ci/package_test_project -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}/include
         cmake --build .
 
-  # Test package integrity test where we use system libs and C++20 (so no nonstd::span)
-  system_test_package:
-    runs-on: ubuntu-22.04
-
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        submodules: true
-
-    - name: Update packages
-      run: |
-        sudo apt update
-        sudo apt install ninja-build libboost-dev
-
-    - name: Build
-      run: |
-        mkdir -p ${{ env.BUILD_DIR }}
-        cd ${{ env.BUILD_DIR }}
-        cmake ${{ github.workspace }} -G "Ninja" -DBUILD_UNIT_TESTS_AND_EXAMPLES=OFF -DDISABLE_VCPKG=ON -DDEATH_TEST_PARALLEL=2
-        cmake --build .
-
-    - name: Test install
-      run: |
-        cd ${{ env.BUILD_DIR }}
-        cmake --install . --prefix ${{ env.INSTALL_DIR }}
-        cd ${{ env.INSTALL_DIR }}
-        [[ -f "./include/arg_router/version.hpp" ]]
-        [[ -f "./include/arg_router/README.md" ]]
-        [[ -f "./include/arg_router/LICENSE" ]]
-        [[ -f "./include/arg_router/arg_router-config.cmake" ]]
-        [[ -f "./include/arg_router/arg_router-config-version.cmake" ]]
-
-    - name: Test CMake package integrity
-      run: |
-        mkdir ${{ env.PACKAGE_BUILD_DIR }}
-        cd ${{ env.PACKAGE_BUILD_DIR }}
-        cmake ${{ github.workspace }}/scripts/ci/package_test_project -DCMAKE_CXX_STANDARD=20 -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}/include -DDISABLE_VCPKG=ON
-        cmake --build .
-
   # Test vcpkg package is acquired and accessible
   vcpkg_test_package:
     runs-on: ubuntu-22.04
