@@ -4,6 +4,38 @@
 
 #pragma once
 
+/** @file
+ *
+ * Preprocessor definitions.  These should not be used directly but via the equivalent constants in
+ * the config namespace.  They can be overridden by defining them before the first arg_router
+ * include in end-user projects, or by setting the equivalent CMake variables in cmake/config.cmake
+ */
+
+// If changing these or adding new ones, reflect those changes in config.cmake
+#ifndef AR_MAX_CTS_SIZE
+#    define AR_MAX_CTS_SIZE 128
+#endif
+
+#ifndef AR_LONG_PREFIX
+#    define AR_LONG_PREFIX "--"
+#endif
+
+#ifndef AR_SHORT_PREFIX
+#    define AR_SHORT_PREFIX "-"
+#endif
+
+#ifndef AR_ALLOCATOR
+#    define AR_ALLOCATOR std::allocator
+#endif
+
+#ifndef AR_UTF8_TRAILING_WINDOW_SIZE
+#    define AR_UTF8_TRAILING_WINDOW_SIZE 16
+#endif
+
+#ifndef AR_DISABLE_CPP20_STRINGS
+#    define AR_DISABLE_CPP20_STRINGS false
+#endif
+
 #include "arg_router/utility/utf8.hpp"
 
 /** Build configuration-defined constants.
