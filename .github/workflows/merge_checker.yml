@@ -102,7 +102,7 @@ jobs:
         cd ${{ env.BUILD_DIR }}/test
         ./arg_router_test -l test_suite
 
-  old_gcc_test:
+  old_gcc_compiler_test:
     runs-on: ubuntu-22.04
 
     steps:
@@ -145,7 +145,7 @@ jobs:
         cd ${{ env.BUILD_DIR }}/test
         ./arg_router_test -l test_suite
 
-  thirtytwobit_gcc_test:
+  thirtytwobit_gcc_compiler_test:
     runs-on: ubuntu-22.04
 
     steps:
@@ -188,7 +188,7 @@ jobs:
         cd ${{ env.BUILD_DIR }}/test
         ./arg_router_test -l test_suite
 
-  windows_cl_compiler_tests:
+  windows_clang_cl_compiler_tests:
     runs-on: windows-2022
 
     # Use the CMake that ships with VS to match locally built versions

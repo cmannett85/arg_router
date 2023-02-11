@@ -820,7 +820,6 @@ Building these targets will require more dependencies:
 * Boost.Test v1.74+
 * Boost.Filesystem v1.74+
 * Boost.Process v1.74+
-* Git
 
 By default all these dependencies are provided by `vcpkg` automatically, please **note** that `vcpkg` is provided via a submodule and therefore will need initialising (`git submodule update`).  If you would rather the dependencies came from the system then simply set `-DDISABLE_VCPKG=OFF`, and CMake will not bootstrap `vcpkg` and therefore try to find the packages locally.
 

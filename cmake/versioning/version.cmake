@@ -1,4 +1,4 @@
-### Copyright (C) 2022 by Camden Mannett.
+### Copyright (C) 2022-2023 by Camden Mannett.
 ### Distributed under the Boost Software License, Version 1.0.
 ### (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -8,15 +8,7 @@ path_prefixer(VERSION_FILE
 
 set_source_files_properties(${VERSION_FILE} PROPERTIES GENERATED TRUE)
 
-find_package(Git REQUIRED)
-execute_process(
-    COMMAND           "${GIT_EXECUTABLE}" rev-parse -q HEAD
-    OUTPUT_VARIABLE   GIT_REV
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-)
-
-string(STRIP ${GIT_REV} GIT_REV)
-message(STATUS "Project revision: ${CMAKE_PROJECT_VERSION}.${GIT_REV}")
+message(STATUS "Project revision: ${CMAKE_PROJECT_VERSION}")
 
 set(VERSION_FILE_TMP
     "${CMAKE_BINARY_DIR}/cmake/versioning/version.hpp.tmp"
@@ -26,6 +18,7 @@ configure_file(
     ${VERSION_FILE_TMP}
 )
 if(NOT "${VERSION_FILE_TMP}" STREQUAL "${VERSION_FILE}")
+    message(STATUS "Updating version.hpp library version")
     file(RENAME ${VERSION_FILE_TMP} ${VERSION_FILE})
 endif()
 
@@ -41,7 +34,7 @@ string(
 )
 
 if(NOT "${DOXYFILE_DATA}" STREQUAL "${UPDATED_DOXYFILE_DATA}")
-    message(STATUS "Updating Doxyfile project version")
+    message(STATUS "Updating Doxyfile library version")
     file(WRITE "${CMAKE_SOURCE_DIR}/docs/Doxyfile" ${UPDATED_DOXYFILE_DATA})
 endif()
 
@@ -57,6 +50,6 @@ string(
 )
 
 if(NOT "${VCPKG_JSON_DATA}" STREQUAL "${UPDATED_VCPKG_JSON_DATA}")
-    message(STATUS "Updating vcpkg.json version")
+    message(STATUS "Updating vcpkg.json library version")
     file(WRITE "${CMAKE_SOURCE_DIR}/vcpkg.json" ${UPDATED_VCPKG_JSON_DATA})
 endif()
