@@ -85,6 +85,24 @@ jobs:
         cd ${{ github.workspace }}/scripts/ci
         ./calculate_test_coverage.sh ${{ env.BUILD_DIR }}
 
+    - name: Test install
+      run: |
+        cd ${{ env.BUILD_DIR }}
+        cmake --install . --prefix ${{ env.INSTALL_DIR }}
+        cd ${{ env.INSTALL_DIR }}
+        [[ -f "./include/arg_router/version.hpp" ]]
+        [[ -f "./include/arg_router/README.md" ]]
+        [[ -f "./include/arg_router/LICENSE" ]]
+        [[ -f "./include/arg_router/arg_router-config.cmake" ]]
+        [[ -f "./include/arg_router/arg_router-config-version.cmake" ]]
+
+    - name: Test CMake package integrity
+      run: |
+        mkdir -p ${{ env.PACKAGE_BUILD_DIR }}
+        cd ${{ env.PACKAGE_BUILD_DIR }}
+        cmake ${{ github.workspace }}/scripts/ci/package_test_project -DCMAKE_CXX_COMPILER=clang++-14 -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}/include
+        cmake --build .
+
     - name: Update README unit test coverage badge
       run: |
         cd ${{ github.workspace }}
@@ -154,7 +172,7 @@ jobs:
       run: |
         mkdir -p ${{ env.BUILD_DIR }}
         cd ${{ env.BUILD_DIR }}
-        cmake ${{ github.workspace }} -G "Ninja" -DBUILD_UNIT_TESTS_AND_EXAMPLES=OFF -DDEATH_TEST_PARALLEL=2
+        cmake ${{ github.workspace }} -G "Ninja" -DBUILD_UNIT_TESTS_AND_EXAMPLES=OFF -DDISABLE_VCPKG=ON -DDEATH_TEST_PARALLEL=2
         cmake --build .
 
     - name: Test install
@@ -172,7 +190,7 @@ jobs:
       run: |
         mkdir ${{ env.PACKAGE_BUILD_DIR }}
         cd ${{ env.PACKAGE_BUILD_DIR }}
-        cmake ${{ github.workspace }}/scripts/ci/package_test_project -DCMAKE_CXX_STANDARD=20 -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}/include
+        cmake ${{ github.workspace }}/scripts/ci/package_test_project -DCMAKE_CXX_STANDARD=20 -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}/include -DDISABLE_VCPKG=ON
         cmake --build .
 
   # Makes sure there are no errors when generating the documentation
