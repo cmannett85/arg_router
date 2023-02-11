@@ -9,7 +9,7 @@ var dir_529fe8366846da263013841a2c49df49 =
     [ "arg.hpp", "arg_8hpp_source.html", null ],
     [ "arg_router.hpp", "arg__router_8hpp_source.html", null ],
     [ "basic_types.hpp", "basic__types_8hpp_source.html", null ],
-    [ "config.hpp", "config_8hpp_source.html", null ],
+    [ "config.hpp", "config_8hpp.html", "config_8hpp" ],
     [ "counting_flag.hpp", "counting__flag_8hpp_source.html", null ],
     [ "exception.hpp", "exception_8hpp_source.html", null ],
     [ "flag.hpp", "flag_8hpp_source.html", null ],

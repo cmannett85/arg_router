@@ -36,7 +36,7 @@
                         <td id="projectalign" style="padding-left: 0.5em;">
                             <div id="projectname">arg_router
                                 &#160;<span
-                                    id="projectnumber">1.1.0</span>
+                                    id="projectnumber">1.1.1</span>
                             </div>
                             <div id="projectbrief">C++ command line argument parsing and routing</div>
                         </td>
@@ -110,7 +110,7 @@ $(document).ready(function(){initNavTree('string__view__ops_8hpp_source.html',''
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;{</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> CharT,</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;          <span class="keyword">typename</span> Traits = std::char_traits&lt;CharT&gt;,</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;          <span class="keyword">typename</span> Allocator = <a class="code" href="namespacearg__router_1_1config.html#a644404cc56de59ea1bfe58054395ec1a">config::allocator&lt;CharT&gt;</a>&gt;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;          <span class="keyword">typename</span> Allocator = <a class="code" href="namespacearg__router_1_1config.html#a153aaca35ad3525cbec6f2fa0cf2e623">config::allocator&lt;CharT&gt;</a>&gt;</div>
 <div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1utility_1_1string__view__ops.html#a700baffd30dc15233a2290787e322135">   27</a></span>&#160;[[nodiscard]] constexpr std::basic_string&lt;CharT, Traits, Allocator&gt; <a class="code" href="namespacearg__router_1_1utility_1_1string__view__ops.html#a700baffd30dc15233a2290787e322135">operator+</a>(</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    std::basic_string&lt;CharT, Traits, Allocator&gt; lhs,</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    std::basic_string_view&lt;CharT, Traits&gt; rhs)</div>
@@ -120,7 +120,7 @@ $(document).ready(function(){initNavTree('string__view__ops_8hpp_source.html',''
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> CharT,</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;          <span class="keyword">typename</span> Traits = std::char_traits&lt;CharT&gt;,</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;          <span class="keyword">typename</span> Allocator = <a class="code" href="namespacearg__router_1_1config.html#a644404cc56de59ea1bfe58054395ec1a">config::allocator&lt;CharT&gt;</a>&gt;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;          <span class="keyword">typename</span> Allocator = <a class="code" href="namespacearg__router_1_1config.html#a153aaca35ad3525cbec6f2fa0cf2e623">config::allocator&lt;CharT&gt;</a>&gt;</div>
 <div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1utility_1_1string__view__ops.html#a0593ed52064d5856855ec138d1480239">   47</a></span>&#160;[[nodiscard]] constexpr std::basic_string&lt;CharT, Traits, Allocator&gt; <a class="code" href="namespacearg__router_1_1utility_1_1string__view__ops.html#a700baffd30dc15233a2290787e322135">operator+</a>(</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    std::basic_string_view&lt;CharT, Traits&gt; lhs,</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    std::basic_string&lt;CharT, Traits, Allocator&gt; rhs)</div>
@@ -137,7 +137,7 @@ $(document).ready(function(){initNavTree('string__view__ops_8hpp_source.html',''
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keywordflow">return</span> std::basic_string&lt;CharT, Traits, config::allocator&lt;CharT&gt;&gt;{lhs} += rhs;</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;}</div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;}  <span class="comment">// namespace arg_router::utility::string_view_ops</span></div>
-<div class="ttc" id="anamespacearg__router_1_1config_html_a644404cc56de59ea1bfe58054395ec1a"><div class="ttname"><a href="namespacearg__router_1_1config.html#a644404cc56de59ea1bfe58054395ec1a">arg_router::config::allocator</a></div><div class="ttdeci">AR_ALLOCATOR&lt; T &gt; allocator</div><div class="ttdef"><b>Definition:</b> <a href="config_8hpp_source.html#l00038">config.hpp:38</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1config_html_a153aaca35ad3525cbec6f2fa0cf2e623"><div class="ttname"><a href="namespacearg__router_1_1config.html#a153aaca35ad3525cbec6f2fa0cf2e623">arg_router::config::allocator</a></div><div class="ttdeci">std::allocator&lt; T &gt; allocator</div><div class="ttdef"><b>Definition:</b> <a href="config_8hpp_source.html#l00070">config.hpp:70</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1utility_1_1string__view__ops_html"><div class="ttname"><a href="namespacearg__router_1_1utility_1_1string__view__ops.html">arg_router::utility::string_view_ops</a></div><div class="ttdef"><b>Definition:</b> <a href="string__view__ops_8hpp_source.html#l00012">string_view_ops.hpp:13</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1utility_1_1string__view__ops_html_a700baffd30dc15233a2290787e322135"><div class="ttname"><a href="namespacearg__router_1_1utility_1_1string__view__ops.html#a700baffd30dc15233a2290787e322135">arg_router::utility::string_view_ops::operator+</a></div><div class="ttdeci">constexpr std::basic_string&lt; CharT, Traits, Allocator &gt; operator+(std::basic_string&lt; CharT, Traits, Allocator &gt; lhs, std::basic_string_view&lt; CharT, Traits &gt; rhs)</div><div class="ttdef"><b>Definition:</b> <a href="string__view__ops_8hpp_source.html#l00027">string_view_ops.hpp:27</a></div></div>
 </div><!-- fragment --></div><!-- contents -->

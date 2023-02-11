@@ -36,7 +36,7 @@
                         <td id="projectalign" style="padding-left: 0.5em;">
                             <div id="projectname">arg_router
                                 &#160;<span
-                                    id="projectnumber">1.1.0</span>
+                                    id="projectnumber">1.1.1</span>
                             </div>
                             <div id="projectbrief">C++ command line argument parsing and routing</div>
                         </td>
@@ -102,7 +102,7 @@ $(document).ready(function(){initNavTree('unsafe__any_8hpp_source.html',''); ini
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;arg_router/config.hpp&quot;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="config_8hpp.html">arg_router/config.hpp</a>&quot;</span></div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;cstring&gt;</span></div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;functional&gt;</span></div>
@@ -143,7 +143,7 @@ $(document).ready(function(){initNavTree('unsafe__any_8hpp_source.html',''); ini
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    }</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T,</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;              <span class="keyword">typename</span> Allocator = <a class="code" href="namespacearg__router_1_1config.html#a644404cc56de59ea1bfe58054395ec1a">config::allocator&lt;std::decay_t&lt;T&gt;</a>&gt;,</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;              <span class="keyword">typename</span> Allocator = <a class="code" href="namespacearg__router_1_1config.html#a153aaca35ad3525cbec6f2fa0cf2e623">config::allocator&lt;std::decay_t&lt;T&gt;</a>&gt;,</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;              <span class="keyword">typename</span> = std::enable_if_t&lt;!use_internal_storage&lt;T&gt; &amp;&amp;</div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;                                          !std::is_same_v&lt;std::decay_t&lt;T&gt;, <a class="code" href="classarg__router_1_1utility_1_1unsafe__any__t.html">unsafe_any_t</a>&gt;&gt;&gt;</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <span class="comment">// NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)</span></div>
@@ -253,7 +253,8 @@ $(document).ready(function(){initNavTree('unsafe__any_8hpp_source.html',''); ini
 <div class="ttc" id="aclassarg__router_1_1utility_1_1unsafe__any__t_html_ae13a39e16f844d1ba65d8a1c34f9c77b"><div class="ttname"><a href="classarg__router_1_1utility_1_1unsafe__any__t.html#ae13a39e16f844d1ba65d8a1c34f9c77b">arg_router::utility::unsafe_any_t::unsafe_any_t</a></div><div class="ttdeci">unsafe_any_t(T &amp;&amp;value) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="unsafe__any_8hpp_source.html#l00047">unsafe_any.hpp:47</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1utility_1_1unsafe__any__t_html_af22d07151d52c396f2664da842c03380"><div class="ttname"><a href="classarg__router_1_1utility_1_1unsafe__any__t.html#af22d07151d52c396f2664da842c03380">arg_router::utility::unsafe_any_t::unsafe_any_t</a></div><div class="ttdeci">constexpr unsafe_any_t()=default</div></div>
 <div class="ttc" id="aclassarg__router_1_1utility_1_1unsafe__any__t_html_afada730e70e66412ad76022ed7fd8cd7"><div class="ttname"><a href="classarg__router_1_1utility_1_1unsafe__any__t.html#afada730e70e66412ad76022ed7fd8cd7">arg_router::utility::unsafe_any_t::swap</a></div><div class="ttdeci">friend void swap(unsafe_any_t &amp;a, unsafe_any_t &amp;b) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="unsafe__any_8hpp_source.html#l00186">unsafe_any.hpp:186</a></div></div>
-<div class="ttc" id="anamespacearg__router_1_1config_html_a644404cc56de59ea1bfe58054395ec1a"><div class="ttname"><a href="namespacearg__router_1_1config.html#a644404cc56de59ea1bfe58054395ec1a">arg_router::config::allocator</a></div><div class="ttdeci">AR_ALLOCATOR&lt; T &gt; allocator</div><div class="ttdef"><b>Definition:</b> <a href="config_8hpp_source.html#l00038">config.hpp:38</a></div></div>
+<div class="ttc" id="aconfig_8hpp_html"><div class="ttname"><a href="config_8hpp.html">config.hpp</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1config_html_a153aaca35ad3525cbec6f2fa0cf2e623"><div class="ttname"><a href="namespacearg__router_1_1config.html#a153aaca35ad3525cbec6f2fa0cf2e623">arg_router::config::allocator</a></div><div class="ttdeci">std::allocator&lt; T &gt; allocator</div><div class="ttdef"><b>Definition:</b> <a href="config_8hpp_source.html#l00070">config.hpp:70</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1utility_html"><div class="ttname"><a href="namespacearg__router_1_1utility.html">arg_router::utility</a></div><div class="ttdef"><b>Definition:</b> <a href="compile__time__optional_8hpp_source.html#l00009">compile_time_optional.hpp:10</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

@@ -125,6 +125,10 @@ var NAVTREEINDEX1 =
 "compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac":[9,0,0,4,2,3],
 "compile__time__string_8hpp.html#ac1a030095dca0eefcac3295e612ffbbc":[9,0,0,4,2,5],
 "compile__time__string_8hpp_source.html":[9,0,0,4,2],
+"config_8hpp.html":[9,0,0,9],
+"config_8hpp.html#a153aaca35ad3525cbec6f2fa0cf2e623":[9,0,0,9,0],
+"config_8hpp.html#a46080eba5c23480d20901c2c412a8eed":[9,0,0,9,2],
+"config_8hpp.html#a801b0c98daa90f1951e5cdd72e680b3e":[9,0,0,9,1],
 "config_8hpp_source.html":[9,0,0,9],
 "configuration.html":[1],
 "configuration_8doxy_source.html":[9,0,1,0,1],
@@ -227,12 +231,10 @@ var NAVTREEINDEX1 =
 "multi__lang_2root_8hpp_source.html":[9,0,0,1,1],
 "multi__stage__value_8hpp_source.html":[9,0,0,3,14],
 "namespacearg__router.html":[7,0,0],
-"namespacearg__router.html#a085bce3c67f7256e3b8fee69311fab99":[7,0,0,39],
 "namespacearg__router.html#a1eb8c408da38619d624f435441efac48":[7,0,0,31],
 "namespacearg__router.html#a29537daeb3ba7d1b8749d3e1e9d83f1b":[7,0,0,28],
-"namespacearg__router.html#a398d5ec8547fe9e1ad7dee8af88c2310":[7,0,0,37],
 "namespacearg__router.html#a3d789cf2175008b4124de867a13a2edf":[7,0,0,26],
-"namespacearg__router.html#a4c3ee7dfa23bf543d5384c0a9150634e":[7,0,0,38],
+"namespacearg__router.html#a4c3ee7dfa23bf543d5384c0a9150634e":[7,0,0,37],
 "namespacearg__router.html#a4cb76b071b74b908e092af674df421bb":[7,0,0,35],
 "namespacearg__router.html#a4d74ea4c448ba12c0cc059bb5d8fad4c":[7,0,0,30],
 "namespacearg__router.html#a586bc7b54b0c222b36e3a1773a1cb5e3":[7,0,0,33],
@@ -247,7 +249,5 @@ var NAVTREEINDEX1 =
 "namespacearg__router.html#ab3c79c3c1cb22d86d1dac370a8733e56a5d6d4ba8d16899f978957a98cbedee54":[7,0,0,27,0],
 "namespacearg__router.html#ab3c79c3c1cb22d86d1dac370a8733e56a6523b27f920fc7e96d93cc40a551a247":[7,0,0,27,12],
 "namespacearg__router.html#ab3c79c3c1cb22d86d1dac370a8733e56a7152184b6796ae090f0fd0a77b65f665":[7,0,0,27,9],
-"namespacearg__router.html#ab3c79c3c1cb22d86d1dac370a8733e56a74dd260022247f71059daca2abadce53":[7,0,0,27,5],
-"namespacearg__router.html#ab3c79c3c1cb22d86d1dac370a8733e56aa257390eee114ba8b358013110d4192d":[7,0,0,27,2],
-"namespacearg__router.html#ab3c79c3c1cb22d86d1dac370a8733e56abf337efe80cbe7ee1d2796819dd72eb6":[7,0,0,27,4]
+"namespacearg__router.html#ab3c79c3c1cb22d86d1dac370a8733e56a74dd260022247f71059daca2abadce53":[7,0,0,27,5]
 };

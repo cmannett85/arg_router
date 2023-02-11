@@ -12,7 +12,7 @@ var searchData=
   ['alias_5ft_9',['alias_t',['../classarg__router_1_1policy_1_1alias__t.html#ae90c0bc80faf795e00fd4747b79a9c97',1,'arg_router::policy::alias_t::alias_t()'],['../classarg__router_1_1policy_1_1alias__t.html',1,'arg_router::policy::alias_t&lt; AliasedPolicies &gt;']]],
   ['aliased_5fpolicies_5ftype_10',['aliased_policies_type',['../classarg__router_1_1policy_1_1alias__t.html#ac282e6e859ba9d8884766a607d48891f',1,'arg_router::policy::alias_t']]],
   ['all_5fchildren_5fhelp_11',['all_children_help',['../classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html#aac796395628945d83ef19473fc6dccc1',1,'arg_router::tree_node::default_leaf_help_data_type']]],
-  ['allocator_12',['allocator',['../namespacearg__router_1_1config.html#a644404cc56de59ea1bfe58054395ec1a',1,'arg_router::config']]],
+  ['allocator_12',['allocator',['../namespacearg__router_1_1config.html#a153aaca35ad3525cbec6f2fa0cf2e623',1,'arg_router::config']]],
   ['always_5ffalse_13',['always_false',['../structarg__router_1_1traits_1_1always__false.html',1,'arg_router::traits']]],
   ['anonymous_5fmode_5fmust_5fbe_5fat_5fend_14',['anonymous_mode_must_be_at_end',['../structarg__router_1_1policy_1_1validation_1_1anonymous__mode__must__be__at__end.html',1,'arg_router::policy::validation']]],
   ['any_5fphases_15',['any_phases',['../classarg__router_1_1tree__node_1_1any__phases.html',1,'arg_router::tree_node']]],

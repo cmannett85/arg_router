@@ -36,7 +36,7 @@
                         <td id="projectalign" style="padding-left: 0.5em;">
                             <div id="projectname">arg_router
                                 &#160;<span
-                                    id="projectnumber">1.1.0</span>
+                                    id="projectnumber">1.1.1</span>
                             </div>
                             <div id="projectbrief">C++ command line argument parsing and routing</div>
                         </td>
@@ -160,19 +160,19 @@ $(document).ready(function(){initNavTree('token__type_8hpp_source.html',''); ini
 <div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;{</div>
 <div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    <span class="keyword">using namespace </span>config;</div>
 <div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    <span class="keywordflow">if</span> (token.substr(0, long_prefix.size()) == long_prefix) {</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        token.remove_prefix(long_prefix.size());</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    <span class="keywordflow">if</span> (token.substr(0, <a class="code" href="namespacearg__router_1_1config.html#a801b0c98daa90f1951e5cdd72e680b3e">long_prefix</a>.size()) == <a class="code" href="namespacearg__router_1_1config.html#a801b0c98daa90f1951e5cdd72e680b3e">long_prefix</a>) {</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        token.remove_prefix(<a class="code" href="namespacearg__router_1_1config.html#a801b0c98daa90f1951e5cdd72e680b3e">long_prefix</a>.size());</div>
 <div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;        <span class="keywordflow">return</span> {prefix_type::long_, token};</div>
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    }</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    <span class="keywordflow">if</span> (token.substr(0, short_prefix.size()) == short_prefix) {</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;        token.remove_prefix(short_prefix.size());</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    <span class="keywordflow">if</span> (token.substr(0, <a class="code" href="namespacearg__router_1_1config.html#a46080eba5c23480d20901c2c412a8eed">short_prefix</a>.size()) == <a class="code" href="namespacearg__router_1_1config.html#a46080eba5c23480d20901c2c412a8eed">short_prefix</a>) {</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;        token.remove_prefix(<a class="code" href="namespacearg__router_1_1config.html#a46080eba5c23480d20901c2c412a8eed">short_prefix</a>.size());</div>
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        <span class="keywordflow">return</span> {<a class="code" href="namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3a16466420ab71d5feae928666169b405c">prefix_type::short_</a>, token};</div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    }</div>
 <div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    <span class="keywordflow">return</span> {<a class="code" href="namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3a334c4a4c42fdb79d7ebc3e73b517e6f8">prefix_type::none</a>, token};</div>
 <div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;}</div>
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;}  <span class="comment">// namespace arg_router::parsing</span></div>
-<div class="ttc" id="anamespacearg__router_1_1config_html_a46080eba5c23480d20901c2c412a8eed"><div class="ttname"><a href="namespacearg__router_1_1config.html#a46080eba5c23480d20901c2c412a8eed">arg_router::config::short_prefix</a></div><div class="ttdeci">constexpr auto short_prefix</div><div class="ttdef"><b>Definition:</b> <a href="config_8hpp_source.html#l00026">config.hpp:26</a></div></div>
-<div class="ttc" id="anamespacearg__router_1_1config_html_a801b0c98daa90f1951e5cdd72e680b3e"><div class="ttname"><a href="namespacearg__router_1_1config.html#a801b0c98daa90f1951e5cdd72e680b3e">arg_router::config::long_prefix</a></div><div class="ttdeci">constexpr auto long_prefix</div><div class="ttdef"><b>Definition:</b> <a href="config_8hpp_source.html#l00020">config.hpp:20</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1config_html_a46080eba5c23480d20901c2c412a8eed"><div class="ttname"><a href="namespacearg__router_1_1config.html#a46080eba5c23480d20901c2c412a8eed">arg_router::config::short_prefix</a></div><div class="ttdeci">constexpr auto short_prefix</div><div class="ttdef"><b>Definition:</b> <a href="config_8hpp_source.html#l00058">config.hpp:58</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1config_html_a801b0c98daa90f1951e5cdd72e680b3e"><div class="ttname"><a href="namespacearg__router_1_1config.html#a801b0c98daa90f1951e5cdd72e680b3e">arg_router::config::long_prefix</a></div><div class="ttdeci">constexpr auto long_prefix</div><div class="ttdef"><b>Definition:</b> <a href="config_8hpp_source.html#l00052">config.hpp:52</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1parsing_html"><div class="ttname"><a href="namespacearg__router_1_1parsing.html">arg_router::parsing</a></div><div class="ttdef"><b>Definition:</b> <a href="dynamic__token__adapter_8hpp_source.html#l00009">dynamic_token_adapter.hpp:10</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1parsing_html_a3f0c82064ba9f3aa78edec0f67383516"><div class="ttname"><a href="namespacearg__router_1_1parsing.html#a3f0c82064ba9f3aa78edec0f67383516">arg_router::parsing::to_string</a></div><div class="ttdeci">constexpr std::string_view to_string(prefix_type prefix) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="token__type_8hpp_source.html#l00024">token_type.hpp:24</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1parsing_html_a6587078e07827bbbbabeae32b3ed2dd3"><div class="ttname"><a href="namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3">arg_router::parsing::prefix_type</a></div><div class="ttdeci">prefix_type</div><div class="ttdef"><b>Definition:</b> <a href="token__type_8hpp_source.html#l00012">token_type.hpp:12</a></div></div>

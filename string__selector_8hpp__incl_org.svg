@@ -53,7 +53,7 @@
 <!-- Node3 -->
 <g id="node3" class="node">
 <title>Node3</title>
-<g id="a_node3"><a xlink:href="config_8hpp_source.html" target="_top" xlink:title=" ">
+<g id="a_node3"><a xlink:href="config_8hpp.html" target="_top" xlink:title=" ">
 <polygon fill="none" stroke="black" points="328,-268.5 328,-287.5 448,-287.5 448,-268.5 328,-268.5"/>
 <text text-anchor="middle" x="388" y="-275.5" font-family="Helvetica,sans-Serif" font-size="10.00">arg_router/config.hpp</text>
 </a>

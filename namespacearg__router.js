@@ -2,7 +2,7 @@ var namespacearg__router =
 [
     [ "algorithm", "namespacearg__router_1_1algorithm.html", "namespacearg__router_1_1algorithm" ],
     [ "config", "namespacearg__router_1_1config.html", [
-      [ "allocator", "namespacearg__router_1_1config.html#a644404cc56de59ea1bfe58054395ec1a", null ],
+      [ "allocator", "namespacearg__router_1_1config.html#a153aaca35ad3525cbec6f2fa0cf2e623", null ],
       [ "long_prefix", "namespacearg__router_1_1config.html#a801b0c98daa90f1951e5cdd72e680b3e", null ],
       [ "short_prefix", "namespacearg__router_1_1config.html#a46080eba5c23480d20901c2c412a8eed", null ]
     ] ],
@@ -117,8 +117,6 @@ var namespacearg__router =
     [ "mode", "namespacearg__router.html#ad143ff2b625031722784ae817ee2ce94", null ],
     [ "positional_arg", "namespacearg__router.html#a4cb76b071b74b908e092af674df421bb", null ],
     [ "root", "namespacearg__router.html#a911ab5ded2b36269fdec3e768450d415", null ],
-    [ "git_revision", "namespacearg__router.html#a398d5ec8547fe9e1ad7dee8af88c2310", null ],
     [ "is_tree_node_v", "namespacearg__router.html#a4c3ee7dfa23bf543d5384c0a9150634e", null ],
-    [ "project_version", "namespacearg__router.html#a085bce3c67f7256e3b8fee69311fab99", null ],
     [ "version_string", "namespacearg__router.html#af4cd92a6007eabf135ad3732ab648d66", null ]
 ];

@@ -1,5 +1,7 @@
 var NAVTREEINDEX2 =
 {
+"namespacearg__router.html#ab3c79c3c1cb22d86d1dac370a8733e56aa257390eee114ba8b358013110d4192d":[7,0,0,27,2],
+"namespacearg__router.html#ab3c79c3c1cb22d86d1dac370a8733e56abf337efe80cbe7ee1d2796819dd72eb6":[7,0,0,27,4],
 "namespacearg__router.html#ab3c79c3c1cb22d86d1dac370a8733e56ad0a9afc920cb61e9af48d1d5b9f78c14":[7,0,0,27,8],
 "namespacearg__router.html#ab3c79c3c1cb22d86d1dac370a8733e56ae77aab6613735fa2402fd8ed4ca93f5e":[7,0,0,27,10],
 "namespacearg__router.html#ab3c79c3c1cb22d86d1dac370a8733e56aed8dc1522c846489d9572902068e0209":[7,0,0,27,1],
@@ -7,7 +9,7 @@ var NAVTREEINDEX2 =
 "namespacearg__router.html#abafabad5af18e8dda89e6b568b594738":[7,0,0,25],
 "namespacearg__router.html#ad143ff2b625031722784ae817ee2ce94":[7,0,0,34],
 "namespacearg__router.html#ae81e77bc890bd12a9a4913497d94ca10":[7,0,0,32],
-"namespacearg__router.html#af4cd92a6007eabf135ad3732ab648d66":[7,0,0,40],
+"namespacearg__router.html#af4cd92a6007eabf135ad3732ab648d66":[7,0,0,38],
 "namespacearg__router_1_1algorithm.html":[7,0,0,0],
 "namespacearg__router_1_1algorithm.html#a3d10a30c1904ec37a18ac240745029f1":[7,0,0,0,9],
 "namespacearg__router_1_1algorithm.html#a5008fcd4729387b3be21347ffd8189e2":[7,0,0,0,10],
@@ -17,8 +19,8 @@ var NAVTREEINDEX2 =
 "namespacearg__router_1_1algorithm.html#ae0c6e74281c42f23d11e9fc509f8d04e":[7,0,0,0,6],
 "namespacearg__router_1_1algorithm.html#afee764743bed099238c6c61bc6a0eb3e":[7,0,0,0,7],
 "namespacearg__router_1_1config.html":[7,0,0,1],
+"namespacearg__router_1_1config.html#a153aaca35ad3525cbec6f2fa0cf2e623":[7,0,0,1,0],
 "namespacearg__router_1_1config.html#a46080eba5c23480d20901c2c412a8eed":[7,0,0,1,2],
-"namespacearg__router_1_1config.html#a644404cc56de59ea1bfe58054395ec1a":[7,0,0,1,0],
 "namespacearg__router_1_1config.html#a801b0c98daa90f1951e5cdd72e680b3e":[7,0,0,1,1],
 "namespacearg__router_1_1dependency.html":[7,0,0,2],
 "namespacearg__router_1_1dependency.html#ab35b17f6aaf02a9b7430081262022a11":[7,0,0,2,2],
@@ -247,7 +249,5 @@ var NAVTREEINDEX2 =
 "structarg__router_1_1policy_1_1validation_1_1child__must__not__have__policy.html":[8,0,0,4,1,10],
 "structarg__router_1_1policy_1_1validation_1_1common__rules_1_1despecialised__any__of__rule.html":[8,0,0,4,1,0,0],
 "structarg__router_1_1policy_1_1validation_1_1despecialised__unique__in__owner.html":[8,0,0,4,1,3],
-"structarg__router_1_1policy_1_1validation_1_1must__have__at__least__min__count__of__1__if__required.html":[8,0,0,4,1,17],
-"structarg__router_1_1policy_1_1validation_1_1must__have__policies.html":[8,0,0,4,1,7],
-"structarg__router_1_1policy_1_1validation_1_1must__not__have__policies.html":[8,0,0,4,1,8]
+"structarg__router_1_1policy_1_1validation_1_1must__have__at__least__min__count__of__1__if__required.html":[8,0,0,4,1,17]
 };
