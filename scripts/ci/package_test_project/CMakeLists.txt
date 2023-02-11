@@ -1,4 +1,4 @@
-### Copyright (C) 2022 by Camden Mannett.
+### Copyright (C) 2022-2023 by Camden Mannett.
 ### Distributed under the Boost Software License, Version 1.0.
 ### (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -7,8 +7,6 @@ cmake_minimum_required(VERSION 3.18)
 option(DISABLE_VCPKG "Disable vcpkg" OFF)
 
 set(ROOT_DIR "${CMAKE_SOURCE_DIR}/../../..")
-include("${ROOT_DIR}/cmake/config.cmake")
-
 if (NOT DISABLE_VCPKG)
     set(CMAKE_TOOLCHAIN_FILE "${ROOT_DIR}/external/vcpkg/scripts/buildsystems/vcpkg.cmake")
 endif()

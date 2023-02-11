@@ -14,5 +14,5 @@ namespace arg_router
 {
 /** Library version as a SymVers-style string.
  */
-constexpr auto version_string = "${CMAKE_PROJECT_VERSION}";
+constexpr auto version_string = "1.1.1";
 }  // namespace arg_router

@@ -1,4 +1,4 @@
-### Copyright (C) 2023 by Camden Mannett.
+### Copyright (C) 2022-2023 by Camden Mannett.
 ### Distributed under the Boost Software License, Version 1.0.
 ### (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -26,7 +26,7 @@ if((NOT INSTALLATION_ONLY) AND (NOT DISABLE_VCPKG))
 endif()
 
 project(arg_router
-        VERSION 1.1.0
+        VERSION 1.1.1
         DESCRIPTION "C++ command line argument parsing and routing"
         HOMEPAGE_URL "https://github.com/cmannett85/arg_router"
         LANGUAGES CXX)
@@ -138,6 +138,7 @@ path_prefixer(HEADERS
     include/arg_router/utility/utf8/line_break.hpp
     include/arg_router/utility/utf8/whitespace.hpp
     include/arg_router/utility/utf8/zero_width.hpp
+    include/arg_router/version.hpp
 )
 
 path_prefixer(FOR_IDE
