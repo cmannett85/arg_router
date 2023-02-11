@@ -1,0 +1,8 @@
+{
+  "name": "package-test-project",
+  "version": "0.0.2",
+  "dependencies": [
+    "boost-lexical-cast",
+    "boost-mp11"
+  ]
+}
