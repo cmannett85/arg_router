@@ -5,11 +5,7 @@
 cmake_minimum_required(VERSION 3.18)
 
 set(ROOT_DIR "${CMAKE_SOURCE_DIR}/../../..")
-include("${ROOT_DIR}/cmake/config.cmake")
-
-if (NOT DISABLE_VCPKG)
-    set(CMAKE_TOOLCHAIN_FILE "${ROOT_DIR}/external/vcpkg/scripts/buildsystems/vcpkg.cmake")
-endif()
+set(CMAKE_TOOLCHAIN_FILE "${ROOT_DIR}/external/vcpkg/scripts/buildsystems/vcpkg.cmake")
 
 project(vcpkg_test_project
         LANGUAGES CXX)
