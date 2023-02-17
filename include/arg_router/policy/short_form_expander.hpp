@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -67,6 +67,10 @@ public:
         // never used
         static_assert((sizeof...(Parents) > 0) && (config::short_prefix != config::long_prefix),
                       "Short and long prefixes cannot be the same");
+
+        if (tokens.empty()) {
+            return parsing::pre_parse_action::valid_node;
+        }
 
         auto first = tokens.begin();
         auto first_token = *first;

@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -13,6 +13,15 @@ BOOST_AUTO_TEST_SUITE(parsing_suite)
 
 BOOST_AUTO_TEST_SUITE(dynamic_token_adapter_suite)
 
+BOOST_AUTO_TEST_CASE(empty_test)
+{
+    auto processed = std::vector<parsing::token_type>{};
+    auto unprocessed = std::vector<parsing::token_type>{};
+    const auto adapter = parsing::dynamic_token_adapter{processed, unprocessed};
+
+    BOOST_CHECK(adapter.empty());
+}
+
 BOOST_AUTO_TEST_CASE(iterator_ops_test)
 {
     auto processed = std::vector<parsing::token_type>{};
@@ -24,6 +33,7 @@ BOOST_AUTO_TEST_CASE(iterator_ops_test)
     auto adapter = parsing::dynamic_token_adapter{processed, unprocessed};
     BOOST_CHECK(processed.empty());
     BOOST_CHECK_EQUAL(unprocessed.size(), 4);
+    BOOST_CHECK(!adapter.empty());
 
     auto it = adapter.begin();
     BOOST_CHECK(processed.empty());
@@ -106,6 +116,7 @@ BOOST_AUTO_TEST_CASE(partial_start_test)
     auto adapter = parsing::dynamic_token_adapter{processed, unprocessed};
     BOOST_CHECK_EQUAL(processed.size(), 2);
     BOOST_CHECK_EQUAL(unprocessed.size(), 2);
+    BOOST_CHECK(!adapter.empty());
 
     auto it = adapter.begin();
     BOOST_CHECK_EQUAL(processed.size(), 2);
@@ -137,6 +148,7 @@ BOOST_AUTO_TEST_CASE(end_iterator_test)
     auto end_it = adapter.end();
     BOOST_CHECK(processed.empty());
     BOOST_CHECK_EQUAL(unprocessed.size(), 4);
+    BOOST_CHECK(!adapter.empty());
 
     // No-op
     ++end_it;
@@ -154,6 +166,7 @@ BOOST_AUTO_TEST_CASE(end_iterator_test)
     BOOST_CHECK_EQUAL(unprocessed.size(), 4);
     BOOST_CHECK(it == adapter.end());
     BOOST_CHECK(it == end_it);
+    BOOST_CHECK(!adapter.empty());
 }
 
 BOOST_AUTO_TEST_CASE(loop_test)
