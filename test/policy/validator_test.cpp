@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -328,6 +328,94 @@ int main() {
              "Policy must be unique in the parse tree up to the nearest mode or "
              "root",
              "policy_unique_from_owner_parent_to_mode_or_root_test"},
+         {
+             R"(
+#include "arg_router/policy/validator.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    policy::validation::
+        policy_unique_from_owner_parent_to_mode_or_root<arg_router::mode_t>::
+            check<
+                policy::long_name_t<AR_STRING("test")>,
+                flag_t<
+                    policy::short_name_t<AR_STRING('a')>,
+                    policy::long_name_t<AR_STRING("test")>>,
+                arg_router::mode_t<
+                    flag_t<
+                        policy::short_name_t<AR_STRING('a')>,
+                        policy::long_name_t<AR_STRING("test")>
+                    >,
+                    flag_t<
+                        policy::long_name_t<AR_STRING("test")>
+                    >,
+                    policy::router<std::less<>>
+                >,
+                root_t<
+                    arg_router::mode_t<
+                        flag_t<
+                            policy::short_name_t<AR_STRING('a')>,
+                            policy::long_name_t<AR_STRING("test")>
+                        >,
+                        flag_t<
+                            policy::long_name_t<AR_STRING("test")>
+                        >,
+                        policy::router<std::less<>>
+                    >,
+                    std::decay_t<decltype(policy::validation::default_validator)>
+        >>();
+    return 0;
+}
+    )",
+             "Policy must be unique in the parse tree up to the nearest mode or "
+             "root",
+             "policy_unique_from_owner_parent_to_mode_or_root_in_mode_test"},
+         {
+             R"(
+#include "arg_router/policy/validator.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    policy::validation::
+        policy_unique_from_owner_parent_to_mode_or_root<arg_router::mode_t>::
+            check<
+                policy::short_name_t<AR_STRING('a')>,
+                flag_t<
+                    policy::short_name_t<AR_STRING('a')>,
+                    policy::long_name_t<AR_STRING("test")>>,
+                arg_router::mode_t<
+                    flag_t<
+                        policy::short_name_t<AR_STRING('a')>,
+                        policy::long_name_t<AR_STRING("test")>
+                    >,
+                    flag_t<
+                        policy::short_name_t<AR_STRING('a')>
+                    >,
+                    policy::router<std::less<>>
+                >,
+                root_t<
+                    arg_router::mode_t<
+                        flag_t<
+                            policy::short_name_t<AR_STRING('a')>,
+                            policy::long_name_t<AR_STRING("test")>
+                        >,
+                        flag_t<
+                            policy::short_name_t<AR_STRING('a')>
+                        >,
+                        policy::router<std::less<>>
+                    >,
+                    std::decay_t<decltype(policy::validation::default_validator)>
+        >>();
+    return 0;
+}
+    )",
+             "Policy must be unique in the parse tree up to the nearest mode or "
+             "root",
+             "policy_unique_from_owner_parent_to_mode_or_root_in_mode_short_name_test"},
          {
              R"(
 #include "arg_router/policy/validator.hpp"
