@@ -68,6 +68,11 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
         f,
         std::tuple{
             std::tuple{std::vector<parsing::token_type>{},
+                       std::vector<parsing::token_type>{},
+                       std::vector<parsing::token_type>{},
+                       std::vector<parsing::token_type>{},
+                       stub_node{policy::short_name<'h'>}},
+            std::tuple{std::vector<parsing::token_type>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"}},
                        std::vector<parsing::token_type>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"}},

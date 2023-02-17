@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -85,6 +85,10 @@ public:
         static_assert((owner_type::minimum_count() == 1) && (owner_type::maximum_count() == 1),
                       "Value separator support requires an owning node to have "
                       "a fixed count of 1");
+
+        if (tokens.empty()) {
+            return parsing::pre_parse_action::valid_node;
+        }
 
         auto first = tokens.begin();
         const auto first_token = *first;

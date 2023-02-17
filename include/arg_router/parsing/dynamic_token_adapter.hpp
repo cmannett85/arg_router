@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -357,6 +357,10 @@ public:
      * @return Number of components
      */
     [[nodiscard]] size_type size() const { return processed_->size() + unprocessed_->size(); }
+
+    /** @return True if there are no processed or unprocessed tokens.
+     */
+    [[nodiscard]] bool empty() const { return processed_->empty() && unprocessed_->empty(); }
 
     /** The underlying processed container.
      *
