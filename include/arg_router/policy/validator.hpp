@@ -216,11 +216,17 @@ struct policy_unique_from_owner_parent_to_mode_or_root {
                                boost::mp11::mp_to_bool>;
 
     // Don't recurse into child modes, they effectively have their own namespace
+    template <typename StartType>
     struct skipper {
         template <typename Current, typename...>
         [[nodiscard]] constexpr static bool fn() noexcept
         {
-            return is_mode<Current>::value;
+            // If the start node is a mode, don't skip it!
+            if constexpr (std::is_same_v<StartType, Current>) {
+                return false;
+            } else {
+                return is_mode<Current>::value;
+            }
         }
     };
 
@@ -235,18 +241,14 @@ struct policy_unique_from_owner_parent_to_mode_or_root {
             // Find a mode type, if there's one present we stop moving up through the ancestors at
             // that point, otherwise we go up to the root
             constexpr auto mode_index = boost::mp11::mp_find_if<ParentTuple, is_mode>::value;
-            using start_type = boost::mp11::mp_eval_if_c<mode_index == NumParents,
-                                                         boost::mp11::mp_back<ParentTuple>,
-                                                         boost::mp11::mp_at,
-                                                         ParentTuple,
-                                                         traits::integral_constant<mode_index>>;
 
             using path_type =
                 boost::mp11::mp_take_c<ParentTuple, std::min(mode_index + 1, NumParents)>;
+            using start_type = boost::mp11::mp_back<path_type>;
 
             // Recurse the tree from the oldest generation, testing that no other policy matches
             // ours
-            utility::tree_type_recursor<checker<T, path_type>, skipper, start_type>();
+            utility::tree_type_recursor<checker<T, path_type>, skipper<start_type>, start_type>();
         }
     }
 };
