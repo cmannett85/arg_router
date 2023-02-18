@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2023-02-15 22:54:45</td>
+            <td class="headerValue">2023-02-18 08:11:03</td>
             <td></td>
           </tr>
           <tr>
@@ -304,27 +304,27 @@
 <a name="238"><span class="lineNum">     238 </span>            : {</a>
 <a name="239"><span class="lineNum">     239 </span>            :     // When are we going to get language-level tuple unpacking!?</a>
 <a name="240"><span class="lineNum">     240 </span>            :     template &lt;std::size_t... I&gt;</a>
-<a name="241"><span class="lineNum">     241 </span><span class="lineCov">        732 :     constexpr explicit unpack_and_derive(</span></a>
+<a name="241"><span class="lineNum">     241 </span><span class="lineCov">        734 :     constexpr explicit unpack_and_derive(</span></a>
 <a name="242"><span class="lineNum">     242 </span>            :         T&lt;Params...&gt; params,</a>
 <a name="243"><span class="lineNum">     243 </span>            :         [[maybe_unused]] std::integer_sequence&lt;std::size_t, I...&gt; Is) noexcept :</a>
-<a name="244"><span class="lineNum">     244 </span><span class="lineCov">       2473 :         Params{std::get&lt;I&gt;(std::move(params))}...</span></a>
-<a name="245"><span class="lineNum">     245 </span><span class="lineCov">       2473 :     {</span></a>
-<a name="246"><span class="lineNum">     246 </span><span class="lineCov">        732 :     }</span></a>
+<a name="244"><span class="lineNum">     244 </span><span class="lineCov">       2476 :         Params{std::get&lt;I&gt;(std::move(params))}...</span></a>
+<a name="245"><span class="lineNum">     245 </span><span class="lineCov">       2476 :     {</span></a>
+<a name="246"><span class="lineNum">     246 </span><span class="lineCov">        734 :     }</span></a>
 <a name="247"><span class="lineNum">     247 </span>            : </a>
 <a name="248"><span class="lineNum">     248 </span>            :     // This empty tuple overload is just to prevent an</a>
 <a name="249"><span class="lineNum">     249 </span>            :     // -Werror=unused-but-set-parameter on the params parameter</a>
 <a name="250"><span class="lineNum">     250 </span>            :     template &lt;std::size_t... I&gt;</a>
-<a name="251"><span class="lineNum">     251 </span><span class="lineCov">         71 :     constexpr explicit unpack_and_derive(</span></a>
+<a name="251"><span class="lineNum">     251 </span><span class="lineCov">         73 :     constexpr explicit unpack_and_derive(</span></a>
 <a name="252"><span class="lineNum">     252 </span>            :         [[maybe_unused]] T&lt;Params...&gt; t,</a>
 <a name="253"><span class="lineNum">     253 </span>            :         [[maybe_unused]] std::integer_sequence&lt;std::size_t&gt; Is) noexcept</a>
 <a name="254"><span class="lineNum">     254 </span>            :     {</a>
-<a name="255"><span class="lineNum">     255 </span><span class="lineCov">         71 :     }</span></a>
+<a name="255"><span class="lineNum">     255 </span><span class="lineCov">         73 :     }</span></a>
 <a name="256"><span class="lineNum">     256 </span>            : </a>
 <a name="257"><span class="lineNum">     257 </span>            : public:</a>
-<a name="258"><span class="lineNum">     258 </span><span class="lineCov">        803 :     constexpr explicit unpack_and_derive(T&lt;Params...&gt; params) noexcept :</span></a>
-<a name="259"><span class="lineNum">     259 </span><span class="lineCov">        803 :         unpack_and_derive{std::move(params), std::make_index_sequence&lt;sizeof...(Params)&gt;{}}</span></a>
+<a name="258"><span class="lineNum">     258 </span><span class="lineCov">        807 :     constexpr explicit unpack_and_derive(T&lt;Params...&gt; params) noexcept :</span></a>
+<a name="259"><span class="lineNum">     259 </span><span class="lineCov">        807 :         unpack_and_derive{std::move(params), std::make_index_sequence&lt;sizeof...(Params)&gt;{}}</span></a>
 <a name="260"><span class="lineNum">     260 </span>            :     {</a>
-<a name="261"><span class="lineNum">     261 </span><span class="lineCov">        803 :     }</span></a>
+<a name="261"><span class="lineNum">     261 </span><span class="lineCov">        807 :     }</span></a>
 <a name="262"><span class="lineNum">     262 </span>            : };</a>
 <a name="263"><span class="lineNum">     263 </span>            : </a>
 <a name="264"><span class="lineNum">     264 </span>            : /** Determine if the static_cast conversion @a From to @a To is valid.</a>

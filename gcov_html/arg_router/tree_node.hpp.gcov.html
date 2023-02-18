@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2023-02-15 22:54:45</td>
+            <td class="headerValue">2023-02-18 08:11:03</td>
             <td></td>
           </tr>
           <tr>
@@ -442,11 +442,11 @@
 <a name="376"><span class="lineNum">     376 </span>            :      *</a>
 <a name="377"><span class="lineNum">     377 </span>            :      * @param params Policy and child instances</a>
 <a name="378"><span class="lineNum">     378 </span>            :      */</a>
-<a name="379"><span class="lineNum">     379 </span><span class="lineCov">        803 :     constexpr explicit tree_node(Params... params) noexcept :</span></a>
-<a name="380"><span class="lineNum">     380 </span><span class="lineCov">        803 :         traits::unpack_and_derive&lt;policies_type&gt;{common_filter&lt;policy::is_policy&gt;(params...)},</span></a>
-<a name="381"><span class="lineNum">     381 </span><span class="lineCov">        803 :         children_(common_filter_tuple&lt;is_tree_node&gt;(list_expander(std::move(params)...)))</span></a>
-<a name="382"><span class="lineNum">     382 </span><span class="lineCov">        803 :     {</span></a>
-<a name="383"><span class="lineNum">     383 </span><span class="lineCov">        803 :     }</span></a>
+<a name="379"><span class="lineNum">     379 </span><span class="lineCov">        807 :     constexpr explicit tree_node(Params... params) noexcept :</span></a>
+<a name="380"><span class="lineNum">     380 </span><span class="lineCov">        807 :         traits::unpack_and_derive&lt;policies_type&gt;{common_filter&lt;policy::is_policy&gt;(params...)},</span></a>
+<a name="381"><span class="lineNum">     381 </span><span class="lineCov">        807 :         children_(common_filter_tuple&lt;is_tree_node&gt;(list_expander(std::move(params)...)))</span></a>
+<a name="382"><span class="lineNum">     382 </span><span class="lineCov">        807 :     {</span></a>
+<a name="383"><span class="lineNum">     383 </span><span class="lineCov">        807 :     }</span></a>
 <a name="384"><span class="lineNum">     384 </span>            : </a>
 <a name="385"><span class="lineNum">     385 </span>            :     /** Default pre-parse implementation.</a>
 <a name="386"><span class="lineNum">     386 </span>            :      *</a>
@@ -608,7 +608,7 @@
 <a name="542"><span class="lineNum">     542 </span>            :                   &quot;Only zero or one policies supporting a routing phase is supported&quot;);</a>
 <a name="543"><span class="lineNum">     543 </span>            : </a>
 <a name="544"><span class="lineNum">     544 </span>            :     template &lt;template &lt;typename...&gt; typename Fn, typename... ExpandedParams&gt;</a>
-<a name="545"><span class="lineNum">     545 </span><span class="lineCov">       1606 :     [[nodiscard]] constexpr static auto common_filter(ExpandedParams&amp;... expanded_params) noexcept</span></a>
+<a name="545"><span class="lineNum">     545 </span><span class="lineCov">       1614 :     [[nodiscard]] constexpr static auto common_filter(ExpandedParams&amp;... expanded_params) noexcept</span></a>
 <a name="546"><span class="lineNum">     546 </span>            :     {</a>
 <a name="547"><span class="lineNum">     547 </span>            :         // Send references to the filter method so we don't copy anything unnecessarily</a>
 <a name="548"><span class="lineNum">     548 </span>            :         using ref_tuple = std::tuple&lt;std::reference_wrapper&lt;ExpandedParams&gt;...&gt;;</a>
@@ -619,23 +619,23 @@
 <a name="553"><span class="lineNum">     553 </span>            : </a>
 <a name="554"><span class="lineNum">     554 </span>            :         // We have our result tuple, but it only contains references so we now have to move</a>
 <a name="555"><span class="lineNum">     555 </span>            :         // construct them into the 'real' types</a>
-<a name="556"><span class="lineNum">     556 </span><span class="lineCov">       1606 :         auto ref_result = algorithm::tuple_filter_and_construct&lt;ref_fn::template fn&gt;(</span></a>
-<a name="557"><span class="lineNum">     557 </span><span class="lineCov">       1526 :             ref_tuple{expanded_params...});</span></a>
+<a name="556"><span class="lineNum">     556 </span><span class="lineCov">       1614 :         auto ref_result = algorithm::tuple_filter_and_construct&lt;ref_fn::template fn&gt;(</span></a>
+<a name="557"><span class="lineNum">     557 </span><span class="lineCov">       1530 :             ref_tuple{expanded_params...});</span></a>
 <a name="558"><span class="lineNum">     558 </span>            : </a>
 <a name="559"><span class="lineNum">     559 </span>            :         using ref_result_t = std::decay_t&lt;decltype(ref_result)&gt;;</a>
 <a name="560"><span class="lineNum">     560 </span>            :         using result_t = boost::mp11::mp_transform&lt;traits::get_type, ref_result_t&gt;;</a>
 <a name="561"><span class="lineNum">     561 </span>            : </a>
 <a name="562"><span class="lineNum">     562 </span>            :         // Converting move-constructor of std::tuple</a>
-<a name="563"><span class="lineNum">     563 </span><span class="lineCov">       1606 :         return result_t{std::move(ref_result)};</span></a>
+<a name="563"><span class="lineNum">     563 </span><span class="lineCov">       1614 :         return result_t{std::move(ref_result)};</span></a>
 <a name="564"><span class="lineNum">     564 </span>            :     }</a>
 <a name="565"><span class="lineNum">     565 </span>            : </a>
 <a name="566"><span class="lineNum">     566 </span>            :     template &lt;template &lt;typename...&gt; typename Fn, typename Tuple&gt;</a>
-<a name="567"><span class="lineNum">     567 </span><span class="lineCov">        803 :     [[nodiscard]] constexpr static auto common_filter_tuple(Tuple&amp;&amp; tuple_params) noexcept</span></a>
+<a name="567"><span class="lineNum">     567 </span><span class="lineCov">        807 :     [[nodiscard]] constexpr static auto common_filter_tuple(Tuple&amp;&amp; tuple_params) noexcept</span></a>
 <a name="568"><span class="lineNum">     568 </span>            :     {</a>
 <a name="569"><span class="lineNum">     569 </span>            :         // std::apply does not like templates, so we have to wrap in a lambda</a>
-<a name="570"><span class="lineNum">     570 </span><span class="lineCov">        803 :         return std::apply(</span></a>
-<a name="571"><span class="lineNum">     571 </span><span class="lineCov">        803 :             [](auto&amp;... args) { return common_filter&lt;Fn&gt;(std::forward&lt;decltype(args)&gt;(args)...); },</span></a>
-<a name="572"><span class="lineNum">     572 </span><span class="lineCov">        803 :             tuple_params);</span></a>
+<a name="570"><span class="lineNum">     570 </span><span class="lineCov">        807 :         return std::apply(</span></a>
+<a name="571"><span class="lineNum">     571 </span><span class="lineCov">        807 :             [](auto&amp;... args) { return common_filter&lt;Fn&gt;(std::forward&lt;decltype(args)&gt;(args)...); },</span></a>
+<a name="572"><span class="lineNum">     572 </span><span class="lineCov">        807 :             tuple_params);</span></a>
 <a name="573"><span class="lineNum">     573 </span>            :     }</a>
 <a name="574"><span class="lineNum">     574 </span>            : </a>
 <a name="575"><span class="lineNum">     575 </span>            :     template &lt;typename Validator, bool HasTarget&gt;</a>

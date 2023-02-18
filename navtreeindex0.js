@@ -1,5 +1,7 @@
 var NAVTREEINDEX0 =
 {
+"":[7,0,0,6,1,1],
+"":[7,0,0,7],
 "algorithm_8hpp_source.html":[9,0,0,5],
 "alias_8hpp_source.html":[9,0,0,3,0],
 "alias__group_8hpp_source.html":[9,0,0,0,0],
@@ -87,16 +89,17 @@ var NAVTREEINDEX0 =
 "classarg__router_1_1parsing_1_1dynamic__token__adapter.html":[8,0,0,3,0],
 "classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a04b621b16771796e5ab0156db3b2d2f3":[8,0,0,3,0,4],
 "classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a17882ec1fcfc2585fd92690c8ade4773":[8,0,0,3,0,3],
-"classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a58f0334ec34a75363d5b65376ae19cef":[8,0,0,3,0,7],
-"classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a5cbd580b497180a7b8334a87ae83d277":[8,0,0,3,0,11],
-"classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a60e1970a9326292a69012bb03631f09c":[8,0,0,3,0,6],
-"classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a759f4a04ebac95bb5689d53c6dfdb8c7":[8,0,0,3,0,10],
-"classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a77108b6fcf10bd62f56f579903f60119":[8,0,0,3,0,8],
+"classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a58f0334ec34a75363d5b65376ae19cef":[8,0,0,3,0,8],
+"classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a5cbd580b497180a7b8334a87ae83d277":[8,0,0,3,0,12],
+"classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a60e1970a9326292a69012bb03631f09c":[8,0,0,3,0,7],
+"classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a6cc731859742b7a38cdd8fae825d6e10":[8,0,0,3,0,5],
+"classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a759f4a04ebac95bb5689d53c6dfdb8c7":[8,0,0,3,0,11],
+"classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a77108b6fcf10bd62f56f579903f60119":[8,0,0,3,0,9],
 "classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a791c7666ecab57d4f2e9792aee7a7c46":[8,0,0,3,0,2],
 "classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a7b9a365f63d4882fd6045738ebe89f10":[8,0,0,3,0,1],
-"classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a7e726c0166294b5d51866f08a9afd7fb":[8,0,0,3,0,9],
-"classarg__router_1_1parsing_1_1dynamic__token__adapter.html#ae036fca9a690d8ab819c3c3813e37709":[8,0,0,3,0,12],
-"classarg__router_1_1parsing_1_1dynamic__token__adapter.html#af812e6d9acacbaf22e122fc430f5449a":[8,0,0,3,0,5],
+"classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a7e726c0166294b5d51866f08a9afd7fb":[8,0,0,3,0,10],
+"classarg__router_1_1parsing_1_1dynamic__token__adapter.html#ae036fca9a690d8ab819c3c3813e37709":[8,0,0,3,0,13],
+"classarg__router_1_1parsing_1_1dynamic__token__adapter.html#af812e6d9acacbaf22e122fc430f5449a":[8,0,0,3,0,6],
 "classarg__router_1_1parsing_1_1dynamic__token__adapter_1_1iterator.html":[8,0,0,3,0,0],
 "classarg__router_1_1parsing_1_1dynamic__token__adapter_1_1iterator.html#a0d79effb67a41f5df2f2fc5053f51b22":[8,0,0,3,0,0,17],
 "classarg__router_1_1parsing_1_1dynamic__token__adapter_1_1iterator.html#a12def13bdcea553fb1615ffcba30becf":[8,0,0,3,0,0,21],
@@ -246,8 +249,5 @@ var NAVTREEINDEX0 =
 "classarg__router_1_1positional__arg__t.html#afe7b6b24baef5bd68067bf059cd3e0db":[8,0,0,17,3],
 "classarg__router_1_1positional__arg__t_1_1help__data__type.html":[8,0,0,17,0],
 "classarg__router_1_1root__t.html":[8,0,0,18],
-"classarg__router_1_1root__t.html#a435e841c0c7edb67dbe1dd22a2e9fc40":[8,0,0,18,4],
-"classarg__router_1_1root__t.html#a91fa95bf1546f47836de9c37a8486325":[8,0,0,18,3],
-"classarg__router_1_1root__t.html#ad1e58e6fdddf15f4a38081e0777abbe1":[8,0,0,18,5],
-"classarg__router_1_1root__t.html#adada7e905b970cdfaaf66668d0b7027f":[8,0,0,18,1]
+"classarg__router_1_1root__t.html#a435e841c0c7edb67dbe1dd22a2e9fc40":[8,0,0,18,4]
 };
