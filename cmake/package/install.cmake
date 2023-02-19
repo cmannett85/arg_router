@@ -1,4 +1,4 @@
-### Copyright (C) 2022 by Camden Mannett.
+### Copyright (C) 2022-2023 by Camden Mannett.
 ### Distributed under the Boost Software License, Version 1.0.
 ### (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -9,9 +9,23 @@ set(INSTALL_AR_DIR "${INSTALL_BASE_DIR}/arg_router")
 set(CONFIG_FILE "${CMAKE_BINARY_DIR}/cmake/package/arg_router-config.cmake")
 set(CONFIG_VERSION_FILE "${CMAKE_BINARY_DIR}/cmake/package/arg_router-config-version.cmake")
 
+set(CMAKE_FILE_DIR "lib/cmake/arg_router")
+if (WIN32)
+    set(CMAKE_FILE_DIR "cmake")
+elseif (APPLE)
+    set(CMAKE_FILE_DIR "arg_router.framework/Resources/CMake")
+endif()
+
+install(TARGETS arg_router
+        EXPORT AR_TARGETS
+        INCLUDES DESTINATION "${INSTALL_BASE_DIR}")
+install(EXPORT AR_TARGETS
+        FILE arg_router.cmake
+        DESTINATION "${CMAKE_FILE_DIR}")
+
 configure_package_config_file("${CMAKE_SOURCE_DIR}/cmake/package/arg_router-config.cmake.in"
                               ${CONFIG_FILE}
-                              INSTALL_DESTINATION ${INSTALL_AR_DIR}
+                              INSTALL_DESTINATION "${CMAKE_FILE_DIR}"
                               PATH_VARS INSTALL_BASE_DIR)
 write_basic_package_version_file(${CONFIG_VERSION_FILE}
                                  COMPATIBILITY SameMajorVersion
@@ -19,11 +33,12 @@ write_basic_package_version_file(${CONFIG_VERSION_FILE}
 
 install(DIRECTORY "${CMAKE_SOURCE_DIR}/include/arg_router"
         DESTINATION ${INSTALL_BASE_DIR})
-install(FILES ${CONFIG_FILE}
-              ${CONFIG_VERSION_FILE}
-              "${CMAKE_SOURCE_DIR}/README.md"
+install(FILES "${CMAKE_SOURCE_DIR}/README.md"
               "${CMAKE_SOURCE_DIR}/LICENSE"
         DESTINATION ${INSTALL_AR_DIR})
+install(FILES ${CONFIG_FILE}
+              ${CONFIG_VERSION_FILE}
+        DESTINATION "${CMAKE_FILE_DIR}")
 
 # CPack package configuration
 set(CPACK_PACKAGE_VENDOR "Camden Mannett")
