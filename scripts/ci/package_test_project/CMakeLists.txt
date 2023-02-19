@@ -17,14 +17,13 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(BOOST_VERSION 1.74)
 find_package(Boost ${BOOST_VERSION} REQUIRED)
-include_directories(BEFORE SYSTEM ${Boost_INCLUDE_DIRS})
-
 find_package(arg_router REQUIRED)
-include_directories(BEFORE SYSTEM "${arg_router_INCLUDE_DIRS}")
 
 add_executable(package_test_project
     "${ROOT_DIR}/examples/c++20/just_cats/main.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/vcpkg.json")
+
+target_link_libraries(package_test_project PUBLIC Boost::boost arg_router)
 
 target_compile_features(package_test_project PUBLIC cxx_std_20)
 set_target_properties(package_test_project PROPERTIES CXX_EXTENSIONS OFF)

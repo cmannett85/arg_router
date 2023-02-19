@@ -17,7 +17,10 @@ configure_file(
     "${CMAKE_SOURCE_DIR}/cmake/versioning/version.hpp.in"
     ${VERSION_FILE_TMP}
 )
-if(NOT "${VERSION_FILE_TMP}" STREQUAL "${VERSION_FILE}")
+
+file(READ ${VERSION_FILE} VERSION_FILE_DATA)
+file(READ ${VERSION_FILE_TMP} VERSION_FILE_TMP_DATA)
+if(NOT "${VERSION_FILE_TMP_DATA}" STREQUAL "${VERSION_FILE_DATA}")
     message(STATUS "Updating version.hpp library version")
     file(RENAME ${VERSION_FILE_TMP} ${VERSION_FILE})
 endif()

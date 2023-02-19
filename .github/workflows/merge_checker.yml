@@ -235,15 +235,16 @@ jobs:
         Test-Path -Path "${{ env.INSTALL_DIR }}/include/arg_router/version.hpp" -PathType Leaf
         Test-Path -Path "${{ env.INSTALL_DIR }}/include/arg_router/README.md" -PathType Leaf
         Test-Path -Path "${{ env.INSTALL_DIR }}/include/arg_router/LICENSE" -PathType Leaf
-        Test-Path -Path "${{ env.INSTALL_DIR }}/include/arg_router/arg_router-config.cmake" -PathType Leaf
-        Test-Path -Path "${{ env.INSTALL_DIR }}/include/arg_router/arg_router-config-version.cmake" -PathType Leaf
+        Test-Path -Path "${{ env.INSTALL_DIR }}/cmake/arg_router.cmake" -PathType Leaf
+        Test-Path -Path "${{ env.INSTALL_DIR }}/cmake/arg_router-config.cmake" -PathType Leaf
+        Test-Path -Path "${{ env.INSTALL_DIR }}/cmake/arg_router-config-version.cmake" -PathType Leaf
 
     - name: Test CMake package integrity
       run: |
         & "C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Auxiliary/Build/vcvarsall.bat" x64
         mkdir ${{ env.PACKAGE_BUILD_DIR }}
         cd ${{ env.PACKAGE_BUILD_DIR }}
-        & "${{ env.CMAKE_EXE }}" ${{ github.workspace }}/scripts/ci/package_test_project -G "Visual Studio 17 2022" -A x64 -T "ClangCl" -DVCPKG_TARGET_TRIPLET:STRING="x64-windows-static" -DCMAKE_CXX_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe" -DCMAKE_C_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe" -DCMAKE_RC_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/llvm-rc.exe" -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}/include
+        & "${{ env.CMAKE_EXE }}" ${{ github.workspace }}/scripts/ci/package_test_project -G "Visual Studio 17 2022" -A x64 -T "ClangCl" -DVCPKG_TARGET_TRIPLET:STRING="x64-windows-static" -DCMAKE_CXX_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe" -DCMAKE_C_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe" -DCMAKE_RC_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/llvm-rc.exe" -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}
         & "${{ env.CMAKE_EXE }}" --build . -- /v:n
 
   macos_compiler_tests:
@@ -296,14 +297,15 @@ jobs:
         [[ -f "./include/arg_router/version.hpp" ]]
         [[ -f "./include/arg_router/README.md" ]]
         [[ -f "./include/arg_router/LICENSE" ]]
-        [[ -f "./include/arg_router/arg_router-config.cmake" ]]
-        [[ -f "./include/arg_router/arg_router-config-version.cmake" ]]
+        [[ -f "./arg_router.framework/Resources/CMake/arg_router.cmake" ]]
+        [[ -f "./arg_router.framework/Resources/CMake/arg_router-config.cmake" ]]
+        [[ -f "./arg_router.framework/Resources/CMake/arg_router-config-version.cmake" ]]
 
     - name: Test CMake package integrity
       run: |
         mkdir ${{ env.PACKAGE_BUILD_DIR }}
         cd ${{ env.PACKAGE_BUILD_DIR }}
-        cmake ${{ github.workspace }}/scripts/ci/package_test_project -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}/include
+        cmake ${{ github.workspace }}/scripts/ci/package_test_project -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}
         cmake --build .
 
   # Test vcpkg package is acquired and accessible
