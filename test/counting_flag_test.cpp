@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE(policies_test)
 
 BOOST_AUTO_TEST_CASE(parse_test)
 {
-    const auto node = counting_flag<std::size_t>(policy::short_name<'h'>);
+    const auto node = counting_flag<std::size_t>(AR_STRING("h"){});
     auto target = parsing::parse_target{{}, node};
     const auto result = node.parse(std::move(target));
     BOOST_CHECK_EQUAL(result, true);
@@ -50,7 +50,7 @@ BOOST_AUTO_TEST_CASE(parse_test)
 BOOST_AUTO_TEST_CASE(merge_test)
 {
     {
-        auto node = counting_flag<std::size_t>(policy::short_name<'h'>);
+        auto node = counting_flag<std::size_t>(AR_STRING("h"){});
 
         auto result = std::optional<std::size_t>{};
         node.merge(result, true);
@@ -69,7 +69,7 @@ BOOST_AUTO_TEST_CASE(merge_test)
     {
         enum class enum_t { A, B, C, D };
 
-        auto node = counting_flag<enum_t>(policy::short_name<'h'>);
+        auto node = counting_flag<enum_t>(AR_STRING("h"){});
 
         auto result = std::optional<enum_t>{};
         node.merge(result, true);
@@ -122,6 +122,11 @@ BOOST_AUTO_TEST_CASE(help_test)
                        "-h",
                        "A counting flag!"},
             std::tuple{counting_flag<int>(policy::short_name<'h'>), "-h", ""},
+            std::tuple{counting_flag<int>(AR_STRING("h"){},
+                                          AR_STRING("hello"){},
+                                          AR_STRING("A counting flag!"){}),
+                       "--hello,-h",
+                       "A counting flag!"},
         });
 }
 

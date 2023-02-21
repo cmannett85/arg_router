@@ -70,6 +70,7 @@ path_prefixer(TEST_SRCS
     utility/compile_time_string_test.cpp
     utility/compile_time_optional_test.cpp
     utility/result_test.cpp
+    utility/string_to_policy_test.cpp
     utility/string_view_ops_test.cpp
     utility/tree_recursor_test.cpp
     utility/type_hash_test.cpp

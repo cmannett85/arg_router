@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -373,7 +373,7 @@ BOOST_AUTO_TEST_CASE(anonymous_triple_child_parse_test)
 BOOST_AUTO_TEST_CASE(named_single_flag_parse_test)
 {
     auto result = std::optional<bool>{};
-    const auto m = mode(policy::none_name<AR_STRING("my-mode")>,
+    const auto m = mode(AR_STRING("my-mode"){},
                         flag(policy::long_name<AR_STRING("hello")>,
                              policy::short_name<'l'>,
                              policy::description<AR_STRING("Hello arg")>),
@@ -415,7 +415,7 @@ BOOST_AUTO_TEST_CASE(named_single_flag_parse_test)
 
 BOOST_AUTO_TEST_CASE(named_triple_arg_pre_parse_test)
 {
-    const auto m = mode(policy::none_name<AR_STRING("my-mode")>,
+    const auto m = mode(AR_STRING("my-mode"){},
                         flag(policy::long_name<AR_STRING("hello")>,
                              policy::short_name<'l'>,
                              policy::description<AR_STRING("Hello arg")>),
@@ -522,7 +522,7 @@ BOOST_AUTO_TEST_CASE(named_triple_arg_pre_parse_test)
 BOOST_AUTO_TEST_CASE(named_triple_arg_parse_test)
 {
     auto result = std::optional<std::tuple<bool, int, bool>>{};
-    const auto m = mode(policy::none_name<AR_STRING("my-mode")>,
+    const auto m = mode(AR_STRING("my-mode"){},
                         flag(policy::long_name<AR_STRING("hello")>,
                              policy::short_name<'l'>,
                              policy::description<AR_STRING("Hello arg")>),
@@ -987,8 +987,8 @@ BOOST_AUTO_TEST_CASE(help_test)
                                                  test_help_data<AR_STRING("--flag1,-a"),
                                                                 AR_STRING("Flag1 desc"),
                                                                 std::tuple<>>>>{}},
-            std::tuple{mode(policy::none_name<AR_STRING("mode1")>,
-                            policy::description<AR_STRING("Mode desc")>,
+            std::tuple{mode(AR_STRING("mode1"){},
+                            AR_STRING("Mode desc"){},
                             flag(policy::long_name<AR_STRING("hello")>,
                                  policy::short_name<'h'>,
                                  policy::description<AR_STRING("Hello desc")>),

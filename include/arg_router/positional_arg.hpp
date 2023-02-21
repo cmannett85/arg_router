@@ -4,8 +4,11 @@
 
 #pragma once
 
+#include "arg_router/policy/description.hpp"
+#include "arg_router/policy/display_name.hpp"
 #include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/tree_node.hpp"
+#include "arg_router/utility/string_to_policy.hpp"
 
 namespace arg_router
 {
@@ -178,6 +181,15 @@ private:
  * This is necessary due to CTAD being required for all template parameters or none, and
  * unfortunately in our case we need @a T to be explicitly set by the user whilst @a Policies
  * should be deduced.
+ *
+ * Compile-time strings can be passed in directly and will be converted to the appropriate policies
+ * automatically.  The rules are:
+ * -# The first multi-character string becomes a policy::display_name_t
+ * -# The second multi-character string becomes a policy::description_t
+ *
+ * The above are unicode aware.  The strings can be passed in any order relative to the other
+ * policies, but it is recommended to put them first to ease reading.
+ *
  * @tparam T Argument value type, must have a <TT>push_back(..)</TT> method
  * @tparam Policies Pack of policies that define its behaviour
  * @param policies Pack of policy instances
@@ -186,6 +198,14 @@ private:
 template <typename T, typename... Policies>
 [[nodiscard]] constexpr auto positional_arg(Policies... policies) noexcept
 {
-    return positional_arg_t<T, std::decay_t<Policies>...>{std::move(policies)...};
+    return std::apply(
+        [](auto... converted_policies) {
+            return positional_arg_t<T, std::decay_t<decltype(converted_policies)>...>{
+                std::move(converted_policies)...};
+        },
+        utility::string_to_policy::convert<
+            utility::string_to_policy::first_string_mapper<policy::display_name_t>,
+            utility::string_to_policy::second_string_mapper<policy::description_t>>(
+            std::move(policies)...));
 }
 }  // namespace arg_router

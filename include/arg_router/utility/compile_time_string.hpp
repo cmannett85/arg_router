@@ -251,6 +251,28 @@ using convert_integral_to_cts_t = typename convert_integral_to_cts<Value>::type;
  */
 template <utility::detail::compile_time_string_storage S>
 using str = utility::str<S>;
+
+namespace traits
+{
+/** Evaluates to true if @a T is a compile-time string-like type.
+ *
+ * @tparam T Type to test
+ */
+template <typename T>
+struct is_compile_time_string_like : std::false_type {
+};
+
+template <auto S>
+struct is_compile_time_string_like<utility::str<S>> : std::true_type {
+};
+
+/** Helper variable for is_compile_time_string_like.
+ *
+ * @tparam T Type to test
+ */
+template <typename T>
+constexpr bool is_compile_time_string_like_v = is_compile_time_string_like<T>::value;
+}  // namespace traits
 }  // namespace arg_router
 
 // A function macro common between utility::str and S_, which allows us to use the same method to
@@ -268,7 +290,9 @@ using str = utility::str<S>;
 /** @file
  */
 
-namespace arg_router::utility
+namespace arg_router
+{
+namespace utility
 {
 template <char... Cs>
 class compile_time_string;
@@ -479,7 +503,30 @@ struct builder {
 template <char... Cs>
 using builder_t = typename builder<Cs...>::type;
 }  // namespace cts_detail
-}  // namespace arg_router::utility
+}  // namespace utility
+
+namespace traits
+{
+/** Evaluates to true if @a T is a compile-time string-like type.
+ *
+ * @tparam T Type to test
+ */
+template <typename T>
+struct is_compile_time_string_like : std::false_type {
+};
+
+template <char... Cs>
+struct is_compile_time_string_like<utility::compile_time_string<Cs...>> : std::true_type {
+};
+
+/** Helper variable for is_compile_time_string_like.
+ *
+ * @tparam T Type to test
+ */
+template <typename T>
+constexpr bool is_compile_time_string_like_v = is_compile_time_string_like<T>::value;
+}  // namespace traits
+}  // namespace arg_router
 
 #    define AR_STR_CHAR(z, n, tok) arg_router::utility::cts_detail::get(tok, n)
 

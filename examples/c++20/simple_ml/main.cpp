@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -95,7 +95,7 @@ class translation<str<"ja">>
 public:
     using force = str<"強制">;
     using force_description = str<"既存のファイルを強制的に上書きする">;
-    using destination = str<"先">;
+    using destination = str<"行き先">;
     using destination_description = str<"宛先ディレクトリ">;
     using help = str<"ヘルプ">;
     using help_description = str<"このヘルプを表示して終了">;
@@ -182,49 +182,46 @@ int main(int argc, char* argv[])
         [&](auto tr_) {
             using tr = decltype(tr_);
 
-            const auto common_args = ar::list{
-                ar::flag(arp::long_name<typename tr::force>,
-                         arp::short_name_t{"f"_S},
-                         arp::description<typename tr::force_description>),
-                ar::positional_arg<fs::path>(arp::required,
-                                             arp::display_name<typename tr::destination>,
-                                             arp::description<typename tr::destination_description>,
-                                             arp::fixed_count<1>)};
+            const auto common_args =
+                ar::list{ar::flag(typename tr::force{}, "f"_S, typename tr::force_description{}),
+                         ar::positional_arg<fs::path>(arp::required,
+                                                      typename tr::destination{},
+                                                      typename tr::destination_description{},
+                                                      arp::fixed_count<1>)};
 
             return ar::root(
                 arp::validation::default_validator,
                 arp::exception_translator<tr>,
-                ar::help(arp::long_name<typename tr::help>,
-                         arp::short_name_t{"h"_S},
-                         arp::description<typename tr::help_description>,
+                ar::help(typename tr::help{},
+                         "h"_S,
+                         typename tr::help_description{},
                          arp::program_name_t{"simple"_S},
                          arp::program_version_t{"v0.1"_S},
                          arp::program_intro<typename tr::program_intro>,
                          arp::program_addendum<typename tr::program_addendum>,
                          arp::flatten_help,
                          arp::colour_help_formatter),
-                ar::mode(arp::none_name<typename tr::copy>,
-                         arp::description<typename tr::copy_description>,
-                         common_args,
-                         ar::positional_arg<std::vector<fs::path>>(
-                             arp::required,
-                             arp::display_name<typename tr::source>,
-                             arp::description<typename tr::sources_description>,
-                             arp::min_count<1>),
-                         arp::router{[](bool force, fs::path dest, std::vector<fs::path> srcs) {
-                             copy_mode(force, std::move(dest), std::move(srcs));
-                         }}),
                 ar::mode(
-                    arp::none_name<typename tr::move>,
-                    arp::description<typename tr::move_description>,
+                    typename tr::copy{},
+                    typename tr::copy_description{},
                     common_args,
-                    ar::positional_arg<fs::path>(arp::required,
-                                                 arp::display_name<typename tr::source>,
-                                                 arp::description<typename tr::source_description>,
-                                                 arp::fixed_count<1>),
-                    arp::router{[](bool force, fs::path dest, fs::path src) {
-                        move_mode(force, std::move(dest), std::move(src));
-                    }}));
+                    ar::positional_arg<std::vector<fs::path>>(arp::required,
+                                                              typename tr::source{},
+                                                              typename tr::sources_description{},
+                                                              arp::min_count<1>),
+                    arp::router{[](bool force, fs::path dest, std::vector<fs::path> srcs) {
+                        copy_mode(force, std::move(dest), std::move(srcs));
+                    }}),
+                ar::mode(typename tr::move{},
+                         typename tr::move_description{},
+                         common_args,
+                         ar::positional_arg<fs::path>(arp::required,
+                                                      typename tr::source{},
+                                                      typename tr::source_description{},
+                                                      arp::fixed_count<1>),
+                         arp::router{[](bool force, fs::path dest, fs::path src) {
+                             move_mode(force, std::move(dest), std::move(src));
+                         }}));
         })
         .parse(argc, argv);
 }

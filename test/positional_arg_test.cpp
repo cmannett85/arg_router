@@ -59,6 +59,10 @@ BOOST_AUTO_TEST_CASE(parse_test)
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "1"},
                                                         {parsing::prefix_type::none, "2"}},
                        std::vector{1, 2}},
+            std::tuple{positional_arg<std::vector<int>>(AR_STRING("node"){}, policy::max_count<2>),
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "1"},
+                                                        {parsing::prefix_type::none, "2"}},
+                       std::vector{1, 2}},
         });
 }
 
@@ -114,6 +118,10 @@ BOOST_AUTO_TEST_CASE(help_test)
                                                         policy::max_count<3>),
                        "<pos-arg> [0,3]",
                        ""},
+            std::tuple{positional_arg<std::vector<int>>(AR_STRING("pos-arg"){},
+                                                        AR_STRING("A positional arg!"){}),
+                       "<pos-arg> [0,N]",
+                       "A positional arg!"},
         });
 }
 

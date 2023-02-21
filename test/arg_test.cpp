@@ -1,10 +1,8 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #include "arg_router/arg.hpp"
-#include "arg_router/mode.hpp"
-#include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/description.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/router.hpp"
@@ -63,6 +61,13 @@ BOOST_AUTO_TEST_CASE(parse_test)
                                        }}),
                               std::vector<parsing::token_type>{{parsing::prefix_type::none, "42"}},
                               42,
+                              true},
+                   std::tuple{arg<int>(AR_STRING("test"){}, policy::router{[&](int result) {
+                                           BOOST_CHECK_EQUAL(result, 42);
+                                           router_hit = true;
+                                       }}),
+                              std::vector<parsing::token_type>{{parsing::prefix_type::none, "42"}},
+                              42,
                               true}});
 }
 
@@ -101,6 +106,9 @@ BOOST_AUTO_TEST_CASE(help_test)
                        "-h <Value>",
                        "An arg!"},
             std::tuple{arg<int>(policy::short_name<'h'>), "-h <Value>", ""},
+            std::tuple{arg<int>(AR_STRING("h"){}, AR_STRING("hello"){}, AR_STRING("An arg!"){}),
+                       "--hello,-h <Value>",
+                       "An arg!"},
         });
 }
 
