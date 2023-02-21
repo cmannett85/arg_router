@@ -123,6 +123,7 @@ path_prefixer(HEADERS
     include/arg_router/utility/compile_time_string.hpp
     include/arg_router/utility/compile_time_optional.hpp
     include/arg_router/utility/result.hpp
+    include/arg_router/utility/string_to_policy.hpp
     include/arg_router/utility/string_view_ops.hpp
     include/arg_router/utility/terminal.hpp
     include/arg_router/utility/tree_recursor.hpp

@@ -174,12 +174,20 @@ private:
                   "(e.g. router)");
 };
 
-// Create a helper function to ease CTAD.
+// Create a helper function to ease CTAD.  The string_to_policy::convert function isn't required
+// but allows string-to-policy conversion to as intended
 template <typename T, typename... Policies>
-[[nodiscard]] constexpr single_positional_arg_t<T, Policies...> single_positional_arg(
-    Policies... policies) noexcept
+[[nodiscard]] constexpr auto single_positional_arg(Policies... policies) noexcept
 {
-    return single_positional_arg_t<T, std::decay_t<Policies>...>{std::move(policies)...};
+    return std::apply(
+        [](auto... converted_policies) {
+            return single_positional_arg_t<T, std::decay_t<decltype(converted_policies)>...>{
+                std::move(converted_policies)...};
+        },
+        ar::utility::string_to_policy::convert<
+            ar::utility::string_to_policy::first_string_mapper<arp::display_name_t>,
+            ar::utility::string_to_policy::second_string_mapper<smiley_description_t>>(
+            std::move(policies)...));
 }
 
 // Take a copy of the default rules, as we're adding new types we just need to add to them
@@ -208,24 +216,25 @@ using my_validator = arp::validation::validator_from_tuple<new_rules>;
 
 int main(int argc, char* argv[])
 {
-    ar::root(my_validator{},
-             ar::help(arp::long_name_t{"help"_S},
-                      arp::short_name_t{"h"_S},
-                      arp::program_name_t{"is_even"_S},
-                      arp::program_version<ar::str<version>>,
-                      arp::program_addendum_t{"An example program for arg_router."_S},
-                      smiley_description_t{"Display this help and exit"_S}),
-             ar::flag(arp::long_name_t{"version"_S},
-                      smiley_description_t{"Output version information and exit"_S},
-                      arp::router{[](bool) {
-                          std::cout << version.data() << std::endl;
-                          std::exit(EXIT_SUCCESS);
-                      }}),
-             ar::mode(single_positional_arg<int>(arp::required,
-                                                 arp::display_name_t{"Value"_S},
-                                                 smiley_description_t{"Value to read"_S},
-                                                 is_even<int>{}),
-                      arp::router{[](int value) { std::cout << "Value: " << value << std::endl; }}))
+    // Help and flag are built-in and therefore will use policy::description_t if passed a
+    // description string, so we have to be explicit
+    ar::root(
+        my_validator{},
+        ar::help("help"_S,
+                 "h"_S,
+                 arp::program_name_t{"is_even"_S},
+                 arp::program_version<ar::str<version>>,
+                 arp::program_addendum_t{"An example program for arg_router."_S},
+                 smiley_description_t{"Display this help and exit"_S}),
+        ar::flag("version"_S,
+                 smiley_description_t{"Output version information and exit"_S},
+                 arp::router{[](bool) {
+                     std::cout << version.data() << std::endl;
+                     std::exit(EXIT_SUCCESS);
+                 }}),
+        ar::mode(
+            single_positional_arg<int>(arp::required, "Value"_S, "Value to read"_S, is_even<int>{}),
+            arp::router{[](int value) { std::cout << "Value: " << value << std::endl; }}))
         .parse(argc, argv);
 
     return EXIT_SUCCESS;

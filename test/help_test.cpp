@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -90,6 +90,30 @@ BOOST_AUTO_TEST_CASE(parse_test)
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "--help"}},
                        std::optional<multi_lang_exception>{},
                        R"(foo v3.14
+
+My foo is good for you
+
+    --flag1,-a    Flag1 description
+    --flag2
+    -b            b description
+    --help,-h     Help output
+)"s},
+            std::tuple{
+                mock_root{
+                    flag(AR_STRING("flag1"){}, AR_STRING("a"){}, AR_STRING("Flag1 description"){}),
+                    flag(AR_STRING("flag2"){}),
+                    flag(AR_STRING("b"){}, policy::description<AR_STRING("b description")>),
+                    help(AR_STRING("help"){},
+                         AR_STRING("h"){},
+                         AR_STRING("Help output"){},
+                         policy::program_name<AR_STRING("foo")>,
+                         policy::program_version<AR_STRING("v3.14")>,
+                         policy::program_intro<AR_STRING("My foo is good for you")>,
+                         policy::router{[&](auto stream) { output = stream.str(); }})},
+                traits::integral_constant<3>{},
+                std::vector<parsing::token_type>{{parsing::prefix_type::none, "--help"}},
+                std::optional<multi_lang_exception>{},
+                R"(foo v3.14
 
 My foo is good for you
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -50,9 +50,8 @@ BOOST_AUTO_TEST_CASE(parse_test)
     };
 
     test::data_set(f,
-                   std::tuple{std::tuple{flag(policy::short_name<'h'>), false},
-                              std::tuple{flag(policy::short_name<'a'>,  //
-                                              policy::router{[&](bool result) {
+                   std::tuple{std::tuple{flag(AR_STRING("a"){}), false},
+                              std::tuple{flag(AR_STRING("a"){}, policy::router{[&](bool result) {
                                                   BOOST_CHECK(result);
                                                   router_hit = true;
                                               }}),
@@ -94,6 +93,9 @@ BOOST_AUTO_TEST_CASE(help_test)
                        "-h",
                        "A flag!"},
             std::tuple{flag(policy::short_name<'h'>), "-h", ""},
+            std::tuple{flag(AR_STRING("h"){}, AR_STRING("hello"){}, AR_STRING("A flag!"){}),
+                       "--hello,-h",
+                       "A flag!"},
         });
 }
 
