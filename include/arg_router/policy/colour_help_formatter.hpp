@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -10,6 +10,12 @@ namespace arg_router::policy
 {
 namespace help_formatter_component
 {
+/** The built-in colour line formatter.
+ *
+ * Same format as the default_help_formatter_t output, but the argument labels are red and the
+ * descriptions green.
+ * @tparam Indent Number of spaces per 'level' of indentation
+ */
 template <std::size_t Indent>
 class colour_line_formatter
 {
@@ -81,15 +87,19 @@ private:
  * just overflows onto the next line, defaults to 8
  * @tparam PreambleFormatter Controls preamble formatting i.e. the 'intro' part of the output that
  * goes before the argument output
+ * @tparam AddendumFormatter Controls addendum formatting i.e. the part of the output that goes
+ * after the argument output
  */
 template <typename Indent = traits::integral_constant<std::size_t{4}>,
           typename DescColumnOffset = traits::integral_constant<Indent{} * 2>,
-          typename PreambleFormatter = help_formatter_component::default_preamble_formatter>
+          typename PreambleFormatter = help_formatter_component::default_preamble_formatter,
+          typename AddendumFormatter = help_formatter_component::default_addendum_formatter>
 using colour_help_formatter_t =
     default_help_formatter_t<Indent,
                              DescColumnOffset,
                              help_formatter_component::colour_line_formatter<Indent{}>,
-                             PreambleFormatter>;
+                             PreambleFormatter,
+                             AddendumFormatter>;
 
 /** Constant variable helper. */
 constexpr auto colour_help_formatter = colour_help_formatter_t<>{};

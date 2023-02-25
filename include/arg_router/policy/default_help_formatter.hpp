@@ -1,11 +1,10 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #pragma once
 
 #include "arg_router/algorithm.hpp"
-#include "arg_router/policy/policy.hpp"
 #include "arg_router/policy/program_addendum.hpp"
 #include "arg_router/policy/program_intro.hpp"
 #include "arg_router/policy/program_name.hpp"
@@ -42,8 +41,9 @@ public:
      *
      * @tparam DescStart Column at which the description should start
      * @tparam Depth Tree depth of the node @a HelpData is representing
+     * @tparam HelpData Help data type from the node that needs printing
      * @param stream Output stream
-     * @param columns Number columns the terminal has, implementations can use this to perform
+     * @param columns Number of columns the terminal has, implementations can use this to perform
      * attractive line wrapping
      */
     template <std::size_t DescStart, std::size_t Depth, typename HelpData>
@@ -168,6 +168,8 @@ public:
  * @tparam LineFormatter Line formatter type
  * @tparam PreambleFormatter Controls preamble formatting i.e. the 'intro' part of the output that
  * goes before the argument output
+ * @tparam AddendumFormatter Controls addendum formatting i.e. the part of the output that goes
+ * after the argument output
  */
 template <typename Indent = traits::integral_constant<std::size_t{4}>,
           typename DescColumnOffset = traits::integral_constant<Indent{} * 2>,

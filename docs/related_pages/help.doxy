@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -15,21 +15,31 @@ namespace arg_router
  * -# <TT>description</TT> which provides the help blurb
  * -# <TT>children</TT> which provides a tuple of other <TT>help_data_type</TT> compatible structure
  *    types defining child help data
- * 
+ *
  * Help data is all generated at compile-time and the result held in program static read-only
  * memory.  For parse tree leaf-level nodes (e.g. flag_t), the library provides a default alias that
  * generates this data for you: tree_node::default_leaf_help_data_type.
- * 
+ *
+ * @subsection help_node_children help_data_type::children
+ * The <TT>help_data_type::children</TT> type can be seen as the child nodes in a 'help tree'.
+ * Typically it will carry nothing as not flattening is the default and most nodes in the parse tree
+ * are leaves (flags, args, etc.), the most common scenario where this is @em not true is when
+ * defined by a mode-like type in which case <TT>children</TT> will be a tuple of the child parse
+ * tree node's <TT>help_data_type</TT>s.
+ *
+ * An outlier to the above is dependency::one_of_t, where the <TT>help_data_type::children</TT>
+ * tuple elements are the still the node's children, but it will ignore the flattening NTTP.
+ *
  * @subsection help_hdt_flatten Flattening
  * The boolean NTTP the <TT>help_data_type</TT> accepts is for 'flattening'.  'Flattened' help
  * output is where all the child help data is displayed with the parent, rather than only the parent
  * output being displayed and the children help data having to be explicitly requested through the
  * command line - see the README.md for examples of this.
- * 
+ *
  * From the node developer's point of view, typically a non-flattened <TT>help_data_type</TT> would
  * simply empty the children tuple (the parameter is ignored for the
  * tree_node::default_leaf_help_data_type as it will never have children).
- * 
+ *
  * @section help_node Help Node
  * Obviously the types don't do anything on their own, they are read by the help_t node which at
  * @em runtime collects and formats the complete output. The help node is an argument-like node
@@ -37,18 +47,35 @@ namespace arg_router
  * help for that node (see the README.md for examples of this).  To achieve this, in the node's
  * parse method it iteratively searches through the tree's descendents (starting at the root), the
  * last node requested has it's help data shown.
- * 
+ *
  * The help_t node checks for the presence of a policy::flatten_help_t policy - flattening is
  * determined at compile-time.
- * 
- * @section help_node_children help_data_type::children
- * The <TT>help_data_type::children</TT> type can be seen as the child nodes in a 'help tree'. 
- * Typically it will carry nothing as not flattening is the default and most nodes in the parse tree
- * are leaves (flags, args, etc.), the most common scenario where this is @em not true is when
- * defined by a mode-like type in which case <TT>children</TT> will be a tuple of the child parse
- * tree node's <TT>help_data_type</TT>s.
- * 
- * An outlier to the above is dependency::one_of_t, where the <TT>help_data_type::children</TT>
- * tuple elements are the still the node's children, but it will ignore the flattening NTTP.
+ *
+ * @section help_formatter Help Formatting
+ * By default help_t will use policy::default_help_formatter_t, which generates basic output as
+ * shown by the examples in the README.  The formatter delegates much of the formatting duty to
+ * formatter components:
+ * - @b LineFormatter @n
+ * As the same suggests this controls the printing of the argument output.  It is called once per
+ * node.  default_help_formatter_t will use
+ * policy::help_formatter_component::default_line_formatter by default.
+ * - @b PreambleFormatter @n
+ * This controls the printing of the preamble, which typically consists of the program name,
+ * version, and introduction text.  These are provided by policy::program_name_t, etc. that are
+ * associated with the owning help_t.  default_help_formatter_t will use
+ * policy::help_formatter_component::default_preamble_formatter by default.
+ * - @b AddendumFormatter @n
+ * The controls the printing of the addendum, which text printed @em after the argument
+ * documentation.  The text is provided by the policy::program_addendum_t associated with the
+ * owning help_t.  default_help_formatter_t will use
+ * policy::help_formatter_component::default_addendum_formatter by default.
+ *
+ * You will notice that there's no API information here, that's because the API is not fixed as the
+ * formatter components belong the formatter.  So minor changes can be achieved via writing your
+ * own formatter components, whilst more dramatic changes will require a new formatter.
+ *
+ * The default line formatter (policy::help_formatter_component::default_line_formatter) is quite
+ * basic, so a colour version is provided in the library too:
+ * policy::help_formatter_component::colour_line_formatter.
  */
 }
