@@ -66,6 +66,7 @@ jobs:
           -source ${{ env.NUGET_SOURCE_URL }}
 
     - name: Build
+      timeout-minutes: 30
       run: |
         mkdir -p ${{ env.BUILD_DIR }}
         cd ${{ env.BUILD_DIR }}
@@ -141,6 +142,7 @@ jobs:
         & $output[-1] setapikey "${{ secrets.GITHUB_TOKEN }}" -source ${{ env.NUGET_SOURCE_URL }}
 
     - name: Build
+      timeout-minutes: 30
       shell: cmd
       run: |
         call "C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Auxiliary/Build/vcvarsall.bat" x64
@@ -170,6 +172,7 @@ jobs:
         sudo apt install ninja-build libboost-dev
 
     - name: Build
+      timeout-minutes: 30
       run: |
         mkdir -p ${{ env.BUILD_DIR }}
         cd ${{ env.BUILD_DIR }}
@@ -190,6 +193,7 @@ jobs:
         [[ -f "/usr/lib/cmake/arg_router/arg_router-config-version.cmake" ]]
 
     - name: Test CMake package integrity
+      timeout-minutes: 30
       run: |
         mkdir ${{ env.PACKAGE_BUILD_DIR }}
         cd ${{ env.PACKAGE_BUILD_DIR }}

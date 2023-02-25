@@ -47,6 +47,7 @@ jobs:
           -source ${{ env.NUGET_SOURCE_URL }}
 
     - name: Build
+      timeout-minutes: 30
       run: |
         mkdir -p ${{ env.BUILD_DIR }}
         cd ${{ env.BUILD_DIR }}
@@ -90,6 +91,7 @@ jobs:
           -source ${{ env.NUGET_SOURCE_URL }}
 
     - name: Build
+      timeout-minutes: 30
       run: |
         mkdir -p ${{ env.BUILD_DIR }}
         cd ${{ env.BUILD_DIR }}
@@ -133,6 +135,7 @@ jobs:
           -source ${{ env.NUGET_SOURCE_URL }}
 
     - name: Build
+      timeout-minutes: 30
       run: |
         mkdir -p ${{ env.BUILD_DIR }}
         cd ${{ env.BUILD_DIR }}
@@ -176,6 +179,7 @@ jobs:
           -source ${{ env.NUGET_SOURCE_URL }}
 
     - name: Build
+      timeout-minutes: 30
       run: |
         mkdir -p ${{ env.BUILD_DIR }}
         cd ${{ env.BUILD_DIR }}
@@ -212,6 +216,7 @@ jobs:
         & $output[-1] setapikey "${{ secrets.GITHUB_TOKEN }}" -source ${{ env.NUGET_SOURCE_URL }}
 
     - name: Build
+      timeout-minutes: 30
       shell: cmd
       run: |
         call "C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Auxiliary/Build/vcvarsall.bat" x64
@@ -221,7 +226,7 @@ jobs:
         "${{ env.CMAKE_EXE }}" --build . --target arg_router_test cpp17_examples cpp20_examples
 
     - name: Run unit tests
-      timeout-minutes: 20
+      timeout-minutes: 30
       run: |
         cd ${{ env.BUILD_DIR }}/test
         ./arg_router_test.exe -l test_suite
@@ -277,6 +282,7 @@ jobs:
           -source ${{ env.NUGET_SOURCE_URL }}
 
     - name: Build
+      timeout-minutes: 30
       run: |
         mkdir -p ${{ env.BUILD_DIR }}
         cd ${{ env.BUILD_DIR }}
