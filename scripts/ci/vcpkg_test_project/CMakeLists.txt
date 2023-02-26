@@ -19,7 +19,7 @@ find_package(arg_router REQUIRED)
 include_directories(BEFORE SYSTEM "${arg_router_INCLUDE_DIRS}")
 
 add_executable(vcpkg_test_project
-    "${ROOT_DIR}/examples/c++20/just_cats/main.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/vcpkg.json")
 
 target_compile_features(vcpkg_test_project PUBLIC cxx_std_20)
