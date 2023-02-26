@@ -478,8 +478,8 @@ private:
  *
  * Compile-time strings can be passed in directly and will be converted to the appropriate policies
  * automatically.  The rules are:
- * -# The first multi-character string becomes a policy::none_name_t
- * -# The second multi-character string becomes a policy::description_t
+ * -# The first string becomes a policy::none_name_t
+ * -# The second string becomes a policy::description_t
  *
  * The above are unicode aware.  The strings can be passed in any order relative to the other
  * policies, but it is recommended to put them first to ease reading.
@@ -494,8 +494,8 @@ constexpr auto mode(Params... params)
     return std::apply(
         [](auto... converted_params) { return mode_t{std::move(converted_params)...}; },
         utility::string_to_policy::convert<
-            utility::string_to_policy::first_string_mapper<policy::none_name_t>,
-            utility::string_to_policy::second_string_mapper<policy::description_t>>(
+            utility::string_to_policy::first_text_mapper<policy::none_name_t>,
+            utility::string_to_policy::second_text_mapper<policy::description_t>>(
             std::move(params)...));
 }
 }  // namespace arg_router

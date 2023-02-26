@@ -130,13 +130,49 @@ public:
     using type = typename inner<Strings>::type;
 };
 
-/** Tuple of mappers
+/** Maps the policy to use on the first string of any size, if present.
  *
- * This for use as the <TT>MappingCollection</TT> template parameter of convert(Params...).
- * @tparam Mappers Pack of mapper types
+ * @note For how to use, see convert(Params...)
+ * @tparam Policy Policy to use
  */
-template <typename... Mappers>
-using mappers_collection = std::tuple<std::decay_t<Mappers>...>;
+template <template <typename> typename Policy>
+class first_text_mapper
+{
+    template <typename Strings>
+    struct inner {
+        using string_type = boost::mp11::
+            mp_eval_if_c<(std::tuple_size_v<Strings> < 1), void, boost::mp11::mp_first, Strings>;
+        using type = boost::mp11::
+            mp_eval_if_c<std::is_void_v<string_type>, string_type, Policy, string_type>;
+    };
+
+public:
+    /** Policy type initialised with the compile-time string, or void if not found. */
+    template <typename Strings>
+    using type = typename inner<Strings>::type;
+};
+
+/** Maps the policy to use on the second string of any size, if present.
+ *
+ * @note For how to use, see convert(Params...)
+ * @tparam Policy Policy to use
+ */
+template <template <typename> typename Policy>
+class second_text_mapper
+{
+    template <typename Strings>
+    struct inner {
+        using string_type = boost::mp11::
+            mp_eval_if_c<(std::tuple_size_v<Strings> < 2), void, boost::mp11::mp_second, Strings>;
+        using type = boost::mp11::
+            mp_eval_if_c<std::is_void_v<string_type>, string_type, Policy, string_type>;
+    };
+
+public:
+    /** Policy type initialised with the compile-time string, or void if not found. */
+    template <typename Strings>
+    using type = typename inner<Strings>::type;
+};
 
 /** Converts the input parameter pack to a tuple where any compile-time strings have been mapped to
  * policies.
