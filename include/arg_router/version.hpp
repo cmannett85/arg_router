@@ -14,5 +14,5 @@ namespace arg_router
 {
 /** Library version as a SymVers-style string.
  */
-constexpr auto version_string = "1.1.1";
+constexpr auto version_string = "1.2.0";
 }  // namespace arg_router
