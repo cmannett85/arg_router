@@ -37,7 +37,7 @@ var namespacearg__router_1_1policy =
     [ "short_form_expander_t", "classarg__router_1_1policy_1_1short__form__expander__t.html", "classarg__router_1_1policy_1_1short__form__expander__t" ],
     [ "short_name_t", "classarg__router_1_1policy_1_1short__name__t.html", "classarg__router_1_1policy_1_1short__name__t" ],
     [ "value_separator_t", "classarg__router_1_1policy_1_1value__separator__t.html", "classarg__router_1_1policy_1_1value__separator__t" ],
-    [ "colour_help_formatter_t", "namespacearg__router_1_1policy.html#a8f75dcf7d479004106e69f977500d8fa", null ],
+    [ "colour_help_formatter_t", "namespacearg__router_1_1policy.html#afb0a4e0030ab0111d18634aca333054c", null ],
     [ "has_no_result_value", "namespacearg__router_1_1policy.html#a985a31d1991b66211625593d1b07dff9", null ],
     [ "is_required", "namespacearg__router_1_1policy.html#a408a1ac19cbc1f4ad69630f965f976d8", null ],
     [ "alias", "namespacearg__router_1_1policy.html#a74f7ac57ca81edc526eb68a9531713c0", null ],

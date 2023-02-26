@@ -37,10 +37,11 @@ var NAVTREE =
     [ "Error Handling", "error_handling.html", null ],
     [ "Help", "help.html", [
       [ "help_data_type", "help.html#help_hdt", [
+        [ "help_data_type::children", "help.html#help_node_children", null ],
         [ "Flattening", "help.html#help_hdt_flatten", null ]
       ] ],
       [ "Help Node", "help.html#help_node", null ],
-      [ "help_data_type::children", "help.html#help_node_children", null ]
+      [ "Help Formatting", "help.html#help_formatter", null ]
     ] ],
     [ "Nodes", "nodes.html", [
       [ "Parameter Organising", "nodes.html#nodes_parameter_organising", null ],
@@ -101,9 +102,9 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "",
-"classarg__router_1_1root__t.html#a91fa95bf1546f47836de9c37a8486325",
-"namespacearg__router.html#ab3c79c3c1cb22d86d1dac370a8733e56a6523b27f920fc7e96d93cc40a551a247",
-"structarg__router_1_1policy_1_1validation_1_1common__rules_1_1despecialised__any__of__rule.html"
+"classarg__router_1_1positional__arg__t.html",
+"mode_8hpp_source.html",
+"structarg__router_1_1is__tree__node.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

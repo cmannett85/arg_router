@@ -396,7 +396,14 @@ template&lt;typename T , typename... Policies&gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Constructs an <a class="el" href="classarg__router_1_1arg__t.html">arg_t</a> with the given policies and value type.</p>
-<p>This is necessary due to CTAD being required for all template parameters or none, and unfortunately in our case we need <em>T</em> to be explicitly set by the user whilst <em>Policies</em> should be deduced. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
+<p>This is necessary due to CTAD being required for all template parameters or none, and unfortunately in our case we need <em>T</em> to be explicitly set by the user whilst <em>Policies</em> should be deduced.</p>
+<p>Compile-time strings can be passed in directly and will be converted to the appropriate policies automatically. The rules are:</p><ol type="1">
+<li>The first multi-character string becomes a <a class="el" href="classarg__router_1_1policy_1_1long__name__t.html">policy::long_name_t</a></li>
+<li>The second multi-character string becomes a <a class="el" href="classarg__router_1_1policy_1_1description__t.html">policy::description_t</a></li>
+<li>The first single-charcter string becomes a <a class="el" href="classarg__router_1_1policy_1_1short__name__t.html">policy::short_name_t</a></li>
+</ol>
+<p>The above are unicode aware. The strings can be passed in any order relative to the other policies, but it is recommended to put them first to ease reading.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">T</td><td>Argument value type </td></tr>
     <tr><td class="paramname">Policies</td><td>Pack of policies that define its behaviour </td></tr>
@@ -411,7 +418,7 @@ template&lt;typename T , typename... Policies&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Argument instance </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="arg_8hpp_source.html#l00113">113</a> of file <a class="el" href="arg_8hpp_source.html">arg.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="arg_8hpp_source.html#l00127">127</a> of file <a class="el" href="arg_8hpp_source.html">arg.hpp</a>.</p>
 
 </div>
 </div>
@@ -441,10 +448,15 @@ template&lt;typename T , typename... Policies&gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Constructs a <a class="el" href="classarg__router_1_1counting__flag__t.html">counting_flag_t</a> with the given policies.</p>
-<p>This is used for similarity with <a class="el" href="classarg__router_1_1arg__t.html">arg_t</a>.</p>
 <p>Just like 'normal' flags, counting flags with shortnames can be concatenated or 'collapsed' on the command line, e.g. </p><div class="fragment"><div class="line">foo -a -b -c</div>
 <div class="line">foo -abc</div>
-</div><!-- fragment --> <dl class="tparams"><dt>Template Parameters</dt><dd>
+</div><!-- fragment --><p>Compile-time strings can be passed in directly and will be converted to the appropriate policies automatically. The rules are:</p><ol type="1">
+<li>The first multi-character string becomes a <a class="el" href="classarg__router_1_1policy_1_1long__name__t.html">policy::long_name_t</a></li>
+<li>The second multi-character string becomes a <a class="el" href="classarg__router_1_1policy_1_1description__t.html">policy::description_t</a></li>
+<li>The first single-charcter string becomes a <a class="el" href="classarg__router_1_1policy_1_1short__name__t.html">policy::short_name_t</a></li>
+</ol>
+<p>The above are unicode aware. The strings can be passed in any order relative to the other policies, but it is recommended to put them first to ease reading.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Policies</td><td>Pack of policies that define its behaviour </td></tr>
   </table>
@@ -458,7 +470,7 @@ template&lt;typename T , typename... Policies&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Flag instance </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="counting__flag_8hpp_source.html#l00132">132</a> of file <a class="el" href="counting__flag_8hpp_source.html">counting_flag.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="counting__flag_8hpp_source.html#l00144">144</a> of file <a class="el" href="counting__flag_8hpp_source.html">counting_flag.hpp</a>.</p>
 
 </div>
 </div>
@@ -488,10 +500,15 @@ template&lt;typename... Policies&gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Constructs a <a class="el" href="classarg__router_1_1flag__t.html">flag_t</a> with the given policies.</p>
-<p>This is used for similarity with <a class="el" href="classarg__router_1_1arg__t.html">arg_t</a>.</p>
 <p>Flags with shortnames can be concatenated or 'collapsed' on the command line, e.g. </p><div class="fragment"><div class="line">foo -a -b -c</div>
 <div class="line">foo -abc</div>
-</div><!-- fragment --> <dl class="tparams"><dt>Template Parameters</dt><dd>
+</div><!-- fragment --><p>Compile-time strings can be passed in directly and will be converted to the appropriate policies automatically. The rules are:</p><ol type="1">
+<li>The first multi-character string becomes a <a class="el" href="classarg__router_1_1policy_1_1long__name__t.html">policy::long_name_t</a></li>
+<li>The second multi-character string becomes a <a class="el" href="classarg__router_1_1policy_1_1description__t.html">policy::description_t</a></li>
+<li>The first single-charcter string becomes a <a class="el" href="classarg__router_1_1policy_1_1short__name__t.html">policy::short_name_t</a></li>
+</ol>
+<p>The above are unicode aware. The strings can be passed in any order relative to the other policies, but it is recommended to put them first to ease reading.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Policies</td><td>Pack of policies that define its behaviour </td></tr>
   </table>
@@ -505,7 +522,7 @@ template&lt;typename... Policies&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Flag instance </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="flag_8hpp_source.html#l00124">124</a> of file <a class="el" href="flag_8hpp_source.html">flag.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flag_8hpp_source.html#l00136">136</a> of file <a class="el" href="flag_8hpp_source.html">flag.hpp</a>.</p>
 
 </div>
 </div>
@@ -535,7 +552,13 @@ template&lt;typename... Policies&gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Constructs a <a class="el" href="classarg__router_1_1help__t.html">help_t</a> with the given policies.</p>
-<p>This is used for similarity with <a class="el" href="classarg__router_1_1arg__t.html">arg_t</a>. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
+<p>Compile-time strings can be passed in directly and will be converted to the appropriate policies automatically. The rules are:</p><ol type="1">
+<li>The first multi-character string becomes a <a class="el" href="classarg__router_1_1policy_1_1long__name__t.html">policy::long_name_t</a></li>
+<li>The second multi-character string becomes a <a class="el" href="classarg__router_1_1policy_1_1description__t.html">policy::description_t</a></li>
+<li>The first single-charcter string becomes a <a class="el" href="classarg__router_1_1policy_1_1short__name__t.html">policy::short_name_t</a></li>
+</ol>
+<p>The above are unicode aware. The strings can be passed in any order relative to the other policies, but it is recommended to put them first to ease reading.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Policies</td><td>Pack of policies that define its behaviour </td></tr>
   </table>
@@ -549,7 +572,7 @@ template&lt;typename... Policies&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Help instance </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="help_8hpp_source.html#l00221">221</a> of file <a class="el" href="help_8hpp_source.html">help.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="help_8hpp_source.html#l00233">233</a> of file <a class="el" href="help_8hpp_source.html">help.hpp</a>.</p>
 
 </div>
 </div>
@@ -667,7 +690,12 @@ template&lt;typename... Params&gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Constructs a <a class="el" href="classarg__router_1_1mode__t.html">mode_t</a> with the given policies.</p>
-<p>This is used for similarity with <a class="el" href="classarg__router_1_1arg__t.html">arg_t</a>. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
+<p>Compile-time strings can be passed in directly and will be converted to the appropriate policies automatically. The rules are:</p><ol type="1">
+<li>The first string becomes a <a class="el" href="classarg__router_1_1policy_1_1none__name__t.html">policy::none_name_t</a></li>
+<li>The second string becomes a <a class="el" href="classarg__router_1_1policy_1_1description__t.html">policy::description_t</a></li>
+</ol>
+<p>The above are unicode aware. The strings can be passed in any order relative to the other policies, but it is recommended to put them first to ease reading.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Params</td><td>Policies and child node types for the mode </td></tr>
   </table>
@@ -681,7 +709,7 @@ template&lt;typename... Params&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Mode instance </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mode_8hpp_source.html#l00482">482</a> of file <a class="el" href="mode_8hpp_source.html">mode.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mode_8hpp_source.html#l00492">492</a> of file <a class="el" href="mode_8hpp_source.html">mode.hpp</a>.</p>
 
 </div>
 </div>
@@ -711,7 +739,13 @@ template&lt;typename T , typename... Policies&gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Constructs an <a class="el" href="classarg__router_1_1positional__arg__t.html">positional_arg_t</a> with the given policies and value type.</p>
-<p>This is necessary due to CTAD being required for all template parameters or none, and unfortunately in our case we need <em>T</em> to be explicitly set by the user whilst <em>Policies</em> should be deduced. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
+<p>This is necessary due to CTAD being required for all template parameters or none, and unfortunately in our case we need <em>T</em> to be explicitly set by the user whilst <em>Policies</em> should be deduced.</p>
+<p>Compile-time strings can be passed in directly and will be converted to the appropriate policies automatically. The rules are:</p><ol type="1">
+<li>The first string becomes a <a class="el" href="classarg__router_1_1policy_1_1display__name__t.html">policy::display_name_t</a></li>
+<li>The second string becomes a <a class="el" href="classarg__router_1_1policy_1_1description__t.html">policy::description_t</a></li>
+</ol>
+<p>The above are unicode aware. The strings can be passed in any order relative to the other policies, but it is recommended to put them first to ease reading.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">T</td><td>Argument value type, must have a <code>push_back(..)</code> method </td></tr>
     <tr><td class="paramname">Policies</td><td>Pack of policies that define its behaviour </td></tr>
@@ -726,7 +760,7 @@ template&lt;typename T , typename... Policies&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Argument instance </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="positional__arg_8hpp_source.html#l00187">187</a> of file <a class="el" href="positional__arg_8hpp_source.html">positional_arg.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="positional__arg_8hpp_source.html#l00199">199</a> of file <a class="el" href="positional__arg_8hpp_source.html">positional_arg.hpp</a>.</p>
 
 </div>
 </div>

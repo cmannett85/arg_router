@@ -155,8 +155,8 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="line">        arp::router{[](<span class="keywordtype">bool</span> show_ends,</div>
 <div class="line">                       <span class="keywordtype">bool</span> show_non_printing,</div>
 <div class="line">                       <span class="keywordtype">int</span> max_lines,</div>
-<div class="line">                       std::vector&lt;std::string_view&gt; files) { ... }})).</div>
-<div class="line">    parse(argc, argv);</div>
+<div class="line">                       std::vector&lt;std::string_view&gt; files) { ... }}))</div>
+<div class="line">    .parse(argc, argv);</div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00015">algorithm.hpp:16</a></div></div>
 </div><!-- fragment --><p> Let's start from the top, as the name suggests <code>root</code> is the root of the parse tree and provides the <code>parse(argc, argv)</code> method. Only children of the root can (and must) have a <code>router</code> policy (except for nested <code>mode</code>s, more <a href="#modes">on that later</a>) and therefore act as access points into the program. The root's children are implicitly mutually exclusive, so trying to pass <code>--version --help</code> in the command line is a runtime error.</p>
 <p>The <code>arp::validation::default_validator</code> instance provides the default validator that the root uses to validate the parse tree at compile-time. It is a required policy of the <code>root</code>. Unless you have implemented your own policy or tree node you will never need to specify anything else.</p>
@@ -170,28 +170,51 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <p>By default whitespace is used to separate out the command line tokens, this is done by the terminal/OS invoking the program, but often '=' is used a name/value token separator. <code><a class="el" href="namespacearg__router.html">arg_router</a></code> supports this with the <code>value_separator_t</code> policy as used in the <code>arg&lt;int&gt;</code> node in the example.</p>
 <p><code>positional_arg&lt;T&gt;</code> does not use a 'marker' token on the command line for which its value follows, the value's position in the command line arguments determines what it is for. The order that arguments are specified on the command line normally don't matter, but for positional arguments they do; for example in our cat program the files must be specified after the arguments so passing <code>myfile.hpp -n</code> would trigger the parser to land on the <code>positional_arg</code> for <code>myfile.hpp</code> which would then greedily consume the <code>-n</code> causing the application to try to open the file <code>-n</code>... We'll cover constrained <code>positional_arg</code>s in later examples. The <code>display_name_t</code> policy is used when generating help or error output - it is not used when parsing.</p>
 <p>Assuming parsing was successful, the final <code>router</code> is called with the parsed argument e.g. if the user passed <code>-E file1 file2</code> then the <code>router</code> is passed <code>(true, false, -1, {"file1", "file2"})</code>.</p>
-<p>You may have noticed that the nodes are constructed with parentheses whilst the policies use braces, this is necessary due to CTAD rules that affect nodes which return a user-defined value type. This can be circumvented using a function to return the required instance, for example the actual type of a flag is <code>flag_t</code>, <code>flag(...)</code> is a function that creates one for you.</p>
+<p>You may have noticed that the nodes are constructed with parentheses whilst the policies use braces, this is necessary due to CTAD rules that affect nodes which return a user-defined value type. This can be circumvented using a function to return the required instance, for example the actual type of a flag is <code>flag_t</code>, <code>flag(...)</code> is a factory function.</p>
+<h2>Implicit String Policies</h2>
+<p>Although explicit, which may make it easier to read, the name policies are also verbose. To ease this most of the built-in nodes support implicit string-to-policy mapping, which allows bare compile-time strings to be passed to the node factory functions which are then mapped to appropriate built-in policies. The rules vary from node to node due, but typically they are:</p><ol type="1">
+<li>The first multi-character string becomes a <code>policy::long_name_t</code></li>
+<li>The second multi-character string becomes a <code>policy::description_t</code></li>
+<li>The first single-charcter string becomes a <code>policy::short_name_t</code> The above are unicode aware. The strings can be passed in any order relative to the other policies, but it is recommended to put them first to ease reading.</li>
+</ol>
+<p>Re-writing the <code>cat</code>-like program using implicit strings shortens it considerably: </p><div class="fragment"><div class="line">ar::root(</div>
+<div class="line">    arp::validation::default_validator,</div>
+<div class="line">    ar::help(<span class="stringliteral">&quot;help&quot;</span>_S, <span class="stringliteral">&quot;h&quot;</span>_S, <span class="stringliteral">&quot;Display this help and exit&quot;</span>_S,</div>
+<div class="line">        arp::program_name_t{<span class="stringliteral">&quot;my-cat&quot;</span>_S},</div>
+<div class="line">        arp::program_version_t{<span class="stringliteral">&quot;v3.14&quot;</span>_S}),</div>
+<div class="line">    ar::flag(<span class="stringliteral">&quot;version&quot;</span>_S, <span class="stringliteral">&quot;Output version information and exit&quot;</span>_S,</div>
+<div class="line">        arp::router{[](<span class="keywordtype">bool</span> v) { ... }}),</div>
+<div class="line">    ar::mode(</div>
+<div class="line">        ar::flag(<span class="stringliteral">&quot;show-all&quot;</span>_S, <span class="stringliteral">&quot;A&quot;</span>_S, <span class="stringliteral">&quot;Equivalent to -nE&quot;</span>_S,</div>
+<div class="line">            arp::alias_t{arp::short_name_t{<span class="stringliteral">&quot;E&quot;</span>_S}, arp::short_name_t{<span class="stringliteral">&quot;n&quot;</span>_S}}),</div>
+<div class="line">        ar::flag(<span class="stringliteral">&quot;show-ends&quot;</span>_S, <span class="stringliteral">&quot;E&quot;</span>_S, <span class="stringliteral">&quot;Display $ at end of each line&quot;</span>_S),</div>
+<div class="line">        ar::flag(<span class="stringliteral">&quot;show-nonprinting&quot;</span>_S, <span class="stringliteral">&quot;n&quot;</span>_S, <span class="stringliteral">&quot;Use ^ and M- notation, except for LFD and TAB&quot;</span>_S),</div>
+<div class="line">        ar::arg&lt;int&gt;(<span class="stringliteral">&quot;max-lines&quot;</span>_S, <span class="stringliteral">&quot;Maximum lines to output&quot;</span>_S,</div>
+<div class="line">            arp::value_separator_t{<span class="stringliteral">&quot;=&quot;</span>_S},</div>
+<div class="line">            arp::default_value{-1}),</div>
+<div class="line">        ar::positional_arg&lt;std::vector&lt;std::string_view&gt;&gt;(<span class="stringliteral">&quot;FILES&quot;</span>_S, <span class="stringliteral">&quot;Files to read&quot;</span>_S,</div>
+<div class="line">            arp::required,</div>
+<div class="line">            arp::min_count&lt;1&gt;),</div>
+<div class="line">        arp::router{[](<span class="keywordtype">bool</span> show_ends,</div>
+<div class="line">                       <span class="keywordtype">bool</span> show_non_printing,</div>
+<div class="line">                       <span class="keywordtype">int</span> max_lines,</div>
+<div class="line">                       std::vector&lt;std::string_view&gt; files) { ... }}))</div>
+<div class="line">    .parse(argc, argv);</div>
+</div><!-- fragment --><p> This documentation will use implicit string policies going forward, but new nodes will always be introduced with explicit policies.</p>
 <h1>Conditional Arguments</h1>
 <p>Let's add another feature to our cat program where we can handle lines over a certain length differently. </p><div class="fragment"><div class="line"><span class="keyword">namespace </span>ard = ar::dependency;</div>
 <div class="line">ar::mode(</div>
 <div class="line">    ...</div>
-<div class="line">    ar::arg&lt;std::optional&lt;std::size_t&gt;&gt;(</div>
-<div class="line">        arp::long_name_t{<span class="stringliteral">&quot;max-line-length&quot;</span>_S},</div>
-<div class="line">        arp::description_t{<span class="stringliteral">&quot;Maximum line length&quot;</span>_S},</div>
+<div class="line">    ar::arg&lt;std::optional&lt;std::size_t&gt;&gt;(<span class="stringliteral">&quot;max-line-length&quot;</span>_S, <span class="stringliteral">&quot;Maximum line length&quot;</span>_S,</div>
 <div class="line">        arp::value_separator_t{<span class="stringliteral">&quot;=&quot;</span>_S},</div>
 <div class="line">        arp::default_value{std::optional&lt;std::size_t&gt;{}}),</div>
 <div class="line">    ard::one_of(</div>
 <div class="line">        arp::default_value{<span class="stringliteral">&quot;...&quot;</span>},</div>
-<div class="line">        ar::flag(</div>
+<div class="line">        ar::flag(<span class="stringliteral">&quot;skip-line&quot;</span>_S, <span class="stringliteral">&quot;s&quot;</span>_S, <span class="stringliteral">&quot;Skips line output if max line length reached&quot;</span>_S,</div>
+<div class="line">            arp::dependent_t{arp::long_name_t{<span class="stringliteral">&quot;max-line-length&quot;</span>_S}}),</div>
+<div class="line">        ar::arg&lt;std::string_view&gt;(<span class="stringliteral">&quot;line-suffix&quot;</span>_S,</div>
+<div class="line">            <span class="stringliteral">&quot;Shortens line length to maximum with the given suffix if max line length reached&quot;</span>_S,</div>
 <div class="line">            arp::dependent_t{arp::long_name_t{<span class="stringliteral">&quot;max-line-length&quot;</span>_S}},</div>
-<div class="line">            arp::long_name_t{<span class="stringliteral">&quot;skip-line&quot;</span>_S},</div>
-<div class="line">            arp::short_name_t{<span class="stringliteral">&quot;s&quot;</span>_S},</div>
-<div class="line">            arp::description_t{<span class="stringliteral">&quot;Skips line output if max line length reached&quot;</span>_S}),</div>
-<div class="line">        ar::arg&lt;std::string_view&gt;(</div>
-<div class="line">            arp::dependent_t{arp::long_name_t{<span class="stringliteral">&quot;max-line-length&quot;</span>_S}},</div>
-<div class="line">            arp::long_name_t{<span class="stringliteral">&quot;line-suffix&quot;</span>_S},</div>
-<div class="line">            arp::description_t{<span class="stringliteral">&quot;Shortens line length to maximum with the &quot;</span></div>
-<div class="line">                               <span class="stringliteral">&quot;given suffix if max line length reached&quot;</span>_S},</div>
 <div class="line">            arp::value_separator_t{<span class="stringliteral">&quot;=&quot;</span>_S})),</div>
 <div class="line">    ...</div>
 <div class="line">    arp::router{[](<span class="keywordtype">bool</span> show_all,</div>
@@ -216,9 +239,7 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="line"> </div>
 <div class="line">ar::mode(</div>
 <div class="line">    ...</div>
-<div class="line">    ar::arg&lt;theme_t&gt;(</div>
-<div class="line">        arp::long_name_t{<span class="stringliteral">&quot;theme&quot;</span>_S},</div>
-<div class="line">        arp::description_t{<span class="stringliteral">&quot;Set the output colour theme&quot;</span>_S},</div>
+<div class="line">    ar::arg&lt;theme_t&gt;(<span class="stringliteral">&quot;theme&quot;</span>_S, <span class="stringliteral">&quot;Set the output colour theme&quot;</span>_S,</div>
 <div class="line">        arp::value_separator_t{<span class="stringliteral">&quot;=&quot;</span>_S},</div>
 <div class="line">        arp::default_value{theme_t::NONE},</div>
 <div class="line">        arp::custom_parser&lt;theme_t&gt;{[](std::string_view <a class="code" href="namespacearg__router.html#a29537daeb3ba7d1b8749d3e1e9d83f1b">arg</a>) {</div>
@@ -232,7 +253,7 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="line">        std::variant&lt;bool, std::string_view&gt; max_line_handling,</div>
 <div class="line">        theme_t theme,</div>
 <div class="line">        std::vector&lt;std::string_view&gt;&gt; files) { ... }}))</div>
-<div class="ttc" id="anamespacearg__router_html_a29537daeb3ba7d1b8749d3e1e9d83f1b"><div class="ttname"><a href="namespacearg__router.html#a29537daeb3ba7d1b8749d3e1e9d83f1b">arg_router::arg</a></div><div class="ttdeci">constexpr auto arg(Policies... policies) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="arg_8hpp_source.html#l00113">arg.hpp:113</a></div></div>
+<div class="ttc" id="anamespacearg__router_html_a29537daeb3ba7d1b8749d3e1e9d83f1b"><div class="ttname"><a href="namespacearg__router.html#a29537daeb3ba7d1b8749d3e1e9d83f1b">arg_router::arg</a></div><div class="ttdeci">constexpr auto arg(Policies... policies) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="arg_8hpp_source.html#l00127">arg.hpp:127</a></div></div>
 </div><!-- fragment --><p> This is a convenient solution to one-off type parsing in-tree, I think it's pretty self-explanatory. However this is not convenient if you have lots of arguments that should return the same custom type, as you would have to copy and paste the lambda or bind calls to the conversion function for each one. In that case we can specialise on the <code>arg_router::parse</code> function. </p><div class="fragment"><div class="line"><span class="keyword">template</span> &lt;&gt;</div>
 <div class="line"><span class="keyword">struct </span><a class="code" href="structarg__router_1_1parser.html">arg_router::parser</a>&lt;theme_t&gt; {</div>
 <div class="line">    [[nodiscard]] <span class="keyword">static</span> <span class="keyword">inline</span> theme_t parse(std::string_view <a class="code" href="namespacearg__router.html#a29537daeb3ba7d1b8749d3e1e9d83f1b">arg</a>)</div>
@@ -260,8 +281,7 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="line"> </div>
 <div class="line">ar::mode(</div>
 <div class="line">    ...</div>
-<div class="line">    ar::counting_flag&lt;verbosity_level_t&gt;(</div>
-<div class="line">        arp::short_name_t{<span class="stringliteral">&quot;v&quot;</span>_S},</div>
+<div class="line">    ar::counting_flag&lt;verbosity_level_t&gt;(<span class="stringliteral">&quot;v&quot;</span>_S,</div>
 <div class="line">        arp::max_value&lt;verbosity_level_t::DEBUG&gt;(),</div>
 <div class="line">        arp::description_t{<span class="stringliteral">&quot;Verbosity level, number of &#39;v&#39;s sets level&quot;</span>_S},</div>
 <div class="line">        arp::default_value{verbosity_level_t::ERROR}),</div>
@@ -284,13 +304,10 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="line">    ard::alias_group(</div>
 <div class="line">        arp::default_value{verbosity_level_t::INFO},</div>
 <div class="line">        arp::max_value&lt;verbosity_level_t::DEBUG&gt;(),</div>
-<div class="line">        ar::counting_flag&lt;verbosity_level_t&gt;(</div>
-<div class="line">            arp::short_name_t{<span class="stringliteral">&quot;v&quot;</span>_S},</div>
+<div class="line">        ar::counting_flag&lt;verbosity_level_t&gt;(<span class="stringliteral">&quot;v&quot;</span>_S,</div>
 <div class="line">            arp::description_t{<span class="stringliteral">&quot;Verbosity level, number of &#39;v&#39;s sets level&quot;</span>_S}),</div>
-<div class="line">        ar::arg&lt;verbosity_level_t&gt;(</div>
-<div class="line">            arp::long_name_t{<span class="stringliteral">&quot;verbose&quot;</span>_S},</div>
-<div class="line">            arp::value_separator_t{<span class="stringliteral">&quot;=&quot;</span>_S},</div>
-<div class="line">            arp::description_t{<span class="stringliteral">&quot;Verbosity level&quot;</span>_S})),</div>
+<div class="line">        ar::arg&lt;verbosity_level_t&gt;(<span class="stringliteral">&quot;verbose&quot;</span>_S, <span class="stringliteral">&quot;Verbosity level&quot;</span>_S,</div>
+<div class="line">            arp::value_separator_t{<span class="stringliteral">&quot;=&quot;</span>_S})),</div>
 <div class="line">    ...</div>
 <div class="line">    arp::router{[](<span class="keywordtype">bool</span> show_all,</div>
 <div class="line">        <span class="keywordtype">bool</span> show_ends,</div>
@@ -320,23 +337,13 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <p>The <code>positional_arg</code> shown in the first example is unconstrained, i.e. it will consume all command line tokens that follow. This isn't always desired, so we can use policies to constrain the amount of tokens consumed. Let's use a file copier as an example: </p><div class="fragment"><div class="line">$ simple-copy -f dest-dir source-path-1 source-path-2</div>
 </div><!-- fragment --><p> Our simple copier takes multiple source paths and copies the files to a single destination directory, a 'force' flag will overwrite existing files silently. </p><div class="fragment"><div class="line">ar::root(</div>
 <div class="line">    arp::validation::default_validator,</div>
-<div class="line">    ar::help(</div>
-<div class="line">        arp::long_name_t{<span class="stringliteral">&quot;help&quot;</span>_S},</div>
-<div class="line">        arp::short_name_t{<span class="stringliteral">&quot;h&quot;</span>_S},</div>
-<div class="line">        arp::description_t{<span class="stringliteral">&quot;Display this help and exit&quot;</span>_S}),</div>
+<div class="line">    ar::help(<span class="stringliteral">&quot;help&quot;</span>_S, <span class="stringliteral">&quot;h&quot;</span>_S, <span class="stringliteral">&quot;Display this help and exit&quot;</span>_S),</div>
 <div class="line">    ar::mode(</div>
-<div class="line">        ar::flag(</div>
-<div class="line">            arp::long_name_t{<span class="stringliteral">&quot;force&quot;</span>_S},</div>
-<div class="line">            arp::short_name_t{<span class="stringliteral">&quot;f&quot;</span>_S},</div>
-<div class="line">            arp::description_t{<span class="stringliteral">&quot;Force overwrite existing files&quot;</span>_S}),</div>
-<div class="line">        ar::positional_arg&lt;std::filesystem::path&gt;(</div>
-<div class="line">            arp::display_name_t{<span class="stringliteral">&quot;DST&quot;</span>_S},</div>
-<div class="line">            arp::description_t{<span class="stringliteral">&quot;Destination directory&quot;</span>_S},</div>
+<div class="line">        ar::flag(<span class="stringliteral">&quot;force&quot;</span>_S, <span class="stringliteral">&quot;f&quot;</span>_S, <span class="stringliteral">&quot;Force overwrite existing files&quot;</span>_S),</div>
+<div class="line">        ar::positional_arg&lt;std::filesystem::path&gt;(<span class="stringliteral">&quot;DST&quot;</span>_S, <span class="stringliteral">&quot;Destination directory&quot;</span>_S,</div>
 <div class="line">            arp::required,</div>
 <div class="line">            arp::fixed_count&lt;1&gt;),</div>
-<div class="line">        ar::positional_arg&lt;std::vector&lt;std::filesystem::path&gt;&gt;(</div>
-<div class="line">            arp::display_name_t{<span class="stringliteral">&quot;SRC&quot;</span>_S},</div>
-<div class="line">            arp::description_t{<span class="stringliteral">&quot;Source file paths&quot;</span>_S},</div>
+<div class="line">        ar::positional_arg&lt;std::vector&lt;std::filesystem::path&gt;&gt;(<span class="stringliteral">&quot;SRC&quot;</span>_S, <span class="stringliteral">&quot;Source file paths&quot;</span>_S,</div>
 <div class="line">            arp::required,</div>
 <div class="line">            arp::min_count&lt;1&gt;),</div>
 <div class="line">        arp::router{[](<span class="keywordtype">bool</span> force,</div>
@@ -352,47 +359,28 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="line">$ simple move -f dest-dir source-path-1</div>
 </div><!-- fragment --> <div class="fragment"><div class="line">ar::root(</div>
 <div class="line">    arp::validation::default_validator,</div>
-<div class="line">    ar::help(</div>
-<div class="line">        arp::long_name_t{<span class="stringliteral">&quot;help&quot;</span>_S},</div>
-<div class="line">        arp::short_name_t{<span class="stringliteral">&quot;h&quot;</span>_S},</div>
-<div class="line">        arp::description_t{<span class="stringliteral">&quot;Display this help and exit&quot;</span>_S}),</div>
+<div class="line">    ar::help(<span class="stringliteral">&quot;help&quot;</span>_S, <span class="stringliteral">&quot;h&quot;</span>_S, <span class="stringliteral">&quot;Display this help and exit&quot;</span>_S),</div>
 <div class="line">    ar::mode(</div>
 <div class="line">        arp::none_name_t{<span class="stringliteral">&quot;copy&quot;</span>_S},</div>
 <div class="line">        arp::description_t{<span class="stringliteral">&quot;Copy source files to destination&quot;</span>_S},</div>
-<div class="line">        ar::flag(</div>
-<div class="line">            arp::long_name_t{<span class="stringliteral">&quot;force&quot;</span>_S},</div>
-<div class="line">            arp::short_name_t{<span class="stringliteral">&quot;f&quot;</span>_S},</div>
-<div class="line">            arp::description_t{<span class="stringliteral">&quot;Force overwrite existing files&quot;</span>_S}),</div>
-<div class="line">        ar::positional_arg&lt;std::filesystem::path&gt;(</div>
+<div class="line">        ar::flag(<span class="stringliteral">&quot;force&quot;</span>_S, <span class="stringliteral">&quot;f&quot;</span>_S, <span class="stringliteral">&quot;Force overwrite existing files&quot;</span>_S),</div>
+<div class="line">        ar::positional_arg&lt;std::filesystem::path&gt;(<span class="stringliteral">&quot;DST&quot;</span>_S, <span class="stringliteral">&quot;Destination directory&quot;</span>_S,</div>
 <div class="line">            arp::required,</div>
-<div class="line">            arp::display_name_t{<span class="stringliteral">&quot;DST&quot;</span>_S},</div>
-<div class="line">            arp::description_t{<span class="stringliteral">&quot;Destination directory&quot;</span>_S},</div>
 <div class="line">            arp::fixed_count&lt;1&gt;),</div>
-<div class="line">        ar::positional_arg&lt;std::vector&lt;std::filesystem::path&gt;&gt;(</div>
+<div class="line">        ar::positional_arg&lt;std::vector&lt;std::filesystem::path&gt;&gt;(<span class="stringliteral">&quot;SRC&quot;</span>_S, <span class="stringliteral">&quot;Source file paths&quot;</span>_S,</div>
 <div class="line">            arp::required,</div>
-<div class="line">            arp::display_name_t{<span class="stringliteral">&quot;SRC&quot;</span>_S},</div>
-<div class="line">            arp::description_t{<span class="stringliteral">&quot;Source file paths&quot;</span>_S},</div>
 <div class="line">            arp::min_count&lt;1&gt;),</div>
 <div class="line">        arp::router{[](<span class="keywordtype">bool</span> force,</div>
 <div class="line">                       std::filesystem::path dest,</div>
 <div class="line">                       std::vector&lt;std::filesystem::path&gt; srcs) { ... }}),</div>
-<div class="line">    ar::mode(</div>
-<div class="line">        arp::none_name_t{<span class="stringliteral">&quot;move&quot;</span>_S},</div>
-<div class="line">        arp::description_t<span class="stringliteral">&quot;Move source file to destination&quot;</span>_S},</div>
-<div class="line">        ar::flag(</div>
-<div class="line">            arp::long_name_t{<span class="stringliteral">&quot;force&quot;</span>_S},</div>
-<div class="line">            arp::short_name_t{<span class="stringliteral">&quot;f&quot;</span>_S},</div>
-<div class="line">            arp::description_t{<span class="stringliteral">&quot;Force overwrite existing files&quot;</span>_S}),</div>
-<div class="line">        ar::positional_arg&lt;std::filesystem::path&gt;(</div>
+<div class="line">    ar::mode(<span class="stringliteral">&quot;move&quot;</span>_S, <span class="stringliteral">&quot;Move source file to destination&quot;</span>_S,</div>
+<div class="line">        ar::flag(<span class="stringliteral">&quot;force&quot;</span>_S, <span class="stringliteral">&quot;f&quot;</span>_S, <span class="stringliteral">&quot;Force overwrite existing files&quot;</span>_S),</div>
+<div class="line">        ar::positional_arg&lt;std::filesystem::path&gt;(<span class="stringliteral">&quot;DST&quot;</span>_S, <span class="stringliteral">&quot;Destination directory&quot;</span>_S,</div>
 <div class="line">            arp::required,</div>
-<div class="line">            arp::display_name_t{<span class="stringliteral">&quot;DST&quot;</span>_S},</div>
-<div class="line">            arp::description_t{<span class="stringliteral">&quot;Destination directory&quot;</span>_S},</div>
 <div class="line">            arp::fixed_count&lt;1&gt;),</div>
 <div class="line">        <span class="comment">// Can only have one</span></div>
-<div class="line">        ar::positional_arg&lt;std::filesystem::path&gt;(</div>
+<div class="line">        ar::positional_arg&lt;std::filesystem::path&gt;(<span class="stringliteral">&quot;SRC&quot;</span>_S, <span class="stringliteral">&quot;Source file path&quot;</span>_S,</div>
 <div class="line">            arp::required,</div>
-<div class="line">            arp::display_name_t{<span class="stringliteral">&quot;SRC&quot;</span>_S},</div>
-<div class="line">            arp::description_t{<span class="stringliteral">&quot;Source file path&quot;</span>_S},</div>
 <div class="line">            arp::fixed_count&lt;1&gt;),</div>
 <div class="line">        arp::router{[](<span class="keywordtype">bool</span> force,</div>
 <div class="line">                       std::filesystem::path dest,</div>
@@ -401,38 +389,25 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <p>Named <code>mode</code>s can be nested too! Only one mode can be invoked, so attempting to use flags from parent modes is a runtime failure. Another stipulation is that every <code>mode</code> needs a <code>router</code> unless <em>all</em> of its children are <code>mode</code>s as well.</p>
 <h2>Flags Common Between Nodes</h2>
 <p>An obvious ugliness to the above example is that we now have duplicated code. We can split that out, and then use copies in the root declaration. </p><div class="fragment"><div class="line">constexpr <span class="keyword">auto</span> common_args = ar::list{</div>
-<div class="line">    ar::flag(</div>
-<div class="line">        arp::long_name_t{<span class="stringliteral">&quot;force&quot;</span>_S},</div>
-<div class="line">        arp::short_name_t{<span class="stringliteral">&quot;f&quot;</span>_S},</div>
-<div class="line">        arp::description_t{<span class="stringliteral">&quot;Force overwrite existing files&quot;</span>_S}),</div>
-<div class="line">    ar::positional_arg&lt;std::filesystem::path&gt;(</div>
+<div class="line">    ar::flag(<span class="stringliteral">&quot;force&quot;</span>_S, <span class="stringliteral">&quot;f&quot;</span>_S, <span class="stringliteral">&quot;Force overwrite existing files&quot;</span>_S),</div>
+<div class="line">    ar::positional_arg&lt;std::filesystem::path&gt;(<span class="stringliteral">&quot;DST&quot;</span>_S, <span class="stringliteral">&quot;Destination directory&quot;</span>_S,</div>
 <div class="line">        arp::required,</div>
-<div class="line">        arp::display_name_t{<span class="stringliteral">&quot;DST&quot;</span>_S},</div>
-<div class="line">        arp::description_t{<span class="stringliteral">&quot;Destination directory&quot;</span>_S},</div>
 <div class="line">        arp::fixed_count&lt;1&gt;)};</div>
 <div class="line"> </div>
 <div class="line">ar::root(</div>
 <div class="line">    arp::validation::default_validator,</div>
-<div class="line">    ar::mode(</div>
-<div class="line">        arp::none_name_t{<span class="stringliteral">&quot;copy&quot;</span>_S},</div>
-<div class="line">        arp::description_t{<span class="stringliteral">&quot;Copy source files to destination&quot;</span>_S},</div>
+<div class="line">    ar::mode(<span class="stringliteral">&quot;copy&quot;</span>_S, <span class="stringliteral">&quot;Copy source files to destination&quot;</span>_S,</div>
 <div class="line">        common_args,</div>
-<div class="line">        ar::positional_arg&lt;std::vector&lt;std::filesystem::path&gt;&gt;(</div>
+<div class="line">        ar::positional_arg&lt;std::vector&lt;std::filesystem::path&gt;&gt;(<span class="stringliteral">&quot;SRC&quot;</span>_S, <span class="stringliteral">&quot;Source file paths&quot;</span>_S,</div>
 <div class="line">            arp::required,</div>
-<div class="line">            arp::display_name_t{<span class="stringliteral">&quot;SRC&quot;</span>_S},</div>
-<div class="line">            arp::description_t{<span class="stringliteral">&quot;Source file paths&quot;</span>_S},</div>
 <div class="line">            arp::min_count&lt;1&gt;),</div>
 <div class="line">        arp::router{[](<span class="keywordtype">bool</span> force,</div>
 <div class="line">                       std::filesystem::path dest,</div>
 <div class="line">                       std::vector&lt;std::filesystem::path&gt; srcs) { ... }}),</div>
-<div class="line">    ar::mode(</div>
-<div class="line">        arp::none_name_t{<span class="stringliteral">&quot;move&quot;</span>_S},</div>
-<div class="line">        arp::description_t{<span class="stringliteral">&quot;Move source file to destination&quot;</span>_S},</div>
+<div class="line">    ar::mode(<span class="stringliteral">&quot;move&quot;</span>_S, <span class="stringliteral">&quot;Move source file to destination&quot;</span>_S,</div>
 <div class="line">        common_args,</div>
-<div class="line">        ar::positional_arg&lt;std::filesystem::path&gt;(</div>
+<div class="line">        ar::positional_arg&lt;std::filesystem::path&gt;(<span class="stringliteral">&quot;SRC&quot;</span>_S, <span class="stringliteral">&quot;Source file path&quot;</span>_S,</div>
 <div class="line">            arp::required,</div>
-<div class="line">            arp::display_name_t{<span class="stringliteral">&quot;SRC&quot;</span>_S},</div>
-<div class="line">            arp::description_t{<span class="stringliteral">&quot;Source file path&quot;</span>_S},</div>
 <div class="line">            arp::fixed_count&lt;1&gt;),</div>
 <div class="line">        arp::router{[](<span class="keywordtype">bool</span> force,</div>
 <div class="line">                       std::filesystem::path dest,</div>
@@ -449,47 +424,31 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 </ul>
 <p>Unlike string data everywhere else in the library, the formatted help output is created at runtime so we don't need to keep duplicate read-only text data.</p>
 <p>For example the slightly embellished tree from above: </p><div class="fragment"><div class="line"><span class="keyword">const</span> <span class="keyword">auto</span> common_args = ar::list{</div>
-<div class="line">    ar::flag(</div>
-<div class="line">        arp::long_name_t{<span class="stringliteral">&quot;force&quot;</span>_S},</div>
-<div class="line">        arp::short_name_t{<span class="stringliteral">&quot;f&quot;</span>_S},</div>
-<div class="line">        arp::description_t{<span class="stringliteral">&quot;Force overwrite existing files&quot;</span>_S}),</div>
-<div class="line">    ar::positional_arg&lt;std::filesystem::path&gt;(</div>
+<div class="line">    ar::flag(<span class="stringliteral">&quot;force&quot;</span>_S, <span class="stringliteral">&quot;f&quot;</span>_S, <span class="stringliteral">&quot;Force overwrite existing files&quot;</span>_S),</div>
+<div class="line">    ar::positional_arg&lt;std::filesystem::path&gt;(<span class="stringliteral">&quot;DST&quot;</span>_S, <span class="stringliteral">&quot;Destination directory&quot;</span>_S,</div>
 <div class="line">        arp::required,</div>
-<div class="line">        arp::display_name_t{<span class="stringliteral">&quot;DST&quot;</span>_S},</div>
-<div class="line">        arp::description_t{<span class="stringliteral">&quot;Destination directory&quot;</span>_S},</div>
 <div class="line">        arp::fixed_count&lt;1&gt;)};</div>
 <div class="line"> </div>
 <div class="line">ar::root(</div>
 <div class="line">    arp::validation::default_validator,</div>
-<div class="line">    ar::help(</div>
-<div class="line">        arp::long_name_t{<span class="stringliteral">&quot;help&quot;</span>_S},</div>
-<div class="line">        arp::short_name_t{<span class="stringliteral">&quot;h&quot;</span>_S},</div>
-<div class="line">        arp::description_t{<span class="stringliteral">&quot;Display this help and exit&quot;</span>_S},</div>
+<div class="line">    ar::help(<span class="stringliteral">&quot;help&quot;</span>_S, <span class="stringliteral">&quot;h&quot;</span>_S, <span class="stringliteral">&quot;Display this help and exit&quot;</span>_S,</div>
 <div class="line">        arp::program_name_t{<span class="stringliteral">&quot;simple&quot;</span>_S},</div>
 <div class="line">        arp::program_version_t{<span class="stringliteral">&quot;v0.1&quot;</span>_S},</div>
 <div class="line">        arp::program_intro_t{<span class="stringliteral">&quot;A simple file copier and mover.&quot;</span>_S},</div>
 <div class="line">        arp::program_addendum_t{<span class="stringliteral">&quot;An example program for arg_router.&quot;</span>_S},</div>
 <div class="line">        arp::flatten_help),</div>
-<div class="line">    ar::mode(</div>
-<div class="line">        arp::none_name_t{<span class="stringliteral">&quot;copy&quot;</span>_S},</div>
-<div class="line">        arp::description_t{<span class="stringliteral">&quot;Copy source files to destination&quot;</span>_S},</div>
+<div class="line">    ar::mode(<span class="stringliteral">&quot;copy&quot;</span>_S, <span class="stringliteral">&quot;Copy source files to destination&quot;</span>_S,</div>
 <div class="line">        common_args,</div>
-<div class="line">        ar::positional_arg&lt;std::vector&lt;std::filesystem::path&gt;&gt;(</div>
+<div class="line">        ar::positional_arg&lt;std::vector&lt;std::filesystem::path&gt;&gt;(<span class="stringliteral">&quot;SRC&quot;</span>_S, <span class="stringliteral">&quot;Source file paths&quot;</span>_S,</div>
 <div class="line">            arp::required,</div>
-<div class="line">            arp::display_name_t{<span class="stringliteral">&quot;SRC&quot;</span>_S},</div>
-<div class="line">            arp::description_t{<span class="stringliteral">&quot;Source file paths&quot;</span>_S},</div>
 <div class="line">            arp::min_count&lt;1&gt;),</div>
 <div class="line">        arp::router{[](<span class="keywordtype">bool</span> force,</div>
 <div class="line">                       std::filesystem::path dest,</div>
 <div class="line">                       std::vector&lt;std::filesystem::path&gt; srcs) { ... }}),</div>
-<div class="line">    ar::mode(</div>
-<div class="line">        arp::none_name_t{<span class="stringliteral">&quot;move&quot;</span>_S},</div>
-<div class="line">        arp::description_t{<span class="stringliteral">&quot;Move source file to destination&quot;</span>_S},</div>
+<div class="line">    ar::mode(<span class="stringliteral">&quot;move&quot;</span>_S, <span class="stringliteral">&quot;Move source file to destination&quot;</span>_S,</div>
 <div class="line">        common_args,</div>
-<div class="line">        ar::positional_arg&lt;std::filesystem::path&gt;(</div>
+<div class="line">        ar::positional_arg&lt;std::filesystem::path&gt;(<span class="stringliteral">&quot;SRC&quot;</span>_S, <span class="stringliteral">&quot;Source file path&quot;</span>_S,</div>
 <div class="line">            arp::required,</div>
-<div class="line">            arp::display_name_t{<span class="stringliteral">&quot;SRC&quot;</span>_S},</div>
-<div class="line">            arp::description_t{<span class="stringliteral">&quot;Source file path&quot;</span>_S},</div>
 <div class="line">            arp::fixed_count&lt;1&gt;),</div>
 <div class="line">        arp::router{[](<span class="keywordtype">bool</span> force,</div>
 <div class="line">                       std::filesystem::path dest,</div>
@@ -636,7 +595,7 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="ttc" id="anamespacearg__router_1_1multi__lang_html"><div class="ttname"><a href="namespacearg__router_1_1multi__lang.html">arg_router::multi_lang</a></div><div class="ttdef"><b>Definition:</b> <a href="iso__locale_8hpp_source.html#l00009">iso_locale.hpp:10</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1policy_html_a50ebcd2455ba90ecbbcaf7d6aab2dc16"><div class="ttname"><a href="namespacearg__router_1_1policy.html#a50ebcd2455ba90ecbbcaf7d6aab2dc16">arg_router::policy::program_addendum</a></div><div class="ttdeci">constexpr auto program_addendum</div><div class="ttdef"><b>Definition:</b> <a href="program__addendum_8hpp_source.html#l00053">program_addendum.hpp:53</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1policy_html_ae4c0515ad6d58ea37fe121ee3f4a9861"><div class="ttname"><a href="namespacearg__router_1_1policy.html#ae4c0515ad6d58ea37fe121ee3f4a9861">arg_router::policy::program_intro</a></div><div class="ttdeci">constexpr auto program_intro</div><div class="ttdef"><b>Definition:</b> <a href="program__intro_8hpp_source.html#l00053">program_intro.hpp:53</a></div></div>
-<div class="ttc" id="anamespacearg__router_html_a1eb8c408da38619d624f435441efac48"><div class="ttname"><a href="namespacearg__router.html#a1eb8c408da38619d624f435441efac48">arg_router::help</a></div><div class="ttdeci">constexpr auto help(Policies... policies) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="help_8hpp_source.html#l00221">help.hpp:221</a></div></div>
+<div class="ttc" id="anamespacearg__router_html_a1eb8c408da38619d624f435441efac48"><div class="ttname"><a href="namespacearg__router.html#a1eb8c408da38619d624f435441efac48">arg_router::help</a></div><div class="ttdeci">constexpr auto help(Policies... policies) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="help_8hpp_source.html#l00233">help.hpp:233</a></div></div>
 </div><!-- fragment --><p> There is nothing special about the <code>translation</code> type, the unspecialised version will simply static assert if used to remind you to implement specialisations for all language IDs (the template parameter type) - otherwise it is just an empty type. Its use is still recommended though as functionality may be added to it in the future. </p><div class="fragment"><div class="line"><span class="keywordtype">int</span> main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>* argv[])</div>
 <div class="line">{</div>
 <div class="line">    <span class="comment">// Apologies for any translation faux pas - Google Translate did it for me!</span></div>
@@ -647,19 +606,15 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="line">            <span class="keyword">using</span> tr = decltype(tr_);</div>
 <div class="line"> </div>
 <div class="line">            <span class="keyword">const</span> <span class="keyword">auto</span> common_args = ar::list{</div>
-<div class="line">                ar::flag(arp::long_name&lt;typename tr::force&gt;,</div>
-<div class="line">                         arp::short_name_t{<span class="stringliteral">&quot;f&quot;</span>_S},</div>
-<div class="line">                         arp::description&lt;typename tr::force_description&gt;),</div>
-<div class="line">                ar::positional_arg&lt;fs::path&gt;(arp::required,</div>
-<div class="line">                                             arp::display_name&lt;typename tr::destination&gt;,</div>
-<div class="line">                                             arp::description&lt;typename tr::destination_description&gt;,</div>
+<div class="line">                ar::flag(<span class="keyword">typename</span> tr::force{}, <span class="stringliteral">&quot;f&quot;</span>_S, <span class="keyword">typename</span> tr::force_description{}),</div>
+<div class="line">                ar::positional_arg&lt;fs::path&gt;(<span class="keyword">typename</span> tr::destination{},</div>
+<div class="line">                                             <span class="keyword">typename</span> tr::destination_description{},</div>
+<div class="line">                                             arp::required,</div>
 <div class="line">                                             arp::fixed_count&lt;1&gt;)};</div>
 <div class="line"> </div>
 <div class="line">            <span class="keywordflow">return</span> ar::root(</div>
 <div class="line">                arp::validation::default_validator,</div>
-<div class="line">                ar::help(arp::long_name&lt;typename tr::help&gt;,</div>
-<div class="line">                         arp::short_name_t{<span class="stringliteral">&quot;h&quot;</span>_S},</div>
-<div class="line">                         arp::description&lt;typename tr::help_description&gt;,</div>
+<div class="line">                ar::help(<span class="keyword">typename</span> tr::help{}, <span class="stringliteral">&quot;h&quot;</span>_S, <span class="keyword">typename</span> tr::help_description{},</div>
 <div class="line">                         arp::program_name_t{<span class="stringliteral">&quot;simple&quot;</span>_S},</div>
 <div class="line">                         arp::program_version_t{<span class="stringliteral">&quot;v0.1&quot;</span>_S},</div>
 <div class="line">                         arp::program_intro&lt;typename tr::program_intro&gt;,</div>
@@ -821,6 +776,8 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <h2>Minimise Static Storage Bloat</h2>
 <p>Despite not using <code>typeid</code> or <code>dynamic_cast</code> in the library, compilers will still generate class name data if RTTI is enabled, because it is used in the standard library implementations (e.g. <code>std::function</code> on Clang). Due to the highly nested templates that make up the parse tree, these class names can become huge and occupy large amount of static storage in the executable. As an example, the <code>basic_cat</code> project in the repo will create ~100KB of class name data in the binary - this data is not used and cannot be stripped out.</p>
 <p>Disabling RTTI is rarely feasible for most projects, but it is possible to disable RTTI for a single CMake target. So if it was deemed worth it for the size reduction, the command line parsing could be the application's executable (compiled without RTTI) and then the wider application logic could be in a static library (compiled with RTTI). This does not affect exceptions, as their type information is always added by the compiler regardless of RTTI status.</p>
+<h2>Newer Compilers are Better with Templates</h2>
+<p>This may seem like an obvious point, but people need reminding: The rise of TMP use has been quicker than the compiler optimisations for it. In practice this means that although <code><a class="el" href="namespacearg__router.html">arg_router</a></code> can be compiled on e.g. GCC v9, it will use staggeringly more memory than e.g. GCC v11.</p>
 <h1>Extra Documentation</h1>
 <p>Complete Doxygen-generated API documentation is available <a href="https://cmannett85.github.io/arg_router/">here</a>. Examples are provided in the <code>examples</code> directory of the repo or online <a href="https://cmannett85.github.io/arg_router/examples.html">here</a>. Doxygen theming is provided by <a href="https://github.com/jothepro/doxygen-awesome-css">Doxygen Awesome CSS</a>.</p>
 <p>The latest unit test coverage report is found <a href="https://cmannett85.github.io/arg_router/gcov_html/">here</a>.</p>

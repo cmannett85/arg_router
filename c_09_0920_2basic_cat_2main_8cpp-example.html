@@ -96,8 +96,7 @@ $(document).ready(function(){initNavTree('c_09_0920_2basic_cat_2main_8cpp-exampl
 <div class="title">c++20/basic_cat/main.cpp</div>  </div>
 </div><!--header-->
 <div class="contents">
-<p>List example source files here.</p>
-<div class="fragment"><div class="line"><span class="comment">// Copyright (C) 2022 by Camden Mannett.</span></div>
+<div class="fragment"><div class="line"><span class="comment">// Copyright (C) 2022-2023 by Camden Mannett.</span></div>
 <div class="line"><span class="comment">// Distributed under the Boost Software License, Version 1.0.</span></div>
 <div class="line"><span class="comment">// (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)</span></div>
 <div class="line"> </div>
@@ -252,51 +251,46 @@ $(document).ready(function(){initNavTree('c_09_0920_2basic_cat_2main_8cpp-exampl
 <div class="line">{</div>
 <div class="line">    ar::root(</div>
 <div class="line">        arp::validation::default_validator,</div>
-<div class="line">        ar::help(arp::long_name_t{<span class="stringliteral">&quot;help&quot;</span>_S},</div>
-<div class="line">                 arp::short_name_t{<span class="stringliteral">&quot;h&quot;</span>_S},</div>
+<div class="line">        ar::help(<span class="stringliteral">&quot;help&quot;</span>_S,</div>
+<div class="line">                 <span class="stringliteral">&quot;h&quot;</span>_S,</div>
+<div class="line">                 <span class="stringliteral">&quot;Display this help and exit&quot;</span>_S,</div>
 <div class="line">                 arp::program_name_t{<span class="stringliteral">&quot;my-cat&quot;</span>_S},</div>
 <div class="line">                 arp::program_version&lt;ar::str&lt;version&gt;&gt;,</div>
-<div class="line">                 arp::program_addendum_t{<span class="stringliteral">&quot;An example program for arg_router.&quot;</span>_S},</div>
-<div class="line">                 arp::description_t{<span class="stringliteral">&quot;Display this help and exit&quot;</span>_S}),</div>
-<div class="line">        ar::flag(arp::long_name_t{<span class="stringliteral">&quot;version&quot;</span>_S},</div>
-<div class="line">                 arp::description_t{<span class="stringliteral">&quot;Output version information and exit&quot;</span>_S},</div>
-<div class="line">                 arp::router{[](bool) {</div>
+<div class="line">                 arp::program_addendum_t{<span class="stringliteral">&quot;An example program for arg_router.&quot;</span>_S}),</div>
+<div class="line">        ar::flag(<span class="stringliteral">&quot;version&quot;</span>_S, <span class="stringliteral">&quot;Output version information and exit&quot;</span>_S, arp::router{[](bool) {</div>
 <div class="line">                     std::cout &lt;&lt; &amp;version[0] &lt;&lt; std::endl;</div>
 <div class="line">                     std::exit(EXIT_SUCCESS);</div>
 <div class="line">                 }}),</div>
 <div class="line">        ar::mode(</div>
-<div class="line">            ar::flag(arp::long_name_t{<span class="stringliteral">&quot;show-all&quot;</span>_S},</div>
-<div class="line">                     arp::description_t{<span class="stringliteral">&quot;Equivalent to -nE&quot;</span>_S},</div>
-<div class="line">                     arp::short_name_t{<span class="stringliteral">&quot;A&quot;</span>_S},</div>
+<div class="line">            ar::flag(<span class="stringliteral">&quot;show-all&quot;</span>_S,</div>
+<div class="line">                     <span class="stringliteral">&quot;Equivalent to -nE&quot;</span>_S,</div>
+<div class="line">                     <span class="stringliteral">&quot;A&quot;</span>_S,</div>
 <div class="line">                     arp::alias(arp::short_name_t{<span class="stringliteral">&quot;E&quot;</span>_S}, arp::short_name_t{<span class="stringliteral">&quot;n&quot;</span>_S})),</div>
-<div class="line">            ar::flag(arp::long_name_t{<span class="stringliteral">&quot;show-ends&quot;</span>_S},</div>
-<div class="line">                     arp::description_t{<span class="stringliteral">&quot;Display $ at end of each line&quot;</span>_S},</div>
-<div class="line">                     arp::short_name_t{<span class="stringliteral">&quot;E&quot;</span>_S}),</div>
-<div class="line">            ar::flag(arp::long_name_t{<span class="stringliteral">&quot;show-nonprinting&quot;</span>_S},</div>
-<div class="line">                     arp::description_t{<span class="stringliteral">&quot;Use ^ and M- notation, except for LFD and TAB&quot;</span>_S},</div>
-<div class="line">                     arp::short_name_t{<span class="stringliteral">&quot;n&quot;</span>_S}),</div>
-<div class="line">            ar::arg&lt;int&gt;(arp::long_name_t{<span class="stringliteral">&quot;max-lines&quot;</span>_S},</div>
-<div class="line">                         arp::description_t{<span class="stringliteral">&quot;Maximum lines to output&quot;</span>_S},</div>
+<div class="line">            ar::flag(<span class="stringliteral">&quot;show-ends&quot;</span>_S, <span class="stringliteral">&quot;Display $ at end of each line&quot;</span>_S, <span class="stringliteral">&quot;E&quot;</span>_S),</div>
+<div class="line">            ar::flag(<span class="stringliteral">&quot;show-nonprinting&quot;</span>_S,</div>
+<div class="line">                     <span class="stringliteral">&quot;Use ^ and M- notation, except for LFD and TAB&quot;</span>_S,</div>
+<div class="line">                     <span class="stringliteral">&quot;n&quot;</span>_S),</div>
+<div class="line">            ar::arg&lt;int&gt;(<span class="stringliteral">&quot;max-lines&quot;</span>_S,</div>
+<div class="line">                         <span class="stringliteral">&quot;Maximum lines to output&quot;</span>_S,</div>
 <div class="line">                         arp::value_separator_t{<span class="stringliteral">&quot;=&quot;</span>_S},</div>
 <div class="line">                         arp::default_value{-1}),</div>
-<div class="line">            ar::arg&lt;std::optional&lt;std::size_t&gt;&gt;(arp::long_name_t{<span class="stringliteral">&quot;max-line-length&quot;</span>_S},</div>
-<div class="line">                                                arp::description_t{<span class="stringliteral">&quot;Maximum line length&quot;</span>_S},</div>
+<div class="line">            ar::arg&lt;std::optional&lt;std::size_t&gt;&gt;(<span class="stringliteral">&quot;max-line-length&quot;</span>_S,</div>
+<div class="line">                                                <span class="stringliteral">&quot;Maximum line length&quot;</span>_S,</div>
 <div class="line">                                                arp::value_separator_t{<span class="stringliteral">&quot;=&quot;</span>_S},</div>
 <div class="line">                                                arp::default_value{std::optional&lt;std::size_t&gt;{}}),</div>
-<div class="line">            ard::one_of(arp::default_value{<span class="stringliteral">&quot;...&quot;</span>},</div>
-<div class="line">                        ar::flag(arp::dependent(arp::long_name_t{<span class="stringliteral">&quot;max-line-length&quot;</span>_S}),</div>
-<div class="line">                                 arp::long_name_t{<span class="stringliteral">&quot;skip-line&quot;</span>_S},</div>
-<div class="line">                                 arp::short_name_t{<span class="stringliteral">&quot;s&quot;</span>_S},</div>
-<div class="line">                                 arp::description_t{<span class="stringliteral">&quot;Skips line output if max line length &quot;</span></div>
-<div class="line">                                                    <span class="stringliteral">&quot;reached&quot;</span>_S}),</div>
-<div class="line">                        ar::arg&lt;std::string_view&gt;(</div>
-<div class="line">                            arp::dependent(arp::long_name_t{<span class="stringliteral">&quot;max-line-length&quot;</span>_S}),</div>
-<div class="line">                            arp::long_name_t{<span class="stringliteral">&quot;line-suffix&quot;</span>_S},</div>
-<div class="line">                            arp::description_t{<span class="stringliteral">&quot;Shortens line length to maximum with the &quot;</span></div>
-<div class="line">                                               <span class="stringliteral">&quot;given suffix if max line length reached&quot;</span>_S},</div>
-<div class="line">                            arp::value_separator_t{<span class="stringliteral">&quot;=&quot;</span>_S})),</div>
-<div class="line">            ar::arg&lt;theme_t&gt;(arp::long_name_t{<span class="stringliteral">&quot;theme&quot;</span>_S},</div>
-<div class="line">                             arp::description_t{<span class="stringliteral">&quot;Set the output colour theme&quot;</span>_S},</div>
+<div class="line">            ard::one_of(</div>
+<div class="line">                arp::default_value{<span class="stringliteral">&quot;...&quot;</span>},</div>
+<div class="line">                ar::flag(arp::dependent(arp::long_name_t{<span class="stringliteral">&quot;max-line-length&quot;</span>_S}),</div>
+<div class="line">                         <span class="stringliteral">&quot;skip-line&quot;</span>_S,</div>
+<div class="line">                         <span class="stringliteral">&quot;s&quot;</span>_S,</div>
+<div class="line">                         <span class="stringliteral">&quot;Skips line output if max line length reached&quot;</span>_S),</div>
+<div class="line">                ar::arg&lt;std::string_view&gt;(</div>
+<div class="line">                    arp::dependent(arp::long_name_t{<span class="stringliteral">&quot;max-line-length&quot;</span>_S}),</div>
+<div class="line">                    <span class="stringliteral">&quot;line-suffix&quot;</span>_S,</div>
+<div class="line">                    <span class="stringliteral">&quot;Shortens line length to maximum with the given suffix if max line length reached&quot;</span>_S,</div>
+<div class="line">                    arp::value_separator_t{<span class="stringliteral">&quot;=&quot;</span>_S})),</div>
+<div class="line">            ar::arg&lt;theme_t&gt;(<span class="stringliteral">&quot;theme&quot;</span>_S,</div>
+<div class="line">                             <span class="stringliteral">&quot;Set the output colour theme&quot;</span>_S,</div>
 <div class="line">                             arp::value_separator_t{<span class="stringliteral">&quot;=&quot;</span>_S},</div>
 <div class="line">                             arp::default_value{theme_t::none},</div>
 <div class="line">                             arp::custom_parser&lt;theme_t&gt;{</div>
@@ -304,17 +298,16 @@ $(document).ready(function(){initNavTree('c_09_0920_2basic_cat_2main_8cpp-exampl
 <div class="line">            ard::alias_group(</div>
 <div class="line">                arp::default_value{verbosity_level_t::info},</div>
 <div class="line">                ar::counting_flag&lt;verbosity_level_t&gt;(</div>
-<div class="line">                    arp::short_name_t{<span class="stringliteral">&quot;v&quot;</span>_S},</div>
+<div class="line">                    <span class="stringliteral">&quot;v&quot;</span>_S,</div>
 <div class="line">                    arp::description_t{<span class="stringliteral">&quot;Verbosity level, number of &#39;v&#39;s sets level&quot;</span>_S}),</div>
-<div class="line">                ar::arg&lt;verbosity_level_t&gt;(arp::long_name_t{<span class="stringliteral">&quot;verbose&quot;</span>_S},</div>
-<div class="line">                                           arp::description_t{<span class="stringliteral">&quot;Verbosity level&quot;</span>_S},</div>
+<div class="line">                ar::arg&lt;verbosity_level_t&gt;(<span class="stringliteral">&quot;verbose&quot;</span>_S,</div>
+<div class="line">                                           <span class="stringliteral">&quot;Verbosity level&quot;</span>_S,</div>
 <div class="line">                                           arp::value_separator_t{<span class="stringliteral">&quot;=&quot;</span>_S}),</div>
 <div class="line">                arp::min_max_value&lt;verbosity_level_t::error, verbosity_level_t::debug&gt;()),</div>
-<div class="line">            ar::positional_arg&lt;std::vector&lt;std::string_view&gt;&gt;(</div>
-<div class="line">                arp::required,</div>
-<div class="line">                arp::min_count&lt;1&gt;,</div>
-<div class="line">                arp::display_name_t{<span class="stringliteral">&quot;FILES&quot;</span>_S},</div>
-<div class="line">                arp::description_t{<span class="stringliteral">&quot;Files to read&quot;</span>_S}),</div>
+<div class="line">            ar::positional_arg&lt;std::vector&lt;std::string_view&gt;&gt;(arp::required,</div>
+<div class="line">                                                              arp::min_count&lt;1&gt;,</div>
+<div class="line">                                                              <span class="stringliteral">&quot;FILES&quot;</span>_S,</div>
+<div class="line">                                                              <span class="stringliteral">&quot;Files to read&quot;</span>_S),</div>
 <div class="line">            arp::router{[](<span class="keywordtype">bool</span> show_ends,</div>
 <div class="line">                           <span class="keywordtype">bool</span> show_non_printing,</div>
 <div class="line">                           <span class="keywordtype">int</span> max_lines,</div>
@@ -338,7 +331,7 @@ $(document).ready(function(){initNavTree('c_09_0920_2basic_cat_2main_8cpp-exampl
 <div class="line">}</div>
 <div class="ttc" id="anamespacearg__router_1_1parsing_html_a6587078e07827bbbbabeae32b3ed2dd3a334c4a4c42fdb79d7ebc3e73b517e6f8"><div class="ttname"><a href="namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3a334c4a4c42fdb79d7ebc3e73b517e6f8">arg_router::parsing::prefix_type::none</a></div><div class="ttdeci">@ none</div><div class="ttdoc">Short prefix.</div></div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00015">algorithm.hpp:16</a></div></div>
-<div class="ttc" id="anamespacearg__router_html_a29537daeb3ba7d1b8749d3e1e9d83f1b"><div class="ttname"><a href="namespacearg__router.html#a29537daeb3ba7d1b8749d3e1e9d83f1b">arg_router::arg</a></div><div class="ttdeci">constexpr auto arg(Policies... policies) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="arg_8hpp_source.html#l00113">arg.hpp:113</a></div></div>
+<div class="ttc" id="anamespacearg__router_html_a29537daeb3ba7d1b8749d3e1e9d83f1b"><div class="ttname"><a href="namespacearg__router.html#a29537daeb3ba7d1b8749d3e1e9d83f1b">arg_router::arg</a></div><div class="ttdeci">constexpr auto arg(Policies... policies) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="arg_8hpp_source.html#l00127">arg.hpp:127</a></div></div>
 </div><!-- fragment --> </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

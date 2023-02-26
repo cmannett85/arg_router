@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2023-02-18 08:11:03</td>
+            <td class="headerValue">2023-02-26 11:57:09</td>
             <td></td>
           </tr>
           <tr>
@@ -89,10 +89,10 @@
 <a name="23"><span class="lineNum">      23 </span>            :  *</a>
 <a name="24"><span class="lineNum">      24 </span>            :  * @return Column count</a>
 <a name="25"><span class="lineNum">      25 </span>            :  */</a>
-<a name="26"><span class="lineNum">      26 </span><span class="lineCov">         34 : inline std::size_t columns()</span></a>
+<a name="26"><span class="lineNum">      26 </span><span class="lineCov">         35 : inline std::size_t columns()</span></a>
 <a name="27"><span class="lineNum">      27 </span>            : {</a>
 <a name="28"><span class="lineNum">      28 </span>            : #ifdef UNIT_TEST_BUILD</a>
-<a name="29"><span class="lineNum">      29 </span><span class="lineCov">         34 :     return test_columns_value;</span></a>
+<a name="29"><span class="lineNum">      29 </span><span class="lineCov">         35 :     return test_columns_value;</span></a>
 <a name="30"><span class="lineNum">      30 </span>            : #else</a>
 <a name="31"><span class="lineNum">      31 </span>            : #    if defined(__linux__) || defined(__APPLE__)</a>
 <a name="32"><span class="lineNum">      32 </span>            :     // NOLINTBEGIN(*-member-init, *-vararg)</a>

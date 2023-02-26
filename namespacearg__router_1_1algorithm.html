@@ -128,9 +128,9 @@ Functions</h2></td></tr>
 <tr class="memitem:afee764743bed099238c6c61bc6a0eb3e"><td class="memTemplParams" colspan="2">template&lt;template&lt; typename... &gt; typename Fn, typename U &gt; </td></tr>
 <tr class="memitem:afee764743bed099238c6c61bc6a0eb3e"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1algorithm.html#afee764743bed099238c6c61bc6a0eb3e">tuple_filter_and_construct</a> (U &amp;&amp;input) noexcept</td></tr>
 <tr class="separator:afee764743bed099238c6c61bc6a0eb3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa47f909be78a36c86d82c4c1a691191c"><td class="memTemplParams" colspan="2">template&lt;typename Tuple , typename Insert , std::size_t... I&gt; </td></tr>
-<tr class="memitem:aa47f909be78a36c86d82c4c1a691191c"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1algorithm.html#aa47f909be78a36c86d82c4c1a691191c">tuple_push_back</a> (Tuple tuple, Insert insert) noexcept</td></tr>
-<tr class="separator:aa47f909be78a36c86d82c4c1a691191c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af16789df8b243585c3d1227368f46db1"><td class="memTemplParams" colspan="2">template&lt;typename Tuple , typename Insert &gt; </td></tr>
+<tr class="memitem:af16789df8b243585c3d1227368f46db1"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1algorithm.html#af16789df8b243585c3d1227368f46db1">tuple_push_back</a> (Tuple tuple, Insert insert) noexcept</td></tr>
+<tr class="separator:af16789df8b243585c3d1227368f46db1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
@@ -205,7 +205,7 @@ template&lt;template&lt; typename... &gt; typename Fn, typename U &gt; </div>
 <p>Moves (or copies if unable to) elements from <em>input</em> if their type passes <em>Fn</em>, and constructs a tuple instance from them.</p>
 <p>The key point of this function is that this operation is done in a single expression so it works with tuples with elements that are <em>not</em> default constructible. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">Fn</td><td>Metafunction type whose value is true for types in <em>U</em> wanted in the return </td></tr>
+    <tr><td class="paramname">Fn</td><td>Metafunction type whose <code>value</code> member is true for types in <em>U</em> wanted in the return </td></tr>
     <tr><td class="paramname">U</td><td>Tuple-like input type </td></tr>
   </table>
   </dd>
@@ -218,17 +218,17 @@ template&lt;template&lt; typename... &gt; typename Fn, typename U &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Result tuple </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="algorithm_8hpp_source.html#l00195">195</a> of file <a class="el" href="algorithm_8hpp_source.html">algorithm.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="algorithm_8hpp_source.html#l00196">196</a> of file <a class="el" href="algorithm_8hpp_source.html">algorithm.hpp</a>.</p>
 
 </div>
 </div>
-<a id="aa47f909be78a36c86d82c4c1a691191c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa47f909be78a36c86d82c4c1a691191c">&#9670;&nbsp;</a></span>tuple_push_back()</h2>
+<a id="af16789df8b243585c3d1227368f46db1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af16789df8b243585c3d1227368f46db1">&#9670;&nbsp;</a></span>tuple_push_back()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Tuple , typename Insert , std::size_t... I&gt; </div>
+template&lt;typename Tuple , typename Insert &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -274,7 +274,7 @@ template&lt;typename Tuple , typename Insert , std::size_t... I&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A Tuple with <em>insert</em> appended </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="algorithm_8hpp_source.html#l00245">245</a> of file <a class="el" href="algorithm_8hpp_source.html">algorithm.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="algorithm_8hpp_source.html#l00246">246</a> of file <a class="el" href="algorithm_8hpp_source.html">algorithm.hpp</a>.</p>
 
 </div>
 </div>

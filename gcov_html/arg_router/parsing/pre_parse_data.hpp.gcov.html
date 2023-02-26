@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2023-02-18 08:11:03</td>
+            <td class="headerValue">2023-02-26 11:57:09</td>
             <td></td>
           </tr>
           <tr>
@@ -78,9 +78,9 @@
 <a name="12"><span class="lineNum">      12 </span>            : {</a>
 <a name="13"><span class="lineNum">      13 </span>            : struct always_returns_true {</a>
 <a name="14"><span class="lineNum">      14 </span>            :     template &lt;typename... Args&gt;</a>
-<a name="15"><span class="lineNum">      15 </span><span class="lineCov">        322 :     constexpr bool operator()([[maybe_unused]] Args&amp;&amp;... args) const noexcept</span></a>
+<a name="15"><span class="lineNum">      15 </span><span class="lineCov">        323 :     constexpr bool operator()([[maybe_unused]] Args&amp;&amp;... args) const noexcept</span></a>
 <a name="16"><span class="lineNum">      16 </span>            :     {</a>
-<a name="17"><span class="lineNum">      17 </span><span class="lineCov">        322 :         return true;</span></a>
+<a name="17"><span class="lineNum">      17 </span><span class="lineCov">        323 :         return true;</span></a>
 <a name="18"><span class="lineNum">      18 </span>            :     }</a>
 <a name="19"><span class="lineNum">      19 </span>            : };</a>
 <a name="20"><span class="lineNum">      20 </span>            : }  // namespace detail</a>
@@ -102,7 +102,7 @@
 <a name="36"><span class="lineNum">      36 </span>            :      *</a>
 <a name="37"><span class="lineNum">      37 </span>            :      * @return Arg list</a>
 <a name="38"><span class="lineNum">      38 </span>            :      */</a>
-<a name="39"><span class="lineNum">      39 </span><span class="lineCov">       1468 :     [[nodiscard]] vector&lt;parsing::token_type&gt;&amp; args() noexcept { return args_; }</span></a>
+<a name="39"><span class="lineNum">      39 </span><span class="lineCov">       1470 :     [[nodiscard]] vector&lt;parsing::token_type&gt;&amp; args() noexcept { return args_; }</span></a>
 <a name="40"><span class="lineNum">      40 </span>            : </a>
 <a name="41"><span class="lineNum">      41 </span>            :     /** Const overload.</a>
 <a name="42"><span class="lineNum">      42 </span>            :      *</a>
@@ -114,16 +114,16 @@
 <a name="48"><span class="lineNum">      48 </span>            :      *</a>
 <a name="49"><span class="lineNum">      49 </span>            :      * @return Validator</a>
 <a name="50"><span class="lineNum">      50 </span>            :      */</a>
-<a name="51"><span class="lineNum">      51 </span><span class="lineCov">        605 :     [[nodiscard]] const Validator&amp; validator() const noexcept { return validator_; }</span></a>
+<a name="51"><span class="lineNum">      51 </span><span class="lineCov">        606 :     [[nodiscard]] const Validator&amp; validator() const noexcept { return validator_; }</span></a>
 <a name="52"><span class="lineNum">      52 </span>            : </a>
 <a name="53"><span class="lineNum">      53 </span>            : protected:</a>
-<a name="54"><span class="lineNum">      54 </span><span class="lineCov">        921 :     explicit pre_parse_data_base(</span></a>
+<a name="54"><span class="lineNum">      54 </span><span class="lineCov">        922 :     explicit pre_parse_data_base(</span></a>
 <a name="55"><span class="lineNum">      55 </span>            :         vector&lt;parsing::token_type&gt;&amp; args,</a>
 <a name="56"><span class="lineNum">      56 </span>            :         const Validator&amp; validator = [](const auto&amp;...) { return true; }) noexcept :</a>
-<a name="57"><span class="lineNum">      57 </span><span class="lineCov">        921 :         args_{args},</span></a>
-<a name="58"><span class="lineNum">      58 </span><span class="lineCov">        921 :         validator_{validator}</span></a>
+<a name="57"><span class="lineNum">      57 </span><span class="lineCov">        922 :         args_{args},</span></a>
+<a name="58"><span class="lineNum">      58 </span><span class="lineCov">        922 :         validator_{validator}</span></a>
 <a name="59"><span class="lineNum">      59 </span>            :     {</a>
-<a name="60"><span class="lineNum">      60 </span><span class="lineCov">        921 :     }</span></a>
+<a name="60"><span class="lineNum">      60 </span><span class="lineCov">        922 :     }</span></a>
 <a name="61"><span class="lineNum">      61 </span>            : </a>
 <a name="62"><span class="lineNum">      62 </span>            : private:</a>
 <a name="63"><span class="lineNum">      63 </span>            :     std::reference_wrapper&lt;vector&lt;parsing::token_type&gt;&gt; args_;</a>
@@ -179,11 +179,11 @@
 <a name="113"><span class="lineNum">     113 </span>            :      * @param args Unprocessed tokens</a>
 <a name="114"><span class="lineNum">     114 </span>            :      * @param validator Validator instance, defaults to always returning true</a>
 <a name="115"><span class="lineNum">     115 </span>            :      */</a>
-<a name="116"><span class="lineNum">     116 </span><span class="lineCov">        302 :     explicit pre_parse_data(vector&lt;parsing::token_type&gt;&amp; args,</span></a>
+<a name="116"><span class="lineNum">     116 </span><span class="lineCov">        303 :     explicit pre_parse_data(vector&lt;parsing::token_type&gt;&amp; args,</span></a>
 <a name="117"><span class="lineNum">     117 </span>            :                             const Validator&amp; validator = detail::always_returns_true{}) noexcept :</a>
-<a name="118"><span class="lineNum">     118 </span><span class="lineCov">        302 :         pre_parse_data_base&lt;Validator, false&gt;{args, validator}</span></a>
-<a name="119"><span class="lineNum">     119 </span><span class="lineCov">        302 :     {</span></a>
-<a name="120"><span class="lineNum">     120 </span><span class="lineCov">        302 :     }</span></a>
+<a name="118"><span class="lineNum">     118 </span><span class="lineCov">        303 :         pre_parse_data_base&lt;Validator, false&gt;{args, validator}</span></a>
+<a name="119"><span class="lineNum">     119 </span><span class="lineCov">        303 :     {</span></a>
+<a name="120"><span class="lineNum">     120 </span><span class="lineCov">        303 :     }</span></a>
 <a name="121"><span class="lineNum">     121 </span>            : };</a>
 <a name="122"><span class="lineNum">     122 </span>            : </a>
 <a name="123"><span class="lineNum">     123 </span>            : /** With parse_target reference specialisation.</a>

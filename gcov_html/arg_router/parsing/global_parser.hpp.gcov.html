@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2023-02-18 08:11:03</td>
+            <td class="headerValue">2023-02-26 11:57:09</td>
             <td></td>
           </tr>
           <tr>
@@ -100,18 +100,18 @@
 <a name="34"><span class="lineNum">      34 </span>            : </a>
 <a name="35"><span class="lineNum">      35 </span>            : template &lt;typename T&gt;</a>
 <a name="36"><span class="lineNum">      36 </span>            : struct parser&lt;T, typename std::enable_if_t&lt;std::is_arithmetic_v&lt;T&gt;&gt;&gt; {</a>
-<a name="37"><span class="lineNum">      37 </span><span class="lineCov">         87 :     [[nodiscard]] static T parse(std::string_view token)</span></a>
+<a name="37"><span class="lineNum">      37 </span><span class="lineCov">         90 :     [[nodiscard]] static T parse(std::string_view token)</span></a>
 <a name="38"><span class="lineNum">      38 </span>            :     {</a>
 <a name="39"><span class="lineNum">      39 </span>            :         using namespace utility::string_view_ops;</a>
 <a name="40"><span class="lineNum">      40 </span>            :         using namespace std::string_view_literals;</a>
 <a name="41"><span class="lineNum">      41 </span>            : </a>
-<a name="42"><span class="lineNum">      42 </span><span class="lineCov">         87 :         auto result = T{};</span></a>
-<a name="43"><span class="lineNum">      43 </span><span class="lineCov">         87 :         if (!boost::conversion::try_lexical_convert(token, result)) {</span></a>
+<a name="42"><span class="lineNum">      42 </span><span class="lineCov">         90 :         auto result = T{};</span></a>
+<a name="43"><span class="lineNum">      43 </span><span class="lineCov">         90 :         if (!boost::conversion::try_lexical_convert(token, result)) {</span></a>
 <a name="44"><span class="lineNum">      44 </span><span class="lineCov">         12 :             throw multi_lang_exception{error_code::failed_to_parse,</span></a>
 <a name="45"><span class="lineNum">      45 </span><span class="lineCov">          6 :                                        parsing::token_type{parsing::prefix_type::none, token}};</span></a>
 <a name="46"><span class="lineNum">      46 </span>            :         }</a>
 <a name="47"><span class="lineNum">      47 </span>            : </a>
-<a name="48"><span class="lineNum">      48 </span><span class="lineCov">         81 :         return result;</span></a>
+<a name="48"><span class="lineNum">      48 </span><span class="lineCov">         84 :         return result;</span></a>
 <a name="49"><span class="lineNum">      49 </span><span class="lineNoCov">          0 :     }</span></a>
 <a name="50"><span class="lineNum">      50 </span>            : };</a>
 <a name="51"><span class="lineNum">      51 </span>            : </a>
@@ -176,9 +176,9 @@
 <a name="110"><span class="lineNum">     110 </span>            : struct parser&lt;</a>
 <a name="111"><span class="lineNum">     111 </span>            :     T,</a>
 <a name="112"><span class="lineNum">     112 </span>            :     typename std::enable_if_t&lt;traits::has_push_back_method_v&lt;T&gt; &amp;&amp; !std::is_same_v&lt;T, string&gt;&gt;&gt; {</a>
-<a name="113"><span class="lineNum">     113 </span><span class="lineCov">         52 :     [[nodiscard]] static typename T::value_type parse(std::string_view token)</span></a>
+<a name="113"><span class="lineNum">     113 </span><span class="lineCov">         54 :     [[nodiscard]] static typename T::value_type parse(std::string_view token)</span></a>
 <a name="114"><span class="lineNum">     114 </span>            :     {</a>
-<a name="115"><span class="lineNum">     115 </span><span class="lineCov">         52 :         return parser&lt;typename T::value_type&gt;::parse(token);</span></a>
+<a name="115"><span class="lineNum">     115 </span><span class="lineCov">         54 :         return parser&lt;typename T::value_type&gt;::parse(token);</span></a>
 <a name="116"><span class="lineNum">     116 </span>            :     }</a>
 <a name="117"><span class="lineNum">     117 </span>            : };</a>
 <a name="118"><span class="lineNum">     118 </span>            : }  // namespace arg_router</a>

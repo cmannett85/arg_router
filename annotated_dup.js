@@ -29,6 +29,7 @@ var annotated_dup =
       ] ],
       [ "policy", "namespacearg__router_1_1policy.html", [
         [ "help_formatter_component", "namespacearg__router_1_1policy_1_1help__formatter__component.html", [
+          [ "colour_line_formatter", "classarg__router_1_1policy_1_1help__formatter__component_1_1colour__line__formatter.html", "classarg__router_1_1policy_1_1help__formatter__component_1_1colour__line__formatter" ],
           [ "default_line_formatter", "classarg__router_1_1policy_1_1help__formatter__component_1_1default__line__formatter.html", "classarg__router_1_1policy_1_1help__formatter__component_1_1default__line__formatter" ],
           [ "default_preamble_formatter", "classarg__router_1_1policy_1_1help__formatter__component_1_1default__preamble__formatter.html", "classarg__router_1_1policy_1_1help__formatter__component_1_1default__preamble__formatter" ],
           [ "default_addendum_formatter", "classarg__router_1_1policy_1_1help__formatter__component_1_1default__addendum__formatter.html", "classarg__router_1_1policy_1_1help__formatter__component_1_1default__addendum__formatter" ]
@@ -127,9 +128,17 @@ var annotated_dup =
         [ "has_parse_method", "structarg__router_1_1traits_1_1has__parse__method.html", null ],
         [ "has_translate_exception_method", "structarg__router_1_1traits_1_1has__translate__exception__method.html", null ],
         [ "has_error_code_translations_type", "structarg__router_1_1traits_1_1has__error__code__translations__type.html", null ],
-        [ "arg_extractor", "structarg__router_1_1traits_1_1arg__extractor.html", null ]
+        [ "arg_extractor", "structarg__router_1_1traits_1_1arg__extractor.html", null ],
+        [ "is_compile_time_string_like", "structarg__router_1_1traits_1_1is__compile__time__string__like.html", null ]
       ] ],
       [ "utility", "namespacearg__router_1_1utility.html", [
+        [ "string_to_policy", "namespacearg__router_1_1utility_1_1string__to__policy.html", [
+          [ "first_string_mapper", "classarg__router_1_1utility_1_1string__to__policy_1_1first__string__mapper.html", "classarg__router_1_1utility_1_1string__to__policy_1_1first__string__mapper" ],
+          [ "second_string_mapper", "classarg__router_1_1utility_1_1string__to__policy_1_1second__string__mapper.html", "classarg__router_1_1utility_1_1string__to__policy_1_1second__string__mapper" ],
+          [ "single_char_mapper", "classarg__router_1_1utility_1_1string__to__policy_1_1single__char__mapper.html", "classarg__router_1_1utility_1_1string__to__policy_1_1single__char__mapper" ],
+          [ "first_text_mapper", "classarg__router_1_1utility_1_1string__to__policy_1_1first__text__mapper.html", "classarg__router_1_1utility_1_1string__to__policy_1_1first__text__mapper" ],
+          [ "second_text_mapper", "classarg__router_1_1utility_1_1string__to__policy_1_1second__text__mapper.html", "classarg__router_1_1utility_1_1string__to__policy_1_1second__text__mapper" ]
+        ] ],
         [ "utf8", "namespacearg__router_1_1utility_1_1utf8.html", [
           [ "code_point", "namespacearg__router_1_1utility_1_1utf8_1_1code__point.html", [
             [ "range", "classarg__router_1_1utility_1_1utf8_1_1code__point_1_1range.html", "classarg__router_1_1utility_1_1utf8_1_1code__point_1_1range" ],

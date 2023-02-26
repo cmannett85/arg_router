@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2023-02-18 08:11:03</td>
+            <td class="headerValue">2023-02-26 11:57:09</td>
             <td></td>
           </tr>
           <tr>
@@ -133,7 +133,7 @@
 <a name="67"><span class="lineNum">      67 </span>            :      * reached</a>
 <a name="68"><span class="lineNum">      68 </span>            :      */</a>
 <a name="69"><span class="lineNum">      69 </span>            :     template &lt;typename ProcessedTarget, typename... Parents&gt;</a>
-<a name="70"><span class="lineNum">      70 </span><span class="lineCov">        700 :     [[nodiscard]] parsing::pre_parse_result pre_parse_phase(</span></a>
+<a name="70"><span class="lineNum">      70 </span><span class="lineCov">        701 :     [[nodiscard]] parsing::pre_parse_result pre_parse_phase(</span></a>
 <a name="71"><span class="lineNum">      71 </span>            :         parsing::dynamic_token_adapter&amp; tokens,</a>
 <a name="72"><span class="lineNum">      72 </span>            :         [[maybe_unused]] utility::compile_time_optional&lt;ProcessedTarget&gt; processed_target,</a>
 <a name="73"><span class="lineNum">      73 </span>            :         [[maybe_unused]] parsing::parse_target&amp; target,</a>
@@ -145,8 +145,8 @@
 <a name="79"><span class="lineNum">      79 </span>            : </a>
 <a name="80"><span class="lineNum">      80 </span>            :         // The min/max values are for argument counts, and so need adjusting to accomodate the label</a>
 <a name="81"><span class="lineNum">      81 </span>            :         // tokens</a>
-<a name="82"><span class="lineNum">      82 </span><span class="lineCov">        700 :         constexpr auto mn_count = minimum_count() + (owner_type::is_named ? 1 : 0);</span></a>
-<a name="83"><span class="lineNum">      83 </span><span class="lineCov">        700 :         constexpr auto mx_count = maximum_count() == 0 ?</span></a>
+<a name="82"><span class="lineNum">      82 </span><span class="lineCov">        701 :         constexpr auto mn_count = minimum_count() + (owner_type::is_named ? 1 : 0);</span></a>
+<a name="83"><span class="lineNum">      83 </span><span class="lineCov">        701 :         constexpr auto mx_count = maximum_count() == 0 ?</span></a>
 <a name="84"><span class="lineNum">      84 </span>            :                                       maximum_count() :</a>
 <a name="85"><span class="lineNum">      85 </span>            :                                       (maximum_count() - (owner_type::is_named ? 0 : 1));</a>
 <a name="86"><span class="lineNum">      86 </span>            : </a>
@@ -166,16 +166,16 @@
 <a name="100"><span class="lineNum">     100 </span>            :         // because there may be other nodes that will consume tokens, so this node will take its</a>
 <a name="101"><span class="lineNum">     101 </span>            :         // maximum (potentially) and any left over tokens will be trigger an error later in the</a>
 <a name="102"><span class="lineNum">     102 </span>            :         // processing</a>
-<a name="103"><span class="lineNum">     103 </span><span class="lineCov">        695 :         if (tokens.size() &lt; mn_count) {</span></a>
+<a name="103"><span class="lineNum">     103 </span><span class="lineCov">        696 :         if (tokens.size() &lt; mn_count) {</span></a>
 <a name="104"><span class="lineNum">     104 </span><span class="lineCov">         47 :             return multi_lang_exception{error_code::minimum_count_not_reached,</span></a>
 <a name="105"><span class="lineNum">     105 </span><span class="lineCov">         47 :                                         parsing::node_token_type&lt;owner_type&gt;()};</span></a>
 <a name="106"><span class="lineNum">     106 </span>            :         }</a>
 <a name="107"><span class="lineNum">     107 </span>            : </a>
 <a name="108"><span class="lineNum">     108 </span>            :         // Transfer any remaining up to the maximum count</a>
-<a name="109"><span class="lineNum">     109 </span><span class="lineCov">        648 :         tokens.transfer(tokens.begin() + std::min(mx_count, tokens.size()));</span></a>
+<a name="109"><span class="lineNum">     109 </span><span class="lineCov">        649 :         tokens.transfer(tokens.begin() + std::min(mx_count, tokens.size()));</span></a>
 <a name="110"><span class="lineNum">     110 </span>            : </a>
-<a name="111"><span class="lineNum">     111 </span><span class="lineCov">        648 :         return parsing::pre_parse_action::valid_node;</span></a>
-<a name="112"><span class="lineNum">     112 </span><span class="lineCov">        700 :     }</span></a>
+<a name="111"><span class="lineNum">     111 </span><span class="lineCov">        649 :         return parsing::pre_parse_action::valid_node;</span></a>
+<a name="112"><span class="lineNum">     112 </span><span class="lineCov">        701 :     }</span></a>
 <a name="113"><span class="lineNum">     113 </span>            : </a>
 <a name="114"><span class="lineNum">     114 </span>            : private:</a>
 <a name="115"><span class="lineNum">     115 </span><span class="lineCov">         55 :     [[nodiscard]] static bool has_filled_tokens(const parsing::parse_target&amp; target,</span></a>

@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2023-02-18 08:11:03</td>
+            <td class="headerValue">2023-02-26 11:57:09</td>
             <td></td>
           </tr>
           <tr>
@@ -100,12 +100,12 @@
 <a name="34"><span class="lineNum">      34 </span>            :      * @param parents Parents of @a node</a>
 <a name="35"><span class="lineNum">      35 </span>            :      */</a>
 <a name="36"><span class="lineNum">      36 </span>            :     template &lt;typename Node, typename... Parents&gt;</a>
-<a name="37"><span class="lineNum">      37 </span><span class="lineCov">       2306 :     parse_target(vector&lt;token_type&gt; tokens, const Node&amp; node, const Parents&amp;... parents) noexcept :</span></a>
-<a name="38"><span class="lineNum">      38 </span><span class="lineCov">       1153 :         node_type_{utility::type_hash&lt;std::decay_t&lt;Node&gt;&gt;()}, tokens_(std::move(tokens))</span></a>
+<a name="37"><span class="lineNum">      37 </span><span class="lineCov">       2312 :     parse_target(vector&lt;token_type&gt; tokens, const Node&amp; node, const Parents&amp;... parents) noexcept :</span></a>
+<a name="38"><span class="lineNum">      38 </span><span class="lineCov">       1156 :         node_type_{utility::type_hash&lt;std::decay_t&lt;Node&gt;&gt;()}, tokens_(std::move(tokens))</span></a>
 <a name="39"><span class="lineNum">      39 </span>            :     {</a>
 <a name="40"><span class="lineNum">      40 </span>            :         static_assert(is_tree_node_v&lt;Node&gt;, &quot;Target must be a tree_node&quot;);</a>
 <a name="41"><span class="lineNum">      41 </span>            : </a>
-<a name="42"><span class="lineNum">      42 </span><span class="lineCov">       1530 :         parse_ = [&amp;node, &amp;parents...](parse_target target) -&gt; utility::unsafe_any {</span></a>
+<a name="42"><span class="lineNum">      42 </span><span class="lineCov">       1533 :         parse_ = [&amp;node, &amp;parents...](parse_target target) -&gt; utility::unsafe_any {</span></a>
 <a name="43"><span class="lineNum">      43 </span>            :             if constexpr (std::is_void_v&lt;decltype(node.parse(std::move(target), parents...))&gt;) {</a>
 <a name="44"><span class="lineNum">      44 </span><span class="lineCov">        129 :                 node.parse(std::move(target), parents...);</span></a>
 <a name="45"><span class="lineNum">      45 </span><span class="lineCov">        109 :                 return {};</span></a>
@@ -113,7 +113,7 @@
 <a name="47"><span class="lineNum">      47 </span><span class="lineCov">        250 :                 return node.parse(std::move(target), parents...);</span></a>
 <a name="48"><span class="lineNum">      48 </span>            :             }</a>
 <a name="49"><span class="lineNum">      49 </span><span class="lineCov">         23 :         };</span></a>
-<a name="50"><span class="lineNum">      50 </span><span class="lineCov">       1153 :     }</span></a>
+<a name="50"><span class="lineNum">      50 </span><span class="lineCov">       1156 :     }</span></a>
 <a name="51"><span class="lineNum">      51 </span>            : </a>
 <a name="52"><span class="lineNum">      52 </span>            :     /** No token constructor.</a>
 <a name="53"><span class="lineNum">      53 </span>            :      *</a>
@@ -125,17 +125,17 @@
 <a name="59"><span class="lineNum">      59 </span>            :     template &lt;typename Node, typename... Parents&gt;</a>
 <a name="60"><span class="lineNum">      60 </span>            :     // https://github.com/llvm/llvm-project/issues/37250</a>
 <a name="61"><span class="lineNum">      61 </span>            :     // NOLINTNEXTLINE(*-member-init)</a>
-<a name="62"><span class="lineNum">      62 </span><span class="lineCov">       1089 :     explicit parse_target(const Node&amp; node,  //</span></a>
+<a name="62"><span class="lineNum">      62 </span><span class="lineCov">       1090 :     explicit parse_target(const Node&amp; node,  //</span></a>
 <a name="63"><span class="lineNum">      63 </span>            :                           const Parents&amp;... parents) noexcept :</a>
-<a name="64"><span class="lineNum">      64 </span><span class="lineCov">       1089 :         parse_target(vector&lt;token_type&gt;{}, node, parents...)</span></a>
+<a name="64"><span class="lineNum">      64 </span><span class="lineCov">       1090 :         parse_target(vector&lt;token_type&gt;{}, node, parents...)</span></a>
 <a name="65"><span class="lineNum">      65 </span>            :     {</a>
-<a name="66"><span class="lineNum">      66 </span><span class="lineCov">       1089 :     }</span></a>
+<a name="66"><span class="lineNum">      66 </span><span class="lineCov">       1090 :     }</span></a>
 <a name="67"><span class="lineNum">      67 </span>            : </a>
 <a name="68"><span class="lineNum">      68 </span>            :     /** The tokens associated with this target.</a>
 <a name="69"><span class="lineNum">      69 </span>            :      *</a>
 <a name="70"><span class="lineNum">      70 </span>            :      * @return Tokens reference</a>
 <a name="71"><span class="lineNum">      71 </span>            :      */</a>
-<a name="72"><span class="lineNum">      72 </span><span class="lineCov">        219 :     [[nodiscard]] vector&lt;token_type&gt;&amp; tokens() noexcept { return tokens_; }</span></a>
+<a name="72"><span class="lineNum">      72 </span><span class="lineCov">        222 :     [[nodiscard]] vector&lt;token_type&gt;&amp; tokens() noexcept { return tokens_; }</span></a>
 <a name="73"><span class="lineNum">      73 </span>            : </a>
 <a name="74"><span class="lineNum">      74 </span>            :     /** Const overload.</a>
 <a name="75"><span class="lineNum">      75 </span>            :      *</a>
@@ -178,7 +178,7 @@
 <a name="112"><span class="lineNum">     112 </span>            :      *</a>
 <a name="113"><span class="lineNum">     113 </span>            :      * @param tokens New tokens</a>
 <a name="114"><span class="lineNum">     114 </span>            :      */</a>
-<a name="115"><span class="lineNum">     115 </span><span class="lineCov">        386 :     void tokens(vector&lt;token_type&gt; tokens) { tokens_ = std::move(tokens); }</span></a>
+<a name="115"><span class="lineNum">     115 </span><span class="lineCov">        387 :     void tokens(vector&lt;token_type&gt; tokens) { tokens_ = std::move(tokens); }</span></a>
 <a name="116"><span class="lineNum">     116 </span>            : </a>
 <a name="117"><span class="lineNum">     117 </span>            :     /** Trigger the parse of this target.</a>
 <a name="118"><span class="lineNum">     118 </span>            :      *</a>

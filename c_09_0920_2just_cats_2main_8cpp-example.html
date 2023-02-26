@@ -96,7 +96,7 @@ $(document).ready(function(){initNavTree('c_09_0920_2just_cats_2main_8cpp-exampl
 <div class="title">c++20/just_cats/main.cpp</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><span class="comment">// Copyright (C) 2022 by Camden Mannett.</span></div>
+<div class="fragment"><div class="line"><span class="comment">// Copyright (C) 2022-2023 by Camden Mannett.</span></div>
 <div class="line"><span class="comment">// Distributed under the Boost Software License, Version 1.0.</span></div>
 <div class="line"><span class="comment">// (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)</span></div>
 <div class="line"> </div>
@@ -109,26 +109,26 @@ $(document).ready(function(){initNavTree('c_09_0920_2just_cats_2main_8cpp-exampl
 <div class="line"><span class="keywordtype">int</span> main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>* argv[])</div>
 <div class="line">{</div>
 <div class="line">    ar::root(arp::validation::default_validator,</div>
-<div class="line">             ar::help(arp::long_name_t{<span class="stringliteral">&quot;help&quot;</span>_S},</div>
-<div class="line">                      arp::short_name_t{<span class="stringliteral">&quot;h&quot;</span>_S},</div>
+<div class="line">             ar::help(<span class="stringliteral">&quot;help&quot;</span>_S,</div>
+<div class="line">                      <span class="stringliteral">&quot;h&quot;</span>_S,</div>
+<div class="line">                      <span class="stringliteral">&quot;Display this help and exit&quot;</span>_S,</div>
 <div class="line">                      arp::program_name_t{<span class="stringliteral">&quot;just-cats&quot;</span>_S},</div>
 <div class="line">                      arp::program_intro_t{<span class="stringliteral">&quot;Prints cats!&quot;</span>_S},</div>
-<div class="line">                      arp::program_addendum_t{<span class="stringliteral">&quot;An example program for arg_router.&quot;</span>_S},</div>
-<div class="line">                      arp::description_t{<span class="stringliteral">&quot;Display this help and exit&quot;</span>_S}),</div>
-<div class="line">             ar::flag(arp::long_name_t{<span class="stringliteral">&quot;cat&quot;</span>_S},</div>
-<div class="line">                      arp::description_t{<span class="stringliteral">&quot;English cat&quot;</span>_S},</div>
-<div class="line">                      arp::router{[](bool) { std::cout &lt;&lt; <span class="stringliteral">&quot;cat&quot;</span> &lt;&lt; std::endl; }}),</div>
-<div class="line">             ar::flag(arp::short_name_t{<span class="stringliteral">&quot;猫&quot;</span>_S},</div>
+<div class="line">                      arp::program_addendum_t{<span class="stringliteral">&quot;An example program for arg_router.&quot;</span>_S}),</div>
+<div class="line">             ar::flag(<span class="stringliteral">&quot;cat&quot;</span>_S, <span class="stringliteral">&quot;English cat&quot;</span>_S, arp::router{[](bool) {</div>
+<div class="line">                          std::cout &lt;&lt; <span class="stringliteral">&quot;cat&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line">                      }}),</div>
+<div class="line">             ar::flag(<span class="stringliteral">&quot;猫&quot;</span>_S,  <span class="comment">//</span></div>
 <div class="line">                      arp::description_t{<span class="stringliteral">&quot;日本語の猫&quot;</span>_S},</div>
 <div class="line">                      arp::router{[](bool) { std::cout &lt;&lt; <span class="stringliteral">&quot;猫&quot;</span> &lt;&lt; std::endl; }}),</div>
-<div class="line">             ar::flag(arp::short_name_t{<span class="stringliteral">&quot;🐱&quot;</span>_S},</div>
+<div class="line">             ar::flag(<span class="stringliteral">&quot;🐱&quot;</span>_S,  <span class="comment">//</span></div>
 <div class="line">                      arp::description_t{<span class="stringliteral">&quot;Emoji cat&quot;</span>_S},</div>
 <div class="line">                      arp::router{[](bool) { std::cout &lt;&lt; <span class="stringliteral">&quot;🐱&quot;</span> &lt;&lt; std::endl; }}),</div>
-<div class="line">             ar::flag(arp::long_name_t{<span class="stringliteral">&quot;แมว&quot;</span>_S},</div>
-<div class="line">                      arp::description_t{<span class="stringliteral">&quot;แมวไทย&quot;</span>_S},</div>
+<div class="line">             ar::flag(<span class="stringliteral">&quot;แมว&quot;</span>_S,  <span class="comment">//</span></div>
+<div class="line">                      <span class="stringliteral">&quot;แมวไทย&quot;</span>_S,</div>
 <div class="line">                      arp::router{[](bool) { std::cout &lt;&lt; <span class="stringliteral">&quot;แมว&quot;</span> &lt;&lt; std::endl; }}),</div>
-<div class="line">             ar::flag(arp::long_name_t{<span class="stringliteral">&quot;кіт&quot;</span>_S},</div>
-<div class="line">                      arp::description_t{<span class="stringliteral">&quot;український кіт&quot;</span>_S},</div>
+<div class="line">             ar::flag(<span class="stringliteral">&quot;кіт&quot;</span>_S,  <span class="comment">//</span></div>
+<div class="line">                      <span class="stringliteral">&quot;український кіт&quot;</span>_S,</div>
 <div class="line">                      arp::router{[](bool) { std::cout &lt;&lt; <span class="stringliteral">&quot;кіт&quot;</span> &lt;&lt; std::endl; }}))</div>
 <div class="line">        .parse(argc, argv);</div>
 <div class="line"> </div>

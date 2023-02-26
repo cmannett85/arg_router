@@ -185,9 +185,9 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:a8f75dcf7d479004106e69f977500d8fa"><td class="memTemplParams" colspan="2">template&lt;typename Indent  = traits::integral_constant&lt;std::size_t{4}&gt;, typename DescColumnOffset  = traits::integral_constant&lt;Indent{} * 2&gt;, typename PreambleFormatter  = help_formatter_component::default_preamble_formatter&gt; </td></tr>
-<tr class="memitem:a8f75dcf7d479004106e69f977500d8fa"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#a8f75dcf7d479004106e69f977500d8fa">colour_help_formatter_t</a> = <a class="el" href="classarg__router_1_1policy_1_1default__help__formatter__t.html">default_help_formatter_t</a>&lt; Indent, DescColumnOffset, help_formatter_component::colour_line_formatter&lt; Indent{}&gt;, PreambleFormatter &gt;</td></tr>
-<tr class="separator:a8f75dcf7d479004106e69f977500d8fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb0a4e0030ab0111d18634aca333054c"><td class="memTemplParams" colspan="2">template&lt;typename Indent  = traits::integral_constant&lt;std::size_t{4}&gt;, typename DescColumnOffset  = traits::integral_constant&lt;Indent{} * 2&gt;, typename PreambleFormatter  = help_formatter_component::default_preamble_formatter, typename AddendumFormatter  = help_formatter_component::default_addendum_formatter&gt; </td></tr>
+<tr class="memitem:afb0a4e0030ab0111d18634aca333054c"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#afb0a4e0030ab0111d18634aca333054c">colour_help_formatter_t</a> = <a class="el" href="classarg__router_1_1policy_1_1default__help__formatter__t.html">default_help_formatter_t</a>&lt; Indent, DescColumnOffset, <a class="el" href="classarg__router_1_1policy_1_1help__formatter__component_1_1colour__line__formatter.html">help_formatter_component::colour_line_formatter</a>&lt; Indent{}&gt;, PreambleFormatter, AddendumFormatter &gt;</td></tr>
+<tr class="separator:afb0a4e0030ab0111d18634aca333054c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a985a31d1991b66211625593d1b07dff9"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a985a31d1991b66211625593d1b07dff9"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#a985a31d1991b66211625593d1b07dff9">has_no_result_value</a> = std::is_base_of&lt; <a class="el" href="structarg__router_1_1policy_1_1no__result__value.html">no_result_value</a>&lt;&gt;, T &gt;</td></tr>
 <tr class="separator:a985a31d1991b66211625593d1b07dff9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -224,7 +224,7 @@ Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a2b0c8681a2563d4b2cac7ff4bdf918f1"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#a2b0c8681a2563d4b2cac7ff4bdf918f1">colour_help_formatter</a> = <a class="el" href="namespacearg__router_1_1policy.html#a8f75dcf7d479004106e69f977500d8fa">colour_help_formatter_t</a>&lt;&gt;{}</td></tr>
+<tr class="memitem:a2b0c8681a2563d4b2cac7ff4bdf918f1"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#a2b0c8681a2563d4b2cac7ff4bdf918f1">colour_help_formatter</a> = <a class="el" href="namespacearg__router_1_1policy.html#afb0a4e0030ab0111d18634aca333054c">colour_help_formatter_t</a>&lt;&gt;{}</td></tr>
 <tr class="separator:a2b0c8681a2563d4b2cac7ff4bdf918f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5839f9553ec6db8d71d7414c03ed5705"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#a5839f9553ec6db8d71d7414c03ed5705">default_help_formatter</a> = <a class="el" href="classarg__router_1_1policy_1_1default__help__formatter__t.html">default_help_formatter_t</a>&lt;&gt;{}</td></tr>
 <tr class="separator:a5839f9553ec6db8d71d7414c03ed5705"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -318,16 +318,16 @@ Variables</h2></td></tr>
 <p>Policy namespace.</p>
 <p><a class="el" href="namespacearg__router.html">arg_router</a> uses policies to compose behaviours on command line argument types. </p>
 </div><h2 class="groupheader">Typedef Documentation</h2>
-<a id="a8f75dcf7d479004106e69f977500d8fa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8f75dcf7d479004106e69f977500d8fa">&#9670;&nbsp;</a></span>colour_help_formatter_t</h2>
+<a id="afb0a4e0030ab0111d18634aca333054c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb0a4e0030ab0111d18634aca333054c">&#9670;&nbsp;</a></span>colour_help_formatter_t</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Indent  = traits::integral_constant&lt;std::size_t{4}&gt;, typename DescColumnOffset  = traits::integral_constant&lt;Indent{} * 2&gt;, typename PreambleFormatter  = help_formatter_component::default_preamble_formatter&gt; </div>
+template&lt;typename Indent  = traits::integral_constant&lt;std::size_t{4}&gt;, typename DescColumnOffset  = traits::integral_constant&lt;Indent{} * 2&gt;, typename PreambleFormatter  = help_formatter_component::default_preamble_formatter, typename AddendumFormatter  = help_formatter_component::default_addendum_formatter&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="namespacearg__router_1_1policy.html#a8f75dcf7d479004106e69f977500d8fa">arg_router::policy::colour_help_formatter_t</a> = typedef <a class="el" href="classarg__router_1_1policy_1_1default__help__formatter__t.html">default_help_formatter_t</a>&lt;Indent, DescColumnOffset, help_formatter_component::colour_line_formatter&lt;Indent{}&gt;, PreambleFormatter&gt;</td>
+          <td class="memname">using <a class="el" href="namespacearg__router_1_1policy.html#afb0a4e0030ab0111d18634aca333054c">arg_router::policy::colour_help_formatter_t</a> = typedef <a class="el" href="classarg__router_1_1policy_1_1default__help__formatter__t.html">default_help_formatter_t</a>&lt;Indent, DescColumnOffset, <a class="el" href="classarg__router_1_1policy_1_1help__formatter__component_1_1colour__line__formatter.html">help_formatter_component::colour_line_formatter</a>&lt;Indent{}&gt;, PreambleFormatter, AddendumFormatter&gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -337,11 +337,12 @@ template&lt;typename Indent  = traits::integral_constant&lt;std::size_t{4}&gt;, 
     <tr><td class="paramname">Indent</td><td>Number of spaces per 'level' of indentation, defaults to 4 </td></tr>
     <tr><td class="paramname">DescColumnOffset</td><td>Minimum number of description columns remaining in a terminal line needed to attempt proper line breaks i.e. if it is less than <em>DescColumnOffset</em> then the output just overflows onto the next line, defaults to 8 </td></tr>
     <tr><td class="paramname">PreambleFormatter</td><td>Controls preamble formatting i.e. the 'intro' part of the output that goes before the argument output </td></tr>
+    <tr><td class="paramname">AddendumFormatter</td><td>Controls addendum formatting i.e. the part of the output that goes after the argument output </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="colour__help__formatter_8hpp_source.html#l00088">88</a> of file <a class="el" href="colour__help__formatter_8hpp_source.html">colour_help_formatter.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="colour__help__formatter_8hpp_source.html#l00097">97</a> of file <a class="el" href="colour__help__formatter_8hpp_source.html">colour_help_formatter.hpp</a>.</p>
 
 </div>
 </div>
@@ -782,7 +783,7 @@ template&lt;typename ValueType , typename LessThanCompare  = std::less&lt;ValueT
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr auto arg_router::policy::colour_help_formatter = <a class="el" href="namespacearg__router_1_1policy.html#a8f75dcf7d479004106e69f977500d8fa">colour_help_formatter_t</a>&lt;&gt;{}</td>
+          <td class="memname">constexpr auto arg_router::policy::colour_help_formatter = <a class="el" href="namespacearg__router_1_1policy.html#afb0a4e0030ab0111d18634aca333054c">colour_help_formatter_t</a>&lt;&gt;{}</td>
         </tr>
       </table>
   </td>
@@ -793,7 +794,7 @@ template&lt;typename ValueType , typename LessThanCompare  = std::less&lt;ValueT
 </div><div class="memdoc">
 <p>Constant variable helper. </p>
 
-<p class="definition">Definition at line <a class="el" href="colour__help__formatter_8hpp_source.html#l00095">95</a> of file <a class="el" href="colour__help__formatter_8hpp_source.html">colour_help_formatter.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="colour__help__formatter_8hpp_source.html#l00105">105</a> of file <a class="el" href="colour__help__formatter_8hpp_source.html">colour_help_formatter.hpp</a>.</p>
 
 </div>
 </div>
@@ -818,7 +819,7 @@ template&lt;typename ValueType , typename LessThanCompare  = std::less&lt;ValueT
 </div><div class="memdoc">
 <p>Constant variable helper. </p>
 
-<p class="definition">Definition at line <a class="el" href="default__help__formatter_8hpp_source.html#l00264">264</a> of file <a class="el" href="default__help__formatter_8hpp_source.html">default_help_formatter.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="default__help__formatter_8hpp_source.html#l00266">266</a> of file <a class="el" href="default__help__formatter_8hpp_source.html">default_help_formatter.hpp</a>.</p>
 
 </div>
 </div>

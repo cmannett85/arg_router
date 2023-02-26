@@ -268,12 +268,20 @@ $(document).ready(function(){initNavTree('c_09_0920_2custom_policy_and_node_2mai
 <div class="line">                  <span class="stringliteral">&quot;(e.g. router)&quot;</span>);</div>
 <div class="line">};</div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// Create a helper function to ease CTAD.</span></div>
+<div class="line"><span class="comment">// Create a helper function to ease CTAD.  The string_to_policy::convert function isn&#39;t required</span></div>
+<div class="line"><span class="comment">// but allows string-to-policy conversion to as intended</span></div>
 <div class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span>... Policies&gt;</div>
-<div class="line">[[nodiscard]] constexpr single_positional_arg_t&lt;T, Policies...&gt; single_positional_arg(</div>
-<div class="line">    Policies... policies) noexcept</div>
+<div class="line">[[nodiscard]] constexpr <span class="keyword">auto</span> single_positional_arg(Policies... policies) noexcept</div>
 <div class="line">{</div>
-<div class="line">    <span class="keywordflow">return</span> single_positional_arg_t&lt;T, std::decay_t&lt;Policies&gt;...&gt;{std::move(policies)...};</div>
+<div class="line">    <span class="keywordflow">return</span> std::apply(</div>
+<div class="line">        [](<span class="keyword">auto</span>... converted_policies) {</div>
+<div class="line">            <span class="keywordflow">return</span> single_positional_arg_t&lt;T, std::decay_t&lt;decltype(converted_policies)&gt;...&gt;{</div>
+<div class="line">                std::move(converted_policies)...};</div>
+<div class="line">        },</div>
+<div class="line">        ar::utility::string_to_policy::convert&lt;</div>
+<div class="line">            ar::utility::string_to_policy::first_text_mapper&lt;arp::display_name_t&gt;,</div>
+<div class="line">            ar::utility::string_to_policy::second_text_mapper&lt;smiley_description_t&gt;&gt;(</div>
+<div class="line">            std::move(policies)...));</div>
 <div class="line">}</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Take a copy of the default rules, as we&#39;re adding new types we just need to add to them</span></div>
@@ -302,24 +310,25 @@ $(document).ready(function(){initNavTree('c_09_0920_2custom_policy_and_node_2mai
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>* argv[])</div>
 <div class="line">{</div>
-<div class="line">    ar::root(my_validator{},</div>
-<div class="line">             ar::help(arp::long_name_t{<span class="stringliteral">&quot;help&quot;</span>_S},</div>
-<div class="line">                      arp::short_name_t{<span class="stringliteral">&quot;h&quot;</span>_S},</div>
-<div class="line">                      arp::program_name_t{<span class="stringliteral">&quot;is_even&quot;</span>_S},</div>
-<div class="line">                      arp::program_version&lt;ar::str&lt;version&gt;&gt;,</div>
-<div class="line">                      arp::program_addendum_t{<span class="stringliteral">&quot;An example program for arg_router.&quot;</span>_S},</div>
-<div class="line">                      smiley_description_t{<span class="stringliteral">&quot;Display this help and exit&quot;</span>_S}),</div>
-<div class="line">             ar::flag(arp::long_name_t{<span class="stringliteral">&quot;version&quot;</span>_S},</div>
-<div class="line">                      smiley_description_t{<span class="stringliteral">&quot;Output version information and exit&quot;</span>_S},</div>
-<div class="line">                      arp::router{[](bool) {</div>
-<div class="line">                          std::cout &lt;&lt; version.data() &lt;&lt; std::endl;</div>
-<div class="line">                          std::exit(EXIT_SUCCESS);</div>
-<div class="line">                      }}),</div>
-<div class="line">             ar::mode(single_positional_arg&lt;int&gt;(arp::required,</div>
-<div class="line">                                                 arp::display_name_t{<span class="stringliteral">&quot;Value&quot;</span>_S},</div>
-<div class="line">                                                 smiley_description_t{<span class="stringliteral">&quot;Value to read&quot;</span>_S},</div>
-<div class="line">                                                 is_even&lt;int&gt;{}),</div>
-<div class="line">                      arp::router{[](<span class="keywordtype">int</span> value) { std::cout &lt;&lt; <span class="stringliteral">&quot;Value: &quot;</span> &lt;&lt; value &lt;&lt; std::endl; }}))</div>
+<div class="line">    <span class="comment">// Help and flag are built-in and therefore will use policy::description_t if passed a</span></div>
+<div class="line">    <span class="comment">// description string, so we have to be explicit</span></div>
+<div class="line">    ar::root(</div>
+<div class="line">        my_validator{},</div>
+<div class="line">        ar::help(<span class="stringliteral">&quot;help&quot;</span>_S,</div>
+<div class="line">                 <span class="stringliteral">&quot;h&quot;</span>_S,</div>
+<div class="line">                 arp::program_name_t{<span class="stringliteral">&quot;is_even&quot;</span>_S},</div>
+<div class="line">                 arp::program_version&lt;ar::str&lt;version&gt;&gt;,</div>
+<div class="line">                 arp::program_addendum_t{<span class="stringliteral">&quot;An example program for arg_router.&quot;</span>_S},</div>
+<div class="line">                 smiley_description_t{<span class="stringliteral">&quot;Display this help and exit&quot;</span>_S}),</div>
+<div class="line">        ar::flag(<span class="stringliteral">&quot;version&quot;</span>_S,</div>
+<div class="line">                 smiley_description_t{<span class="stringliteral">&quot;Output version information and exit&quot;</span>_S},</div>
+<div class="line">                 arp::router{[](bool) {</div>
+<div class="line">                     std::cout &lt;&lt; version.data() &lt;&lt; std::endl;</div>
+<div class="line">                     std::exit(EXIT_SUCCESS);</div>
+<div class="line">                 }}),</div>
+<div class="line">        ar::mode(</div>
+<div class="line">            single_positional_arg&lt;int&gt;(arp::required, <span class="stringliteral">&quot;Value&quot;</span>_S, <span class="stringliteral">&quot;Value to read&quot;</span>_S, is_even&lt;int&gt;{}),</div>
+<div class="line">            arp::router{[](<span class="keywordtype">int</span> value) { std::cout &lt;&lt; <span class="stringliteral">&quot;Value: &quot;</span> &lt;&lt; value &lt;&lt; std::endl; }}))</div>
 <div class="line">        .parse(argc, argv);</div>
 <div class="line"> </div>
 <div class="line">    <span class="keywordflow">return</span> EXIT_SUCCESS;</div>

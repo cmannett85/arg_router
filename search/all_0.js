@@ -38,9 +38,10 @@ var searchData=
   ['no_5fbreak_5frules_35',['no_break_rules',['../namespacearg__router_1_1utility_1_1utf8_1_1no__break__rules.html',1,'arg_router::utility::utf8']]],
   ['parsing_36',['parsing',['../namespacearg__router_1_1parsing.html',1,'arg_router']]],
   ['policy_37',['policy',['../namespacearg__router_1_1policy.html',1,'arg_router']]],
-  ['string_5fview_5fops_38',['string_view_ops',['../namespacearg__router_1_1utility_1_1string__view__ops.html',1,'arg_router::utility']]],
-  ['terminal_39',['terminal',['../namespacearg__router_1_1utility_1_1terminal.html',1,'arg_router::utility']]],
-  ['utf8_40',['utf8',['../namespacearg__router_1_1utility_1_1utf8.html',1,'arg_router::utility']]],
-  ['utility_41',['utility',['../namespacearg__router_1_1utility.html',1,'arg_router']]],
-  ['validation_42',['validation',['../namespacearg__router_1_1policy_1_1validation.html',1,'arg_router::policy']]]
+  ['string_5fto_5fpolicy_38',['string_to_policy',['../namespacearg__router_1_1utility_1_1string__to__policy.html',1,'arg_router::utility']]],
+  ['string_5fview_5fops_39',['string_view_ops',['../namespacearg__router_1_1utility_1_1string__view__ops.html',1,'arg_router::utility']]],
+  ['terminal_40',['terminal',['../namespacearg__router_1_1utility_1_1terminal.html',1,'arg_router::utility']]],
+  ['utf8_41',['utf8',['../namespacearg__router_1_1utility_1_1utf8.html',1,'arg_router::utility']]],
+  ['utility_42',['utility',['../namespacearg__router_1_1utility.html',1,'arg_router']]],
+  ['validation_43',['validation',['../namespacearg__router_1_1policy_1_1validation.html',1,'arg_router::policy']]]
 ];

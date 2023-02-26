@@ -96,7 +96,7 @@ $(document).ready(function(){initNavTree('c_09_0920_2simple_ml_2main_8cpp-exampl
 <div class="title">c++20/simple_ml/main.cpp</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><span class="comment">// Copyright (C) 2022 by Camden Mannett.</span></div>
+<div class="fragment"><div class="line"><span class="comment">// Copyright (C) 2022-2023 by Camden Mannett.</span></div>
 <div class="line"><span class="comment">// Distributed under the Boost Software License, Version 1.0.</span></div>
 <div class="line"><span class="comment">// (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)</span></div>
 <div class="line"> </div>
@@ -280,49 +280,46 @@ $(document).ready(function(){initNavTree('c_09_0920_2simple_ml_2main_8cpp-exampl
 <div class="line">        [&amp;](<span class="keyword">auto</span> tr_) {</div>
 <div class="line">            <span class="keyword">using</span> tr = decltype(tr_);</div>
 <div class="line"> </div>
-<div class="line">            <span class="keyword">const</span> <span class="keyword">auto</span> common_args = ar::list{</div>
-<div class="line">                ar::flag(arp::long_name&lt;typename tr::force&gt;,</div>
-<div class="line">                         arp::short_name_t{<span class="stringliteral">&quot;f&quot;</span>_S},</div>
-<div class="line">                         arp::description&lt;typename tr::force_description&gt;),</div>
-<div class="line">                ar::positional_arg&lt;fs::path&gt;(arp::required,</div>
-<div class="line">                                             arp::display_name&lt;typename tr::destination&gt;,</div>
-<div class="line">                                             arp::description&lt;typename tr::destination_description&gt;,</div>
-<div class="line">                                             arp::fixed_count&lt;1&gt;)};</div>
+<div class="line">            <span class="keyword">const</span> <span class="keyword">auto</span> common_args =</div>
+<div class="line">                ar::list{ar::flag(<span class="keyword">typename</span> tr::force{}, <span class="stringliteral">&quot;f&quot;</span>_S, <span class="keyword">typename</span> tr::force_description{}),</div>
+<div class="line">                         ar::positional_arg&lt;fs::path&gt;(arp::required,</div>
+<div class="line">                                                      <span class="keyword">typename</span> tr::destination{},</div>
+<div class="line">                                                      <span class="keyword">typename</span> tr::destination_description{},</div>
+<div class="line">                                                      arp::fixed_count&lt;1&gt;)};</div>
 <div class="line"> </div>
 <div class="line">            <span class="keywordflow">return</span> ar::root(</div>
 <div class="line">                arp::validation::default_validator,</div>
 <div class="line">                arp::exception_translator&lt;tr&gt;,</div>
-<div class="line">                ar::help(arp::long_name&lt;typename tr::help&gt;,</div>
-<div class="line">                         arp::short_name_t{<span class="stringliteral">&quot;h&quot;</span>_S},</div>
-<div class="line">                         arp::description&lt;typename tr::help_description&gt;,</div>
+<div class="line">                ar::help(<span class="keyword">typename</span> tr::help{},</div>
+<div class="line">                         <span class="stringliteral">&quot;h&quot;</span>_S,</div>
+<div class="line">                         <span class="keyword">typename</span> tr::help_description{},</div>
 <div class="line">                         arp::program_name_t{<span class="stringliteral">&quot;simple&quot;</span>_S},</div>
 <div class="line">                         arp::program_version_t{<span class="stringliteral">&quot;v0.1&quot;</span>_S},</div>
 <div class="line">                         arp::program_intro&lt;typename tr::program_intro&gt;,</div>
 <div class="line">                         arp::program_addendum&lt;typename tr::program_addendum&gt;,</div>
 <div class="line">                         arp::flatten_help,</div>
 <div class="line">                         arp::colour_help_formatter),</div>
-<div class="line">                ar::mode(arp::none_name&lt;typename tr::copy&gt;,</div>
-<div class="line">                         arp::description&lt;typename tr::copy_description&gt;,</div>
-<div class="line">                         common_args,</div>
-<div class="line">                         ar::positional_arg&lt;std::vector&lt;fs::path&gt;&gt;(</div>
-<div class="line">                             arp::required,</div>
-<div class="line">                             arp::display_name&lt;typename tr::source&gt;,</div>
-<div class="line">                             arp::description&lt;typename tr::sources_description&gt;,</div>
-<div class="line">                             arp::min_count&lt;1&gt;),</div>
-<div class="line">                         arp::router{[](<span class="keywordtype">bool</span> force, fs::path dest, std::vector&lt;fs::path&gt; srcs) {</div>
-<div class="line">                             copy_mode(force, std::move(dest), std::move(srcs));</div>
-<div class="line">                         }}),</div>
 <div class="line">                ar::mode(</div>
-<div class="line">                    arp::none_name&lt;typename tr::move&gt;,</div>
-<div class="line">                    arp::description&lt;typename tr::move_description&gt;,</div>
+<div class="line">                    <span class="keyword">typename</span> tr::copy{},</div>
+<div class="line">                    <span class="keyword">typename</span> tr::copy_description{},</div>
 <div class="line">                    common_args,</div>
-<div class="line">                    ar::positional_arg&lt;fs::path&gt;(arp::required,</div>
-<div class="line">                                                 arp::display_name&lt;typename tr::source&gt;,</div>
-<div class="line">                                                 arp::description&lt;typename tr::source_description&gt;,</div>
-<div class="line">                                                 arp::fixed_count&lt;1&gt;),</div>
-<div class="line">                    arp::router{[](<span class="keywordtype">bool</span> force, fs::path dest, fs::path src) {</div>
-<div class="line">                        move_mode(force, std::move(dest), std::move(src));</div>
-<div class="line">                    }}));</div>
+<div class="line">                    ar::positional_arg&lt;std::vector&lt;fs::path&gt;&gt;(arp::required,</div>
+<div class="line">                                                              <span class="keyword">typename</span> tr::source{},</div>
+<div class="line">                                                              <span class="keyword">typename</span> tr::sources_description{},</div>
+<div class="line">                                                              arp::min_count&lt;1&gt;),</div>
+<div class="line">                    arp::router{[](<span class="keywordtype">bool</span> force, fs::path dest, std::vector&lt;fs::path&gt; srcs) {</div>
+<div class="line">                        copy_mode(force, std::move(dest), std::move(srcs));</div>
+<div class="line">                    }}),</div>
+<div class="line">                ar::mode(<span class="keyword">typename</span> tr::move{},</div>
+<div class="line">                         <span class="keyword">typename</span> tr::move_description{},</div>
+<div class="line">                         common_args,</div>
+<div class="line">                         ar::positional_arg&lt;fs::path&gt;(arp::required,</div>
+<div class="line">                                                      <span class="keyword">typename</span> tr::source{},</div>
+<div class="line">                                                      <span class="keyword">typename</span> tr::source_description{},</div>
+<div class="line">                                                      arp::fixed_count&lt;1&gt;),</div>
+<div class="line">                         arp::router{[](<span class="keywordtype">bool</span> force, fs::path dest, fs::path src) {</div>
+<div class="line">                             move_mode(force, std::move(dest), std::move(src));</div>
+<div class="line">                         }}));</div>
 <div class="line">        })</div>
 <div class="line">        .parse(argc, argv);</div>
 <div class="line">}</div>
@@ -330,8 +327,8 @@ $(document).ready(function(){initNavTree('c_09_0920_2simple_ml_2main_8cpp-exampl
 <div class="ttc" id="anamespacearg__router_1_1policy_html_a50ebcd2455ba90ecbbcaf7d6aab2dc16"><div class="ttname"><a href="namespacearg__router_1_1policy.html#a50ebcd2455ba90ecbbcaf7d6aab2dc16">arg_router::policy::program_addendum</a></div><div class="ttdeci">constexpr auto program_addendum</div><div class="ttdef"><b>Definition:</b> <a href="program__addendum_8hpp_source.html#l00053">program_addendum.hpp:53</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1policy_html_ae4c0515ad6d58ea37fe121ee3f4a9861"><div class="ttname"><a href="namespacearg__router_1_1policy.html#ae4c0515ad6d58ea37fe121ee3f4a9861">arg_router::policy::program_intro</a></div><div class="ttdeci">constexpr auto program_intro</div><div class="ttdef"><b>Definition:</b> <a href="program__intro_8hpp_source.html#l00053">program_intro.hpp:53</a></div></div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00015">algorithm.hpp:16</a></div></div>
-<div class="ttc" id="anamespacearg__router_html_a1eb8c408da38619d624f435441efac48"><div class="ttname"><a href="namespacearg__router.html#a1eb8c408da38619d624f435441efac48">arg_router::help</a></div><div class="ttdeci">constexpr auto help(Policies... policies) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="help_8hpp_source.html#l00221">help.hpp:221</a></div></div>
-<div class="ttc" id="anamespacearg__router_html_a29537daeb3ba7d1b8749d3e1e9d83f1b"><div class="ttname"><a href="namespacearg__router.html#a29537daeb3ba7d1b8749d3e1e9d83f1b">arg_router::arg</a></div><div class="ttdeci">constexpr auto arg(Policies... policies) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="arg_8hpp_source.html#l00113">arg.hpp:113</a></div></div>
+<div class="ttc" id="anamespacearg__router_html_a1eb8c408da38619d624f435441efac48"><div class="ttname"><a href="namespacearg__router.html#a1eb8c408da38619d624f435441efac48">arg_router::help</a></div><div class="ttdeci">constexpr auto help(Policies... policies) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="help_8hpp_source.html#l00233">help.hpp:233</a></div></div>
+<div class="ttc" id="anamespacearg__router_html_a29537daeb3ba7d1b8749d3e1e9d83f1b"><div class="ttname"><a href="namespacearg__router.html#a29537daeb3ba7d1b8749d3e1e9d83f1b">arg_router::arg</a></div><div class="ttdeci">constexpr auto arg(Policies... policies) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="arg_8hpp_source.html#l00127">arg.hpp:127</a></div></div>
 </div><!-- fragment --> </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

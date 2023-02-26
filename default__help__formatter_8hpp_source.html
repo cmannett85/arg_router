@@ -96,35 +96,34 @@ $(document).ready(function(){initNavTree('default__help__formatter_8hpp_source.h
 <div class="title">default_help_formatter.hpp</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">// Copyright (C) 2022 by Camden Mannett.</span></div>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">// Copyright (C) 2022-2023 by Camden Mannett.</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">// Distributed under the Boost Software License, Version 1.0.</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">// (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;arg_router/algorithm.hpp&quot;</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;arg_router/policy/policy.hpp&quot;</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;arg_router/policy/program_addendum.hpp&quot;</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;arg_router/policy/program_intro.hpp&quot;</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;arg_router/policy/program_name.hpp&quot;</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;arg_router/policy/program_version.hpp&quot;</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="compile__time__string_8hpp.html">arg_router/utility/compile_time_string.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &quot;arg_router/utility/terminal.hpp&quot;</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &quot;arg_router/utility/tuple_iterator.hpp&quot;</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &quot;arg_router/utility/utf8.hpp&quot;</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &lt;limits&gt;</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacearg__router_1_1policy.html">arg_router::policy</a></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;{</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keyword">namespace </span>help_formatter_component</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;{</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">template</span> &lt;std::<span class="keywordtype">size_t</span> Indent&gt;</div>
-<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1help__formatter__component_1_1default__line__formatter.html">   36</a></span>&#160;<span class="keyword">class </span><a class="code" href="classarg__router_1_1policy_1_1help__formatter__component_1_1default__line__formatter.html">default_line_formatter</a></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;{</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    static_assert(Indent &gt; 0, <span class="stringliteral">&quot;Indent must be greater than zero&quot;</span>);</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;arg_router/policy/program_addendum.hpp&quot;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;arg_router/policy/program_intro.hpp&quot;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;arg_router/policy/program_name.hpp&quot;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;arg_router/policy/program_version.hpp&quot;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="compile__time__string_8hpp.html">arg_router/utility/compile_time_string.hpp</a>&quot;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;arg_router/utility/terminal.hpp&quot;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &quot;arg_router/utility/tuple_iterator.hpp&quot;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &quot;arg_router/utility/utf8.hpp&quot;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &lt;limits&gt;</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacearg__router_1_1policy.html">arg_router::policy</a></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;{</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keyword">namespace </span>help_formatter_component</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;{</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">template</span> &lt;std::<span class="keywordtype">size_t</span> Indent&gt;</div>
+<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1help__formatter__component_1_1default__line__formatter.html">   35</a></span>&#160;<span class="keyword">class </span><a class="code" href="classarg__router_1_1policy_1_1help__formatter__component_1_1default__line__formatter.html">default_line_formatter</a></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;{</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    static_assert(Indent &gt; 0, <span class="stringliteral">&quot;Indent must be greater than zero&quot;</span>);</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keyword">template</span> &lt;std::<span class="keywordtype">size_t</span> DescStart, std::<span class="keywordtype">size_t</span> Depth, <span class="keyword">typename</span> HelpData&gt;</div>
 <div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1help__formatter__component_1_1default__line__formatter.html#a36ba0359d5a9d481686d37feb38ecf86">   50</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classarg__router_1_1policy_1_1help__formatter__component_1_1default__line__formatter.html#a36ba0359d5a9d481686d37feb38ecf86">format</a>(std::ostream&amp; stream, std::size_t columns)</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    {</div>
@@ -224,102 +223,102 @@ $(document).ready(function(){initNavTree('default__help__formatter_8hpp_source.h
 <div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;};</div>
 <div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;}  <span class="comment">// namespace help_formatter_component</span></div>
 <div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160; </div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Indent = traits::integral_constant&lt;std::size_t{4}&gt;,</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;          <span class="keyword">typename</span> DescColumnOffset = traits::integral_constant&lt;Indent{} * 2&gt;,</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;          <span class="keyword">typename</span> LineFormatter = help_formatter_component::default_line_formatter&lt;Indent{}&gt;,</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;          <span class="keyword">typename</span> PreambleFormatter = help_formatter_component::default_preamble_formatter,</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;          <span class="keyword">typename</span> AddendumFormatter = help_formatter_component::default_addendum_formatter&gt;</div>
-<div class="line"><a name="l00177"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1default__help__formatter__t.html">  177</a></span>&#160;<span class="keyword">class </span><a class="code" href="classarg__router_1_1policy_1_1default__help__formatter__t.html">default_help_formatter_t</a></div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;{</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;    static_assert(traits::has_value_type_v&lt;Indent&gt;, <span class="stringliteral">&quot;Indent must have a value_type&quot;</span>);</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;    static_assert(Indent{} &gt; 0, <span class="stringliteral">&quot;Indent value_type must be greater than zero&quot;</span>);</div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;    static_assert(traits::has_value_type_v&lt;DescColumnOffset&gt;,</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;                  <span class="stringliteral">&quot;DescColumnOffset must have a value_type&quot;</span>);</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;    static_assert(DescColumnOffset{} &gt; 0, <span class="stringliteral">&quot;DescColumnOffset value_type must be greater than zero&quot;</span>);</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160; </div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Node, <span class="keyword">typename</span> HelpNode, <span class="keywordtype">bool</span> Flatten&gt;</div>
-<div class="line"><a name="l00198"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1default__help__formatter__t.html#a227e279f63b17b57a786c6c22ea755db">  198</a></span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="classarg__router_1_1policy_1_1default__help__formatter__t.html#a227e279f63b17b57a786c6c22ea755db">generate_help</a>(std::ostream&amp; stream)</div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;    {</div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;        static_assert(traits::has_help_data_type_v&lt;Node&gt;,</div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;                      <span class="stringliteral">&quot;Node must have a help_data_type to generate help from&quot;</span>);</div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160; </div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;        <span class="keyword">using</span> help_data_type = <span class="keyword">typename</span> Node::template help_data_type&lt;Flatten&gt;;</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Indent = traits::integral_constant&lt;std::size_t{4}&gt;,</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;          <span class="keyword">typename</span> DescColumnOffset = traits::integral_constant&lt;Indent{} * 2&gt;,</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;          <span class="keyword">typename</span> LineFormatter = help_formatter_component::default_line_formatter&lt;Indent{}&gt;,</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;          <span class="keyword">typename</span> PreambleFormatter = help_formatter_component::default_preamble_formatter,</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;          <span class="keyword">typename</span> AddendumFormatter = help_formatter_component::default_addendum_formatter&gt;</div>
+<div class="line"><a name="l00179"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1default__help__formatter__t.html">  179</a></span>&#160;<span class="keyword">class </span><a class="code" href="classarg__router_1_1policy_1_1default__help__formatter__t.html">default_help_formatter_t</a></div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;{</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;    static_assert(traits::has_value_type_v&lt;Indent&gt;, <span class="stringliteral">&quot;Indent must have a value_type&quot;</span>);</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;    static_assert(Indent{} &gt; 0, <span class="stringliteral">&quot;Indent value_type must be greater than zero&quot;</span>);</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;    static_assert(traits::has_value_type_v&lt;DescColumnOffset&gt;,</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;                  <span class="stringliteral">&quot;DescColumnOffset must have a value_type&quot;</span>);</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;    static_assert(DescColumnOffset{} &gt; 0, <span class="stringliteral">&quot;DescColumnOffset value_type must be greater than zero&quot;</span>);</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160; </div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Node, <span class="keyword">typename</span> HelpNode, <span class="keywordtype">bool</span> Flatten&gt;</div>
+<div class="line"><a name="l00200"></a><span class="lineno"><a class="line" href="classarg__router_1_1policy_1_1default__help__formatter__t.html#a227e279f63b17b57a786c6c22ea755db">  200</a></span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="classarg__router_1_1policy_1_1default__help__formatter__t.html#a227e279f63b17b57a786c6c22ea755db">generate_help</a>(std::ostream&amp; stream)</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;    {</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;        static_assert(traits::has_help_data_type_v&lt;Node&gt;,</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;                      <span class="stringliteral">&quot;Node must have a help_data_type to generate help from&quot;</span>);</div>
 <div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160; </div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;        <span class="comment">// Write out the preamble</span></div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;        <span class="keyword">auto</span> preamble_formatter = PreambleFormatter{};</div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;        preamble_formatter.template format&lt;HelpNode&gt;(stream);</div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160; </div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;        <span class="comment">// Calculate description offset</span></div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;        constexpr <span class="keyword">auto</span> desc_column = description_column_start&lt;0, help_data_type&gt;(0);</div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160; </div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;        <span class="comment">// Get the current number of console columns, so we can wrap the description nicely.  If</span></div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;        <span class="comment">// the call fails (it returns zero), or the description field start column plus a fixed</span></div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;        <span class="comment">// offset exceeds the column count, then don&#39;t attempt to wrap</span></div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;        <span class="keyword">const</span> <span class="keyword">auto</span> columns = <a class="code" href="namespacearg__router_1_1utility_1_1terminal.html#acd0f8412a18a5275568c0fa51a64bf04">utility::terminal::columns</a>();</div>
-<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160; </div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;        <span class="comment">// Generate the args output</span></div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;        <span class="keyword">auto</span> line_formatter = LineFormatter{};</div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;        generate_help_impl&lt;desc_column, 0, help_data_type&gt;(</div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;            stream,</div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;            columns &gt;= (desc_column + DescColumnOffset{}) ? columns :</div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;                                                            std::numeric_limits&lt;std::size_t&gt;::max(),</div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;            line_formatter);</div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160; </div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;        <span class="comment">// Write out the addendum</span></div>
-<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;        <span class="keyword">auto</span> addendum_formatter = AddendumFormatter{};</div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;        addendum_formatter.template format&lt;HelpNode&gt;(stream);</div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;    }</div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160; </div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;    <span class="keyword">template</span> &lt;std::<span class="keywordtype">size_t</span> Depth, <span class="keyword">typename</span> HelpData&gt;</div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;    [[nodiscard]] constexpr <span class="keyword">static</span> std::size_t description_column_start(</div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;        std::size_t current_max) noexcept</div>
-<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;    {</div>
-<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;        constexpr <span class="keyword">auto</span> this_row_start =</div>
-<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;            (Depth * Indent{}) + <a class="code" href="namespacearg__router_1_1utility_1_1utf8.html#a029e882141ecc47c06c4c37680c9c45f">utility::utf8::terminal_width</a>(HelpData::label::get()) + Indent{};</div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;        current_max = std::max(current_max, this_row_start);</div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160; </div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;        utility::tuple_type_iterator&lt;typename HelpData::children&gt;([&amp;](<span class="keyword">auto</span> i) {</div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;            <span class="keyword">using</span> child_type = std::tuple_element_t&lt;i, typename HelpData::children&gt;;</div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160; </div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;            current_max = description_column_start&lt;Depth + 1, child_type&gt;(current_max);</div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;        });</div>
-<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160; </div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;        <span class="keywordflow">return</span> current_max;</div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;    }</div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160; </div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;    <span class="keyword">template</span> &lt;std::<span class="keywordtype">size_t</span> DescStart, std::<span class="keywordtype">size_t</span> Depth, <span class="keyword">typename</span> HelpData&gt;</div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> generate_help_impl(std::ostream&amp; stream,</div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;                                   std::size_t columns,</div>
-<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;                                   LineFormatter&amp; line_formatter)</div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;    {</div>
-<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;        line_formatter.template format&lt;DescStart, Depth, HelpData&gt;(stream, columns);</div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160; </div>
-<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;        utility::tuple_type_iterator&lt;typename HelpData::children&gt;([&amp;](<span class="keyword">auto</span> i) {</div>
-<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;            <span class="keyword">using</span> child_type = std::tuple_element_t&lt;i, typename HelpData::children&gt;;</div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160; </div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;            generate_help_impl&lt;DescStart, Depth + 1, child_type&gt;(stream, columns, line_formatter);</div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;        });</div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;    }</div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;};</div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160; </div>
-<div class="line"><a name="l00264"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1policy.html#a5839f9553ec6db8d71d7414c03ed5705">  264</a></span>&#160;constexpr <span class="keyword">auto</span> <a class="code" href="namespacearg__router_1_1policy.html#a5839f9553ec6db8d71d7414c03ed5705">default_help_formatter</a> = <a class="code" href="classarg__router_1_1policy_1_1default__help__formatter__t.html">default_help_formatter_t&lt;&gt;</a>{};</div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160; </div>
-<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Indent,</div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;          <span class="keyword">typename</span> DescColumnOffset,</div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;          <span class="keyword">typename</span> LineFormatter,</div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;          <span class="keyword">typename</span> PreambleFormatter&gt;</div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;<span class="keyword">struct </span>is_policy&lt;</div>
-<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;    default_help_formatter_t&lt;Indent, DescColumnOffset, LineFormatter, PreambleFormatter&gt;&gt; :</div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;    std::true_type {</div>
-<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;};</div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;}  <span class="comment">// namespace arg_router::policy</span></div>
-<div class="ttc" id="aclassarg__router_1_1policy_1_1default__help__formatter__t_html"><div class="ttname"><a href="classarg__router_1_1policy_1_1default__help__formatter__t.html">arg_router::policy::default_help_formatter_t</a></div><div class="ttdef"><b>Definition:</b> <a href="default__help__formatter_8hpp_source.html#l00177">default_help_formatter.hpp:178</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1policy_1_1default__help__formatter__t_html_a227e279f63b17b57a786c6c22ea755db"><div class="ttname"><a href="classarg__router_1_1policy_1_1default__help__formatter__t.html#a227e279f63b17b57a786c6c22ea755db">arg_router::policy::default_help_formatter_t::generate_help</a></div><div class="ttdeci">static void generate_help(std::ostream &amp;stream)</div><div class="ttdef"><b>Definition:</b> <a href="default__help__formatter_8hpp_source.html#l00198">default_help_formatter.hpp:198</a></div></div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;        <span class="keyword">using</span> help_data_type = <span class="keyword">typename</span> Node::template help_data_type&lt;Flatten&gt;;</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160; </div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;        <span class="comment">// Write out the preamble</span></div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;        <span class="keyword">auto</span> preamble_formatter = PreambleFormatter{};</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;        preamble_formatter.template format&lt;HelpNode&gt;(stream);</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160; </div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;        <span class="comment">// Calculate description offset</span></div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;        constexpr <span class="keyword">auto</span> desc_column = description_column_start&lt;0, help_data_type&gt;(0);</div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160; </div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;        <span class="comment">// Get the current number of console columns, so we can wrap the description nicely.  If</span></div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;        <span class="comment">// the call fails (it returns zero), or the description field start column plus a fixed</span></div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;        <span class="comment">// offset exceeds the column count, then don&#39;t attempt to wrap</span></div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;        <span class="keyword">const</span> <span class="keyword">auto</span> columns = <a class="code" href="namespacearg__router_1_1utility_1_1terminal.html#acd0f8412a18a5275568c0fa51a64bf04">utility::terminal::columns</a>();</div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160; </div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;        <span class="comment">// Generate the args output</span></div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;        <span class="keyword">auto</span> line_formatter = LineFormatter{};</div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;        generate_help_impl&lt;desc_column, 0, help_data_type&gt;(</div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;            stream,</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;            columns &gt;= (desc_column + DescColumnOffset{}) ? columns :</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;                                                            std::numeric_limits&lt;std::size_t&gt;::max(),</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;            line_formatter);</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160; </div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;        <span class="comment">// Write out the addendum</span></div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;        <span class="keyword">auto</span> addendum_formatter = AddendumFormatter{};</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;        addendum_formatter.template format&lt;HelpNode&gt;(stream);</div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;    }</div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160; </div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;    <span class="keyword">template</span> &lt;std::<span class="keywordtype">size_t</span> Depth, <span class="keyword">typename</span> HelpData&gt;</div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;    [[nodiscard]] constexpr <span class="keyword">static</span> std::size_t description_column_start(</div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;        std::size_t current_max) noexcept</div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;    {</div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;        constexpr <span class="keyword">auto</span> this_row_start =</div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;            (Depth * Indent{}) + <a class="code" href="namespacearg__router_1_1utility_1_1utf8.html#a029e882141ecc47c06c4c37680c9c45f">utility::utf8::terminal_width</a>(HelpData::label::get()) + Indent{};</div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;        current_max = std::max(current_max, this_row_start);</div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160; </div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;        utility::tuple_type_iterator&lt;typename HelpData::children&gt;([&amp;](<span class="keyword">auto</span> i) {</div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;            <span class="keyword">using</span> child_type = std::tuple_element_t&lt;i, typename HelpData::children&gt;;</div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160; </div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;            current_max = description_column_start&lt;Depth + 1, child_type&gt;(current_max);</div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;        });</div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160; </div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;        <span class="keywordflow">return</span> current_max;</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;    }</div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160; </div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;    <span class="keyword">template</span> &lt;std::<span class="keywordtype">size_t</span> DescStart, std::<span class="keywordtype">size_t</span> Depth, <span class="keyword">typename</span> HelpData&gt;</div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> generate_help_impl(std::ostream&amp; stream,</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;                                   std::size_t columns,</div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;                                   LineFormatter&amp; line_formatter)</div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;    {</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;        line_formatter.template format&lt;DescStart, Depth, HelpData&gt;(stream, columns);</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160; </div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;        utility::tuple_type_iterator&lt;typename HelpData::children&gt;([&amp;](<span class="keyword">auto</span> i) {</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;            <span class="keyword">using</span> child_type = std::tuple_element_t&lt;i, typename HelpData::children&gt;;</div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160; </div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;            generate_help_impl&lt;DescStart, Depth + 1, child_type&gt;(stream, columns, line_formatter);</div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;        });</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;    }</div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;};</div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160; </div>
+<div class="line"><a name="l00266"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1policy.html#a5839f9553ec6db8d71d7414c03ed5705">  266</a></span>&#160;constexpr <span class="keyword">auto</span> <a class="code" href="namespacearg__router_1_1policy.html#a5839f9553ec6db8d71d7414c03ed5705">default_help_formatter</a> = <a class="code" href="classarg__router_1_1policy_1_1default__help__formatter__t.html">default_help_formatter_t&lt;&gt;</a>{};</div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160; </div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Indent,</div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;          <span class="keyword">typename</span> DescColumnOffset,</div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;          <span class="keyword">typename</span> LineFormatter,</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;          <span class="keyword">typename</span> PreambleFormatter&gt;</div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;<span class="keyword">struct </span>is_policy&lt;</div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;    default_help_formatter_t&lt;Indent, DescColumnOffset, LineFormatter, PreambleFormatter&gt;&gt; :</div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;    std::true_type {</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;};</div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;}  <span class="comment">// namespace arg_router::policy</span></div>
+<div class="ttc" id="aclassarg__router_1_1policy_1_1default__help__formatter__t_html"><div class="ttname"><a href="classarg__router_1_1policy_1_1default__help__formatter__t.html">arg_router::policy::default_help_formatter_t</a></div><div class="ttdef"><b>Definition:</b> <a href="default__help__formatter_8hpp_source.html#l00179">default_help_formatter.hpp:180</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1policy_1_1default__help__formatter__t_html_a227e279f63b17b57a786c6c22ea755db"><div class="ttname"><a href="classarg__router_1_1policy_1_1default__help__formatter__t.html#a227e279f63b17b57a786c6c22ea755db">arg_router::policy::default_help_formatter_t::generate_help</a></div><div class="ttdeci">static void generate_help(std::ostream &amp;stream)</div><div class="ttdef"><b>Definition:</b> <a href="default__help__formatter_8hpp_source.html#l00200">default_help_formatter.hpp:200</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1policy_1_1help__formatter__component_1_1default__addendum__formatter_html"><div class="ttname"><a href="classarg__router_1_1policy_1_1help__formatter__component_1_1default__addendum__formatter.html">arg_router::policy::help_formatter_component::default_addendum_formatter</a></div><div class="ttdef"><b>Definition:</b> <a href="default__help__formatter_8hpp_source.html#l00136">default_help_formatter.hpp:137</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1policy_1_1help__formatter__component_1_1default__addendum__formatter_html_af117349c91bc6bac3ae0c4c2903502ae"><div class="ttname"><a href="classarg__router_1_1policy_1_1help__formatter__component_1_1default__addendum__formatter.html#af117349c91bc6bac3ae0c4c2903502ae">arg_router::policy::help_formatter_component::default_addendum_formatter::format</a></div><div class="ttdeci">void format(std::ostream &amp;stream)</div><div class="ttdef"><b>Definition:</b> <a href="default__help__formatter_8hpp_source.html#l00146">default_help_formatter.hpp:146</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1policy_1_1help__formatter__component_1_1default__line__formatter_html"><div class="ttname"><a href="classarg__router_1_1policy_1_1help__formatter__component_1_1default__line__formatter.html">arg_router::policy::help_formatter_component::default_line_formatter</a></div><div class="ttdef"><b>Definition:</b> <a href="default__help__formatter_8hpp_source.html#l00036">default_help_formatter.hpp:37</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1policy_1_1help__formatter__component_1_1default__line__formatter_html"><div class="ttname"><a href="classarg__router_1_1policy_1_1help__formatter__component_1_1default__line__formatter.html">arg_router::policy::help_formatter_component::default_line_formatter</a></div><div class="ttdef"><b>Definition:</b> <a href="default__help__formatter_8hpp_source.html#l00035">default_help_formatter.hpp:36</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1policy_1_1help__formatter__component_1_1default__line__formatter_html_a36ba0359d5a9d481686d37feb38ecf86"><div class="ttname"><a href="classarg__router_1_1policy_1_1help__formatter__component_1_1default__line__formatter.html#a36ba0359d5a9d481686d37feb38ecf86">arg_router::policy::help_formatter_component::default_line_formatter::format</a></div><div class="ttdeci">void format(std::ostream &amp;stream, std::size_t columns)</div><div class="ttdef"><b>Definition:</b> <a href="default__help__formatter_8hpp_source.html#l00050">default_help_formatter.hpp:50</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1policy_1_1help__formatter__component_1_1default__preamble__formatter_html"><div class="ttname"><a href="classarg__router_1_1policy_1_1help__formatter__component_1_1default__preamble__formatter.html">arg_router::policy::help_formatter_component::default_preamble_formatter</a></div><div class="ttdef"><b>Definition:</b> <a href="default__help__formatter_8hpp_source.html#l00092">default_help_formatter.hpp:93</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1policy_1_1help__formatter__component_1_1default__preamble__formatter_html_a61a2199cbeb30514fb6d988717ec83c1"><div class="ttname"><a href="classarg__router_1_1policy_1_1help__formatter__component_1_1default__preamble__formatter.html#a61a2199cbeb30514fb6d988717ec83c1">arg_router::policy::help_formatter_component::default_preamble_formatter::format</a></div><div class="ttdeci">void format(std::ostream &amp;stream)</div><div class="ttdef"><b>Definition:</b> <a href="default__help__formatter_8hpp_source.html#l00102">default_help_formatter.hpp:102</a></div></div>
@@ -333,7 +332,7 @@ $(document).ready(function(){initNavTree('default__help__formatter_8hpp_source.h
 <div class="ttc" id="anamespacearg__router_1_1policy_html"><div class="ttname"><a href="namespacearg__router_1_1policy.html">arg_router::policy</a></div><div class="ttdef"><b>Definition:</b> <a href="alias_8hpp_source.html#l00014">alias.hpp:15</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1policy_html_a1931b88e8974c4b1446f2e2c7938f4ee"><div class="ttname"><a href="namespacearg__router_1_1policy.html#a1931b88e8974c4b1446f2e2c7938f4ee">arg_router::policy::program_version</a></div><div class="ttdeci">constexpr auto program_version</div><div class="ttdef"><b>Definition:</b> <a href="program__version_8hpp_source.html#l00053">program_version.hpp:53</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1policy_html_a50ebcd2455ba90ecbbcaf7d6aab2dc16"><div class="ttname"><a href="namespacearg__router_1_1policy.html#a50ebcd2455ba90ecbbcaf7d6aab2dc16">arg_router::policy::program_addendum</a></div><div class="ttdeci">constexpr auto program_addendum</div><div class="ttdef"><b>Definition:</b> <a href="program__addendum_8hpp_source.html#l00053">program_addendum.hpp:53</a></div></div>
-<div class="ttc" id="anamespacearg__router_1_1policy_html_a5839f9553ec6db8d71d7414c03ed5705"><div class="ttname"><a href="namespacearg__router_1_1policy.html#a5839f9553ec6db8d71d7414c03ed5705">arg_router::policy::default_help_formatter</a></div><div class="ttdeci">constexpr auto default_help_formatter</div><div class="ttdef"><b>Definition:</b> <a href="default__help__formatter_8hpp_source.html#l00264">default_help_formatter.hpp:264</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1policy_html_a5839f9553ec6db8d71d7414c03ed5705"><div class="ttname"><a href="namespacearg__router_1_1policy.html#a5839f9553ec6db8d71d7414c03ed5705">arg_router::policy::default_help_formatter</a></div><div class="ttdeci">constexpr auto default_help_formatter</div><div class="ttdef"><b>Definition:</b> <a href="default__help__formatter_8hpp_source.html#l00266">default_help_formatter.hpp:266</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1policy_html_a8a7dac62cbf1cda9df5e26125cd823f4"><div class="ttname"><a href="namespacearg__router_1_1policy.html#a8a7dac62cbf1cda9df5e26125cd823f4">arg_router::policy::program_name</a></div><div class="ttdeci">constexpr auto program_name</div><div class="ttdef"><b>Definition:</b> <a href="program__name_8hpp_source.html#l00056">program_name.hpp:56</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1policy_html_ae4c0515ad6d58ea37fe121ee3f4a9861"><div class="ttname"><a href="namespacearg__router_1_1policy.html#ae4c0515ad6d58ea37fe121ee3f4a9861">arg_router::policy::program_intro</a></div><div class="ttdeci">constexpr auto program_intro</div><div class="ttdef"><b>Definition:</b> <a href="program__intro_8hpp_source.html#l00053">program_intro.hpp:53</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1utility_1_1terminal_html_acd0f8412a18a5275568c0fa51a64bf04"><div class="ttname"><a href="namespacearg__router_1_1utility_1_1terminal.html#acd0f8412a18a5275568c0fa51a64bf04">arg_router::utility::terminal::columns</a></div><div class="ttdeci">std::size_t columns()</div><div class="ttdef"><b>Definition:</b> <a href="terminal_8hpp_source.html#l00026">terminal.hpp:26</a></div></div>

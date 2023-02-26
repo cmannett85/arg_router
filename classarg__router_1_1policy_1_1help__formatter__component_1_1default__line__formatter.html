@@ -120,7 +120,7 @@ class arg_router::policy::help_formatter_component::default_line_formatter&lt; I
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="default__help__formatter_8hpp_source.html#l00036">36</a> of file <a class="el" href="default__help__formatter_8hpp_source.html">default_help_formatter.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="default__help__formatter_8hpp_source.html#l00035">35</a> of file <a class="el" href="default__help__formatter_8hpp_source.html">default_help_formatter.hpp</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a36ba0359d5a9d481686d37feb38ecf86"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a36ba0359d5a9d481686d37feb38ecf86">&#9670;&nbsp;</a></span>format()</h2>
@@ -164,13 +164,14 @@ template&lt;std::size_t DescStart, std::size_t Depth, typename HelpData &gt; </d
   <table class="tparams">
     <tr><td class="paramname">DescStart</td><td>Column at which the description should start </td></tr>
     <tr><td class="paramname">Depth</td><td>Tree depth of the node <em>HelpData</em> is representing </td></tr>
+    <tr><td class="paramname">HelpData</td><td>Help data type from the node that needs printing </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">stream</td><td>Output stream </td></tr>
-    <tr><td class="paramname">columns</td><td>Number columns the terminal has, implementations can use this to perform attractive line wrapping </td></tr>
+    <tr><td class="paramname">columns</td><td>Number of columns the terminal has, implementations can use this to perform attractive line wrapping </td></tr>
   </table>
   </dd>
 </dl>
