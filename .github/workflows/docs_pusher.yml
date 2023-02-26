@@ -44,6 +44,7 @@ jobs:
           -source ${{ env.NUGET_SOURCE_URL }}
 
     - name: Generate API documentation and build Unit Tests
+      timeout-minutes: 30
       run: |
         mkdir -p ${{ env.BUILD_DIR }}
         cd ${{ env.BUILD_DIR }}

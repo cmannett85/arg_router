@@ -171,12 +171,20 @@ private:
                   "(e.g. router)");
 };
 
-// Create a helper function to ease CTAD.
+// Create a helper function to ease CTAD.  The string_to_policy::convert function isn't required
+// but allows string-to-policy conversion to as intended
 template <typename T, typename... Policies>
-[[nodiscard]] constexpr single_positional_arg_t<T, Policies...> single_positional_arg(
-    Policies... policies) noexcept
+[[nodiscard]] constexpr auto single_positional_arg(Policies... policies) noexcept
 {
-    return single_positional_arg_t<T, std::decay_t<Policies>...>{std::move(policies)...};
+    return std::apply(
+        [](auto... converted_policies) {
+            return single_positional_arg_t<T, std::decay_t<decltype(converted_policies)>...>{
+                std::move(converted_policies)...};
+        },
+        ar::utility::string_to_policy::convert<
+            ar::utility::string_to_policy::first_text_mapper<arp::display_name_t>,
+            ar::utility::string_to_policy::second_text_mapper<smiley_description_t>>(
+            std::move(policies)...));
 }
 
 // Take a copy of the default rules, as we're adding new types we just need to add to them
@@ -206,8 +214,8 @@ using my_validator = arp::validation::validator_from_tuple<new_rules>;
 int main(int argc, char* argv[])
 {
     ar::root(my_validator{},
-             ar::help(arp::long_name<S_("help")>,
-                      arp::short_name<'h'>,
+             ar::help(S_("help"){},
+                      S_('h'){},
                       arp::program_name<S_("is_even")>,
                       arp::program_version<S_(version)>,
                       arp::program_addendum<S_("An example program for arg_router.")>,
@@ -219,8 +227,8 @@ int main(int argc, char* argv[])
                           std::exit(EXIT_SUCCESS);
                       }}),
              ar::mode(single_positional_arg<int>(arp::required,
-                                                 arp::display_name<S_("Value")>,
-                                                 smiley_description<S_("Value to read")>,
+                                                 S_("Value"){},
+                                                 S_("Value to read"){},
                                                  is_even<int>{}),
                       arp::router{[](int value) { std::cout << "Value: " << value << std::endl; }}))
         .parse(argc, argv);

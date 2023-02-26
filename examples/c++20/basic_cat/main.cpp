@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -153,51 +153,46 @@ int main(int argc, char* argv[])
 {
     ar::root(
         arp::validation::default_validator,
-        ar::help(arp::long_name_t{"help"_S},
-                 arp::short_name_t{"h"_S},
+        ar::help("help"_S,
+                 "h"_S,
+                 "Display this help and exit"_S,
                  arp::program_name_t{"my-cat"_S},
                  arp::program_version<ar::str<version>>,
-                 arp::program_addendum_t{"An example program for arg_router."_S},
-                 arp::description_t{"Display this help and exit"_S}),
-        ar::flag(arp::long_name_t{"version"_S},
-                 arp::description_t{"Output version information and exit"_S},
-                 arp::router{[](bool) {
+                 arp::program_addendum_t{"An example program for arg_router."_S}),
+        ar::flag("version"_S, "Output version information and exit"_S, arp::router{[](bool) {
                      std::cout << &version[0] << std::endl;
                      std::exit(EXIT_SUCCESS);
                  }}),
         ar::mode(
-            ar::flag(arp::long_name_t{"show-all"_S},
-                     arp::description_t{"Equivalent to -nE"_S},
-                     arp::short_name_t{"A"_S},
+            ar::flag("show-all"_S,
+                     "Equivalent to -nE"_S,
+                     "A"_S,
                      arp::alias(arp::short_name_t{"E"_S}, arp::short_name_t{"n"_S})),
-            ar::flag(arp::long_name_t{"show-ends"_S},
-                     arp::description_t{"Display $ at end of each line"_S},
-                     arp::short_name_t{"E"_S}),
-            ar::flag(arp::long_name_t{"show-nonprinting"_S},
-                     arp::description_t{"Use ^ and M- notation, except for LFD and TAB"_S},
-                     arp::short_name_t{"n"_S}),
-            ar::arg<int>(arp::long_name_t{"max-lines"_S},
-                         arp::description_t{"Maximum lines to output"_S},
+            ar::flag("show-ends"_S, "Display $ at end of each line"_S, "E"_S),
+            ar::flag("show-nonprinting"_S,
+                     "Use ^ and M- notation, except for LFD and TAB"_S,
+                     "n"_S),
+            ar::arg<int>("max-lines"_S,
+                         "Maximum lines to output"_S,
                          arp::value_separator_t{"="_S},
                          arp::default_value{-1}),
-            ar::arg<std::optional<std::size_t>>(arp::long_name_t{"max-line-length"_S},
-                                                arp::description_t{"Maximum line length"_S},
+            ar::arg<std::optional<std::size_t>>("max-line-length"_S,
+                                                "Maximum line length"_S,
                                                 arp::value_separator_t{"="_S},
                                                 arp::default_value{std::optional<std::size_t>{}}),
-            ard::one_of(arp::default_value{"..."},
-                        ar::flag(arp::dependent(arp::long_name_t{"max-line-length"_S}),
-                                 arp::long_name_t{"skip-line"_S},
-                                 arp::short_name_t{"s"_S},
-                                 arp::description_t{"Skips line output if max line length "
-                                                    "reached"_S}),
-                        ar::arg<std::string_view>(
-                            arp::dependent(arp::long_name_t{"max-line-length"_S}),
-                            arp::long_name_t{"line-suffix"_S},
-                            arp::description_t{"Shortens line length to maximum with the "
-                                               "given suffix if max line length reached"_S},
-                            arp::value_separator_t{"="_S})),
-            ar::arg<theme_t>(arp::long_name_t{"theme"_S},
-                             arp::description_t{"Set the output colour theme"_S},
+            ard::one_of(
+                arp::default_value{"..."},
+                ar::flag(arp::dependent(arp::long_name_t{"max-line-length"_S}),
+                         "skip-line"_S,
+                         "s"_S,
+                         "Skips line output if max line length reached"_S),
+                ar::arg<std::string_view>(
+                    arp::dependent(arp::long_name_t{"max-line-length"_S}),
+                    "line-suffix"_S,
+                    "Shortens line length to maximum with the given suffix if max line length reached"_S,
+                    arp::value_separator_t{"="_S})),
+            ar::arg<theme_t>("theme"_S,
+                             "Set the output colour theme"_S,
                              arp::value_separator_t{"="_S},
                              arp::default_value{theme_t::none},
                              arp::custom_parser<theme_t>{
@@ -205,17 +200,16 @@ int main(int argc, char* argv[])
             ard::alias_group(
                 arp::default_value{verbosity_level_t::info},
                 ar::counting_flag<verbosity_level_t>(
-                    arp::short_name_t{"v"_S},
+                    "v"_S,
                     arp::description_t{"Verbosity level, number of 'v's sets level"_S}),
-                ar::arg<verbosity_level_t>(arp::long_name_t{"verbose"_S},
-                                           arp::description_t{"Verbosity level"_S},
+                ar::arg<verbosity_level_t>("verbose"_S,
+                                           "Verbosity level"_S,
                                            arp::value_separator_t{"="_S}),
                 arp::min_max_value<verbosity_level_t::error, verbosity_level_t::debug>()),
-            ar::positional_arg<std::vector<std::string_view>>(
-                arp::required,
-                arp::min_count<1>,
-                arp::display_name_t{"FILES"_S},
-                arp::description_t{"Files to read"_S}),
+            ar::positional_arg<std::vector<std::string_view>>(arp::required,
+                                                              arp::min_count<1>,
+                                                              "FILES"_S,
+                                                              "Files to read"_S),
             arp::router{[](bool show_ends,
                            bool show_non_printing,
                            int max_lines,

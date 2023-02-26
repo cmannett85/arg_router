@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -315,6 +315,28 @@ int main() {
     )",
              "basic_one_of_t must not have a none name policy",
              "cannot_have_none_name_test"},
+         {
+             R"(
+#include "arg_router/arg.hpp"
+#include "arg_router/dependency/alias_group.hpp"
+#include "arg_router/policy/default_value.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/description.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+namespace ard = arg_router::dependency;
+
+int main() {
+    auto f = ard::alias_group(arg<double>(policy::long_name<AR_STRING("arg1")>),
+                              arg<double>(policy::long_name<AR_STRING("arg2")>),
+                              policy::description<AR_STRING("description")>,
+                              policy::default_value{42});
+    return 0;
+}
+    )",
+             "basic_one_of_t must not have a description policy",
+             "cannot_have_description_test"},
          {
              R"(
 #include "arg_router/arg.hpp"

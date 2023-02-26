@@ -4,10 +4,14 @@
 
 #pragma once
 
+#include "arg_router/policy/description.hpp"
+#include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/policy/multi_stage_value.hpp"
 #include "arg_router/policy/short_form_expander.hpp"
+#include "arg_router/policy/short_name.hpp"
 #include "arg_router/tree_node.hpp"
+#include "arg_router/utility/string_to_policy.hpp"
 
 namespace arg_router
 {
@@ -115,8 +119,6 @@ private:
 
 /** Constructs a counting_flag_t with the given policies.
  *
- * This is used for similarity with arg_t.
- *
  * Just like 'normal' flags, counting flags with shortnames can be concatenated or 'collapsed' on
  * the command line,
  * e.g.
@@ -124,6 +126,16 @@ private:
  * foo -a -b -c
  * foo -abc
  * @endcode
+ *
+ * Compile-time strings can be passed in directly and will be converted to the appropriate policies
+ * automatically.  The rules are:
+ * -# The first multi-character string becomes a policy::long_name_t
+ * -# The second multi-character string becomes a policy::description_t
+ * -# The first single-charcter string becomes a policy::short_name_t
+ *
+ * The above are unicode aware.  The strings can be passed in any order relative to the other
+ * policies, but it is recommended to put them first to ease reading.
+ *
  * @tparam Policies Pack of policies that define its behaviour
  * @param policies Pack of policy instances
  * @return Flag instance
@@ -131,16 +143,28 @@ private:
 template <typename T, typename... Policies>
 [[nodiscard]] constexpr auto counting_flag(Policies... policies) noexcept
 {
-    // Add the short-form expander if one of the policies implements the short name method, and if
-    // the short and long prefix are not the same
-    constexpr auto has_short_name = boost::mp11::mp_any_of<std::tuple<std::decay_t<Policies>...>,
-                                                           traits::has_short_name_method>::value;
-    if constexpr ((config::long_prefix != config::short_prefix) && has_short_name) {
-        return counting_flag_t<T, policy::short_form_expander_t<>, std::decay_t<Policies>...>{
-            policy::short_form_expander,
-            std::move(policies)...};
-    } else {
-        return counting_flag_t<T, std::decay_t<Policies>...>{std::move(policies)...};
-    }
+    return std::apply(
+        [](auto... converted_policies) {
+            // Add the short-form expander if one of the policies implements the short name method,
+            // and if the short and long prefix are not the same
+            constexpr auto has_short_name =
+                boost::mp11::mp_any_of<std::tuple<std::decay_t<decltype(converted_policies)>...>,
+                                       traits::has_short_name_method>::value;
+            if constexpr ((config::long_prefix != config::short_prefix) && has_short_name) {
+                return counting_flag_t<T,
+                                       policy::short_form_expander_t<>,
+                                       std::decay_t<decltype(converted_policies)>...>{
+                    policy::short_form_expander,
+                    std::move(converted_policies)...};
+            } else {
+                return counting_flag_t<T, std::decay_t<decltype(converted_policies)>...>{
+                    std::move(converted_policies)...};
+            }
+        },
+        utility::string_to_policy::convert<
+            utility::string_to_policy::first_string_mapper<policy::long_name_t>,
+            utility::string_to_policy::second_string_mapper<policy::description_t>,
+            utility::string_to_policy::single_char_mapper<policy::short_name_t>>(
+            std::move(policies)...));
 }
 }  // namespace arg_router

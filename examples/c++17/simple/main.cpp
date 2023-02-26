@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -44,41 +44,38 @@ struct ar::parser<fs::path> {
 int main(int argc, char* argv[])
 {
     const auto common_args =
-        ar::list{ar::flag(arp::long_name<S_("force")>,
-                          arp::short_name<'f'>,
-                          arp::description<S_("Force overwrite existing files")>),
+        ar::list{ar::flag(S_("force"){}, S_('f'){}, S_("Force overwrite existing files"){}),
                  ar::positional_arg<fs::path>(arp::required,
-                                              arp::display_name<S_("DST")>,
-                                              arp::description<S_("Destination directory")>,
+                                              S_("DST"){},
+                                              S_("Destination directory"){},
                                               arp::fixed_count<1>)};
 
     ar::root(arp::validation::default_validator,
-             ar::help(arp::long_name<S_("help")>,
-                      arp::short_name<'h'>,
-                      arp::description<S_("Display this help and exit")>,
+             ar::help(S_("help"){},
+                      S_('h'){},
+                      S_("Display this help and exit"){},
                       arp::program_name<S_("simple")>,
                       arp::program_version<S_("v0.1")>,
                       arp::program_intro<S_("A simple file copier and mover.")>,
                       arp::program_addendum<S_("An example program for arg_router.")>,
                       arp::flatten_help,
                       arp::colour_help_formatter),
-             ar::mode(arp::none_name<S_("copy")>,
-                      arp::description<S_("Copy source files to destination")>,
+             ar::mode(S_("copy"){},
+                      S_("Copy source files to destination"){},
                       common_args,
-                      ar::positional_arg<std::vector<fs::path>>(
-                          arp::required,
-                          arp::display_name<S_("SRC")>,
-                          arp::description<S_("Source file paths")>,
-                          arp::min_count<1>),
+                      ar::positional_arg<std::vector<fs::path>>(arp::required,
+                                                                S_("SRC"){},
+                                                                S_("Source file paths"){},
+                                                                arp::min_count<1>),
                       arp::router{[](bool force, fs::path dest, std::vector<fs::path> srcs) {
                           copy_mode(force, std::move(dest), std::move(srcs));
                       }}),
-             ar::mode(arp::none_name<S_("move")>,
-                      arp::description<S_("Move source file to destination")>,
+             ar::mode(S_("move"){},
+                      S_("Move source file to destination"){},
                       common_args,
                       ar::positional_arg<fs::path>(arp::required,
-                                                   arp::display_name<S_("SRC")>,
-                                                   arp::description<S_("Source file path")>,
+                                                   S_("SRC"){},
+                                                   S_("Source file path"){},
                                                    arp::fixed_count<1>),
                       arp::router{[](bool force, fs::path dest, fs::path src) {
                           move_mode(force, std::move(dest), std::move(src));

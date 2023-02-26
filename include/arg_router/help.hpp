@@ -5,10 +5,14 @@
 #pragma once
 
 #include "arg_router/policy/default_help_formatter.hpp"
+#include "arg_router/policy/description.hpp"
 #include "arg_router/policy/flatten_help.hpp"
+#include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/policy/no_result_value.hpp"
+#include "arg_router/policy/short_name.hpp"
 #include "arg_router/tree_node.hpp"
+#include "arg_router/utility/string_to_policy.hpp"
 
 #include <iostream>
 #include <sstream>
@@ -212,7 +216,15 @@ private:
 
 /** Constructs a help_t with the given policies.
  *
- * This is used for similarity with arg_t.
+ * Compile-time strings can be passed in directly and will be converted to the appropriate policies
+ * automatically.  The rules are:
+ * -# The first multi-character string becomes a policy::long_name_t
+ * -# The second multi-character string becomes a policy::description_t
+ * -# The first single-charcter string becomes a policy::short_name_t
+ *
+ * The above are unicode aware.  The strings can be passed in any order relative to the other
+ * policies, but it is recommended to put them first to ease reading.
+ *
  * @tparam Policies Pack of policies that define its behaviour
  * @param policies Pack of policy instances
  * @return Help instance
@@ -220,6 +232,15 @@ private:
 template <typename... Policies>
 [[nodiscard]] constexpr auto help(Policies... policies) noexcept
 {
-    return help_t<std::decay_t<Policies>...>{std::move(policies)...};
+    return std::apply(
+        [](auto... converted_policies) {
+            return help_t<std::decay_t<decltype(converted_policies)>...>{
+                std::move(converted_policies)...};
+        },
+        utility::string_to_policy::convert<
+            utility::string_to_policy::first_string_mapper<policy::long_name_t>,
+            utility::string_to_policy::second_string_mapper<policy::description_t>,
+            utility::string_to_policy::single_char_mapper<policy::short_name_t>>(
+            std::move(policies)...));
 }
 }  // namespace arg_router

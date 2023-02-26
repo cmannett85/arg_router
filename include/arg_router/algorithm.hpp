@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -186,7 +186,8 @@ template <typename U, typename... I>
  *
  * The key point of this function is that this operation is done in a single expression so it works
  * with tuples with elements that are @em not default constructible.
- * @tparam Fn Metafunction type whose value is true for types in @a U wanted in the return
+ * @tparam Fn Metafunction type whose <TT>value</TT> member is true for types in @a U wanted in the
+ * return
  * @tparam U Tuple-like input type
  * @param input Tuple-like input
  * @return Result tuple
@@ -202,7 +203,7 @@ template <template <typename...> typename Fn, typename U>
     // second type in the pair (the type from U)
     using wrapped_fn =
         boost::mp11::mp_bind<Fn, boost::mp11::mp_bind<boost::mp11::mp_second, boost::mp11::_1>>;
-    using filtered = boost::mp11::mp_filter<wrapped_fn::template fn, zipped>;
+    using filtered = boost::mp11::mp_filter_q<wrapped_fn, zipped>;
 
     // Fold construct the return value using the zip indices as accessors to input
     return detail::tuple_filter_and_construct_impl(input, typename unzip<filtered>::first_type{});
@@ -241,9 +242,10 @@ template <template <typename...> typename Tuple, typename Insert>
  * @param insert Instance to append
  * @return A Tuple with @a insert appended
  */
-template <typename Tuple, typename Insert, std::size_t... I>
+template <typename Tuple, typename Insert>
 [[nodiscard]] constexpr auto tuple_push_back(Tuple tuple, Insert insert) noexcept
 {
+    // Cannot use std::tuple_cat as it causes infinite compiler loops in MSVC
     return detail::tuple_push_back_impl(std::move(tuple),
                                         std::move(insert),
                                         std::make_index_sequence<std::tuple_size_v<Tuple>>{});

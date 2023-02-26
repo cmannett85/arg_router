@@ -66,6 +66,7 @@ jobs:
           -source ${{ env.NUGET_SOURCE_URL }}
 
     - name: Build
+      timeout-minutes: 30
       run: |
         mkdir -p ${{ env.BUILD_DIR }}
         cd ${{ env.BUILD_DIR }}
@@ -93,14 +94,15 @@ jobs:
         [[ -f "./include/arg_router/version.hpp" ]]
         [[ -f "./include/arg_router/README.md" ]]
         [[ -f "./include/arg_router/LICENSE" ]]
-        [[ -f "./include/arg_router/arg_router-config.cmake" ]]
-        [[ -f "./include/arg_router/arg_router-config-version.cmake" ]]
+        [[ -f "./lib/cmake/arg_router/arg_router.cmake" ]]
+        [[ -f "./lib/cmake/arg_router/arg_router-config.cmake" ]]
+        [[ -f "./lib/cmake/arg_router/arg_router-config-version.cmake" ]]
 
     - name: Test CMake package integrity
       run: |
         mkdir -p ${{ env.PACKAGE_BUILD_DIR }}
         cd ${{ env.PACKAGE_BUILD_DIR }}
-        cmake ${{ github.workspace }}/scripts/ci/package_test_project -DCMAKE_CXX_COMPILER=clang++-14 -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}/include
+        cmake ${{ github.workspace }}/scripts/ci/package_test_project -DCMAKE_CXX_COMPILER=clang++-14 -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}
         cmake --build .
 
     - name: Update README unit test coverage badge
@@ -114,6 +116,50 @@ jobs:
       with:
         commit_message: Updating README.md unit test coverage badge
         file_pattern: README.md scripts/ci/old_coverage
+
+  old_gcc_compiler_test:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - name: Update packages
+      run: |
+        sudo apt update
+        sudo apt install ninja-build
+
+    - name: Bootstrap vcpkg to build the NuGet client
+      run: |
+        ./external/vcpkg/bootstrap-vcpkg.sh -disableMetrics
+
+    - name: Configure NuGet client
+      run: |
+        mono `./external/vcpkg/vcpkg fetch nuget | tail -n 1` \
+          sources add \
+          -source ${{ env.NUGET_SOURCE_URL }} \
+          -storepasswordincleartext \
+          -name "vcpkg-cache" \
+          -username "cmannett85" \
+          -password "${{ secrets.GITHUB_TOKEN }}"
+        mono `./external/vcpkg/vcpkg fetch nuget | tail -n 1` \
+          setapikey "${{ secrets.GITHUB_TOKEN }}" \
+          -source ${{ env.NUGET_SOURCE_URL }}
+
+    - name: Build
+      timeout-minutes: 30
+      run: |
+        mkdir -p ${{ env.BUILD_DIR }}
+        cd ${{ env.BUILD_DIR }}
+        cmake ${{ github.workspace }} -G "Ninja" -DCMAKE_CXX_COMPILER=g++-9 -DDEATH_TEST_PARALLEL=2 -DCMAKE_CXX_STANDARD=17
+        cmake --build . --target arg_router_test cpp17_examples
+
+    - name: Run unit tests
+      timeout-minutes: 30
+      run: |
+        cd ${{ env.BUILD_DIR }}/test
+        ./arg_router_test -l test_suite
 
   windows_msvc_compiler_tests:
     runs-on: windows-2022
@@ -140,6 +186,7 @@ jobs:
         & $output[-1] setapikey "${{ secrets.GITHUB_TOKEN }}" -source ${{ env.NUGET_SOURCE_URL }}
 
     - name: Build
+      timeout-minutes: 30
       shell: cmd
       run: |
         call "C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Auxiliary/Build/vcvarsall.bat" x64
@@ -169,29 +216,36 @@ jobs:
         sudo apt install ninja-build libboost-dev
 
     - name: Build
+      timeout-minutes: 30
       run: |
         mkdir -p ${{ env.BUILD_DIR }}
         cd ${{ env.BUILD_DIR }}
-        cmake ${{ github.workspace }} -G "Ninja" -DBUILD_UNIT_TESTS_AND_EXAMPLES=OFF -DDISABLE_VCPKG=ON -DDEATH_TEST_PARALLEL=2
-        cmake --build .
+        cmake ${{ github.workspace }} -G "Ninja" -DINSTALLATION_ONLY=ON
+        cmake --build . --target package
 
     - name: Test install
       run: |
         cd ${{ env.BUILD_DIR }}
-        cmake --install . --prefix ${{ env.INSTALL_DIR }}
-        cd ${{ env.INSTALL_DIR }}
-        [[ -f "./include/arg_router/version.hpp" ]]
-        [[ -f "./include/arg_router/README.md" ]]
-        [[ -f "./include/arg_router/LICENSE" ]]
-        [[ -f "./include/arg_router/arg_router-config.cmake" ]]
-        [[ -f "./include/arg_router/arg_router-config-version.cmake" ]]
+        sudo apt install ./*.deb
+        test -e /usr/include/arg_router
+        test -e /usr/lib/cmake/arg_router
+        [[ -f "/usr/include/arg_router/version.hpp" ]]
+        [[ -f "/usr/include/arg_router/README.md" ]]
+        [[ -f "/usr/include/arg_router/LICENSE" ]]
+        [[ -f "/usr/lib/cmake/arg_router/arg_router.cmake" ]]
+        [[ -f "/usr/lib/cmake/arg_router/arg_router-config.cmake" ]]
+        [[ -f "/usr/lib/cmake/arg_router/arg_router-config-version.cmake" ]]
 
     - name: Test CMake package integrity
+      timeout-minutes: 30
       run: |
         mkdir ${{ env.PACKAGE_BUILD_DIR }}
         cd ${{ env.PACKAGE_BUILD_DIR }}
-        cmake ${{ github.workspace }}/scripts/ci/package_test_project -DCMAKE_CXX_STANDARD=20 -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}/include -DDISABLE_VCPKG=ON
+        cmake ${{ github.workspace }}/scripts/ci/package_test_project -DCMAKE_CXX_STANDARD=20 -DDISABLE_VCPKG=ON
         cmake --build .
+        sudo apt remove arg_router
+        ! test -e /usr/include/arg_router
+        ! test -e /usr/lib/cmake/arg_router
 
   # Makes sure there are no errors when generating the documentation
   documentation:

@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -150,88 +150,84 @@ struct ar::parser<verbosity_level_t> {
 
 int main(int argc, char* argv[])
 {
-    ar::root(
-        arp::validation::default_validator,
-        ar::help(arp::long_name<S_("help")>,
-                 arp::short_name<'h'>,
-                 arp::program_name<S_("my-cat")>,
-                 arp::program_version<S_(version)>,
-                 arp::program_addendum<S_("An example program for arg_router.")>,
-                 arp::description<S_("Display this help and exit")>),
-        ar::flag(arp::long_name<S_("version")>,
-                 arp::description<S_("Output version information and exit")>,
-                 arp::router{[](bool) {
-                     std::cout << version << std::endl;
-                     std::exit(EXIT_SUCCESS);
-                 }}),
-        ar::mode(
-            ar::flag(arp::long_name<S_("show-all")>,
-                     arp::description<S_("Equivalent to -nE")>,
-                     arp::short_name<'A'>,
-                     arp::alias(arp::short_name<'E'>, arp::short_name<'n'>)),
-            ar::flag(arp::long_name<S_("show-ends")>,
-                     arp::description<S_("Display $ at end of each line")>,
-                     arp::short_name<'E'>),
-            ar::flag(arp::long_name<S_("show-nonprinting")>,
-                     arp::description<S_("Use ^ and M- notation, except for LFD and TAB")>,
-                     arp::short_name<'n'>),
-            ar::arg<int>(arp::long_name<S_("max-lines")>,
-                         arp::description<S_("Maximum lines to output")>,
-                         arp::value_separator<'='>,
-                         arp::default_value{-1}),
-            ar::arg<std::optional<std::size_t>>(arp::long_name<S_("max-line-length")>,
-                                                arp::description<S_("Maximum line length")>,
-                                                arp::value_separator<'='>,
-                                                arp::default_value{std::optional<std::size_t>{}}),
-            ard::one_of(arp::default_value{"..."},
-                        ar::flag(arp::dependent(arp::long_name<S_("max-line-length")>),
-                                 arp::long_name<S_("skip-line")>,
-                                 arp::short_name<'s'>,
-                                 arp::description<S_("Skips line output if max line length "
-                                                     "reached")>),
-                        ar::arg<std::string_view>(
-                            arp::dependent(arp::long_name<S_("max-line-length")>),
-                            arp::long_name<S_("line-suffix")>,
-                            arp::description<S_("Shortens line length to maximum with the "
-                                                "given suffix if max line length reached")>,
-                            arp::value_separator<'='>)),
-            ar::arg<theme_t>(arp::long_name<S_("theme")>,
-                             arp::description<S_("Set the output colour theme")>,
-                             arp::value_separator<'='>,
-                             arp::default_value{theme_t::none},
-                             arp::custom_parser<theme_t>{
-                                 [](std::string_view arg) { return theme_from_string(arg); }}),
-            ard::alias_group(
-                arp::default_value{verbosity_level_t::info},
-                ar::counting_flag<verbosity_level_t>(
-                    arp::short_name<'v'>,
-                    arp::description<S_("Verbosity level, number of 'v's sets level")>),
-                ar::arg<verbosity_level_t>(arp::long_name<S_("verbose")>,
-                                           arp::description<S_("Verbosity level")>,
-                                           arp::value_separator<'='>),
-                arp::min_max_value<verbosity_level_t::error, verbosity_level_t::debug>()),
-            ar::positional_arg<std::vector<std::string_view>>(
-                arp::required,
-                arp::min_count<1>,
-                arp::display_name<S_("FILES")>,
-                arp::description<S_("Files to read")>),
-            arp::router{[](bool show_ends,
-                           bool show_non_printing,
-                           int max_lines,
-                           std::optional<std::size_t> max_line_length,
-                           std::variant<bool, std::string_view> max_line_handling,
-                           theme_t theme,
-                           verbosity_level_t /*verbosity_level*/,
-                           std::vector<std::string_view> files) {
-                set_theme(theme);
-                cat(show_ends,
-                    show_non_printing,
-                    max_lines,
-                    max_line_length,
-                    max_line_handling,
-                    std::move(files));
-                set_theme(theme_t::none);
-            }}))
+    ar::root(arp::validation::default_validator,
+             ar::help(S_("help"){},
+                      S_('h'){},
+                      S_("Display this help and exit"){},
+                      arp::program_name<S_("my-cat")>,
+                      arp::program_version<S_(version)>,
+                      arp::program_addendum<S_("An example program for arg_router.")>),
+             ar::flag(S_("version"){},
+                      S_("Output version information and exit"){},
+                      arp::router{[](bool) {
+                          std::cout << version << std::endl;
+                          std::exit(EXIT_SUCCESS);
+                      }}),
+             ar::mode(ar::flag(S_("show-all"){},
+                               S_("Equivalent to -nE"){},
+                               S_('A'){},
+                               arp::alias(arp::short_name<'E'>, arp::short_name<'n'>)),
+                      ar::flag(S_("show-ends"){}, S_("Display $ at end of each line"){}, S_('E'){}),
+                      ar::flag(S_("show-nonprinting"){},
+                               S_("Use ^ and M- notation, except for LFD and TAB"){},
+                               S_('n'){}),
+                      ar::arg<int>(S_("max-lines"){},
+                                   S_("Maximum lines to output"){},
+                                   arp::value_separator<'='>,
+                                   arp::default_value{-1}),
+                      ar::arg<std::optional<std::size_t>>(
+                          S_("max-line-length"){},
+                          S_("Maximum line length"){},
+                          arp::value_separator<'='>,
+                          arp::default_value{std::optional<std::size_t>{}}),
+                      ard::one_of(arp::default_value{"..."},
+                                  ar::flag(arp::dependent(arp::long_name<S_("max-line-length")>),
+                                           S_("skip-line"){},
+                                           S_('s'){},
+                                           S_("Skips line output if max line length reached"){}),
+                                  ar::arg<std::string_view>(
+                                      arp::dependent(arp::long_name<S_("max-line-length")>),
+                                      S_("line-suffix"){},
+                                      S_("Shortens line length to maximum with the given "
+                                         "suffix if max line length reached"){},
+                                      arp::value_separator<'='>)),
+                      ar::arg<theme_t>(S_("theme"){},
+                                       S_("Set the output colour theme"){},
+                                       arp::value_separator<'='>,
+                                       arp::default_value{theme_t::none},
+                                       arp::custom_parser<theme_t>{[](std::string_view arg) {
+                                           return theme_from_string(arg);
+                                       }}),
+                      ard::alias_group(
+                          arp::default_value{verbosity_level_t::info},
+                          ar::counting_flag<verbosity_level_t>(
+                              S_('v'){},
+                              arp::description<S_("Verbosity level, number of 'v's sets level")>),
+                          ar::arg<verbosity_level_t>(S_("verbose"){},
+                                                     S_("Verbosity level"){},
+                                                     arp::value_separator<'='>),
+                          arp::min_max_value<verbosity_level_t::error, verbosity_level_t::debug>()),
+                      ar::positional_arg<std::vector<std::string_view>>(arp::required,
+                                                                        arp::min_count<1>,
+                                                                        S_("FILES"){},
+                                                                        S_("Files to read"){}),
+                      arp::router{[](bool show_ends,
+                                     bool show_non_printing,
+                                     int max_lines,
+                                     std::optional<std::size_t> max_line_length,
+                                     std::variant<bool, std::string_view> max_line_handling,
+                                     theme_t theme,
+                                     verbosity_level_t /*verbosity_level*/,
+                                     std::vector<std::string_view> files) {
+                          set_theme(theme);
+                          cat(show_ends,
+                              show_non_printing,
+                              max_lines,
+                              max_line_length,
+                              max_line_handling,
+                              std::move(files));
+                          set_theme(theme_t::none);
+                      }}))
         .parse(argc, argv);
 
     return EXIT_SUCCESS;

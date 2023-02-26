@@ -59,8 +59,6 @@ if(NOT INSTALLATION_ONLY)
     include_directories(BEFORE SYSTEM ${Boost_INCLUDE_DIRS})
 endif()
 
-include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/package/install.cmake")
-
 path_prefixer(HEADERS
     include/arg_router/algorithm.hpp
     include/arg_router/arg.hpp
@@ -125,6 +123,7 @@ path_prefixer(HEADERS
     include/arg_router/utility/compile_time_string.hpp
     include/arg_router/utility/compile_time_optional.hpp
     include/arg_router/utility/result.hpp
+    include/arg_router/utility/string_to_policy.hpp
     include/arg_router/utility/string_view_ops.hpp
     include/arg_router/utility/terminal.hpp
     include/arg_router/utility/tree_recursor.hpp
@@ -180,6 +179,7 @@ if(NOT INSTALLATION_ONLY)
 endif()
 
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/library.cmake")
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/package/install.cmake")
 
 if(BUILD_UNIT_TESTS_AND_EXAMPLES)
     enable_testing()

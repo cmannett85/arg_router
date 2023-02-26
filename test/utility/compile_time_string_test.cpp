@@ -208,6 +208,14 @@ BOOST_AUTO_TEST_CASE(convert_integral_to_cts_test)
     }
 }
 
+BOOST_AUTO_TEST_CASE(is_compile_time_string_like_test)
+{
+    static_assert(traits::is_compile_time_string_like_v<AR_STRING("hello")>);
+    static_assert(traits::is_compile_time_string_like_v<AR_STRING("")>);
+    static_assert(!traits::is_compile_time_string_like_v<int>);
+    static_assert(!traits::is_compile_time_string_like_v<std::vector<int>>);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -4,9 +4,12 @@
 
 #pragma once
 
+#include "arg_router/policy/description.hpp"
 #include "arg_router/policy/multi_stage_value.hpp"
 #include "arg_router/policy/no_result_value.hpp"
+#include "arg_router/policy/none_name.hpp"
 #include "arg_router/tree_node.hpp"
+#include "arg_router/utility/string_to_policy.hpp"
 #include "arg_router/utility/tree_recursor.hpp"
 
 #include <bitset>
@@ -473,7 +476,14 @@ private:
 
 /** Constructs a mode_t with the given policies.
  *
- * This is used for similarity with arg_t.
+ * Compile-time strings can be passed in directly and will be converted to the appropriate policies
+ * automatically.  The rules are:
+ * -# The first string becomes a policy::none_name_t
+ * -# The second string becomes a policy::description_t
+ *
+ * The above are unicode aware.  The strings can be passed in any order relative to the other
+ * policies, but it is recommended to put them first to ease reading.
+ *
  * @tparam Params Policies and child node types for the mode
  * @param params Pack of policy and child node instances
  * @return Mode instance
@@ -481,6 +491,11 @@ private:
 template <typename... Params>
 constexpr auto mode(Params... params)
 {
-    return mode_t{std::move(params)...};
+    return std::apply(
+        [](auto... converted_params) { return mode_t{std::move(converted_params)...}; },
+        utility::string_to_policy::convert<
+            utility::string_to_policy::first_text_mapper<policy::none_name_t>,
+            utility::string_to_policy::second_text_mapper<policy::description_t>>(
+            std::move(params)...));
 }
 }  // namespace arg_router
