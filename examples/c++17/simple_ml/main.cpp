@@ -93,7 +93,7 @@ class translation<S_("ja")>
 public:
     using force = S_("強制");
     using force_description = S_("既存のファイルを強制的に上書きする");
-    using destination = S_("行き先");
+    using destination = S_("先");
     using destination_description = S_("宛先ディレクトリ");
     using help = S_("ヘルプ");
     using help_description = S_("このヘルプを表示して終了");

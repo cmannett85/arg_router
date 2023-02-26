@@ -576,7 +576,7 @@ class translation<str<"ja">>
 public:
     using force = str<"強制">;
     using force_description = str<"既存のファイルを強制的に上書きする">;
-    using destination = str<"行き先">;
+    using destination = str<"先">;
     using destination_description = str<"宛先ディレクトリ">;
     using help = str<"ヘルプ">;
     using help_description = str<"このヘルプを表示して終了">;

@@ -182,8 +182,8 @@ template <typename T, typename... Policies>
                 std::move(converted_policies)...};
         },
         ar::utility::string_to_policy::convert<
-            ar::utility::string_to_policy::first_string_mapper<arp::display_name_t>,
-            ar::utility::string_to_policy::second_string_mapper<smiley_description_t>>(
+            ar::utility::string_to_policy::first_text_mapper<arp::display_name_t>,
+            ar::utility::string_to_policy::second_text_mapper<smiley_description_t>>(
             std::move(policies)...));
 }
 
