@@ -712,7 +712,7 @@ BOOST_AUTO_TEST_CASE(nested_mode_test)
         f,
         std::tuple{
             std::tuple{std::vector{"foo", "--top-flag"}, 0, std::tuple{true}, ""},
-            std::tuple{std::vector{"foo", "--top-arg", "42"}, 1, std::tuple{42}, ""},
+            std::tuple{std::vector{"foo", "--top-arg", "-42"}, 1, std::tuple{-42}, ""},
             std::tuple{std::vector{"foo"}, 5, std::tuple{false, 4.2}, ""},
             std::tuple{std::vector{"foo", "--arg1", "13"}, 5, std::tuple{false, 13.0}, ""},
             std::tuple{std::vector{"foo", "mode1", "-t"}, 2, std::tuple{false, 3.14, true}, ""},
