@@ -1,7 +1,5 @@
 var NAVTREEINDEX3 =
 {
-"structarg__router_1_1is__tree__node.html":[8,0,0,20],
-"structarg__router_1_1parser.html":[8,0,0,16],
 "structarg__router_1_1parsing_1_1token__type.html":[8,0,0,3,6],
 "structarg__router_1_1parsing_1_1token__type.html#a17d51d5c01cdd242814dbeda4d8cf2e5":[8,0,0,3,6,3],
 "structarg__router_1_1parsing_1_1token__type.html#a52130985c6ce890b9e91e671a2e9746a":[8,0,0,3,6,2],
@@ -137,5 +135,7 @@ var NAVTREEINDEX3 =
 "version_8hpp.html#af4cd92a6007eabf135ad3732ab648d66":[9,0,0,23,0],
 "version_8hpp_source.html":[9,0,0,23],
 "whitespace_8hpp_source.html":[9,0,0,4,0,4],
-"zero__width_8hpp_source.html":[9,0,0,4,0,5]
+"zero__width_8hpp_source.html":[9,0,0,4,0,5],
+"":[7,0,0,6,1,1],
+"":[7,0,0,7]
 };

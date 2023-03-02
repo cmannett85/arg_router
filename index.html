@@ -96,7 +96,7 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="title"><a class="el" href="namespacearg__router.html">arg_router</a> </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="md_docs_README_API"></a><code><a class="el" href="namespacearg__router.html">arg_router</a></code> is a C++17 command line parser and router. It uses policy-based objects hierarchically, so the parsing code is self-describing. Rather than just providing a parsing service that returns a map of <code>variant</code>s/<code>any</code>s, it allows you to bind <code>Callable</code> instances to points in the parse structure, so complex command line arguments can directly call functions with the expected arguments - rather than you having to do this yourself.</p>
+<div class="textblock"><p><a class="anchor" id="md_docs_README_API"></a><code><a class="el" href="namespacearg__router.html">arg_router</a></code> is a C++17/20 command line parser and router. It uses policy-based objects hierarchically, so the parsing code is self-describing. Rather than just providing a parsing service that returns a map of <code>variant</code>s/<code>any</code>s, it allows you to bind <code>Callable</code> instances to points in the parse structure, so complex command line arguments can directly call functions with the expected arguments - rather than you having to do this yourself.</p>
 <h1>Features</h1>
 <ul>
 <li>Use policies to define the properties and constraints of arguments at compile-time</li>
@@ -110,6 +110,57 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <li>Uses a macro to ease compile-time string generation when using C++17. For C++20 and above, compile-time string literals can be used directly in constructors</li>
 <li>Available on vcpkg!</li>
 </ul>
+<h2>Example of the Benefits of a Compile-Time Parse Tree</h2>
+<p>It's not immediately obvious why defining a parse tree at compile would bring any benefits, so before we show you <em>how</em> <code><a class="el" href="namespacearg__router.html">arg_router</a></code> is used, let us show you <em>why</em>. Here is a very contrived parse tree defined using the very popular and well-made <a href="https://github.com/p-ranav/argparse">argparse</a>: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;argparse/argparse.hpp&gt;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">namespace </span>ap = argparse;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>* argv[])</div>
+<div class="line">{</div>
+<div class="line">    <span class="keyword">auto</span> program = ap::ArgumentParser{<span class="stringliteral">&quot;fail!&quot;</span>};</div>
+<div class="line">    program.add_argument(<span class="stringliteral">&quot;--verbose&quot;</span>, <span class="stringliteral">&quot;-v&quot;</span>)</div>
+<div class="line">        .help(<span class="stringliteral">&quot;Lots of output&quot;</span>)</div>
+<div class="line">        .default_value(<span class="keyword">false</span>)</div>
+<div class="line">        .implicit_value(<span class="keyword">true</span>);</div>
+<div class="line">    program.add_argument(<span class="stringliteral">&quot;--value&quot;</span>, <span class="stringliteral">&quot;-v&quot;</span>)</div>
+<div class="line">        .help(<span class="stringliteral">&quot;Do something with a value&quot;</span>)</div>
+<div class="line">        .default_value(<span class="keyword">false</span>)</div>
+<div class="line">        .implicit_value(<span class="keyword">true</span>);</div>
+<div class="line"> </div>
+<div class="line">    program.parse_args(argc, argv);</div>
+<div class="line">    std::cout &lt;&lt; program.get&lt;<span class="keywordtype">bool</span>&gt;(<span class="stringliteral">&quot;--verbose&quot;</span>) &lt;&lt; <span class="stringliteral">&quot;, &quot;</span></div>
+<div class="line">              &lt;&lt; program.get&lt;<span class="keywordtype">bool</span>&gt;(<span class="stringliteral">&quot;--value&quot;</span>) &lt;&lt; std::endl;</div>
+<div class="line"> </div>
+<div class="line">    <span class="keywordflow">return</span> EXIT_SUCCESS;</div>
+<div class="line">}</div>
+</div><!-- fragment --><p> This parser has an easy to make error, both flags have a short name that is the same, resulting in an ambiguous parse tree. In this example it stands out as the whole program is so small, but it wouldn't be so obvious on a larger, more real-world program. Let's build and run it: </p><div class="fragment"><div class="line">$ ./fail --verbose</div>
+<div class="line">1, 0</div>
+<div class="line">$ ./fail -v</div>
+<div class="line">0, 1</div>
+</div><!-- fragment --><p> There is no runtime error detection so you would need to write a test for this scenario. Let's try the equivalent in <code><a class="el" href="namespacearg__router.html">arg_router</a></code>: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;arg_router/arg_router.hpp&gt;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">namespace </span>ar = <a class="code" href="namespacearg__router.html">arg_router</a>;</div>
+<div class="line"><span class="keyword">namespace </span>arp = ar::policy;</div>
+<div class="line"><span class="keyword">using namespace </span>ar::literals;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>* argv[])</div>
+<div class="line">{</div>
+<div class="line">    ar::root(arp::validation::default_validator,</div>
+<div class="line">             ar::help(<span class="stringliteral">&quot;help&quot;</span>_S, <span class="stringliteral">&quot;h&quot;</span>_S, arp::program_name_t{<span class="stringliteral">&quot;fail!&quot;</span>_S}),</div>
+<div class="line">             ar::mode(ar::flag(<span class="stringliteral">&quot;verbose&quot;</span>_S, <span class="stringliteral">&quot;v&quot;</span>_S, <span class="stringliteral">&quot;Lots of output&quot;</span>_S),</div>
+<div class="line">                      ar::flag(<span class="stringliteral">&quot;value&quot;</span>_S, <span class="stringliteral">&quot;v&quot;</span>_S, <span class="stringliteral">&quot;Do something with a value&quot;</span>_S),</div>
+<div class="line">                      arp::router{[](<span class="keyword">auto</span> verbose, <span class="keyword">auto</span> value) {</div>
+<div class="line">                          std::cout &lt;&lt; verbose &lt;&lt; <span class="stringliteral">&quot;, &quot;</span> &lt;&lt; value &lt;&lt; std::endl;</div>
+<div class="line">                      }}))</div>
+<div class="line">        .parse(argc, argv);</div>
+<div class="line"> </div>
+<div class="line">    <span class="keywordflow">return</span> EXIT_SUCCESS;</div>
+<div class="line">}</div>
+<div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00015">algorithm.hpp:16</a></div></div>
+</div><!-- fragment --><p> Let's build it: </p><div class="fragment"><div class="line">arg_router/policy/validator.hpp:206:17: error: static_assert failed due to requirement &#39;!std::is_same_v&lt;arg_router::policy::short_name_t&lt;arg_router::utility::str&lt;{{{118, 0}}}&gt;&gt;, arg_router::policy::short_name_t&lt;arg_router::utility::str&lt;{{{118, 0}}}&gt;&gt;&gt;&#39; &quot;Policy must be unique in the parse tree up to the nearest mode or root&quot;</div>
+<div class="line">                static_assert(!std::is_same_v&lt;Policy, Current&gt;,</div>
+<div class="line">                ^             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</div>
+</div><!-- fragment --><p> <code>"Policy must be unique in the parse tree up to the nearest mode or root"</code> is a formal way of saying that you've got a duplicate policy, and it's a <code>policy::short_name_t</code>. By having the tree defined at compile-time, it can verify itself via C++ template metaprogramming and cause a build failure. This is a simple example, but there is a great many more checks done during compilation to help you write safer code with less explicit testing.</p>
 <h1>Basics</h1>
 <p>Let's start simple, with this <code>cat</code>-like program: </p><div class="fragment"><div class="line"><span class="keyword">namespace </span>ar = <a class="code" href="namespacearg__router.html">arg_router</a>;</div>
 <div class="line"><span class="keyword">namespace </span>arp = ar::policy</div>
@@ -157,7 +208,6 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="line">                       <span class="keywordtype">int</span> max_lines,</div>
 <div class="line">                       std::vector&lt;std::string_view&gt; files) { ... }}))</div>
 <div class="line">    .parse(argc, argv);</div>
-<div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00015">algorithm.hpp:16</a></div></div>
 </div><!-- fragment --><p> Let's start from the top, as the name suggests <code>root</code> is the root of the parse tree and provides the <code>parse(argc, argv)</code> method. Only children of the root can (and must) have a <code>router</code> policy (except for nested <code>mode</code>s, more <a href="#modes">on that later</a>) and therefore act as access points into the program. The root's children are implicitly mutually exclusive, so trying to pass <code>--version --help</code> in the command line is a runtime error.</p>
 <p>The <code>arp::validation::default_validator</code> instance provides the default validator that the root uses to validate the parse tree at compile-time. It is a required policy of the <code>root</code>. Unless you have implemented your own policy or tree node you will never need to specify anything else.</p>
 <p>The <code>help</code> node is used by the <code>root</code> to generate the argument documentation for the help output, by default it just prints directly to the console and then exits, but a <code>router</code> can be attached that accepts the formatted output to do something else with it. The optional <code>program_name_t</code> and <code>program_version_t</code> policies add a header to the help output.</p>

@@ -1,7 +1,5 @@
 var NAVTREEINDEX2 =
 {
-"mode_8hpp_source.html":[9,0,0,17],
-"multi__lang_2root_8hpp_source.html":[9,0,0,1,1],
 "multi__stage__value_8hpp_source.html":[9,0,0,3,14],
 "namespacearg__router.html":[7,0,0],
 "namespacearg__router.html#a1eb8c408da38619d624f435441efac48":[7,0,0,31],
@@ -249,5 +247,7 @@ var NAVTREEINDEX2 =
 "structarg__router_1_1algorithm_1_1unzip.html":[8,0,0,0,5],
 "structarg__router_1_1algorithm_1_1unzip.html#a5775c4f67b4c6dfa9ef26b9b4d1400a2":[8,0,0,0,5,1],
 "structarg__router_1_1algorithm_1_1unzip.html#af3593f060d40b2d3e779adfe94c834e1":[8,0,0,0,5,0],
-"structarg__router_1_1default__error__code__translations.html":[8,0,0,9]
+"structarg__router_1_1default__error__code__translations.html":[8,0,0,9],
+"structarg__router_1_1is__tree__node.html":[8,0,0,20],
+"structarg__router_1_1parser.html":[8,0,0,16]
 };

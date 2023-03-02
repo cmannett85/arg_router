@@ -1,7 +1,5 @@
 var NAVTREEINDEX0 =
 {
-"":[7,0,0,6,1,1],
-"":[7,0,0,7],
 "algorithm_8hpp_source.html":[9,0,0,5],
 "alias_8hpp_source.html":[9,0,0,3,0],
 "alias__group_8hpp_source.html":[9,0,0,0,0],
@@ -249,5 +247,7 @@ var NAVTREEINDEX0 =
 "classarg__router_1_1policy_1_1value__separator__t.html":[8,0,0,4,36],
 "classarg__router_1_1policy_1_1value__separator__t.html#aa8d245e1bdbb82dfacc28c5b4596180b":[8,0,0,4,36,0],
 "classarg__router_1_1policy_1_1value__separator__t.html#abfe4a7c761b176212c60c1f65c4c9b2f":[8,0,0,4,36,2],
-"classarg__router_1_1policy_1_1value__separator__t.html#ad88ea853a98aa87f33cd57fe9157d372":[8,0,0,4,36,1]
+"classarg__router_1_1policy_1_1value__separator__t.html#ad88ea853a98aa87f33cd57fe9157d372":[8,0,0,4,36,1],
+"classarg__router_1_1positional__arg__t.html":[8,0,0,17],
+"classarg__router_1_1positional__arg__t.html#a483bb866a87ba806a487b38de085751f":[8,0,0,17,2]
 };
