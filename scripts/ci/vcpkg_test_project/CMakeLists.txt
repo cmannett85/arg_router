@@ -11,16 +11,13 @@ project(vcpkg_test_project
         LANGUAGES CXX)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(BOOST_VERSION 1.74)
-find_package(Boost ${BOOST_VERSION} REQUIRED)
-include_directories(BEFORE SYSTEM ${Boost_INCLUDE_DIRS})
-
 find_package(arg_router REQUIRED)
-include_directories(BEFORE SYSTEM "${arg_router_INCLUDE_DIRS}")
 
 add_executable(vcpkg_test_project
     "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/vcpkg.json")
+    
+target_link_libraries(vcpkg_test_project PUBLIC arg_router)
 
 target_compile_features(vcpkg_test_project PUBLIC cxx_std_20)
 set_target_properties(vcpkg_test_project PROPERTIES CXX_EXTENSIONS OFF)

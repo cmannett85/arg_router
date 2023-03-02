@@ -1,7 +1,7 @@
 ![Documentation Generator](https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg) [![Merge to main Checker](https://github.com/cmannett85/arg_router/actions/workflows/merge_checker.yml/badge.svg)](https://github.com/cmannett85/arg_router/actions/workflows/merge_checker.yml) ![Unit test coverage](https://img.shields.io/badge/Unit_Test_Coverage-97.5%25-brightgreen)
 
 # arg_router
-`arg_router` is a C++17 command line parser and router.  It uses policy-based objects hierarchically, so the parsing code is self-describing.  Rather than just providing a parsing service that returns a map of `variant`s/`any`s, it allows you to bind `Callable` instances to points in the parse structure, so complex command line arguments can directly call functions with the expected arguments - rather than you having to do this yourself.
+`arg_router` is a C++17/20 command line parser and router.  It uses policy-based objects hierarchically, so the parsing code is self-describing.  Rather than just providing a parsing service that returns a map of `variant`s/`any`s, it allows you to bind `Callable` instances to points in the parse structure, so complex command line arguments can directly call functions with the expected arguments - rather than you having to do this yourself.
 
 ## Features
 - Use policies to define the properties and constraints of arguments at compile-time
@@ -14,6 +14,69 @@
 - Support of runtime language selection
 - Uses a macro to ease compile-time string generation when using C++17.  For C++20 and above, compile-time string literals can be used directly in constructors
 - Available on vcpkg!
+
+### Example of the Benefits of a Compile-Time Parse Tree
+It's not immediately obvious why defining a parse tree at compile would bring any benefits, so before we show you _how_ `arg_router` is used, let us show you _why_.  Here is a very contrived parse tree defined using the very popular and well-made [argparse](https://github.com/p-ranav/argparse):
+```cpp
+#include <argparse/argparse.hpp>
+
+namespace ap = argparse;
+
+int main(int argc, char* argv[])
+{
+    auto program = ap::ArgumentParser{"fail!"};
+    program.add_argument("--verbose", "-v")
+        .help("Lots of output")
+        .default_value(false)
+        .implicit_value(true);
+    program.add_argument("--value", "-v")
+        .help("Do something with a value")
+        .default_value(false)
+        .implicit_value(true);
+
+    program.parse_args(argc, argv);
+    std::cout << program.get<bool>("--verbose") << ", "
+              << program.get<bool>("--value") << std::endl;
+
+    return EXIT_SUCCESS;
+}
+```
+This parser has an easy to make error, both flags have a short name that is the same, resulting in an ambiguous parse tree.  In this example it stands out as the whole program is so small, but it wouldn't be so obvious on a larger, more real-world program.  Let's build and run it:
+```
+$ ./fail --verbose
+1, 0
+$ ./fail -v
+0, 1
+```
+There is no runtime error detection so you would need to write a test for this scenario.  Let's try the equivalent in `arg_router`:
+```cpp
+#include <arg_router/arg_router.hpp>
+
+namespace ar = arg_router;
+namespace arp = ar::policy;
+using namespace ar::literals;
+
+int main(int argc, char* argv[])
+{
+    ar::root(arp::validation::default_validator,
+             ar::help("help"_S, "h"_S, arp::program_name_t{"fail!"_S}),
+             ar::mode(ar::flag("verbose"_S, "v"_S, "Lots of output"_S),
+                      ar::flag("value"_S, "v"_S, "Do something with a value"_S),
+                      arp::router{[](auto verbose, auto value) {
+                          std::cout << verbose << ", " << value << std::endl;
+                      }}))
+        .parse(argc, argv);
+
+    return EXIT_SUCCESS;
+}
+```
+Let's build it:
+```
+arg_router/policy/validator.hpp:206:17: error: static_assert failed due to requirement '!std::is_same_v<arg_router::policy::short_name_t<arg_router::utility::str<{{{118, 0}}}>>, arg_router::policy::short_name_t<arg_router::utility::str<{{{118, 0}}}>>>' "Policy must be unique in the parse tree up to the nearest mode or root"
+                static_assert(!std::is_same_v<Policy, Current>,
+                ^             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+```
+`"Policy must be unique in the parse tree up to the nearest mode or root"` is a formal way of saying that you've got a duplicate policy, and it's a `policy::short_name_t`.  By having the tree defined at compile-time, it can verify itself via C++ template metaprogramming and cause a build failure.  This is a simple example, but there is a great many more checks done during compilation to help you write safer code with less explicit testing.
 
 ## Basics
 Let's start simple, with this `cat`-like program:
