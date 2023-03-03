@@ -196,9 +196,9 @@ jobs:
         Test-Path -Path "${{ env.INSTALL_DIR }}/include/arg_router/version.hpp" -PathType Leaf
         Test-Path -Path "${{ env.INSTALL_DIR }}/include/arg_router/README.md" -PathType Leaf
         Test-Path -Path "${{ env.INSTALL_DIR }}/include/arg_router/LICENSE" -PathType Leaf
-        Test-Path -Path "${{ env.INSTALL_DIR }}/cmake/arg_router.cmake" -PathType Leaf
-        Test-Path -Path "${{ env.INSTALL_DIR }}/cmake/arg_router-config.cmake" -PathType Leaf
-        Test-Path -Path "${{ env.INSTALL_DIR }}/cmake/arg_router-config-version.cmake" -PathType Leaf
+        Test-Path -Path "${{ env.INSTALL_DIR }}/share/arg_router/arg_router.cmake" -PathType Leaf
+        Test-Path -Path "${{ env.INSTALL_DIR }}/share/arg_router/arg_router-config.cmake" -PathType Leaf
+        Test-Path -Path "${{ env.INSTALL_DIR }}/share/arg_router/arg_router-config-version.cmake" -PathType Leaf
 
     - name: Test CMake package integrity
       run: |
@@ -259,9 +259,9 @@ jobs:
         [[ -f "./include/arg_router/version.hpp" ]]
         [[ -f "./include/arg_router/README.md" ]]
         [[ -f "./include/arg_router/LICENSE" ]]
-        [[ -f "./arg_router.framework/Resources/CMake/arg_router.cmake" ]]
-        [[ -f "./arg_router.framework/Resources/CMake/arg_router-config.cmake" ]]
-        [[ -f "./arg_router.framework/Resources/CMake/arg_router-config-version.cmake" ]]
+        [[ -f "./share/arg_router/arg_router.cmake" ]]
+        [[ -f "./share/arg_router/arg_router-config.cmake" ]]
+        [[ -f "./share/arg_router/arg_router-config-version.cmake" ]]
 
     - name: Test CMake package integrity
       run: |

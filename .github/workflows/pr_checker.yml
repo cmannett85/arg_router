@@ -94,9 +94,9 @@ jobs:
         [[ -f "./include/arg_router/version.hpp" ]]
         [[ -f "./include/arg_router/README.md" ]]
         [[ -f "./include/arg_router/LICENSE" ]]
-        [[ -f "./lib/cmake/arg_router/arg_router.cmake" ]]
-        [[ -f "./lib/cmake/arg_router/arg_router-config.cmake" ]]
-        [[ -f "./lib/cmake/arg_router/arg_router-config-version.cmake" ]]
+        [[ -f "./share/arg_router/arg_router.cmake" ]]
+        [[ -f "./share/arg_router/arg_router-config.cmake" ]]
+        [[ -f "./share/arg_router/arg_router-config-version.cmake" ]]
 
     - name: Test CMake package integrity
       run: |
@@ -228,13 +228,13 @@ jobs:
         cd ${{ env.BUILD_DIR }}
         sudo apt install ./*.deb
         test -e /usr/include/arg_router
-        test -e /usr/lib/cmake/arg_router
+        test -e /usr/share/arg_router
         [[ -f "/usr/include/arg_router/version.hpp" ]]
         [[ -f "/usr/include/arg_router/README.md" ]]
         [[ -f "/usr/include/arg_router/LICENSE" ]]
-        [[ -f "/usr/lib/cmake/arg_router/arg_router.cmake" ]]
-        [[ -f "/usr/lib/cmake/arg_router/arg_router-config.cmake" ]]
-        [[ -f "/usr/lib/cmake/arg_router/arg_router-config-version.cmake" ]]
+        [[ -f "/usr/share/arg_router/arg_router.cmake" ]]
+        [[ -f "/usr/share/arg_router/arg_router-config.cmake" ]]
+        [[ -f "/usr/share/arg_router/arg_router-config-version.cmake" ]]
 
     - name: Test CMake package integrity
       timeout-minutes: 30
@@ -245,7 +245,7 @@ jobs:
         cmake --build .
         sudo apt remove arg_router
         ! test -e /usr/include/arg_router
-        ! test -e /usr/lib/cmake/arg_router
+        ! test -e /usr/share/arg_router
 
   # Makes sure there are no errors when generating the documentation
   documentation:
