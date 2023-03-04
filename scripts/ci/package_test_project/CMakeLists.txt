@@ -15,7 +15,6 @@ project(package_test_project
         LANGUAGES CXX)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-find_package(Boost 1.74 REQUIRED)
 find_package(arg_router REQUIRED)
 
 add_executable(package_test_project
