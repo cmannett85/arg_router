@@ -78,6 +78,13 @@ arg_router/policy/validator.hpp:206:17: error: static_assert failed due to requi
 ```
 `"Policy must be unique in the parse tree up to the nearest mode or root"` is a formal way of saying that you've got a duplicate policy, and it's a `policy::short_name_t`.  By having the tree defined at compile-time, it can verify itself via C++ template metaprogramming and cause a build failure.  This is a simple example, but there is a great many more checks done during compilation to help you write safer code with less explicit testing.
 
+## Installation
+There are several ways to install `arg_router`, the most appropriate depends on your project's configuration.
+* If using vcpkg as your package manager, simply add `arg-router` (note the hyphen) to `dependencies` in your `vcpkg.json`
+* If using a DEB package based Linux distribution, download the [release](https://github.com/cmannett85/arg_router/releases) Debian package and install it
+* If you just want to do a traditional install then download the [release](https://github.com/cmannett85/arg_router/releases) zip file and decompress it where you want.  Then point your project at the `include/arg_router` directory or package config location `share/arg_router`
+* Same as above but installed from the checked out repo, i.e. using the invocation `cmake ../arg_router -DINSTALLATION_ONLY=ON;cmake --install .`
+
 ## Basics
 Let's start simple, with this `cat`-like program:
 ```cpp
