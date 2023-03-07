@@ -161,6 +161,13 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="line">                static_assert(!std::is_same_v&lt;Policy, Current&gt;,</div>
 <div class="line">                ^             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</div>
 </div><!-- fragment --><p> <code>"Policy must be unique in the parse tree up to the nearest mode or root"</code> is a formal way of saying that you've got a duplicate policy, and it's a <code>policy::short_name_t</code>. By having the tree defined at compile-time, it can verify itself via C++ template metaprogramming and cause a build failure. This is a simple example, but there is a great many more checks done during compilation to help you write safer code with less explicit testing.</p>
+<h1>Installation</h1>
+<p>There are several ways to install <code><a class="el" href="namespacearg__router.html">arg_router</a></code>, the most appropriate depends on your project's configuration.</p><ul>
+<li>If using vcpkg as your package manager, simply add <code>arg-router</code> (note the hyphen) to <code>dependencies</code> in your <code>vcpkg.json</code></li>
+<li>If using a DEB package based Linux distribution, download the <a href="https://github.com/cmannett85/arg_router/releases">release</a> Debian package and install it</li>
+<li>If you just want to do a traditional install then download the <a href="https://github.com/cmannett85/arg_router/releases">release</a> zip file and decompress it where you want. Then point your project at the <code>include/arg_router</code> directory or package config location <code>share/arg_router</code></li>
+<li>Same as above but installed from the checked out repo, i.e. using the invocation <code>cmake ../arg_router -DINSTALLATION_ONLY=ON;cmake --install .</code></li>
+</ul>
 <h1>Basics</h1>
 <p>Let's start simple, with this <code>cat</code>-like program: </p><div class="fragment"><div class="line"><span class="keyword">namespace </span>ar = <a class="code" href="namespacearg__router.html">arg_router</a>;</div>
 <div class="line"><span class="keyword">namespace </span>arp = ar::policy</div>
