@@ -17,8 +17,7 @@ add_executable(vcpkg_test_project
     "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/vcpkg.json")
     
-target_link_libraries(vcpkg_test_project PUBLIC arg_router)
-
+target_link_libraries(vcpkg_test_project PUBLIC arg_router::arg_router)
 target_compile_features(vcpkg_test_project PUBLIC cxx_std_20)
 set_target_properties(vcpkg_test_project PROPERTIES CXX_EXTENSIONS OFF)
 
