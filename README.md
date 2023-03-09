@@ -83,7 +83,37 @@ There are several ways to install `arg_router`, the most appropriate depends on 
 * If using vcpkg as your package manager, simply add `arg-router` (note the hyphen) to `dependencies` in your `vcpkg.json`
 * If using a DEB package based Linux distribution, download the [release](https://github.com/cmannett85/arg_router/releases) Debian package and install it
 * If you just want to do a traditional install then download the [release](https://github.com/cmannett85/arg_router/releases) zip file and decompress it where you want.  Then point your project at the `include/arg_router` directory or package config location `share/arg_router`
-* Same as above but installed from the checked out repo, i.e. using the invocation `cmake ../arg_router -DINSTALLATION_ONLY=ON;cmake --install .`
+* Same as above but installed from the checked out repo, i.e. using the invocation `cmake ../arg_router -DINSTALLATION_ONLY=ON; cmake --install .`
+
+### Dependencies
+If you're a library user, you will need the following dependencies in order to build:
+* Boost.mp11 v1.74+
+* Boost.Lexical_Cast v1.74+
+* Boost.Preprocessor v1.74+ (only needed if building against C++17)
+* [span-lite](https://github.com/martinmoene/span-lite) (only needed if building against C++17)
+
+If you're a vcpkg user, then these will be brought in automatically for you.  `arg_router` is header-only (due to all the templates) and so are the above dependencies.
+
+**Note** currently `arg_router` requires exception support, but _not_ RTTI.
+
+To get a pre-release `arg_router`, or build the unit tests and examples, simply check out the repo and build via CMake in the usual way - the unit tests will be built by default:
+```
+$ cd arg_router
+$ mkdir build
+$ cd ./build
+$ cmake ..
+$ cmake --build .
+$ cmake --install .
+```
+Building these targets will require more dependencies:
+* clang-format
+* Python v3 (used for copyright checking)
+* Doxygen
+* Boost.Test v1.74+
+* Boost.Filesystem v1.74+
+* Boost.Process v1.74+
+
+By default all these dependencies are provided by `vcpkg` automatically, please **note** that `vcpkg` is provided via a submodule and therefore will need initialising (`git submodule update`).  If you would rather the dependencies came from the system then simply set `-DDISABLE_VCPKG=OFF`, and CMake will not bootstrap `vcpkg` and therefore try to find the packages locally.
 
 ## Basics
 Let's start simple, with this `cat`-like program:
@@ -822,36 +852,6 @@ For those targetting C++20 with existing v1.0 code, upgrading to a newer library
 
 ## Error Handling
 Currently `arg_router` only supports exceptions as error handling.  If a parsing fails for some reason a `arg_router::parse_exception` is thrown carrying information on the failure.
-
-## Installation and Dependencies
-If you're simply a library user, then download the pre-packaged release and install somewhere.  You will need the following dependencies in order to build:
-* Boost.mp11 v1.74+
-* Boost.Lexical_Cast v1.74+
-* Boost.Preprocessor v1.74+ (only needed if building against C++17)
-* [span-lite](https://github.com/martinmoene/span-lite) (only needed if building against C++17)
-
-`arg_router` is header-only (due to all the templates) and so are the above dependencies.
-
-**Note** currently arg_router requires exception support, but _not_ RTTI.
-
-To get a pre-release `arg_router`, or build the unit tests and examples, simply check out the repo and build via CMake in the usual way - the unit tests will be built by default:
-```
-$ cd arg_router
-$ mkdir build
-$ cd ./build
-$ cmake -G "Ninja" ..
-$ cmake --build .
-$ cmake --install .
-```
-Building these targets will require more dependencies:
-* clang-format
-* Python v3 (used for copyright checking)
-* Doxygen
-* Boost.Test v1.74+
-* Boost.Filesystem v1.74+
-* Boost.Process v1.74+
-
-By default all these dependencies are provided by `vcpkg` automatically, please **note** that `vcpkg` is provided via a submodule and therefore will need initialising (`git submodule update`).  If you would rather the dependencies came from the system then simply set `-DDISABLE_VCPKG=OFF`, and CMake will not bootstrap `vcpkg` and therefore try to find the packages locally.
 
 ## Configuration
 Low-level tweaking of the library is achieved via some defines and/or CMake variables, documented [here](https://cmannett85.github.io/arg_router/configuration.html).
