@@ -909,4 +909,114 @@ BOOST_AUTO_TEST_CASE(counting_flag_test)
         });
 }
 
+BOOST_AUTO_TEST_CASE(parse_overloads_test)
+{
+    auto router_hit = false;
+    auto result = std::array<bool, 3>{};
+    const auto r = root(
+        mode(flag(policy::long_name<AR_STRING("flag1")>,
+                  policy::description<AR_STRING("First description")>),
+             flag(policy::long_name<AR_STRING("flag2")>,
+                  policy::description<AR_STRING("Second description")>),
+             flag(policy::short_name<'t'>, policy::description<AR_STRING("Third description")>),
+             policy::router{[&](bool flag1, bool flag2, bool t) {
+                 result = {flag1, flag2, t};
+                 router_hit = true;
+             }}),
+        policy::validation::default_validator);
+
+    const auto parse_invocations =
+        std::vector<std::pair<std::string_view, std::function<void(std::vector<const char*>)>>>{
+            {"vector<parsing::token_type> overload",
+             [&](std::vector<const char*> args) {
+                 args.erase(args.begin());
+                 auto tt = vector<parsing::token_type>{};
+                 for (auto arg : args) {
+                     tt.emplace_back(parsing::prefix_type::none, arg);
+                 }
+                 r.parse(std::move(tt));
+             }},
+            {"int, char** overload",
+             [&](std::vector<const char*> args) {
+                 r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data()));
+             }},
+            {"Iter, Iter overload",
+             [&](std::vector<const char*> args) {  //
+                 args.erase(args.begin());
+                 r.parse(args.begin(), args.end());
+             }},
+            {"Container overload",
+             [&](std::vector<const char*> args) {  //
+                 args.erase(args.begin());
+                 r.parse(args);
+             }},
+            {"Container overload (with strings)",  //
+             [&](std::vector<const char*> args) {
+                 args.erase(args.begin());
+                 auto strings = vector<string>{};
+                 for (auto arg : args) {
+                     strings.push_back(arg);
+                 }
+                 r.parse(std::move(strings));
+             }}};
+
+    auto f = [&](auto args, auto expected, std::string fail_message) {
+        result.fill(false);
+        router_hit = false;
+
+        for (const auto& [name, invoc] : parse_invocations) {
+            BOOST_TEST_MESSAGE("\t" << name);
+            try {
+                invoc(args);
+                BOOST_CHECK(fail_message.empty());
+                BOOST_CHECK(router_hit);
+                BOOST_CHECK_EQUAL(result[0], expected[0]);
+                BOOST_CHECK_EQUAL(result[1], expected[1]);
+                BOOST_CHECK_EQUAL(result[2], expected[2]);
+            } catch (parse_exception& e) {
+                BOOST_CHECK_EQUAL(fail_message, e.what());
+                BOOST_CHECK(!router_hit);
+            }
+        }
+    };
+
+    test::data_set(
+        f,
+        {
+            std::tuple{std::vector{"foo", "--flag1"}, std::array{true, false, false}, ""},
+            std::tuple{std::vector{"foo", "--flag2"}, std::array{false, true, false}, ""},
+            std::tuple{std::vector{"foo", "-t"}, std::array{false, false, true}, ""},
+            std::tuple{std::vector{"foo", "--flag1", "-t"}, std::array{true, false, true}, ""},
+            std::tuple{std::vector{"foo", "-t", "--flag1"}, std::array{true, false, true}, ""},
+            std::tuple{std::vector{"foo", "--flag1", "--flag2", "-t"},
+                       std::array{true, true, true},
+                       ""},
+            std::tuple{std::vector{"foo", "--flag2", "-t", "--flag1"},
+                       std::array{true, true, true},
+                       ""},
+            std::tuple{std::vector{"foo", "--foo", "--flag2"},
+                       std::array{false, false, false},
+                       "Unknown argument: --foo"},
+            std::tuple{std::vector{"foo", "--flag2", "--foo"},
+                       std::array{false, false, false},
+                       "Unknown argument: --foo"},
+            std::tuple{std::vector{"foo", "--flag1", "--flag2", "-t", "--foo"},
+                       std::array{false, false, false},
+                       "Unhandled arguments: --foo"},
+            std::tuple{std::vector{"foo", "--flag2", "-t", "--flag1", "--foo"},
+                       std::array{false, false, false},
+                       "Unhandled arguments: --foo"},
+            std::tuple{std::vector{"foo", "--flag1", "--flag1"},
+                       std::array{false, false, false},
+                       "Argument has already been set: --flag1"},
+            std::tuple{std::vector{"foo", "-t", "-t"},
+                       std::array{false, false, false},
+                       "Argument has already been set: -t"},
+            std::tuple{std::vector{"foo", "--flag2", "-t", "--flag1", "--flag2"},
+                       std::array{false, false, false},
+                       "Argument has already been set: --flag2"},
+            std::tuple{std::vector{"foo"}, std::array{false, false, false}, ""},
+        });
+}
+
 BOOST_AUTO_TEST_SUITE_END()
