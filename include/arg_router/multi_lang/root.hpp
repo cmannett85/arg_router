@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -125,6 +125,47 @@ public:
         if (!root_) {
             root_.emplace(root_variant_t{f(translation<DefaultLanguageID>{})});
         }
+    }
+
+    /** Calls the parse method on the selected root.
+     *
+     * The first element is @em not expected to be the executable name.
+     * @param args Vector of tokens
+     * @exception parse_exception Thrown if parsing has failed
+     */
+    void parse(vector<parsing::token_type> args) const
+    {
+        std::visit([&](const auto& root) { root.parse(std::move(args)); }, *root_);
+    }
+
+    /** Calls the parse method on the selected root.
+     *
+     * The first element is @em not expected to be the executable name.
+     * @note The strings must out live the parse process as they are not copied.
+     * @tparam Iter Iterator type to <TT>std::string_view</TT> convertible elements
+     * @param begin Iterator to the first element
+     * @param end Iterator to the one-past-the-end element
+     */
+    template <typename Iter, typename = std::enable_if_t<!std::is_same_v<std::decay_t<Iter>, int>>>
+    void parse(Iter begin, Iter end) const
+    {
+        std::visit([&](const auto& root) { root.parse(begin, end); }, *root_);
+    }
+
+    /** Calls the parse method on the selected root.
+     *
+     * The first element is @em not expected to be the executable name.
+     * @note This does not take part in overload resolution if @a c is a
+     * <TT>vector\<parsing::token_type\></TT>
+     * @tparam Container
+     * @param c Elements to parse
+     */
+    template <typename Container,
+              typename = std::enable_if_t<
+                  !std::is_same_v<std::decay_t<Container>, vector<parsing::token_type>>>>
+    void parse(const Container& c) const
+    {
+        std::visit([&](const auto& root) { root.parse(c); }, *root_);
     }
 
     /** Calls the parse method on the selected root.
