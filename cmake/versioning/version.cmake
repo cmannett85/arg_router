@@ -2,14 +2,12 @@
 ### Distributed under the Boost Software License, Version 1.0.
 ### (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
+message(STATUS "Project revision: ${CMAKE_PROJECT_VERSION}")
+
+# Update the version in version.hpp
 path_prefixer(VERSION_FILE
     include/arg_router/version.hpp
 )
-
-set_source_files_properties(${VERSION_FILE} PROPERTIES GENERATED TRUE)
-
-message(STATUS "Project revision: ${CMAKE_PROJECT_VERSION}")
-
 set(VERSION_FILE_TMP
     "${CMAKE_BINARY_DIR}/cmake/versioning/version.hpp.tmp"
 )
@@ -27,7 +25,6 @@ endif()
 
 # Update the project version in the Doxyfile
 file(READ "${CMAKE_SOURCE_DIR}/docs/Doxyfile" DOXYFILE_DATA)
-
 string(
     REGEX REPLACE
     "PROJECT_NUMBER         = [0-9]*\\.[0-9]*\\.[0-9]*"
@@ -43,7 +40,6 @@ endif()
 
 # Update the version in vcpkg.json
 file(READ "${CMAKE_SOURCE_DIR}/vcpkg.json" VCPKG_JSON_DATA)
-
 string(
     REGEX REPLACE
     "\"version-string\": \"[0-9]*\\.[0-9]*\\.[0-9]*\""
@@ -55,4 +51,19 @@ string(
 if(NOT "${VCPKG_JSON_DATA}" STREQUAL "${UPDATED_VCPKG_JSON_DATA}")
     message(STATUS "Updating vcpkg.json library version")
     file(WRITE "${CMAKE_SOURCE_DIR}/vcpkg.json" ${UPDATED_VCPKG_JSON_DATA})
+endif()
+
+# Update the version in conanfile.py
+file(READ "${CMAKE_SOURCE_DIR}/conanfile.py" CONANFILE_DATA)
+string(
+    REGEX REPLACE
+    "version = [0-9]*\\.[0-9]*\\.[0-9]*"
+    "version = ${CMAKE_PROJECT_VERSION}"
+    UPDATED_CONANFILE_DATA
+    "${CONANFILE_DATA}"
+)
+
+if(NOT "${CONANFILE_DATA}" STREQUAL "${UPDATED_CONANFILE_DATA}")
+    message(STATUS "Updating conanfile.py library version")
+    file(WRITE "${CMAKE_SOURCE_DIR}/conanfile.py" ${UPDATED_CONANFILE_DATA})
 endif()
