@@ -1,14 +1,8 @@
-### Copyright (C) 2022 by Camden Mannett.
+### Copyright (C) 2022-2023 by Camden Mannett.
 ### Distributed under the Boost Software License, Version 1.0.
 ### (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
-path_prefixer(TEST_COVERAGE_FOR_IDE
-    ../scripts/ci/calculate_test_coverage.sh
-    ../scripts/ci/old_coverage
-)
-
-add_executable(arg_router_test_coverage EXCLUDE_FROM_ALL
-    ${TEST_HEADERS} ${TEST_SRCS} ${TEST_COVERAGE_FOR_IDE})
+add_executable(arg_router_test_coverage EXCLUDE_FROM_ALL ${TEST_HEADERS} ${TEST_SRCS})
 add_dependencies(arg_router_test_coverage clangformat_test arg_router)
 
 set_target_properties(arg_router_test_coverage PROPERTIES CXX_EXTENSIONS OFF)
@@ -27,11 +21,11 @@ add_clangtidy_to_target(arg_router_test_coverage)
 add_santizers_to_target(arg_router_test_coverage)
 
 target_include_directories(arg_router_test_coverage
-    PUBLIC "${CMAKE_SOURCE_DIR}/include"
     PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}"
 )
 
 target_link_libraries(arg_router_test_coverage
+    PRIVATE arg_router
     PUBLIC Boost::filesystem
     PUBLIC Threads::Threads
 )
