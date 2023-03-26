@@ -1,8 +1,8 @@
-### Copyright (C) 2022 by Camden Mannett.
+### Copyright (C) 2022-2023 by Camden Mannett.
 ### Distributed under the Boost Software License, Version 1.0.
 ### (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
-path_prefixer(DOCS_FOR_IDE
+path_prefixer(DOCS_SOURCES
     cmake/build_types/documentation_script.cmake
     docs/Doxyfile
     docs/related_pages/architecture.doxy
@@ -14,6 +14,7 @@ path_prefixer(DOCS_FOR_IDE
     docs/related_pages/nodes.doxy
     docs/related_pages/policies.doxy
     docs/related_pages/validation.doxy
+    README.md
 )
 
 path_prefixer(README_API_PATH
@@ -28,10 +29,10 @@ set(DOCS_COMMAND
 
 add_custom_target(documentation
     COMMAND ${DOCS_COMMAND}
-    SOURCES ${DOCS_FOR_IDE}
+    SOURCES ${DOCS_SOURCES}
 )
 
-# We have touch the generated API readme because CPack configuration will fail if it is not there.
-# set_source_files_properties cannot be used in a script so that's set here too
+# We have to touch the generated API readme because CPack configuration will fail if it is not
+# there. set_source_files_properties cannot be used in a script so that's set here too
 file(TOUCH ${README_API_PATH})
 set_source_files_properties(${README_API_PATH} PROPERTIES GENERATED TRUE)

@@ -1,0 +1,6 @@
+[requires]
+arg_router/1.2.2
+
+[generators]
+CMakeDeps
+CMakeToolchain
