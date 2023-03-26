@@ -131,11 +131,11 @@ add_clangtidy_to_target(arg_router_test)
 add_santizers_to_target(arg_router_test)
 
 target_include_directories(arg_router_test
-    PUBLIC "${CMAKE_SOURCE_DIR}/include"
     PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}"
 )
 
 target_link_libraries(arg_router_test
+    PRIVATE arg_router
     PUBLIC Boost::filesystem
     PUBLIC Threads::Threads
 )

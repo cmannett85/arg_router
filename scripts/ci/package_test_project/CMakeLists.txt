@@ -17,12 +17,18 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(arg_router REQUIRED)
 
+# Default to C++20
+if(NOT DEFINED CMAKE_CXX_STANDARD)
+    set(CMAKE_CXX_STANDARD "20")
+endif()
+
 add_executable(package_test_project
-    "${ROOT_DIR}/examples/c++20/just_cats/main.cpp"
+    $<IF:$<STREQUAL:"${CMAKE_CXX_STANDARD}","17">,
+        "${ROOT_DIR}/examples/c++17/just_cats/main.cpp" ,
+        "${ROOT_DIR}/examples/c++20/just_cats/main.cpp" >
     "${CMAKE_CURRENT_SOURCE_DIR}/vcpkg.json")
 
 target_link_libraries(package_test_project PUBLIC arg_router::arg_router)
-target_compile_features(package_test_project PUBLIC cxx_std_20)
 set_target_properties(package_test_project PROPERTIES CXX_EXTENSIONS OFF)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" OR CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")

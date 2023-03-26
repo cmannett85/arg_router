@@ -137,22 +137,15 @@ public:
         validator_type::template validate<std::decay_t<decltype(*this)>>();
     }
 
-    /** Parse the command line arguments.
+    /** Parse the unprocessed token_types.
      *
-     * @param argc Number of arguments
-     * @param argv Array of char pointers to the command line tokens
+     * The first element is @em not expected to be the executable name.
+     * @param args Vector of tokens
      * @exception parse_exception Thrown if parsing has failed
      */
-    void parse(int argc, char** argv) const
+    void parse(vector<parsing::token_type> args) const
     {
         try {
-            // Skip the program name
-            auto args = vector<parsing::token_type>{};
-            args.reserve(argc - 1);
-            for (auto i = 1; i < argc; ++i) {
-                args.emplace_back(parsing::prefix_type::none, argv[i]);
-            }
-
             // Take a copy of the front token for the error messages
             const auto front_token = args.empty() ?  //
                                          parsing::token_type{parsing::prefix_type::none, ""} :
@@ -183,6 +176,58 @@ public:
             // user, a default en_GB one is added
             this->translate_exception(e);
         }
+    }
+
+    /** Parse the <TT>std::string_view</TT> convertible elements between @a begin and @a end.
+     *
+     * The first element is @em not expected to be the executable name.
+     * @note The strings must out live the parse process as they are not copied.
+     * @tparam Iter Iterator type to <TT>std::string_view</TT> convertible elements
+     * @param begin Iterator to the first element
+     * @param end Iterator to the one-past-the-end element
+     */
+    template <typename Iter, typename = std::enable_if_t<!std::is_same_v<std::decay_t<Iter>, int>>>
+    void parse(Iter begin, Iter end) const
+    {
+        auto args = vector<parsing::token_type>{};
+        for (; begin != end; ++begin) {
+            args.emplace_back(parsing::prefix_type::none, *begin);
+        }
+        args.shrink_to_fit();
+
+        parse(std::move(args));
+    }
+
+    /** Parse all <TT>std::string_view</TT> convertible elements in @a c.
+     *
+     * The first element is @em not expected to be the executable name.
+     * @note This does not take part in overload resolution if @a c is a
+     * <TT>vector\<parsing::token_type\></TT>
+     * @tparam Container
+     * @param c Elements to parse
+     */
+    template <typename Container,
+              typename = std::enable_if_t<
+                  !std::is_same_v<std::decay_t<Container>, vector<parsing::token_type>>>>
+    void parse(const Container& c) const
+    {
+        using std::begin;
+        using std::end;
+
+        parse(std::begin(c), std::end(c));
+    }
+
+    /** Parse the raw command line arguments.
+     *
+     * The first element is expected to be the executable name.
+     * @param argc Number of arguments
+     * @param argv Array of char pointers to the command line tokens
+     * @exception parse_exception Thrown if parsing has failed
+     */
+    void parse(int argc, char** argv) const
+    {
+        // Skip the program name
+        parse(&argv[1], &argv[argc]);
     }
 
     /** Generates a root-level help string and writes it into @a stream.

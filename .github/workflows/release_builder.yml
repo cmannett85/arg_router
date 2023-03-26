@@ -27,7 +27,7 @@ jobs:
         MSG="${MSG//'%'/'%25'}"
         MSG="${MSG//$'\n'/'%0A'}"
         MSG="${MSG//$'\r'/'%0D'}"
-        echo "::set-output name=commit_msg::${MSG}"
+        echo "commit_msg::${MSG}" >> $GITHUB_OUTPUT
 
     - name: Build release
       run: |
@@ -43,7 +43,7 @@ jobs:
         VERSION=`cut -c 12- <<< "${{ env.TAG_VERSION }}"`
         FILENAME="arg_router-${VERSION}"
         test -e ${FILENAME}.zip
-        echo "::set-output name=filename::${FILENAME}"
+        echo "filename::${FILENAME}" >> $GITHUB_OUTPUT
 
     - name: Test Deb install
       run: |
