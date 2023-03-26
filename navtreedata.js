@@ -101,10 +101,10 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"algorithm_8hpp_source.html",
-"classarg__router_1_1policy_1_1value__separator__t.html#ad88ea853a98aa87f33cd57fe9157d372",
-"long__name_8hpp_source.html",
-"structarg__router_1_1algorithm_1_1unzip.html"
+"",
+"classarg__router_1_1policy_1_1value__separator__t.html#aa8d245e1bdbb82dfacc28c5b4596180b",
+"list_8hpp_source.html",
+"string__view__ops_8hpp_source.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

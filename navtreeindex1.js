@@ -1,5 +1,7 @@
 var NAVTREEINDEX1 =
 {
+"classarg__router_1_1policy_1_1value__separator__t.html#aa8d245e1bdbb82dfacc28c5b4596180b":[8,0,0,4,36,0],
+"classarg__router_1_1policy_1_1value__separator__t.html#abfe4a7c761b176212c60c1f65c4c9b2f":[8,0,0,4,36,2],
 "classarg__router_1_1policy_1_1value__separator__t.html#ad88ea853a98aa87f33cd57fe9157d372":[8,0,0,4,36,1],
 "classarg__router_1_1positional__arg__t.html":[8,0,0,17],
 "classarg__router_1_1positional__arg__t.html#a483bb866a87ba806a487b38de085751f":[8,0,0,17,2],
@@ -247,7 +249,5 @@ var NAVTREEINDEX1 =
 "hierarchy.html":[8,2],
 "index.html":[],
 "iso__locale_8hpp_source.html":[9,0,0,1,0],
-"line__break_8hpp_source.html":[9,0,0,4,0,3],
-"list_8hpp_source.html":[9,0,0,14],
-"literals_8hpp_source.html":[9,0,0,15]
+"line__break_8hpp_source.html":[9,0,0,4,0,3]
 };

@@ -1,5 +1,7 @@
 var NAVTREEINDEX3 =
 {
+"string__view__ops_8hpp_source.html":[9,0,0,4,5],
+"structarg__router_1_1algorithm_1_1has__specialisation.html":[8,0,0,0,3],
 "structarg__router_1_1algorithm_1_1unzip.html":[8,0,0,0,5],
 "structarg__router_1_1algorithm_1_1unzip.html#a5775c4f67b4c6dfa9ef26b9b4d1400a2":[8,0,0,0,5,1],
 "structarg__router_1_1algorithm_1_1unzip.html#af3593f060d40b2d3e779adfe94c834e1":[8,0,0,0,5,0],
@@ -141,7 +143,5 @@ var NAVTREEINDEX3 =
 "version_8hpp.html#af4cd92a6007eabf135ad3732ab648d66":[9,0,0,23,0],
 "version_8hpp_source.html":[9,0,0,23],
 "whitespace_8hpp_source.html":[9,0,0,4,0,4],
-"zero__width_8hpp_source.html":[9,0,0,4,0,5],
-"":[7,0,0,7],
-"":[7,0,0,6,1,1]
+"zero__width_8hpp_source.html":[9,0,0,4,0,5]
 };
