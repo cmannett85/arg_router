@@ -36,7 +36,7 @@
                         <td id="projectalign" style="padding-left: 0.5em;">
                             <div id="projectname">arg_router
                                 &#160;<span
-                                    id="projectnumber">1.2.2</span>
+                                    id="projectnumber">1.3.0</span>
                             </div>
                             <div id="projectbrief">C++ command line argument parsing and routing</div>
                         </td>
@@ -121,6 +121,14 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ae03c8f5d92f81a5b04988426aa3a7438"><td class="memTemplParams" colspan="2">template&lt;auto has_exception_translator = detail::add_missing_exception_translator&lt;Params...&gt;::has_exception_translator&gt; </td></tr>
 <tr class="memitem:ae03c8f5d92f81a5b04988426aa3a7438"><td class="memTemplItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1root__t.html#ae03c8f5d92f81a5b04988426aa3a7438">root_t</a> (Params... params, std::enable_if_t&lt; has_exception_translator &gt; *=nullptr) noexcept</td></tr>
 <tr class="separator:ae03c8f5d92f81a5b04988426aa3a7438"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e70cf821683c5e31cbf87d804f6b303"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1root__t.html#a9e70cf821683c5e31cbf87d804f6b303">parse</a> (<a class="el" href="namespacearg__router.html#a3d789cf2175008b4124de867a13a2edf">vector</a>&lt; <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a> &gt; args) const</td></tr>
+<tr class="separator:a9e70cf821683c5e31cbf87d804f6b303"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a85ec3c6585391372dbad7f245f4e3489"><td class="memTemplParams" colspan="2">template&lt;typename Iter , typename  = std::enable_if_t&lt;!std::is_same_v&lt;std::decay_t&lt;Iter&gt;, int&gt;&gt;&gt; </td></tr>
+<tr class="memitem:a85ec3c6585391372dbad7f245f4e3489"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1root__t.html#a85ec3c6585391372dbad7f245f4e3489">parse</a> (Iter begin, Iter end) const</td></tr>
+<tr class="separator:a85ec3c6585391372dbad7f245f4e3489"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a49873669be757c9f1d03aebecc99758a"><td class="memTemplParams" colspan="2">template&lt;typename Container , typename  = std::enable_if_t&lt;                  !std::is_same_v&lt;std::decay_t&lt;Container&gt;, vector&lt;parsing::token_type&gt;&gt;&gt;&gt; </td></tr>
+<tr class="memitem:a49873669be757c9f1d03aebecc99758a"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1root__t.html#a49873669be757c9f1d03aebecc99758a">parse</a> (const Container &amp;c) const</td></tr>
+<tr class="separator:a49873669be757c9f1d03aebecc99758a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad1e58e6fdddf15f4a38081e0777abbe1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1root__t.html#ad1e58e6fdddf15f4a38081e0777abbe1">parse</a> (int argc, char **argv) const</td></tr>
 <tr class="separator:ad1e58e6fdddf15f4a38081e0777abbe1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a435e841c0c7edb67dbe1dd22a2e9fc40"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1root__t.html#a435e841c0c7edb67dbe1dd22a2e9fc40">help</a> ([[maybe_unused]] std::ostream &amp;stream) const</td></tr>
@@ -239,7 +247,7 @@ template&lt;typename... Params&gt; </div>
 <p>Overload that writes into a string and returns it.</p>
 <dl class="section return"><dt>Returns</dt><dd>String holding the help output </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="root_8hpp_source.html#l00225">225</a> of file <a class="el" href="root_8hpp_source.html">root.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="root_8hpp_source.html#l00270">270</a> of file <a class="el" href="root_8hpp_source.html">root.hpp</a>.</p>
 
 </div>
 </div>
@@ -276,12 +284,58 @@ template&lt;typename... Params&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="root_8hpp_source.html#l00193">193</a> of file <a class="el" href="root_8hpp_source.html">root.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="root_8hpp_source.html#l00238">238</a> of file <a class="el" href="root_8hpp_source.html">root.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a49873669be757c9f1d03aebecc99758a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a49873669be757c9f1d03aebecc99758a">&#9670;&nbsp;</a></span>parse() <span class="overload">[1/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename... Params&gt; </div>
+<div class="memtemplate">
+template&lt;typename Container , typename  = std::enable_if_t&lt;                  !std::is_same_v&lt;std::decay_t&lt;Container&gt;, vector&lt;parsing::token_type&gt;&gt;&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classarg__router_1_1root__t.html">arg_router::root_t</a>&lt; Params &gt;::parse </td>
+          <td>(</td>
+          <td class="paramtype">const Container &amp;&#160;</td>
+          <td class="paramname"><em>c</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Parse all <code>std::string_view</code> convertible elements in <em>c</em>.</p>
+<p>The first element is <em>not</em> expected to be the executable name. </p><dl class="section note"><dt>Note</dt><dd>This does not take part in overload resolution if <em>c</em> is a <code>vector&lt;<a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a>&gt;</code> </dd></dl>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Container</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">c</td><td>Elements to parse </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="root_8hpp_source.html#l00212">212</a> of file <a class="el" href="root_8hpp_source.html">root.hpp</a>.</p>
 
 </div>
 </div>
 <a id="ad1e58e6fdddf15f4a38081e0777abbe1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad1e58e6fdddf15f4a38081e0777abbe1">&#9670;&nbsp;</a></span>parse()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ad1e58e6fdddf15f4a38081e0777abbe1">&#9670;&nbsp;</a></span>parse() <span class="overload">[2/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -315,11 +369,111 @@ template&lt;typename... Params&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Parse the command line arguments.</p>
-<dl class="params"><dt>Parameters</dt><dd>
+<p>Parse the raw command line arguments.</p>
+<p>The first element is expected to be the executable name. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">argc</td><td>Number of arguments </td></tr>
     <tr><td class="paramname">argv</td><td>Array of char pointers to the command line tokens </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classarg__router_1_1parse__exception.html">parse_exception</a></td><td>Thrown if parsing has failed </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="root_8hpp_source.html#l00227">227</a> of file <a class="el" href="root_8hpp_source.html">root.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a85ec3c6585391372dbad7f245f4e3489"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a85ec3c6585391372dbad7f245f4e3489">&#9670;&nbsp;</a></span>parse() <span class="overload">[3/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename... Params&gt; </div>
+<div class="memtemplate">
+template&lt;typename Iter , typename  = std::enable_if_t&lt;!std::is_same_v&lt;std::decay_t&lt;Iter&gt;, int&gt;&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classarg__router_1_1root__t.html">arg_router::root_t</a>&lt; Params &gt;::parse </td>
+          <td>(</td>
+          <td class="paramtype">Iter&#160;</td>
+          <td class="paramname"><em>begin</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Iter&#160;</td>
+          <td class="paramname"><em>end</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Parse the <code>std::string_view</code> convertible elements between <em>begin</em> and <em>end</em>.</p>
+<p>The first element is <em>not</em> expected to be the executable name. </p><dl class="section note"><dt>Note</dt><dd>The strings must out live the parse process as they are not copied. </dd></dl>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Iter</td><td>Iterator type to <code>std::string_view</code> convertible elements </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">begin</td><td>Iterator to the first element </td></tr>
+    <tr><td class="paramname">end</td><td>Iterator to the one-past-the-end element </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="root_8hpp_source.html#l00190">190</a> of file <a class="el" href="root_8hpp_source.html">root.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a9e70cf821683c5e31cbf87d804f6b303"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9e70cf821683c5e31cbf87d804f6b303">&#9670;&nbsp;</a></span>parse() <span class="overload">[4/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename... Params&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classarg__router_1_1root__t.html">arg_router::root_t</a>&lt; Params &gt;::parse </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacearg__router.html#a3d789cf2175008b4124de867a13a2edf">vector</a>&lt; <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a> &gt;&#160;</td>
+          <td class="paramname"><em>args</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Parse the unprocessed token_types.</p>
+<p>The first element is <em>not</em> expected to be the executable name. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">args</td><td>Vector of tokens </td></tr>
   </table>
   </dd>
 </dl>

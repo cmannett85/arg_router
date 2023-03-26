@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2023-03-07 22:23:57</td>
+            <td class="headerValue">2023-03-26 13:06:42</td>
             <td></td>
           </tr>
           <tr>
@@ -98,18 +98,18 @@
 <a name="32"><span class="lineNum">      32 </span>            :  * @return True if token matches</a>
 <a name="33"><span class="lineNum">      33 </span>            :  */</a>
 <a name="34"><span class="lineNum">      34 </span>            : template &lt;typename T&gt;</a>
-<a name="35"><span class="lineNum">      35 </span><span class="lineCov">        814 : [[nodiscard]] constexpr bool match(token_type token) noexcept</span></a>
+<a name="35"><span class="lineNum">      35 </span><span class="lineCov">       1178 : [[nodiscard]] constexpr bool match(token_type token) noexcept</span></a>
 <a name="36"><span class="lineNum">      36 </span>            : {</a>
 <a name="37"><span class="lineNum">      37 </span>            :     using namespace std::string_literals;</a>
 <a name="38"><span class="lineNum">      38 </span>            : </a>
 <a name="39"><span class="lineNum">      39 </span>            :     if constexpr (traits::has_long_name_method_v&lt;T&gt;) {</a>
-<a name="40"><span class="lineNum">      40 </span><span class="lineCov">        503 :         if ((token.prefix == prefix_type::long_) &amp;&amp; (token.name == T::long_name())) {</span></a>
-<a name="41"><span class="lineNum">      41 </span><span class="lineCov">        165 :             return true;</span></a>
+<a name="40"><span class="lineNum">      40 </span><span class="lineCov">        797 :         if ((token.prefix == prefix_type::long_) &amp;&amp; (token.name == T::long_name())) {</span></a>
+<a name="41"><span class="lineNum">      41 </span><span class="lineCov">        267 :             return true;</span></a>
 <a name="42"><span class="lineNum">      42 </span>            :         }</a>
 <a name="43"><span class="lineNum">      43 </span>            :     }</a>
 <a name="44"><span class="lineNum">      44 </span>            :     if constexpr (traits::has_short_name_method_v&lt;T&gt;) {</a>
-<a name="45"><span class="lineNum">      45 </span><span class="lineCov">        271 :         if ((token.prefix == prefix_type::short_) &amp;&amp; (token.name == T::short_name())) {</span></a>
-<a name="46"><span class="lineNum">      46 </span><span class="lineCov">        130 :             return true;</span></a>
+<a name="45"><span class="lineNum">      45 </span><span class="lineCov">        341 :         if ((token.prefix == prefix_type::short_) &amp;&amp; (token.name == T::short_name())) {</span></a>
+<a name="46"><span class="lineNum">      46 </span><span class="lineCov">        180 :             return true;</span></a>
 <a name="47"><span class="lineNum">      47 </span>            :         }</a>
 <a name="48"><span class="lineNum">      48 </span>            :     }</a>
 <a name="49"><span class="lineNum">      49 </span>            :     if constexpr (traits::has_none_name_method_v&lt;T&gt;) {</a>
@@ -118,8 +118,8 @@
 <a name="52"><span class="lineNum">      52 </span>            :         }</a>
 <a name="53"><span class="lineNum">      53 </span>            :     }</a>
 <a name="54"><span class="lineNum">      54 </span>            : </a>
-<a name="55"><span class="lineNum">      55 </span><span class="lineCov">        420 :     return false;</span></a>
-<a name="56"><span class="lineNum">      56 </span><span class="lineCov">        814 : }</span></a>
+<a name="55"><span class="lineNum">      55 </span><span class="lineCov">        632 :     return false;</span></a>
+<a name="56"><span class="lineNum">      56 </span><span class="lineCov">       1178 : }</span></a>
 <a name="57"><span class="lineNum">      57 </span>            : </a>
 <a name="58"><span class="lineNum">      58 </span>            : /** Returns the token_type of @a Node, the long form name is preferred if @a Node has both short and</a>
 <a name="59"><span class="lineNum">      59 </span>            :  * long form names.</a>

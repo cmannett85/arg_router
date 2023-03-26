@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2023-03-07 22:23:57</td>
+            <td class="headerValue">2023-03-26 13:06:42</td>
             <td></td>
           </tr>
           <tr>
@@ -177,27 +177,27 @@
 <a name="111"><span class="lineNum">     111 </span>            :      * @param ec Error code</a>
 <a name="112"><span class="lineNum">     112 </span>            :      * @param token Token that caused the error</a>
 <a name="113"><span class="lineNum">     113 </span>            :      */</a>
-<a name="114"><span class="lineNum">     114 </span><span class="lineCov">        420 :     multi_lang_exception(error_code ec, const parsing::token_type&amp; token) : ec_{ec}, tokens_{token}</span></a>
-<a name="115"><span class="lineNum">     115 </span><span class="lineCov">        280 :     {</span></a>
-<a name="116"><span class="lineNum">     116 </span><span class="lineCov">        140 :     }</span></a>
+<a name="114"><span class="lineNum">     114 </span><span class="lineCov">        531 :     multi_lang_exception(error_code ec, const parsing::token_type&amp; token) : ec_{ec}, tokens_{token}</span></a>
+<a name="115"><span class="lineNum">     115 </span><span class="lineCov">        354 :     {</span></a>
+<a name="116"><span class="lineNum">     116 </span><span class="lineCov">        177 :     }</span></a>
 <a name="117"><span class="lineNum">     117 </span>            : </a>
 <a name="118"><span class="lineNum">     118 </span>            :     /** Token list constructor.</a>
 <a name="119"><span class="lineNum">     119 </span>            :      *</a>
 <a name="120"><span class="lineNum">     120 </span>            :      * @param ec Error code</a>
 <a name="121"><span class="lineNum">     121 </span>            :      * @param tokens Tokens that caused the error</a>
 <a name="122"><span class="lineNum">     122 </span>            :      */</a>
-<a name="123"><span class="lineNum">     123 </span><span class="lineCov">        138 :     multi_lang_exception(error_code ec, vector&lt;parsing::token_type&gt; tokens) noexcept :</span></a>
-<a name="124"><span class="lineNum">     124 </span><span class="lineCov">         69 :         ec_{ec}, tokens_(std::move(tokens))</span></a>
-<a name="125"><span class="lineNum">     125 </span><span class="lineCov">        138 :     {</span></a>
-<a name="126"><span class="lineNum">     126 </span><span class="lineCov">         69 :     }</span></a>
+<a name="123"><span class="lineNum">     123 </span><span class="lineCov">        158 :     multi_lang_exception(error_code ec, vector&lt;parsing::token_type&gt; tokens) noexcept :</span></a>
+<a name="124"><span class="lineNum">     124 </span><span class="lineCov">         79 :         ec_{ec}, tokens_(std::move(tokens))</span></a>
+<a name="125"><span class="lineNum">     125 </span><span class="lineCov">        158 :     {</span></a>
+<a name="126"><span class="lineNum">     126 </span><span class="lineCov">         79 :     }</span></a>
 <a name="127"><span class="lineNum">     127 </span>            : </a>
 <a name="128"><span class="lineNum">     128 </span>            :     /** @return Error code</a>
 <a name="129"><span class="lineNum">     129 </span>            :      */</a>
-<a name="130"><span class="lineNum">     130 </span><span class="lineCov">        488 :     [[nodiscard]] error_code ec() const noexcept { return ec_; }</span></a>
+<a name="130"><span class="lineNum">     130 </span><span class="lineCov">        575 :     [[nodiscard]] error_code ec() const noexcept { return ec_; }</span></a>
 <a name="131"><span class="lineNum">     131 </span>            : </a>
 <a name="132"><span class="lineNum">     132 </span>            :     /** @return Token list</a>
 <a name="133"><span class="lineNum">     133 </span>            :      */</a>
-<a name="134"><span class="lineNum">     134 </span><span class="lineCov">        170 :     [[nodiscard]] const vector&lt;parsing::token_type&gt;&amp; tokens() const noexcept { return tokens_; }</span></a>
+<a name="134"><span class="lineNum">     134 </span><span class="lineCov">        217 :     [[nodiscard]] const vector&lt;parsing::token_type&gt;&amp; tokens() const noexcept { return tokens_; }</span></a>
 <a name="135"><span class="lineNum">     135 </span>            : </a>
 <a name="136"><span class="lineNum">     136 </span>            : private:</a>
 <a name="137"><span class="lineNum">     137 </span>            :     error_code ec_;</a>
@@ -221,11 +221,11 @@
 <a name="155"><span class="lineNum">     155 </span>            :      * @param message Error message</a>
 <a name="156"><span class="lineNum">     156 </span>            :      * @param tokens Tokens that caused the error</a>
 <a name="157"><span class="lineNum">     157 </span>            :      */</a>
-<a name="158"><span class="lineNum">     158 </span><span class="lineCov">        148 :     explicit parse_exception(const string&amp; message,</span></a>
+<a name="158"><span class="lineNum">     158 </span><span class="lineCov">        242 :     explicit parse_exception(const string&amp; message,</span></a>
 <a name="159"><span class="lineNum">     159 </span>            :                              const vector&lt;parsing::token_type&gt;&amp; tokens = {}) :</a>
-<a name="160"><span class="lineNum">     160 </span><span class="lineCov">         74 :         message_{message + (tokens.empty() ? &quot;&quot; : &quot;: &quot; + parsing::to_string(tokens))}</span></a>
-<a name="161"><span class="lineNum">     161 </span><span class="lineCov">        148 :     {</span></a>
-<a name="162"><span class="lineNum">     162 </span><span class="lineCov">         74 :     }</span></a>
+<a name="160"><span class="lineNum">     160 </span><span class="lineCov">        121 :         message_{message + (tokens.empty() ? &quot;&quot; : &quot;: &quot; + parsing::to_string(tokens))}</span></a>
+<a name="161"><span class="lineNum">     161 </span><span class="lineCov">        242 :     {</span></a>
+<a name="162"><span class="lineNum">     162 </span><span class="lineCov">        121 :     }</span></a>
 <a name="163"><span class="lineNum">     163 </span>            : </a>
 <a name="164"><span class="lineNum">     164 </span>            :     /** Token constructor.</a>
 <a name="165"><span class="lineNum">     165 </span>            :      *</a>
@@ -237,7 +237,7 @@
 <a name="171"><span class="lineNum">     171 </span>            :     {</a>
 <a name="172"><span class="lineNum">     172 </span>            :     }</a>
 <a name="173"><span class="lineNum">     173 </span>            : </a>
-<a name="174"><span class="lineNum">     174 </span><span class="lineCov">         73 :     [[nodiscard]] const char* what() const noexcept override { return message_.data(); }</span></a>
+<a name="174"><span class="lineNum">     174 </span><span class="lineCov">        120 :     [[nodiscard]] const char* what() const noexcept override { return message_.data(); }</span></a>
 <a name="175"><span class="lineNum">     175 </span>            : </a>
 <a name="176"><span class="lineNum">     176 </span>            : private:</a>
 <a name="177"><span class="lineNum">     177 </span>            :     string message_;</a>

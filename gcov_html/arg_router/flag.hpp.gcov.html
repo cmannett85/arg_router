@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2023-03-07 22:23:57</td>
+            <td class="headerValue">2023-03-26 13:06:42</td>
             <td></td>
           </tr>
           <tr>
@@ -127,21 +127,21 @@
 <a name="61"><span class="lineNum">      61 </span>            :      *</a>
 <a name="62"><span class="lineNum">      62 </span>            :      * @param policies Policy instances</a>
 <a name="63"><span class="lineNum">      63 </span>            :      */</a>
-<a name="64"><span class="lineNum">      64 </span><span class="lineCov">        203 :     constexpr explicit flag_t(Policies... policies) noexcept :</span></a>
-<a name="65"><span class="lineNum">      65 </span><span class="lineCov">        406 :         parent_type{policy::default_value&lt;bool&gt;{false},</span></a>
+<a name="64"><span class="lineNum">      64 </span><span class="lineCov">        206 :     constexpr explicit flag_t(Policies... policies) noexcept :</span></a>
+<a name="65"><span class="lineNum">      65 </span><span class="lineCov">        412 :         parent_type{policy::default_value&lt;bool&gt;{false},</span></a>
 <a name="66"><span class="lineNum">      66 </span>            :                     policy::min_max_count_t&lt;traits::integral_constant&lt;std::size_t{0}&gt;,</a>
 <a name="67"><span class="lineNum">      67 </span>            :                                             traits::integral_constant&lt;std::size_t{0}&gt;&gt;{},</a>
-<a name="68"><span class="lineNum">      68 </span><span class="lineCov">        203 :                     std::move(policies)...}</span></a>
-<a name="69"><span class="lineNum">      69 </span><span class="lineCov">        203 :     {</span></a>
-<a name="70"><span class="lineNum">      70 </span><span class="lineCov">        203 :     }</span></a>
+<a name="68"><span class="lineNum">      68 </span><span class="lineCov">        206 :                     std::move(policies)...}</span></a>
+<a name="69"><span class="lineNum">      69 </span><span class="lineCov">        206 :     {</span></a>
+<a name="70"><span class="lineNum">      70 </span><span class="lineCov">        206 :     }</span></a>
 <a name="71"><span class="lineNum">      71 </span>            : </a>
 <a name="72"><span class="lineNum">      72 </span>            :     template &lt;typename Validator, bool HasTarget, typename... Parents&gt;</a>
-<a name="73"><span class="lineNum">      73 </span><span class="lineCov">        403 :     [[nodiscard]] std::optional&lt;parsing::parse_target&gt; pre_parse(</span></a>
+<a name="73"><span class="lineNum">      73 </span><span class="lineCov">        743 :     [[nodiscard]] std::optional&lt;parsing::parse_target&gt; pre_parse(</span></a>
 <a name="74"><span class="lineNum">      74 </span>            :         parsing::pre_parse_data&lt;Validator, HasTarget&gt; pre_parse_data,</a>
 <a name="75"><span class="lineNum">      75 </span>            :         const Parents&amp;... parents) const</a>
 <a name="76"><span class="lineNum">      76 </span>            : </a>
 <a name="77"><span class="lineNum">      77 </span>            :     {</a>
-<a name="78"><span class="lineNum">      78 </span><span class="lineCov">        403 :         return parent_type::pre_parse(pre_parse_data, *this, parents...);</span></a>
+<a name="78"><span class="lineNum">      78 </span><span class="lineCov">        743 :         return parent_type::pre_parse(pre_parse_data, *this, parents...);</span></a>
 <a name="79"><span class="lineNum">      79 </span>            :     }</a>
 <a name="80"><span class="lineNum">      80 </span>            : </a>
 <a name="81"><span class="lineNum">      81 </span>            :     /** Parse function.</a>
@@ -153,11 +153,11 @@
 <a name="87"><span class="lineNum">      87 </span>            :      * @exception multi_lang_exception Thrown if routing phase failed</a>
 <a name="88"><span class="lineNum">      88 </span>            :      */</a>
 <a name="89"><span class="lineNum">      89 </span>            :     template &lt;typename... Parents&gt;</a>
-<a name="90"><span class="lineNum">      90 </span><span class="lineCov">         99 :     value_type parse([[maybe_unused]] parsing::parse_target&amp;&amp; target,</span></a>
+<a name="90"><span class="lineNum">      90 </span><span class="lineCov">        164 :     value_type parse([[maybe_unused]] parsing::parse_target&amp;&amp; target,</span></a>
 <a name="91"><span class="lineNum">      91 </span>            :                      [[maybe_unused]] const Parents&amp;... parents) const</a>
 <a name="92"><span class="lineNum">      92 </span>            :     {</a>
 <a name="93"><span class="lineNum">      93 </span>            :         // Presence of the flag yields a constant true</a>
-<a name="94"><span class="lineNum">      94 </span><span class="lineCov">         99 :         const auto result = true;</span></a>
+<a name="94"><span class="lineNum">      94 </span><span class="lineCov">        164 :         const auto result = true;</span></a>
 <a name="95"><span class="lineNum">      95 </span>            : </a>
 <a name="96"><span class="lineNum">      96 </span>            :         // Routing phase</a>
 <a name="97"><span class="lineNum">      97 </span>            :         using routing_policy =</a>
@@ -166,7 +166,7 @@
 <a name="100"><span class="lineNum">     100 </span><span class="lineCov">          6 :             this-&gt;routing_policy::routing_phase(result);</span></a>
 <a name="101"><span class="lineNum">     101 </span>            :         }</a>
 <a name="102"><span class="lineNum">     102 </span>            : </a>
-<a name="103"><span class="lineNum">     103 </span><span class="lineCov">         99 :         return result;</span></a>
+<a name="103"><span class="lineNum">     103 </span><span class="lineCov">        164 :         return result;</span></a>
 <a name="104"><span class="lineNum">     104 </span>            :     }</a>
 <a name="105"><span class="lineNum">     105 </span>            : </a>
 <a name="106"><span class="lineNum">     106 </span>            : private:</a>
@@ -199,26 +199,26 @@
 <a name="133"><span class="lineNum">     133 </span>            :  * @return Flag instance</a>
 <a name="134"><span class="lineNum">     134 </span>            :  */</a>
 <a name="135"><span class="lineNum">     135 </span>            : template &lt;typename... Policies&gt;</a>
-<a name="136"><span class="lineNum">     136 </span><span class="lineCov">        203 : [[nodiscard]] constexpr auto flag(Policies... policies) noexcept</span></a>
+<a name="136"><span class="lineNum">     136 </span><span class="lineCov">        206 : [[nodiscard]] constexpr auto flag(Policies... policies) noexcept</span></a>
 <a name="137"><span class="lineNum">     137 </span>            : {</a>
-<a name="138"><span class="lineNum">     138 </span><span class="lineCov">        203 :     return std::apply(</span></a>
-<a name="139"><span class="lineNum">     139 </span><span class="lineCov">        203 :         [](auto... converted_policies) {</span></a>
+<a name="138"><span class="lineNum">     138 </span><span class="lineCov">        206 :     return std::apply(</span></a>
+<a name="139"><span class="lineNum">     139 </span><span class="lineCov">        206 :         [](auto... converted_policies) {</span></a>
 <a name="140"><span class="lineNum">     140 </span>            :             // Add the short-form expander if one of the policies implements the short name method,</a>
 <a name="141"><span class="lineNum">     141 </span>            :             // and if the short and long prefix are not the same</a>
-<a name="142"><span class="lineNum">     142 </span><span class="lineCov">        203 :             constexpr auto has_short_name =</span></a>
+<a name="142"><span class="lineNum">     142 </span><span class="lineCov">        206 :             constexpr auto has_short_name =</span></a>
 <a name="143"><span class="lineNum">     143 </span>            :                 boost::mp11::mp_any_of&lt;std::tuple&lt;std::decay_t&lt;decltype(converted_policies)&gt;...&gt;,</a>
 <a name="144"><span class="lineNum">     144 </span>            :                                        traits::has_short_name_method&gt;::value;</a>
 <a name="145"><span class="lineNum">     145 </span>            :             if constexpr ((config::long_prefix != config::short_prefix) &amp;&amp; has_short_name) {</a>
-<a name="146"><span class="lineNum">     146 </span><span class="lineCov">        137 :                 return flag_t{policy::short_form_expander, std::move(converted_policies)...};</span></a>
+<a name="146"><span class="lineNum">     146 </span><span class="lineCov">        138 :                 return flag_t{policy::short_form_expander, std::move(converted_policies)...};</span></a>
 <a name="147"><span class="lineNum">     147 </span>            :             } else {</a>
-<a name="148"><span class="lineNum">     148 </span><span class="lineCov">         66 :                 return flag_t{std::move(converted_policies)...};</span></a>
+<a name="148"><span class="lineNum">     148 </span><span class="lineCov">         68 :                 return flag_t{std::move(converted_policies)...};</span></a>
 <a name="149"><span class="lineNum">     149 </span>            :             }</a>
 <a name="150"><span class="lineNum">     150 </span>            :         },</a>
-<a name="151"><span class="lineNum">     151 </span><span class="lineCov">        203 :         utility::string_to_policy::convert&lt;</span></a>
+<a name="151"><span class="lineNum">     151 </span><span class="lineCov">        206 :         utility::string_to_policy::convert&lt;</span></a>
 <a name="152"><span class="lineNum">     152 </span>            :             utility::string_to_policy::first_string_mapper&lt;policy::long_name_t&gt;,</a>
 <a name="153"><span class="lineNum">     153 </span>            :             utility::string_to_policy::second_string_mapper&lt;policy::description_t&gt;,</a>
 <a name="154"><span class="lineNum">     154 </span>            :             utility::string_to_policy::single_char_mapper&lt;policy::short_name_t&gt;&gt;(</a>
-<a name="155"><span class="lineNum">     155 </span><span class="lineCov">        203 :             std::move(policies)...));</span></a>
+<a name="155"><span class="lineNum">     155 </span><span class="lineCov">        206 :             std::move(policies)...));</span></a>
 <a name="156"><span class="lineNum">     156 </span>            : }</a>
 <a name="157"><span class="lineNum">     157 </span>            : }  // namespace arg_router</a>
 </pre>

@@ -71,9 +71,12 @@ var NAVTREEINDEX0 =
 "classarg__router_1_1mode__t_1_1help__data__type.html":[8,0,0,15,0],
 "classarg__router_1_1multi__lang_1_1root__t.html":[8,0,0,2,0],
 "classarg__router_1_1multi__lang_1_1root__t.html#a09359c602d383e75bac67f04bdb43201":[8,0,0,2,0,1],
+"classarg__router_1_1multi__lang_1_1root__t.html#a18c78b19b6efb79e4395b58a9b77a4e8":[8,0,0,2,0,6],
 "classarg__router_1_1multi__lang_1_1root__t.html#a61113f3969b6a7e7a9d502ced017f328":[8,0,0,2,0,2],
-"classarg__router_1_1multi__lang_1_1root__t.html#a6295e8e56bf123f5ab927666108c4504":[8,0,0,2,0,3],
+"classarg__router_1_1multi__lang_1_1root__t.html#a6295e8e56bf123f5ab927666108c4504":[8,0,0,2,0,4],
 "classarg__router_1_1multi__lang_1_1root__t.html#a7bd5f89565a679d0089fa3f4b1880e4c":[8,0,0,2,0,0],
+"classarg__router_1_1multi__lang_1_1root__t.html#a9d2ca39e78f6681af8785638e1b504c4":[8,0,0,2,0,3],
+"classarg__router_1_1multi__lang_1_1root__t.html#ab41073389fae307be2f7495189727fe8":[8,0,0,2,0,5],
 "classarg__router_1_1multi__lang_1_1root__wrapper__t.html":[8,0,0,2,1],
 "classarg__router_1_1multi__lang_1_1root__wrapper__t.html#a0ed028ab8916e09f22cb6df3980bc6e6":[8,0,0,2,1,1],
 "classarg__router_1_1multi__lang_1_1root__wrapper__t.html#a52b47c4f3e9f084e03574064aecf04ec":[8,0,0,2,1,0],
@@ -246,8 +249,5 @@ var NAVTREEINDEX0 =
 "classarg__router_1_1policy_1_1validation_1_1validator.html#adca5b43d5f0fd325ab37e188fbb6b338":[8,0,0,4,1,2,0],
 "classarg__router_1_1policy_1_1value__separator__t.html":[8,0,0,4,36],
 "classarg__router_1_1policy_1_1value__separator__t.html#aa8d245e1bdbb82dfacc28c5b4596180b":[8,0,0,4,36,0],
-"classarg__router_1_1policy_1_1value__separator__t.html#abfe4a7c761b176212c60c1f65c4c9b2f":[8,0,0,4,36,2],
-"classarg__router_1_1policy_1_1value__separator__t.html#ad88ea853a98aa87f33cd57fe9157d372":[8,0,0,4,36,1],
-"classarg__router_1_1positional__arg__t.html":[8,0,0,17],
-"classarg__router_1_1positional__arg__t.html#a483bb866a87ba806a487b38de085751f":[8,0,0,17,2]
+"classarg__router_1_1policy_1_1value__separator__t.html#abfe4a7c761b176212c60c1f65c4c9b2f":[8,0,0,4,36,2]
 };

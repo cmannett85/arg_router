@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2023-03-07 22:23:57</td>
+            <td class="headerValue">2023-03-26 13:06:42</td>
             <td></td>
           </tr>
           <tr>
@@ -217,7 +217,7 @@
 <a name="151"><span class="lineNum">     151 </span>            :      *</a>
 <a name="152"><span class="lineNum">     152 </span>            :      * @return Children</a>
 <a name="153"><span class="lineNum">     153 </span>            :      */</a>
-<a name="154"><span class="lineNum">     154 </span><span class="lineCov">       1784 :     [[nodiscard]] constexpr const children_type&amp; children() const noexcept { return children_; }</span></a>
+<a name="154"><span class="lineNum">     154 </span><span class="lineCov">       2393 :     [[nodiscard]] constexpr const children_type&amp; children() const noexcept { return children_; }</span></a>
 <a name="155"><span class="lineNum">     155 </span>            : </a>
 <a name="156"><span class="lineNum">     156 </span>            : protected:</a>
 <a name="157"><span class="lineNum">     157 </span>            :     /** Provides a default implementation for leaf nodes (e.g. flag and arg), and some useful</a>
@@ -442,11 +442,11 @@
 <a name="376"><span class="lineNum">     376 </span>            :      *</a>
 <a name="377"><span class="lineNum">     377 </span>            :      * @param params Policy and child instances</a>
 <a name="378"><span class="lineNum">     378 </span>            :      */</a>
-<a name="379"><span class="lineNum">     379 </span><span class="lineCov">        818 :     constexpr explicit tree_node(Params... params) noexcept :</span></a>
-<a name="380"><span class="lineNum">     380 </span><span class="lineCov">        818 :         traits::unpack_and_derive&lt;policies_type&gt;{common_filter&lt;policy::is_policy&gt;(params...)},</span></a>
-<a name="381"><span class="lineNum">     381 </span><span class="lineCov">        818 :         children_(common_filter_tuple&lt;is_tree_node&gt;(list_expander(std::move(params)...)))</span></a>
-<a name="382"><span class="lineNum">     382 </span><span class="lineCov">        818 :     {</span></a>
-<a name="383"><span class="lineNum">     383 </span><span class="lineCov">        818 :     }</span></a>
+<a name="379"><span class="lineNum">     379 </span><span class="lineCov">        823 :     constexpr explicit tree_node(Params... params) noexcept :</span></a>
+<a name="380"><span class="lineNum">     380 </span><span class="lineCov">        823 :         traits::unpack_and_derive&lt;policies_type&gt;{common_filter&lt;policy::is_policy&gt;(params...)},</span></a>
+<a name="381"><span class="lineNum">     381 </span><span class="lineCov">        823 :         children_(common_filter_tuple&lt;is_tree_node&gt;(list_expander(std::move(params)...)))</span></a>
+<a name="382"><span class="lineNum">     382 </span><span class="lineCov">        823 :     {</span></a>
+<a name="383"><span class="lineNum">     383 </span><span class="lineCov">        823 :     }</span></a>
 <a name="384"><span class="lineNum">     384 </span>            : </a>
 <a name="385"><span class="lineNum">     385 </span>            :     /** Default pre-parse implementation.</a>
 <a name="386"><span class="lineNum">     386 </span>            :      *</a>
@@ -472,53 +472,53 @@
 <a name="406"><span class="lineNum">     406 </span>            :      * returned an exception</a>
 <a name="407"><span class="lineNum">     407 </span>            :      */</a>
 <a name="408"><span class="lineNum">     408 </span>            :     template &lt;typename Validator, bool HasTarget, typename Node, typename... Parents&gt;</a>
-<a name="409"><span class="lineNum">     409 </span><span class="lineCov">        825 :     [[nodiscard]] std::optional&lt;parsing::parse_target&gt; pre_parse(</span></a>
+<a name="409"><span class="lineNum">     409 </span><span class="lineCov">       1189 :     [[nodiscard]] std::optional&lt;parsing::parse_target&gt; pre_parse(</span></a>
 <a name="410"><span class="lineNum">     410 </span>            :         parsing::pre_parse_data&lt;Validator, HasTarget&gt; pre_parse_data,</a>
 <a name="411"><span class="lineNum">     411 </span>            :         const Node&amp; node,</a>
 <a name="412"><span class="lineNum">     412 </span>            :         const Parents&amp;... parents) const</a>
 <a name="413"><span class="lineNum">     413 </span>            :     {</a>
-<a name="414"><span class="lineNum">     414 </span><span class="lineCov">        825 :         auto result = vector&lt;parsing::token_type&gt;{};</span></a>
-<a name="415"><span class="lineNum">     415 </span><span class="lineCov">        825 :         auto tmp_args = pre_parse_data.args();</span></a>
-<a name="416"><span class="lineNum">     416 </span><span class="lineCov">        825 :         auto adapter = parsing::dynamic_token_adapter{result, tmp_args};</span></a>
+<a name="414"><span class="lineNum">     414 </span><span class="lineCov">       1189 :         auto result = vector&lt;parsing::token_type&gt;{};</span></a>
+<a name="415"><span class="lineNum">     415 </span><span class="lineCov">       1189 :         auto tmp_args = pre_parse_data.args();</span></a>
+<a name="416"><span class="lineNum">     416 </span><span class="lineCov">       1189 :         auto adapter = parsing::dynamic_token_adapter{result, tmp_args};</span></a>
 <a name="417"><span class="lineNum">     417 </span>            : </a>
 <a name="418"><span class="lineNum">     418 </span>            :         // At this stage, the target is only for collecting sub-targets</a>
-<a name="419"><span class="lineNum">     419 </span><span class="lineCov">        825 :         auto target = parsing::parse_target{node, parents...};</span></a>
+<a name="419"><span class="lineNum">     419 </span><span class="lineCov">       1189 :         auto target = parsing::parse_target{node, parents...};</span></a>
 <a name="420"><span class="lineNum">     420 </span>            : </a>
-<a name="421"><span class="lineNum">     421 </span><span class="lineCov">        825 :         auto match = parsing::pre_parse_result{parsing::pre_parse_action::valid_node};</span></a>
-<a name="422"><span class="lineNum">     422 </span><span class="lineCov">       4247 :         utility::tuple_type_iterator&lt;priority_ordered_policies_type&gt;([&amp;](auto i) {</span></a>
+<a name="421"><span class="lineNum">     421 </span><span class="lineCov">       1189 :         auto match = parsing::pre_parse_result{parsing::pre_parse_action::valid_node};</span></a>
+<a name="422"><span class="lineNum">     422 </span><span class="lineCov">       6137 :         utility::tuple_type_iterator&lt;priority_ordered_policies_type&gt;([&amp;](auto i) {</span></a>
 <a name="423"><span class="lineNum">     423 </span>            :             using policy_type = std::tuple_element_t&lt;i, priority_ordered_policies_type&gt;;</a>
 <a name="424"><span class="lineNum">     424 </span>            :             if constexpr (policy::has_pre_parse_phase_method_v&lt;policy_type&gt;) {</a>
-<a name="425"><span class="lineNum">     425 </span><span class="lineCov">       1009 :                 if (match == parsing::pre_parse_action::skip_node) {</span></a>
+<a name="425"><span class="lineNum">     425 </span><span class="lineCov">       1443 :                 if (match == parsing::pre_parse_action::skip_node) {</span></a>
 <a name="426"><span class="lineNum">     426 </span><span class="lineCov">          7 :                     return;</span></a>
 <a name="427"><span class="lineNum">     427 </span>            :                 }</a>
 <a name="428"><span class="lineNum">     428 </span>            : </a>
 <a name="429"><span class="lineNum">     429 </span>            :                 // Keep the skip_node_but_use_sub_targets state if later policies return valid_node</a>
-<a name="430"><span class="lineNum">     430 </span><span class="lineCov">       1002 :                 const auto use_subs =</span></a>
-<a name="431"><span class="lineNum">     431 </span><span class="lineCov">       1002 :                     match == parsing::pre_parse_action::skip_node_but_use_sub_targets;</span></a>
-<a name="432"><span class="lineNum">     432 </span><span class="lineCov">       2004 :                 match = this-&gt;policy_type::pre_parse_phase(adapter,</span></a>
-<a name="433"><span class="lineNum">     433 </span><span class="lineCov">       1002 :                                                            extract_parent_target(pre_parse_data),</span></a>
-<a name="434"><span class="lineNum">     434 </span><span class="lineCov">       1002 :                                                            target,</span></a>
-<a name="435"><span class="lineNum">     435 </span><span class="lineCov">       1002 :                                                            node,</span></a>
-<a name="436"><span class="lineNum">     436 </span><span class="lineCov">        990 :                                                            parents...);</span></a>
-<a name="437"><span class="lineNum">     437 </span><span class="lineCov">       1002 :                 if (use_subs &amp;&amp; (match == parsing::pre_parse_action::valid_node)) {</span></a>
+<a name="430"><span class="lineNum">     430 </span><span class="lineCov">       1436 :                 const auto use_subs =</span></a>
+<a name="431"><span class="lineNum">     431 </span><span class="lineCov">       1436 :                     match == parsing::pre_parse_action::skip_node_but_use_sub_targets;</span></a>
+<a name="432"><span class="lineNum">     432 </span><span class="lineCov">       2872 :                 match = this-&gt;policy_type::pre_parse_phase(adapter,</span></a>
+<a name="433"><span class="lineNum">     433 </span><span class="lineCov">       1436 :                                                            extract_parent_target(pre_parse_data),</span></a>
+<a name="434"><span class="lineNum">     434 </span><span class="lineCov">       1436 :                                                            target,</span></a>
+<a name="435"><span class="lineNum">     435 </span><span class="lineCov">       1436 :                                                            node,</span></a>
+<a name="436"><span class="lineNum">     436 </span><span class="lineCov">       1424 :                                                            parents...);</span></a>
+<a name="437"><span class="lineNum">     437 </span><span class="lineCov">       1436 :                 if (use_subs &amp;&amp; (match == parsing::pre_parse_action::valid_node)) {</span></a>
 <a name="438"><span class="lineNum">     438 </span><span class="lineNoCov">          0 :                     match = parsing::pre_parse_action::skip_node_but_use_sub_targets;</span></a>
 <a name="439"><span class="lineNum">     439 </span><span class="lineNoCov">          0 :                 }</span></a>
 <a name="440"><span class="lineNum">     440 </span>            :             }</a>
-<a name="441"><span class="lineNum">     441 </span><span class="lineCov">       3422 :         });</span></a>
+<a name="441"><span class="lineNum">     441 </span><span class="lineCov">       4948 :         });</span></a>
 <a name="442"><span class="lineNum">     442 </span>            : </a>
 <a name="443"><span class="lineNum">     443 </span>            :         // If we have a result and it is false, then exit early.  We need to wait until after name</a>
 <a name="444"><span class="lineNum">     444 </span>            :         // checking is (possibly) performed to throw an exception, otherwise a parse-stopping</a>
 <a name="445"><span class="lineNum">     445 </span>            :         // exception could be thrown when the target of the token isn't even this node</a>
-<a name="446"><span class="lineNum">     446 </span><span class="lineCov">        825 :         if (match == parsing::pre_parse_action::skip_node) {</span></a>
+<a name="446"><span class="lineNum">     446 </span><span class="lineCov">       1189 :         if (match == parsing::pre_parse_action::skip_node) {</span></a>
 <a name="447"><span class="lineNum">     447 </span><span class="lineCov">         17 :             return {};</span></a>
 <a name="448"><span class="lineNum">     448 </span>            :         }</a>
 <a name="449"><span class="lineNum">     449 </span>            : </a>
 <a name="450"><span class="lineNum">     450 </span>            :         if constexpr (is_named) {</a>
 <a name="451"><span class="lineNum">     451 </span>            :             // Check the first token against the names (if the node is named of course)</a>
-<a name="452"><span class="lineNum">     452 </span><span class="lineCov">        785 :             if (match != parsing::pre_parse_action::skip_node_but_use_sub_targets) {</span></a>
+<a name="452"><span class="lineNum">     452 </span><span class="lineCov">       1149 :             if (match != parsing::pre_parse_action::skip_node_but_use_sub_targets) {</span></a>
 <a name="453"><span class="lineNum">     453 </span>            :                 // If the node is named but there are no tokens, then take the first from args.</a>
 <a name="454"><span class="lineNum">     454 </span>            :                 // If args is empty, then return false</a>
-<a name="455"><span class="lineNum">     455 </span><span class="lineCov">        771 :                 if (result.empty()) {</span></a>
+<a name="455"><span class="lineNum">     455 </span><span class="lineCov">       1135 :                 if (result.empty()) {</span></a>
 <a name="456"><span class="lineNum">     456 </span><span class="lineCov">        173 :                     if (tmp_args.empty()) {</span></a>
 <a name="457"><span class="lineNum">     457 </span><span class="lineCov">          6 :                         return {};</span></a>
 <a name="458"><span class="lineNum">     458 </span>            :                     }</a>
@@ -527,44 +527,44 @@
 <a name="461"><span class="lineNum">     461 </span><span class="lineCov">        167 :                 }</span></a>
 <a name="462"><span class="lineNum">     462 </span>            : </a>
 <a name="463"><span class="lineNum">     463 </span>            :                 // The first token may not have been processed, so convert</a>
-<a name="464"><span class="lineNum">     464 </span><span class="lineCov">        765 :                 auto&amp; first_token = result.front();</span></a>
-<a name="465"><span class="lineNum">     465 </span><span class="lineCov">        765 :                 if (first_token.prefix == parsing::prefix_type::none) {</span></a>
-<a name="466"><span class="lineNum">     466 </span><span class="lineCov">        637 :                     first_token = parsing::get_token_type(first_token.name);</span></a>
-<a name="467"><span class="lineNum">     467 </span><span class="lineCov">        637 :                 }</span></a>
+<a name="464"><span class="lineNum">     464 </span><span class="lineCov">       1129 :                 auto&amp; first_token = result.front();</span></a>
+<a name="465"><span class="lineNum">     465 </span><span class="lineCov">       1129 :                 if (first_token.prefix == parsing::prefix_type::none) {</span></a>
+<a name="466"><span class="lineNum">     466 </span><span class="lineCov">       1001 :                     first_token = parsing::get_token_type(first_token.name);</span></a>
+<a name="467"><span class="lineNum">     467 </span><span class="lineCov">       1001 :                 }</span></a>
 <a name="468"><span class="lineNum">     468 </span>            : </a>
 <a name="469"><span class="lineNum">     469 </span>            :                 // And then test it is correct unless we are skipping</a>
-<a name="470"><span class="lineNum">     470 </span><span class="lineCov">        765 :                 if (!parsing::match&lt;tree_node&gt;(first_token)) {</span></a>
-<a name="471"><span class="lineNum">     471 </span><span class="lineCov">        399 :                     return {};</span></a>
+<a name="470"><span class="lineNum">     470 </span><span class="lineCov">       1129 :                 if (!parsing::match&lt;tree_node&gt;(first_token)) {</span></a>
+<a name="471"><span class="lineNum">     471 </span><span class="lineCov">        611 :                     return {};</span></a>
 <a name="472"><span class="lineNum">     472 </span>            :                 }</a>
-<a name="473"><span class="lineNum">     473 </span><span class="lineCov">        366 :             }</span></a>
+<a name="473"><span class="lineNum">     473 </span><span class="lineCov">        518 :             }</span></a>
 <a name="474"><span class="lineNum">     474 </span>            :         }</a>
 <a name="475"><span class="lineNum">     475 </span>            : </a>
 <a name="476"><span class="lineNum">     476 </span>            :         // If the policy checking returned an exception, now is the time to throw it</a>
-<a name="477"><span class="lineNum">     477 </span><span class="lineCov">        403 :         match.throw_exception();</span></a>
+<a name="477"><span class="lineNum">     477 </span><span class="lineCov">        555 :         match.throw_exception();</span></a>
 <a name="478"><span class="lineNum">     478 </span>            : </a>
 <a name="479"><span class="lineNum">     479 </span>            :         // If there are no processed tokens and no sub-targets then this node cannot do anything and</a>
 <a name="480"><span class="lineNum">     480 </span>            :         // therefore should not be used</a>
-<a name="481"><span class="lineNum">     481 </span><span class="lineCov">        398 :         if (result.empty() &amp;&amp; target.sub_targets().empty()) {</span></a>
+<a name="481"><span class="lineNum">     481 </span><span class="lineCov">        550 :         if (result.empty() &amp;&amp; target.sub_targets().empty()) {</span></a>
 <a name="482"><span class="lineNum">     482 </span><span class="lineCov">          1 :             return {};</span></a>
 <a name="483"><span class="lineNum">     483 </span>            :         }</a>
 <a name="484"><span class="lineNum">     484 </span>            : </a>
-<a name="485"><span class="lineNum">     485 </span><span class="lineCov">        397 :         if (!pre_parse_data.validator()(node, parents...)) {</span></a>
+<a name="485"><span class="lineNum">     485 </span><span class="lineCov">        549 :         if (!pre_parse_data.validator()(node, parents...)) {</span></a>
 <a name="486"><span class="lineNum">     486 </span><span class="lineNoCov">          0 :             return {};</span></a>
 <a name="487"><span class="lineNum">     487 </span>            :         }</a>
 <a name="488"><span class="lineNum">     488 </span>            : </a>
 <a name="489"><span class="lineNum">     489 </span>            :         // Update the unprocessed args</a>
-<a name="490"><span class="lineNum">     490 </span><span class="lineCov">        387 :         pre_parse_data.args() = tmp_args;</span></a>
+<a name="490"><span class="lineNum">     490 </span><span class="lineCov">        524 :         pre_parse_data.args() = tmp_args;</span></a>
 <a name="491"><span class="lineNum">     491 </span>            : </a>
 <a name="492"><span class="lineNum">     492 </span>            :         // Update the target with the pre-parsed tokens.  Remove the label token if present</a>
 <a name="493"><span class="lineNum">     493 </span>            :         if constexpr (is_named) {</a>
-<a name="494"><span class="lineNum">     494 </span><span class="lineCov">        367 :             if (!result.empty()) {</span></a>
-<a name="495"><span class="lineNum">     495 </span><span class="lineCov">        353 :                 result.erase(result.begin());</span></a>
-<a name="496"><span class="lineNum">     496 </span><span class="lineCov">        353 :             }</span></a>
+<a name="494"><span class="lineNum">     494 </span><span class="lineCov">        504 :             if (!result.empty()) {</span></a>
+<a name="495"><span class="lineNum">     495 </span><span class="lineCov">        490 :                 result.erase(result.begin());</span></a>
+<a name="496"><span class="lineNum">     496 </span><span class="lineCov">        490 :             }</span></a>
 <a name="497"><span class="lineNum">     497 </span>            :         }</a>
-<a name="498"><span class="lineNum">     498 </span><span class="lineCov">        387 :         target.tokens(std::move(result));</span></a>
+<a name="498"><span class="lineNum">     498 </span><span class="lineCov">        524 :         target.tokens(std::move(result));</span></a>
 <a name="499"><span class="lineNum">     499 </span>            : </a>
-<a name="500"><span class="lineNum">     500 </span><span class="lineCov">        387 :         return target;</span></a>
-<a name="501"><span class="lineNum">     501 </span><span class="lineCov">        825 :     }</span></a>
+<a name="500"><span class="lineNum">     500 </span><span class="lineCov">        524 :         return target;</span></a>
+<a name="501"><span class="lineNum">     501 </span><span class="lineCov">       1189 :     }</span></a>
 <a name="502"><span class="lineNum">     502 </span>            : </a>
 <a name="503"><span class="lineNum">     503 </span>            :     /** Generic parse call, uses a policy that supports the parse phase if present, or the global</a>
 <a name="504"><span class="lineNum">     504 </span>            :      * parser.</a>
@@ -577,7 +577,7 @@
 <a name="511"><span class="lineNum">     511 </span>            :      * @exception multi_lang_exception Thrown if parsing failed</a>
 <a name="512"><span class="lineNum">     512 </span>            :      */</a>
 <a name="513"><span class="lineNum">     513 </span>            :     template &lt;typename ValueType, typename... Parents&gt;</a>
-<a name="514"><span class="lineNum">     514 </span><span class="lineCov">        119 :     [[nodiscard]] auto parse(std::string_view token, const Parents&amp;... parents) const</span></a>
+<a name="514"><span class="lineNum">     514 </span><span class="lineCov">        131 :     [[nodiscard]] auto parse(std::string_view token, const Parents&amp;... parents) const</span></a>
 <a name="515"><span class="lineNum">     515 </span>            :     {</a>
 <a name="516"><span class="lineNum">     516 </span>            :         using finder_type = phase_finder&lt;policy::has_parse_phase_method, ValueType&gt;;</a>
 <a name="517"><span class="lineNum">     517 </span>            :         using policy_type = typename finder_type::type;</a>
@@ -594,7 +594,7 @@
 <a name="528"><span class="lineNum">     528 </span>            :             &quot;supported&quot;);</a>
 <a name="529"><span class="lineNum">     529 </span>            : </a>
 <a name="530"><span class="lineNum">     530 </span>            :         if constexpr (std::is_void_v&lt;policy_type&gt;) {</a>
-<a name="531"><span class="lineNum">     531 </span><span class="lineCov">        117 :             return parser&lt;ValueType&gt;::parse(token);</span></a>
+<a name="531"><span class="lineNum">     531 </span><span class="lineCov">        129 :             return parser&lt;ValueType&gt;::parse(token);</span></a>
 <a name="532"><span class="lineNum">     532 </span>            :         } else {</a>
 <a name="533"><span class="lineNum">     533 </span><span class="lineCov">          2 :             return this-&gt;policy_type::template parse_phase&lt;ValueType&gt;(token, parents...);</span></a>
 <a name="534"><span class="lineNum">     534 </span>            :         }</a>
@@ -608,7 +608,7 @@
 <a name="542"><span class="lineNum">     542 </span>            :                   &quot;Only zero or one policies supporting a routing phase is supported&quot;);</a>
 <a name="543"><span class="lineNum">     543 </span>            : </a>
 <a name="544"><span class="lineNum">     544 </span>            :     template &lt;template &lt;typename...&gt; typename Fn, typename... ExpandedParams&gt;</a>
-<a name="545"><span class="lineNum">     545 </span><span class="lineCov">       1636 :     [[nodiscard]] constexpr static auto common_filter(ExpandedParams&amp;... expanded_params) noexcept</span></a>
+<a name="545"><span class="lineNum">     545 </span><span class="lineCov">       1646 :     [[nodiscard]] constexpr static auto common_filter(ExpandedParams&amp;... expanded_params) noexcept</span></a>
 <a name="546"><span class="lineNum">     546 </span>            :     {</a>
 <a name="547"><span class="lineNum">     547 </span>            :         // Send references to the filter method so we don't copy anything unnecessarily</a>
 <a name="548"><span class="lineNum">     548 </span>            :         using ref_tuple = std::tuple&lt;std::reference_wrapper&lt;ExpandedParams&gt;...&gt;;</a>
@@ -619,32 +619,32 @@
 <a name="553"><span class="lineNum">     553 </span>            : </a>
 <a name="554"><span class="lineNum">     554 </span>            :         // We have our result tuple, but it only contains references so we now have to move</a>
 <a name="555"><span class="lineNum">     555 </span>            :         // construct them into the 'real' types</a>
-<a name="556"><span class="lineNum">     556 </span><span class="lineCov">       1636 :         auto ref_result = algorithm::tuple_filter_and_construct&lt;ref_fn::template fn&gt;(</span></a>
-<a name="557"><span class="lineNum">     557 </span><span class="lineCov">       1552 :             ref_tuple{expanded_params...});</span></a>
+<a name="556"><span class="lineNum">     556 </span><span class="lineCov">       1646 :         auto ref_result = algorithm::tuple_filter_and_construct&lt;ref_fn::template fn&gt;(</span></a>
+<a name="557"><span class="lineNum">     557 </span><span class="lineCov">       1562 :             ref_tuple{expanded_params...});</span></a>
 <a name="558"><span class="lineNum">     558 </span>            : </a>
 <a name="559"><span class="lineNum">     559 </span>            :         using ref_result_t = std::decay_t&lt;decltype(ref_result)&gt;;</a>
 <a name="560"><span class="lineNum">     560 </span>            :         using result_t = boost::mp11::mp_transform&lt;traits::get_type, ref_result_t&gt;;</a>
 <a name="561"><span class="lineNum">     561 </span>            : </a>
 <a name="562"><span class="lineNum">     562 </span>            :         // Converting move-constructor of std::tuple</a>
-<a name="563"><span class="lineNum">     563 </span><span class="lineCov">       1636 :         return result_t{std::move(ref_result)};</span></a>
+<a name="563"><span class="lineNum">     563 </span><span class="lineCov">       1646 :         return result_t{std::move(ref_result)};</span></a>
 <a name="564"><span class="lineNum">     564 </span>            :     }</a>
 <a name="565"><span class="lineNum">     565 </span>            : </a>
 <a name="566"><span class="lineNum">     566 </span>            :     template &lt;template &lt;typename...&gt; typename Fn, typename Tuple&gt;</a>
-<a name="567"><span class="lineNum">     567 </span><span class="lineCov">        818 :     [[nodiscard]] constexpr static auto common_filter_tuple(Tuple&amp;&amp; tuple_params) noexcept</span></a>
+<a name="567"><span class="lineNum">     567 </span><span class="lineCov">        823 :     [[nodiscard]] constexpr static auto common_filter_tuple(Tuple&amp;&amp; tuple_params) noexcept</span></a>
 <a name="568"><span class="lineNum">     568 </span>            :     {</a>
 <a name="569"><span class="lineNum">     569 </span>            :         // std::apply does not like templates, so we have to wrap in a lambda</a>
-<a name="570"><span class="lineNum">     570 </span><span class="lineCov">        818 :         return std::apply(</span></a>
-<a name="571"><span class="lineNum">     571 </span><span class="lineCov">        818 :             [](auto&amp;... args) { return common_filter&lt;Fn&gt;(std::forward&lt;decltype(args)&gt;(args)...); },</span></a>
-<a name="572"><span class="lineNum">     572 </span><span class="lineCov">        818 :             tuple_params);</span></a>
+<a name="570"><span class="lineNum">     570 </span><span class="lineCov">        823 :         return std::apply(</span></a>
+<a name="571"><span class="lineNum">     571 </span><span class="lineCov">        823 :             [](auto&amp;... args) { return common_filter&lt;Fn&gt;(std::forward&lt;decltype(args)&gt;(args)...); },</span></a>
+<a name="572"><span class="lineNum">     572 </span><span class="lineCov">        823 :             tuple_params);</span></a>
 <a name="573"><span class="lineNum">     573 </span>            :     }</a>
 <a name="574"><span class="lineNum">     574 </span>            : </a>
 <a name="575"><span class="lineNum">     575 </span>            :     template &lt;typename Validator, bool HasTarget&gt;</a>
-<a name="576"><span class="lineNum">     576 </span><span class="lineCov">       1002 :     [[nodiscard]] constexpr auto extract_parent_target(</span></a>
+<a name="576"><span class="lineNum">     576 </span><span class="lineCov">       1436 :     [[nodiscard]] constexpr auto extract_parent_target(</span></a>
 <a name="577"><span class="lineNum">     577 </span>            :         [[maybe_unused]] parsing::pre_parse_data&lt;Validator, HasTarget&gt; pre_parse_data)</a>
 <a name="578"><span class="lineNum">     578 </span>            :         const noexcept</a>
 <a name="579"><span class="lineNum">     579 </span>            :     {</a>
 <a name="580"><span class="lineNum">     580 </span>            :         if constexpr (HasTarget) {</a>
-<a name="581"><span class="lineNum">     581 </span><span class="lineCov">        921 :             return utility::compile_time_optional{std::cref(pre_parse_data.target())};</span></a>
+<a name="581"><span class="lineNum">     581 </span><span class="lineCov">       1355 :             return utility::compile_time_optional{std::cref(pre_parse_data.target())};</span></a>
 <a name="582"><span class="lineNum">     582 </span>            :         } else {</a>
 <a name="583"><span class="lineNum">     583 </span><span class="lineCov">         81 :             return utility::compile_time_optional{};</span></a>
 <a name="584"><span class="lineNum">     584 </span>            :         }</a>

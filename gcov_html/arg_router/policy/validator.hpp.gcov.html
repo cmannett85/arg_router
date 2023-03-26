@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2023-03-07 22:23:57</td>
+            <td class="headerValue">2023-03-26 13:06:42</td>
             <td></td>
           </tr>
           <tr>
@@ -182,10 +182,10 @@
 <a name="116"><span class="lineNum">     116 </span>            : </a>
 <a name="117"><span class="lineNum">     117 </span>            :     struct validate_fn {</a>
 <a name="118"><span class="lineNum">     118 </span>            :         template &lt;typename Current, typename... Parents&gt;</a>
-<a name="119"><span class="lineNum">     119 </span><span class="lineCov">       1185 :         constexpr static void fn() noexcept</span></a>
+<a name="119"><span class="lineNum">     119 </span><span class="lineCov">       1207 :         constexpr static void fn() noexcept</span></a>
 <a name="120"><span class="lineNum">     120 </span>            :         {</a>
 <a name="121"><span class="lineNum">     121 </span>            :             // Find the matching rule</a>
-<a name="122"><span class="lineNum">     122 </span><span class="lineCov">       1185 :             constexpr auto rule_index = boost::mp11::mp_find_if_q&lt;  //</span></a>
+<a name="122"><span class="lineNum">     122 </span><span class="lineCov">       1207 :             constexpr auto rule_index = boost::mp11::mp_find_if_q&lt;  //</span></a>
 <a name="123"><span class="lineNum">     123 </span>            :                 rules_type,</a>
 <a name="124"><span class="lineNum">     124 </span>            :                 rule_lookup&lt;Current&gt;&gt;::value;</a>
 <a name="125"><span class="lineNum">     125 </span>            :             static_assert(rule_index != std::tuple_size_v&lt;rules_type&gt;, &quot;No rule for Current&quot;);</a>
@@ -193,11 +193,11 @@
 <a name="127"><span class="lineNum">     127 </span>            :             // Remove the rule key so we just have a list of conditions</a>
 <a name="128"><span class="lineNum">     128 </span>            :             using conditions =</a>
 <a name="129"><span class="lineNum">     129 </span>            :                 boost::mp11::mp_drop_c&lt;std::tuple_element_t&lt;rule_index, rules_type&gt;, 1&gt;;</a>
-<a name="130"><span class="lineNum">     130 </span><span class="lineCov">       3356 :             utility::tuple_type_iterator&lt;conditions&gt;([](auto i) {</span></a>
+<a name="130"><span class="lineNum">     130 </span><span class="lineCov">       3416 :             utility::tuple_type_iterator&lt;conditions&gt;([](auto i) {</span></a>
 <a name="131"><span class="lineNum">     131 </span>            :                 using condition = std::tuple_element_t&lt;i, conditions&gt;;</a>
-<a name="132"><span class="lineNum">     132 </span><span class="lineCov">       2171 :                 condition::template check&lt;Current, Parents...&gt;();</span></a>
-<a name="133"><span class="lineNum">     133 </span><span class="lineCov">       2171 :             });</span></a>
-<a name="134"><span class="lineNum">     134 </span><span class="lineCov">       1185 :         }</span></a>
+<a name="132"><span class="lineNum">     132 </span><span class="lineCov">       2209 :                 condition::template check&lt;Current, Parents...&gt;();</span></a>
+<a name="133"><span class="lineNum">     133 </span><span class="lineCov">       2209 :             });</span></a>
+<a name="134"><span class="lineNum">     134 </span><span class="lineCov">       1207 :         }</span></a>
 <a name="135"><span class="lineNum">     135 </span>            :     };</a>
 <a name="136"><span class="lineNum">     136 </span>            : </a>
 <a name="137"><span class="lineNum">     137 </span>            : public:</a>
@@ -208,10 +208,10 @@
 <a name="142"><span class="lineNum">     142 </span>            :      * @return void</a>
 <a name="143"><span class="lineNum">     143 </span>            :      */</a>
 <a name="144"><span class="lineNum">     144 </span>            :     template &lt;typename Root&gt;</a>
-<a name="145"><span class="lineNum">     145 </span><span class="lineCov">         58 :     constexpr static void validate() noexcept</span></a>
+<a name="145"><span class="lineNum">     145 </span><span class="lineCov">         59 :     constexpr static void validate() noexcept</span></a>
 <a name="146"><span class="lineNum">     146 </span>            :     {</a>
-<a name="147"><span class="lineNum">     147 </span><span class="lineCov">         58 :         utility::tree_type_recursor&lt;validate_fn, Root&gt;();</span></a>
-<a name="148"><span class="lineNum">     148 </span><span class="lineCov">         58 :     }</span></a>
+<a name="147"><span class="lineNum">     147 </span><span class="lineCov">         59 :         utility::tree_type_recursor&lt;validate_fn, Root&gt;();</span></a>
+<a name="148"><span class="lineNum">     148 </span><span class="lineCov">         59 :     }</span></a>
 <a name="149"><span class="lineNum">     149 </span>            : };</a>
 <a name="150"><span class="lineNum">     150 </span>            : </a>
 <a name="151"><span class="lineNum">     151 </span>            : /** Namespace for a collection of common rule_q types.</a>
@@ -239,7 +239,7 @@
 <a name="173"><span class="lineNum">     173 </span>            :  */</a>
 <a name="174"><span class="lineNum">     174 </span>            : struct despecialised_unique_in_owner {</a>
 <a name="175"><span class="lineNum">     175 </span>            :     template &lt;typename T, typename... Parents&gt;</a>
-<a name="176"><span class="lineNum">     176 </span><span class="lineCov">        914 :     constexpr static void check() noexcept</span></a>
+<a name="176"><span class="lineNum">     176 </span><span class="lineCov">        931 :     constexpr static void check() noexcept</span></a>
 <a name="177"><span class="lineNum">     177 </span>            :     {</a>
 <a name="178"><span class="lineNum">     178 </span>            :         if constexpr (sizeof...(Parents) &gt; 0) {</a>
 <a name="179"><span class="lineNum">     179 </span>            :             using Owner = boost::mp11::mp_first&lt;std::tuple&lt;Parents...&gt;&gt;;</a>
@@ -248,7 +248,7 @@
 <a name="182"><span class="lineNum">     182 </span>            :             static_assert(algorithm::count_despecialised_v&lt;T, typename Owner::policies_type&gt; == 1,</a>
 <a name="183"><span class="lineNum">     183 </span>            :                           &quot;Policy must be present and unique in owner&quot;);</a>
 <a name="184"><span class="lineNum">     184 </span>            :         }</a>
-<a name="185"><span class="lineNum">     185 </span><span class="lineCov">        914 :     }</span></a>
+<a name="185"><span class="lineNum">     185 </span><span class="lineCov">        931 :     }</span></a>
 <a name="186"><span class="lineNum">     186 </span>            : };</a>
 <a name="187"><span class="lineNum">     187 </span>            : </a>
 <a name="188"><span class="lineNum">     188 </span>            : /** A rule condition that checks a policy is unique up to the nearest mode or root - but skips the</a>
@@ -263,7 +263,7 @@
 <a name="197"><span class="lineNum">     197 </span>            :     template &lt;typename Policy, typename PathToThis&gt;</a>
 <a name="198"><span class="lineNum">     198 </span>            :     struct checker {</a>
 <a name="199"><span class="lineNum">     199 </span>            :         template &lt;typename Current, typename... Parents&gt;</a>
-<a name="200"><span class="lineNum">     200 </span><span class="lineCov">       3309 :         constexpr static void fn() noexcept</span></a>
+<a name="200"><span class="lineNum">     200 </span><span class="lineCov">       3366 :         constexpr static void fn() noexcept</span></a>
 <a name="201"><span class="lineNum">     201 </span>            :         {</a>
 <a name="202"><span class="lineNum">     202 </span>            :             using path_type = std::tuple&lt;Parents...&gt;;</a>
 <a name="203"><span class="lineNum">     203 </span>            : </a>
@@ -273,7 +273,7 @@
 <a name="207"><span class="lineNum">     207 </span>            :                               &quot;Policy must be unique in the parse tree up to &quot;</a>
 <a name="208"><span class="lineNum">     208 </span>            :                               &quot;the nearest mode or root&quot;);</a>
 <a name="209"><span class="lineNum">     209 </span>            :             }</a>
-<a name="210"><span class="lineNum">     210 </span><span class="lineCov">       3309 :         }</span></a>
+<a name="210"><span class="lineNum">     210 </span><span class="lineCov">       3366 :         }</span></a>
 <a name="211"><span class="lineNum">     211 </span>            :     };</a>
 <a name="212"><span class="lineNum">     212 </span>            : </a>
 <a name="213"><span class="lineNum">     213 </span>            :     template &lt;typename T&gt;</a>
@@ -297,16 +297,16 @@
 <a name="231"><span class="lineNum">     231 </span>            :     };</a>
 <a name="232"><span class="lineNum">     232 </span>            : </a>
 <a name="233"><span class="lineNum">     233 </span>            :     template &lt;typename T, typename... Parents&gt;</a>
-<a name="234"><span class="lineNum">     234 </span><span class="lineCov">        180 :     constexpr static void check() noexcept</span></a>
+<a name="234"><span class="lineNum">     234 </span><span class="lineCov">        183 :     constexpr static void check() noexcept</span></a>
 <a name="235"><span class="lineNum">     235 </span>            :     {</a>
 <a name="236"><span class="lineNum">     236 </span>            :         using ParentTuple = std::tuple&lt;Parents...&gt;;</a>
-<a name="237"><span class="lineNum">     237 </span><span class="lineCov">        180 :         constexpr auto NumParents = sizeof...(Parents);</span></a>
+<a name="237"><span class="lineNum">     237 </span><span class="lineCov">        183 :         constexpr auto NumParents = sizeof...(Parents);</span></a>
 <a name="238"><span class="lineNum">     238 </span>            : </a>
 <a name="239"><span class="lineNum">     239 </span>            :         // Make sure there's at least one parent beyond the owner</a>
 <a name="240"><span class="lineNum">     240 </span>            :         if constexpr (NumParents &gt; 1) {</a>
 <a name="241"><span class="lineNum">     241 </span>            :             // Find a mode type, if there's one present we stop moving up through the ancestors at</a>
 <a name="242"><span class="lineNum">     242 </span>            :             // that point, otherwise we go up to the root</a>
-<a name="243"><span class="lineNum">     243 </span><span class="lineCov">        178 :             constexpr auto mode_index = boost::mp11::mp_find_if&lt;ParentTuple, is_mode&gt;::value;</span></a>
+<a name="243"><span class="lineNum">     243 </span><span class="lineCov">        181 :             constexpr auto mode_index = boost::mp11::mp_find_if&lt;ParentTuple, is_mode&gt;::value;</span></a>
 <a name="244"><span class="lineNum">     244 </span>            : </a>
 <a name="245"><span class="lineNum">     245 </span>            :             using path_type =</a>
 <a name="246"><span class="lineNum">     246 </span>            :                 boost::mp11::mp_take_c&lt;ParentTuple, std::min(mode_index + 1, NumParents)&gt;;</a>
@@ -314,9 +314,9 @@
 <a name="248"><span class="lineNum">     248 </span>            : </a>
 <a name="249"><span class="lineNum">     249 </span>            :             // Recurse the tree from the oldest generation, testing that no other policy matches</a>
 <a name="250"><span class="lineNum">     250 </span>            :             // ours</a>
-<a name="251"><span class="lineNum">     251 </span><span class="lineCov">        178 :             utility::tree_type_recursor&lt;checker&lt;T, path_type&gt;, skipper&lt;start_type&gt;, start_type&gt;();</span></a>
+<a name="251"><span class="lineNum">     251 </span><span class="lineCov">        181 :             utility::tree_type_recursor&lt;checker&lt;T, path_type&gt;, skipper&lt;start_type&gt;, start_type&gt;();</span></a>
 <a name="252"><span class="lineNum">     252 </span>            :         }</a>
-<a name="253"><span class="lineNum">     253 </span><span class="lineCov">        180 :     }</span></a>
+<a name="253"><span class="lineNum">     253 </span><span class="lineCov">        183 :     }</span></a>
 <a name="254"><span class="lineNum">     254 </span>            : };</a>
 <a name="255"><span class="lineNum">     255 </span>            : </a>
 <a name="256"><span class="lineNum">     256 </span>            : /** Defines the mapping of a parent ancestry index against an expected node type.</a>
@@ -362,7 +362,7 @@
 <a name="296"><span class="lineNum">     296 </span>            :     };</a>
 <a name="297"><span class="lineNum">     297 </span>            : </a>
 <a name="298"><span class="lineNum">     298 </span>            :     template &lt;typename T, typename... Parents&gt;</a>
-<a name="299"><span class="lineNum">     299 </span><span class="lineCov">        208 :     constexpr static void check() noexcept</span></a>
+<a name="299"><span class="lineNum">     299 </span><span class="lineCov">        211 :     constexpr static void check() noexcept</span></a>
 <a name="300"><span class="lineNum">     300 </span>            :     {</a>
 <a name="301"><span class="lineNum">     301 </span>            :         // Remove any entries whose index is beyond the Parents list size</a>
 <a name="302"><span class="lineNum">     302 </span>            :         using clamped_indices = boost::mp11::mp_filter_q&lt;index_filter&lt;sizeof...(Parents)&gt;,</a>
@@ -373,7 +373,7 @@
 <a name="307"><span class="lineNum">     307 </span>            : </a>
 <a name="308"><span class="lineNum">     308 </span>            :         static_assert(boost::mp11::mp_any_of&lt;matches, boost::mp11::mp_to_bool&gt;::value,</a>
 <a name="309"><span class="lineNum">     309 </span>            :                       &quot;Parent must be one of a set of types&quot;);</a>
-<a name="310"><span class="lineNum">     310 </span><span class="lineCov">        208 :     }</span></a>
+<a name="310"><span class="lineNum">     310 </span><span class="lineCov">        211 :     }</span></a>
 <a name="311"><span class="lineNum">     311 </span>            : };</a>
 <a name="312"><span class="lineNum">     312 </span>            : </a>
 <a name="313"><span class="lineNum">     313 </span>            : /** A rule condition that checks that @a T's policies contain all of @a Policies.</a>
@@ -388,10 +388,10 @@
 <a name="322"><span class="lineNum">     322 </span>            :         boost::mp11::mp_to_bool&gt;;</a>
 <a name="323"><span class="lineNum">     323 </span>            : </a>
 <a name="324"><span class="lineNum">     324 </span>            :     template &lt;typename T, typename...&gt;</a>
-<a name="325"><span class="lineNum">     325 </span><span class="lineCov">         60 :     constexpr static void check() noexcept</span></a>
+<a name="325"><span class="lineNum">     325 </span><span class="lineCov">         61 :     constexpr static void check() noexcept</span></a>
 <a name="326"><span class="lineNum">     326 </span>            :     {</a>
 <a name="327"><span class="lineNum">     327 </span>            :         static_assert(checker&lt;T&gt;::value, &quot;T must have all these policies&quot;);</a>
-<a name="328"><span class="lineNum">     328 </span><span class="lineCov">         60 :     }</span></a>
+<a name="328"><span class="lineNum">     328 </span><span class="lineCov">         61 :     }</span></a>
 <a name="329"><span class="lineNum">     329 </span>            : };</a>
 <a name="330"><span class="lineNum">     330 </span>            : </a>
 <a name="331"><span class="lineNum">     331 </span>            : /** A rule condition that checks that @a T's policies contain none of @a Policies.</a>
@@ -406,10 +406,10 @@
 <a name="340"><span class="lineNum">     340 </span>            :         boost::mp11::mp_to_bool&gt;;</a>
 <a name="341"><span class="lineNum">     341 </span>            : </a>
 <a name="342"><span class="lineNum">     342 </span>            :     template &lt;typename T, typename...&gt;</a>
-<a name="343"><span class="lineNum">     343 </span><span class="lineCov">        275 :     constexpr static void check() noexcept</span></a>
+<a name="343"><span class="lineNum">     343 </span><span class="lineCov">        280 :     constexpr static void check() noexcept</span></a>
 <a name="344"><span class="lineNum">     344 </span>            :     {</a>
 <a name="345"><span class="lineNum">     345 </span>            :         static_assert(checker&lt;T&gt;::value, &quot;T must have none of these policies&quot;);</a>
-<a name="346"><span class="lineNum">     346 </span><span class="lineCov">        275 :     }</span></a>
+<a name="346"><span class="lineNum">     346 </span><span class="lineCov">        280 :     }</span></a>
 <a name="347"><span class="lineNum">     347 </span>            : };</a>
 <a name="348"><span class="lineNum">     348 </span>            : </a>
 <a name="349"><span class="lineNum">     349 </span>            : template &lt;template &lt;typename...&gt; typename Policy&gt;</a>
@@ -443,13 +443,13 @@
 <a name="377"><span class="lineNum">     377 </span>            : template &lt;template &lt;typename...&gt; typename Policy&gt;</a>
 <a name="378"><span class="lineNum">     378 </span>            : struct child_must_not_have_policy {</a>
 <a name="379"><span class="lineNum">     379 </span>            :     template &lt;typename T, typename...&gt;</a>
-<a name="380"><span class="lineNum">     380 </span><span class="lineCov">        132 :     constexpr static void check() noexcept</span></a>
+<a name="380"><span class="lineNum">     380 </span><span class="lineCov">        134 :     constexpr static void check() noexcept</span></a>
 <a name="381"><span class="lineNum">     381 </span>            :     {</a>
 <a name="382"><span class="lineNum">     382 </span>            :         if constexpr ((std::tuple_size_v&lt;typename T::children_type&gt;) &gt; 0) {</a>
 <a name="383"><span class="lineNum">     383 </span>            :             static_assert(!basic_child_must_have_policy&lt;Policy&gt;::template value&lt;T&gt;,</a>
 <a name="384"><span class="lineNum">     384 </span>            :                           &quot;All children of T must not have this policy&quot;);</a>
 <a name="385"><span class="lineNum">     385 </span>            :         }</a>
-<a name="386"><span class="lineNum">     386 </span><span class="lineCov">        132 :     }</span></a>
+<a name="386"><span class="lineNum">     386 </span><span class="lineCov">        134 :     }</span></a>
 <a name="387"><span class="lineNum">     387 </span>            : };</a>
 <a name="388"><span class="lineNum">     388 </span>            : </a>
 <a name="389"><span class="lineNum">     389 </span>            : /** A rule condition that checks the parent node of the policy @a T does not contain @a Policy.</a>
@@ -457,7 +457,7 @@
 <a name="391"><span class="lineNum">     391 </span>            : template &lt;template &lt;typename...&gt; typename Policy&gt;</a>
 <a name="392"><span class="lineNum">     392 </span>            : struct policy_parent_must_not_have_policy {</a>
 <a name="393"><span class="lineNum">     393 </span>            :     template &lt;typename T, typename... Parents&gt;</a>
-<a name="394"><span class="lineNum">     394 </span><span class="lineCov">        191 :     constexpr static void check() noexcept</span></a>
+<a name="394"><span class="lineNum">     394 </span><span class="lineCov">        194 :     constexpr static void check() noexcept</span></a>
 <a name="395"><span class="lineNum">     395 </span>            :     {</a>
 <a name="396"><span class="lineNum">     396 </span>            :         static_assert(policy::is_policy_v&lt;T&gt;, &quot;T must be a policy&quot;);</a>
 <a name="397"><span class="lineNum">     397 </span>            :         static_assert(sizeof...(Parents) &gt;= 1, &quot;Must be at least one parent&quot;);</a>
@@ -465,7 +465,7 @@
 <a name="399"><span class="lineNum">     399 </span>            :         using parent = boost::mp11::mp_first&lt;std::tuple&lt;Parents...&gt;&gt;;</a>
 <a name="400"><span class="lineNum">     400 </span>            :         static_assert(!algorithm::has_specialisation_v&lt;Policy, typename parent::policies_type&gt;,</a>
 <a name="401"><span class="lineNum">     401 </span>            :                       &quot;Parent must not have this policy&quot;);</a>
-<a name="402"><span class="lineNum">     402 </span><span class="lineCov">        191 :     }</span></a>
+<a name="402"><span class="lineNum">     402 </span><span class="lineCov">        194 :     }</span></a>
 <a name="403"><span class="lineNum">     403 </span>            : };</a>
 <a name="404"><span class="lineNum">     404 </span>            : </a>
 <a name="405"><span class="lineNum">     405 </span>            : /** A rule condition that checks if there are more than one child of @a T that is a mode, only one</a>
@@ -493,14 +493,14 @@
 <a name="427"><span class="lineNum">     427 </span>            :     };</a>
 <a name="428"><span class="lineNum">     428 </span>            : </a>
 <a name="429"><span class="lineNum">     429 </span>            :     template &lt;typename T, typename...&gt;</a>
-<a name="430"><span class="lineNum">     430 </span><span class="lineCov">         62 :     constexpr static void check() noexcept</span></a>
+<a name="430"><span class="lineNum">     430 </span><span class="lineCov">         63 :     constexpr static void check() noexcept</span></a>
 <a name="431"><span class="lineNum">     431 </span>            :     {</a>
-<a name="432"><span class="lineNum">     432 </span><span class="lineCov">         62 :         constexpr auto num_anonymous = boost::mp11::mp_count_if&lt;  //</span></a>
+<a name="432"><span class="lineNum">     432 </span><span class="lineCov">         63 :         constexpr auto num_anonymous = boost::mp11::mp_count_if&lt;  //</span></a>
 <a name="433"><span class="lineNum">     433 </span>            :             typename T::children_type,</a>
 <a name="434"><span class="lineNum">     434 </span>            :             is_anonymous_mode&gt;::value;</a>
 <a name="435"><span class="lineNum">     435 </span>            : </a>
 <a name="436"><span class="lineNum">     436 </span>            :         static_assert((num_anonymous &lt;= 1), &quot;Only one child mode can be anonymous&quot;);</a>
-<a name="437"><span class="lineNum">     437 </span><span class="lineCov">         62 :     }</span></a>
+<a name="437"><span class="lineNum">     437 </span><span class="lineCov">         63 :     }</span></a>
 <a name="438"><span class="lineNum">     438 </span>            : };</a>
 <a name="439"><span class="lineNum">     439 </span>            : </a>
 <a name="440"><span class="lineNum">     440 </span>            : /** A rule condition that checks that one of the @a Policies is in T.</a>
@@ -535,7 +535,7 @@
 <a name="469"><span class="lineNum">     469 </span>            :                                boost::mp11::mp_to_bool&gt;;</a>
 <a name="470"><span class="lineNum">     470 </span>            : </a>
 <a name="471"><span class="lineNum">     471 </span>            :     template &lt;typename T, typename...&gt;</a>
-<a name="472"><span class="lineNum">     472 </span><span class="lineCov">         96 :     constexpr static void check() noexcept</span></a>
+<a name="472"><span class="lineNum">     472 </span><span class="lineCov">         98 :     constexpr static void check() noexcept</span></a>
 <a name="473"><span class="lineNum">     473 </span>            :     {</a>
 <a name="474"><span class="lineNum">     474 </span>            :         // Find the first index of a target node, then for each element type after, check that it</a>
 <a name="475"><span class="lineNum">     475 </span>            :         // is also the same type of node</a>
@@ -549,14 +549,14 @@
 <a name="483"><span class="lineNum">     483 </span>            : </a>
 <a name="484"><span class="lineNum">     484 </span>            :             children_type&gt;;</a>
 <a name="485"><span class="lineNum">     485 </span>            : </a>
-<a name="486"><span class="lineNum">     486 </span><span class="lineCov">         96 :         constexpr auto first_node_index =</span></a>
+<a name="486"><span class="lineNum">     486 </span><span class="lineCov">         98 :         constexpr auto first_node_index =</span></a>
 <a name="487"><span class="lineNum">     487 </span>            :             boost::mp11::mp_find&lt;is_target_node_map, boost::mp11::mp_true&gt;::value;</a>
 <a name="488"><span class="lineNum">     488 </span>            :         if constexpr (first_node_index != std::tuple_size_v&lt;is_target_node_map&gt;) {</a>
 <a name="489"><span class="lineNum">     489 </span>            :             using drop_before_first = boost::mp11::mp_drop_c&lt;is_target_node_map, first_node_index&gt;;</a>
 <a name="490"><span class="lineNum">     490 </span>            :             static_assert(boost::mp11::mp_all_of&lt;drop_before_first, boost::mp11::mp_to_bool&gt;::value,</a>
 <a name="491"><span class="lineNum">     491 </span>            :                           &quot;Node types must all appear at the end of child list for a node&quot;);</a>
 <a name="492"><span class="lineNum">     492 </span>            :         }</a>
-<a name="493"><span class="lineNum">     493 </span><span class="lineCov">         96 :     }</span></a>
+<a name="493"><span class="lineNum">     493 </span><span class="lineCov">         98 :     }</span></a>
 <a name="494"><span class="lineNum">     494 </span>            : };</a>
 <a name="495"><span class="lineNum">     495 </span>            : </a>
 <a name="496"><span class="lineNum">     496 </span>            : /** A rule condition that checks if there are more than one child of @a T that is a mode, only one</a>
@@ -584,15 +584,15 @@
 <a name="518"><span class="lineNum">     518 </span>            :     };</a>
 <a name="519"><span class="lineNum">     519 </span>            : </a>
 <a name="520"><span class="lineNum">     520 </span>            :     template &lt;typename T, typename...&gt;</a>
-<a name="521"><span class="lineNum">     521 </span><span class="lineCov">         61 :     constexpr static void check() noexcept</span></a>
+<a name="521"><span class="lineNum">     521 </span><span class="lineCov">         62 :     constexpr static void check() noexcept</span></a>
 <a name="522"><span class="lineNum">     522 </span>            :     {</a>
-<a name="523"><span class="lineNum">     523 </span><span class="lineCov">         61 :         constexpr auto has_anonymous_mode_child =</span></a>
+<a name="523"><span class="lineNum">     523 </span><span class="lineCov">         62 :         constexpr auto has_anonymous_mode_child =</span></a>
 <a name="524"><span class="lineNum">     524 </span>            :             boost::mp11::mp_any_of&lt;typename T::children_type, is_anonymous_mode&gt;::value;</a>
 <a name="525"><span class="lineNum">     525 </span>            : </a>
 <a name="526"><span class="lineNum">     526 </span>            :         if constexpr (has_anonymous_mode_child) {</a>
-<a name="527"><span class="lineNum">     527 </span><span class="lineCov">         42 :             node_types_must_be_at_end&lt;ModeTypes...&gt;::template check&lt;T&gt;();</span></a>
+<a name="527"><span class="lineNum">     527 </span><span class="lineCov">         43 :             node_types_must_be_at_end&lt;ModeTypes...&gt;::template check&lt;T&gt;();</span></a>
 <a name="528"><span class="lineNum">     528 </span>            :         }</a>
-<a name="529"><span class="lineNum">     529 </span><span class="lineCov">         61 :     }</span></a>
+<a name="529"><span class="lineNum">     529 </span><span class="lineCov">         62 :     }</span></a>
 <a name="530"><span class="lineNum">     530 </span>            : };</a>
 <a name="531"><span class="lineNum">     531 </span>            : </a>
 <a name="532"><span class="lineNum">     532 </span>            : /** A rule condition that checks that positional arg @a T has a fixed argument count if not at the</a>
@@ -625,19 +625,19 @@
 <a name="559"><span class="lineNum">     559 </span>            :     };</a>
 <a name="560"><span class="lineNum">     560 </span>            : </a>
 <a name="561"><span class="lineNum">     561 </span>            :     template &lt;typename T, typename...&gt;</a>
-<a name="562"><span class="lineNum">     562 </span><span class="lineCov">         55 :     constexpr static void check() noexcept</span></a>
+<a name="562"><span class="lineNum">     562 </span><span class="lineCov">         56 :     constexpr static void check() noexcept</span></a>
 <a name="563"><span class="lineNum">     563 </span>            :     {</a>
 <a name="564"><span class="lineNum">     564 </span>            :         using children_type = typename T::children_type;</a>
 <a name="565"><span class="lineNum">     565 </span>            :         using pos_args = boost::mp11::mp_filter&lt;is_positional_arg, children_type&gt;;</a>
 <a name="566"><span class="lineNum">     566 </span>            : </a>
-<a name="567"><span class="lineNum">     567 </span><span class="lineCov">         55 :         constexpr auto num_pos_args = std::tuple_size_v&lt;pos_args&gt;;</span></a>
+<a name="567"><span class="lineNum">     567 </span><span class="lineCov">         56 :         constexpr auto num_pos_args = std::tuple_size_v&lt;pos_args&gt;;</span></a>
 <a name="568"><span class="lineNum">     568 </span>            :         if constexpr (num_pos_args &gt; 0) {</a>
 <a name="569"><span class="lineNum">     569 </span>            :             using needs_fixed_count = boost::mp11::mp_take_c&lt;pos_args, num_pos_args - 1&gt;;</a>
 <a name="570"><span class="lineNum">     570 </span>            :             using has_fixed_count = boost::mp11::mp_all_of&lt;needs_fixed_count, fixed_count_checker&gt;;</a>
 <a name="571"><span class="lineNum">     571 </span>            :             static_assert(has_fixed_count::value,</a>
 <a name="572"><span class="lineNum">     572 </span>            :                           &quot;Positional args not at the end of the list must have a fixed count&quot;);</a>
 <a name="573"><span class="lineNum">     573 </span>            :         }</a>
-<a name="574"><span class="lineNum">     574 </span><span class="lineCov">         55 :     }</span></a>
+<a name="574"><span class="lineNum">     574 </span><span class="lineCov">         56 :     }</span></a>
 <a name="575"><span class="lineNum">     575 </span>            : };</a>
 <a name="576"><span class="lineNum">     576 </span>            : </a>
 <a name="577"><span class="lineNum">     577 </span>            : /** A rule condition that checks if node @a T is required and supports a minimum count, then it has</a>

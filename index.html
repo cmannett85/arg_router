@@ -36,7 +36,7 @@
                         <td id="projectalign" style="padding-left: 0.5em;">
                             <div id="projectname">arg_router
                                 &#160;<span
-                                    id="projectnumber">1.2.2</span>
+                                    id="projectnumber">1.3.0</span>
                             </div>
                             <div id="projectbrief">C++ command line argument parsing and routing</div>
                         </td>
@@ -166,8 +166,32 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <li>If using vcpkg as your package manager, simply add <code>arg-router</code> (note the hyphen) to <code>dependencies</code> in your <code>vcpkg.json</code></li>
 <li>If using a DEB package based Linux distribution, download the <a href="https://github.com/cmannett85/arg_router/releases">release</a> Debian package and install it</li>
 <li>If you just want to do a traditional install then download the <a href="https://github.com/cmannett85/arg_router/releases">release</a> zip file and decompress it where you want. Then point your project at the <code>include/arg_router</code> directory or package config location <code>share/arg_router</code></li>
-<li>Same as above but installed from the checked out repo, i.e. using the invocation <code>cmake ../arg_router -DINSTALLATION_ONLY=ON;cmake --install .</code></li>
+<li>Same as above but installed from the checked out repo, i.e. using the invocation <code>cmake ../arg_router -DINSTALLATION_ONLY=ON; cmake --install .</code></li>
 </ul>
+<h2>Dependencies</h2>
+<p>If you're a library user, you will need the following dependencies in order to build:</p><ul>
+<li>Boost.mp11 v1.74+</li>
+<li>Boost.Lexical_Cast v1.74+</li>
+<li>Boost.Preprocessor v1.74+ (only needed if building against C++17)</li>
+<li><a href="https://github.com/martinmoene/span-lite">span-lite</a> (only needed if building against C++17)</li>
+</ul>
+<p>If you're a vcpkg user, then these will be brought in automatically for you. <code><a class="el" href="namespacearg__router.html">arg_router</a></code> is header-only (due to all the templates) and so are the above dependencies.</p>
+<p><b>Note</b> currently <code><a class="el" href="namespacearg__router.html">arg_router</a></code> requires exception support, but <em>not</em> RTTI.</p>
+<p>To get a pre-release <code><a class="el" href="namespacearg__router.html">arg_router</a></code>, or build the unit tests and examples, simply check out the repo and build via CMake in the usual way - the unit tests will be built by default: </p><div class="fragment"><div class="line">$ cd arg_router</div>
+<div class="line">$ mkdir build</div>
+<div class="line">$ cd ./build</div>
+<div class="line">$ cmake ..</div>
+<div class="line">$ cmake --build .</div>
+<div class="line">$ cmake --install .</div>
+</div><!-- fragment --><p> Building these targets will require more dependencies:</p><ul>
+<li>clang-format</li>
+<li>Python v3 (used for copyright checking)</li>
+<li>Doxygen</li>
+<li>Boost.Test v1.74+</li>
+<li>Boost.Filesystem v1.74+</li>
+<li>Boost.Process v1.74+</li>
+</ul>
+<p>By default all these dependencies are provided by <code>vcpkg</code> automatically, please <b>note</b> that <code>vcpkg</code> is provided via a submodule and therefore will need initialising (<code>git submodule update</code>). If you would rather the dependencies came from the system then simply set <code>-DDISABLE_VCPKG=OFF</code>, and CMake will not bootstrap <code>vcpkg</code> and therefore try to find the packages locally.</p>
 <h1>Basics</h1>
 <p>Let's start simple, with this <code>cat</code>-like program: </p><div class="fragment"><div class="line"><span class="keyword">namespace </span>ar = <a class="code" href="namespacearg__router.html">arg_router</a>;</div>
 <div class="line"><span class="keyword">namespace </span>arp = ar::policy</div>
@@ -793,30 +817,6 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <p><b>Note</b> C++17 will be supported as a first class citizen until v2.0, after that C++20 will be the minimum so I can strip out a ton of code and get better diagnostics by using concepts.</p>
 <h1>Error Handling</h1>
 <p>Currently <code><a class="el" href="namespacearg__router.html">arg_router</a></code> only supports exceptions as error handling. If a parsing fails for some reason a <code><a class="el" href="classarg__router_1_1parse__exception.html">arg_router::parse_exception</a></code> is thrown carrying information on the failure.</p>
-<h1>Installation and Dependencies</h1>
-<p>If you're simply a library user, then download the pre-packaged release and install somewhere. You will need the following dependencies in order to build:</p><ul>
-<li>Boost.mp11 v1.74+</li>
-<li>Boost.Lexical_Cast v1.74+</li>
-<li>Boost.Preprocessor v1.74+ (only needed if building against C++17)</li>
-<li><a href="https://github.com/martinmoene/span-lite">span-lite</a> (only needed if building against C++17)</li>
-</ul>
-<p><code><a class="el" href="namespacearg__router.html">arg_router</a></code> is header-only (due to all the templates) and so are the above dependencies.</p>
-<p><b>Note</b> currently <a class="el" href="namespacearg__router.html">arg_router</a> requires exception support, but <em>not</em> RTTI.</p>
-<p>To get a pre-release <code><a class="el" href="namespacearg__router.html">arg_router</a></code>, or build the unit tests and examples, simply check out the repo and build via CMake in the usual way - the unit tests will be built by default: </p><div class="fragment"><div class="line">$ cd arg_router</div>
-<div class="line">$ mkdir build</div>
-<div class="line">$ cd ./build</div>
-<div class="line">$ cmake -G &quot;Ninja&quot; ..</div>
-<div class="line">$ cmake --build .</div>
-<div class="line">$ cmake --install .</div>
-</div><!-- fragment --><p> Building these targets will require more dependencies:</p><ul>
-<li>clang-format</li>
-<li>Python v3 (used for copyright checking)</li>
-<li>Doxygen</li>
-<li>Boost.Test v1.74+</li>
-<li>Boost.Filesystem v1.74+</li>
-<li>Boost.Process v1.74+</li>
-</ul>
-<p>By default all these dependencies are provided by <code>vcpkg</code> automatically, please <b>note</b> that <code>vcpkg</code> is provided via a submodule and therefore will need initialising (<code>git submodule update</code>). If you would rather the dependencies came from the system then simply set <code>-DDISABLE_VCPKG=OFF</code>, and CMake will not bootstrap <code>vcpkg</code> and therefore try to find the packages locally.</p>
 <h1>Configuration</h1>
 <p>Low-level tweaking of the library is achieved via some defines and/or CMake variables, documented <a href="https://cmannett85.github.io/arg_router/configuration.html">here</a>.</p>
 <h1>Supported Compilers/Platforms</h1>

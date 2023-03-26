@@ -36,7 +36,7 @@
                         <td id="projectalign" style="padding-left: 0.5em;">
                             <div id="projectname">arg_router
                                 &#160;<span
-                                    id="projectnumber">1.2.2</span>
+                                    id="projectnumber">1.3.0</span>
                             </div>
                             <div id="projectbrief">C++ command line argument parsing and routing</div>
                         </td>
@@ -106,6 +106,14 @@ $(document).ready(function(){initNavTree('classarg__router_1_1multi__lang_1_1roo
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a7bd5f89565a679d0089fa3f4b1880e4c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1multi__lang_1_1root__t.html#a7bd5f89565a679d0089fa3f4b1880e4c">root_t</a> (std::string_view language_id, const RootFactory &amp;f)</td></tr>
 <tr class="separator:a7bd5f89565a679d0089fa3f4b1880e4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a18c78b19b6efb79e4395b58a9b77a4e8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1multi__lang_1_1root__t.html#a18c78b19b6efb79e4395b58a9b77a4e8">parse</a> (<a class="el" href="namespacearg__router.html#a3d789cf2175008b4124de867a13a2edf">vector</a>&lt; <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a> &gt; args) const</td></tr>
+<tr class="separator:a18c78b19b6efb79e4395b58a9b77a4e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab41073389fae307be2f7495189727fe8"><td class="memTemplParams" colspan="2">template&lt;typename Iter , typename  = std::enable_if_t&lt;!std::is_same_v&lt;std::decay_t&lt;Iter&gt;, int&gt;&gt;&gt; </td></tr>
+<tr class="memitem:ab41073389fae307be2f7495189727fe8"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1multi__lang_1_1root__t.html#ab41073389fae307be2f7495189727fe8">parse</a> (Iter begin, Iter end) const</td></tr>
+<tr class="separator:ab41073389fae307be2f7495189727fe8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9d2ca39e78f6681af8785638e1b504c4"><td class="memTemplParams" colspan="2">template&lt;typename Container , typename  = std::enable_if_t&lt;                  !std::is_same_v&lt;std::decay_t&lt;Container&gt;, vector&lt;parsing::token_type&gt;&gt;&gt;&gt; </td></tr>
+<tr class="memitem:a9d2ca39e78f6681af8785638e1b504c4"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1multi__lang_1_1root__t.html#a9d2ca39e78f6681af8785638e1b504c4">parse</a> (const Container &amp;c) const</td></tr>
+<tr class="separator:a9d2ca39e78f6681af8785638e1b504c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6295e8e56bf123f5ab927666108c4504"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1multi__lang_1_1root__t.html#a6295e8e56bf123f5ab927666108c4504">parse</a> (int argc, char **argv) const</td></tr>
 <tr class="separator:a6295e8e56bf123f5ab927666108c4504"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a61113f3969b6a7e7a9d502ced017f328"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1multi__lang_1_1root__t.html#a61113f3969b6a7e7a9d502ced017f328">help</a> (std::ostream &amp;stream) const</td></tr>
@@ -257,7 +265,7 @@ template&lt;typename RootFactory , typename DefaultLanguageID , typename... Supp
 <p>Calls the help method on the selected root.</p>
 <dl class="section return"><dt>Returns</dt><dd>String holding the help output </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="multi__lang_2root_8hpp_source.html#l00153">153</a> of file <a class="el" href="multi__lang_2root_8hpp_source.html">root.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="multi__lang_2root_8hpp_source.html#l00194">194</a> of file <a class="el" href="multi__lang_2root_8hpp_source.html">root.hpp</a>.</p>
 
 </div>
 </div>
@@ -294,12 +302,58 @@ template&lt;typename RootFactory , typename DefaultLanguageID , typename... Supp
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="multi__lang_2root_8hpp_source.html#l00144">144</a> of file <a class="el" href="multi__lang_2root_8hpp_source.html">root.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="multi__lang_2root_8hpp_source.html#l00185">185</a> of file <a class="el" href="multi__lang_2root_8hpp_source.html">root.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a9d2ca39e78f6681af8785638e1b504c4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9d2ca39e78f6681af8785638e1b504c4">&#9670;&nbsp;</a></span>parse() <span class="overload">[1/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename RootFactory , typename DefaultLanguageID , typename... SupportedLanguageIDs&gt; </div>
+<div class="memtemplate">
+template&lt;typename Container , typename  = std::enable_if_t&lt;                  !std::is_same_v&lt;std::decay_t&lt;Container&gt;, vector&lt;parsing::token_type&gt;&gt;&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classarg__router_1_1multi__lang_1_1root__t.html">arg_router::multi_lang::root_t</a>&lt; RootFactory, DefaultLanguageID, SupportedLanguageIDs &gt;::parse </td>
+          <td>(</td>
+          <td class="paramtype">const Container &amp;&#160;</td>
+          <td class="paramname"><em>c</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Calls the parse method on the selected root.</p>
+<p>The first element is <em>not</em> expected to be the executable name. </p><dl class="section note"><dt>Note</dt><dd>This does not take part in overload resolution if <em>c</em> is a <code>vector&lt;<a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a>&gt;</code> </dd></dl>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Container</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">c</td><td>Elements to parse </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="multi__lang_2root_8hpp_source.html#l00166">166</a> of file <a class="el" href="multi__lang_2root_8hpp_source.html">root.hpp</a>.</p>
 
 </div>
 </div>
 <a id="a6295e8e56bf123f5ab927666108c4504"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6295e8e56bf123f5ab927666108c4504">&#9670;&nbsp;</a></span>parse()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a6295e8e56bf123f5ab927666108c4504">&#9670;&nbsp;</a></span>parse() <span class="overload">[2/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -342,7 +396,107 @@ template&lt;typename RootFactory , typename DefaultLanguageID , typename... Supp
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="multi__lang_2root_8hpp_source.html#l00135">135</a> of file <a class="el" href="multi__lang_2root_8hpp_source.html">root.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="multi__lang_2root_8hpp_source.html#l00176">176</a> of file <a class="el" href="multi__lang_2root_8hpp_source.html">root.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ab41073389fae307be2f7495189727fe8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab41073389fae307be2f7495189727fe8">&#9670;&nbsp;</a></span>parse() <span class="overload">[3/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename RootFactory , typename DefaultLanguageID , typename... SupportedLanguageIDs&gt; </div>
+<div class="memtemplate">
+template&lt;typename Iter , typename  = std::enable_if_t&lt;!std::is_same_v&lt;std::decay_t&lt;Iter&gt;, int&gt;&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classarg__router_1_1multi__lang_1_1root__t.html">arg_router::multi_lang::root_t</a>&lt; RootFactory, DefaultLanguageID, SupportedLanguageIDs &gt;::parse </td>
+          <td>(</td>
+          <td class="paramtype">Iter&#160;</td>
+          <td class="paramname"><em>begin</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Iter&#160;</td>
+          <td class="paramname"><em>end</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Calls the parse method on the selected root.</p>
+<p>The first element is <em>not</em> expected to be the executable name. </p><dl class="section note"><dt>Note</dt><dd>The strings must out live the parse process as they are not copied. </dd></dl>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Iter</td><td>Iterator type to <code>std::string_view</code> convertible elements </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">begin</td><td>Iterator to the first element </td></tr>
+    <tr><td class="paramname">end</td><td>Iterator to the one-past-the-end element </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="multi__lang_2root_8hpp_source.html#l00150">150</a> of file <a class="el" href="multi__lang_2root_8hpp_source.html">root.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a18c78b19b6efb79e4395b58a9b77a4e8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a18c78b19b6efb79e4395b58a9b77a4e8">&#9670;&nbsp;</a></span>parse() <span class="overload">[4/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename RootFactory , typename DefaultLanguageID , typename... SupportedLanguageIDs&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classarg__router_1_1multi__lang_1_1root__t.html">arg_router::multi_lang::root_t</a>&lt; RootFactory, DefaultLanguageID, SupportedLanguageIDs &gt;::parse </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacearg__router.html#a3d789cf2175008b4124de867a13a2edf">vector</a>&lt; <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a> &gt;&#160;</td>
+          <td class="paramname"><em>args</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Calls the parse method on the selected root.</p>
+<p>The first element is <em>not</em> expected to be the executable name. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">args</td><td>Vector of tokens </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classarg__router_1_1parse__exception.html">parse_exception</a></td><td>Thrown if parsing has failed </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="multi__lang_2root_8hpp_source.html#l00136">136</a> of file <a class="el" href="multi__lang_2root_8hpp_source.html">root.hpp</a>.</p>
 
 </div>
 </div>

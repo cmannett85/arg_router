@@ -5,5 +5,8 @@ var classarg__router_1_1root__t =
     [ "root_t", "classarg__router_1_1root__t.html#ae03c8f5d92f81a5b04988426aa3a7438", null ],
     [ "help", "classarg__router_1_1root__t.html#a91fa95bf1546f47836de9c37a8486325", null ],
     [ "help", "classarg__router_1_1root__t.html#a435e841c0c7edb67dbe1dd22a2e9fc40", null ],
-    [ "parse", "classarg__router_1_1root__t.html#ad1e58e6fdddf15f4a38081e0777abbe1", null ]
+    [ "parse", "classarg__router_1_1root__t.html#a49873669be757c9f1d03aebecc99758a", null ],
+    [ "parse", "classarg__router_1_1root__t.html#ad1e58e6fdddf15f4a38081e0777abbe1", null ],
+    [ "parse", "classarg__router_1_1root__t.html#a85ec3c6585391372dbad7f245f4e3489", null ],
+    [ "parse", "classarg__router_1_1root__t.html#a9e70cf821683c5e31cbf87d804f6b303", null ]
 ];

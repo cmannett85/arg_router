@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2023-03-07 22:23:57</td>
+            <td class="headerValue">2023-03-26 13:06:42</td>
             <td></td>
           </tr>
           <tr>
@@ -139,7 +139,7 @@
 <a name="73"><span class="lineNum">      73 </span>            :      *</a>
 <a name="74"><span class="lineNum">      74 </span>            :      * @return String size</a>
 <a name="75"><span class="lineNum">      75 </span>            :      */</a>
-<a name="76"><span class="lineNum">      76 </span><span class="lineCov">       1585 :     [[nodiscard]] constexpr static std::size_t size() noexcept { return size_; }</span></a>
+<a name="76"><span class="lineNum">      76 </span><span class="lineCov">       1926 :     [[nodiscard]] constexpr static std::size_t size() noexcept { return size_; }</span></a>
 <a name="77"><span class="lineNum">      77 </span>            : </a>
 <a name="78"><span class="lineNum">      78 </span>            :     /** True if string is empty.</a>
 <a name="79"><span class="lineNum">      79 </span>            :      *</a>
@@ -151,9 +151,9 @@
 <a name="85"><span class="lineNum">      85 </span>            :      *</a>
 <a name="86"><span class="lineNum">      86 </span>            :      * @return View of the string data</a>
 <a name="87"><span class="lineNum">      87 </span>            :      */</a>
-<a name="88"><span class="lineNum">      88 </span><span class="lineCov">       1585 :     [[nodiscard]] constexpr static std::string_view get() noexcept</span></a>
+<a name="88"><span class="lineNum">      88 </span><span class="lineCov">       1926 :     [[nodiscard]] constexpr static std::string_view get() noexcept</span></a>
 <a name="89"><span class="lineNum">      89 </span>            :     {</a>
-<a name="90"><span class="lineNum">      90 </span><span class="lineCov">       1585 :         return {S.value.data(), size()};</span></a>
+<a name="90"><span class="lineNum">      90 </span><span class="lineCov">       1926 :         return {S.value.data(), size()};</span></a>
 <a name="91"><span class="lineNum">      91 </span>            :     }</a>
 <a name="92"><span class="lineNum">      92 </span>            : </a>
 <a name="93"><span class="lineNum">      93 </span>            :     /** Concatentation operator.</a>
