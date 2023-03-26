@@ -12,8 +12,7 @@ set(AR_CMAKE_PACKAGE_DIR "share/arg_router"
     CACHE STRING "Installation suffix of CMake package config files, defaults to share/arg_router")
 
 install(TARGETS arg_router
-        EXPORT AR_TARGETS
-        INCLUDES DESTINATION "${INSTALL_BASE_DIR}")
+        EXPORT AR_TARGETS)
 install(EXPORT AR_TARGETS
         FILE arg_router.cmake
         NAMESPACE arg_router::

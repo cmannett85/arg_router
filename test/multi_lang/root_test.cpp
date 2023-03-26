@@ -122,13 +122,52 @@ BOOST_AUTO_TEST_CASE(parse_test)
                             policy::exception_translator<tr>);
             });
 
-        try {
-            r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data()));
-            BOOST_CHECK(exception_message.empty());
-            BOOST_REQUIRE(!!result);
-            BOOST_CHECK_EQUAL(*result, parse_result);
-        } catch (parse_exception& e) {
-            BOOST_CHECK_EQUAL(e.what(), exception_message);
+        const auto parse_invocations =
+            std::vector<std::pair<std::string_view, std::function<void(std::vector<const char*>)>>>{
+                {"vector<parsing::token_type> overload",
+                 [&](std::vector<const char*> args) {
+                     args.erase(args.begin());
+                     auto tt = vector<parsing::token_type>{};
+                     for (auto arg : args) {
+                         tt.emplace_back(parsing::prefix_type::none, arg);
+                     }
+                     r.parse(std::move(tt));
+                 }},
+                {"int, char** overload",
+                 [&](std::vector<const char*> args) {
+                     r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data()));
+                 }},
+                {"Iter, Iter overload",
+                 [&](std::vector<const char*> args) {  //
+                     args.erase(args.begin());
+                     r.parse(args.begin(), args.end());
+                 }},
+                {"Container overload",
+                 [&](std::vector<const char*> args) {  //
+                     args.erase(args.begin());
+                     r.parse(args);
+                 }},
+                {"Container overload (with strings)",  //
+                 [&](std::vector<const char*> args) {
+                     args.erase(args.begin());
+                     auto strings = vector<string>{};
+                     for (auto arg : args) {
+                         strings.push_back(arg);
+                     }
+                     r.parse(std::move(strings));
+                 }}};
+
+        for (const auto& [name, invoc] : parse_invocations) {
+            BOOST_TEST_MESSAGE("\t" << name);
+            try {
+                result.reset();
+                invoc(args);
+                BOOST_CHECK(exception_message.empty());
+                BOOST_REQUIRE(!!result);
+                BOOST_CHECK_EQUAL(*result, parse_result);
+            } catch (parse_exception& e) {
+                BOOST_CHECK_EQUAL(e.what(), exception_message);
+            }
         }
     };
 

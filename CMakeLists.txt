@@ -26,7 +26,7 @@ if((NOT INSTALLATION_ONLY) AND (NOT DISABLE_VCPKG))
 endif()
 
 project(arg_router
-        VERSION 1.2.2
+        VERSION 1.3.0
         DESCRIPTION "C++ command line argument parsing and routing"
         HOMEPAGE_URL "https://github.com/cmannett85/arg_router"
         LANGUAGES CXX)
@@ -37,26 +37,23 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" OR CMAKE_CXX_COMPILER_FRONTEND_VARIANT
     set(MSVC_FRONTEND ON)
 endif()
 
-include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/versioning/version.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/documentation.cmake")
 
 set(BOOST_VERSION 1.74)
 if(NOT INSTALLATION_ONLY)
+    include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/versioning/version.cmake")
     include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/copyright_checker.cmake")
     include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.cmake")
     include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/clang-tidy.cmake")
     include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/sanitizers.cmake")
     include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/ccache.cmake")
 
-    find_package(span-lite)
-    if (NOT span-lite_FOUND)
-        message(WARNING "span-lite package not found, you will need to compile against a C++20 supporting compiler")
-    else()
-        include_directories(BEFORE SYSTEM ${span-lite_INCLUDE_DIRS})
-    endif()
-
     find_package(Boost ${BOOST_VERSION} REQUIRED)
-    include_directories(BEFORE SYSTEM ${Boost_INCLUDE_DIRS})
+
+    find_package(span-lite QUIET)
+    if (NOT span-lite_FOUND)
+        message(WARNING "span-lite package not found, you will need to compile against C++20 or higher")
+    endif()
 endif()
 
 path_prefixer(HEADERS
@@ -138,35 +135,6 @@ path_prefixer(HEADERS
     include/arg_router/utility/utf8/whitespace.hpp
     include/arg_router/utility/utf8/zero_width.hpp
     include/arg_router/version.hpp
-)
-
-path_prefixer(FOR_IDE
-    .clang-format
-    .clang-tidy
-    .clangd
-    .github/workflows/docs_pusher.yml
-    .github/workflows/merge_checker.yml
-    .github/workflows/pr_checker.yml
-    .gitignore
-    cmake/package/arg_router-config.cmake.in
-    cmake/versioning/version.cmake
-    cmake/versioning/version.hpp.in
-    LICENSE
-    README.md
-    scripts/ci/create_badge_url.sh
-    scripts/ci/calculate_test_coverage.sh
-    scripts/ci/docker/base.sh
-    scripts/ci/docker/clang-9.sh
-    scripts/ci/docker/clang++-9.sh
-    scripts/ci/docker/cmake.sh
-    scripts/ci/docker/Dockerfile
-    scripts/ci/docker/g++-9.sh
-    scripts/ci/docker/gcc-9.sh
-    scripts/ci/docker/README.md
-    scripts/copyright_checker.py
-    scripts/unicode_table_generators.py
-    test/.clang-tidy
-    vcpkg.json
 )
 
 if(NOT INSTALLATION_ONLY)
