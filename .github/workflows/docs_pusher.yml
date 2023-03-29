@@ -8,8 +8,6 @@ on:
 
 env:
   SKIP_COVERAGE_UPDATE: 1
-  NUGET_SOURCE_URL: "https://nuget.pkg.github.com/cmannett85/index.json"
-  VCPKG_BINARY_SOURCES: 'clear;nuget,vcpkg-cache,readwrite'
   BUILD_DIR: ${{ github.workspace }}/build
 
 jobs:
@@ -17,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: true
 
@@ -26,22 +24,9 @@ jobs:
         sudo apt update
         sudo apt install lcov ninja-build doxygen graphviz
 
-    - name: Bootstrap vcpkg to build the NuGet client
-      run: |
-        ./external/vcpkg/bootstrap-vcpkg.sh -disableMetrics
-
-    - name: Configure NuGet client
-      run: |
-        mono `./external/vcpkg/vcpkg fetch nuget | tail -n 1` \
-          sources add \
-          -source ${{ env.NUGET_SOURCE_URL }} \
-          -storepasswordincleartext \
-          -name "vcpkg-cache" \
-          -username "cmannett85" \
-          -password "${{ secrets.GITHUB_TOKEN }}"
-        mono `./external/vcpkg/vcpkg fetch nuget | tail -n 1` \
-          setapikey "${{ secrets.GITHUB_TOKEN }}" \
-          -source ${{ env.NUGET_SOURCE_URL }}
+    - uses: ./.github/workflows/bootstrap_vcpkg
+      with:
+        token: "${{ secrets.GITHUB_TOKEN }}"
 
     - name: Generate API documentation and build Unit Tests
       timeout-minutes: 30

@@ -1,0 +1,53 @@
+name: Bootstrap vcpkg and Configure NuGet
+description: Bootsraps vcpkg with disabled metrics, and configures NuGet as a bianry cache
+
+inputs:
+  token:
+    description: "GitHub password token"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Configure env vars
+      shell: bash
+      run: |
+        echo "NUGET_SOURCE_URL=https://nuget.pkg.github.com/cmannett85/index.json" >> $GITHUB_ENV
+        echo "VCPKG_BINARY_SOURCES=clear;nuget,vcpkg-cache,readwrite" >> $GITHUB_ENV
+
+    - name: Bootstrap vcpkg to build the NuGet client on Linux and MacOS
+      if: runner.os != 'Windows'
+      shell: bash
+      run: |
+        cd ${{ github.workspace }}
+        ./external/vcpkg/bootstrap-vcpkg.sh -disableMetrics
+
+    - name: Bootstrap vcpkg to build the NuGet client on Windows
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        cd ${{ github.workspace }}
+        ./external/vcpkg/bootstrap-vcpkg.bat -disableMetrics
+
+    - name: Configure NuGet client on Linux and MacOS
+      if: runner.os != 'Windows'
+      shell: bash
+      run: |
+        mono `./external/vcpkg/vcpkg fetch nuget | tail -n 1` \
+          sources add \
+          -source ${{ env.NUGET_SOURCE_URL }} \
+          -storepasswordincleartext \
+          -name "vcpkg-cache" \
+          -username "cmannett85" \
+          -password "${{ inputs.token }}"
+        mono `./external/vcpkg/vcpkg fetch nuget | tail -n 1` \
+          setapikey "${{ inputs.token }}" \
+          -source ${{ env.NUGET_SOURCE_URL }}
+
+    - name: Configure NuGet client on Windows
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        [array] $output = ./external/vcpkg/vcpkg.exe fetch nuget
+        & $output[-1] sources add -source ${{ env.NUGET_SOURCE_URL }} -storepasswordincleartext -name "vcpkg-cache" -username "cmannett85" -password "${{ inputs.token }}"
+        & $output[-1] setapikey "${{ inputs.token }}" -source ${{ env.NUGET_SOURCE_URL }}
