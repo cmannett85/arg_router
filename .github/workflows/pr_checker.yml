@@ -7,8 +7,6 @@ on:
 
 env:
   SKIP_COVERAGE_UPDATE: 0
-  NUGET_SOURCE_URL: "https://nuget.pkg.github.com/cmannett85/index.json"
-  VCPKG_BINARY_SOURCES: 'clear;nuget,vcpkg-cache,readwrite'
   BUILD_DIR: ${{ github.workspace }}/build
   INSTALL_DIR: ${{ github.workspace }}/install
   PACKAGE_BUILD_DIR: ${{ github.workspace }}/package_build
@@ -31,7 +29,7 @@ jobs:
     needs: purge_old_packages
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: true
         fetch-depth: 2
@@ -48,22 +46,9 @@ jobs:
         sudo apt update
         sudo apt install valgrind lcov ninja-build
 
-    - name: Bootstrap vcpkg to build the NuGet client
-      run: |
-        ./external/vcpkg/bootstrap-vcpkg.sh -disableMetrics
-
-    - name: Configure NuGet client
-      run: |
-        mono `./external/vcpkg/vcpkg fetch nuget | tail -n 1` \
-          sources add \
-          -source ${{ env.NUGET_SOURCE_URL }} \
-          -storepasswordincleartext \
-          -name "vcpkg-cache" \
-          -username "cmannett85" \
-          -password "${{ secrets.GITHUB_TOKEN }}"
-        mono `./external/vcpkg/vcpkg fetch nuget | tail -n 1` \
-          setapikey "${{ secrets.GITHUB_TOKEN }}" \
-          -source ${{ env.NUGET_SOURCE_URL }}
+    - uses: ./.github/workflows/bootstrap_vcpkg
+      with:
+        token: "${{ secrets.GITHUB_TOKEN }}"
 
     - name: Build
       timeout-minutes: 30
@@ -121,7 +106,7 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: true
 
@@ -130,22 +115,9 @@ jobs:
         sudo apt update
         sudo apt install ninja-build
 
-    - name: Bootstrap vcpkg to build the NuGet client
-      run: |
-        ./external/vcpkg/bootstrap-vcpkg.sh -disableMetrics
-
-    - name: Configure NuGet client
-      run: |
-        mono `./external/vcpkg/vcpkg fetch nuget | tail -n 1` \
-          sources add \
-          -source ${{ env.NUGET_SOURCE_URL }} \
-          -storepasswordincleartext \
-          -name "vcpkg-cache" \
-          -username "cmannett85" \
-          -password "${{ secrets.GITHUB_TOKEN }}"
-        mono `./external/vcpkg/vcpkg fetch nuget | tail -n 1` \
-          setapikey "${{ secrets.GITHUB_TOKEN }}" \
-          -source ${{ env.NUGET_SOURCE_URL }}
+    - uses: ./.github/workflows/bootstrap_vcpkg
+      with:
+        token: "${{ secrets.GITHUB_TOKEN }}"
 
     - name: Build
       timeout-minutes: 30
@@ -171,19 +143,13 @@ jobs:
       CMD_BUILD_DIR: ${{ github.workspace }}\\build
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: true
 
-    - name: Bootstrap vcpkg to build the NuGet client
-      run: |
-        ./external/vcpkg/bootstrap-vcpkg.bat -disableMetrics
-
-    - name: Configure NuGet client
-      run: |
-        [array] $output = ./external/vcpkg/vcpkg.exe fetch nuget
-        & $output[-1] sources add -source ${{ env.NUGET_SOURCE_URL }} -storepasswordincleartext -name "vcpkg-cache" -username "cmannett85" -password "${{ secrets.GITHUB_TOKEN }}"
-        & $output[-1] setapikey "${{ secrets.GITHUB_TOKEN }}" -source ${{ env.NUGET_SOURCE_URL }}
+    - uses: ./.github/workflows/bootstrap_vcpkg
+      with:
+        token: "${{ secrets.GITHUB_TOKEN }}"
 
     - name: Build
       timeout-minutes: 30
@@ -206,7 +172,7 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: true
 
@@ -252,7 +218,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: true
 

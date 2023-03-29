@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
           fetch-depth: 1
 
@@ -55,32 +55,14 @@ jobs:
 
     - name: Create GitHub release entry
       id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: softprops/action-gh-release@v0.1.15
       with:
         tag_name: ${{ env.TAG_VERSION }}
-        release_name: arg_router ${{ env.TAG_VERSION }}
+        name: arg_router ${{ env.TAG_VERSION }}
+        body: ${{ steps.commit_msg.outputs.commit_msg }}
         draft: false
         prerelease: false
-        body: ${{ steps.commit_msg.outputs.commit_msg }}
-
-    - name: Upload zip
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{steps.create_release.outputs.upload_url}}
-        asset_path: ${{ env.BUILD_DIR }}/${{ steps.version_check.outputs.filename }}.zip
-        asset_name: ${{ steps.version_check.outputs.filename }}.zip
-        asset_content_type: application/zip
-
-    - name: Upload deb
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{steps.create_release.outputs.upload_url}}
-        asset_path: ${{ env.BUILD_DIR }}/${{ steps.version_check.outputs.filename }}.deb
-        asset_name: ${{ steps.version_check.outputs.filename }}.deb
-        asset_content_type: application/vnd.debian.binary-package
+        fail_on_unmatched_files: true
+        files: |
+          ${{ env.BUILD_DIR }}/${{ steps.version_check.outputs.filename }}.zip
+          ${{ env.BUILD_DIR }}/${{ steps.version_check.outputs.filename }}.deb
