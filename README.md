@@ -171,7 +171,7 @@ The `arp::validation::default_validator` instance provides the default validator
 
 The `help` node is used by the `root` to generate the argument documentation for the help output, by default it just prints directly to the console and then exits, but a `router` can be attached that accepts the formatted output to do something else with it.  The optional `program_name_t` and `program_version_t` policies add a header to the help output.
 
-Now let's introduce some 'policies'.  Policies define common behaviours across node types, a basic one is `long_name_t` which provides long-form argument definition.  By default, a standard unix double hyphen prefix for long names is added automatically.  Having the name defined at compile-time means we detect duplicate names and fail the build - one less unit test you have to worry about.  `short_name_t` is the single character short-form name, by default a single hyphen is prefixed automatically.  `arg_router` supports short name collapsing for flags, so if you have defined flags like `-a -b -c` then `-abc` will be accepted or `-bca`, etc. (**note** short-form name collapsing is disabled if the library has been configured to have the same long and short prefix).
+Now let's introduce some 'policies'.  Policies define common behaviours across node types, a basic one is `long_name_t` which provides long-form argument definition.  By default, a standard unix double hyphen prefix for long names is added automatically.  `short_name_t` is the single character short-form name, by default a single hyphen is prefixed automatically.  `arg_router` supports short name collapsing for flags, so if you have defined flags like `-a -b -c` then `-abc` will be accepted or `-bca`, etc. (**note** short-form name collapsing is disabled if the library has been configured to have the same long and short prefix, which is common on Windows).
 
 Compile-time strings are created via the `""_S` string literal, which creates an instance of a `ar::str` type.  **Note** Advanced NTTP language support that allows for this is not present until C++20, see [compile-time string support](#compile-time-string-support) for what to do in C++17.
 
@@ -192,10 +192,10 @@ Assuming parsing was successful, the final `router` is called with the parsed ar
 You may have noticed that the nodes are constructed with parentheses whilst the policies use braces, this is necessary due to CTAD rules that affect nodes which return a user-defined value type.  This can be circumvented using a function to return the required instance, for example the actual type of a flag is `flag_t`, `flag(...)` is a factory function.
 
 ### Implicit String Policies
-Although explicit, which may make it easier to read, the name policies are also verbose.  To ease this most of the built-in nodes support implicit string-to-policy mapping, which allows bare compile-time strings to be passed to the node factory functions which are then mapped to appropriate built-in policies.  The rules vary from node to node due, but typically they are:
+Although explicit, which may make it easier to read, the name policies are also verbose.  To ease this most of the built-in nodes support implicit string-to-policy mapping, which allows bare compile-time strings to be passed to the node factory functions which are then mapped to appropriate built-in policies.  The rules vary from node to node, but typically they are:
 1. The first multi-character string becomes a `policy::long_name_t`
 2. The second multi-character string becomes a `policy::description_t`
-3. The first single-charcter string becomes a `policy::short_name_t`
+3. The first single-character string becomes a `policy::short_name_t`
 The above are unicode aware.  The strings can be passed in any order relative to the other policies, but it is recommended to put them first to ease reading.
 
 Re-writing the `cat`-like program using implicit strings shortens it considerably:
@@ -343,7 +343,7 @@ Note that even though we are using a custom enum, we haven't specified a `custom
 
 Short name collapsing still works as expected, so passing `-Evnv` will result in `show_ends` and `show_non_printing` being true, and `verbosity_level` will be `verbosity_level_t::INFO` in the `router` call.
 
-We can constrain the amount of flags the user can provide by using the `max_value` policy, so passing `-vvvv` will result in a runtime error.  There are min/max and min variants too.  Here we are using the compile-time variant of the policy, we can do that because the value type is an integral/enum, but if your value type cannot be used as a template parameter then there equivalent runtime variants that take the paramters as function parameters instead.  The compile-time variants should be used when possible due to extra checks e.g. setting the max value less than the min.
+We can constrain the amount of flags the user can provide by using the `max_value` policy, so passing `-vvvv` will result in a runtime error.  There are min/max and min variants too.  Here we are using the compile-time variant of the policy, we can do that because the value type is an integral/enum, but if your value type cannot be used as a template parameter then there equivalent runtime variants that take the parameters as function parameters instead.  The compile-time variants should be used when possible due to extra checks e.g. setting the max value less than the min.
 
 The `long_name_t` policy is allowed but usually leads to ugly invocations, however there is a better option:
 ```cpp
@@ -416,7 +416,7 @@ Only the last `positional_arg` may be of variable length.  A runtime error will 
 It should be noted that setting a non-zero minimum count (`min_count`, `fixed_count`, or `min_max_count`) does _not_ imply a requirement, the minimum count check only applies when there is at least one argument for the node to process.  So as with an `arg`, you should use a `required` policy to explicitly state that at least one argument needs to be present, or a `default_value` policy - otherwise a default initialised value will be used instead.  For `positional_arg` nodes that are marked as `required`, it is a compile-time error to have a minimum count policy value of 0.
 
 ## Modes
-As noted in [Basics](#basics), `mode`s allow you to group command line components under an initial token on the command line.  A common example of this developers will be aware of is `git`, for example in our parlance `git clean -ffxd`; `clean` would be the mode and `ffxd` would be be the flags that are available under that mode.
+As noted in [Basics](#basics), `mode`s allow you to group command line components under an initial token on the command line.  A common example of this developers will be aware of is `git`, for example in our parlance `git clean -ffxd`; `clean` would be the mode and `ffxd` would be the flags that are available under that mode.
 
 As an example, let's take the `simple-copy` above and split it into two modes:
 ```
@@ -581,7 +581,7 @@ copy              Copy source files to destination
 An example program for arg_router.
 ```
 ### Programmatic Access
-By default when parsed, `help` will output its contents to `std::cout` and then exit the application with `EXIT_SUCCESS`.  Obviously this won't always be desired, so a `router` policy can be attached that will pass a `std::ostringstream` to the user-provided `Callable`.  The stream will have already been populated with the help data shown above, but it can now be appended to or converted to string for use somewhere else.
+By default when parsed, `help` will output its contents to `std::cout` and then exit the application with `EXIT_SUCCESS`.  Obviously this won't always be desired, so a `router` policy can be attached that will pass a `std::ostringstream` to the user-provided `Callable`.  The stream will have already been populated with the help data shown above, but it can now be appended to or converted to a string for use somewhere else.
 
 Often programmatic access is desired for the help output outside of the user requesting it, for example if a parse exception is thrown, generally the exception error is printed to the terminal followed by the help output.  This is exposed by the `help()` or `help(std::ostringstream&)` methods of the root object.
 
@@ -851,7 +851,7 @@ For those targetting C++20 with existing v1.0 code, upgrading to a newer library
 **Note** C++17 will be supported as a first class citizen until v2.0, after that C++20 will be the minimum so I can strip out a ton of code and get better diagnostics by using concepts.
 
 ## Error Handling
-Currently `arg_router` only supports exceptions as error handling.  If a parsing fails for some reason a `arg_router::parse_exception` is thrown carrying information on the failure.
+Currently `arg_router` only supports exceptions as error handling.  If parsing fails for some reason a `arg_router::parse_exception` is thrown carrying information on the failure.
 
 ## Configuration
 Low-level tweaking of the library is achieved via some defines and/or CMake variables, documented [here](https://cmannett85.github.io/arg_router/configuration.html).
@@ -862,7 +862,7 @@ The CI system attached to this repo builds the unit tests and examples with:
 * Windows Server 2022 (Ninja, MSBuild), Clang 14.0.5, MSVC 19.34(C++20 only)
 * MacOS 12 (Ninja), Clang 14
 
-You can build on Windows with using MSBuild but you must set the CMake variable `DEATH_TEST_PARALLEL` to 1 otherwise the parallel tests will attempt to write to the project-wide `lastSuccessfulBuild` file simultaneously, which causes the build to fail. MSVC is supported but only when using the C++20-style compile-time strings due [this](https://developercommunity.visualstudio.com/t/1395099) MSVC bug.
+You can build the unit tests on Windows using MSBuild but you must set the CMake variable `DEATH_TEST_PARALLEL` to 1 otherwise the parallel tests will attempt to write to the project-wide `lastSuccessfulBuild` file simultaneously, which causes the build to fail. MSVC is supported but only when using the C++20-style compile-time strings due [this](https://developercommunity.visualstudio.com/t/1395099) MSVC bug.
 
 Other compiler versions and platform combinations may work, but I'm currently limited by the built-in GitHub runners and how much I'm willing to spend on Actions!
 
