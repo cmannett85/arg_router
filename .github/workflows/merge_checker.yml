@@ -13,9 +13,30 @@ env:
   DOWNLOAD_DIR: ${{ github.workspace }}/download
 
 jobs:
+  # Skip jobs based on what files have changed
+  changes:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      merge_checker: ${{ steps.filter.outputs.merge_checker }}
+      source_tests_and_examples: ${{ steps.filter.outputs.source_tests_and_examples }}
+      docs: ${{ steps.filter.outputs.docs }}
+      vcpkg_test_project: ${{ steps.filter.outputs.vcpkg_test_project }}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        filters: .github/filters.yml
+
   # Run the more esoteric/likely to succeed unit tests when merging to main
   sanitizer_unit_tests:
     runs-on: ubuntu-22.04
+    needs: changes
+    if: |
+      needs.changes.outputs.merge_checker == 'true' ||
+      needs.changes.outputs.source_tests_and_examples == 'true'
 
     steps:
     - uses: actions/checkout@v3
@@ -47,6 +68,10 @@ jobs:
 
   gcc_compiler_test:
     runs-on: ubuntu-22.04
+    needs: changes
+    if: |
+      needs.changes.outputs.merge_checker == 'true' ||
+      needs.changes.outputs.source_tests_and_examples == 'true'
 
     steps:
     - uses: actions/checkout@v3
@@ -78,6 +103,10 @@ jobs:
 
   thirtytwobit_gcc_compiler_test:
     runs-on: ubuntu-22.04
+    needs: changes
+    if: |
+      needs.changes.outputs.merge_checker == 'true' ||
+      needs.changes.outputs.source_tests_and_examples == 'true'
 
     steps:
     - uses: actions/checkout@v3
@@ -109,6 +138,10 @@ jobs:
 
   windows_clang_cl_compiler_tests:
     runs-on: windows-2022
+    needs: changes
+    if: |
+      needs.changes.outputs.merge_checker == 'true' ||
+      needs.changes.outputs.source_tests_and_examples == 'true'
 
     # Use the CMake that ships with VS to match locally built versions
     env:
@@ -163,6 +196,10 @@ jobs:
 
   macos_compiler_tests:
     runs-on: macos-12
+    needs: changes
+    if: |
+      needs.changes.outputs.merge_checker == 'true' ||
+      needs.changes.outputs.source_tests_and_examples == 'true'
 
     steps:
     - uses: actions/checkout@v3
@@ -213,6 +250,10 @@ jobs:
   # Test vcpkg package is acquired and accessible
   vcpkg_test_package:
     runs-on: ubuntu-22.04
+    needs: changes
+    if: |
+      needs.changes.outputs.merge_checker == 'true' ||
+      needs.changes.outputs.vcpkg_test_project == 'true'
 
     steps:
     - uses: actions/checkout@v3
