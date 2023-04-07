@@ -23,10 +23,30 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  # Skip jobs based on what files have changed
+  changes:
+    runs-on: ubuntu-latest
+    needs: purge_old_packages
+    permissions:
+      pull-requests: read
+    outputs:
+      pr_checker: ${{ steps.filter.outputs.pr_checker }}
+      source_tests_and_examples: ${{ steps.filter.outputs.source_tests_and_examples }}
+      docs: ${{ steps.filter.outputs.docs }}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        filters: .github/filters.yml
+
   # Builds the unit tests and executes them
   unit_test_coverage:
     runs-on: ubuntu-22.04
-    needs: purge_old_packages
+    needs: changes
+    if: |
+      needs.changes.outputs.pr_checker == 'true' ||
+      needs.changes.outputs.source_tests_and_examples == 'true'
 
     steps:
     - uses: actions/checkout@v3
@@ -104,6 +124,10 @@ jobs:
 
   old_gcc_compiler_test:
     runs-on: ubuntu-22.04
+    needs: changes
+    if: |
+      needs.changes.outputs.pr_checker == 'true' ||
+      needs.changes.outputs.source_tests_and_examples == 'true'
 
     steps:
     - uses: actions/checkout@v3
@@ -135,7 +159,11 @@ jobs:
 
   windows_msvc_compiler_tests:
     runs-on: windows-2022
-    needs: purge_old_packages
+    needs: changes
+    if: |
+      needs.changes.outputs.pr_checker == 'true' ||
+      needs.changes.outputs.source == 'true' ||
+      needs.changes.outputs.source_tests_and_examples == 'true'
 
     # Use the CMake that ships with VS to match locally built versions
     env:
@@ -159,7 +187,7 @@ jobs:
         mkdir ${{ env.CMD_BUILD_DIR }}
         cd ${{ env.CMD_BUILD_DIR }}
         "${{ env.CMAKE_EXE }}" ${{ github.workspace }} -G "Visual Studio 17 2022" -DVCPKG_TARGET_TRIPLET:STRING="x64-windows-static" -DDEATH_TEST_PARALLEL=1
-        "${{ env.CMAKE_EXE }}" --build . --target arg_router_test cpp17_examples cpp20_examples
+        "${{ env.CMAKE_EXE }}" --build . --target arg_router_test cpp20_examples
 
     - name: Run unit tests
       timeout-minutes: 20
@@ -170,6 +198,10 @@ jobs:
   # Test package integrity test where we use system libs and C++20 (so no nonstd::span)
   system_test_package:
     runs-on: ubuntu-22.04
+    needs: changes
+    if: |
+      needs.changes.outputs.pr_checker == 'true' ||
+      needs.changes.outputs.source_tests_and_examples == 'true'
 
     steps:
     - uses: actions/checkout@v3
@@ -216,6 +248,11 @@ jobs:
   # Makes sure there are no errors when generating the documentation
   documentation:
     runs-on: ubuntu-latest
+    needs: changes
+    if: |
+      needs.changes.outputs.pr_checker == 'true' ||
+      needs.changes.outputs.source_tests_and_examples == 'true' ||
+      needs.changes.outputs.docs == 'true'
 
     steps:
     - uses: actions/checkout@v3

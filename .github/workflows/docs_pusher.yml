@@ -11,8 +11,30 @@ env:
   BUILD_DIR: ${{ github.workspace }}/build
 
 jobs:
+  # Skip jobs based on what files have changed
+  changes:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      docs_pusher: ${{ steps.filter.outputs.docs_pusher }}
+      source_tests_and_examples: ${{ steps.filter.outputs.source_tests_and_examples }}
+      docs: ${{ steps.filter.outputs.docs }}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        initial-fetch-depth: 2
+        filters: .github/filters.yml
+
   documentation:
     runs-on: ubuntu-latest
+    needs: changes
+    if: |
+      needs.changes.outputs.docs_pusher == 'true' ||
+      needs.changes.outputs.source_tests_and_examples == 'true' ||
+      needs.changes.outputs.docs == 'true'
 
     steps:
     - uses: actions/checkout@v3
