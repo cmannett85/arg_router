@@ -109,6 +109,7 @@ path_prefixer(HEADERS
     include/arg_router/policy/router.hpp
     include/arg_router/policy/short_form_expander.hpp
     include/arg_router/policy/short_name.hpp
+    include/arg_router/policy/token_end_marker.hpp
     include/arg_router/policy/validator.hpp
     include/arg_router/policy/validator_rule_utilities.hpp
     include/arg_router/policy/value_separator.hpp

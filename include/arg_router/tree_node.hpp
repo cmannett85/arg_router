@@ -271,6 +271,9 @@ protected:
             [[maybe_unused]] constexpr auto has_short_name =
                 boost::mp11::mp_find_if<policies_type, traits::has_short_name_method>::value !=
                 num_policies;
+            [[maybe_unused]] constexpr auto has_none_name =
+                boost::mp11::mp_find_if<policies_type, traits::has_none_name_method>::value !=
+                num_policies;
 
             if constexpr (has_long_name && has_short_name) {
                 return AR_STRING_SV(config::long_prefix){} +
@@ -283,6 +286,8 @@ protected:
             } else if constexpr (has_short_name) {
                 return AR_STRING_SV(config::short_prefix){} +
                        AR_STRING_SV(tree_node::short_name()){} + value_separator_suffix();
+            } else if constexpr (has_none_name) {
+                return AR_STRING_SV(tree_node::none_name()){} + value_separator_suffix();
             } else {
                 return AR_STRING(""){};
             }
@@ -473,18 +478,13 @@ protected:
             }
         }
 
-        // If the policy checking returned an exception, now is the time to throw it
-        match.throw_exception();
-
-        // If there are no processed tokens and no sub-targets then this node cannot do anything and
-        // therefore should not be used
-        if (result.empty() && target.sub_targets().empty()) {
-            return {};
-        }
-
+        // Exit early if the caller doesn't want this node
         if (!pre_parse_data.validator()(node, parents...)) {
             return {};
         }
+
+        // If the policy checking returned an exception, now is the time to throw it
+        match.throw_exception();
 
         // Update the unprocessed args
         pre_parse_data.args() = tmp_args;

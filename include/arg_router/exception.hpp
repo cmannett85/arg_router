@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -45,6 +45,7 @@ enum class error_code : std::size_t {
     minimum_value_not_reached,  ///< Parsed value is below the minimum
     maximum_value_exceeded,     ///< Parsed value is above the maximum
     minimum_count_not_reached,  ///< Minimum number of value tokens for node not reached
+    maximum_count_exceeded,     ///< Maximum number of value tokens exceeded
 
     // Builtin node specific
     mode_requires_arguments = 100,  ///< The mode only consists of child modes, but there  are no
@@ -78,6 +79,8 @@ struct default_error_code_translations {
                              AR_STRING("Maximum value exceeded")>,
                    std::pair<traits::integral_constant<error_code::minimum_count_not_reached>,
                              AR_STRING("Minimum count not reached")>,
+                   std::pair<traits::integral_constant<error_code::maximum_count_exceeded>,
+                             AR_STRING("Maximum count not exceeded")>,
                    std::pair<traits::integral_constant<error_code::mode_requires_arguments>,
                              AR_STRING("Mode requires arguments")>,
                    std::pair<traits::integral_constant<error_code::missing_required_argument>,

@@ -56,6 +56,7 @@ path_prefixer(TEST_SRCS
     policy/router_test.cpp
     policy/short_form_expander_test.cpp
     policy/short_name_test.cpp
+    policy/token_end_marker_test.cpp
     policy/validator_rule_utilities_test.cpp
     policy/validator_test.cpp
     policy/value_separator_test.cpp

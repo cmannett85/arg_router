@@ -529,47 +529,38 @@ struct anonymous_mode_must_be_at_end {
     }
 };
 
-/** A rule condition that checks that positional arg @a T has a fixed argument count if not at the
- * end of the positional arg list.
+/** A rule condition that checks that child list-like nodes have a fixed value count if not at the
+ * end of the policies list.
  *
- * @tparam PositionalArgTypes Pack of types that are considered positional args
+ * "List-like nodes" are defined as those with a <TT>minimum_count()</TT> different to their
+ * <TT>maximum_count()</TT> and without a policy::multi_stage_value and policy::token_end_marker.
  */
-template <template <typename...> typename... PositionalArgTypes>
-struct positional_args_must_have_fixed_count_if_not_at_end {
-    static_assert(sizeof...(PositionalArgTypes), "Must be at least one positional arg type");
-
+struct list_like_nodes_must_have_fixed_count_if_not_at_end {
     template <typename T>
-    using is_positional_arg =
-        boost::mp11::mp_any_of<std::tuple<traits::is_specialisation_of<T, PositionalArgTypes>...>,
-                               boost::mp11::mp_to_bool>;
-
-    template <typename T>
-    struct fixed_count_checker {
-        [[nodiscard]] constexpr static bool f() noexcept
-        {
+    struct is_list_like_node {
+        static constexpr bool value = []() {
             if constexpr (traits::has_minimum_count_method_v<T> &&
                           traits::has_maximum_count_method_v<T>) {
-                return T::minimum_count() == T::maximum_count();
+                return (T::minimum_count() != T::maximum_count()) &&
+                       !policy::has_multi_stage_value_v<T> &&
+                       !traits::has_token_end_marker_method_v<T>;
             }
 
             return false;
-        }
-
-        constexpr static auto value = f();
+        }();
     };
 
     template <typename T, typename...>
     constexpr static void check() noexcept
     {
         using children_type = typename T::children_type;
-        using pos_args = boost::mp11::mp_filter<is_positional_arg, children_type>;
+        constexpr auto count = boost::mp11::mp_count_if<children_type, is_list_like_node>::value;
+        static_assert(count <= 1, "There can only be one variable length list-like child");
 
-        constexpr auto num_pos_args = std::tuple_size_v<pos_args>;
-        if constexpr (num_pos_args > 0) {
-            using needs_fixed_count = boost::mp11::mp_take_c<pos_args, num_pos_args - 1>;
-            using has_fixed_count = boost::mp11::mp_all_of<needs_fixed_count, fixed_count_checker>;
-            static_assert(has_fixed_count::value,
-                          "Positional args not at the end of the list must have a fixed count");
+        if constexpr (count == 1) {
+            constexpr auto index = boost::mp11::mp_find_if<children_type, is_list_like_node>::value;
+            static_assert(index == (std::tuple_size_v<children_type> - 1),
+                          "Variable length list-like child must be at end of children");
         }
     }
 };
@@ -696,7 +687,7 @@ constexpr auto default_validator = validator<
            must_not_have_policies<policy::multi_stage_value,  //
                                   policy::required_t>,
            node_types_must_be_at_end<positional_arg_t>,
-           positional_args_must_have_fixed_count_if_not_at_end<positional_arg_t>,
+           list_like_nodes_must_have_fixed_count_if_not_at_end,
            parent_types<parent_index_pair_type<0, root_t>, parent_index_pair_type<0, mode_t>>>,
     // Help
     rule_q<common_rules::despecialised_any_of_rule<help_t>,

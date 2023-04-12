@@ -12,35 +12,6 @@
 
 namespace arg_router
 {
-namespace detail
-{
-template <typename... Policies>
-class add_missing_min_max_policy
-{
-    template <typename Policy>
-    struct has_min_max_t {
-        constexpr static bool value = traits::has_minimum_count_method_v<Policy> &&
-                                      traits::has_maximum_count_method_v<Policy>;
-    };
-
-    using policies_tuple = std::tuple<std::decay_t<Policies>...>;
-    using unbounded_policy_type =
-        policy::min_max_count_t<traits::integral_constant<0>,
-                                traits::integral_constant<std::numeric_limits<std::size_t>::max()>>;
-
-public:
-    constexpr static auto has_min_max =
-        boost::mp11::mp_find_if<policies_tuple, has_min_max_t>::value !=
-        std::tuple_size_v<policies_tuple>;
-
-    using type = std::conditional_t<
-        has_min_max,
-        boost::mp11::mp_rename<policies_tuple, tree_node>,
-        boost::mp11::mp_rename<boost::mp11::mp_push_front<policies_tuple, unbounded_policy_type>,
-                               tree_node>>;
-};
-}  // namespace detail
-
 /** Represents a positional argument on the command line that has potentially multiple values that
  * need parsing.
  *
@@ -51,12 +22,12 @@ public:
  * @tparam Policies Pack of policies that define its behaviour
  */
 template <typename T, typename... Policies>
-class positional_arg_t : public detail::add_missing_min_max_policy<Policies...>::type
+class positional_arg_t : public add_missing_min_max_policy<Policies...>::type
 {
     static_assert(policy::is_all_policies_v<std::tuple<std::decay_t<Policies>...>>,
                   "Positional args must only contain policies (not other nodes)");
 
-    using parent_type = typename detail::add_missing_min_max_policy<Policies...>::type;
+    using parent_type = typename add_missing_min_max_policy<Policies...>::type;
 
     template <std::size_t N>
     constexpr static bool has_fixed_count = []() {
@@ -107,7 +78,7 @@ public:
      *
      * @param policies Policy instances
      */
-    template <auto has_min_max = detail::add_missing_min_max_policy<Policies...>::has_min_max>
+    template <auto has_min_max = add_missing_min_max_policy<Policies...>::has_min_max>
     constexpr explicit positional_arg_t(Policies... policies,
                                         // NOLINTNEXTLINE(*-named-parameter)
                                         std::enable_if_t<has_min_max>* = nullptr) noexcept :
@@ -115,7 +86,7 @@ public:
     {
     }
 
-    template <auto has_min_max = detail::add_missing_min_max_policy<Policies...>::has_min_max>
+    template <auto has_min_max = add_missing_min_max_policy<Policies...>::has_min_max>
     constexpr explicit positional_arg_t(Policies... policies,
                                         // NOLINTNEXTLINE(*-named-parameter)
                                         std::enable_if_t<!has_min_max>* = nullptr) noexcept :

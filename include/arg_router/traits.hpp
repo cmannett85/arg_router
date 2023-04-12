@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -414,6 +414,25 @@ struct has_value_separator_method {
  */
 template <typename T>
 constexpr bool has_value_separator_method_v = has_value_separator_method<T>::value;
+
+/** Determine if a type has a <TT>token_end_marker()</TT> static method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+struct has_token_end_marker_method {
+    template <typename U>
+    using type = decltype(U::token_end_marker());
+
+    constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
+};
+
+/** Helper variable for has_token_end_marker_method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+constexpr bool has_token_end_marker_method_v = has_token_end_marker_method<T>::value;
 
 /** Determine if a type has a <TT>maximum_count()</TT> static method.
  *

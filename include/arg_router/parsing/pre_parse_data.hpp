@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -69,7 +69,7 @@ private:
  * As each tree_node derived type must reimplement the <TT>pre_parse(..)</TT> method to at least add
  * a reference to themselves, then overloads cause a lot of extra boilerplate.  By wrapping the arg
  * variations for each of those overloads into another type (this one), the user will only need to
- * change a single overload with any variation compile-time switchable.
+ * change a single overload with any variation of compile-time switchable.
  *
  * There are two specialisations of pre_parse_data, one that carries a parse_target reference and
  * one that doesn't.  The difference is invisible at construction, but changes how it is used:
@@ -91,9 +91,9 @@ class pre_parse_data;
 
 /** Without parse_target reference specialisation.
  *
- * The @a Validator instance is called just before the args list is updated by the
- * <TT>pre_parse(..)</TT> method, and allows the caller to run a custom verification the on the
- * method's node and parents arguments. @a Validator must be equivalent to:
+ * The @a Validator instance is called before the args list is updated by the <TT>pre_parse(..)</TT>
+ * method, and allows the caller to run a custom verification on the method's node and parents
+ * arguments. @a Validator must be equivalent to:
  * @code
  * struct my_validator {
  *     template <typename Node, typename... Parents>

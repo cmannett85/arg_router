@@ -411,9 +411,26 @@ It was noted in the [Basics](#basics) section that ordering does matter for posi
 
 Following the destination path are the source paths, we need at least one so we mark it as required, as our range is unbounded the `value_type` needs to be a container.  `positional_arg` uses a `push_back` call on the container, so `std::vector` is the typical type to use.
 
-Only the last `positional_arg` may be of variable length.  A runtime error will only occur if there are no unbounded variable length `postional_arg`s and there are more arguments than the maximum or less than the minimum.
+Only the last `positional_arg` may be of variable length - unless a `token_end_maker` policy is used.  A runtime error will only occur if there are no unbounded variable length `postional_arg`s and there are more arguments than the maximum or less than the minimum.
 
 It should be noted that setting a non-zero minimum count (`min_count`, `fixed_count`, or `min_max_count`) does _not_ imply a requirement, the minimum count check only applies when there is at least one argument for the node to process.  So as with an `arg`, you should use a `required` policy to explicitly state that at least one argument needs to be present, or a `default_value` policy - otherwise a default initialised value will be used instead.  For `positional_arg` nodes that are marked as `required`, it is a compile-time error to have a minimum count policy value of 0.
+
+### Token End Marker Policy
+The `token_end_maker` policy allows for multiple adjacent variable length `positional_arg` nodes to be defined.  It does this by defining a token that marks the end of the value token list for that node.  A trivial example could be a simple launcher application (which is available as a [buildable example](https://cmannett85.github.io/arg_router/c_09_0920_2launcher_2main_8cpp-example.html)) e.g.:
+```
+$ example_launcher_cpp prog1 prog2 prog3 -- arg1 arg2 arg3
+```
+Where the argument tokens are used invoke the programs as child processes.  Here the `--` token is used to separate the two adjacent `positional_args`:
+```
+ar::positional_arg<std::vector<std::string_view>>(arp::required,
+                                                  "PROGS"_S,
+                                                  "Programs to run"_S,
+                                                  arp::token_end_marker_t{"--"_S},
+                                                  arp::min_count<1>),
+ar::positional_arg<std::vector<std::string_view>>("ARGS"_S,
+                                                  "Arguments to pass to programs"_S),
+```
+There is no limit to number of `positional_arg` nodes that can be chained together like this, but they must still follow `positional_arg` rules such as being at the end of the child node list.
 
 ## Modes
 As noted in [Basics](#basics), `mode`s allow you to group command line components under an initial token on the command line.  A common example of this developers will be aware of is `git`, for example in our parlance `git clean -ffxd`; `clean` would be the mode and `ffxd` would be the flags that are available under that mode.
