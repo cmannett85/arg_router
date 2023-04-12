@@ -5,14 +5,16 @@
 #pragma once
 
 #include "arg_router/exception.hpp"
-#include "arg_router/parsing/parse_target.hpp"
 #include "arg_router/parsing/parsing.hpp"
 #include "arg_router/policy/policy.hpp"
+#include "arg_router/traits.hpp"
 #include "arg_router/utility/compile_time_optional.hpp"
 
 #include <limits>
 
-namespace arg_router::policy
+namespace arg_router
+{
+namespace policy
 {
 /** Exposes the number of tokens the owning node will consume.
  *
@@ -79,54 +81,38 @@ public:
 
         // The min/max values are for argument counts, and so need adjusting to accomodate the label
         // tokens
-        constexpr auto mn_count = minimum_count() + (owner_type::is_named ? 1 : 0);
-        constexpr auto mx_count = maximum_count() == 0 ?
+        constexpr auto named_offset = owner_type::is_named ? 1u : 0u;
+        constexpr auto mn_count = minimum_count() == std::numeric_limits<std::size_t>::max() ?
+                                      minimum_count() :
+                                      minimum_count() + named_offset;
+        constexpr auto mx_count = maximum_count() == std::numeric_limits<std::size_t>::max() ?
                                       maximum_count() :
-                                      (maximum_count() - (owner_type::is_named ? 0 : 1));
+                                      maximum_count() + named_offset;
 
-        // If we are unnamed then check that tokens haven't already been parsed for the owner.  This
-        // is for the scenario where there are multiple positional arg-like types under a mode, and
-        // once one has been processed, then it should be skipped so subsequent ones are used
-        // instead
-        if constexpr (!owner_type::is_named) {
-            static_assert(!processed_target.empty, "processed_target cannot be empty");
+        auto num_tokens = tokens.size();
+        if constexpr (traits::has_token_end_marker_method_v<owner_type>) {
+            // If there's a token end marker attached, then it will have already processed the
+            // tokens as it is a higher priority policy
+            num_tokens = tokens.processed().size();
 
-            if (has_filled_tokens(*processed_target, utility::type_hash<owner_type>(), mx_count)) {
-                return parsing::pre_parse_action::skip_node;
+            // We can only check that we have exceeded the maximum if there's a token end marker
+            // because know that all the tokens preceding it are for the owner
+            if (num_tokens > mx_count) {
+                return multi_lang_exception{error_code::maximum_count_exceeded,
+                                            parsing::node_token_type<owner_type>()};
             }
         }
 
-        // Check that we are in the bounds.  We can't check that we have exceeded the maximum
-        // because there may be other nodes that will consume tokens, so this node will take its
-        // maximum (potentially) and any left over tokens will be trigger an error later in the
-        // processing
-        if (tokens.size() < mn_count) {
+        // Check that we are within the minimum bound
+        if (num_tokens < mn_count) {
             return multi_lang_exception{error_code::minimum_count_not_reached,
                                         parsing::node_token_type<owner_type>()};
         }
 
         // Transfer any remaining up to the maximum count
-        tokens.transfer(tokens.begin() + std::min(mx_count, tokens.size()));
+        tokens.transfer(tokens.begin() + std::min(mx_count - 1, num_tokens - 1));
 
         return parsing::pre_parse_action::valid_node;
-    }
-
-private:
-    [[nodiscard]] static bool has_filled_tokens(const parsing::parse_target& target,
-                                                std::size_t owner_hash_code,
-                                                std::size_t mx_count) noexcept
-    {
-        if (target.node_type() == owner_hash_code) {
-            return target.tokens().size() >= mx_count;
-        }
-
-        for (const auto& sub_target : target.sub_targets()) {
-            if (has_filled_tokens(sub_target, owner_hash_code, mx_count)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 };
 
@@ -167,4 +153,52 @@ constexpr auto fixed_count =
 template <typename MinType, typename MaxType>
 struct is_policy<min_max_count_t<MinType, MaxType>> : std::true_type {
 };
-}  // namespace arg_router::policy
+}  // namespace policy
+
+/** Provides a tree_node type with an unbounded policy::min_max_count_t if a compatible one is not
+ * present in @a Policies.
+ *
+ * If no policy implementing <TT>minimum_count()</TT> and <TT>maximum_count()</TT> methods is in
+ * @a Policies (e.g. policy::min_max_count_t), then an unbounded policy::min_max_count_t is
+ * prepended to @a Policies and made available by a tree_node typedef.
+ *
+ * This used via inheritance in nodes, e.g.:
+ * @code
+ * template <typename T, typename... Policies>
+ * class positional_arg_t : public add_missing_min_max_policy<Policies...>::type
+ * { ... };
+ * @endcode
+ * @tparam Policies Pack of policies that define its behaviour
+ */
+template <typename... Policies>
+class add_missing_min_max_policy
+{
+    template <typename Policy>
+    struct has_min_max_t {
+        constexpr static bool value = traits::has_minimum_count_method_v<Policy> &&
+                                      traits::has_maximum_count_method_v<Policy>;
+    };
+
+    using policies_tuple = std::tuple<std::decay_t<Policies>...>;
+    using unbounded_policy_type =
+        policy::min_max_count_t<traits::integral_constant<0>,
+                                traits::integral_constant<std::numeric_limits<std::size_t>::max()>>;
+
+public:
+    /** True if there is no policy implementing <TT>minimum_count()</TT> and
+     * <TT>maximum_count()</TT> methods in @a Policies.
+     */
+    constexpr static auto has_min_max =
+        boost::mp11::mp_find_if<policies_tuple, has_min_max_t>::value !=
+        std::tuple_size_v<policies_tuple>;
+
+    /** Equivalent to <TT>tree_node\<decltype(policy::min_count(0)), Policies...\></TT> if
+     * has_min_max is false, otherwise <TT>tree_node\<Policies...\></TT>
+     */
+    using type = std::conditional_t<
+        has_min_max,
+        boost::mp11::mp_rename<policies_tuple, tree_node>,
+        boost::mp11::mp_rename<boost::mp11::mp_push_front<policies_tuple, unbounded_policy_type>,
+                               tree_node>>;
+};
+}  // namespace arg_router

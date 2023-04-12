@@ -71,36 +71,18 @@ public:
     /** True if this mode is anonymous. */
     constexpr static bool is_anonymous = !traits::has_none_name_method_v<mode_t>;
 
+    static_assert(!is_anonymous || !traits::has_description_method_v<mode_t>,
+                  "Anonymous modes cannot have a description policy");
+
     /** Help data type. */
     template <bool Flatten>
     class help_data_type
     {
-        // The template param shouldn't be necessary, but without it MSVC will always evaluate the
-        // false branch of the if constexpr block
-        template <typename T>
-        [[nodiscard]] constexpr auto static label_generator() noexcept
-        {
-            if constexpr (T::is_anonymous) {
-                return AR_STRING(""){};
-            } else {
-                constexpr auto none_index =
-                    boost::mp11::mp_find_if<typename T::policies_type,
-                                            traits::has_none_name_method>::value;
-                using none_type =
-                    typename std::tuple_element_t<none_index,
-                                                  typename T::policies_type>::string_type;
-
-                return none_type{};
-            }
-        }
-
     public:
-        using label = decltype(label_generator<mode_t>());
+        using label = typename parent_type::template default_leaf_help_data_type<Flatten>::label;
 
-        using description = std::conditional_t<
-            is_anonymous,
-            AR_STRING(""),
-            typename parent_type::template default_leaf_help_data_type<Flatten>::description>;
+        using description =
+            typename parent_type::template default_leaf_help_data_type<Flatten>::description;
 
         using children = std::conditional_t<
             is_anonymous || Flatten,

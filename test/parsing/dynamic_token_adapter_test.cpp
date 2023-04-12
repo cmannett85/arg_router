@@ -220,6 +220,42 @@ BOOST_AUTO_TEST_CASE(insertion_test)
     BOOST_CHECK(unprocessed.empty());
 }
 
+BOOST_AUTO_TEST_CASE(erase_test)
+{
+    auto processed = std::vector<parsing::token_type>{};
+    auto unprocessed = std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"},
+                                                        {parsing::prefix_type::none, "42"},
+                                                        {parsing::prefix_type::none, "-f"},
+                                                        {parsing::prefix_type::none, "goodbye"}};
+
+    auto adapter = parsing::dynamic_token_adapter{processed, unprocessed};
+
+    auto it = adapter.begin() + 2;
+    adapter.erase(it);
+    BOOST_CHECK(processed.empty());
+    BOOST_CHECK_EQUAL(unprocessed,
+                      (std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"},
+                                                        {parsing::prefix_type::none, "42"},
+                                                        {parsing::prefix_type::none, "goodbye"}}));
+    BOOST_CHECK_EQUAL(*it, (parsing::token_type{parsing::prefix_type::none, "goodbye"}));
+
+    std::swap(processed, unprocessed);
+    adapter.erase(it);
+    BOOST_CHECK(unprocessed.empty());
+    BOOST_CHECK_EQUAL(processed,
+                      (std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"},
+                                                        {parsing::prefix_type::none, "42"}}));
+    BOOST_CHECK(it == adapter.end());
+
+    it = adapter.end();
+    adapter.erase(it);
+    BOOST_CHECK(unprocessed.empty());
+    BOOST_CHECK_EQUAL(processed,
+                      (std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"},
+                                                        {parsing::prefix_type::none, "42"}}));
+    BOOST_CHECK(it == adapter.end());
+}
+
 BOOST_AUTO_TEST_CASE(transfer_test)
 {
     auto f = [](auto processed,

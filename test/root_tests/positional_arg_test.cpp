@@ -3,10 +3,12 @@
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #include "arg_router/policy/description.hpp"
+#include "arg_router/policy/token_end_marker.hpp"
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 #include "test_helpers.hpp"
+#include "test_printers.hpp"
 
 using namespace arg_router;
 namespace ard = arg_router::dependency;
@@ -174,6 +176,230 @@ BOOST_AUTO_TEST_CASE(two_positional_arg_parse_test)
                 std::vector{"foo", "one", "--flag1", "two", "--arg1", "5"},
                 std::tuple{false, 42, std::vector<std::string_view>{}, std::vector<double>{}},
                 "Failed to parse: two"},
+        });
+}
+
+BOOST_AUTO_TEST_CASE(two_positional_token_end_marker_arg_parse_test)
+{
+    auto router_hit = false;
+    auto result = std::tuple<bool, int, std::vector<std::string_view>, std::vector<double>>{};
+    const auto r = root(mode(flag(policy::long_name<AR_STRING("flag1")>,
+                                  policy::description<AR_STRING("First description")>),
+                             arg<int>(policy::long_name<AR_STRING("arg1")>,
+                                      policy::default_value(42),
+                                      policy::description<AR_STRING("Second description")>),
+                             positional_arg<std::vector<std::string_view>>(
+                                 policy::display_name<AR_STRING("pos_args1")>,
+                                 policy::description<AR_STRING("Third description")>,
+                                 policy::token_end_marker<AR_STRING("--")>),
+                             positional_arg<std::vector<double>>(
+                                 policy::display_name<AR_STRING("pos_args2")>,
+                                 policy::description<AR_STRING("Fourth description")>),
+                             policy::router{[&](bool flag1,
+                                                int arg1,
+                                                std::vector<std::string_view> pos_args1,
+                                                std::vector<double> pos_args2) {
+                                 result = decltype(result){flag1, arg1, pos_args1, pos_args2};
+                                 router_hit = true;
+                             }}),
+                        policy::validation::default_validator);
+
+    auto f = [&](auto args, auto expected, std::string fail_message) {
+        result = decltype(result){};
+        router_hit = false;
+
+        try {
+            r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data()));
+            BOOST_CHECK(fail_message.empty());
+            BOOST_CHECK(router_hit);
+            BOOST_CHECK_EQUAL(std::get<0>(result), std::get<0>(expected));
+            BOOST_CHECK_EQUAL(std::get<1>(result), std::get<1>(expected));
+            BOOST_CHECK(std::get<2>(result) == std::get<2>(expected));
+            BOOST_CHECK(std::get<3>(result) == std::get<3>(expected));
+        } catch (parse_exception& e) {
+            BOOST_CHECK_EQUAL(fail_message, e.what());
+            BOOST_CHECK(!router_hit);
+        }
+    };
+
+    test::data_set(
+        f,
+        {
+            std::tuple{std::vector{"foo", "one", "two"},
+                       std::tuple{false,
+                                  42,
+                                  std::vector<std::string_view>{"one", "two"},
+                                  std::vector<double>{}},
+                       ""},
+            std::tuple{std::vector{"foo", "one", "two", "3.14"},
+                       std::tuple{false,
+                                  42,
+                                  std::vector<std::string_view>{"one", "two", "3.14"},
+                                  std::vector<double>{}},
+                       ""},
+            std::tuple{std::vector{"foo", "one", "two", "--", "3.14"},
+                       std::tuple{false,
+                                  42,
+                                  std::vector<std::string_view>{"one", "two"},
+                                  std::vector<double>{3.14}},
+                       ""},
+            std::tuple{std::vector{"foo", "--flag1", "one", "two", "--", "3.14"},
+                       std::tuple{true,
+                                  42,
+                                  std::vector<std::string_view>{"one", "two"},
+                                  std::vector<double>{3.14}},
+                       ""},
+            std::tuple{std::vector{"foo", "--arg1", "5", "one", "two", "--", "3.14"},
+                       std::tuple{false,
+                                  5,
+                                  std::vector<std::string_view>{"one", "two"},
+                                  std::vector<double>{3.14}},
+                       ""},
+            std::tuple{
+                std::vector{"foo", "--arg1", "5", "--", "3.14"},
+                std::tuple{false, 5, std::vector<std::string_view>{}, std::vector<double>{3.14}},
+                ""},
+            std::tuple{
+                std::vector{"foo", "--", "3.14"},
+                std::tuple{false, 42, std::vector<std::string_view>{}, std::vector<double>{3.14}},
+                ""},
+            std::tuple{
+                std::vector{"foo", "--"},
+                std::tuple{false, 42, std::vector<std::string_view>{}, std::vector<double>{}},
+                ""},
+            std::tuple{
+                std::vector{"foo"},
+                std::tuple{false, 42, std::vector<std::string_view>{}, std::vector<double>{}},
+                ""},
+            std::tuple{
+                std::vector{"foo", "one", "two", "--", "3.14", "three"},
+                std::tuple{false, 42, std::vector<std::string_view>{}, std::vector<double>{}},
+                "Failed to parse: three"},
+        });
+}
+
+BOOST_AUTO_TEST_CASE(three_positional_token_end_marker_arg_parse_test)
+{
+    auto router_hit = false;
+    auto result = std::tuple<bool,
+                             std::vector<std::string_view>,
+                             std::vector<double>,
+                             std::vector<std::string_view>>{};
+    const auto r = root(mode(flag(policy::long_name<AR_STRING("flag1")>,
+                                  policy::description<AR_STRING("First description")>),
+                             positional_arg<std::vector<std::string_view>>(
+                                 policy::display_name<AR_STRING("pos_args1")>,
+                                 policy::description<AR_STRING("Third description")>,
+                                 policy::token_end_marker<AR_STRING("--")>),
+                             positional_arg<std::vector<double>>(
+                                 policy::display_name<AR_STRING("pos_args2")>,
+                                 policy::description<AR_STRING("Fourth description")>,
+                                 policy::token_end_marker<AR_STRING("--")>),
+                             positional_arg<std::vector<std::string_view>>(
+                                 policy::display_name<AR_STRING("pos_args1")>,
+                                 policy::description<AR_STRING("Fifth description")>),
+                             policy::router{[&](bool flag1,
+                                                std::vector<std::string_view> pos_args1,
+                                                std::vector<double> pos_args2,
+                                                std::vector<std::string_view> pos_args3) {
+                                 result = decltype(result){flag1, pos_args1, pos_args2, pos_args3};
+                                 router_hit = true;
+                             }}),
+                        policy::validation::default_validator);
+
+    auto f = [&](auto args, auto expected, std::string fail_message) {
+        result = decltype(result){};
+        router_hit = false;
+
+        try {
+            r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data()));
+            BOOST_CHECK(fail_message.empty());
+            BOOST_CHECK(router_hit);
+            BOOST_CHECK_EQUAL(std::get<0>(result), std::get<0>(expected));
+            BOOST_CHECK_EQUAL(std::get<1>(result), std::get<1>(expected));
+            BOOST_CHECK_EQUAL(std::get<2>(result), std::get<2>(expected));
+            BOOST_CHECK_EQUAL(std::get<3>(result), std::get<3>(expected));
+        } catch (parse_exception& e) {
+            BOOST_CHECK_EQUAL(fail_message, e.what());
+            BOOST_CHECK(!router_hit);
+        }
+    };
+
+    test::data_set(
+        f,
+        {
+            std::tuple{std::vector{"foo", "one", "two"},
+                       std::tuple{false,
+                                  std::vector<std::string_view>{"one", "two"},
+                                  std::vector<double>{},
+                                  std::vector<std::string_view>{}},
+                       ""},
+            std::tuple{std::vector{"foo", "one", "two", "3.14"},
+                       std::tuple{false,
+                                  std::vector<std::string_view>{"one", "two", "3.14"},
+                                  std::vector<double>{},
+                                  std::vector<std::string_view>{}},
+                       ""},
+            std::tuple{std::vector{"foo", "one", "two", "--", "3.14"},
+                       std::tuple{false,
+                                  std::vector<std::string_view>{"one", "two"},
+                                  std::vector<double>{3.14},
+                                  std::vector<std::string_view>{}},
+                       ""},
+            std::tuple{std::vector{"foo", "one", "two", "--", "3.14", "three"},
+                       std::tuple{false,
+                                  std::vector<std::string_view>{},
+                                  std::vector<double>{},
+                                  std::vector<std::string_view>{}},
+                       "Failed to parse: three"},
+            std::tuple{std::vector{"foo", "one", "two", "--", "3.14", "5", "--"},
+                       std::tuple{false,
+                                  std::vector<std::string_view>{"one", "two"},
+                                  std::vector<double>{3.14, 5.0},
+                                  std::vector<std::string_view>{}},
+                       ""},
+            std::tuple{std::vector{"foo", "--flag1", "one", "two", "--", "3.14", "5", "--"},
+                       std::tuple{true,
+                                  std::vector<std::string_view>{"one", "two"},
+                                  std::vector<double>{3.14, 5.0},
+                                  std::vector<std::string_view>{}},
+                       ""},
+            std::tuple{std::vector{"foo", "one", "two", "--", "3.14", "5", "--", "three"},
+                       std::tuple{false,
+                                  std::vector<std::string_view>{"one", "two"},
+                                  std::vector<double>{3.14, 5.0},
+                                  std::vector<std::string_view>{"three"}},
+                       ""},
+            std::tuple{std::vector{"foo", "one", "two", "--", "--", "three"},
+                       std::tuple{false,
+                                  std::vector<std::string_view>{"one", "two"},
+                                  std::vector<double>{},
+                                  std::vector<std::string_view>{"three"}},
+                       ""},
+            std::tuple{std::vector{"foo", "one", "two", "--", "--"},
+                       std::tuple{false,
+                                  std::vector<std::string_view>{"one", "two"},
+                                  std::vector<double>{},
+                                  std::vector<std::string_view>{}},
+                       ""},
+            std::tuple{std::vector{"foo", "one", "two", "--"},
+                       std::tuple{false,
+                                  std::vector<std::string_view>{"one", "two"},
+                                  std::vector<double>{},
+                                  std::vector<std::string_view>{}},
+                       ""},
+            std::tuple{std::vector{"foo", "one", "two"},
+                       std::tuple{false,
+                                  std::vector<std::string_view>{"one", "two"},
+                                  std::vector<double>{},
+                                  std::vector<std::string_view>{}},
+                       ""},
+            std::tuple{std::vector{"foo"},
+                       std::tuple{false,
+                                  std::vector<std::string_view>{},
+                                  std::vector<double>{},
+                                  std::vector<std::string_view>{}},
+                       ""},
         });
 }
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -6,6 +6,7 @@
 #include "arg_router/flag.hpp"
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/default_value.hpp"
+#include "arg_router/policy/display_name.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/none_name.hpp"
 #include "arg_router/policy/router.hpp"
@@ -290,12 +291,12 @@ BOOST_AUTO_TEST_CASE(pre_parse_test)
                        std::vector<parsing::token_type>{},
                        true,
                        std::optional<multi_lang_exception>{}},
-            std::tuple{stub_node{},
-                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "hello"}},
+            std::tuple{stub_node{policy::display_name<AR_STRING("hello")>},
+                       std::vector<parsing::token_type>{},
                        std::vector<parsing::token_type>{},
                        std::vector<pre_parse_test_data>{},
-                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "hello"}},
-                       false,
+                       std::vector<parsing::token_type>{},
+                       true,
                        std::optional<multi_lang_exception>{}},
             std::tuple{stub_node{policy::long_name<AR_STRING("hello")>},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "--foo"}},
