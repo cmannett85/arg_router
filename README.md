@@ -82,6 +82,7 @@ arg_router/policy/validator.hpp:206:17: error: static_assert failed due to requi
 ## Installation
 There are several ways to install `arg_router`, the most appropriate depends on your project's configuration.
 * If using vcpkg as your package manager, simply add `arg-router` (note the hyphen) to `dependencies` in your `vcpkg.json`
+* If using Conan as your package manager, simply add `arg_router` to your requirements
 * If using a DEB package based Linux distribution, download the [release](https://github.com/cmannett85/arg_router/releases) Debian package and install it
 * If you just want to do a traditional install then download the [release](https://github.com/cmannett85/arg_router/releases) zip file and decompress it where you want.  Then point your project at the `include/arg_router` directory or package config location `share/arg_router`
 * Same as above but installed from the checked out repo, i.e. using the invocation `cmake ../arg_router -DINSTALLATION_ONLY=ON; cmake --install .`
