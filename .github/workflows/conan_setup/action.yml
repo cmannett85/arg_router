@@ -1,0 +1,37 @@
+name: Installs and configures Conan
+description: Installs and configures Conan for a particular C++ version (Linux only)
+
+inputs:
+  version:
+    description: "C++ language version"
+  build_dir:
+    description: "Build directory for the Conan test project"
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Update packages
+      shell: bash
+      run: |
+        sudo apt update
+        sudo apt install ninja-build
+        python -m pip install --upgrade pip conan
+
+    - name: Build Conan profile
+      shell: bash
+      run: |
+        conan profile detect --force
+        sed -i "s/^compiler.cppstd=.*/compiler.cppstd=${{ inputs.version }}/g" `conan profile path default`
+
+    - name: Build
+      shell: bash
+      run: |
+        conan install ${{ github.workspace }}/ci/conan_test_project --output-folder=${{ inputs.build_dir }} --build=missing
+        cd ${{ inputs.build_dir }}
+        cmake ${{ github.workspace }}/ci/conan_test_project/ -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=./build/Release/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
+        cmake --build .

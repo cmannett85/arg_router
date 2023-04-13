@@ -4,7 +4,7 @@
 
 cmake_minimum_required(VERSION 3.18)
 
-set(ROOT_DIR "${CMAKE_SOURCE_DIR}/../../..")
+set(ROOT_DIR "${CMAKE_SOURCE_DIR}/../..")
 set(CMAKE_TOOLCHAIN_FILE "${ROOT_DIR}/external/vcpkg/scripts/buildsystems/vcpkg.cmake")
 
 project(vcpkg_test_project

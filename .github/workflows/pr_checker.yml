@@ -88,7 +88,7 @@ jobs:
 
     - name: Calculate unit test coverage
       run: |
-        cd ${{ github.workspace }}/scripts/ci
+        cd ${{ github.workspace }}/ci
         ./calculate_test_coverage.sh ${{ env.BUILD_DIR }}
 
     - name: Test install
@@ -107,20 +107,20 @@ jobs:
       run: |
         mkdir -p ${{ env.PACKAGE_BUILD_DIR }}
         cd ${{ env.PACKAGE_BUILD_DIR }}
-        cmake ${{ github.workspace }}/scripts/ci/package_test_project -DCMAKE_CXX_COMPILER=clang++-14 -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}
+        cmake ${{ github.workspace }}/ci/package_test_project -DCMAKE_CXX_COMPILER=clang++-14 -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}
         cmake --build .
 
     - name: Update README unit test coverage badge
       run: |
         cd ${{ github.workspace }}
-        BADGE_URL=$(./scripts/ci/create_badge_url.sh -e)
+        BADGE_URL=$(./ci/create_badge_url.sh -e)
         sed -i -e "s/https:\/\/img\.shields\.io\/badge\/Unit_Test_Coverage-[0-9\.]\+%25-[a-z]\+/${BADGE_URL}/" ./README.md
 
     - name: Push updated README and old_coverage
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
         commit_message: Updating README.md unit test coverage badge
-        file_pattern: README.md scripts/ci/old_coverage
+        file_pattern: README.md ci/old_coverage
 
   old_gcc_compiler_test:
     runs-on: ubuntu-22.04
@@ -239,7 +239,7 @@ jobs:
       run: |
         mkdir ${{ env.PACKAGE_BUILD_DIR }}
         cd ${{ env.PACKAGE_BUILD_DIR }}
-        cmake ${{ github.workspace }}/scripts/ci/package_test_project -DCMAKE_CXX_STANDARD=20 -DDISABLE_VCPKG=ON
+        cmake ${{ github.workspace }}/ci/package_test_project -DCMAKE_CXX_STANDARD=20 -DDISABLE_VCPKG=ON
         cmake --build .
         sudo apt remove arg_router
         ! test -e /usr/include/arg_router
@@ -269,3 +269,33 @@ jobs:
         cd ${{ env.BUILD_DIR }}
         cmake ${{ github.workspace }} -DINSTALLATION_ONLY=ON
         cmake --build . --target documentation
+
+  # Test Conan package is acquired and accessible for C++17
+  conan_test_package_17:
+    runs-on: ubuntu-22.04
+    needs: changes
+    if: |
+      needs.changes.outputs.pr_checker == 'true' ||
+      needs.changes.outputs.conan_test_project == 'true'
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: ./.github/workflows/conan_setup
+      with:
+        version: "17"
+        build_dir: "${{ env.BUILD_DIR }}"
+
+  # Test Conan package is acquired and accessible for C++20
+  conan_test_package_20:
+    runs-on: ubuntu-22.04
+    needs: changes
+    if: |
+      needs.changes.outputs.pr_checker == 'true' ||
+      needs.changes.outputs.conan_test_project == 'true'
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: ./.github/workflows/conan_setup
+      with:
+        version: "20"
+        build_dir: "${{ env.BUILD_DIR }}"
