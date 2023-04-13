@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-### Copyright (C) 2022 by Camden Mannett.
+### Copyright (C) 2022-2023 by Camden Mannett.
 ### Distributed under the Boost Software License, Version 1.0.
 ### (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
-# Run from inside the scripts/ci folder.
+# Run from inside the /ci folder.
 # - First argument is the top-level build directory and is required
-# - Second argument is optional, and defined the gcov tool (defaults to gcov-11)
+# - Second argument is optional, and defined the gcov tool (defaults to llvm-gcov-14)
 if [ -z "$1" ]; then
     echo "Must pass build directory"
     exit 1

@@ -52,18 +52,3 @@ if(NOT "${VCPKG_JSON_DATA}" STREQUAL "${UPDATED_VCPKG_JSON_DATA}")
     message(STATUS "Updating vcpkg.json library version")
     file(WRITE "${CMAKE_SOURCE_DIR}/vcpkg.json" ${UPDATED_VCPKG_JSON_DATA})
 endif()
-
-# Update the version in conanfile.py
-file(READ "${CMAKE_SOURCE_DIR}/conanfile.py" CONANFILE_DATA)
-string(
-    REGEX REPLACE
-    "version = [0-9]*\\.[0-9]*\\.[0-9]*"
-    "version = ${CMAKE_PROJECT_VERSION}"
-    UPDATED_CONANFILE_DATA
-    "${CONANFILE_DATA}"
-)
-
-if(NOT "${CONANFILE_DATA}" STREQUAL "${UPDATED_CONANFILE_DATA}")
-    message(STATUS "Updating conanfile.py library version")
-    file(WRITE "${CMAKE_SOURCE_DIR}/conanfile.py" ${UPDATED_CONANFILE_DATA})
-endif()

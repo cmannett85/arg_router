@@ -191,7 +191,7 @@ jobs:
         & "C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Auxiliary/Build/vcvarsall.bat" x64
         mkdir ${{ env.PACKAGE_BUILD_DIR }}
         cd ${{ env.PACKAGE_BUILD_DIR }}
-        & "${{ env.CMAKE_EXE }}" ${{ github.workspace }}/scripts/ci/package_test_project -G "Visual Studio 17 2022" -A x64 -T "ClangCl" -DVCPKG_TARGET_TRIPLET:STRING="x64-windows-static" -DCMAKE_CXX_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe" -DCMAKE_C_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe" -DCMAKE_RC_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/llvm-rc.exe" -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}
+        & "${{ env.CMAKE_EXE }}" ${{ github.workspace }}/ci/package_test_project -G "Visual Studio 17 2022" -A x64 -T "ClangCl" -DVCPKG_TARGET_TRIPLET:STRING="x64-windows-static" -DCMAKE_CXX_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe" -DCMAKE_C_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe" -DCMAKE_RC_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/llvm-rc.exe" -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}
         & "${{ env.CMAKE_EXE }}" --build . -- /v:n
 
   macos_compiler_tests:
@@ -244,7 +244,7 @@ jobs:
       run: |
         mkdir ${{ env.PACKAGE_BUILD_DIR }}
         cd ${{ env.PACKAGE_BUILD_DIR }}
-        cmake ${{ github.workspace }}/scripts/ci/package_test_project -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}
+        cmake ${{ github.workspace }}/ci/package_test_project -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}
         cmake --build .
 
   # Test vcpkg package is acquired and accessible
@@ -273,37 +273,35 @@ jobs:
       run: |
         mkdir -p ${{ env.BUILD_DIR }}
         cd ${{ env.BUILD_DIR }}
-        cmake ${{ github.workspace }}/scripts/ci/vcpkg_test_project -G "Ninja" -DCMAKE_CXX_STANDARD=20
+        cmake ${{ github.workspace }}/ci/vcpkg_test_project -G "Ninja" -DCMAKE_CXX_STANDARD=20
         cmake --build .
 
-  # Test Conan package can be created and accessible
-  conan_test_package:
+  # Test Conan package is acquired and accessible for C++17
+  conan_test_package_17:
     runs-on: ubuntu-22.04
+    needs: changes
+    if: |
+      needs.changes.outputs.merge_checker == 'true' ||
+      needs.changes.outputs.conan_test_project == 'true'
 
     steps:
     - uses: actions/checkout@v3
+    - uses: ./.github/workflows/conan_setup
       with:
-        submodules: true
+        version: "17"
+        build_dir: "${{ env.BUILD_DIR }}"
 
-    - name: Setup Python
-      uses: actions/setup-python@v4
+  # Test Conan package is acquired and accessible for C++20
+  conan_test_package_20:
+    runs-on: ubuntu-22.04
+    needs: changes
+    if: |
+      needs.changes.outputs.merge_checker == 'true' ||
+      needs.changes.outputs.conan_test_project == 'true'
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: ./.github/workflows/conan_setup
       with:
-        python-version: '3.x'
-
-    - name: Update packages
-      run: |
-        sudo apt update
-        sudo apt install ninja-build
-        python -m pip install --upgrade pip conan
-
-    - name: Build Conan package
-      run: |
-        conan profile detect --force
-        conan create ${{ github.workspace }}
-
-    - name: Build
-      run: |
-        conan install ${{ github.workspace }}/scripts/ci/conan_test_project --output-folder=${{ env.BUILD_DIR }} --build=missing
-        cd ${{ env.BUILD_DIR }}
-        cmake ${{ github.workspace }}/scripts/ci/conan_test_project/ -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
-        cmake --build .
+        version: "20"
+        build_dir: "${{ env.BUILD_DIR }}"

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-### Copyright (C) 2022 by Camden Mannett.
+### Copyright (C) 2022-2023 by Camden Mannett.
 ### Distributed under the Boost Software License, Version 1.0.
 ### (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -10,7 +10,7 @@ if [ "$1" == "-e" ]; then
 fi
 
 # Creates a shields.io badge URL for the unit test coverage
-COVERAGE="$(cat ./scripts/ci/old_coverage)"
+COVERAGE="$(cat ./ci/old_coverage)"
 COLOUR="brightgreen"
 if (( $(echo "$COVERAGE < 50" | bc -l) )); then
     COLOUR="red"

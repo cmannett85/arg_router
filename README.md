@@ -13,7 +13,8 @@
 - Unicode compliant by supporting UTF-8 encoded compile-time strings ([details](#unicode-compliance))
 - Support of runtime language selection
 - Uses a macro to ease compile-time string generation when using C++17.  For C++20 and above, compile-time string literals can be used directly in constructors
-- Available on vcpkg!
+- [Available](https://github.com/microsoft/vcpkg/tree/master/ports/arg-router) on vcpkg!
+- [Available](https://conan.io/center/arg_router) on Conan Center!
 
 ### Example of the Benefits of a Compile-Time Parse Tree
 It's not immediately obvious why defining a parse tree at compile would bring any benefits, so before we show you _how_ `arg_router` is used, let us show you _why_.  Here is a very contrived parse tree defined using the very popular and well-made [argparse](https://github.com/p-ranav/argparse):
