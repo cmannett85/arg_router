@@ -269,33 +269,3 @@ jobs:
         cd ${{ env.BUILD_DIR }}
         cmake ${{ github.workspace }} -DINSTALLATION_ONLY=ON
         cmake --build . --target documentation
-
-  # Test Conan package is acquired and accessible for C++17
-  conan_test_package_17:
-    runs-on: ubuntu-22.04
-    needs: changes
-    if: |
-      needs.changes.outputs.pr_checker == 'true' ||
-      needs.changes.outputs.conan_test_project == 'true'
-
-    steps:
-    - uses: actions/checkout@v3
-    - uses: ./.github/workflows/conan_setup
-      with:
-        version: "17"
-        build_dir: "${{ env.BUILD_DIR }}"
-
-  # Test Conan package is acquired and accessible for C++20
-  conan_test_package_20:
-    runs-on: ubuntu-22.04
-    needs: changes
-    if: |
-      needs.changes.outputs.pr_checker == 'true' ||
-      needs.changes.outputs.conan_test_project == 'true'
-
-    steps:
-    - uses: actions/checkout@v3
-    - uses: ./.github/workflows/conan_setup
-      with:
-        version: "20"
-        build_dir: "${{ env.BUILD_DIR }}"
