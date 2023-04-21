@@ -4,9 +4,10 @@
 
 #pragma once
 
-#include "arg_router/utility/tuple_iterator.hpp"
-
 #ifndef AR_ENABLE_CPP20_STRINGS
+
+#    include "arg_router/basic_types.hpp"
+#    include "arg_router/utility/tuple_iterator.hpp"
 
 #    include <variant>
 

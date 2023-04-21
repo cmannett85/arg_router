@@ -10,6 +10,7 @@
 
 #include <algorithm>
 #include <optional>
+#include <ostream>
 #include <type_traits>
 
 // Surprised this is not already done somewhere in mp11, without it using
