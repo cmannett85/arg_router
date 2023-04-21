@@ -25,10 +25,12 @@ path_prefixer(TEST_SRCS
     dependency/one_of_test.cpp
     flag_same_prefix_test.cpp
     flag_test.cpp
+    forwarding_arg_test.cpp
     help_test.cpp
     list_test.cpp
     math_test.cpp
     mode_test.cpp
+    multi_arg_test.cpp
     multi_lang/iso_locale_test.cpp
     multi_lang/root_test.cpp
     multi_lang/root_wrapper_test.cpp

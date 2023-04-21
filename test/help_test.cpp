@@ -278,8 +278,9 @@ My foo is good for you
                        traits::integral_constant<3>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "--help"},
                                                         {parsing::prefix_type::none, "--foo"}},
-                       std::optional<multi_lang_exception>{
-                           test::create_exception(error_code::unknown_argument, {"--foo"})},
+                       std::optional<multi_lang_exception>{multi_lang_exception{
+                           error_code::unknown_argument,
+                           std::vector{parsing::token_type{parsing::prefix_type::none, "--foo"}}}},
                        ""s},
             std::tuple{mock_root{help(policy::long_name<AR_STRING("help")>,
                                       policy::short_name<'h'>,
@@ -304,8 +305,9 @@ My foo is good for you
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "-h"},
                                                         {parsing::prefix_type::none, "mode1"},
                                                         {parsing::prefix_type::none, "--foo"}},
-                       std::optional<multi_lang_exception>{
-                           test::create_exception(error_code::unknown_argument, {"--foo"})},
+                       std::optional<multi_lang_exception>{multi_lang_exception{
+                           error_code::unknown_argument,
+                           std::vector{parsing::token_type{parsing::prefix_type::none, "--foo"}}}},
                        ""s},
         });
 }

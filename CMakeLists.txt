@@ -68,11 +68,14 @@ path_prefixer(HEADERS
     include/arg_router/dependency/one_of.hpp
     include/arg_router/exception.hpp
     include/arg_router/flag.hpp
+    include/arg_router/forwarding_arg.hpp
     include/arg_router/help.hpp
     include/arg_router/list.hpp
     include/arg_router/literals.hpp
     include/arg_router/math.hpp
     include/arg_router/mode.hpp
+    include/arg_router/multi_arg.hpp
+    include/arg_router/multi_arg_base.hpp
     include/arg_router/multi_lang/iso_locale.hpp
     include/arg_router/multi_lang/root_wrapper.hpp
     include/arg_router/multi_lang/string_selector.hpp

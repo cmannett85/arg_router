@@ -1,4 +1,4 @@
-// Copyright (C) 2022-2023 by Camden Mannett.
+// Copyright (C) 2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -12,30 +12,30 @@
 
 namespace arg_router
 {
-/** Represents a named argument on the command line that has a value that needs parsing.
+/** Represents a named argument on the command line that has multiple values that needs parsing.
  *
- * Cannot have a none name or display name policy.
- * @tparam T Argument value type
+ * Cannot have a none name or display name policy.  A policy::token_end_marker_t can be used to mark
+ * the end of a variable length value token list on the command line.
+ * @tparam T Argument value type, must be a container that supports <TT>push_back</TT> if the count
+ * is variable
  * @tparam Policies Pack of policies that define its behaviour
  */
 template <typename T, typename... Policies>
-class arg_t :
-    public multi_arg_base_t<T,
-                            1,
-                            policy::min_max_count_t<traits::integral_constant<std::size_t{1}>,
-                                                    traits::integral_constant<std::size_t{1}>>,
-                            std::decay_t<Policies>...>
+class multi_arg_t : public multi_arg_base_t<T, 1, std::decay_t<Policies>...>
 {
-    using parent_type =
-        multi_arg_base_t<T,
-                         1,
-                         policy::min_max_count_t<traits::integral_constant<std::size_t{1}>,
-                                                 traits::integral_constant<std::size_t{1}>>,
-                         std::decay_t<Policies>...>;
+    using parent_type = multi_arg_base_t<T, 1, std::decay_t<Policies>...>;
 
-    static_assert(!traits::has_none_name_method_v<arg_t>, "Arg must not have a none name policy");
-    static_assert(!traits::has_display_name_method_v<arg_t>,
-                  "Arg must not have a display name policy");
+    static_assert(!traits::has_none_name_method_v<multi_arg_t>,
+                  "Multi arg must not have a none name policy");
+    static_assert(!traits::has_display_name_method_v<multi_arg_t>,
+                  "Multi arg must not have a display name policy");
+
+    static_assert(!((parent_type::minimum_count() == parent_type::maximum_count()) &&
+                    parent_type::minimum_count() == 1),
+                  "Multi arg set to a fixed count of 1, use arg_t instead");
+    static_assert(
+        parent_type::minimum_count() >= 1,
+        "Multi arg requires a minimum of one value token, use min_max_count_t to define the range");
 
 public:
     using typename parent_type::policies_type;
@@ -45,16 +45,24 @@ public:
 
     /** Help data type. */
     template <bool Flatten>
-    using help_data_type = typename parent_type::template default_leaf_help_data_type<Flatten>;
+    class help_data_type
+    {
+    public:
+        using label = std::decay_t<decltype(
+            parent_type::template default_leaf_help_data_type<Flatten>::label_generator() +
+            AR_STRING(" "){} +
+            parent_type::template default_leaf_help_data_type<Flatten>::count_suffix())>;
+        using description =
+            typename parent_type::template default_leaf_help_data_type<Flatten>::description;
+        using children = std::tuple<>;
+    };
 
     /** Constructor.
      *
      * @param policies Policy instances
      */
-    constexpr explicit arg_t(Policies... policies) noexcept :
-        parent_type{policy::min_max_count_t<traits::integral_constant<std::size_t{1}>,
-                                            traits::integral_constant<std::size_t{1}>>{},
-                    std::move(policies)...}
+    constexpr explicit multi_arg_t(Policies... policies) noexcept :
+        parent_type{std::move(policies)...}
     {
     }
 
@@ -72,9 +80,14 @@ public:
     {
         return parent_type::parse(target, *this, parents...);
     }
+
+private:
+    static_assert(!parent_type::template any_phases_v<value_type, policy::has_routing_phase_method>,
+                  "Multi arg does not support policies with routing phases "
+                  "(e.g. router)");
 };
 
-/** Constructs an arg_t with the given policies and value type.
+/** Constructs a multi_arg_t with the given policies and value type.
  *
  * This is necessary due to CTAD being required for all template parameters or none, and
  * unfortunately in our case we need @a T to be explicitly set by the user whilst @a Policies should
@@ -95,11 +108,11 @@ public:
  * @return Argument instance
  */
 template <typename T, typename... Policies>
-[[nodiscard]] constexpr auto arg(Policies... policies) noexcept
+[[nodiscard]] constexpr auto multi_arg(Policies... policies) noexcept
 {
     return std::apply(
         [](auto... converted_policies) {
-            return arg_t<T, std::decay_t<decltype(converted_policies)>...>{
+            return multi_arg_t<T, std::decay_t<decltype(converted_policies)>...>{
                 std::move(converted_policies)...};
         },
         utility::string_to_policy::convert<

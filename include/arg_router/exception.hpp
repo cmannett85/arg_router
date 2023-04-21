@@ -80,7 +80,7 @@ struct default_error_code_translations {
                    std::pair<traits::integral_constant<error_code::minimum_count_not_reached>,
                              AR_STRING("Minimum count not reached")>,
                    std::pair<traits::integral_constant<error_code::maximum_count_exceeded>,
-                             AR_STRING("Maximum count not exceeded")>,
+                             AR_STRING("Maximum count exceeded")>,
                    std::pair<traits::integral_constant<error_code::mode_requires_arguments>,
                              AR_STRING("Mode requires arguments")>,
                    std::pair<traits::integral_constant<error_code::missing_required_argument>,

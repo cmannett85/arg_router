@@ -144,7 +144,7 @@ int main() {
     return 0;
 }
     )",
-                               "Positional args must only contain policies (not other nodes)",
+                               "Arg must only contain policies (not other nodes)",
                                "only_policies_test"},
                               {
                                   R"(

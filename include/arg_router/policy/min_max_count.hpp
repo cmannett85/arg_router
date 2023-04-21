@@ -165,12 +165,13 @@ struct is_policy<min_max_count_t<MinType, MaxType>> : std::true_type {
  * This used via inheritance in nodes, e.g.:
  * @code
  * template <typename T, typename... Policies>
- * class positional_arg_t : public add_missing_min_max_policy<Policies...>::type
+ * class positional_arg_t : public add_missing_min_max_policy<0, Policies...>::type
  * { ... };
  * @endcode
+ * @tparam MinCount Minimum count value to use if one not specified by user
  * @tparam Policies Pack of policies that define its behaviour
  */
-template <typename... Policies>
+template <std::size_t MinCount, typename... Policies>
 class add_missing_min_max_policy
 {
     template <typename Policy>
@@ -180,8 +181,8 @@ class add_missing_min_max_policy
     };
 
     using policies_tuple = std::tuple<std::decay_t<Policies>...>;
-    using unbounded_policy_type =
-        policy::min_max_count_t<traits::integral_constant<0>,
+    using range_policy_type =
+        policy::min_max_count_t<traits::integral_constant<MinCount>,
                                 traits::integral_constant<std::numeric_limits<std::size_t>::max()>>;
 
 public:
@@ -198,7 +199,7 @@ public:
     using type = std::conditional_t<
         has_min_max,
         boost::mp11::mp_rename<policies_tuple, tree_node>,
-        boost::mp11::mp_rename<boost::mp11::mp_push_front<policies_tuple, unbounded_policy_type>,
+        boost::mp11::mp_rename<boost::mp11::mp_push_front<policies_tuple, range_policy_type>,
                                tree_node>>;
 };
 }  // namespace arg_router

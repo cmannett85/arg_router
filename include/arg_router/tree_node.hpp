@@ -416,6 +416,89 @@ protected:
         const Node& node,
         const Parents&... parents) const
     {
+        return std::apply(
+            [&](auto&&... ancestors) { return pre_parse_impl(pre_parse_data, ancestors.get()...); },
+            parsing::clean_node_ancestry_list(node, parents...));
+    }
+
+    /** Generic parse call, uses a policy that supports the parse phase if present, or the global
+     * parser.
+     *
+     * @tparam ValueType Parsed type
+     * @tparam Node This node's derived type
+     * @tparam Parents Pack of parent tree nodes in ascending ancestry order
+     * @param token Token to parse
+     * @param node This node instance
+     * @param parents Parents instances pack
+     * @return Parsed result
+     * @exception multi_lang_exception Thrown if parsing failed
+     */
+    template <typename ValueType, typename Node, typename... Parents>
+    [[nodiscard]] auto parse(std::string_view token,
+                             const Node& node,
+                             const Parents&... parents) const
+    {
+        return std::apply(
+            [&](auto&&... ancestors) { return parse_impl<ValueType>(token, ancestors.get()...); },
+            parsing::clean_node_ancestry_list(node, parents...));
+    }
+
+private:
+    static_assert((boost::mp11::mp_count_if_q<
+                       policies_type,
+                       typename phase_finder<policy::has_routing_phase_method>::finder>::value <=
+                   1),
+                  "Only zero or one policies supporting a routing phase is supported");
+
+    template <template <typename...> typename Fn, typename... ExpandedParams>
+    [[nodiscard]] constexpr static auto common_filter(ExpandedParams&... expanded_params) noexcept
+    {
+        // Send references to the filter method so we don't copy anything unnecessarily
+        using ref_tuple = std::tuple<std::reference_wrapper<ExpandedParams>...>;
+
+        // We have to wrap Fn because we're now giving it a std::reference_wrapper
+        using ref_fn =
+            boost::mp11::mp_bind<Fn, boost::mp11::mp_bind<traits::get_type, boost::mp11::_1>>;
+
+        // We have our result tuple, but it only contains references so we now have to move
+        // construct them into the 'real' types
+        auto ref_result = algorithm::tuple_filter_and_construct<ref_fn::template fn>(
+            ref_tuple{expanded_params...});
+
+        using ref_result_t = std::decay_t<decltype(ref_result)>;
+        using result_t = boost::mp11::mp_transform<traits::get_type, ref_result_t>;
+
+        // Converting move-constructor of std::tuple
+        return result_t{std::move(ref_result)};
+    }
+
+    template <template <typename...> typename Fn, typename Tuple>
+    [[nodiscard]] constexpr static auto common_filter_tuple(Tuple&& tuple_params) noexcept
+    {
+        // std::apply does not like templates, so we have to wrap in a lambda
+        return std::apply(
+            [](auto&... args) { return common_filter<Fn>(std::forward<decltype(args)>(args)...); },
+            tuple_params);
+    }
+
+    template <typename Validator, bool HasTarget>
+    [[nodiscard]] constexpr auto extract_parent_target(
+        [[maybe_unused]] parsing::pre_parse_data<Validator, HasTarget> pre_parse_data)
+        const noexcept
+    {
+        if constexpr (HasTarget) {
+            return utility::compile_time_optional{std::cref(pre_parse_data.target())};
+        } else {
+            return utility::compile_time_optional{};
+        }
+    }
+
+    template <typename Validator, bool HasTarget, typename Node, typename... Parents>
+    [[nodiscard]] std::optional<parsing::parse_target> pre_parse_impl(
+        parsing::pre_parse_data<Validator, HasTarget> pre_parse_data,
+        const Node& node,
+        const Parents&... parents) const
+    {
         auto result = vector<parsing::token_type>{};
         auto tmp_args = pre_parse_data.args();
         auto adapter = parsing::dynamic_token_adapter{result, tmp_args};
@@ -468,7 +551,7 @@ protected:
                 // The first token may not have been processed, so convert
                 auto& first_token = result.front();
                 if (first_token.prefix == parsing::prefix_type::none) {
-                    first_token = parsing::get_token_type(first_token.name);
+                    first_token = parsing::get_token_type(*this, first_token.name);
                 }
 
                 // And then test it is correct unless we are skipping
@@ -500,18 +583,8 @@ protected:
         return target;
     }
 
-    /** Generic parse call, uses a policy that supports the parse phase if present, or the global
-     * parser.
-     *
-     * @tparam ValueType Parsed type
-     * @tparam Parents Pack of parent tree nodes in ascending ancestry order
-     * @param token Token to parse
-     * @param parents Parents instances pack
-     * @return Parsed result
-     * @exception multi_lang_exception Thrown if parsing failed
-     */
     template <typename ValueType, typename... Parents>
-    [[nodiscard]] auto parse(std::string_view token, const Parents&... parents) const
+    [[nodiscard]] auto parse_impl(std::string_view token, const Parents&... parents) const
     {
         using finder_type = phase_finder<policy::has_parse_phase_method, ValueType>;
         using policy_type = typename finder_type::type;
@@ -531,56 +604,6 @@ protected:
             return parser<ValueType>::parse(token);
         } else {
             return this->policy_type::template parse_phase<ValueType>(token, parents...);
-        }
-    }
-
-private:
-    static_assert((boost::mp11::mp_count_if_q<
-                       policies_type,
-                       typename phase_finder<policy::has_routing_phase_method>::finder>::value <=
-                   1),
-                  "Only zero or one policies supporting a routing phase is supported");
-
-    template <template <typename...> typename Fn, typename... ExpandedParams>
-    [[nodiscard]] constexpr static auto common_filter(ExpandedParams&... expanded_params) noexcept
-    {
-        // Send references to the filter method so we don't copy anything unnecessarily
-        using ref_tuple = std::tuple<std::reference_wrapper<ExpandedParams>...>;
-
-        // We have to wrap Fn because we're now giving it a std::reference_wrapper
-        using ref_fn =
-            boost::mp11::mp_bind<Fn, boost::mp11::mp_bind<traits::get_type, boost::mp11::_1>>;
-
-        // We have our result tuple, but it only contains references so we now have to move
-        // construct them into the 'real' types
-        auto ref_result = algorithm::tuple_filter_and_construct<ref_fn::template fn>(
-            ref_tuple{expanded_params...});
-
-        using ref_result_t = std::decay_t<decltype(ref_result)>;
-        using result_t = boost::mp11::mp_transform<traits::get_type, ref_result_t>;
-
-        // Converting move-constructor of std::tuple
-        return result_t{std::move(ref_result)};
-    }
-
-    template <template <typename...> typename Fn, typename Tuple>
-    [[nodiscard]] constexpr static auto common_filter_tuple(Tuple&& tuple_params) noexcept
-    {
-        // std::apply does not like templates, so we have to wrap in a lambda
-        return std::apply(
-            [](auto&... args) { return common_filter<Fn>(std::forward<decltype(args)>(args)...); },
-            tuple_params);
-    }
-
-    template <typename Validator, bool HasTarget>
-    [[nodiscard]] constexpr auto extract_parent_target(
-        [[maybe_unused]] parsing::pre_parse_data<Validator, HasTarget> pre_parse_data)
-        const noexcept
-    {
-        if constexpr (HasTarget) {
-            return utility::compile_time_optional{std::cref(pre_parse_data.target())};
-        } else {
-            return utility::compile_time_optional{};
         }
     }
 

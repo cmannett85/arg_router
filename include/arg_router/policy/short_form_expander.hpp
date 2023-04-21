@@ -76,7 +76,8 @@ public:
         auto first_token = *first;
         if (first_token.prefix == parsing::prefix_type::none) {
             // The token has _probably_ not been processed yet, so try to convert to short form
-            const auto tt = parsing::get_token_type(first_token.name);
+            const auto& owner = algorithm::pack_element<0>(parents...);
+            const auto tt = parsing::get_token_type(owner, first_token.name);
             if (tt.prefix != parsing::prefix_type::short_) {
                 return parsing::pre_parse_action::valid_node;
             }

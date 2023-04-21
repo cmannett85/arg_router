@@ -71,17 +71,21 @@ struct arp::is_policy<is_even<ValueType>> : std::true_type {
 // This is really just a simplified positional_arg_t that only supports a single argument
 template <typename T, typename... Policies>
 class single_positional_arg_t :
-    public ar::tree_node<arp::min_max_count_t<ar::traits::integral_constant<std::size_t{1}>,
-                                              ar::traits::integral_constant<std::size_t{1}>>,
-                         Policies...>
+    public ar::multi_arg_base_t<T,
+                                1,
+                                arp::min_max_count_t<ar::traits::integral_constant<std::size_t{1}>,
+                                                     ar::traits::integral_constant<std::size_t{1}>>,
+                                Policies...>
 {
     static_assert(arp::is_all_policies_v<std::tuple<Policies...>>,
                   "Positional args must only contain policies (not other nodes)");
 
     using parent_type =
-        ar::tree_node<arp::min_max_count_t<ar::traits::integral_constant<std::size_t{1}>,
-                                           ar::traits::integral_constant<std::size_t{1}>>,
-                      Policies...>;
+        ar::multi_arg_base_t<T,
+                             1,
+                             arp::min_max_count_t<ar::traits::integral_constant<std::size_t{1}>,
+                                                  ar::traits::integral_constant<std::size_t{1}>>,
+                             Policies...>;
 
     static_assert(ar::traits::has_display_name_method_v<single_positional_arg_t>,
                   "Positional arg must have a display name policy");
@@ -96,7 +100,7 @@ public:
     using typename parent_type::policies_type;
 
     // You must expose the parsed type as a using declaration
-    using value_type = T;
+    using value_type = typename parent_type::value_type;
 
     /* This is a minor variation on the tree_node::default_leaf_help_data_type type, we're just
      * wrapping the display name in chevrons.
@@ -106,10 +110,7 @@ public:
     {
         [[nodiscard]] constexpr static auto label_generator() noexcept
         {
-            constexpr auto name_index =
-                boost::mp11::mp_find_if<policies_type, ar::traits::has_display_name_method>::value;
-            constexpr auto name = std::tuple_element_t<name_index, policies_type>::display_name();
-
+            constexpr auto name = single_positional_arg_t::display_name();
             return S_("<"){} + S_(name){} + S_("> "){} +
                    parent_type::template default_leaf_help_data_type<Flatten>::count_suffix();
         }
@@ -145,24 +146,7 @@ public:
     [[nodiscard]] value_type parse(ar::parsing::parse_target target,
                                    const Parents&... parents) const
     {
-        // The fixed count of 1 guarantees there is a single token.  Pass it onto the parent type
-        // which will use a custom parse if one is available, otherwise it will use the global
-        // parser
-        auto result = parent_type::template parse<value_type>(target.tokens().front().name,
-                                                              *this,
-                                                              parents...);
-
-        // Run the result through the validation policies
-        ar::utility::tuple_type_iterator<policies_type>([&](auto i) {
-            using policy_type = std::tuple_element_t<i, policies_type>;
-            if constexpr (arp::has_validation_phase_method_v<policy_type, value_type>) {
-                this->policy_type::validation_phase(result, *this, parents...);
-            }
-        });
-
-        // No routing phase, it cannot be used as a top-level node
-
-        return result;
+        return parent_type::parse(target, *this, parents...);
     }
 
 private:

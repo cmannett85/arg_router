@@ -9,8 +9,10 @@
 #include "arg_router/dependency/alias_group.hpp"
 #include "arg_router/dependency/one_of.hpp"
 #include "arg_router/flag.hpp"
+#include "arg_router/forwarding_arg.hpp"
 #include "arg_router/help.hpp"
 #include "arg_router/mode.hpp"
+#include "arg_router/multi_arg.hpp"
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/default_value.hpp"
 #include "arg_router/policy/display_name.hpp"
@@ -653,6 +655,16 @@ constexpr auto default_validator = validator<
                                   policy::validation::validator>>,
     // Arg
     rule_q<common_rules::despecialised_any_of_rule<arg_t>,
+           must_not_have_policies<policy::multi_stage_value,
+                                  policy::no_result_value,
+                                  policy::validation::validator>>,
+    // Multi-arg
+    rule_q<common_rules::despecialised_any_of_rule<multi_arg_t>,
+           must_not_have_policies<policy::multi_stage_value,
+                                  policy::no_result_value,
+                                  policy::validation::validator>>,
+    // Forwarding-arg
+    rule_q<common_rules::despecialised_any_of_rule<forwarding_arg_t>,
            must_not_have_policies<policy::multi_stage_value,
                                   policy::no_result_value,
                                   policy::validation::validator>>,

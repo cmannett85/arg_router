@@ -81,10 +81,7 @@ public:
     using typename parent_type::policies_type;
     using parent_type::generate_help;
 
-    /** Help data type.
-     *
-     * This may seem surprising but of course help is a flag-like type.
-     */
+    /** Help data type. */
     template <bool Flatten>
     using help_data_type = typename parent_type::template default_leaf_help_data_type<Flatten>;
 
@@ -190,16 +187,15 @@ private:
             return;
         }
 
-        // Help tokens aren't pre-parsed by the target nodes (as they would fail if missing any
-        // required value tokens), so we have just use the prefix to generate a token_type from
-        // them, as they all of a prefix_type of none
-        const auto token = parsing::get_token_type(tokens.front().name);
-
         auto result = false;
         utility::tuple_iterator(
             [&](auto /*i*/, const auto& child) {
                 using child_type = std::decay_t<decltype(child)>;
 
+                // Help tokens aren't pre-parsed by the target nodes (as they would fail if missing
+                // any required value tokens), so we have just use the prefix to generate a
+                // token_type from them, as they all of a prefix_type of none
+                const auto token = parsing::get_token_type(child, tokens.front().name);
                 if (!result && parsing::match<child_type>(token)) {
                     result = true;
                     tokens.erase(tokens.begin());
@@ -209,7 +205,7 @@ private:
             node.children());
 
         if (!result) {
-            throw multi_lang_exception{error_code::unknown_argument, token};
+            throw multi_lang_exception{error_code::unknown_argument, tokens.front()};
         }
     }
 };

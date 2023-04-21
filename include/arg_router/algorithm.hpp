@@ -211,43 +211,38 @@ template <template <typename...> typename Fn, typename U>
 
 namespace detail
 {
-template <template <typename...> typename Tuple,
-          typename Insert,
-          typename... Args,
-          std::size_t... I>
-[[nodiscard]] constexpr auto tuple_push_back_impl(
-    Tuple<Args...> tuple,
-    Insert insert,
-    [[maybe_unused]] std::integer_sequence<std::size_t, I...> Is) noexcept
+template <std::size_t Count, typename U, std::size_t... I>
+[[nodiscard]] constexpr auto tuple_drop_impl(
+    U&& input,
+    [[maybe_unused]] std::integer_sequence<std::size_t, I...>) noexcept
 {
-    return Tuple{std::move(std::get<I>(tuple))..., std::move(insert)};
-}
-
-// Empty tuple specialisation
-template <template <typename...> typename Tuple, typename Insert>
-[[nodiscard]] constexpr auto tuple_push_back_impl(
-    [[maybe_unused]] Tuple<> t,
-    Insert insert,
-    [[maybe_unused]] std::integer_sequence<std::size_t> Is) noexcept
-{
-    return Tuple{std::move(insert)};
+    return std::tuple{std::get<I + Count>(std::forward<U>(input))...};
 }
 }  // namespace detail
 
-/** Appends @a insert to @a tuple.
+/** Remove the first @a Count elements from @a tuple.
  *
- * @tparam Tuple A tuple-like type
- * @tparam Insert The type to append
- * @param tuple Tuple instance
- * @param insert Instance to append
- * @return A Tuple with @a insert appended
+ * @param input Tuple to remove elements from
+ * @return Tuple with the first @a Count elements removed
  */
-template <typename Tuple, typename Insert>
-[[nodiscard]] constexpr auto tuple_push_back(Tuple tuple, Insert insert) noexcept
+template <std::size_t Count, typename Tuple>
+[[nodiscard]] constexpr auto tuple_drop(Tuple&& input)
 {
-    // Cannot use std::tuple_cat as it causes infinite compiler loops in MSVC
-    return detail::tuple_push_back_impl(std::move(tuple),
-                                        std::move(insert),
-                                        std::make_index_sequence<std::tuple_size_v<Tuple>>{});
+    return detail::tuple_drop_impl<Count>(
+        std::forward<Tuple>(input),
+        std::make_index_sequence<std::tuple_size_v<Tuple> - Count>{});
+}
+
+/** Convenience function for extracting a reference to the pack element at index @a I.
+ *
+ * Compilation failure if @a I is greater than or equal to the number of elements in @a pack.
+ * @param pack Parameter pack
+ * @return Const reference to the pack element at index @a I
+ */
+template <std::size_t I, typename... T>
+[[nodiscard]] constexpr auto& pack_element(const T&... pack) noexcept
+{
+    static_assert(I < sizeof...(pack), "Index out of bounds for pack");
+    return std::get<I>(std::tuple{std::cref(pack)...}).get();
 }
 }  // namespace arg_router::algorithm
