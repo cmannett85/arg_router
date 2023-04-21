@@ -10,7 +10,6 @@
 
 #include <algorithm>
 #include <string_view>
-#include <tuple>
 
 /** Namespace for generic algorithms. */
 namespace arg_router::algorithm
