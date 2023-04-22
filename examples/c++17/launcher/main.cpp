@@ -89,8 +89,8 @@ int main(int argc, char* argv[])
                      S_("ARGS"){},
                      S_("Arguments to pass to programs"){}),
                  arp::router{[](bool dry_run,
-                                std::vector<std::string_view> progs,
-                                std::vector<std::string_view> args) {
+                                const std::vector<std::string_view>& progs,
+                                const std::vector<std::string_view>& args) {
                      if (dry_run) {
                          print_invocs(progs, args);
                          return;

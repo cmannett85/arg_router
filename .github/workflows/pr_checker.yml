@@ -180,7 +180,7 @@ jobs:
         token: "${{ secrets.GITHUB_TOKEN }}"
 
     - name: Build
-      timeout-minutes: 30
+      timeout-minutes: 45
       shell: cmd
       run: |
         call "C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Auxiliary/Build/vcvarsall.bat" x64

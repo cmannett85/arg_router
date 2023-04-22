@@ -21,6 +21,7 @@ using namespace ar::utility::string_view_ops;
 
 namespace
 {
+// NOLINTNEXTLINE(*-avoid-c-arrays)
 constexpr char version[] = "v3.14";
 
 void print_invocs(const std::vector<std::string_view>& progs,
