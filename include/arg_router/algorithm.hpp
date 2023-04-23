@@ -211,6 +211,48 @@ template <template <typename...> typename Fn, typename U>
 
 namespace detail
 {
+template <template <typename...> typename Tuple,
+          typename Insert,
+          typename... Args,
+          std::size_t... I>
+[[nodiscard]] constexpr auto tuple_push_back_impl(
+    Tuple<Args...> tuple,
+    Insert insert,
+    [[maybe_unused]] std::integer_sequence<std::size_t, I...> Is) noexcept
+{
+    return Tuple{std::move(std::get<I>(tuple))..., std::move(insert)};
+}
+
+// Empty tuple specialisation
+template <template <typename...> typename Tuple, typename Insert>
+[[nodiscard]] constexpr auto tuple_push_back_impl(
+    [[maybe_unused]] Tuple<> t,
+    Insert insert,
+    [[maybe_unused]] std::integer_sequence<std::size_t> Is) noexcept
+{
+    return Tuple{std::move(insert)};
+}
+}  // namespace detail
+
+/** Appends @a insert to @a tuple.
+ *
+ * @tparam Tuple A tuple-like type
+ * @tparam Insert The type to append
+ * @param tuple Tuple instance
+ * @param insert Instance to append
+ * @return A Tuple with @a insert appended
+ */
+template <typename Tuple, typename Insert>
+[[nodiscard]] constexpr auto tuple_push_back(Tuple tuple, Insert insert) noexcept
+{
+    // Cannot use std::tuple_cat as it causes infinite compiler loops in MSVC
+    return detail::tuple_push_back_impl(std::move(tuple),
+                                        std::move(insert),
+                                        std::make_index_sequence<std::tuple_size_v<Tuple>>{});
+}
+
+namespace detail
+{
 template <std::size_t Count, typename U, std::size_t... I>
 [[nodiscard]] constexpr auto tuple_drop_impl(
     U&& input,

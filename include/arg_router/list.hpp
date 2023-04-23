@@ -1,4 +1,4 @@
-// Copyright (C) 2022-2023 by Camden Mannett.
+// Copyright (C) 2022 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -82,7 +82,7 @@ template <typename Result, typename Next, typename... Others>
                 std::make_index_sequence<std::tuple_size_v<typename Next::children_type>>{}),
             std::move(others)...);
     } else {
-        return list_expander_impl(std::tuple_cat(std::move(result), std::tuple{std::move(next)}),
+        return list_expander_impl(algorithm::tuple_push_back(std::move(result), std::move(next)),
                                   std::move(others)...);
     }
 }
