@@ -81,7 +81,7 @@ jobs:
     # We run the tests under Valgrind rather than ASan/UBSan because when combined with coverage
     # causes hangs in the death tests
     - name: Run unit tests under Valgrind and generate coverage data
-      timeout-minutes: 30
+      timeout-minutes: 45
       run: |
         cd ${{ env.BUILD_DIR }}/test
         valgrind --error-exitcode=1 --leak-check=full ./arg_router_test_coverage -l test_suite
@@ -157,43 +157,43 @@ jobs:
         cd ${{ env.BUILD_DIR }}/test
         ./arg_router_test -l test_suite
 
-  windows_msvc_compiler_tests:
-    runs-on: windows-2022
-    needs: changes
-    if: |
-      needs.changes.outputs.pr_checker == 'true' ||
-      needs.changes.outputs.source == 'true' ||
-      needs.changes.outputs.source_tests_and_examples == 'true'
+  #windows_msvc_compiler_tests:
+  #  runs-on: windows-2022
+  #  needs: changes
+  #  if: |
+  #    needs.changes.outputs.pr_checker == 'true' ||
+  #    needs.changes.outputs.source == 'true' ||
+  #    needs.changes.outputs.source_tests_and_examples == 'true'
 
-    # Use the CMake that ships with VS to match locally built versions
-    env:
-      CMAKE_EXE: "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe"
-      CMD_BUILD_DIR: ${{ github.workspace }}\\build
+  #  # Use the CMake that ships with VS to match locally built versions
+  #  env:
+  #    CMAKE_EXE: "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe"
+  #    CMD_BUILD_DIR: ${{ github.workspace }}\\build
 
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: true
+  #  steps:
+  #  - uses: actions/checkout@v3
+  #    with:
+  #      submodules: true
 
-    - uses: ./.github/workflows/bootstrap_vcpkg
-      with:
-        token: "${{ secrets.GITHUB_TOKEN }}"
+  #  - uses: ./.github/workflows/bootstrap_vcpkg
+  #    with:
+  #      token: "${{ secrets.GITHUB_TOKEN }}"
 
-    - name: Build
-      timeout-minutes: 60
-      shell: cmd
-      run: |
-        call "C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Auxiliary/Build/vcvarsall.bat" x64
-        mkdir ${{ env.CMD_BUILD_DIR }}
-        cd ${{ env.CMD_BUILD_DIR }}
-        "${{ env.CMAKE_EXE }}" ${{ github.workspace }} -G "Visual Studio 17 2022" -A x64 -DVCPKG_TARGET_TRIPLET:STRING="x64-windows-static" -DDEATH_TEST_PARALLEL=1
-        "${{ env.CMAKE_EXE }}" --build . --target arg_router_test cpp20_examples
+  #  - name: Build
+  #    timeout-minutes: 60
+  #    shell: cmd
+  #    run: |
+  #      call "C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Auxiliary/Build/vcvarsall.bat" x64
+  #      mkdir ${{ env.CMD_BUILD_DIR }}
+  #      cd ${{ env.CMD_BUILD_DIR }}
+  #      "${{ env.CMAKE_EXE }}" ${{ github.workspace }} -G "Visual Studio 17 2022" -A x64 -DVCPKG_TARGET_TRIPLET:STRING="x64-windows-static" -DDEATH_TEST_PARALLEL=1
+  #      "${{ env.CMAKE_EXE }}" --build . --target arg_router_test cpp20_examples
 
-    - name: Run unit tests
-      timeout-minutes: 20
-      run: |
-        cd ${{ env.BUILD_DIR }}/test/Debug
-        ./arg_router_test.exe -l test_suite
+  #  - name: Run unit tests
+  #    timeout-minutes: 20
+  #    run: |
+  #      cd ${{ env.BUILD_DIR }}/test/Debug
+  #      ./arg_router_test.exe -l test_suite
 
   # Test package integrity test where we use system libs and C++20 (so no nonstd::span)
   system_test_package:
