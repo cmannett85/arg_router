@@ -103,7 +103,9 @@ public:
         {
             auto alias_label = *tokens.begin();
             if (alias_label.prefix == parsing::prefix_type::none) {
-                alias_label = parsing::get_token_type(alias_label.name);
+                alias_label =
+                    parsing::get_token_type(std::get<0>(std::tuple{std::cref(parents)...}).get(),
+                                            alias_label.name);
             }
 
             if (!parsing::match<node_type>(alias_label)) {

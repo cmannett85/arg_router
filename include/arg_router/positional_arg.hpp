@@ -4,10 +4,9 @@
 
 #pragma once
 
+#include "arg_router/multi_arg_base.hpp"
 #include "arg_router/policy/description.hpp"
 #include "arg_router/policy/display_name.hpp"
-#include "arg_router/policy/min_max_count.hpp"
-#include "arg_router/tree_node.hpp"
 #include "arg_router/utility/string_to_policy.hpp"
 
 namespace arg_router
@@ -18,25 +17,16 @@ namespace arg_router
  * If no policy implementing <TT>minimum_count()</TT> and <TT>maximum_count()</TT> methods is used
  * (e.g. policy::min_max_count_t), then an unbounded policy::min_max_count_t is prepended to the
  * policies internally.
+ *
+ * A policy::token_end_marker_t can be used to mark the end of a variable length value token list
+ * on the command line.
  * @tparam T Argument value type, must have a <TT>push_back(..)</TT> method
  * @tparam Policies Pack of policies that define its behaviour
  */
 template <typename T, typename... Policies>
-class positional_arg_t : public add_missing_min_max_policy<Policies...>::type
+class positional_arg_t : public multi_arg_base_t<T, 0, Policies...>
 {
-    static_assert(policy::is_all_policies_v<std::tuple<std::decay_t<Policies>...>>,
-                  "Positional args must only contain policies (not other nodes)");
-
-    using parent_type = typename add_missing_min_max_policy<Policies...>::type;
-
-    template <std::size_t N>
-    constexpr static bool has_fixed_count = []() {
-        return (parent_type::minimum_count() == N) && (parent_type::maximum_count() == N);
-    }();
-
-    static_assert(!has_fixed_count<0>, "Cannot have a fixed count of zero");
-    static_assert(has_fixed_count<1> || traits::has_push_back_method_v<T>,
-                  "value_type must have a push_back() method");
+    using parent_type = multi_arg_base_t<T, 0, Policies...>;
 
     static_assert(traits::has_display_name_method_v<positional_arg_t>,
                   "Positional arg must have a display name policy");
@@ -78,22 +68,8 @@ public:
      *
      * @param policies Policy instances
      */
-    template <auto has_min_max = add_missing_min_max_policy<Policies...>::has_min_max>
-    constexpr explicit positional_arg_t(Policies... policies,
-                                        // NOLINTNEXTLINE(*-named-parameter)
-                                        std::enable_if_t<has_min_max>* = nullptr) noexcept :
+    constexpr explicit positional_arg_t(Policies... policies) noexcept :
         parent_type{std::move(policies)...}
-    {
-    }
-
-    template <auto has_min_max = add_missing_min_max_policy<Policies...>::has_min_max>
-    constexpr explicit positional_arg_t(Policies... policies,
-                                        // NOLINTNEXTLINE(*-named-parameter)
-                                        std::enable_if_t<!has_min_max>* = nullptr) noexcept :
-        parent_type{policy::min_max_count_t<
-                        traits::integral_constant<0>,
-                        traits::integral_constant<std::numeric_limits<std::size_t>::max()>>{},
-                    std::move(policies)...}
     {
     }
 
@@ -105,40 +81,10 @@ public:
         return parent_type::pre_parse(pre_parse_data, *this, parents...);
     }
 
-    /** Parse function.
-     *
-     * @tparam Parents Pack of parent tree nodes in ascending ancestry order
-     * @param target Parse target
-     * @param parents Parents instances pack
-     * @return Parsed result
-     * @exception multi_lang_exception Thrown if parsing failed
-     */
     template <typename... Parents>
     [[nodiscard]] value_type parse(parsing::parse_target target, const Parents&... parents) const
     {
-        auto result = value_type{};
-        if constexpr (traits::has_push_back_method_v<value_type>) {
-            for (auto token : target.tokens()) {
-                result.push_back(
-                    parent_type::template parse<value_type>(token.name, *this, parents...));
-            }
-        } else if (!target.tokens().empty()) {
-            result = parent_type::template parse<value_type>(target.tokens().front().name,
-                                                             *this,
-                                                             parents...);
-        }
-
-        // Validation
-        utility::tuple_type_iterator<policies_type>([&](auto i) {
-            using policy_type = std::tuple_element_t<i, policies_type>;
-            if constexpr (policy::has_validation_phase_method_v<policy_type, value_type>) {
-                this->policy_type::validation_phase(result, *this, parents...);
-            }
-        });
-
-        // No routing phase, a positional_arg cannot be used as a top-level node
-
-        return result;
+        return parent_type::parse(target, *this, parents...);
     }
 
 private:

@@ -84,9 +84,9 @@ public:
 
         // Transfer the tokens up to the end marker.  If not found then the whole token list is
         // used.  If found, the token is removed as it should be in the parsed results
-        const auto it = std::find_if(tokens.begin(), tokens.end(), [](auto&& token) {
-            return token.name == token_end_marker();
-        });
+        const auto it = std::find_if(tokens.begin() + (owner_type::is_named ? 1 : 0),
+                                     tokens.end(),
+                                     [](auto&& token) { return token.name == token_end_marker(); });
         tokens.transfer(it);
         tokens.erase(it);
 

@@ -431,11 +431,16 @@ template <typename... Params>
 class stub_node : public tree_node<Params...>
 {
 public:
-    using tree_node<Params...>::parse;
-
     constexpr explicit stub_node(Params... params) :
         tree_node<Params...>{std::move(params)...}
     {
+    }
+
+    template <typename ValueType, typename... Parents>
+    [[nodiscard]] auto parse(std::string_view token,
+                             const Parents&... parents) const
+    {
+        return tree_node<Params...>::template parse<ValueType>(token, *this, parents...);
     }
 };
 
@@ -462,11 +467,16 @@ template <typename... Params>
 class stub_node : public tree_node<Params...>
 {
 public:
-    using tree_node<Params...>::parse;
-
     constexpr explicit stub_node(Params... params) :
         tree_node<Params...>{std::move(params)...}
     {
+    }
+
+    template <typename ValueType, typename... Parents>
+    [[nodiscard]] auto parse(std::string_view token,
+                             const Parents&... parents) const
+    {
+        return tree_node<Params...>::template parse<ValueType>(token, *this, parents...);
     }
 };
 

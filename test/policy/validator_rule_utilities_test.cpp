@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -34,7 +34,7 @@ BOOST_AUTO_TEST_CASE(find_index_of_rule_type_test)
         constexpr auto pos = arp::validation::utility::find_index_of_rule_type<
             arp::validation::common_rules::despecialised_any_of_rule<std::vector>,
             arp::validation::utility::default_rules>();
-        static_assert(pos == 17, "Test failed");
+        static_assert(pos == 19, "Test failed");
     }
 }
 
@@ -134,7 +134,7 @@ BOOST_AUTO_TEST_CASE(remove_rule_test)
                           (std::tuple_size_v<arp::validation::utility::default_rules> - 1),
                       "Test failed");
 
-        using next_rule = std::tuple_element_t<9, new_rules>;
+        using next_rule = std::tuple_element_t<11, new_rules>;
         static_assert(
             std::is_same_v<
                 next_rule,
@@ -181,7 +181,7 @@ BOOST_AUTO_TEST_CASE(remove_rule_by_type_test)
                           (std::tuple_size_v<arp::validation::utility::default_rules> - 1),
                       "Test failed");
 
-        using next_rule = std::tuple_element_t<9, new_rules>;
+        using next_rule = std::tuple_element_t<11, new_rules>;
         static_assert(
             std::is_same_v<
                 next_rule,

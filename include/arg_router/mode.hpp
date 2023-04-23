@@ -119,6 +119,57 @@ public:
         parsing::pre_parse_data<Validator, HasTarget> pre_parse_data,
         const Parents&... parents) const
     {
+        return std::apply(
+            [&](auto&&... ancestors) { return pre_parse_impl(pre_parse_data, ancestors.get()...); },
+            parsing::clean_node_ancestry_list(*this, parents...));
+    }
+
+    /** Parse function.
+     *
+     * This function will recurse into child nodes to find matching tokens, a mode must have a
+     * routing phase policy which is why this method does not return the parsed tuple.
+     *
+     * @tparam Parents Pack of parent tree nodes in ascending ancestry order
+     * @param target Parse target
+     * @param parents Parents instances pack
+     * @exception multi_lang_exception Thrown if parsing failed
+     */
+    template <typename... Parents>
+    void parse(parsing::parse_target target, const Parents&... parents) const
+    {
+        return std::apply(
+            [&](auto&&... ancestors) { return parse_impl(target, ancestors.get()...); },
+            parsing::clean_node_ancestry_list(*this, parents...));
+    }
+
+private:
+    static_assert(!is_anonymous || boost::mp11::mp_none_of<children_type, is_child_mode>::value,
+                  "Anonymous mode cannot have a child mode");
+
+    static_assert(!parent_type::template any_phases_v<value_type,
+                                                      policy::has_pre_parse_phase_method,
+                                                      policy::has_parse_phase_method,
+                                                      policy::has_validation_phase_method,
+                                                      policy::has_missing_phase_method>,
+                  "Mode does not support policies with pre-parse, parse, validation, "
+                  "or missing phases; as it delegates those to its children");
+
+    template <typename Child>
+    struct child_has_routing_phase {
+        using type = typename Child::template phase_finder_t<policy::has_routing_phase_method>;
+
+        constexpr static bool value = !std::is_void_v<type>;
+    };
+    static_assert(boost::mp11::mp_none_of<boost::mp11::mp_remove_if<children_type, is_child_mode>,
+                                          child_has_routing_phase>::value,
+                  "Non-mode children cannot have routing");
+
+    template <typename Validator, bool HasTarget, typename DerivedMode, typename... Parents>
+    [[nodiscard]] std::optional<parsing::parse_target> pre_parse_impl(
+        parsing::pre_parse_data<Validator, HasTarget> pre_parse_data,
+        const DerivedMode& this_mode,
+        const Parents&... parents) const
+    {
         using namespace utility::string_view_ops;
         using namespace std::string_literals;
 
@@ -133,7 +184,7 @@ public:
         // If we're not anonymous then check the leading token is a match.  We can just delegate to
         // the default implementation for this
         if constexpr (!is_anonymous) {
-            auto match = parent_type::pre_parse(pre_parse_data, *this, parents...);
+            auto match = parent_type::pre_parse(pre_parse_data, this_mode, parents...);
             if (!match) {
                 return match;
             }
@@ -146,7 +197,7 @@ public:
                         using child_type = std::decay_t<decltype(child)>;
                         if constexpr (traits::is_specialisation_of_v<child_type, mode_t>) {
                             if (!match) {
-                                match = child.pre_parse(pre_parse_data, *this, parents...);
+                                match = child.pre_parse(pre_parse_data, this_mode, parents...);
                             }
                         }
                     },
@@ -157,11 +208,11 @@ public:
             }
         }
 
-        if (!pre_parse_data.validator()(*this, parents...)) {
+        if (!pre_parse_data.validator()(this_mode, parents...)) {
             return {};
         }
 
-        auto target = parsing::parse_target{*this, parents...};
+        auto target = parsing::parse_target{this_mode, parents...};
 
         // Iterate over the tokens until consumed, skipping children already processed that cannot
         // be repeated on the command line
@@ -190,7 +241,7 @@ public:
                                     using real_child_type = std::decay_t<decltype(real_child)>;
                                     return verify_match<real_child_type>(matched[i], front_token);
                                 }},
-                            *this,
+                            this_mode,
                             parents...);
 
                         // Update the matched bitset
@@ -222,18 +273,10 @@ public:
         return target;
     }
 
-    /** Parse function.
-     *
-     * This function will recurse into child nodes to find matching tokens, a mode must have a
-     * routing phase policy which is why this method does not return the parsed tuple.
-     *
-     * @tparam Parents Pack of parent tree nodes in ascending ancestry order
-     * @param target Parse target
-     * @param parents Parents instances pack
-     * @exception multi_lang_exception Thrown if parsing failed
-     */
-    template <typename... Parents>
-    void parse(parsing::parse_target target, const Parents&... parents) const
+    template <typename DerivedMode, typename... Parents>
+    void parse_impl(parsing::parse_target target,
+                    const DerivedMode& this_mode,
+                    const Parents&... parents) const
     {
         // Create an internal-use results tuple, this is made from optional-wrapped children's
         // value_types but any no_result_value children are replaced with skip_tag - this makes it
@@ -271,7 +314,7 @@ public:
                 if constexpr (!is_skip_tag_v<std::decay_t<decltype(result)>>) {
                     if (!result) {
                         const auto& child = std::get<i>(this->children());
-                        process_missing_token(result, child, *this, parents...);
+                        process_missing_token(result, child, this_mode, parents...);
                     }
                 }
             },
@@ -281,7 +324,7 @@ public:
         // processing, as they will likely fail validation when partially processed.  So the
         // multi-stage nodes do not perform validation themselves, but have their owner (i.e. modes)
         // do it at the end of processing - including after any default values have been generated
-        multi_stage_validation(results, *this, parents...);
+        multi_stage_validation(results, this_mode, parents...);
 
         // Routing
         using routing_policy =
@@ -307,28 +350,6 @@ public:
                                        parsing::node_token_type<mode_t>()};
         }
     }
-
-private:
-    static_assert(!is_anonymous || boost::mp11::mp_none_of<children_type, is_child_mode>::value,
-                  "Anonymous mode cannot have a child mode");
-
-    static_assert(!parent_type::template any_phases_v<value_type,
-                                                      policy::has_pre_parse_phase_method,
-                                                      policy::has_parse_phase_method,
-                                                      policy::has_validation_phase_method,
-                                                      policy::has_missing_phase_method>,
-                  "Mode does not support policies with pre-parse, parse, validation, "
-                  "or missing phases; as it delegates those to its children");
-
-    template <typename Child>
-    struct child_has_routing_phase {
-        using type = typename Child::template phase_finder_t<policy::has_routing_phase_method>;
-
-        constexpr static bool value = !std::is_void_v<type>;
-    };
-    static_assert(boost::mp11::mp_none_of<boost::mp11::mp_remove_if<children_type, is_child_mode>,
-                                          child_has_routing_phase>::value,
-                  "Non-mode children cannot have routing");
 
     template <typename Child, typename Handler>
     static void match_child(const Child& child, std::size_t hash, Handler handler)

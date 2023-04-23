@@ -25,10 +25,12 @@ path_prefixer(TEST_SRCS
     dependency/one_of_test.cpp
     flag_same_prefix_test.cpp
     flag_test.cpp
+    forwarding_arg_test.cpp
     help_test.cpp
     list_test.cpp
     math_test.cpp
     mode_test.cpp
+    multi_arg_test.cpp
     multi_lang/iso_locale_test.cpp
     multi_lang/root_test.cpp
     multi_lang/root_wrapper_test.cpp
@@ -105,7 +107,7 @@ function(configure_test_build TARGET)
     # Clang can run in different command line argument modes to mimic gcc or cl.exe,
     # so we have to test for a 'frontent variant' too
     if (MSVC_FRONTEND)
-        set(EXTRA_FLAGS /Zc:__cplusplus /W4 /Z7 /GR- /permissive- /bigobj ${ARGN} )
+        set(EXTRA_FLAGS /MP /Zc:__cplusplus /W4 /Z7 /GR- /permissive- /bigobj ${ARGN} )
         set(EXTRA_DEFINES NOMINMAX BOOST_USE_WINDOWS_H WIN32_LEAN_AND_MEAN _CRT_SECURE_NO_WARNINGS)
 
         # /MT by default as it simplifies the running of the unit tests

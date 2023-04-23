@@ -350,7 +350,8 @@ public:
      *
      * @return End iterator
      */
-    [[nodiscard]] static iterator end() { return {}; }
+    // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+    [[nodiscard]] iterator end() { return {}; }
 
     /** Returns the count of all tokens, processed and unprocessed.
      *

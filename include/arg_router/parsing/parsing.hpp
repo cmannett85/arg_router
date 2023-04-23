@@ -1,9 +1,10 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #pragma once
 
+#include "arg_router/algorithm.hpp"
 #include "arg_router/traits.hpp"
 #include "arg_router/utility/result.hpp"
 
@@ -78,6 +79,44 @@ template <typename Node>
         return {prefix_type::none, Node::none_name()};
     } else {
         static_assert(traits::always_false_v<Node>, "Node does not have a name");
+    }
+}
+
+/** Remove the leading entries from the node ancestry list that are derived from @a BaseNode.
+ *
+ * To allow derived types to call the inherited implementations of the pre-parse and parse stages,
+ * we need to clean the multiple leading `*this` references that each parent method call will add.
+ * Due to the use of policies we can @em almost guarantee that OOP parents will not be confused
+ * with structural parents (i.e. parents in the tree).  It is an @em almost guarantee because
+ * someone could create a custom node that allows for identical policies to it's tree parent and
+ * then not define a validator rule to prevent this - but I'd consider that to have bigger
+ * problems...
+ *
+ * This method is used in tree_node, so anything derived from that that uses its inherited pre-parse
+ * and parse methods will not need to use this function.
+ * @tparam BaseNode Base node type to be used to find derived types in @a derived_and_parents
+ * @tparam DerivedAndParents Pack of (possibly) derived types in descending OOP ancestry order, and
+ * then parent tree nodes in ascending ancestry order
+ * @param derived_and_parents Derived type and parent node instances
+ * @return Tuple of cleaned const reference ancestors in <TT>std::reference_wrapper</TT>
+ */
+template <typename BaseNode, typename... DerivedAndParents>
+[[nodiscard]] static constexpr auto clean_node_ancestry_list(
+    const BaseNode& base_node,
+    const DerivedAndParents&... derived_and_parents)
+{
+    // Iterate along the ancestry until you hit a node type that is _not_ a base of Node, then
+    // remove the elements up to that element
+    using parents_tuple = std::tuple<std::decay_t<DerivedAndParents>...>;
+
+    constexpr auto remove_n = boost::mp11::mp_find_if_q<
+        parents_tuple,
+        boost::mp11::mp_not_fn_q<
+            boost::mp11::mp_bind<std::is_base_of, std::decay_t<BaseNode>, boost::mp11::_1>>>::value;
+    if constexpr (remove_n == 0) {
+        return std::tuple{std::cref(base_node), std::cref(derived_and_parents)...};
+    } else {
+        return algorithm::tuple_drop<remove_n - 1>(std::tuple{std::cref(derived_and_parents)...});
     }
 }
 }  // namespace arg_router::parsing

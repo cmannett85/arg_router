@@ -4,14 +4,14 @@
 
 #pragma once
 
-#include "arg_router/parsing/parse_target.hpp"
-
 #include <boost/mp11/algorithm.hpp>
 #include <boost/mp11/bind.hpp>
 #include <boost/mp11/utility.hpp>
 
 #include <algorithm>
 #include <optional>
+#include <ostream>
+#include <tuple>
 #include <type_traits>
 
 // Surprised this is not already done somewhere in mp11, without it using
@@ -33,6 +33,7 @@ namespace arg_router
 {
 class multi_lang_exception;
 
+/** Namespace for type traits. */
 namespace traits
 {
 /** Regardless of @a T, always evaluates to false.
@@ -567,28 +568,6 @@ struct has_generate_help_method {
  */
 template <typename T>
 constexpr bool has_generate_help_method_v = has_generate_help_method<T>::value;
-
-/** Determine if a node has a <TT>parse</TT> method.
- *
- * @tparam T Node type to query
- */
-template <typename T>
-struct has_parse_method {
-    static_assert(is_tree_node_v<T>, "T must be node");
-
-    template <typename U>
-    using type = decltype(  //
-        std::declval<const U&>().template parse<>(std::declval<parsing::parse_target>()));
-
-    constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
-};
-
-/** Helper variable for has_parse_method.
- *
- * @tparam T Node type to query
- */
-template <typename T>
-constexpr static bool has_parse_method_v = has_parse_method<T>::value;
 
 /** Determine if a type has a <TT>translate_exception</TT> method.
  *

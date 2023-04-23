@@ -5,6 +5,7 @@
 #pragma once
 
 #include "arg_router/multi_lang/translation.hpp"
+#include "arg_router/parsing/token_type.hpp"
 #include "arg_router/utility/tuple_iterator.hpp"
 
 #include <variant>

@@ -1,4 +1,4 @@
-![Documentation Generator](https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg) [![Merge to main Checker](https://github.com/cmannett85/arg_router/actions/workflows/merge_checker.yml/badge.svg)](https://github.com/cmannett85/arg_router/actions/workflows/merge_checker.yml) ![Unit test coverage](https://img.shields.io/badge/Unit_Test_Coverage-97.6%25-brightgreen)
+![Documentation Generator](https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg) [![Merge to main Checker](https://github.com/cmannett85/arg_router/actions/workflows/merge_checker.yml/badge.svg)](https://github.com/cmannett85/arg_router/actions/workflows/merge_checker.yml) ![Unit test coverage](https://img.shields.io/badge/Unit_Test_Coverage-97.5%25-brightgreen)
 
 # arg_router
 `arg_router` is a C++17/20 command line parser and router.  It uses policy-based objects hierarchically, so the parsing code is self-describing.  Rather than just providing a parsing service that returns a map of `variant`s/`any`s, it allows you to bind `Callable` instances to points in the parse structure, so complex command line arguments can directly call functions with the expected arguments - rather than you having to do this yourself.
@@ -433,6 +433,24 @@ ar::positional_arg<std::vector<std::string_view>>("ARGS"_S,
                                                   "Arguments to pass to programs"_S),
 ```
 There is no limit to number of `positional_arg` nodes that can be chained together like this, but they must still follow `positional_arg` rules such as being at the end of the child node list.
+
+### Multi-Arg and Forwarding Arg
+Another variation of multi-value arguments are `multi_arg` and `forwarding_arg`. `multi_arg` is almost the same as `arg` but accepts multiple (at least one) value tokens from the command line, you can tune the min/max value token count using the `min_max_count_t` policy - although you can't use a `value_separator` policy.
+
+`forwarding_arg` is similar to `multi_arg` except that it is tuned for simply forwarding arguments, so has no naming restrictions, no min/max count, and is has a fixed `value_type` of `vector<std::string>`.  You could re-write the launcher example above to use it:
+```
+ar::forwarding_arg(arp::required,
+                   "--"_S,
+                   "Programs to run"_S,
+                   arp::token_end_marker_t{"--"_S},
+                   arp::min_count<1>),
+ar::positional_arg<std::vector<std::string_view>>("ARGS"_S,
+                                                  "Arguments to pass to programs"_S),
+```
+Which would look like this on the command line:
+```
+$ example_launcher_cpp -f -- prog1 prog2 prog3 -- arg1 arg2 arg3
+```
 
 ## Modes
 As noted in [Basics](#basics), `mode`s allow you to group command line components under an initial token on the command line.  A common example of this developers will be aware of is `git`, for example in our parlance `git clean -ffxd`; `clean` would be the mode and `ffxd` would be the flags that are available under that mode.
