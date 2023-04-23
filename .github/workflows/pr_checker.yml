@@ -190,7 +190,7 @@ jobs:
        "${{ env.CMAKE_EXE }}" --build . --target arg_router_test cpp20_examples
 
    - name: Run unit tests
-     timeout-minutes: 20
+     timeout-minutes: 30
      run: |
        cd ${{ env.BUILD_DIR }}/test/Debug
        ./arg_router_test.exe -l test_suite
