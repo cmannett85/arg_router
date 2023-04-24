@@ -192,6 +192,10 @@ private:
             [&](auto /*i*/, const auto& child) {
                 using child_type = std::decay_t<decltype(child)>;
 
+                if (tokens.empty()) {
+                    return;
+                }
+
                 // Help tokens aren't pre-parsed by the target nodes (as they would fail if missing
                 // any required value tokens), so we have just use the prefix to generate a
                 // token_type from them, as they all of a prefix_type of none
