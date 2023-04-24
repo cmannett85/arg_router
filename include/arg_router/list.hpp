@@ -82,7 +82,7 @@ template <typename Result, typename Next, typename... Others>
                 std::make_index_sequence<std::tuple_size_v<typename Next::children_type>>{}),
             std::move(others)...);
     } else {
-        return list_expander_impl(std::tuple_cat(std::move(result), std::tuple{std::move(next)}),
+        return list_expander_impl(algorithm::tuple_push_back(std::move(result), std::move(next)),
                                   std::move(others)...);
     }
 }
