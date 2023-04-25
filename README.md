@@ -85,7 +85,7 @@ There are several ways to install `arg_router`, the most appropriate depends on 
 * If using Conan as your package manager, simply add `arg_router` to your requirements
 * If using a DEB package based Linux distribution, download the [release](https://github.com/cmannett85/arg_router/releases) Debian package and install it
 * If you just want to do a traditional install then download the [release](https://github.com/cmannett85/arg_router/releases) zip file and decompress it where you want.  Then point your project at the `include/arg_router` directory or package config location `share/arg_router`
-* Same as above but installed from the checked out repo, i.e. using the invocation `cmake ../arg_router -DINSTALLATION_ONLY=ON; cmake --install .`
+* Same as above but installed from the checked out repo, i.e. using the invocation `cmake ../arg_router -DINSTALLATION_ONLY=ON; cmake --install .` (see [developer installation](https://github.com/cmannett85/arg_router/wiki/Developer-Installation))
 
 ### Dependencies
 If you're a library user, you will need the following dependencies in order to build:
@@ -97,25 +97,6 @@ If you're a library user, you will need the following dependencies in order to b
 If you're a vcpkg user, then these will be brought in automatically for you.  `arg_router` is header-only (due to all the templates) and so are the above dependencies.
 
 **Note** currently `arg_router` requires exception support, but _not_ RTTI.
-
-To get a pre-release `arg_router`, or build the unit tests and examples, simply check out the repo and build via CMake in the usual way - the unit tests will be built by default:
-```
-$ cd arg_router
-$ mkdir build
-$ cd ./build
-$ cmake ..
-$ cmake --build .
-$ cmake --install .
-```
-Building these targets will require more dependencies:
-* clang-format
-* Python v3 (used for copyright checking)
-* Doxygen
-* Boost.Test v1.74+
-* Boost.Filesystem v1.74+
-* Boost.Process v1.74+
-
-By default all these dependencies are provided by `vcpkg` automatically, please **note** that `vcpkg` is provided via a submodule and therefore will need initialising (`git submodule update`).  If you would rather the dependencies came from the system then simply set `-DDISABLE_VCPKG=OFF`, and CMake will not bootstrap `vcpkg` and therefore try to find the packages locally.
 
 ## Basics
 Let's start simple, with this `cat`-like program:
