@@ -421,10 +421,10 @@ private:
         }
     }
 
-    #ifdef _MSC_VER
-    #pragma warning(push)
-    #pragma warning(disable : 4702)
-    #endif
+#ifdef _MSC_VER
+#    pragma warning(push)
+#    pragma warning(disable : 4702)
+#endif
     template <typename ValueType, typename ChildType, typename... Parents>
     void process_missing_token(std::optional<ValueType>& result,
                                const ChildType& child,
@@ -436,9 +436,9 @@ private:
                 result = child.policy_type::template missing_phase<ValueType>(child, parents...);
             }
 
-            #ifdef _MSC_VER
-            #pragma warning(pop)
-            #endif
+#ifdef _MSC_VER
+#    pragma warning(pop)
+#endif
         });
 
         // If no missing_phase methods were found that made the result valid, then it still needs to
