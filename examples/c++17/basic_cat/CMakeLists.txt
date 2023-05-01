@@ -14,7 +14,7 @@ target_compile_features(example_basic_cat PUBLIC cxx_std_17)
 set_target_properties(example_basic_cat PROPERTIES CXX_EXTENSIONS OFF)
 target_link_libraries(example_basic_cat PRIVATE arg_router)
 
-configure_test_build(example_basic_cat)
+configure_example_build(example_basic_cat)
 add_clangtidy_to_target(example_basic_cat)
 
 add_dependencies(cpp17_examples example_basic_cat)

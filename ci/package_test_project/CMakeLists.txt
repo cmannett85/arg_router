@@ -32,22 +32,7 @@ target_link_libraries(package_test_project PUBLIC arg_router::arg_router)
 set_target_properties(package_test_project PROPERTIES CXX_EXTENSIONS OFF)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" OR CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
-    target_compile_options(package_test_project PRIVATE /W4 /Z7)
-    target_compile_definitions(package_test_project PRIVATE
-        NOMINMAX
-        BOOST_USE_WINDOWS_H
-        WIN32_LEAN_AND_MEAN
-        _CRT_SECURE_NO_WARNINGS
-    )
-
-    if (CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
-        target_compile_options(package_test_project PRIVATE /clang:-fconstexpr-steps=10000000)
-    endif()
+    target_compile_options(package_test_project PRIVATE /W4 /Z7 /GR- /permissive-)
 else()
-    target_compile_options(package_test_project PRIVATE
-        -Werror
-        -Wall
-        -Wextra
-        -ftemplate-backtrace-limit=0
-    )
+    target_compile_options(package_test_project PRIVATE -Werror -Wall -Wextra)
 endif()

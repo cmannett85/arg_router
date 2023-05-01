@@ -888,6 +888,8 @@ Other compiler versions and platform combinations may work, but I'm currently li
 ### Do **NOT** Make the Parse Tree Type Accessible
 The parse tree is _very_ expensive to construct due to all the compile-time checking and meta-programming shennanigans, so do **NOT** define it in a header and have multiple source files include it - it will cause the tree to be built/checked in every source file it is included in.
 
+This is especially important on Windows as `windows.h` is included (needed for calculating terminal column width) with `NOMINMAX` and `WIN32_LEAN_AND_MEAN` set by default.
+
 ### Minimise Static Storage Bloat
 Despite not using `typeid` or `dynamic_cast` in the library, compilers will still generate class name data if RTTI is enabled, because it is used in the standard library implementations (e.g. `std::function` on Clang).  Due to the highly nested templates that make up the parse tree, these class names can become huge and occupy large amount of static storage in the executable.  As an example, the `basic_cat` project in the repo will create ~100KB of class name data in the binary - this data is not used and cannot be stripped out.
 

@@ -22,7 +22,7 @@ target_link_libraries(example_launcher_cpp20
     PUBLIC Boost::filesystem
 )
 
-configure_test_build(example_launcher_cpp20)
+configure_example_build(example_launcher_cpp20)
 add_clangtidy_to_target(example_launcher_cpp20)
 
 add_dependencies(cpp20_examples example_launcher_cpp20)

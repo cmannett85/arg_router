@@ -14,7 +14,7 @@ target_compile_features(example_just_cats_cpp20 PUBLIC cxx_std_20)
 set_target_properties(example_just_cats_cpp20 PROPERTIES CXX_EXTENSIONS OFF)
 target_link_libraries(example_just_cats_cpp20 PRIVATE arg_router)
 
-configure_test_build(example_just_cats_cpp20)
+configure_example_build(example_just_cats_cpp20)
 add_clangtidy_to_target(example_just_cats_cpp20)
 
 add_dependencies(cpp20_examples example_just_cats_cpp20)

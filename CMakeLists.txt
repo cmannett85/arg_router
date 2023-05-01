@@ -138,6 +138,7 @@ path_prefixer(HEADERS
     include/arg_router/utility/utf8/line_break.hpp
     include/arg_router/utility/utf8/whitespace.hpp
     include/arg_router/utility/utf8/zero_width.hpp
+    include/arg_router/utility/win_api.hpp
     include/arg_router/version.hpp
 )
 

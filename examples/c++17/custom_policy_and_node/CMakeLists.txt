@@ -14,7 +14,7 @@ target_compile_features(example_custom_policy_and_node PUBLIC cxx_std_17)
 set_target_properties(example_custom_policy_and_node PROPERTIES CXX_EXTENSIONS OFF)
 target_link_libraries(example_custom_policy_and_node PRIVATE arg_router)
 
-configure_test_build(example_custom_policy_and_node)
+configure_example_build(example_custom_policy_and_node)
 add_clangtidy_to_target(example_custom_policy_and_node)
 
 add_dependencies(cpp17_examples example_custom_policy_and_node)

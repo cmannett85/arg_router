@@ -386,9 +386,12 @@ private:
             if (already_matched) {
                 throw multi_lang_exception{error_code::argument_has_already_been_set, token};
             }
-        }
 
-        return true;
+            return true;
+        } else {
+            // Just to prevent C4702 errors on MSVC
+            return true;
+        }
     }
 
     template <std::size_t I, typename ResultsType, typename ChildType>
@@ -418,6 +421,10 @@ private:
         }
     }
 
+    #ifdef _MSC_VER
+    #pragma warning(push)
+    #pragma warning(disable : 4702)
+    #endif
     template <typename ValueType, typename ChildType, typename... Parents>
     void process_missing_token(std::optional<ValueType>& result,
                                const ChildType& child,
@@ -428,6 +435,10 @@ private:
             if constexpr (policy::has_missing_phase_method_v<policy_type, ValueType>) {
                 result = child.policy_type::template missing_phase<ValueType>(child, parents...);
             }
+
+            #ifdef _MSC_VER
+            #pragma warning(pop)
+            #endif
         });
 
         // If no missing_phase methods were found that made the result valid, then it still needs to
