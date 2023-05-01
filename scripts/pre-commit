@@ -1,8 +1,26 @@
 #!/usr/bin/env bash
 
-# Copyright (C) 2022-2023 by Camden Mannett.
+# Copyright (C) 2023 by Camden Mannett.
 # Distributed under the Boost Software License, Version 1.0.
 # (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
+set -e
+
+# Get list of changes files
+readarray -t files <<< `git diff-index --name-only --cached HEAD`
+
 # Run the copyright checker
-git diff-index --name-only --cached HEAD | xargs ./scripts/copyright_checker.py date
+python ./scripts/copyright_checker.py date $files
+
+# Run clang-format
+source_files=()
+for file in "${files[@]}"; do
+    extension="${file#*.}"
+    if [ "$extension" = "hpp" ] || [ "$extension" = "cpp" ]; then
+        source_files+=($file)
+    fi
+done
+
+if [[ ${#source_files[@]} > 0 ]]; then
+    clang-format --style=file --dry-run --Werror $source_files
+fi

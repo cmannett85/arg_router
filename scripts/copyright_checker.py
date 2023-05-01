@@ -17,8 +17,9 @@ LANGUAGE_COMMENT_ENDS = [('*.sh', '###'),
                          ('*.hpp', '//'),
                          ('*.py', '#'),
                          ('*.cmake', '###'),
-                         ('CMakeLists.txt', '###'),
-                         ('*.doxy', '//')]
+                         ('*CMakeLists.txt', '###'),
+                         ('*.doxy', '//'),
+                         ('*pre-commit', '#')]
 SKIP_PATHS = ['external' + os.sep,
               'test' + os.sep + 'death_test',
               'build' + os.sep,         # VSCode
