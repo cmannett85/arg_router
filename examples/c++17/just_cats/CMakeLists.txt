@@ -14,7 +14,7 @@ target_compile_features(example_just_cats PUBLIC cxx_std_17)
 set_target_properties(example_just_cats PROPERTIES CXX_EXTENSIONS OFF)
 target_link_libraries(example_just_cats PRIVATE arg_router)
 
-configure_test_build(example_just_cats)
+configure_example_build(example_just_cats)
 add_clangtidy_to_target(example_just_cats)
 
 add_dependencies(cpp17_examples example_just_cats)

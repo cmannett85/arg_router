@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -9,7 +9,7 @@
 #if defined(__linux__) || defined(__APPLE__)
 #    include <sys/ioctl.h>
 #elif _WIN32
-#    include <windows.h>
+#    include "arg_router/utility/win_api.hpp"
 #endif
 
 /** Namespace for terminal utilities. */

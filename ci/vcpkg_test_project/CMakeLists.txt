@@ -21,10 +21,8 @@ target_link_libraries(vcpkg_test_project PUBLIC arg_router::arg_router)
 target_compile_features(vcpkg_test_project PUBLIC cxx_std_20)
 set_target_properties(vcpkg_test_project PROPERTIES CXX_EXTENSIONS OFF)
 
-target_compile_options(vcpkg_test_project PRIVATE
-    -Werror
-    -Wall
-    -Wextra
-    -ftemplate-backtrace-limit=0
-)
-
+if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" OR CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
+    target_compile_options(package_test_project PRIVATE /W4 /Z7 /GR- /permissive-)
+else()
+    target_compile_options(package_test_project PRIVATE -Werror -Wall -Wextra)
+endif()
