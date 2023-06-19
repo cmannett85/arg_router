@@ -110,6 +110,7 @@ path_prefixer(HEADERS
     include/arg_router/policy/program_version.hpp
     include/arg_router/policy/required.hpp
     include/arg_router/policy/router.hpp
+    include/arg_router/policy/runtime_enable.hpp
     include/arg_router/policy/short_form_expander.hpp
     include/arg_router/policy/short_name.hpp
     include/arg_router/policy/token_end_marker.hpp
@@ -123,6 +124,7 @@ path_prefixer(HEADERS
     include/arg_router/tree_node_fwd.hpp
     include/arg_router/utility/compile_time_string.hpp
     include/arg_router/utility/compile_time_optional.hpp
+    include/arg_router/utility/dynamic_string_view.hpp
     include/arg_router/utility/result.hpp
     include/arg_router/utility/string_to_policy.hpp
     include/arg_router/utility/string_view_ops.hpp

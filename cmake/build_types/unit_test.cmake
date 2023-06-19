@@ -56,6 +56,7 @@ path_prefixer(TEST_SRCS
     policy/min_max_value_t_test.cpp
     policy/required_test.cpp
     policy/router_test.cpp
+    policy/runtime_enable_test.cpp
     policy/short_form_expander_test.cpp
     policy/short_name_test.cpp
     policy/token_end_marker_test.cpp
@@ -72,6 +73,7 @@ path_prefixer(TEST_SRCS
     tree_node_test.cpp
     utility/compile_time_string_test.cpp
     utility/compile_time_optional_test.cpp
+    utility/dynamic_string_view_test.cpp
     utility/result_test.cpp
     utility/string_to_policy_test.cpp
     utility/string_view_ops_test.cpp
@@ -114,8 +116,8 @@ function(configure_test_build TARGET)
         set_property(TARGET ${TARGET} PROPERTY
                      MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
-        if (CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
-            set(EXTRA_FLAGS /clang:-fconstexpr-steps=10000000)
+        if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+            set(EXTRA_FLAGS ${EXTRA_FLAGS} /clang:-fconstexpr-steps=10000000)
         endif()
     else()
         set(EXTRA_FLAGS -Werror -Wall -Wextra -ftemplate-backtrace-limit=0 -fno-rtti

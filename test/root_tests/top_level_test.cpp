@@ -2,8 +2,10 @@
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/custom_parser.hpp"
 #include "arg_router/policy/description.hpp"
+#include "arg_router/policy/flatten_help.hpp"
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/policy/value_separator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
@@ -12,6 +14,7 @@
 
 using namespace arg_router;
 namespace ard = arg_router::dependency;
+using namespace arg_router::literals;
 using namespace std::string_literals;
 using namespace std::string_view_literals;
 
@@ -392,11 +395,292 @@ My foo is good for you
 My foo is good for you
 
     --help,-h             Help output
+     
+        --flag1,-a        Flag1 description
+        --flag2
+        --arg1 <Value>    Arg1 description
+        -b                b description
+)"s},
+            std::tuple{root(help(policy::long_name<AR_STRING("help")>,
+                                 policy::short_name<'h'>,
+                                 policy::description<AR_STRING("Help output")>,
+                                 policy::program_name<AR_STRING("foo")>,
+                                 policy::program_version<AR_STRING("v3.14")>,
+                                 policy::program_intro<AR_STRING("My foo is good for you")>),
+                            mode(AR_STRING("test"){},
+                                 AR_STRING("Test mode"){},
+                                 flag(policy::long_name<AR_STRING("flag1")>),
+                                 arg<int>(policy::long_name<AR_STRING("arg1")>,
+                                          policy::description<AR_STRING("Arg1 description")>),
+                                 policy::router{[](bool, int) {}}),
+                            mode(flag(policy::long_name<AR_STRING("flag1")>,
+                                      policy::short_name<'a'>,
+                                      policy::description<AR_STRING("Flag1 description")>),
+                                 flag(policy::long_name<AR_STRING("flag2")>),
+                                 arg<int>(policy::long_name<AR_STRING("arg1")>,
+                                          policy::description<AR_STRING("Arg1 description")>),
+                                 flag(policy::short_name<'b'>,
+                                      policy::description<AR_STRING("b description")>),
+                                 policy::router{[](bool, bool, bool) {}}),
+                            policy::validation::default_validator),
+                       R"(foo v3.14
+
+My foo is good for you
+
+    --help,-h             Help output
+    test                  Test mode
+     
+        --flag1,-a        Flag1 description
+        --flag2
+        --arg1 <Value>    Arg1 description
+        -b                b description
+)"s},
+            std::tuple{root(help(policy::long_name<AR_STRING("help")>,
+                                 policy::short_name<'h'>,
+                                 policy::flatten_help,
+                                 policy::description<AR_STRING("Help output")>,
+                                 policy::program_name<AR_STRING("foo")>,
+                                 policy::program_version<AR_STRING("v3.14")>,
+                                 policy::program_intro<AR_STRING("My foo is good for you")>),
+                            mode(AR_STRING("test"){},
+                                 AR_STRING("Test mode"){},
+                                 flag(policy::long_name<AR_STRING("flag1")>),
+                                 arg<int>(policy::long_name<AR_STRING("arg1")>,
+                                          policy::description<AR_STRING("Arg1 description")>),
+                                 policy::router{[](bool, int) {}}),
+                            mode(flag(policy::long_name<AR_STRING("flag1")>,
+                                      policy::short_name<'a'>,
+                                      policy::description<AR_STRING("Flag1 description")>),
+                                 flag(policy::long_name<AR_STRING("flag2")>),
+                                 arg<int>(policy::long_name<AR_STRING("arg1")>,
+                                          policy::description<AR_STRING("Arg1 description")>),
+                                 flag(policy::short_name<'b'>,
+                                      policy::description<AR_STRING("b description")>),
+                                 policy::router{[](bool, bool, bool) {}}),
+                            policy::validation::default_validator),
+                       R"(foo v3.14
+
+My foo is good for you
+
+    --help,-h             Help output
+    test                  Test mode
+        --flag1
+        --arg1 <Value>    Arg1 description
+     
         --flag1,-a        Flag1 description
         --flag2
         --arg1 <Value>    Arg1 description
         -b                b description
 )"s}});
+}
+
+BOOST_AUTO_TEST_CASE(help_runtime_test)
+{
+    auto f = [](const auto& root, const auto& expected_result) {
+        const auto result = root.help();
+        BOOST_CHECK_EQUAL(result, expected_result);
+    };
+
+    test::data_set(
+        f,
+        std::tuple{
+            std::tuple{
+                root(flag(policy::long_name<AR_STRING("flag1")>,
+                          policy::short_name<'a'>,
+                          policy::description<AR_STRING("Flag1 description")>,
+                          policy::router{[](bool) {}}),
+                     flag(policy::long_name<AR_STRING("flag2")>, policy::router{[](bool) {}}),
+                     flag(policy::short_name<'b'>,
+                          policy::description<AR_STRING("b description")>,
+                          policy::runtime_enable{false},
+                          policy::router{[](bool) {}}),
+                     policy::validation::default_validator),
+                ""s},
+            std::tuple{
+                root(flag(policy::long_name<AR_STRING("flag1")>,
+                          policy::short_name<'a'>,
+                          policy::description<AR_STRING("Flag1 description")>,
+                          policy::router{[](bool) {}}),
+                     flag(policy::long_name<AR_STRING("flag2")>, policy::router{[](bool) {}}),
+                     flag(policy::short_name<'b'>,
+                          policy::description<AR_STRING("b description")>,
+                          policy::runtime_enable{true},
+                          policy::router{[](bool) {}}),
+                     policy::validation::default_validator),
+                ""s},
+            std::tuple{
+                root(flag(policy::long_name<AR_STRING("flag1")>,
+                          policy::short_name<'a'>,
+                          policy::description<AR_STRING("Flag1 description")>,
+                          policy::router{[](bool) {}}),
+                     flag(policy::long_name<AR_STRING("flag2")>, policy::router{[](bool) {}}),
+                     flag(policy::short_name<'b'>,
+                          policy::description<AR_STRING("b description")>,
+                          policy::runtime_enable{false},
+                          policy::router{[](bool) {}}),
+                     arg<int>(policy::long_name<AR_STRING("arg1")>,
+                              policy::value_separator<'='>,
+                              policy::router{[](int) {}}),
+                     help(policy::long_name<AR_STRING("help")>,
+                          policy::short_name<'h'>,
+                          policy::description<AR_STRING("Help output")>,
+                          policy::program_name<AR_STRING("foo")>,
+                          policy::program_version<AR_STRING("v3.14")>,
+                          policy::program_intro<AR_STRING("My foo is good for you")>),
+                     policy::validation::default_validator),
+                R"(foo v3.14
+
+My foo is good for you
+
+    --flag1,-a        Flag1 description
+    --flag2
+    --arg1=<Value>
+    --help,-h         Help output
+)"s},
+            std::tuple{root(help(policy::long_name<AR_STRING("help")>,
+                                 policy::short_name<'h'>,
+                                 policy::description<AR_STRING("Help output")>,
+                                 policy::program_name<AR_STRING("foo")>,
+                                 policy::program_version<AR_STRING("v3.14")>,
+                                 policy::program_intro<AR_STRING("My foo is good for you")>),
+                            mode(flag(policy::long_name<AR_STRING("flag1")>,
+                                      policy::short_name<'a'>,
+                                      policy::description<AR_STRING("Flag1 description")>),
+                                 flag(policy::long_name<AR_STRING("flag2")>,
+                                      policy::runtime_enable{false}),
+                                 arg<int>(policy::long_name<AR_STRING("arg1")>,
+                                          policy::description<AR_STRING("Arg1 description")>),
+                                 flag(policy::short_name<'b'>,
+                                      policy::description<AR_STRING("b description")>),
+                                 policy::router{[](bool, bool, bool) {}}),
+                            policy::validation::default_validator),
+                       R"(foo v3.14
+
+My foo is good for you
+
+    --help,-h             Help output
+     
+        --flag1,-a        Flag1 description
+        --arg1 <Value>    Arg1 description
+        -b                b description
+)"s},
+            std::tuple{root(help(policy::long_name<AR_STRING("help")>,
+                                 policy::short_name<'h'>,
+                                 policy::description<AR_STRING("Help output")>,
+                                 policy::program_name<AR_STRING("foo")>,
+                                 policy::program_version<AR_STRING("v3.14")>,
+                                 policy::program_intro<AR_STRING("My foo is good for you")>),
+                            mode(AR_STRING("test"){},
+                                 AR_STRING("Test mode"){},
+                                 policy::runtime_enable{false},
+                                 flag(policy::long_name<AR_STRING("flag1")>),
+                                 arg<int>(policy::long_name<AR_STRING("arg1")>,
+                                          policy::description<AR_STRING("Arg1 description")>),
+                                 policy::router{[](bool, int) {}}),
+                            mode(flag(policy::long_name<AR_STRING("flag1")>,
+                                      policy::short_name<'a'>,
+                                      policy::description<AR_STRING("Flag1 description")>),
+                                 flag(policy::long_name<AR_STRING("flag2")>),
+                                 arg<int>(policy::long_name<AR_STRING("arg1")>,
+                                          policy::description<AR_STRING("Arg1 description")>),
+                                 flag(policy::short_name<'b'>,
+                                      policy::description<AR_STRING("b description")>),
+                                 policy::router{[](bool, bool, bool) {}}),
+                            policy::validation::default_validator),
+                       R"(foo v3.14
+
+My foo is good for you
+
+    --help,-h             Help output
+     
+        --flag1,-a        Flag1 description
+        --flag2
+        --arg1 <Value>    Arg1 description
+        -b                b description
+)"s},
+            std::tuple{root(help(policy::long_name<AR_STRING("help")>,
+                                 policy::short_name<'h'>,
+                                 policy::flatten_help,
+                                 policy::description<AR_STRING("Help output")>,
+                                 policy::program_name<AR_STRING("foo")>,
+                                 policy::program_version<AR_STRING("v3.14")>,
+                                 policy::program_intro<AR_STRING("My foo is good for you")>),
+                            mode(AR_STRING("test"){},
+                                 AR_STRING("Test mode"){},
+                                 flag(policy::long_name<AR_STRING("flag1")>),
+                                 arg<int>(policy::long_name<AR_STRING("arg1")>,
+                                          policy::description<AR_STRING("Arg1 description")>,
+                                          policy::runtime_enable{false}),
+                                 policy::router{[](bool, int) {}}),
+                            mode(flag(policy::long_name<AR_STRING("flag1")>,
+                                      policy::short_name<'a'>,
+                                      policy::description<AR_STRING("Flag1 description")>),
+                                 flag(policy::long_name<AR_STRING("flag2")>),
+                                 arg<int>(policy::long_name<AR_STRING("arg1")>,
+                                          policy::description<AR_STRING("Arg1 description")>),
+                                 flag(policy::short_name<'b'>,
+                                      policy::description<AR_STRING("b description")>),
+                                 policy::router{[](bool, bool, bool) {}}),
+                            policy::validation::default_validator),
+                       R"(foo v3.14
+
+My foo is good for you
+
+    --help,-h             Help output
+    test                  Test mode
+        --flag1
+     
+        --flag1,-a        Flag1 description
+        --flag2
+        --arg1 <Value>    Arg1 description
+        -b                b description
+)"s}});
+}
+
+BOOST_AUTO_TEST_CASE(runtime_enable_flag_parse_test)
+{
+    auto f =
+        [&](auto args, auto expected, auto enable_flag1, auto enable_flag2, auto fail_message) {
+            auto result = std::array<bool, 2>{};
+
+            try {
+                const auto r = root(flag(policy::long_name<AR_STRING("flag1")>,
+                                         policy::description<AR_STRING("First description")>,
+                                         policy::runtime_enable{enable_flag1},
+                                         policy::router{[&](bool) { result[0] = true; }}),
+                                    flag(policy::long_name<AR_STRING("flag2")>,
+                                         policy::description<AR_STRING("Second description")>,
+                                         policy::runtime_enable{enable_flag2},
+                                         policy::router{[&](bool) { result[1] = true; }}),
+                                    policy::validation::default_validator);
+
+                r.parse(args);
+                BOOST_CHECK_EQUAL(result[0], expected[0]);
+                BOOST_CHECK_EQUAL(result[1], expected[1]);
+                BOOST_CHECK(fail_message.empty());
+            } catch (parse_exception& e) {
+                BOOST_CHECK_EQUAL(fail_message, e.what());
+            }
+        };
+
+    test::data_set(
+        f,
+        {
+            std::tuple{std::vector{"--flag1"}, std::array{true, false}, true, true, ""s},
+            std::tuple{std::vector{"--flag2"}, std::array{false, true}, true, true, ""s},
+            std::tuple{std::vector{"--flag1"}, std::array{true, false}, true, false, ""s},
+            std::tuple{std::vector{"--flag2"}, std::array{false, true}, false, true, ""s},
+            std::tuple{std::vector{"--flag1"},
+                       std::array{false, false},
+                       false,
+                       true,
+                       "Unknown argument: --flag1"s},
+            std::tuple{std::vector{"--flag2"},
+                       std::array{false, false},
+                       true,
+                       false,
+                       "Unknown argument: --flag2"s},
+        });
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -119,7 +119,7 @@ def date_checker(args):
         if (prefix == None) or skip_file(file):
             continue
 
-        with open(file, 'r') as f:
+        with open(file, 'r', encoding="utf-8") as f:
             data = f.readlines()
             m = find_copyright(prefix, data)
             if not m:

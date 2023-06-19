@@ -352,6 +352,57 @@ protected:
             }
         }
 
+        /** Generates a vector of runtime_help_data instances representing the children of @a owner.
+         *
+         * This is the runtime equivalent of the help_data_type::children member.  Children can be
+         * filtered using @a f that must have the equivalent signature to:
+         * @code
+         * template <typename Child>
+         * bool operator()(const Child&) const;
+         * @endcode
+         * Only if the return is true is the child added to the return list.  If a child
+         * help_data_type does not have an implementation of this function, then this function will
+         * just call itself on the child node in order to provide a sensible default implementation.
+         * @param owner Node whose children are to be converted if approved by @a f
+         * @param f A filter function that determines if the child should be shown
+         * @return runtime_help_data instances representing the unfiltered children
+         */
+        template <typename OwnerNode, typename FilterFn>
+        [[nodiscard]] static vector<runtime_help_data> runtime_children(const OwnerNode& owner,
+                                                                        FilterFn&& f)
+        {
+            auto result = vector<runtime_help_data>{};
+            utility::tuple_iterator(
+                [&](auto, auto& child) {
+                    using child_type = std::decay_t<decltype(child)>;
+                    if constexpr (traits::has_help_data_type_v<child_type>) {
+                        using child_help_data_type =
+                            typename child_type::template help_data_type<Flatten>;
+
+                        static_assert(child_help_data_type::description::get().find('\t') ==
+                                          std::string_view::npos,
+                                      "Help descriptions cannot contain tabs");
+
+                        if (f(child)) {
+                            auto child_result = vector<runtime_help_data>{};
+                            if constexpr (traits::has_runtime_children_method_v<
+                                              child_help_data_type>) {
+                                child_result = child_help_data_type::runtime_children(child, f);
+                            } else {
+                                child_result = runtime_children(child, f);
+                            }
+
+                            result.push_back(
+                                runtime_help_data{child_help_data_type::label::get(),
+                                                  child_help_data_type::description::get(),
+                                                  std::move(child_result)});
+                        }
+                    }
+                },
+                owner.children());
+            return result;
+        }
+
         /** Collects the help data from all the children that have a help_data_type. */
         using all_children_help =
             boost::mp11::mp_remove_if<boost::mp11::mp_transform<child_help, children_type>,
@@ -589,16 +640,28 @@ private:
         using finder_type = phase_finder<policy::has_parse_phase_method, ValueType>;
         using policy_type = typename finder_type::type;
 
-        static_assert((boost::mp11::mp_count_if_q<policies_type,
-                                                  typename finder_type::finder>::value  //
-                       <= 1),
-                      "Only zero or one policies supporting a parse phase is supported");
+#ifdef MSVC_1936_WORKAROUND
+        static_assert(
+            (boost::mp11::mp_count_if<policies_type, finder_type::finder::fn>::value <= 1),
+            "Only zero or one policies supporting a parse phase is supported");
+        static_assert(
+            (boost::mp11::mp_count_if<
+                 policies_type,
+                 phase_finder<policy::has_missing_phase_method, ValueType>::finder::fn>::value <=
+             1),
+            "Only zero or one policies supporting a missing phase is "
+            "supported");
+#else
+        static_assert(
+            (boost::mp11::mp_count_if_q<policies_type, typename finder_type::finder>::value <= 1),
+            "Only zero or one policies supporting a parse phase is supported");
         static_assert(
             (boost::mp11::mp_count_if_q<policies_type,
                                         typename phase_finder<policy::has_missing_phase_method,
                                                               ValueType>::finder>::value <= 1),
             "Only zero or one policies supporting a missing phase is "
             "supported");
+#endif
 
         if constexpr (std::is_void_v<policy_type>) {
             return parser<ValueType>::parse(token);

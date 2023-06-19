@@ -256,18 +256,22 @@ BOOST_AUTO_TEST_CASE(help_test)
                        std::tuple{"en_GB",
                                   "foo v3.14\n\nFooooooo\n\n"
                                   "    --help,-h              Display help\n"
+                                  "     \n"
                                   "        --hello <Value>    Hello description\n"},
                        std::tuple{"fr",
                                   "foo v3.14\n\nFooooooo\n\n"
                                   "    --aider,-h               Afficher l'aide\n"
+                                  "     \n"
                                   "        --bonjour <Value>    Bonjour descriptif\n"},
                        std::tuple{"es",
                                   "foo v3.14\n\nFooooooo\n\n"
                                   "    --ayuda,-h            Mostrar ayuda\n"
+                                  "     \n"
                                   "        --hola <Value>    Hola descripción\n"},
                        std::tuple{"en-us",
                                   "foo v3.14\n\nFooooooo\n\n"
                                   "    --help,-h              Display help\n"
+                                  "     \n"
                                   "        --hello <Value>    Hello description\n"},
                    });
 }

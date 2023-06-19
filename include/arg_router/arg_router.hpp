@@ -11,7 +11,6 @@
 #include "arg_router/multi_lang/string_selector.hpp"
 #include "arg_router/policy/colour_help_formatter.hpp"
 #include "arg_router/policy/custom_parser.hpp"
-#include "arg_router/policy/dependent.hpp"
 #include "arg_router/policy/description.hpp"
 #include "arg_router/policy/min_max_value.hpp"
 #include "arg_router/policy/token_end_marker.hpp"

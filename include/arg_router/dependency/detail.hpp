@@ -167,14 +167,18 @@ protected:
             using children = std::tuple<>;
         };
 
-        template <typename Child>
-        using first_prefixer = prefixer<Child, AR_STRING("┌ ")>;
+        using top_bar = AR_STRING("┌ ");
+        using middle_bar = AR_STRING("├ ");
+        using bottom_bar = AR_STRING("└ ");
 
         template <typename Child>
-        using middle_prefixer = prefixer<Child, AR_STRING("├ ")>;
+        using first_prefixer = prefixer<Child, top_bar>;
 
         template <typename Child>
-        using last_prefixer = prefixer<Child, AR_STRING("└ ")>;
+        using middle_prefixer = prefixer<Child, middle_bar>;
+
+        template <typename Child>
+        using last_prefixer = prefixer<Child, bottom_bar>;
 
     public:
         using children = boost::mp11::mp_replace_at_c<
@@ -182,6 +186,32 @@ protected:
                                           first_prefixer<boost::mp11::mp_first<children_type>>>,
             std::tuple_size_v<children_type> - 1,
             last_prefixer<boost::mp11::mp_back<children_type>>>;
+
+        template <typename OwnerNode, typename FilterFn>
+        [[nodiscard]] static vector<runtime_help_data> runtime_children(const OwnerNode& owner,
+                                                                        FilterFn&& f)
+        {
+            // Gather the basic data
+            auto result = parent_type::template default_leaf_help_data_type<true>::runtime_children(
+                owner,
+                std::forward<FilterFn>(f));
+
+            // Don't prepend bars if there are zero or one children
+            if (result.size() <= 1) {
+                return result;
+            }
+
+            // Prepend the bars
+            result.front().label =
+                utility::dynamic_string_view{top_bar::get()} + result.front().label;
+            for (auto i = 1u; i < (result.size() - 1); ++i) {
+                result[i].label = utility::dynamic_string_view{middle_bar::get()} + result[i].label;
+            }
+            result.back().label =
+                utility::dynamic_string_view{bottom_bar::get()} + result.back().label;
+
+            return result;
+        }
     };
 
     template <auto has_display_name = add_names<ParentDocName, Params...>::has_display_name>

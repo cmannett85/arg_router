@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -25,7 +25,11 @@ namespace
 template <typename... Params>
 class mock_root : public tree_node<Params...>
 {
+    using parent_type = tree_node<Params...>;
+
 public:
+    using typename parent_type::children_type;
+
     constexpr explicit mock_root(Params... params) : tree_node<Params...>{std::move(params)...} {}
 
     template <bool Flatten>
@@ -34,8 +38,17 @@ public:
     public:
         using label = AR_STRING("");
         using description = AR_STRING("");
-        using children = typename tree_node<Params...>::template  //
-            default_leaf_help_data_type<Flatten>::all_children_help;
+        using children = typename tree_node<Params...>::template default_leaf_help_data_type<
+            Flatten>::all_children_help;
+
+        template <typename OwnerNode, typename FilterFn>
+        [[nodiscard]] static vector<runtime_help_data> runtime_children(const OwnerNode& owner,
+                                                                        FilterFn&& f)
+        {
+            return parent_type::template default_leaf_help_data_type<Flatten>::runtime_children(
+                owner,
+                std::forward<FilterFn>(f));
+        }
     };
 };
 }  // namespace
@@ -54,12 +67,33 @@ BOOST_AUTO_TEST_CASE(generate_help_test)
 {
     auto f = [](const auto& root, auto help_index, auto flatten, const auto& expected_result) {
         using root_type = std::decay_t<decltype(root)>;
+        using root_hdt = typename root_type::template help_data_type<flatten>;
         using help_type = std::tuple_element_t<help_index, typename root_type::children_type>;
 
-        auto stream = std::stringstream{};
-        std::tuple_element_t<0, typename help_type::policies_type>::
-            template generate_help<root_type, help_type, flatten>(stream);
-        BOOST_CHECK_EQUAL(stream.str(), expected_result);
+        // For some baffling reason MSVC will not accept this alias, but does accept the full
+        // name...
+        // using formatter_type = std::tuple_element_t<0, typename help_type::policies_type>;
+
+        // Compile-time
+        {
+            auto stream = std::stringstream{};
+            std::tuple_element_t<0, typename help_type::policies_type>::
+                template generate_help<root_type, help_type, flatten>(stream);
+            BOOST_CHECK_EQUAL(stream.str(), expected_result);
+        }
+
+        // Runtime
+        {
+            const auto rhd =
+                runtime_help_data{root_hdt::label::get(),
+                                  root_hdt::description::get(),
+                                  root_hdt::runtime_children(root, [](auto&&) { return true; })};
+
+            auto stream = std::stringstream{};
+            std::tuple_element_t<0, typename help_type::policies_type>::
+                template generate_help<root_type, help_type, flatten>(stream, rhd);
+            BOOST_CHECK_EQUAL(stream.str(), expected_result);
+        }
     };
 
     test::data_set(
@@ -275,6 +309,7 @@ My foo is good for you
 My foo is good for you
 
     --help,-h             Help output
+     
         --flag1,-a        Flag1 description
         --flag2
         --arg1=<Value>    Arg1 description
@@ -300,6 +335,7 @@ My foo is good for you
 My foo is good for you
 
     --help,-h         Help output
+     
         --flag1,-a    Flag1 description
         --flag2
         -b            b description

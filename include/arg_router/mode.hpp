@@ -79,7 +79,13 @@ public:
     class help_data_type
     {
     public:
-        using label = typename parent_type::template default_leaf_help_data_type<Flatten>::label;
+        /* Provide an 'invisible' label when anonymous to have a preceding blank line, so it's
+         * contents aren't confused with any previously declared named modes (or their contents).
+         */
+        using label = std::conditional_t<
+            is_anonymous,
+            AR_STRING(' '),
+            typename parent_type::template default_leaf_help_data_type<Flatten>::label>;
 
         using description =
             typename parent_type::template default_leaf_help_data_type<Flatten>::description;
@@ -88,6 +94,19 @@ public:
             is_anonymous || Flatten,
             typename parent_type::template default_leaf_help_data_type<Flatten>::all_children_help,
             std::tuple<>>;
+
+        template <typename OwnerNode, typename FilterFn>
+        [[nodiscard]] static vector<runtime_help_data> runtime_children(const OwnerNode& owner,
+                                                                        FilterFn&& f)
+        {
+            if constexpr (is_anonymous || Flatten) {
+                return parent_type::template default_leaf_help_data_type<true>::runtime_children(
+                    owner,
+                    std::forward<FilterFn>(f));
+            }
+
+            return {};
+        }
     };
 
     /** Constructor.
@@ -147,12 +166,11 @@ private:
                   "Anonymous mode cannot have a child mode");
 
     static_assert(!parent_type::template any_phases_v<value_type,
-                                                      policy::has_pre_parse_phase_method,
                                                       policy::has_parse_phase_method,
                                                       policy::has_validation_phase_method,
                                                       policy::has_missing_phase_method>,
-                  "Mode does not support policies with pre-parse, parse, validation, "
-                  "or missing phases; as it delegates those to its children");
+                  "Mode does not support policies with parse, validation, or missing phases; as it "
+                  "delegates those to its children");
 
     template <typename Child>
     struct child_has_routing_phase {

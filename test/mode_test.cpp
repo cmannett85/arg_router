@@ -956,7 +956,7 @@ BOOST_AUTO_TEST_CASE(help_test)
                                  policy::description<AR_STRING("Hello desc")>),
                             policy::router([](bool) {})),
                        std::true_type{},
-                       test_help_data<AR_STRING(""),
+                       test_help_data<AR_STRING(" "),
                                       AR_STRING(""),
                                       std::tuple<test_help_data<AR_STRING("--hello,-h"),
                                                                 AR_STRING("Hello desc"),
@@ -966,7 +966,7 @@ BOOST_AUTO_TEST_CASE(help_test)
                                  policy::description<AR_STRING("Hello desc")>),
                             policy::router([](bool) {})),
                        std::false_type{},
-                       test_help_data<AR_STRING(""),
+                       test_help_data<AR_STRING(" "),
                                       AR_STRING(""),
                                       std::tuple<test_help_data<AR_STRING("--hello,-h"),
                                                                 AR_STRING("Hello desc"),
@@ -979,7 +979,7 @@ BOOST_AUTO_TEST_CASE(help_test)
                                  policy::description<AR_STRING("Flag1 desc")>),
                             policy::router([](bool, bool) {})),
                        std::true_type{},
-                       test_help_data<AR_STRING(""),
+                       test_help_data<AR_STRING(" "),
                                       AR_STRING(""),
                                       std::tuple<test_help_data<AR_STRING("--hello,-h"),
                                                                 AR_STRING("Hello desc"),
@@ -1405,25 +1405,6 @@ int main() {
              R"(
 #include "arg_router/flag.hpp"
 #include "arg_router/mode.hpp"
-#include "arg_router/policy/alias.hpp"
-#include "arg_router/policy/long_name.hpp"
-#include "arg_router/utility/compile_time_string.hpp"
-
-using namespace arg_router;
-
-int main() {
-    const auto m = mode(policy::alias(policy::long_name<AR_STRING("other-mode")>),
-                        flag(policy::long_name<AR_STRING("hello")>));
-    return 0;
-}
-    )",
-             "Mode does not support policies with pre-parse, parse, validation, "
-             "or missing phases; as it delegates those to its children",
-             "pre_parse_phase_test"},
-         {
-             R"(
-#include "arg_router/flag.hpp"
-#include "arg_router/mode.hpp"
 #include "arg_router/policy/custom_parser.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
@@ -1436,8 +1417,8 @@ int main() {
     return 0;
 }
     )",
-             "Mode does not support policies with pre-parse, parse, validation, "
-             "or missing phases; as it delegates those to its children",
+             "Mode does not support policies with parse, validation, or missing phases; as it "
+             "delegates those to its children",
              "parse_phase_test"},
          {
              R"(
@@ -1455,8 +1436,8 @@ int main() {
     return 0;
 }
     )",
-             "Mode does not support policies with pre-parse, parse, validation, "
-             "or missing phases; as it delegates those to its children",
+             "Mode does not support policies with parse, validation, or missing phases; as it "
+             "delegates those to its children",
              "validation_phase_test"},
          {
              R"(
@@ -1474,8 +1455,8 @@ int main() {
     return 0;
 }
     )",
-             "Mode does not support policies with pre-parse, parse, validation, "
-             "or missing phases; as it delegates those to its children",
+             "Mode does not support policies with parse, validation, or missing phases; as it "
+             "delegates those to its children",
              "missing_phase_test"},
          {
              R"(
