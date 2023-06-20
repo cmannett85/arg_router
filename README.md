@@ -1,4 +1,4 @@
-![Documentation Generator](https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg) [![Merge to main Checker](https://github.com/cmannett85/arg_router/actions/workflows/merge_checker.yml/badge.svg)](https://github.com/cmannett85/arg_router/actions/workflows/merge_checker.yml) ![Unit test coverage](https://img.shields.io/badge/Unit_Test_Coverage-97.6%25-brightgreen)
+![Documentation Generator](https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg) [![Merge to main Checker](https://github.com/cmannett85/arg_router/actions/workflows/merge_checker.yml/badge.svg)](https://github.com/cmannett85/arg_router/actions/workflows/merge_checker.yml) ![Unit test coverage](https://img.shields.io/badge/Unit_Test_Coverage-97.2%25-brightgreen)
 
 # arg_router
 `arg_router` is a C++17/20 command line parser and router.  It uses policy-based objects hierarchically, so the parsing code is self-describing.  Rather than just providing a parsing service that returns a map of `variant`s/`any`s, it allows you to bind `Callable` instances to points in the parse structure, so complex command line arguments can directly call functions with the expected arguments - rather than you having to do this yourself.
@@ -504,6 +504,69 @@ ar::root(
                        std::filesystem::path src) { ... }}))
 ```
 `ar::list` is a simple `arg` and `flag` container that `mode` and `root` instances detect and add the contents to their child/policy lists.  Also don't be afraid of the copies, the majority of `arg_router` types hold no data (the advantage of compile-time!) and those that do (e.g. `default_value`) generally have small types like primitives or `std::string_view`.
+
+## Enabling/Disabling Nodes at Runtime
+Sometimes features or parameters only make sense within certain environments or scenarios that can only be detected at runtime.  You can use `policy::runtime_enable` to dynamically make a node 'disappear' from the parsing process and help output by the value set at runtime in the policy's constructor.  A trivial example is given by the [runtime_node_enable example](https://cmannett85.github.io/arg_router/c_09_0920_2runtime_node_enable_2main_8cpp-example.html):
+```
+const auto advanced = std::getenv(license_env_var) != nullptr;
+ar::root(
+    arp::validation::default_validator,
+    ar::help("help"_S,
+             "h"_S,
+             "Display this help and exit"_S,
+             arp::flatten_help,
+             arp::program_name_t{"runtime_node_enable"_S},
+             arp::program_version<ar::str<version>>,
+             arp::program_addendum_t{"An example program for arg_router."_S}),
+    ar::flag("version"_S, "Output version information and exit"_S, arp::router{[](bool) { ... }}),
+    ar::mode("advanced"_S,
+             "Advanced features"_S,
+             ar::flag("feature1"_S, "First feature"_S),
+             ar::arg<int>("feature2"_S, "Second feature"_S, arp::default_value{42}),
+             arp::router{[](bool f1, int f2) { ... }},
+             arp::runtime_enable{advanced}),
+    ar::mode(
+        ar::flag("foo"_S, "Foo flag"_S, "f"_S),
+        ar::flag("bar"_S, "Bar flag"_S, "b"_S),
+        ar::arg<std::string_view>("advance-foo"_S,
+                                  "Licensed foo"_S,
+                                  arp::runtime_enable_required<std::string_view>{advanced}),
+        arp::router{[](bool f, bool b, std::string_view advance_foo) { ... }}))
+    .parse(argc, argv);
+```
+Here an environment variable is used to detect if a license is installed (do not use this method in production...) and if it
+is, unlocks 'advanced' features.  If the license is available then the entire `advanced` mode is available and so is the `--advance-foo` `std::string_view` `arg` in the default mode.
+
+The help output adjusts to match:
+```
+$ ./example_runtime_node_enable_cpp20 --help
+runtime_node_enable v3.14
+
+    --help,-h                    Display this help and exit
+    --version                    Output version information and exit
+     
+        --foo,-f                 Foo flag
+        --bar,-b                 Bar flag
+
+An example program for arg_router.
+```
+And with the license:
+```
+$ AR_EXAMPLE_LICENSE=1 ./example_runtime_node_enable_cpp20 --help
+runtime_node_enable v3.14
+
+    --help,-h                    Display this help and exit
+    --version                    Output version information and exit
+    advanced                     Advanced features
+        --feature1               First feature
+        --feature2 <Value>       Second feature
+     
+        --foo,-f                 Foo flag
+        --bar,-b                 Bar flag
+        --advance-foo <Value>    Licensed foo
+
+An example program for arg_router.
+```
 
 ## Help Output
 As shown in prior sections, a `help` node can be a child of the `root` (and only the `root`!), which acts like an `arg`, and generates the help output when requested by the user.  This node is optional, without it there is no help command line argument.  As the node is `arg`-like, it requires a long and/or short name.

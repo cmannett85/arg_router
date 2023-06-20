@@ -15,11 +15,13 @@
 #include "arg_router/multi_arg.hpp"
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/default_value.hpp"
+#include "arg_router/policy/dependent.hpp"
 #include "arg_router/policy/display_name.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/none_name.hpp"
 #include "arg_router/policy/required.hpp"
 #include "arg_router/policy/router.hpp"
+#include "arg_router/policy/runtime_enable.hpp"
 #include "arg_router/policy/short_form_expander.hpp"
 #include "arg_router/policy/short_name.hpp"
 #include "arg_router/positional_arg.hpp"
@@ -121,9 +123,15 @@ private:
         constexpr static void fn() noexcept
         {
             // Find the matching rule
+#ifdef MSVC_1936_WORKAROUND
+            constexpr auto rule_index = boost::mp11::mp_find_if<  //
+                rules_type,
+                rule_lookup<Current>::fn>::value;
+#else
             constexpr auto rule_index = boost::mp11::mp_find_if_q<  //
                 rules_type,
                 rule_lookup<Current>>::value;
+#endif
             static_assert(rule_index != std::tuple_size_v<rules_type>, "No rule for Current");
 
             // Remove the rule key so we just have a list of conditions
@@ -697,7 +705,10 @@ constexpr auto default_validator = validator<
     // Mode
     rule_q<common_rules::despecialised_any_of_rule<mode_t>,
            must_not_have_policies<policy::multi_stage_value,  //
-                                  policy::required_t>,
+                                  policy::required_t,
+                                  policy::runtime_enable_required,
+                                  policy::alias_t,
+                                  policy::dependent_t>,
            node_types_must_be_at_end<positional_arg_t>,
            list_like_nodes_must_have_fixed_count_if_not_at_end,
            parent_types<parent_index_pair_type<0, root_t>, parent_index_pair_type<0, mode_t>>>,
@@ -706,12 +717,16 @@ constexpr auto default_validator = validator<
            must_not_have_policies<policy::multi_stage_value,
                                   policy::required_t,
                                   policy::short_form_expander_t,
-                                  policy::validation::validator>,
+                                  policy::validation::validator,
+                                  policy::runtime_enable>,
            parent_types<parent_index_pair_type<0, root_t>>>,
     // Root
     rule_q<common_rules::despecialised_any_of_rule<root_t>,
            must_have_policies<policy::validation::validator>,
-           must_not_have_policies<policy::multi_stage_value, policy::no_result_value>,
+           must_not_have_policies<policy::multi_stage_value,
+                                  policy::no_result_value,
+                                  policy::runtime_enable,
+                                  policy::runtime_enable_required>,
            child_must_not_have_policy<policy::required_t>,
            child_must_not_have_policy<policy::alias_t>,
            single_anonymous_mode<arg_router::mode_t>,

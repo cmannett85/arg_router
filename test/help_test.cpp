@@ -9,6 +9,7 @@
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/none_name.hpp"
 #include "arg_router/policy/router.hpp"
+#include "arg_router/policy/runtime_enable.hpp"
 #include "arg_router/policy/short_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
@@ -32,8 +33,8 @@ public:
     public:
         using label = AR_STRING("");
         using description = AR_STRING("");
-        using children = typename tree_node<Params...>::template  //
-            default_leaf_help_data_type<Flatten>::all_children_help;
+        using children = typename tree_node<Params...>::template default_leaf_help_data_type<
+            Flatten>::all_children_help;
     };
 };
 }  // namespace
@@ -44,6 +45,27 @@ BOOST_AUTO_TEST_CASE(is_tree_node_test)
 {
     static_assert(is_tree_node_v<help_t<policy::long_name_t<AR_STRING("hello")>>>,
                   "Tree node test has failed");
+}
+
+BOOST_AUTO_TEST_CASE(has_generate_help_method_test)
+{
+    static_assert(
+        traits::has_generate_help_method_v<help_t<policy::long_name_t<AR_STRING("help")>>>,
+        "Tree node test has failed");
+}
+
+BOOST_AUTO_TEST_CASE(has_generate_runtime_help_data_method_test)
+{
+    static_assert(traits::has_generate_runtime_help_data_method_v<
+                      help_t<policy::long_name_t<AR_STRING("help")>>>,
+                  "Tree node test has failed");
+}
+
+BOOST_AUTO_TEST_CASE(has_runtime_generate_help_method_test)
+{
+    static_assert(
+        traits::has_runtime_generate_help_method_v<help_t<policy::long_name_t<AR_STRING("help")>>>,
+        "Tree node test has failed");
 }
 
 BOOST_AUTO_TEST_CASE(parse_test)
@@ -309,7 +331,63 @@ My foo is good for you
                            error_code::unknown_argument,
                            std::vector{parsing::token_type{parsing::prefix_type::none, "--foo"}}}},
                        ""s},
-        });
+            std::tuple{mock_root{flag(policy::long_name<AR_STRING("flag1")>,
+                                      policy::short_name<'a'>,
+                                      policy::description<AR_STRING("Flag1 description")>),
+                                 flag(policy::long_name<AR_STRING("flag2")>),
+                                 flag(policy::short_name<'b'>,
+                                      policy::description<AR_STRING("b description")>,
+                                      policy::runtime_enable{false}),
+                                 help(policy::long_name<AR_STRING("help")>,
+                                      policy::short_name<'h'>,
+                                      policy::description<AR_STRING("Help output")>,
+                                      policy::program_name<AR_STRING("foo")>,
+                                      policy::program_version<AR_STRING("v3.14")>,
+                                      policy::program_intro<AR_STRING("My foo is good for you")>,
+                                      policy::router{[&](auto stream) { output = stream.str(); }})},
+                       traits::integral_constant<3>{},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "--help"}},
+                       std::optional<multi_lang_exception>{},
+                       R"(foo v3.14
+
+My foo is good for you
+
+    --flag1,-a    Flag1 description
+    --flag2
+    --help,-h     Help output
+)"s},
+            std::tuple{mock_root{help(policy::long_name<AR_STRING("help")>,
+                                      policy::short_name<'h'>,
+                                      policy::description<AR_STRING("Help output")>,
+                                      policy::program_name<AR_STRING("foo")>,
+                                      policy::program_version<AR_STRING("v3.14")>,
+                                      policy::program_intro<AR_STRING("My foo is good for you")>,
+                                      policy::router{[&](auto stream) { output = stream.str(); }}),
+                                 mode(policy::none_name<AR_STRING("mode1")>,
+                                      policy::description<AR_STRING("Mode1 description")>,
+                                      flag(policy::long_name<AR_STRING("flag1")>,
+                                           policy::short_name<'a'>,
+                                           policy::description<AR_STRING("Flag1 description")>,
+                                           policy::runtime_enable{false}),
+                                      flag(policy::long_name<AR_STRING("flag2")>),
+                                      flag(policy::short_name<'b'>,
+                                           policy::description<AR_STRING("b description")>)),
+                                 mode(policy::none_name<AR_STRING("mode2")>,
+                                      flag(policy::long_name<AR_STRING("flag3")>,
+                                           policy::short_name<'c'>,
+                                           policy::description<AR_STRING("Flag3 description")>))},
+                       traits::integral_constant<0>{},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "-h"},
+                                                        {parsing::prefix_type::none, "mode1"}},
+                       std::optional<multi_lang_exception>{},
+                       R"(foo v3.14
+
+My foo is good for you
+
+mode1             Mode1 description
+    --flag2
+    -b            b description
+)"s}});
 }
 
 BOOST_AUTO_TEST_CASE(death_test)

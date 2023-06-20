@@ -7,6 +7,7 @@
 #include "arg_router/policy/dependent.hpp"
 #include "arg_router/policy/description.hpp"
 #include "arg_router/policy/min_max_value.hpp"
+#include "arg_router/policy/runtime_enable.hpp"
 #include "arg_router/policy/token_end_marker.hpp"
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/policy/value_separator.hpp"
@@ -352,12 +353,14 @@ BOOST_AUTO_TEST_CASE(named_single_mode_parse_test)
         });
 }
 
-BOOST_AUTO_TEST_CASE(named_multi_mode_parse_test)
+BOOST_AUTO_TEST_CASE(anonymous_and_named_multi_mode_parse_test)
 {
     auto router_hit1 = false;
     auto router_hit2 = false;
+    auto router_hit3 = false;
     auto result1 = std::array<bool, 3>{};
     auto result2 = std::array<bool, 2>{};
+    auto result3 = std::array<bool, 2>{};
 
     const auto r = root(
         mode(policy::none_name<AR_STRING("mode1")>,
@@ -378,13 +381,22 @@ BOOST_AUTO_TEST_CASE(named_multi_mode_parse_test)
                  result2 = {flag1, b};
                  router_hit2 = true;
              }}),
+        mode(flag(policy::long_name<AR_STRING("flag3")>,
+                  policy::description<AR_STRING("Other third description")>),
+             flag(policy::short_name<'c'>, policy::description<AR_STRING("Fourth description")>),
+             policy::router{[&](bool flag3, bool c) {
+                 result3 = {flag3, c};
+                 router_hit3 = true;
+             }}),
         policy::validation::default_validator);
 
     auto f = [&](auto args, auto router_index, auto expected, std::string fail_message) {
         router_hit1 = false;
         router_hit2 = false;
+        router_hit3 = false;
         result1.fill(false);
         result2.fill(false);
+        result3.fill(false);
 
         try {
             r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data()));
@@ -396,11 +408,17 @@ BOOST_AUTO_TEST_CASE(named_multi_mode_parse_test)
                 BOOST_CHECK_EQUAL(result1[0], expected[0]);
                 BOOST_CHECK_EQUAL(result1[1], expected[1]);
                 BOOST_CHECK_EQUAL(result1[2], expected[2]);
-            } else {
+            } else if (router_index == 1) {
                 BOOST_CHECK(!router_hit1);
                 BOOST_CHECK(router_hit2);
                 BOOST_CHECK_EQUAL(result2[0], expected[0]);
                 BOOST_CHECK_EQUAL(result2[1], expected[1]);
+            } else if (router_index == 2) {
+                BOOST_CHECK(!router_hit1);
+                BOOST_CHECK(!router_hit2);
+                BOOST_CHECK(router_hit3);
+                BOOST_CHECK_EQUAL(result3[0], expected[0]);
+                BOOST_CHECK_EQUAL(result3[1], expected[1]);
             }
         } catch (parse_exception& e) {
             BOOST_CHECK_EQUAL(fail_message, e.what());
@@ -422,6 +440,17 @@ BOOST_AUTO_TEST_CASE(named_multi_mode_parse_test)
                        std::vector{false, false, false},
                        "Unknown argument: mode2"},
             std::tuple{std::vector{"foo", "mode2", "-b"}, 1, std::vector{false, true}, ""},
+            std::tuple{std::vector{"foo", "--flag3"}, 2, std::vector{true, false}, ""},
+            std::tuple{std::vector{"foo", "-c"}, 2, std::vector{false, true}, ""},
+            std::tuple{std::vector{"foo", "-c", "--flag3"}, 2, std::vector{true, true}, ""},
+            std::tuple{std::vector{"foo", "--flag1"},
+                       2,
+                       std::vector{false, false},
+                       "Unknown argument: --flag1"},
+            std::tuple{std::vector{"foo", "-b"},
+                       2,
+                       std::vector{false, false},
+                       "Unknown argument: -b"},
         });
 }
 
@@ -1297,6 +1326,184 @@ BOOST_AUTO_TEST_CASE(variable_length_forwarding_arg_with_positional_arg_test)
                        std::tuple{false, std::vector<std::string_view>{}, std::vector<int>{}},
                        "Maximum count exceeded: --"},
         });
+}
+
+BOOST_AUTO_TEST_CASE(runtime_enable_test)
+{
+    auto f =
+        [&](auto args, auto expected, auto enable_flag, auto enable_arg, std::string fail_message) {
+            auto router_hit = false;
+            auto result = std::tuple{false, false, 0};
+            const auto r = root(mode(flag(policy::long_name<AR_STRING("flag1")>,
+                                          policy::description<AR_STRING("First description")>,
+                                          policy::runtime_enable{enable_flag}),
+                                     flag(policy::long_name<AR_STRING("flag2")>,
+                                          policy::description<AR_STRING("Second description")>),
+                                     arg<int>(policy::long_name<AR_STRING("arg")>,
+                                              policy::description<AR_STRING("Arg description")>,
+                                              policy::runtime_enable_required<int>{enable_arg, 42}),
+                                     policy::router{[&](bool flag1, bool flag2, int arg) {
+                                         result = {flag1, flag2, arg};
+                                         router_hit = true;
+                                     }}),
+                                policy::validation::default_validator);
+
+            try {
+                r.parse(args);
+                BOOST_CHECK(fail_message.empty());
+                BOOST_CHECK(router_hit);
+                BOOST_CHECK_EQUAL(std::get<0>(result), std::get<0>(expected));
+                BOOST_CHECK_EQUAL(std::get<1>(result), std::get<1>(expected));
+            } catch (parse_exception& e) {
+                BOOST_CHECK_EQUAL(fail_message, e.what());
+                BOOST_CHECK(!router_hit);
+            }
+        };
+
+    test::data_set(
+        f,
+        {
+            std::tuple{std::vector{"--flag1"},
+                       std::tuple{true, false, 42},
+                       true,
+                       true,
+                       "Missing required argument: --arg"},
+            std::tuple{std::vector{"--flag1", "--arg", "32"},
+                       std::tuple{true, false, 42},
+                       true,
+                       true,
+                       ""},
+            std::tuple{std::vector{"--flag2", "--arg", "32"},
+                       std::tuple{false, true, 42},
+                       true,
+                       true,
+                       ""},
+            std::tuple{std::vector{"--arg", "32"}, std::tuple{false, false, 32}, true, true, ""},
+            std::tuple{std::vector{"--flag1"},
+                       std::tuple{false, false, 0},
+                       false,
+                       true,
+                       "Unknown argument: --flag1"},
+            std::tuple{std::vector{"--arg", "32"},
+                       std::tuple{false, false, 0},
+                       true,
+                       false,
+                       "Unknown argument: --arg"},
+            std::tuple{std::vector{"--flag2"}, std::tuple{false, true, 42}, false, false, ""},
+        });
+}
+
+BOOST_AUTO_TEST_CASE(runtime_enable_mode_parse_test)
+{
+    auto f = [&](auto args,
+                 auto router_index,
+                 auto expected,
+                 auto enable_mode1,
+                 auto enable_mode2,
+                 std::string fail_message) {
+        auto router_hit1 = false;
+        auto router_hit2 = false;
+        auto result1 = std::array<bool, 3>{};
+        auto result2 = std::array<bool, 2>{};
+
+        const auto r = root(
+            mode(policy::none_name<AR_STRING("mode1")>,
+                 flag(policy::long_name<AR_STRING("flag1")>,
+                      policy::description<AR_STRING("First description")>),
+                 flag(policy::long_name<AR_STRING("flag2")>,
+                      policy::description<AR_STRING("Second description")>),
+                 flag(policy::short_name<'t'>, policy::description<AR_STRING("Third description")>),
+                 policy::runtime_enable{enable_mode1},
+                 policy::router{[&](bool flag1, bool flag2, bool t) {
+                     result1 = {flag1, flag2, t};
+                     router_hit1 = true;
+                 }}),
+            mode(
+                policy::none_name<AR_STRING("mode2")>,
+                flag(policy::long_name<AR_STRING("flag1")>,
+                     policy::description<AR_STRING("Other third description")>),
+                flag(policy::short_name<'b'>, policy::description<AR_STRING("Fourth description")>),
+                policy::runtime_enable{enable_mode2},
+                policy::router{[&](bool flag1, bool b) {
+                    result2 = {flag1, b};
+                    router_hit2 = true;
+                }}),
+            policy::validation::default_validator);
+
+        try {
+            r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data()));
+            BOOST_CHECK(fail_message.empty());
+
+            if (router_index == 0) {
+                BOOST_CHECK(router_hit1);
+                BOOST_CHECK(!router_hit2);
+                BOOST_CHECK_EQUAL(result1[0], expected[0]);
+                BOOST_CHECK_EQUAL(result1[1], expected[1]);
+                BOOST_CHECK_EQUAL(result1[2], expected[2]);
+            } else {
+                BOOST_CHECK(!router_hit1);
+                BOOST_CHECK(router_hit2);
+                BOOST_CHECK_EQUAL(result2[0], expected[0]);
+                BOOST_CHECK_EQUAL(result2[1], expected[1]);
+            }
+        } catch (parse_exception& e) {
+            BOOST_CHECK_EQUAL(fail_message, e.what());
+            BOOST_CHECK(!router_hit1);
+            BOOST_CHECK(!router_hit2);
+        }
+    };
+
+    test::data_set(f,
+                   {
+                       std::tuple{std::vector{"foo", "mode1", "--flag1"},
+                                  0,
+                                  std::vector{true, false, false},
+                                  true,
+                                  true,
+                                  ""},
+                       std::tuple{std::vector{"foo", "mode2", "--flag1"},
+                                  1,
+                                  std::vector{true, false},
+                                  true,
+                                  true,
+                                  ""},
+                       std::tuple{std::vector{"foo", "mode1", "mode2", "--flag1"},
+                                  0,
+                                  std::vector{false, false, false},
+                                  true,
+                                  true,
+                                  "Unknown argument: mode2"},
+                       std::tuple{std::vector{"foo", "mode2", "-b"},
+                                  1,
+                                  std::vector{false, true},
+                                  true,
+                                  true,
+                                  ""},
+                       std::tuple{std::vector{"foo", "mode1", "--flag1"},
+                                  0,
+                                  std::vector{true, false, false},
+                                  true,
+                                  false,
+                                  ""},
+                       std::tuple{std::vector{"foo", "mode1", "--flag1"},
+                                  0,
+                                  std::vector{true, false, false},
+                                  false,
+                                  true,
+                                  "Unknown argument: mode1"},
+                       std::tuple{std::vector{"foo", "mode2", "--flag1"},
+                                  0,
+                                  std::vector{true, false, false},
+                                  true,
+                                  false,
+                                  "Unknown argument: mode2"},
+                       std::tuple{std::vector{"foo", "mode1", "--flag1"},
+                                  0,
+                                  std::vector{true, false, false},
+                                  false,
+                                  false,
+                                  "Unknown argument: mode1"},
+                   });
 }
 
 BOOST_AUTO_TEST_SUITE_END()

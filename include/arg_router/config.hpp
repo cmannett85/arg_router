@@ -72,4 +72,11 @@ using allocator = AR_ALLOCATOR<T>;
 #if (__cplusplus >= 202002L) && !AR_DISABLE_CPP20_STRINGS
 #    define AR_ENABLE_CPP20_STRINGS
 #endif
+
+/** There's a bizarre issue that appeared in MSVC 1936 where quoted metafunctions appeared to stop
+ * working due to the <TT>Q::template fn</TT> definition not being accepted.
+ */
+#if (!defined(__clang__) && defined(_MSC_VER) && (_MSC_VER >= 1936))
+#    define MSVC_1936_WORKAROUND 1
+#endif
 }  // namespace arg_router::config

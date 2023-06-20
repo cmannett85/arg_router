@@ -10,7 +10,7 @@ set -e
 readarray -t files <<< `git diff-index --name-only --cached HEAD`
 
 # Run the copyright checker
-python ./scripts/copyright_checker.py date $files
+python ./scripts/copyright_checker.py date ${files[@]}
 
 # Run clang-format
 source_files=()
@@ -22,5 +22,5 @@ for file in "${files[@]}"; do
 done
 
 if [[ ${#source_files[@]} > 0 ]]; then
-    clang-format --style=file --dry-run --Werror $source_files
+    clang-format --style=file --dry-run --Werror ${source_files[@]}
 fi

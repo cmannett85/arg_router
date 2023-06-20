@@ -10,6 +10,7 @@
 #include "arg_router/policy/description.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/required.hpp"
+#include "arg_router/policy/runtime_enable.hpp"
 #include "arg_router/policy/short_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
@@ -253,6 +254,81 @@ BOOST_AUTO_TEST_CASE(help_test)
                                       std::pair{"└ -b <Value>", "A desc"},
                                   }},
                    });
+}
+
+BOOST_AUTO_TEST_CASE(runtime_help_test)
+{
+    auto f = [](const auto& node, auto expected_child_strings) {
+        using node_type = std::decay_t<decltype(node)>;
+        using node_help_data = typename node_type::template help_data_type<true>;
+
+        const auto result = node_help_data::runtime_children(node, [](const auto& child) {
+            using child_type = std::decay_t<decltype(child)>;
+
+            if constexpr (traits::has_runtime_enabled_method_v<child_type>) {
+                return child.runtime_enabled();
+            }
+            return true;
+        });
+
+        BOOST_REQUIRE_EQUAL(result.size(), expected_child_strings.size());
+        for (auto i = 0u; i < result.size(); ++i) {
+            BOOST_CHECK_EQUAL(result[i].label, expected_child_strings[i].first);
+            BOOST_CHECK_EQUAL(result[i].description, expected_child_strings[i].second);
+            BOOST_CHECK(result[i].children.empty());
+        }
+    };
+
+    test::data_set(
+        f,
+        std::tuple{
+            std::tuple{ard::one_of(arg<int>(policy::long_name<AR_STRING("arg1")>),
+                                   arg<double>(policy::long_name<AR_STRING("arg2")>),
+                                   policy::required),
+                       std::vector{
+                           std::pair{"┌ --arg1 <Value>", ""},
+                           std::pair{"└ --arg2 <Value>", ""},
+                       }},
+            std::tuple{
+                ard::one_of(
+                    arg<int>(policy::long_name<AR_STRING("arg1")>, policy::runtime_enable{true}),
+                    arg<double>(policy::long_name<AR_STRING("arg2")>, policy::runtime_enable{true}),
+                    policy::required),
+                std::vector{
+                    std::pair{"┌ --arg1 <Value>", ""},
+                    std::pair{"└ --arg2 <Value>", ""},
+                }},
+            std::tuple{ard::one_of(arg<int>(policy::long_name<AR_STRING("arg1")>,
+                                            policy::runtime_enable{true}),
+                                   arg<double>(policy::long_name<AR_STRING("arg2")>,
+                                               policy::runtime_enable{false}),
+                                   policy::required),
+                       std::vector{std::pair{"--arg1 <Value>", ""}}},
+            std::tuple{
+                ard::one_of(
+                    arg<int>(policy::long_name<AR_STRING("arg1")>, policy::runtime_enable{false}),
+                    arg<double>(policy::long_name<AR_STRING("arg2")>, policy::runtime_enable{true}),
+                    policy::required),
+                std::vector{std::pair{"--arg2 <Value>", ""}}},
+            std::tuple{ard::one_of(arg<int>(policy::long_name<AR_STRING("arg1")>,
+                                            policy::runtime_enable{false}),
+                                   arg<double>(policy::long_name<AR_STRING("arg2")>,
+                                               policy::runtime_enable{false}),
+                                   policy::required),
+                       std::vector<std::pair<const char*, const char*>>{}},
+            std::tuple{ard::one_of(arg<int>(policy::long_name<AR_STRING("arg1")>),
+                                   flag(policy::long_name<AR_STRING("flag")>,
+                                        policy::short_name<'f'>,
+                                        policy::description<AR_STRING("Hello")>,
+                                        policy::runtime_enable{false}),
+                                   arg<double>(policy::short_name<'b'>,
+                                               policy::description<AR_STRING("A desc")>),
+                                   policy::required),
+                       std::vector{
+                           std::pair{"┌ --arg1 <Value>", ""},
+                           std::pair{"└ -b <Value>", "A desc"},
+                       }},
+        });
 }
 
 BOOST_AUTO_TEST_CASE(death_test)

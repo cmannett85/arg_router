@@ -69,6 +69,49 @@ public:
         }
     }
 
+    /** Overload for runtime_help_data.
+     *
+     * @param stream Output stream
+     * @param desc_start Column at which the description should start
+     * @param depth Tree depth of the node @a help_data is representing
+     * @param columns Number of columns the terminal has, implementations can use this to perform
+     * attractive line wrapping
+     * @param help_data Help data from the node that needs printing
+     */
+    void format(std::ostream& stream,
+                std::size_t desc_start,
+                std::size_t depth,
+                std::size_t columns,
+                const runtime_help_data& help_data)
+    {
+        if (!help_data.label.empty()) {
+            const auto indent = depth * Indent;
+            stream << red_colour << std::setw(indent) << ' ' << help_data.label;
+
+            if (!help_data.description.empty()) {
+                const auto gap =
+                    desc_start - indent - utility::utf8::terminal_width(help_data.label);
+
+                // Spacing between the end of the args label and start of description
+                stream << green_colour << std::setw(gap) << ' ';
+
+                // Print the description, breaking if a word will exceed the terminal width
+                for (auto it =
+                         utility::utf8::line_iterator{help_data.description, columns - desc_start};
+                     it != utility::utf8::line_iterator{};) {
+                    stream << *it;
+
+                    // If there's more data to follow, then add the offset
+                    if (++it != utility::utf8::line_iterator{}) {
+                        stream << '\n' << std::setw(desc_start) << ' ';
+                    }
+                }
+            }
+
+            stream << "\n" << reset_colour;
+        }
+    }
+
 private:
     template <std::size_t Depth>
     [[nodiscard]] constexpr static std::size_t indent_size() noexcept

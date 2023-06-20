@@ -98,7 +98,9 @@ protected:
     [[nodiscard]] value_type parse(parsing::parse_target target, const Parents&... parents) const
     {
         auto result = value_type{};
-        if constexpr (traits::has_push_back_method_v<value_type>) {
+        if constexpr (traits::has_push_back_method_v<value_type> &&
+                      !traits::is_specialisation_of_v<value_type, std::basic_string> &&
+                      !std::is_same_v<T, string>) {
             for (auto token : target.tokens()) {
                 result.push_back(
                     parent_type::template parse<value_type>(token.name, *this, parents...));
