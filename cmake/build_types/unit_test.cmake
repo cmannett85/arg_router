@@ -70,6 +70,7 @@ path_prefixer(TEST_SRCS
     root_test.cpp
     test_helpers.cpp
     traits_test.cpp
+    translation_generator_test.cpp
     tree_node_test.cpp
     utility/compile_time_string_test.cpp
     utility/compile_time_optional_test.cpp
@@ -148,6 +149,17 @@ target_link_libraries(arg_router_test
 target_compile_definitions(arg_router_test PRIVATE
     UNIT_TEST_BUILD
     AR_REPO_PATH="${CMAKE_SOURCE_DIR}"
+    UNIT_TEST_BIN_DIR="${CMAKE_CURRENT_BINARY_DIR}"
 )
+
+# Translation generator unit test input files
+include("${CMAKE_SOURCE_DIR}/cmake/translation_generator.cmake")
+arg_router_translation_generator(
+    SOURCES "${CMAKE_SOURCE_DIR}/examples/resources/simple_ml_gen/en_GB.toml"
+            "${CMAKE_SOURCE_DIR}/examples/resources/simple_ml_gen/ja.toml"
+    OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/translations/"
+    GENERATED_FILES_VAR translation_files
+)
+target_sources(arg_router_test PRIVATE ${translation_files})
 
 add_test(NAME arg_router_test COMMAND arg_router_test -l message)

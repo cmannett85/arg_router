@@ -11,6 +11,7 @@
  * @example c++17/runtime_node_enable/main.cpp
  * @example c++17/simple/main.cpp
  * @example c++17/simple_ml/main.cpp
+ * @example c++17/simple_ml_gen/main.cpp
  *
  * @example c++20/basic_cat/main.cpp
  * @example c++20/custom_policy_and_node/main.cpp
@@ -19,4 +20,5 @@
  * @example c++20/runtime_node_enable/main.cpp
  * @example c++20/simple/main.cpp
  * @example c++20/simple_ml/main.cpp
+ * @example c++20/simple_ml_gen/main.cpp
  */

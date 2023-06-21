@@ -921,7 +921,59 @@ terminate called after throwing an instance of 'arg_router::parse_exception'
   what():  不明な引数: -🐱
 ```
 
-### Note ###
+## Translation Generation
+An annoyance of the above is that the translation types are verbose and difficult to read, so as of v1.4 a CMake function is provided by the package config that allows translation type headers to be generated from [TOML](https://en.wikipedia.org/wiki/TOML).
+
+For example the Japanese translation above looks like this:
+```
+# Comments are supported, but only if the # character is the first on the line
+force = "強制"
+force_description = "既存のファイルを強制的に上書きする"
+destination = "先"
+destination_description = "宛先ディレクトリ"
+help = "ヘルプ"
+help_description = "このヘルプを表示して終了"
+program_intro = "ファイルをコピーおよび移動するためのシンプルなプログラム。"
+program_addendum = "「arg_router」のサンプルプログラム。"
+copy = "コピー"
+copy_description = "ソース ファイルを宛先にコピーする"
+source = "出典"
+sources_description = "ソース ファイルのパス"
+move = "移動"
+move_description = "ソース ファイルを宛先に移動する"
+source_description = "ソース ファイル パス"
+
+[error_code]
+unknown_argument = "不明な引数"
+unhandled_arguments = "未処理の引数"
+argument_has_already_been_set = "引数はすでに設定されています"
+failed_to_parse = "解析に失敗しました"
+no_arguments_passed = "引数が渡されませんでした"
+minimum_value_not_reached = "最小値に達していません"
+maximum_value_exceeded = "最大値を超えました"
+minimum_count_not_reached = "最小数に達していません"
+maximum_count_exceeded = "最大数を超えました"
+mode_requires_arguments = "モードには引数が必要です"
+missing_required_argument = "必要な引数がありません"
+too_few_values_for_alias = "エイリアス値が少なすぎる"
+dependent_argument_missing = "従属引数がありません (コマンドラインで必要なトークンの前に置く必要があります)"
+one_of_selected_type_mismatch = "一度に許可される「One Of」引数は1つだけです"
+```
+The TOML file name is the language ID.  Calling the CMake function like this:
+```
+arg_router_translation_generator(
+    SOURCES "${CMAKE_SOURCE_DIR}/en_GB.toml"
+            "${CMAKE_SOURCE_DIR}/fr.toml"
+            "${CMAKE_SOURCE_DIR}/ja.toml"
+    OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/translations/"
+    GENERATED_FILES_VAR translation_files
+)
+add_executable(my_exe ...  ${translation_files})
+target_include_directories(my_exe PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
+```
+Creates a header for each language with the corresponding translation specialisation that can be included in your root source file.  You can see this in the [buildable example](https://cmannett85.github.io/arg_router/c_09_0920_2simple_ml_gen_2main_8cpp-example.html)).  This is now the recommended approach for writing translations, but is certainly not (and never will be) a requirement.
+
+### Note
 `multi_lang::root_wrapper` from v1.0 is still present and supported, but is now marked as deprecated - new code should use `multi_lang::root`.  It is not supported when using C++20 compile-time strings (see [compile-time string support](#compile-time-string-support)).
 
 ## Compile-time String Support

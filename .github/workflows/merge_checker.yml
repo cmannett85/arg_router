@@ -185,6 +185,7 @@ jobs:
         Test-Path -Path "${{ env.INSTALL_DIR }}/share/arg_router/arg_router.cmake" -PathType Leaf
         Test-Path -Path "${{ env.INSTALL_DIR }}/share/arg_router/arg_router-config.cmake" -PathType Leaf
         Test-Path -Path "${{ env.INSTALL_DIR }}/share/arg_router/arg_router-config-version.cmake" -PathType Leaf
+        Test-Path -Path "${{ env.INSTALL_DIR }}/share/arg_router/translation_generator.cmake" -PathType Leaf
 
     - name: Test CMake package integrity
       run: |
@@ -239,6 +240,7 @@ jobs:
         [[ -f "./share/arg_router/arg_router.cmake" ]]
         [[ -f "./share/arg_router/arg_router-config.cmake" ]]
         [[ -f "./share/arg_router/arg_router-config-version.cmake" ]]
+        [[ -f "./share/arg_router/translation_generator.cmake" ]]
 
     - name: Test CMake package integrity
       run: |

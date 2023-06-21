@@ -33,3 +33,13 @@ target_link_libraries(arg_router_test_coverage
 target_link_options(arg_router_test_coverage
     PRIVATE --coverage
 )
+
+# Translation generator unit test input files
+include("${CMAKE_SOURCE_DIR}/cmake/translation_generator.cmake")
+arg_router_translation_generator(
+    SOURCES "${CMAKE_SOURCE_DIR}/examples/resources/simple_ml_gen/en_GB.toml"
+            "${CMAKE_SOURCE_DIR}/examples/resources/simple_ml_gen/ja.toml"
+    OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/translations/"
+    GENERATED_FILES_VAR translation_files
+)
+target_sources(arg_router_test_coverage PRIVATE ${translation_files})
