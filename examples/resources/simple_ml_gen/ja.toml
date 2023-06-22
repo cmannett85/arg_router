@@ -1,0 +1,35 @@
+# Copyright (C) 2023 by Camden Mannett.
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
+
+force = "強制"
+force_description = "既存のファイルを強制的に上書きする"
+destination = "先"
+destination_description = "宛先ディレクトリ"
+help = "ヘルプ"
+help_description = "このヘルプを表示して終了"
+program_intro = "ファイルをコピーおよび移動するためのシンプルなプログラム。"
+program_addendum = "「arg_router」のサンプルプログラム。"
+copy = "コピー"
+copy_description = "ソース ファイルを宛先にコピーする"
+source = "出典"
+sources_description = "ソース ファイルのパス"
+move = "移動"
+move_description = "ソース ファイルを宛先に移動する"
+source_description = "ソース ファイル パス"
+
+[error_code]
+unknown_argument = "不明な引数"
+unhandled_arguments = "未処理の引数"
+argument_has_already_been_set = "引数はすでに設定されています"
+failed_to_parse = "解析に失敗しました"
+no_arguments_passed = "引数が渡されませんでした"
+minimum_value_not_reached = "最小値に達していません"
+maximum_value_exceeded = "最大値を超えました"
+minimum_count_not_reached = "最小数に達していません"
+maximum_count_exceeded = "最大数を超えました"
+mode_requires_arguments = "モードには引数が必要です"
+missing_required_argument = "必要な引数がありません"
+too_few_values_for_alias = "エイリアス値が少なすぎる"
+dependent_argument_missing = "従属引数がありません (コマンドラインで必要なトークンの前に置く必要があります)"
+one_of_selected_type_mismatch = "一度に許可される「One Of」引数は1つだけです"

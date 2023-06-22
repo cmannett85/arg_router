@@ -9,6 +9,7 @@ set_target_properties(arg_router_test_coverage PROPERTIES CXX_EXTENSIONS OFF)
 target_compile_definitions(arg_router_test_coverage PRIVATE
     UNIT_TEST_BUILD
     AR_REPO_PATH="${CMAKE_SOURCE_DIR}"
+    UNIT_TEST_BIN_DIR="${CMAKE_CURRENT_BINARY_DIR}"
 )
 
 # Default to C++20
@@ -33,3 +34,13 @@ target_link_libraries(arg_router_test_coverage
 target_link_options(arg_router_test_coverage
     PRIVATE --coverage
 )
+
+# Translation generator unit test input files
+include("${CMAKE_SOURCE_DIR}/cmake/translation_generator.cmake")
+arg_router_translation_generator(
+    SOURCES "${CMAKE_SOURCE_DIR}/examples/resources/simple_ml_gen/en_GB.toml"
+            "${CMAKE_SOURCE_DIR}/examples/resources/simple_ml_gen/ja.toml"
+    OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/translations/"
+    GENERATED_FILES_VAR translation_files
+)
+target_sources(arg_router_test_coverage PRIVATE ${translation_files})
