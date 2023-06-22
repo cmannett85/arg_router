@@ -9,6 +9,7 @@ set_target_properties(arg_router_test_coverage PROPERTIES CXX_EXTENSIONS OFF)
 target_compile_definitions(arg_router_test_coverage PRIVATE
     UNIT_TEST_BUILD
     AR_REPO_PATH="${CMAKE_SOURCE_DIR}"
+    UNIT_TEST_BIN_DIR="${CMAKE_CURRENT_BINARY_DIR}"
 )
 
 # Default to C++20
