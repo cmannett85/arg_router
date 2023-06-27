@@ -903,15 +903,22 @@ public:
                   str<"最大値を超えました">>,
         std::pair<traits::integral_constant<error_code::minimum_count_not_reached>,
                   str<"最小数に達していません">>,
+        std::pair<traits::integral_constant<error_code::maximum_count_exceeded>,
+                  str<"最大数を超えました">>,
+        std::pair<traits::integral_constant<error_code::unknown_argument_with_suggestion>,
+                  str<"不明な引数 {}。 { } という意味でしたか？">>,
         std::pair<traits::integral_constant<error_code::mode_requires_arguments>,
                   str<"モードには引数が必要です">>,
         std::pair<traits::integral_constant<error_code::missing_required_argument>,
                   str<"必要な引数がありません">>,
         std::pair<traits::integral_constant<error_code::too_few_values_for_alias>,
                   str<"エイリアス値が少なすぎる">>,
-        std::pair<
-            traits::integral_constant<error_code::dependent_argument_missing>,
-            str<"従属引数がありません (コマンドラインで必要なトークンの前に置く必要があります)">>>;
+        std::pair<traits::integral_constant<error_code::dependent_argument_missing>,
+                  str<"従属引数がありません (コマンドラインで必要なトークンの前に置く必要があります)">>,
+        std::pair<traits::integral_constant<error_code::one_of_selected_type_mismatch>,
+                  str<"「One Of」から一度に使用できる引数は 1 つだけです">>,
+        std::pair<traits::integral_constant<error_code::missing_value_separator>,
+                  str<"値の区切り文字が必要です">>>;
 };
 ```
 Could yield:
@@ -953,11 +960,13 @@ minimum_value_not_reached = "最小値に達していません"
 maximum_value_exceeded = "最大値を超えました"
 minimum_count_not_reached = "最小数に達していません"
 maximum_count_exceeded = "最大数を超えました"
+unknown_argument_with_suggestion = "不明な引数 {}。 { } という意味でしたか？"
 mode_requires_arguments = "モードには引数が必要です"
 missing_required_argument = "必要な引数がありません"
 too_few_values_for_alias = "エイリアス値が少なすぎる"
 dependent_argument_missing = "従属引数がありません (コマンドラインで必要なトークンの前に置く必要があります)"
-one_of_selected_type_mismatch = "一度に許可される「One Of」引数は1つだけです"
+one_of_selected_type_mismatch = "「One Of」から一度に使用できる引数は 1 つだけです"
+missing_value_separator = "値の区切り文字が必要です"
 ```
 The TOML file name is the language ID.  Calling the CMake function like this:
 ```

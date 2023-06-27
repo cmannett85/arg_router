@@ -86,7 +86,9 @@ BOOST_AUTO_TEST_CASE(unknown_argument_parse_test)
     auto args = std::vector{"foo", "--foo"};
     BOOST_CHECK_EXCEPTION(r.parse(static_cast<int>(args.size()), const_cast<char**>(args.data())),
                           parse_exception,
-                          [](const auto& e) { return e.what() == "Unknown argument: --foo"s; });
+                          [](const auto& e) {
+                              return e.what() == "Unknown argument: --foo. Did you mean --hello?"s;
+                          });
     BOOST_CHECK(!router_hit);
 }
 
@@ -160,13 +162,16 @@ BOOST_AUTO_TEST_CASE(single_arg_separator_parse_test)
         }
     };
 
-    test::data_set(
-        f,
-        {
-            std::tuple{std::vector{"foo", "--hello=42"}, 42, ""},
-            std::tuple{std::vector{"foo", "--hello", "42"}, 0, "Unknown argument: --hello"},
-            std::tuple{std::vector{"foo", "--hello="}, 0, "Unknown argument: --hello="},
-        });
+    test::data_set(f,
+                   {
+                       std::tuple{std::vector{"foo", "--hello=42"}, 42, ""},
+                       std::tuple{std::vector{"foo", "--hello", "42"},
+                                  0,
+                                  "Expected a value separator: --hello"},
+                       std::tuple{std::vector{"foo", "--hello="},
+                                  0,
+                                  "Unknown argument: --hello=. Did you mean --hello?"},
+                   });
 }
 
 BOOST_AUTO_TEST_CASE(single_string_arg_parse_test)
@@ -674,12 +679,12 @@ BOOST_AUTO_TEST_CASE(runtime_enable_flag_parse_test)
                        std::array{false, false},
                        false,
                        true,
-                       "Unknown argument: --flag1"s},
+                       "Unknown argument: --flag1. Did you mean --flag2?"s},
             std::tuple{std::vector{"--flag2"},
                        std::array{false, false},
                        true,
                        false,
-                       "Unknown argument: --flag2"s},
+                       "Unknown argument: --flag2. Did you mean --flag1?"s},
         });
 }
 

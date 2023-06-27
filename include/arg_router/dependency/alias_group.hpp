@@ -97,7 +97,7 @@ public:
 
     /** Propagates the pre-parse phase to the child, returns on a positive return from one of them.
      *
-     * @tparam Validator Validator type\
+     * @tparam Validator Validator type
      * @tparam HasTarget True if @a pre_parse_data contains the parent's
      * parse_target
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order

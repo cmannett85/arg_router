@@ -75,6 +75,7 @@ path_prefixer(TEST_SRCS
     utility/compile_time_string_test.cpp
     utility/compile_time_optional_test.cpp
     utility/dynamic_string_view_test.cpp
+    utility/exception_formatter_test.cpp
     utility/result_test.cpp
     utility/string_to_policy_test.cpp
     utility/string_view_ops_test.cpp
@@ -83,6 +84,7 @@ path_prefixer(TEST_SRCS
     utility/unsafe_any_test.cpp
     utility/utf8/code_point_test.cpp
     utility/utf8/grapheme_cluster_break_test.cpp
+    utility/utf8/levenshtein_distance_test.cpp
     utility/utf8/line_break_test.cpp
     utility/utf8_test.cpp
 )
