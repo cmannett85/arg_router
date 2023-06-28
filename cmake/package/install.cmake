@@ -8,7 +8,9 @@ set(INSTALL_BASE_DIR "include")
 set(INSTALL_AR_DIR "${INSTALL_BASE_DIR}/arg_router")
 set(CONFIG_FILE "${CMAKE_BINARY_DIR}/cmake/package/arg_router-config.cmake")
 set(CONFIG_VERSION_FILE "${CMAKE_BINARY_DIR}/cmake/package/arg_router-config-version.cmake")
-set(TRANSLATION_GENERATOR "${CMAKE_SOURCE_DIR}/cmake/translation_generator.cmake")
+set(TRANSLATION_GENERATOR_FILES
+    "${CMAKE_SOURCE_DIR}/cmake/translation_generator/translation_generator.cmake"
+    "${CMAKE_SOURCE_DIR}/cmake/translation_generator/translation_generator_script.cmake")
 set(AR_CMAKE_PACKAGE_DIR "share/arg_router"
     CACHE STRING "Installation suffix of CMake package config files, defaults to share/arg_router")
 
@@ -34,7 +36,7 @@ install(FILES "${CMAKE_SOURCE_DIR}/README.md"
         DESTINATION ${INSTALL_AR_DIR})
 install(FILES "${CONFIG_FILE}"
               "${CONFIG_VERSION_FILE}"
-              "${TRANSLATION_GENERATOR}"
+              ${TRANSLATION_GENERATOR_FILES}
         DESTINATION ${AR_CMAKE_PACKAGE_DIR})
 
 # CPack package configuration
