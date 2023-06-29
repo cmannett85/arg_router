@@ -29,7 +29,7 @@ function(arg_router_translation_generator)
                 -DOUTPUT_DIR=${ARGS_OUTPUT_DIR}
                 -P ${script_path}
         SOURCES ${ARGS_SOURCES}
-                "${CMAKE_SOURCE_DIR}/cmake/translation_generator/translation_generator_script.cmake"
+                ${script_path}
         VERBATIM)
 
     # set_source_files_properties cannot be used in a script so that's set here
