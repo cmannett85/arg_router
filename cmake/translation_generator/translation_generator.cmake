@@ -3,10 +3,9 @@
 ### (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 function(arg_router_translation_generator)
-    set(options INTERNAL)
     set(single_value_args OUTPUT_DIR TARGET)
     set(multi_value_args SOURCES)
-    cmake_parse_arguments(ARGS "${options}" "${single_value_args}" "${multi_value_args}" ${ARGN})
+    cmake_parse_arguments(ARGS "" "${single_value_args}" "${multi_value_args}" ${ARGN})
 
     if (NOT DEFINED ARGS_SOURCES)
         message(FATAL_ERROR "Translation generator requires at least one source file")
@@ -18,10 +17,9 @@ function(arg_router_translation_generator)
         message(FATAL_ERROR "Translation generator requires a target output variable")
     endif()
 
-    set(script_path $<INSTALL_INTERFACE:share/arg_router/translation_generator_script.cmake>)
-    if (ARGS_INTERNAL)
-        set(script_path "${CMAKE_SOURCE_DIR}/cmake/translation_generator/translation_generator_script.cmake")
-    endif()
+    # The script file is always in the dir as this file
+    get_filename_component(this_file_path "${CMAKE_CURRENT_FUNCTION_LIST_FILE}" DIRECTORY)
+    set(script_path "${this_file_path}/translation_generator_script.cmake")
 
     add_custom_target(${ARGS_TARGET}
         COMMAND ${CMAKE_COMMAND}

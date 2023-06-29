@@ -100,7 +100,6 @@ arg_router_translation_generator(
             "${CMAKE_SOURCE_DIR}/examples/resources/simple_ml_gen/ja.toml"
     OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/translations/"
     TARGET translation_arg_router_test
-    INTERNAL
 )
 
 add_executable(arg_router_test ${TEST_HEADERS} ${TEST_SRCS})
