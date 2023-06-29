@@ -18,7 +18,7 @@ function(arg_router_translation_generator)
         message(FATAL_ERROR "Translation generator requires a target output variable")
     endif()
 
-    set(script_path share/arg_router/translation_generator_script.cmake)
+    set(script_path $<INSTALL_INTERFACE:share/arg_router/translation_generator_script.cmake>)
     if (ARGS_INTERNAL)
         set(script_path "${CMAKE_SOURCE_DIR}/cmake/translation_generator/translation_generator_script.cmake")
     endif()
