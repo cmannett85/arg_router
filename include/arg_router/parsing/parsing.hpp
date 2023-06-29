@@ -97,6 +97,7 @@ template <typename Node>
  * @tparam BaseNode Base node type to be used to find derived types in @a derived_and_parents
  * @tparam DerivedAndParents Pack of (possibly) derived types in descending OOP ancestry order, and
  * then parent tree nodes in ascending ancestry order
+ * @param base_node Base node instance
  * @param derived_and_parents Derived type and parent node instances
  * @return Tuple of cleaned const reference ancestors in <TT>std::reference_wrapper</TT>
  */

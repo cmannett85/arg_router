@@ -92,7 +92,7 @@ template <typename Node>
                 // This monstrosity is because we want to keep the vector initialisation from a
                 // fold-expression, whilst removing the root entry which requires converting the
                 // pack to a tuple first
-                const auto append_parents = [](parsing::token_type child_token) {
+                [[maybe_unused]] const auto append_parents = [](parsing::token_type child_token) {
                     return std::apply(
                         [&](auto... parents_without_root) {
                             return vector<parsing::token_type>{

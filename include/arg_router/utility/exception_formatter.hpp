@@ -144,26 +144,29 @@ private:
         utility::tuple_type_iterator<placeholders>([&](auto i) {
             using PH = std::tuple_element_t<i, placeholders>;
 
+            // Wouldn't normally create a local from static data, but this is necessary due to
+            // https://gcc.gnu.org/bugzilla/show_bug.cgi?id=92654
+            constexpr auto joining_str = PH::joining::get();
             if (it != tokens.end()) {
                 auto next_str = to_string(*it);
                 auto pos = PH::start + offset;
-                str.replace(pos, PH::joining::size() + bracket_width, next_str);
+                str.replace(pos, joining_str.size() + bracket_width, next_str);
                 ++it;
 
                 offset += next_str.size() - bracket_width;
 
-                if constexpr (PH::joining::size() > 0) {
+                if constexpr (!joining_str.empty()) {
                     // Greedily consume the remaining tokens
                     pos += next_str.size();
                     for (; it != std::end(tokens); ++it) {
-                        next_str = PH::joining::get() + to_string(*it);
+                        next_str = joining_str + to_string(*it);
                         str.insert(pos, next_str);
                         pos += next_str.size();
                     }
                 }
             } else {
                 // Replace any remaining placeholders with empty strings
-                str.replace(PH::start + offset, PH::joining::size() + bracket_width, "");
+                str.replace(PH::start + offset, joining_str.size() + bracket_width, "");
                 offset -= bracket_width;
             }
         });
