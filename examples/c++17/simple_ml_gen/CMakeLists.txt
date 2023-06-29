@@ -2,14 +2,13 @@
 ### Distributed under the Boost Software License, Version 1.0.
 ### (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
-include("${CMAKE_SOURCE_DIR}/cmake/translation_generator.cmake")
-
+include("${CMAKE_SOURCE_DIR}/cmake/translation_generator/translation_generator.cmake")
 arg_router_translation_generator(
     SOURCES "${CMAKE_SOURCE_DIR}/examples/resources/simple_ml_gen/en_GB.toml"
             "${CMAKE_SOURCE_DIR}/examples/resources/simple_ml_gen/fr.toml"
             "${CMAKE_SOURCE_DIR}/examples/resources/simple_ml_gen/ja.toml"
     OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/translations/"
-    GENERATED_FILES_VAR translation_files
+    TARGET translation_example_simple_ml_gen
 )
 
 create_clangformat_target(
@@ -18,9 +17,11 @@ create_clangformat_target(
 )
 
 add_executable(example_simple_ml_gen
-    "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp"
-    ${translation_files})
-add_dependencies(example_simple_ml_gen clangformat_example_simple_ml)
+    "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp")
+add_dependencies(
+    example_simple_ml_gen
+    translation_example_simple_ml_gen
+    clangformat_example_simple_ml)
 
 target_include_directories(example_simple_ml_gen PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
 

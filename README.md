@@ -966,9 +966,10 @@ arg_router_translation_generator(
             "${CMAKE_SOURCE_DIR}/fr.toml"
             "${CMAKE_SOURCE_DIR}/ja.toml"
     OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/translations/"
-    GENERATED_FILES_VAR translation_files
+    TARGET my_exe_translations
 )
-add_executable(my_exe ...  ${translation_files})
+add_executable(my_exe ...)
+add_dependencies(my_exe my_exe_translations)
 target_include_directories(my_exe PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
 ```
 Creates a header for each language with the corresponding translation specialisation that can be included in your root source file.  You can see this in the [buildable example](https://cmannett85.github.io/arg_router/c_09_0920_2simple_ml_gen_2main_8cpp-example.html)).  This is now the recommended approach for writing translations, but is certainly not (and never will be) a requirement.

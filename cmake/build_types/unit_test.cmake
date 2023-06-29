@@ -93,8 +93,17 @@ create_clangformat_target(
     SOURCES ${TEST_HEADERS} ${TEST_SRCS}
 )
 
+# Translation generator unit test input files
+include("${CMAKE_SOURCE_DIR}/cmake/translation_generator/translation_generator.cmake")
+arg_router_translation_generator(
+    SOURCES "${CMAKE_SOURCE_DIR}/examples/resources/simple_ml_gen/en_GB.toml"
+            "${CMAKE_SOURCE_DIR}/examples/resources/simple_ml_gen/ja.toml"
+    OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/translations/"
+    TARGET translation_arg_router_test
+)
+
 add_executable(arg_router_test ${TEST_HEADERS} ${TEST_SRCS})
-add_dependencies(arg_router_test clangformat_test arg_router)
+add_dependencies(arg_router_test translation_arg_router_test clangformat_test arg_router)
 
 set_target_properties(arg_router_test PROPERTIES CXX_EXTENSIONS OFF)
 target_compile_definitions(arg_router_test PRIVATE UNIT_TEST_BUILD)
@@ -151,15 +160,5 @@ target_compile_definitions(arg_router_test PRIVATE
     AR_REPO_PATH="${CMAKE_SOURCE_DIR}"
     UNIT_TEST_BIN_DIR="${CMAKE_CURRENT_BINARY_DIR}"
 )
-
-# Translation generator unit test input files
-include("${CMAKE_SOURCE_DIR}/cmake/translation_generator.cmake")
-arg_router_translation_generator(
-    SOURCES "${CMAKE_SOURCE_DIR}/examples/resources/simple_ml_gen/en_GB.toml"
-            "${CMAKE_SOURCE_DIR}/examples/resources/simple_ml_gen/ja.toml"
-    OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/translations/"
-    GENERATED_FILES_VAR translation_files
-)
-target_sources(arg_router_test PRIVATE ${translation_files})
 
 add_test(NAME arg_router_test COMMAND arg_router_test -l message)
