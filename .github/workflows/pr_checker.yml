@@ -102,8 +102,8 @@ jobs:
         [[ -f "./share/arg_router/arg_router.cmake" ]]
         [[ -f "./share/arg_router/arg_router-config.cmake" ]]
         [[ -f "./share/arg_router/arg_router-config-version.cmake" ]]
-        [[ -f "./share/arg_router/translation_generator/translation_generator.cmake" ]]
-        [[ -f "./share/arg_router/translation_generator/translation_generator_script.cmake" ]]
+        [[ -f "./share/arg_router/translation_generator.cmake" ]]
+        [[ -f "./share/arg_router/translation_generator_script.cmake" ]]
 
     - name: Test CMake package integrity
       run: |
@@ -235,8 +235,8 @@ jobs:
         [[ -f "/usr/share/arg_router/arg_router.cmake" ]]
         [[ -f "/usr/share/arg_router/arg_router-config.cmake" ]]
         [[ -f "/usr/share/arg_router/arg_router-config-version.cmake" ]]
-        [[ -f "/usr/share/arg_router/translation_generator/translation_generator.cmake" ]]
-        [[ -f "/usr/share/arg_router/translation_generator/translation_generator_script.cmake" ]]
+        [[ -f "/usr/share/arg_router/translation_generator.cmake" ]]
+        [[ -f "/usr/share/arg_router/translation_generator_script.cmake" ]]
 
     - name: Test CMake package integrity
       timeout-minutes: 30

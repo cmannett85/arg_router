@@ -21,7 +21,8 @@ function(arg_router_translation_generator)
         COMMAND ${CMAKE_COMMAND}
                 "-DSOURCES=${ARGS_SOURCES}"
                 -DOUTPUT_DIR=${ARGS_OUTPUT_DIR}
-                -P ${CMAKE_SOURCE_DIR}/cmake/translation_generator/translation_generator_script.cmake
+                -P $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/cmake/translation_generator/translation_generator_script.cmake>
+                   $<INSTALL_INTERFACE:share/arg_router/translation_generator_script.cmake>
         SOURCES ${ARGS_SOURCES}
                 "${CMAKE_SOURCE_DIR}/cmake/translation_generator/translation_generator_script.cmake"
         VERBATIM)

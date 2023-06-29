@@ -22,7 +22,7 @@ arg_router_translation_generator(
             "${ROOT_DIR}/examples/resources/simple_ml_gen/fr.toml"
             "${ROOT_DIR}/examples/resources/simple_ml_gen/ja.toml"
     OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/translations/"
-    GENERATED_FILES_VAR translation_files
+    TARGET translation_package_test_project
 )
 
 # Default to C++20
@@ -39,6 +39,7 @@ add_executable(package_test_project
 
 target_link_libraries(package_test_project PUBLIC arg_router::arg_router)
 set_target_properties(package_test_project PROPERTIES CXX_EXTENSIONS OFF)
+add_dependencies(package_test_project translation_package_test_project)
 target_include_directories(package_test_project PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" OR CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
