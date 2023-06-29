@@ -118,7 +118,7 @@ BOOST_AUTO_TEST_CASE(at_least_one_child_test)
     test::death_test_compile(R"(
 #include "arg_router/utility/utf8/levenshtein_distance.hpp"
 
-using arg_router;
+using namespace arg_router;
 
 template <typename... PoliciesAndChildren>
 class stub_node : public tree_node<PoliciesAndChildren...>
