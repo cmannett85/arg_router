@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "arg_router/parsing/unknown_argument_handling.hpp"
 #include "arg_router/policy/exception_translator.hpp"
 #include "arg_router/policy/flatten_help.hpp"
 #include "arg_router/policy/no_result_value.hpp"
@@ -168,7 +169,7 @@ public:
                 if (front_token.name.empty()) {
                     throw multi_lang_exception{error_code::no_arguments_passed};
                 }
-                throw multi_lang_exception{error_code::unknown_argument, front_token};
+                parsing::unknown_argument_exception(*this, front_token);
             }
         } catch (multi_lang_exception& e) {
             // Convert the error code exception to a parse_exception.  This method will always be

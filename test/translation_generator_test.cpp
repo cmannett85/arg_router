@@ -119,11 +119,13 @@ public:
         std::pair<traits::integral_constant<error_code::maximum_value_exceeded>, str<"最大値を超えました">>,
         std::pair<traits::integral_constant<error_code::minimum_count_not_reached>, str<"最小数に達していません">>,
         std::pair<traits::integral_constant<error_code::maximum_count_exceeded>, str<"最大数を超えました">>,
+        std::pair<traits::integral_constant<error_code::unknown_argument_with_suggestion>, str<"不明な引数 {}。 { } という意味でしたか？">>,
         std::pair<traits::integral_constant<error_code::mode_requires_arguments>, str<"モードには引数が必要です">>,
         std::pair<traits::integral_constant<error_code::missing_required_argument>, str<"必要な引数がありません">>,
         std::pair<traits::integral_constant<error_code::too_few_values_for_alias>, str<"エイリアス値が少なすぎる">>,
         std::pair<traits::integral_constant<error_code::dependent_argument_missing>, str<"従属引数がありません (コマンドラインで必要なトークンの前に置く必要があります)">>,
-        std::pair<traits::integral_constant<error_code::one_of_selected_type_mismatch>, str<"一度に許可される「One Of」引数は1つだけです">>
+        std::pair<traits::integral_constant<error_code::one_of_selected_type_mismatch>, str<"一度に許可される「One Of」引数は1つだけです">>,
+        std::pair<traits::integral_constant<error_code::missing_value_separator>, str<"値の区切り文字が必要です">>
     >;
 };
 #else
@@ -157,11 +159,13 @@ public:
         std::pair<traits::integral_constant<error_code::maximum_value_exceeded>, S_("最大値を超えました")>,
         std::pair<traits::integral_constant<error_code::minimum_count_not_reached>, S_("最小数に達していません")>,
         std::pair<traits::integral_constant<error_code::maximum_count_exceeded>, S_("最大数を超えました")>,
+        std::pair<traits::integral_constant<error_code::unknown_argument_with_suggestion>, S_("不明な引数 {}。 { } という意味でしたか？")>,
         std::pair<traits::integral_constant<error_code::mode_requires_arguments>, S_("モードには引数が必要です")>,
         std::pair<traits::integral_constant<error_code::missing_required_argument>, S_("必要な引数がありません")>,
         std::pair<traits::integral_constant<error_code::too_few_values_for_alias>, S_("エイリアス値が少なすぎる")>,
         std::pair<traits::integral_constant<error_code::dependent_argument_missing>, S_("従属引数がありません (コマンドラインで必要なトークンの前に置く必要があります)")>,
-        std::pair<traits::integral_constant<error_code::one_of_selected_type_mismatch>, S_("一度に許可される「One Of」引数は1つだけです")>
+        std::pair<traits::integral_constant<error_code::one_of_selected_type_mismatch>, S_("一度に許可される「One Of」引数は1つだけです")>,
+        std::pair<traits::integral_constant<error_code::missing_value_separator>, S_("値の区切り文字が必要です")>
     >;
 };
 #endif

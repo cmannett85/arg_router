@@ -86,6 +86,7 @@ path_prefixer(HEADERS
     include/arg_router/parsing/parsing.hpp
     include/arg_router/parsing/pre_parse_data.hpp
     include/arg_router/parsing/token_type.hpp
+    include/arg_router/parsing/unknown_argument_handling.hpp
     include/arg_router/policy/alias.hpp
     include/arg_router/policy/colour_help_formatter.hpp
     include/arg_router/policy/custom_parser.hpp
@@ -125,6 +126,7 @@ path_prefixer(HEADERS
     include/arg_router/utility/compile_time_string.hpp
     include/arg_router/utility/compile_time_optional.hpp
     include/arg_router/utility/dynamic_string_view.hpp
+    include/arg_router/utility/exception_formatter.hpp
     include/arg_router/utility/result.hpp
     include/arg_router/utility/string_to_policy.hpp
     include/arg_router/utility/string_view_ops.hpp
@@ -137,6 +139,7 @@ path_prefixer(HEADERS
     include/arg_router/utility/utf8/code_point.hpp
     include/arg_router/utility/utf8/double_width.hpp
     include/arg_router/utility/utf8/grapheme_cluster_break.hpp
+    include/arg_router/utility/utf8/levenshtein_distance.hpp
     include/arg_router/utility/utf8/line_break.hpp
     include/arg_router/utility/utf8/whitespace.hpp
     include/arg_router/utility/utf8/zero_width.hpp

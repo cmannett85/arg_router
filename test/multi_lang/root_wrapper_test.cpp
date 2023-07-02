@@ -52,24 +52,29 @@ BOOST_AUTO_TEST_CASE(parse_test)
         }
     };
 
-    test::data_set(
-        f,
-        {
-            // English
-            std::tuple{"en_GB", std::vector{"foo", "--hello", "42"}, 42, ""},
-            std::tuple{"en_GB",
-                       std::vector{"foo", "--bonjour", "42"},
-                       42,
-                       "Unknown argument: --bonjour"},
+    test::data_set(f,
+                   {
+                       // English
+                       std::tuple{"en_GB", std::vector{"foo", "--hello", "42"}, 42, ""},
+                       std::tuple{"en_GB",
+                                  std::vector{"foo", "--bonjour", "42"},
+                                  42,
+                                  "Unknown argument: --bonjour. Did you mean --hello?"},
 
-            // French
-            std::tuple{"fr", std::vector{"foo", "--bonjour", "42"}, 42, ""},
-            std::tuple{"fr", std::vector{"foo", "--hello", "42"}, 42, "Unknown argument: --hello"},
+                       // French
+                       std::tuple{"fr", std::vector{"foo", "--bonjour", "42"}, 42, ""},
+                       std::tuple{"fr",
+                                  std::vector{"foo", "--hello", "42"},
+                                  42,
+                                  "Unknown argument: --hello. Did you mean --bonjour?"},
 
-            // Spanish
-            std::tuple{"es", std::vector{"foo", "--hola", "42"}, 42, ""},
-            std::tuple{"es", std::vector{"foo", "--hello", "42"}, 42, "Unknown argument: --hello"},
-        });
+                       // Spanish
+                       std::tuple{"es", std::vector{"foo", "--hola", "42"}, 42, ""},
+                       std::tuple{"es",
+                                  std::vector{"foo", "--hello", "42"},
+                                  42,
+                                  "Unknown argument: --hello. Did you mean --hola?"},
+                   });
 }
 
 BOOST_AUTO_TEST_CASE(parse_default_test)

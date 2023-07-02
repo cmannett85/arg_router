@@ -5,6 +5,7 @@
 #include "arg_router/arg.hpp"
 #include "arg_router/flag.hpp"
 #include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/runtime_enable.hpp"
 #include "arg_router/policy/short_name.hpp"
 #include "arg_router/policy/value_separator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
@@ -235,6 +236,27 @@ BOOST_AUTO_TEST_CASE(clean_parents_list_test)
                                              flag(policy::long_name<AR_STRING("foo")>),
                                              arg<int>(policy::long_name<AR_STRING("foo")>)},
                               }});
+}
+
+BOOST_AUTO_TEST_CASE(is_runtime_disabled_test)
+{
+    auto f = [](auto expected, const auto& node, const auto&... parents) {
+        const auto result = parsing::is_runtime_disabled(node, parents...);
+        BOOST_CHECK_EQUAL(result, expected);
+    };
+
+    test::data_set(
+        f,
+        std::tuple{
+            std::tuple{false, stub_node(policy::runtime_enable{true})},
+            std::tuple{true, stub_node(policy::runtime_enable{false})},
+            std::tuple{false, stub_node(), stub_node(), stub_node()},
+            std::tuple{false, stub_node(), stub_node(policy::runtime_enable{true}), stub_node()},
+            std::tuple{true,
+                       stub_node(policy::runtime_enable{true}),
+                       stub_node(policy::runtime_enable{true}),
+                       stub_node(policy::runtime_enable{false})},
+        });
 }
 
 BOOST_AUTO_TEST_SUITE_END()

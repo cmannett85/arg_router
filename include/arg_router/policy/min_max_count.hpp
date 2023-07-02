@@ -160,14 +160,32 @@ struct is_policy<min_max_count_t<MinType, MaxType>> : std::true_type {
  *
  * If no policy implementing <TT>minimum_count()</TT> and <TT>maximum_count()</TT> methods is in
  * @a Policies (e.g. policy::min_max_count_t), then an unbounded policy::min_max_count_t is
- * prepended to @a Policies and made available by a tree_node typedef.
+ * prepended to @a Policies.
  *
- * This used via inheritance in nodes, e.g.:
+ * This is used via inheritance in nodes, e.g.:
  * @code
  * template <typename T, typename... Policies>
- * class positional_arg_t : public add_missing_min_max_policy<0, Policies...>::type
- * { ... };
+ * class my_arg_t : public add_missing_min_max_policy<0, Policies...>::type
+ * {
+ * public:
+ *  template <auto has_min_max = add_missing_min_max_policy<0, Policies...>::has_min_max>
+ *  constexpr explicit my_arg_t(Policies... policies,
+ *                              std::enable_if_t<has_min_max>* = nullptr) noexcept :
+ *      parent_type{std::move(policies)...}
+ * {
+ * }
+ *
+ * template <auto has_min_max = add_missing_min_max_policy<0, Policies...>::has_min_max>
+ * constexpr explicit multi_arg_base_t(Policies... policies,
+ *                                     std::enable_if_t<!has_min_max>* = nullptr) noexcept :
+ *   parent_type{policy::min_count<0>, std::move(policies)...}
+ * {
+ * }
+ * };
  * @endcode
+ * The constructor specialisation is needed because the parent constructor calls need to match the
+ * inherited policies count and order.
+ *
  * @tparam MinCount Minimum count value to use if one not specified by user
  * @tparam Policies Pack of policies that define its behaviour
  */

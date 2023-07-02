@@ -97,11 +97,12 @@ template <typename Node>
  * @tparam BaseNode Base node type to be used to find derived types in @a derived_and_parents
  * @tparam DerivedAndParents Pack of (possibly) derived types in descending OOP ancestry order, and
  * then parent tree nodes in ascending ancestry order
+ * @param base_node Base node instance
  * @param derived_and_parents Derived type and parent node instances
  * @return Tuple of cleaned const reference ancestors in <TT>std::reference_wrapper</TT>
  */
 template <typename BaseNode, typename... DerivedAndParents>
-[[nodiscard]] static constexpr auto clean_node_ancestry_list(
+[[nodiscard]] constexpr auto clean_node_ancestry_list(
     const BaseNode& base_node,
     const DerivedAndParents&... derived_and_parents)
 {
@@ -118,5 +119,30 @@ template <typename BaseNode, typename... DerivedAndParents>
     } else {
         return algorithm::tuple_drop<remove_n - 1>(std::tuple{std::cref(derived_and_parents)...});
     }
+}
+
+/** Returns true if @a node or any of its @a parents are marked as runtime disabled.
+ *
+ * @tparam Node Current node type
+ * @tparam Parents Parent nodes' type
+ * @param node Current node instance
+ * @param parents Parent nodes of @a node
+ * @return True if the ancestry chain is effectively runtime disabled
+ */
+template <typename Node, typename... Parents>
+[[nodiscard]] bool is_runtime_disabled(const Node& node, const Parents&... parents) noexcept
+{
+    auto any_disabled = false;
+    utility::tuple_iterator(
+        [&]([[maybe_unused]] auto i, auto entry) {
+            using entry_type = typename std::decay_t<decltype(entry)>::type;
+
+            if constexpr (traits::has_runtime_enabled_method_v<entry_type>) {
+                any_disabled = any_disabled || !entry.get().runtime_enabled();
+            }
+        },
+        std::tuple{std::cref(node), std::cref(parents)...});
+
+    return any_disabled;
 }
 }  // namespace arg_router::parsing

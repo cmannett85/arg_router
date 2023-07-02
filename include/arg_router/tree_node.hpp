@@ -561,7 +561,7 @@ private:
         utility::tuple_type_iterator<priority_ordered_policies_type>([&](auto i) {
             using policy_type = std::tuple_element_t<i, priority_ordered_policies_type>;
             if constexpr (policy::has_pre_parse_phase_method_v<policy_type>) {
-                if (match == parsing::pre_parse_action::skip_node) {
+                if (!match || (match == parsing::pre_parse_action::skip_node)) {
                     return;
                 }
 
