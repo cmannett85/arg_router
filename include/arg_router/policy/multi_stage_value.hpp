@@ -41,7 +41,6 @@ public:
      *
      * @param result Parent's result value.  If empty, will need initialising
      * @param value Parsed value
-     * @return Void
      */
     constexpr void merge(std::optional<ResultType>& result, ValueType&& value) const
     {

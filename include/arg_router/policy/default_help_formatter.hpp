@@ -247,7 +247,6 @@ public:
      * @tparam HelpNode Parent help node
      * @tparam Flatten True to display all nested help data
      * @param stream Output stream to write the output to
-     * @return void
      */
     template <typename Node, typename HelpNode, bool Flatten>
     static void generate_help(std::ostream& stream)
@@ -262,7 +261,6 @@ public:
      * @tparam Flatten True to display all nested help data
      * @param stream Output stream to write the output to
      * @param help_data Parent runtime help data
-     * @return void
      */
     template <typename Node, typename HelpNode, bool Flatten>
     static void generate_help(std::ostream& stream, const runtime_help_data& help_data)
