@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -97,7 +97,6 @@ struct tree_type_recursor_collector_impl {
  * @tparam Root tree_node derived type to start from
  * @param visitor Callable called on each tree_node visited
  * @param root Tree node to start from (must be a tree_node derived type!)
- * @return void
  */
 template <typename Visitor, typename Root>
 constexpr void tree_recursor(Visitor visitor, const Root& root)
@@ -141,7 +140,6 @@ constexpr void tree_recursor(Visitor visitor, const Root& root)
  * @tparam Visitor Visitor type
  * @tparam SkipFn Skip function type
  * @tparam Root Start object type in the parse tree
- * @return void
  */
 template <typename Visitor, typename SkipFn, typename Root>
 constexpr void tree_type_recursor()
@@ -153,7 +151,6 @@ constexpr void tree_type_recursor()
  *
  * @tparam Visitor Visitor type
  * @tparam Root Start object type in the parse tree
- * @return void
  */
 template <typename Visitor, typename Root>
 constexpr void tree_type_recursor()

@@ -149,7 +149,6 @@ public:
      *
      * A <TT>static_assert</TT> will fail with a useful(ish) error message if validation fails.
      * @tparam Root Root type to validate
-     * @return void
      */
     template <typename Root>
     constexpr static void validate() noexcept
