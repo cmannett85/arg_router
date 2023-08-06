@@ -288,6 +288,11 @@ jobs:
       needs.changes.outputs.merge_checker == 'true' ||
       needs.changes.outputs.vcpkg_test_project == 'true'
 
+    # Use the CMake that ships with VS to match locally built versions
+    env:
+      CMAKE_EXE: "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe"
+      CMD_BUILD_DIR: ${{ github.workspace }}\\build
+
     steps:
     - uses: actions/checkout@v3
       with:
