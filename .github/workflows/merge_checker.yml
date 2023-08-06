@@ -309,7 +309,7 @@ jobs:
         call "C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Auxiliary/Build/vcvarsall.bat" x64
         mkdir ${{ env.CMD_BUILD_DIR }}
         cd ${{ env.CMD_BUILD_DIR }}
-        "${{ env.CMAKE_EXE }}" ${{ github.workspace }}/ci/vcpkg_test_project -G "Visual Studio 17 2022" -A x64 -DVCPKG_TARGET_TRIPLET:STRING="x64-windows-static"
+        "${{ env.CMAKE_EXE }}" ${{ github.workspace }}/ci/vcpkg_test_project -G "Visual Studio 17 2022" -A x64 -DVCPKG_TARGET_TRIPLET:STRING="x64-windows-static" -DCMAKE_CXX_STANDARD=20
         "${{ env.CMAKE_EXE }}" --build .
 
   # Test Conan package is acquired and accessible for C++17
