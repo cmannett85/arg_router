@@ -281,36 +281,38 @@ jobs:
         cmake ${{ github.workspace }}/ci/vcpkg_test_project -G "Ninja" -DCMAKE_CXX_STANDARD=20
         cmake --build .
 
-  vcpkg_test_package_win:
-    runs-on: windows-2022
-    needs: changes
-    if: |
-      needs.changes.outputs.merge_checker == 'true' ||
-      needs.changes.outputs.vcpkg_test_project == 'true'
+  # Temporarily disabled until vcpkg is updated to v1.4.0 due to MSVC compiler changes (bugs?)
+  # rendering v1.3.0 broken
+  # vcpkg_test_package_win:
+  #   runs-on: windows-2022
+  #   needs: changes
+  #   if: |
+  #     needs.changes.outputs.merge_checker == 'true' ||
+  #     needs.changes.outputs.vcpkg_test_project == 'true'
 
-    # Use the CMake that ships with VS to match locally built versions
-    env:
-      CMAKE_EXE: "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe"
-      CMD_BUILD_DIR: ${{ github.workspace }}\\build
+  #   # Use the CMake that ships with VS to match locally built versions
+  #   env:
+  #     CMAKE_EXE: "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe"
+  #     CMD_BUILD_DIR: ${{ github.workspace }}\\build
 
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: true
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #     with:
+  #       submodules: true
 
-    - uses: ./.github/workflows/bootstrap_vcpkg
-      with:
-        token: "${{ secrets.GITHUB_TOKEN }}"
+  #   - uses: ./.github/workflows/bootstrap_vcpkg
+  #     with:
+  #       token: "${{ secrets.GITHUB_TOKEN }}"
 
-    - name: Build
-      timeout-minutes: 10
-      shell: cmd
-      run: |
-        call "C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Auxiliary/Build/vcvarsall.bat" x64
-        mkdir ${{ env.CMD_BUILD_DIR }}
-        cd ${{ env.CMD_BUILD_DIR }}
-        "${{ env.CMAKE_EXE }}" ${{ github.workspace }}/ci/vcpkg_test_project -G "Visual Studio 17 2022" -A x64 -DVCPKG_TARGET_TRIPLET:STRING="x64-windows-static" -DCMAKE_CXX_STANDARD=20
-        "${{ env.CMAKE_EXE }}" --build .
+  #   - name: Build
+  #     timeout-minutes: 10
+  #     shell: cmd
+  #     run: |
+  #       call "C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Auxiliary/Build/vcvarsall.bat" x64
+  #       mkdir ${{ env.CMD_BUILD_DIR }}
+  #       cd ${{ env.CMD_BUILD_DIR }}
+  #       "${{ env.CMAKE_EXE }}" ${{ github.workspace }}/ci/vcpkg_test_project -G "Visual Studio 17 2022" -A x64 -DVCPKG_TARGET_TRIPLET:STRING="x64-windows-static" -DCMAKE_CXX_STANDARD=20
+  #       "${{ env.CMAKE_EXE }}" --build .
 
   # Test Conan package is acquired and accessible for C++17
   conan_test_package_17:
