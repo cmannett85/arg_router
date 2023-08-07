@@ -11,6 +11,10 @@ function(configure_example_build TARGET)
         # /MT by default as it simplifies the running of the examples
         set_property(TARGET ${TARGET} PROPERTY
                      MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+
+        if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+            set(EXTRA_FLAGS ${EXTRA_FLAGS} /clang:-fconstexpr-steps=10000000)
+        endif()
     else()
         set(EXTRA_FLAGS -Werror -Wall -Wextra -fno-rtti -Wno-deprecated-declarations)
     endif()
