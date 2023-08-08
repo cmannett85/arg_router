@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "arg_router/parsing/unknown_argument_handling.hpp"
 #include "arg_router/policy/exception_translator.hpp"
 #include "arg_router/policy/flatten_help.hpp"
 #include "arg_router/policy/no_result_value.hpp"
@@ -108,8 +109,8 @@ public:
     public:
         using label = AR_STRING("");
         using description = AR_STRING("");
-        using children = typename parent_type::template  //
-            default_leaf_help_data_type<Flatten>::all_children_help;
+        using children =
+            typename parent_type::template default_leaf_help_data_type<Flatten>::all_children_help;
     };
 
     /** Constructor.
@@ -168,7 +169,7 @@ public:
                 if (front_token.name.empty()) {
                     throw multi_lang_exception{error_code::no_arguments_passed};
                 }
-                throw multi_lang_exception{error_code::unknown_argument, front_token};
+                parsing::unknown_argument_exception(*this, front_token);
             }
         } catch (multi_lang_exception& e) {
             // Convert the error code exception to a parse_exception.  This method will always be
@@ -237,30 +238,37 @@ public:
      */
     void help([[maybe_unused]] std::ostream& stream) const
     {
-        // Have to lambda wrap here due to an MSVC bug where the false if constexpr branch is
-        // evaluated
+        // Have to lambda wrap here due to MSVC where the if constexpr branch is evaluated even when
+        // false
         [&](auto* type_ptr) {
-            using root_type = std::remove_pointer_t<decltype(type_ptr)>;
+            using root_type = std::decay_t<std::remove_pointer_t<decltype(type_ptr)>>;
+            using root_children = typename root_type::children_type;
 
             constexpr static auto help_index =
-                boost::mp11::mp_find_if<typename root_type::children_type,
-                                        traits::has_generate_help_method>::value;
+                boost::mp11::mp_find_if<root_children, traits::has_generate_help_method>::value;
 
-            if constexpr (help_index < std::tuple_size_v<typename root_type::children_type>) {
-                using help_type =
-                    std::tuple_element_t<help_index, typename root_type::children_type>;
+            if constexpr (help_index < std::tuple_size_v<root_children>) {
+                using help_type = std::tuple_element_t<help_index, root_children>;
                 constexpr auto flatten =
                     algorithm::has_specialisation_v<policy::flatten_help_t,
                                                     typename help_type::policies_type>;
 
+                const auto& help_node = std::get<help_index>(this->children());
                 try {
-                    std::get<help_index>(this->children())
-                        .template generate_help<root_type, help_type, flatten>(stream);
+                    if constexpr (traits::has_generate_runtime_help_data_method_v<help_type> &&
+                                  traits::has_runtime_generate_help_method_v<help_type>) {
+                        const auto rhd =
+                            help_node.template generate_runtime_help_data<flatten>(*this);
+                        help_node.template generate_help<root_type, help_type, flatten>(stream,
+                                                                                        rhd);
+                    } else {
+                        help_node.template generate_help<root_type, help_type, flatten>(stream);
+                    }
                 } catch (multi_lang_exception& e) {
                     this->translate_exception(e);
                 }
             }
-        }(static_cast<root_t*>(nullptr));
+        }(this);
     }
 
     /** Overload that writes into a string and returns it.

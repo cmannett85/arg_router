@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -11,6 +11,7 @@
 #include <vector>
 
 using namespace arg_router;
+using namespace std::string_literals;
 using namespace std::string_view_literals;
 
 BOOST_AUTO_TEST_SUITE(algorithm_suite)
@@ -220,6 +221,50 @@ BOOST_AUTO_TEST_CASE(unzip_test)
     test::data_set(f, data_set{});
 }
 
+BOOST_AUTO_TEST_CASE(tuple_drop_test)
+{
+    auto f = [](auto count, auto input, auto expected) {
+        const auto result = algorithm::tuple_drop<count>(std::move(input));
+        utility::tuple_iterator(
+            [&](auto i, auto&& v) {
+                const auto e = std::get<i>(expected);
+                BOOST_CHECK_EQUAL(e, v);
+            },
+            result);
+    };
+
+    test::data_set(
+        f,
+        std::tuple{
+            std::tuple{traits::integral_constant<0>{},
+                       std::tuple{42, 3.14, "hello"},
+                       std::tuple{42, 3.14, "hello"}},
+            std::tuple{traits::integral_constant<1>{},
+                       std::tuple{42, 3.14, "hello"},
+                       std::tuple{3.14, "hello"}},
+            std::tuple{traits::integral_constant<2>{},
+                       std::tuple{42, 3.14, "hello"},
+                       std::tuple{"hello"}},
+            std::tuple{traits::integral_constant<3>{}, std::tuple{42, 3.14, "hello"}, std::tuple{}},
+            std::tuple{traits::integral_constant<0>{}, std::tuple{}, std::tuple{}},
+        });
+}
+
+BOOST_AUTO_TEST_CASE(pack_element_test)
+{
+    auto f = [](auto I, auto expected, auto... pack) {
+        const auto& result = algorithm::pack_element<I>(pack...);
+        BOOST_CHECK_EQUAL(result, expected);
+    };
+
+    test::data_set(f,
+                   std::tuple{
+                       std::tuple{traits::integral_constant<0>{}, 0, 0, 1, 2, 3, 4},
+                       std::tuple{traits::integral_constant<1>{}, 3, 4, 3, 2, 1, 0},
+                       std::tuple{traits::integral_constant<2>{}, "c"s, "a"s, "b"s, "c"s},
+                   });
+}
+
 BOOST_AUTO_TEST_SUITE(death_suite)
 
 BOOST_AUTO_TEST_CASE(zip_test)
@@ -235,6 +280,19 @@ int main() {
 }
     )",
         "First and Second tuples must contain the same number of elements");
+}
+
+BOOST_AUTO_TEST_CASE(pack_element_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/algorithm.hpp"
+int main() {
+    const auto& result = arg_router::algorithm::pack_element<0>();
+    return 0;
+}
+    )",
+        "Index out of bounds for pack");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

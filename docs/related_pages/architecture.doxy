@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -10,12 +10,12 @@ namespace arg_router
  * In arg_router core functionality is defined by the parse tree, which consists of tree_node
  * instances that define the parse tree structure (i.e. a parse entry point and token grouping), and
  * policies that define the reusable behaviours of nodes.
- * 
+ *
  * @note In order to reduce ambiguity, the term @em token is used for referring to words or symbols
  * passed to the command line by the user; which could be long or short form options (e.g.
  * <TT>-f</TT>, <TT>--flag</TT>) or the values for those options. The term @em argument is used
  * exclusively for a token that expects another word to follow it e.g. arg_t.
- * 
+ *
  * @section node_relationships Node Relationships
  * @image html node_relationships.svg height=400px
  *
@@ -23,50 +23,91 @@ namespace arg_router
  * Policies are common sets of behaviours which can be re-used between nodes, but more importantly
  * for us, can be used by a library user to 'build' a custom tree_node by assembling a collection of
  * policies.
- * 
+ *
  * Policies come in three basic flavours:
  * - A core type, that just provides some static data (e.g. policy::long_name_t)
  * - A parsing type, that provides one or more methods that are used by the derived node to
  *   generate, check, and manipulate the input tokens (e.g. policy::min_max_count_t)
  * - A tag type, that provides no data, just it's own presence which can be detected by other parts
  *   of the library
- * 
+ *
  * @subsection node_relationships_nodes Nodes
  * Nodes are implemented by deriving from tree_node, passing one or more policies and/or children to
  * it's constructor.  Nodes can contain other nodes (i.e. children) and in doing so form a tree
  * structure - our parse tree!
- * 
+ *
  * As you may have noticed from the above diagram, tree_node is clever, it can work out which
  * constructor args are policies and which are nodes by itself so you can pass them in any order you
  * like.
- * 
+ *
  * @subsection node_relationships_validation Validation
  * Although the nodes can do a lot of compile-time error checking themselves from analysing their
  * children and policies, they can't check everything - mainly because you can easily get into
  * dependency loops by nodes needing to know about other node types and vice-versa (which also leads
  * to horrible spaghetti code).
- * 
+ *
  * To prevent this, _inter-node_ validation is done separately by a special policy called
  * policy::validation::validator that can only be derived from by the root node (root_t).  As the
  * root is the last to be instantiated (the leaves are created first), it has all the information
  * needed to check the entire tree, @em and because nothing depends on the validator it can know
  * about all the other nodes without causing dependency loops.
- * 
+ *
  * @section node_relationships_parsing Parsing
- * Parsing starts at the root node, and follows these basic steps:
- * -# Push the tokens down the parse tree for the pre-parsing phase.  Each node will inspect the
- *    leading token to see if it can be handled by the node, if so the correct number of tokens are
- *    pre-processed (e.g. short form expansion) and stored in a parsing::parse_target and returned
- *    to the root or parent mode.
- * -# The parsing::parse_target initiates the parsing using the node that created it and the
- *    pre-processed tokens (if any).  A validation phase is ran on the result if present (e.g.
- *    policy::min_max_value)
- * -# If the target node is top-level, then the target's policy::router is then called by the node
- *    with the parse result.  If not, the parent mode collects the results for all the
- *    parsing::parse_target instances it collected
- * -# If applicable, any nodes under the parent mode that did not have an associated
- *    parsing::parse_target, have the missing phase ran on them (e.g. policy::default_value)
- * 
+ * @verbatim
+["my_app" "mode1" "-f" "--arg" "42"]
+            |
+            V
+          ______
+         | Root |  -> [{none, "mode1"}, {none, "-f"}, {none, "--arg"}, {none, "42}]
+         |______|
+@endverbatim
+ * Parsing starts at the root node, where initially the tokens from the shell are converted into an
+ * array of parsing::token_type instances each with a type of parsing::prefix_type::none because we
+ * don't know what they are yet.  You're probably thinking "can't it be inferred from the prefix?",
+ * sadly not as the type is also context-dependent e.g. you could have an arg_t that expects a
+ * string, but if that string just happened to have the same prefix as a flag then the prefix would
+ * be stripped at this stage.
+ * @verbatim
+  ______
+ | Root |
+ |______|     _______
+    |------->| Child | std::optional<parsing::parse_target> pre_parse(
+             |_______|      parsing::pre_parse_data<Validator, HasTarget> pre_parse_data,
+                            const Parents&... parents) const
+@endverbatim
+ * The root then iterates through its children calling <TT>pre_parse(..)</TT> on each until a valid
+ * parsing::parse_target is returned.  A parsing::parse_target is a function object that executes
+ * the appropriate node's <TT>parse(..)</TT> method with the now fully processed parsing::token_type
+ * instances.
+ *
+ * How a child node decides if it is the correct target and how it processes the tokens is entirely
+ * node (and it's policies) dependent.  For example an arg_t checks that there are enough
+ * unprocessed tokens for the number of value tokens it expects (1 in the case of arg_t via a
+ * policy::min_max_count), and then checks that the label token matches the arg_t short or long
+ * name.  There could be other steps if there are policies that handle the pre-parse phase.
+ *
+ * Mode-like types (e.g. mode_t) are complication to this because they need to collect all the
+ * valid parsing::parse_target of their non-mode children - but ultimately follow the same pattern.
+ * You'll notice that a mode still follows the same interface for the pre-parse method so how does
+ * it return multiple parsing::parse_target instances?  Because you can add sub-targets to it!  The
+ * top-level target is the mode node itself, and all the subtargets are for the children.
+ * @verbatim
+  ______
+ | Root | ------> (*returned_parse_target)()
+ |______|
+@endverbatim
+ * Once the valid parsing::parse_target is returned to the root, it executes like any other function
+ * object.  It should be noted that there various scenarios along this path where nodes and policies
+ * throw an exception, we'll ignore that here for brevity.
+ *
+ * Taking our arg_t example again, the
+ * <TT>value_type parse(parsing::parse_target target, const Parents&... parents) const</TT> method
+ * takes the value token and converts it to the expected type.  If the node has policies that
+ * support the validation phase, then the parsed value is validated by them.  If the node has a
+ * routing policy attached (only for top-level nodes) then the validated result value is dispatched
+ * to it for handling by the library user - otherwise it is returned to the caller (usually for
+ * collection by a mode).
+ *
  * As you have probably gathered from the above, the pre-processing and parsing within a node is
  * split up into 'phases' which different policies implement different parts of.
  */

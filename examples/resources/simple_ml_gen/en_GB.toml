@@ -1,0 +1,19 @@
+# Copyright (C) 2023 by Camden Mannett.
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
+
+force = "force"
+force_description = "Force overwrite existing files"
+destination = "DST"
+destination_description = "Destination directory"
+help = "help"
+help_description = "Display this help and exit"
+program_intro = "A simple file copier and mover."
+program_addendum = "An example program for arg_router."
+copy = "copy"
+copy_description = "Copy source files to destination"
+source = "SRC"
+sources_description = "Source file paths"
+move = "move"
+move_description = "Move source file to destination"
+source_description = "Source file path"

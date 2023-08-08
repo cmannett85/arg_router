@@ -80,8 +80,18 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
         auto target = parsing::parse_target{node};
 
         const auto match = policy.pre_parse_phase(adapter, processed_target, target, parents...);
+        if constexpr (std::is_same_v<parsing::pre_parse_action, decltype(expected_match)>) {
+            BOOST_CHECK_EQUAL(match, expected_match);
+        } else {
+            try {
+                match.throw_exception();
+                BOOST_CHECK(false);
+            } catch (multi_lang_exception& e) {
+                BOOST_CHECK(e.ec() == error_code::missing_value_separator);
+            }
+        }
+
         BOOST_CHECK_EQUAL(result, expected_result);
-        BOOST_CHECK_EQUAL(match, expected_match);
         BOOST_CHECK_EQUAL(args, expected_args);
 
         BOOST_CHECK(target);
@@ -143,7 +153,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
             std::tuple{std::vector<parsing::token_type>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"}},
                        std::vector<parsing::token_type>{},
-                       parsing::pre_parse_action::skip_node,
+                       error_code::missing_value_separator,
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"}},
                        stub_node{policy::long_name<AR_STRING("hello")>, policy::fixed_count<1>}},
             std::tuple{std::vector<parsing::token_type>{},

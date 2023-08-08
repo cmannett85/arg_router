@@ -7,8 +7,6 @@ on:
 
 env:
   SKIP_COVERAGE_UPDATE: 0
-  NUGET_SOURCE_URL: "https://nuget.pkg.github.com/cmannett85/index.json"
-  VCPKG_BINARY_SOURCES: 'clear;nuget,vcpkg-cache,readwrite'
   BUILD_DIR: ${{ github.workspace }}/build
   INSTALL_DIR: ${{ github.workspace }}/install
   PACKAGE_BUILD_DIR: ${{ github.workspace }}/package_build
@@ -25,13 +23,33 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  # Skip jobs based on what files have changed
+  changes:
+    runs-on: ubuntu-latest
+    needs: purge_old_packages
+    permissions:
+      pull-requests: read
+    outputs:
+      pr_checker: ${{ steps.filter.outputs.pr_checker }}
+      source_tests_and_examples: ${{ steps.filter.outputs.source_tests_and_examples }}
+      docs: ${{ steps.filter.outputs.docs }}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        filters: .github/filters.yml
+
   # Builds the unit tests and executes them
   unit_test_coverage:
     runs-on: ubuntu-22.04
-    needs: purge_old_packages
+    needs: changes
+    if: |
+      needs.changes.outputs.pr_checker == 'true' ||
+      needs.changes.outputs.source_tests_and_examples == 'true'
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: true
         fetch-depth: 2
@@ -48,22 +66,9 @@ jobs:
         sudo apt update
         sudo apt install valgrind lcov ninja-build
 
-    - name: Bootstrap vcpkg to build the NuGet client
-      run: |
-        ./external/vcpkg/bootstrap-vcpkg.sh -disableMetrics
-
-    - name: Configure NuGet client
-      run: |
-        mono `./external/vcpkg/vcpkg fetch nuget | tail -n 1` \
-          sources add \
-          -source ${{ env.NUGET_SOURCE_URL }} \
-          -storepasswordincleartext \
-          -name "vcpkg-cache" \
-          -username "cmannett85" \
-          -password "${{ secrets.GITHUB_TOKEN }}"
-        mono `./external/vcpkg/vcpkg fetch nuget | tail -n 1` \
-          setapikey "${{ secrets.GITHUB_TOKEN }}" \
-          -source ${{ env.NUGET_SOURCE_URL }}
+    - uses: ./.github/workflows/bootstrap_vcpkg
+      with:
+        token: "${{ secrets.GITHUB_TOKEN }}"
 
     - name: Build
       timeout-minutes: 30
@@ -76,14 +81,14 @@ jobs:
     # We run the tests under Valgrind rather than ASan/UBSan because when combined with coverage
     # causes hangs in the death tests
     - name: Run unit tests under Valgrind and generate coverage data
-      timeout-minutes: 30
+      timeout-minutes: 45
       run: |
         cd ${{ env.BUILD_DIR }}/test
         valgrind --error-exitcode=1 --leak-check=full ./arg_router_test_coverage -l test_suite
 
     - name: Calculate unit test coverage
       run: |
-        cd ${{ github.workspace }}/scripts/ci
+        cd ${{ github.workspace }}/ci
         ./calculate_test_coverage.sh ${{ env.BUILD_DIR }}
 
     - name: Test install
@@ -97,31 +102,37 @@ jobs:
         [[ -f "./share/arg_router/arg_router.cmake" ]]
         [[ -f "./share/arg_router/arg_router-config.cmake" ]]
         [[ -f "./share/arg_router/arg_router-config-version.cmake" ]]
+        [[ -f "./share/arg_router/translation_generator.cmake" ]]
+        [[ -f "./share/arg_router/translation_generator_script.cmake" ]]
 
     - name: Test CMake package integrity
       run: |
         mkdir -p ${{ env.PACKAGE_BUILD_DIR }}
         cd ${{ env.PACKAGE_BUILD_DIR }}
-        cmake ${{ github.workspace }}/scripts/ci/package_test_project -DCMAKE_CXX_COMPILER=clang++-14 -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}
+        cmake ${{ github.workspace }}/ci/package_test_project -DCMAKE_CXX_COMPILER=clang++-14 -DCMAKE_PREFIX_PATH=${{ env.INSTALL_DIR }}
         cmake --build .
 
     - name: Update README unit test coverage badge
       run: |
         cd ${{ github.workspace }}
-        BADGE_URL=$(./scripts/ci/create_badge_url.sh -e)
+        BADGE_URL=$(./ci/create_badge_url.sh -e)
         sed -i -e "s/https:\/\/img\.shields\.io\/badge\/Unit_Test_Coverage-[0-9\.]\+%25-[a-z]\+/${BADGE_URL}/" ./README.md
 
     - name: Push updated README and old_coverage
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
         commit_message: Updating README.md unit test coverage badge
-        file_pattern: README.md scripts/ci/old_coverage
+        file_pattern: README.md ci/old_coverage
 
   old_gcc_compiler_test:
     runs-on: ubuntu-22.04
+    needs: changes
+    if: |
+      needs.changes.outputs.pr_checker == 'true' ||
+      needs.changes.outputs.source_tests_and_examples == 'true'
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: true
 
@@ -130,22 +141,9 @@ jobs:
         sudo apt update
         sudo apt install ninja-build
 
-    - name: Bootstrap vcpkg to build the NuGet client
-      run: |
-        ./external/vcpkg/bootstrap-vcpkg.sh -disableMetrics
-
-    - name: Configure NuGet client
-      run: |
-        mono `./external/vcpkg/vcpkg fetch nuget | tail -n 1` \
-          sources add \
-          -source ${{ env.NUGET_SOURCE_URL }} \
-          -storepasswordincleartext \
-          -name "vcpkg-cache" \
-          -username "cmannett85" \
-          -password "${{ secrets.GITHUB_TOKEN }}"
-        mono `./external/vcpkg/vcpkg fetch nuget | tail -n 1` \
-          setapikey "${{ secrets.GITHUB_TOKEN }}" \
-          -source ${{ env.NUGET_SOURCE_URL }}
+    - uses: ./.github/workflows/bootstrap_vcpkg
+      with:
+        token: "${{ secrets.GITHUB_TOKEN }}"
 
     - name: Build
       timeout-minutes: 30
@@ -162,51 +160,53 @@ jobs:
         ./arg_router_test -l test_suite
 
   windows_msvc_compiler_tests:
-    runs-on: windows-2022
-    needs: purge_old_packages
+   runs-on: windows-2022
+   needs: changes
+   if: |
+     needs.changes.outputs.pr_checker == 'true' ||
+     needs.changes.outputs.source == 'true' ||
+     needs.changes.outputs.source_tests_and_examples == 'true'
 
-    # Use the CMake that ships with VS to match locally built versions
-    env:
-      CMAKE_EXE: "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe"
-      CMD_BUILD_DIR: ${{ github.workspace }}\\build
+   # Use the CMake that ships with VS to match locally built versions
+   env:
+     CMAKE_EXE: "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe"
+     CMD_BUILD_DIR: ${{ github.workspace }}\\build
 
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        submodules: true
+   steps:
+   - uses: actions/checkout@v3
+     with:
+       submodules: true
 
-    - name: Bootstrap vcpkg to build the NuGet client
-      run: |
-        ./external/vcpkg/bootstrap-vcpkg.bat -disableMetrics
+   - uses: ./.github/workflows/bootstrap_vcpkg
+     with:
+       token: "${{ secrets.GITHUB_TOKEN }}"
 
-    - name: Configure NuGet client
-      run: |
-        [array] $output = ./external/vcpkg/vcpkg.exe fetch nuget
-        & $output[-1] sources add -source ${{ env.NUGET_SOURCE_URL }} -storepasswordincleartext -name "vcpkg-cache" -username "cmannett85" -password "${{ secrets.GITHUB_TOKEN }}"
-        & $output[-1] setapikey "${{ secrets.GITHUB_TOKEN }}" -source ${{ env.NUGET_SOURCE_URL }}
+   - name: Build
+     timeout-minutes: 60
+     shell: cmd
+     run: |
+       call "C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Auxiliary/Build/vcvarsall.bat" x64
+       mkdir ${{ env.CMD_BUILD_DIR }}
+       cd ${{ env.CMD_BUILD_DIR }}
+       "${{ env.CMAKE_EXE }}" ${{ github.workspace }} -G "Visual Studio 17 2022" -A x64 -DVCPKG_TARGET_TRIPLET:STRING="x64-windows-static" -DDEATH_TEST_PARALLEL=1
+       "${{ env.CMAKE_EXE }}" --build . --target arg_router_test cpp20_examples
 
-    - name: Build
-      timeout-minutes: 30
-      shell: cmd
-      run: |
-        call "C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Auxiliary/Build/vcvarsall.bat" x64
-        mkdir ${{ env.CMD_BUILD_DIR }}
-        cd ${{ env.CMD_BUILD_DIR }}
-        "${{ env.CMAKE_EXE }}" ${{ github.workspace }} -G "Visual Studio 17 2022" -DVCPKG_TARGET_TRIPLET:STRING="x64-windows-static" -DDEATH_TEST_PARALLEL=1
-        "${{ env.CMAKE_EXE }}" --build . --target arg_router_test cpp17_examples cpp20_examples
-
-    - name: Run unit tests
-      timeout-minutes: 20
-      run: |
-        cd ${{ env.BUILD_DIR }}/test/Debug
-        ./arg_router_test.exe -l test_suite
+   - name: Run unit tests
+     timeout-minutes: 30
+     run: |
+       cd ${{ env.BUILD_DIR }}/test/Debug
+       ./arg_router_test.exe -l test_suite
 
   # Test package integrity test where we use system libs and C++20 (so no nonstd::span)
   system_test_package:
     runs-on: ubuntu-22.04
+    needs: changes
+    if: |
+      needs.changes.outputs.pr_checker == 'true' ||
+      needs.changes.outputs.source_tests_and_examples == 'true'
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: true
 
@@ -235,13 +235,15 @@ jobs:
         [[ -f "/usr/share/arg_router/arg_router.cmake" ]]
         [[ -f "/usr/share/arg_router/arg_router-config.cmake" ]]
         [[ -f "/usr/share/arg_router/arg_router-config-version.cmake" ]]
+        [[ -f "/usr/share/arg_router/translation_generator.cmake" ]]
+        [[ -f "/usr/share/arg_router/translation_generator_script.cmake" ]]
 
     - name: Test CMake package integrity
       timeout-minutes: 30
       run: |
         mkdir ${{ env.PACKAGE_BUILD_DIR }}
         cd ${{ env.PACKAGE_BUILD_DIR }}
-        cmake ${{ github.workspace }}/scripts/ci/package_test_project -DCMAKE_CXX_STANDARD=20 -DDISABLE_VCPKG=ON
+        cmake ${{ github.workspace }}/ci/package_test_project -DCMAKE_CXX_STANDARD=20 -DDISABLE_VCPKG=ON
         cmake --build .
         sudo apt remove arg_router
         ! test -e /usr/include/arg_router
@@ -250,9 +252,14 @@ jobs:
   # Makes sure there are no errors when generating the documentation
   documentation:
     runs-on: ubuntu-latest
+    needs: changes
+    if: |
+      needs.changes.outputs.pr_checker == 'true' ||
+      needs.changes.outputs.source_tests_and_examples == 'true' ||
+      needs.changes.outputs.docs == 'true'
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: true
 

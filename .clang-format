@@ -17,6 +17,9 @@ ConstructorInitializerAllOnOneLineOrOnePerLine: false
 IndentCaseLabels: false
 IndentPPDirectives: AfterHash
 IndentWidth: 4
+PointerAlignment: Left
+QualifierAlignment: Left
+ReferenceAlignment: Pointer
 ReflowComments: true
 SortUsingDeclarations: false
 SpacesInContainerLiterals: false

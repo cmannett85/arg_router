@@ -1,0 +1,44 @@
+pr_checker:
+  - ".github/workflows/pr_checker.yml"
+  - ".github/workflows/bootstrap_vcpkg/action.yml"
+
+merge_checker:
+  - ".github/workflows/merge_checker.yml"
+  - ".github/workflows/bootstrap_vcpkg/action.yml"
+
+docs_pusher:
+  - ".github/workflows/docs_pusher.yml"
+  - ".github/workflows/bootstrap_vcpkg/action.yml"
+
+ci: &ci
+  - "scripts/copyright_checker.py"
+  - "ci/calculate_test_coverage.sh"
+  - "ci/create_badge_url.sh"
+
+source: &source
+  - *ci
+  - "include/**"
+  - "CMakeLists.txt"
+  - "cmake/**"
+  - "vcpkg.json"
+  - ".gitmodules"
+  - ".clang-format"
+  - ".clang-tidy"
+
+source_tests_and_examples:
+  - *source
+  - "test/**"
+  - "examples/**"
+  - "ci/package_test_project/**"
+
+docs:
+  - "cmake/build_types/documentation*"
+  - "docs/**"
+  - "README.md"
+
+vcpkg_test_project:
+  - "ci/vcpkg_test_project/**"
+
+conan_test_project:
+  - ".github/workflows/conan_setup/action.yml"
+  - "ci/conan_test_project/**"

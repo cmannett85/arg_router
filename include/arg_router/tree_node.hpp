@@ -271,6 +271,9 @@ protected:
             [[maybe_unused]] constexpr auto has_short_name =
                 boost::mp11::mp_find_if<policies_type, traits::has_short_name_method>::value !=
                 num_policies;
+            [[maybe_unused]] constexpr auto has_none_name =
+                boost::mp11::mp_find_if<policies_type, traits::has_none_name_method>::value !=
+                num_policies;
 
             if constexpr (has_long_name && has_short_name) {
                 return AR_STRING_SV(config::long_prefix){} +
@@ -283,6 +286,8 @@ protected:
             } else if constexpr (has_short_name) {
                 return AR_STRING_SV(config::short_prefix){} +
                        AR_STRING_SV(tree_node::short_name()){} + value_separator_suffix();
+            } else if constexpr (has_none_name) {
+                return AR_STRING_SV(tree_node::none_name()){} + value_separator_suffix();
             } else {
                 return AR_STRING(""){};
             }
@@ -345,6 +350,57 @@ protected:
 
                 return prefix + min_count + AR_STRING(","){} + max_count + AR_STRING("]"){};
             }
+        }
+
+        /** Generates a vector of runtime_help_data instances representing the children of @a owner.
+         *
+         * This is the runtime equivalent of the help_data_type::children member.  Children can be
+         * filtered using @a f that must have the equivalent signature to:
+         * @code
+         * template <typename Child>
+         * bool operator()(const Child&) const;
+         * @endcode
+         * Only if the return is true is the child added to the return list.  If a child
+         * help_data_type does not have an implementation of this function, then this function will
+         * just call itself on the child node in order to provide a sensible default implementation.
+         * @param owner Node whose children are to be converted if approved by @a f
+         * @param f A filter function that determines if the child should be shown
+         * @return runtime_help_data instances representing the unfiltered children
+         */
+        template <typename OwnerNode, typename FilterFn>
+        [[nodiscard]] static vector<runtime_help_data> runtime_children(const OwnerNode& owner,
+                                                                        FilterFn&& f)
+        {
+            auto result = vector<runtime_help_data>{};
+            utility::tuple_iterator(
+                [&](auto, auto& child) {
+                    using child_type = std::decay_t<decltype(child)>;
+                    if constexpr (traits::has_help_data_type_v<child_type>) {
+                        using child_help_data_type =
+                            typename child_type::template help_data_type<Flatten>;
+
+                        static_assert(child_help_data_type::description::get().find('\t') ==
+                                          std::string_view::npos,
+                                      "Help descriptions cannot contain tabs");
+
+                        if (f(child)) {
+                            auto child_result = vector<runtime_help_data>{};
+                            if constexpr (traits::has_runtime_children_method_v<
+                                              child_help_data_type>) {
+                                child_result = child_help_data_type::runtime_children(child, f);
+                            } else {
+                                child_result = runtime_children(child, f);
+                            }
+
+                            result.push_back(
+                                runtime_help_data{child_help_data_type::label::get(),
+                                                  child_help_data_type::description::get(),
+                                                  std::move(child_result)});
+                        }
+                    }
+                },
+                owner.children());
+            return result;
         }
 
         /** Collects the help data from all the children that have a help_data_type. */
@@ -411,127 +467,31 @@ protected:
         const Node& node,
         const Parents&... parents) const
     {
-        auto result = vector<parsing::token_type>{};
-        auto tmp_args = pre_parse_data.args();
-        auto adapter = parsing::dynamic_token_adapter{result, tmp_args};
-
-        // At this stage, the target is only for collecting sub-targets
-        auto target = parsing::parse_target{node, parents...};
-
-        auto match = parsing::pre_parse_result{parsing::pre_parse_action::valid_node};
-        utility::tuple_type_iterator<priority_ordered_policies_type>([&](auto i) {
-            using policy_type = std::tuple_element_t<i, priority_ordered_policies_type>;
-            if constexpr (policy::has_pre_parse_phase_method_v<policy_type>) {
-                if (match == parsing::pre_parse_action::skip_node) {
-                    return;
-                }
-
-                // Keep the skip_node_but_use_sub_targets state if later policies return valid_node
-                const auto use_subs =
-                    match == parsing::pre_parse_action::skip_node_but_use_sub_targets;
-                match = this->policy_type::pre_parse_phase(adapter,
-                                                           extract_parent_target(pre_parse_data),
-                                                           target,
-                                                           node,
-                                                           parents...);
-                if (use_subs && (match == parsing::pre_parse_action::valid_node)) {
-                    match = parsing::pre_parse_action::skip_node_but_use_sub_targets;
-                }
-            }
-        });
-
-        // If we have a result and it is false, then exit early.  We need to wait until after name
-        // checking is (possibly) performed to throw an exception, otherwise a parse-stopping
-        // exception could be thrown when the target of the token isn't even this node
-        if (match == parsing::pre_parse_action::skip_node) {
-            return {};
-        }
-
-        if constexpr (is_named) {
-            // Check the first token against the names (if the node is named of course)
-            if (match != parsing::pre_parse_action::skip_node_but_use_sub_targets) {
-                // If the node is named but there are no tokens, then take the first from args.
-                // If args is empty, then return false
-                if (result.empty()) {
-                    if (tmp_args.empty()) {
-                        return {};
-                    }
-                    result.push_back(tmp_args.front());
-                    tmp_args.erase(tmp_args.begin());
-                }
-
-                // The first token may not have been processed, so convert
-                auto& first_token = result.front();
-                if (first_token.prefix == parsing::prefix_type::none) {
-                    first_token = parsing::get_token_type(first_token.name);
-                }
-
-                // And then test it is correct unless we are skipping
-                if (!parsing::match<tree_node>(first_token)) {
-                    return {};
-                }
-            }
-        }
-
-        // If the policy checking returned an exception, now is the time to throw it
-        match.throw_exception();
-
-        // If there are no processed tokens and no sub-targets then this node cannot do anything and
-        // therefore should not be used
-        if (result.empty() && target.sub_targets().empty()) {
-            return {};
-        }
-
-        if (!pre_parse_data.validator()(node, parents...)) {
-            return {};
-        }
-
-        // Update the unprocessed args
-        pre_parse_data.args() = tmp_args;
-
-        // Update the target with the pre-parsed tokens.  Remove the label token if present
-        if constexpr (is_named) {
-            if (!result.empty()) {
-                result.erase(result.begin());
-            }
-        }
-        target.tokens(std::move(result));
-
-        return target;
+        return std::apply(
+            [&](auto&&... ancestors) { return pre_parse_impl(pre_parse_data, ancestors.get()...); },
+            parsing::clean_node_ancestry_list(node, parents...));
     }
 
     /** Generic parse call, uses a policy that supports the parse phase if present, or the global
      * parser.
      *
      * @tparam ValueType Parsed type
+     * @tparam Node This node's derived type
      * @tparam Parents Pack of parent tree nodes in ascending ancestry order
      * @param token Token to parse
+     * @param node This node instance
      * @param parents Parents instances pack
      * @return Parsed result
      * @exception multi_lang_exception Thrown if parsing failed
      */
-    template <typename ValueType, typename... Parents>
-    [[nodiscard]] auto parse(std::string_view token, const Parents&... parents) const
+    template <typename ValueType, typename Node, typename... Parents>
+    [[nodiscard]] auto parse(std::string_view token,
+                             const Node& node,
+                             const Parents&... parents) const
     {
-        using finder_type = phase_finder<policy::has_parse_phase_method, ValueType>;
-        using policy_type = typename finder_type::type;
-
-        static_assert((boost::mp11::mp_count_if_q<policies_type,
-                                                  typename finder_type::finder>::value  //
-                       <= 1),
-                      "Only zero or one policies supporting a parse phase is supported");
-        static_assert(
-            (boost::mp11::mp_count_if_q<policies_type,
-                                        typename phase_finder<policy::has_missing_phase_method,
-                                                              ValueType>::finder>::value <= 1),
-            "Only zero or one policies supporting a missing phase is "
-            "supported");
-
-        if constexpr (std::is_void_v<policy_type>) {
-            return parser<ValueType>::parse(token);
-        } else {
-            return this->policy_type::template parse_phase<ValueType>(token, parents...);
-        }
+        return std::apply(
+            [&](auto&&... ancestors) { return parse_impl<ValueType>(token, ancestors.get()...); },
+            parsing::clean_node_ancestry_list(node, parents...));
     }
 
 private:
@@ -581,6 +541,132 @@ private:
             return utility::compile_time_optional{std::cref(pre_parse_data.target())};
         } else {
             return utility::compile_time_optional{};
+        }
+    }
+
+    template <typename Validator, bool HasTarget, typename Node, typename... Parents>
+    [[nodiscard]] std::optional<parsing::parse_target> pre_parse_impl(
+        parsing::pre_parse_data<Validator, HasTarget> pre_parse_data,
+        const Node& node,
+        const Parents&... parents) const
+    {
+        auto result = vector<parsing::token_type>{};
+        auto tmp_args = pre_parse_data.args();
+        auto adapter = parsing::dynamic_token_adapter{result, tmp_args};
+
+        // At this stage, the target is only for collecting sub-targets
+        auto target = parsing::parse_target{node, parents...};
+
+        auto match = parsing::pre_parse_result{parsing::pre_parse_action::valid_node};
+        utility::tuple_type_iterator<priority_ordered_policies_type>([&](auto i) {
+            using policy_type = std::tuple_element_t<i, priority_ordered_policies_type>;
+            if constexpr (policy::has_pre_parse_phase_method_v<policy_type>) {
+                if (!match || (match == parsing::pre_parse_action::skip_node)) {
+                    return;
+                }
+
+                // Keep the skip_node_but_use_sub_targets state if later policies return valid_node
+                const auto use_subs =
+                    match == parsing::pre_parse_action::skip_node_but_use_sub_targets;
+                match = this->policy_type::pre_parse_phase(adapter,
+                                                           extract_parent_target(pre_parse_data),
+                                                           target,
+                                                           node,
+                                                           parents...);
+                if (use_subs && (match == parsing::pre_parse_action::valid_node)) {
+                    match = parsing::pre_parse_action::skip_node_but_use_sub_targets;
+                }
+            }
+        });
+
+        // If we have a result and it is false, then exit early.  We need to wait until after name
+        // checking is (possibly) performed to throw an exception, otherwise a parse-stopping
+        // exception could be thrown when the target of the token isn't even this node
+        if (match == parsing::pre_parse_action::skip_node) {
+            return {};
+        }
+
+        if constexpr (is_named) {
+            // Check the first token against the names (if the node is named of course)
+            if (match != parsing::pre_parse_action::skip_node_but_use_sub_targets) {
+                // If the node is named but there are no tokens, then take the first from args.
+                // If args is empty, then return false
+                if (result.empty()) {
+                    if (tmp_args.empty()) {
+                        return {};
+                    }
+                    result.push_back(tmp_args.front());
+                    tmp_args.erase(tmp_args.begin());
+                }
+
+                // The first token may not have been processed, so convert
+                auto& first_token = result.front();
+                if (first_token.prefix == parsing::prefix_type::none) {
+                    first_token = parsing::get_token_type(*this, first_token.name);
+                }
+
+                // And then test it is correct unless we are skipping
+                if (!parsing::match<tree_node>(first_token)) {
+                    return {};
+                }
+            }
+        }
+
+        // Exit early if the caller doesn't want this node
+        if (!pre_parse_data.validator()(node, parents...)) {
+            return {};
+        }
+
+        // If the policy checking returned an exception, now is the time to throw it
+        match.throw_exception();
+
+        // Update the unprocessed args
+        pre_parse_data.args() = tmp_args;
+
+        // Update the target with the pre-parsed tokens.  Remove the label token if present
+        if constexpr (is_named) {
+            if (!result.empty()) {
+                result.erase(result.begin());
+            }
+        }
+        target.tokens(std::move(result));
+
+        return target;
+    }
+
+    template <typename ValueType, typename... Parents>
+    [[nodiscard]] auto parse_impl(std::string_view token, const Parents&... parents) const
+    {
+        using finder_type = phase_finder<policy::has_parse_phase_method, ValueType>;
+        using policy_type = typename finder_type::type;
+
+#ifdef MSVC_1936_WORKAROUND
+        static_assert(
+            (boost::mp11::mp_count_if<policies_type, finder_type::finder::fn>::value <= 1),
+            "Only zero or one policies supporting a parse phase is supported");
+        static_assert(
+            (boost::mp11::mp_count_if<
+                 policies_type,
+                 phase_finder<policy::has_missing_phase_method, ValueType>::finder::fn>::value <=
+             1),
+            "Only zero or one policies supporting a missing phase is "
+            "supported");
+#else
+        static_assert(
+            (boost::mp11::mp_count_if_q<policies_type, typename finder_type::finder>::value <= 1),
+            "Only zero or one policies supporting a parse phase is supported");
+        static_assert(
+            (boost::mp11::mp_count_if_q<policies_type,
+                                        typename phase_finder<policy::has_missing_phase_method,
+                                                              ValueType>::finder>::value <= 1),
+            "Only zero or one policies supporting a missing phase is "
+            "supported");
+#endif
+
+        if constexpr (std::is_void_v<policy_type>) {
+            return parser<ValueType>::parse(token);
+        } else {
+            return this->policy_type::template parse_phase<ValueType>(token, parents...);
         }
     }
 

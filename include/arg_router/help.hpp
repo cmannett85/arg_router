@@ -81,10 +81,7 @@ public:
     using typename parent_type::policies_type;
     using parent_type::generate_help;
 
-    /** Help data type.
-     *
-     * This may seem surprising but of course help is a flag-like type.
-     */
+    /** Help data type. */
     template <bool Flatten>
     using help_data_type = typename parent_type::template default_leaf_help_data_type<Flatten>;
 
@@ -128,6 +125,45 @@ public:
         return parent_type::pre_parse(pre_parse_data, *this, parents...);
     }
 
+    /** Starting from @a start_node, iterate down through the tree generating runtime help data.
+     *
+     * @tparam Flatten True to flatten output
+     * @tparam Node Start node type
+     * @param start_node Tree node to start generating from
+     * @return Runtime help data
+     */
+    template <bool Flatten, typename Node>
+    [[nodiscard]] runtime_help_data generate_runtime_help_data(
+        const Node& start_node) const noexcept
+    {
+        using node_hdt = typename Node::template help_data_type<Flatten>;
+
+        const auto filter = [](const auto& child) {
+            using child_type = std::decay_t<decltype(child)>;
+            if constexpr (traits::has_help_data_type_v<child_type>) {
+                if constexpr (traits::has_runtime_enabled_method_v<child_type>) {
+                    return child.runtime_enabled();
+                }
+                return true;
+            }
+
+            return false;
+        };
+
+        // Create a target runtime
+        auto rhd = runtime_help_data{node_hdt::label::get(), node_hdt::description::get(), {}};
+        if constexpr (traits::has_runtime_children_method_v<node_hdt>) {
+            rhd.children = node_hdt::runtime_children(start_node, filter);
+        } else {
+            rhd.children =
+                parent_type::template default_leaf_help_data_type<Flatten>::runtime_children(
+                    start_node,
+                    filter);
+        }
+
+        return rhd;
+    }
+
     /** Parse function.
      *
      * Unless a routing policy is specified, then when parsed the help output is sent to
@@ -142,9 +178,8 @@ public:
     template <typename... Parents>
     void parse(parsing::parse_target&& target, const Parents&... parents) const
     {
-        const auto& root = std::get<sizeof...(Parents) - 1>(  //
-                               std::tuple{std::cref(parents)...})
-                               .get();
+        const auto& root =
+            std::get<sizeof...(Parents) - 1>(std::tuple{std::cref(parents)...}).get();
 
         find_help_target(target.tokens(), root, [&](const auto& target_node) {
             using root_type = std::decay_t<decltype(root)>;
@@ -157,17 +192,34 @@ public:
                                                 typename parent_type::policies_type> ||
                 !std::is_same_v<root_type, node_type>;
 
-            // If there is a routing policy then delegate to it, otherwise print the help output to
-            // std::cout and exit
-            using routing_policy =
-                typename parent_type::template phase_finder_t<policy::has_routing_phase_method>;
-            if constexpr (std::is_void_v<routing_policy>) {
-                formatter_type::template generate_help<node_type, help_t, flatten>(std::cout);
-                std::exit(EXIT_SUCCESS);
+            // Create the runtime filter
+            if constexpr (traits::has_runtime_generate_help_method_v<formatter_type>) {
+                const auto rhd = generate_runtime_help_data<flatten>(target_node);
+
+                // If there is a routing policy then delegate to it, otherwise print the help output
+                // to std::cout and exit
+                using routing_policy =
+                    typename parent_type::template phase_finder_t<policy::has_routing_phase_method>;
+                if constexpr (std::is_void_v<routing_policy>) {
+                    formatter_type::template generate_help<node_type, help_t, flatten>(std::cout,
+                                                                                       rhd);
+                    std::exit(EXIT_SUCCESS);
+                } else {
+                    auto stream = ostringstream{};
+                    formatter_type::template generate_help<node_type, help_t, flatten>(stream, rhd);
+                    this->routing_policy::routing_phase(std::move(stream));
+                }
             } else {
-                auto stream = ostringstream{};
-                formatter_type::template generate_help<node_type, help_t, flatten>(stream);
-                this->routing_policy::routing_phase(std::move(stream));
+                using routing_policy =
+                    typename parent_type::template phase_finder_t<policy::has_routing_phase_method>;
+                if constexpr (std::is_void_v<routing_policy>) {
+                    formatter_type::template generate_help<node_type, help_t, flatten>(std::cout);
+                    std::exit(EXIT_SUCCESS);
+                } else {
+                    auto stream = ostringstream{};
+                    formatter_type::template generate_help<node_type, help_t, flatten>(stream);
+                    this->routing_policy::routing_phase(std::move(stream));
+                }
             }
         });
     }
@@ -185,21 +237,30 @@ private:
                                  const Node& node,
                                  const TargetFn& fn)
     {
+        if constexpr (traits::has_runtime_enabled_method_v<Node>) {
+            if (!node.runtime_enabled()) {
+                throw multi_lang_exception{error_code::unknown_argument, tokens.front()};
+            }
+        }
+
         if (tokens.empty()) {
             fn(node);
             return;
         }
-
-        // Help tokens aren't pre-parsed by the target nodes (as they would fail if missing any
-        // required value tokens), so we have just use the prefix to generate a token_type from
-        // them, as they all of a prefix_type of none
-        const auto token = parsing::get_token_type(tokens.front().name);
 
         auto result = false;
         utility::tuple_iterator(
             [&](auto /*i*/, const auto& child) {
                 using child_type = std::decay_t<decltype(child)>;
 
+                if (tokens.empty()) {
+                    return;
+                }
+
+                // Help tokens aren't pre-parsed by the target nodes (as they would fail if missing
+                // any required value tokens), so we have just use the prefix to generate a
+                // token_type from them, as they all of a prefix_type of none
+                const auto token = parsing::get_token_type(child, tokens.front().name);
                 if (!result && parsing::match<child_type>(token)) {
                     result = true;
                     tokens.erase(tokens.begin());
@@ -209,7 +270,7 @@ private:
             node.children());
 
         if (!result) {
-            throw multi_lang_exception{error_code::unknown_argument, token};
+            throw multi_lang_exception{error_code::unknown_argument, tokens.front()};
         }
     }
 };

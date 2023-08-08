@@ -1,4 +1,4 @@
-![Documentation Generator](https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg) [![Merge to main Checker](https://github.com/cmannett85/arg_router/actions/workflows/merge_checker.yml/badge.svg)](https://github.com/cmannett85/arg_router/actions/workflows/merge_checker.yml) ![Unit test coverage](https://img.shields.io/badge/Unit_Test_Coverage-97.5%25-brightgreen)
+![Documentation Generator](https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg) [![Merge to main Checker](https://github.com/cmannett85/arg_router/actions/workflows/merge_checker.yml/badge.svg)](https://github.com/cmannett85/arg_router/actions/workflows/merge_checker.yml) ![Unit test coverage](https://img.shields.io/badge/Unit_Test_Coverage-97.2%25-brightgreen)
 
 # arg_router
 `arg_router` is a C++17/20 command line parser and router.  It uses policy-based objects hierarchically, so the parsing code is self-describing.  Rather than just providing a parsing service that returns a map of `variant`s/`any`s, it allows you to bind `Callable` instances to points in the parse structure, so complex command line arguments can directly call functions with the expected arguments - rather than you having to do this yourself.
@@ -13,7 +13,8 @@
 - Unicode compliant by supporting UTF-8 encoded compile-time strings ([details](#unicode-compliance))
 - Support of runtime language selection
 - Uses a macro to ease compile-time string generation when using C++17.  For C++20 and above, compile-time string literals can be used directly in constructors
-- Available on vcpkg!
+- [Available](https://github.com/microsoft/vcpkg/tree/master/ports/arg-router) on vcpkg!
+- [Available](https://conan.io/center/arg_router) on Conan Center!
 
 ### Example of the Benefits of a Compile-Time Parse Tree
 It's not immediately obvious why defining a parse tree at compile would bring any benefits, so before we show you _how_ `arg_router` is used, let us show you _why_.  Here is a very contrived parse tree defined using the very popular and well-made [argparse](https://github.com/p-ranav/argparse):
@@ -81,9 +82,10 @@ arg_router/policy/validator.hpp:206:17: error: static_assert failed due to requi
 ## Installation
 There are several ways to install `arg_router`, the most appropriate depends on your project's configuration.
 * If using vcpkg as your package manager, simply add `arg-router` (note the hyphen) to `dependencies` in your `vcpkg.json`
+* If using Conan as your package manager, simply add `arg_router` to your requirements
 * If using a DEB package based Linux distribution, download the [release](https://github.com/cmannett85/arg_router/releases) Debian package and install it
 * If you just want to do a traditional install then download the [release](https://github.com/cmannett85/arg_router/releases) zip file and decompress it where you want.  Then point your project at the `include/arg_router` directory or package config location `share/arg_router`
-* Same as above but installed from the checked out repo, i.e. using the invocation `cmake ../arg_router -DINSTALLATION_ONLY=ON; cmake --install .`
+* Same as above but installed from the checked out repo, i.e. using the invocation `cmake ../arg_router -DINSTALLATION_ONLY=ON; cmake --install .` (see [developer installation](https://github.com/cmannett85/arg_router/wiki/Developer-Installation))
 
 ### Dependencies
 If you're a library user, you will need the following dependencies in order to build:
@@ -95,25 +97,6 @@ If you're a library user, you will need the following dependencies in order to b
 If you're a vcpkg user, then these will be brought in automatically for you.  `arg_router` is header-only (due to all the templates) and so are the above dependencies.
 
 **Note** currently `arg_router` requires exception support, but _not_ RTTI.
-
-To get a pre-release `arg_router`, or build the unit tests and examples, simply check out the repo and build via CMake in the usual way - the unit tests will be built by default:
-```
-$ cd arg_router
-$ mkdir build
-$ cd ./build
-$ cmake ..
-$ cmake --build .
-$ cmake --install .
-```
-Building these targets will require more dependencies:
-* clang-format
-* Python v3 (used for copyright checking)
-* Doxygen
-* Boost.Test v1.74+
-* Boost.Filesystem v1.74+
-* Boost.Process v1.74+
-
-By default all these dependencies are provided by `vcpkg` automatically, please **note** that `vcpkg` is provided via a submodule and therefore will need initialising (`git submodule update`).  If you would rather the dependencies came from the system then simply set `-DDISABLE_VCPKG=OFF`, and CMake will not bootstrap `vcpkg` and therefore try to find the packages locally.
 
 ## Basics
 Let's start simple, with this `cat`-like program:
@@ -171,7 +154,7 @@ The `arp::validation::default_validator` instance provides the default validator
 
 The `help` node is used by the `root` to generate the argument documentation for the help output, by default it just prints directly to the console and then exits, but a `router` can be attached that accepts the formatted output to do something else with it.  The optional `program_name_t` and `program_version_t` policies add a header to the help output.
 
-Now let's introduce some 'policies'.  Policies define common behaviours across node types, a basic one is `long_name_t` which provides long-form argument definition.  By default, a standard unix double hyphen prefix for long names is added automatically.  Having the name defined at compile-time means we detect duplicate names and fail the build - one less unit test you have to worry about.  `short_name_t` is the single character short-form name, by default a single hyphen is prefixed automatically.  `arg_router` supports short name collapsing for flags, so if you have defined flags like `-a -b -c` then `-abc` will be accepted or `-bca`, etc. (**note** short-form name collapsing is disabled if the library has been configured to have the same long and short prefix).
+Now let's introduce some 'policies'.  Policies define common behaviours across node types, a basic one is `long_name_t` which provides long-form argument definition.  By default, a standard unix double hyphen prefix for long names is added automatically.  `short_name_t` is the single character short-form name, by default a single hyphen is prefixed automatically.  `arg_router` supports short name collapsing for flags, so if you have defined flags like `-a -b -c` then `-abc` will be accepted or `-bca`, etc. (**note** short-form name collapsing is disabled if the library has been configured to have the same long and short prefix, which is common on Windows).
 
 Compile-time strings are created via the `""_S` string literal, which creates an instance of a `ar::str` type.  **Note** Advanced NTTP language support that allows for this is not present until C++20, see [compile-time string support](#compile-time-string-support) for what to do in C++17.
 
@@ -192,10 +175,10 @@ Assuming parsing was successful, the final `router` is called with the parsed ar
 You may have noticed that the nodes are constructed with parentheses whilst the policies use braces, this is necessary due to CTAD rules that affect nodes which return a user-defined value type.  This can be circumvented using a function to return the required instance, for example the actual type of a flag is `flag_t`, `flag(...)` is a factory function.
 
 ### Implicit String Policies
-Although explicit, which may make it easier to read, the name policies are also verbose.  To ease this most of the built-in nodes support implicit string-to-policy mapping, which allows bare compile-time strings to be passed to the node factory functions which are then mapped to appropriate built-in policies.  The rules vary from node to node due, but typically they are:
+Although explicit, which may make it easier to read, the name policies are also verbose.  To ease this most of the built-in nodes support implicit string-to-policy mapping, which allows bare compile-time strings to be passed to the node factory functions which are then mapped to appropriate built-in policies.  The rules vary from node to node, but typically they are:
 1. The first multi-character string becomes a `policy::long_name_t`
 2. The second multi-character string becomes a `policy::description_t`
-3. The first single-charcter string becomes a `policy::short_name_t`
+3. The first single-character string becomes a `policy::short_name_t`
 The above are unicode aware.  The strings can be passed in any order relative to the other policies, but it is recommended to put them first to ease reading.
 
 Re-writing the `cat`-like program using implicit strings shortens it considerably:
@@ -343,7 +326,7 @@ Note that even though we are using a custom enum, we haven't specified a `custom
 
 Short name collapsing still works as expected, so passing `-Evnv` will result in `show_ends` and `show_non_printing` being true, and `verbosity_level` will be `verbosity_level_t::INFO` in the `router` call.
 
-We can constrain the amount of flags the user can provide by using the `max_value` policy, so passing `-vvvv` will result in a runtime error.  There are min/max and min variants too.  Here we are using the compile-time variant of the policy, we can do that because the value type is an integral/enum, but if your value type cannot be used as a template parameter then there equivalent runtime variants that take the paramters as function parameters instead.  The compile-time variants should be used when possible due to extra checks e.g. setting the max value less than the min.
+We can constrain the amount of flags the user can provide by using the `max_value` policy, so passing `-vvvv` will result in a runtime error.  There are min/max and min variants too.  Here we are using the compile-time variant of the policy, we can do that because the value type is an integral/enum, but if your value type cannot be used as a template parameter then there equivalent runtime variants that take the parameters as function parameters instead.  The compile-time variants should be used when possible due to extra checks e.g. setting the max value less than the min.
 
 The `long_name_t` policy is allowed but usually leads to ugly invocations, however there is a better option:
 ```cpp
@@ -411,12 +394,47 @@ It was noted in the [Basics](#basics) section that ordering does matter for posi
 
 Following the destination path are the source paths, we need at least one so we mark it as required, as our range is unbounded the `value_type` needs to be a container.  `positional_arg` uses a `push_back` call on the container, so `std::vector` is the typical type to use.
 
-Only the last `positional_arg` may be of variable length.  A runtime error will only occur if there are no unbounded variable length `postional_arg`s and there are more arguments than the maximum or less than the minimum.
+Only the last `positional_arg` may be of variable length - unless a `token_end_maker` policy is used.  A runtime error will only occur if there are no unbounded variable length `postional_arg`s and there are more arguments than the maximum or less than the minimum.
 
 It should be noted that setting a non-zero minimum count (`min_count`, `fixed_count`, or `min_max_count`) does _not_ imply a requirement, the minimum count check only applies when there is at least one argument for the node to process.  So as with an `arg`, you should use a `required` policy to explicitly state that at least one argument needs to be present, or a `default_value` policy - otherwise a default initialised value will be used instead.  For `positional_arg` nodes that are marked as `required`, it is a compile-time error to have a minimum count policy value of 0.
 
+### Token End Marker Policy
+The `token_end_maker` policy allows for multiple adjacent variable length `positional_arg` nodes to be defined.  It does this by defining a token that marks the end of the value token list for that node.  A trivial example could be a simple launcher application (which is available as a [buildable example](https://cmannett85.github.io/arg_router/c_09_0920_2launcher_2main_8cpp-example.html)) e.g.:
+```
+$ example_launcher_cpp prog1 prog2 prog3 -- arg1 arg2 arg3
+```
+Where the argument tokens are used invoke the programs as child processes.  Here the `--` token is used to separate the two adjacent `positional_args`:
+```
+ar::positional_arg<std::vector<std::string_view>>(arp::required,
+                                                  "PROGS"_S,
+                                                  "Programs to run"_S,
+                                                  arp::token_end_marker_t{"--"_S},
+                                                  arp::min_count<1>),
+ar::positional_arg<std::vector<std::string_view>>("ARGS"_S,
+                                                  "Arguments to pass to programs"_S),
+```
+There is no limit to number of `positional_arg` nodes that can be chained together like this, but they must still follow `positional_arg` rules such as being at the end of the child node list.
+
+### Multi-Arg and Forwarding Arg
+Another variation of multi-value arguments are `multi_arg` and `forwarding_arg`. `multi_arg` is almost the same as `arg` but accepts multiple (at least one) value tokens from the command line, you can tune the min/max value token count using the `min_max_count_t` policy - although you can't use a `value_separator` policy.
+
+`forwarding_arg` is similar to `multi_arg` except that it is tuned for simply forwarding arguments, so has no naming restrictions, no min/max count, and is has a fixed `value_type` of `vector<std::string>`.  You could re-write the launcher example above to use it:
+```
+ar::forwarding_arg(arp::required,
+                   "--"_S,
+                   "Programs to run"_S,
+                   arp::token_end_marker_t{"--"_S},
+                   arp::min_count<1>),
+ar::positional_arg<std::vector<std::string_view>>("ARGS"_S,
+                                                  "Arguments to pass to programs"_S),
+```
+Which would look like this on the command line:
+```
+$ example_launcher_cpp -f -- prog1 prog2 prog3 -- arg1 arg2 arg3
+```
+
 ## Modes
-As noted in [Basics](#basics), `mode`s allow you to group command line components under an initial token on the command line.  A common example of this developers will be aware of is `git`, for example in our parlance `git clean -ffxd`; `clean` would be the mode and `ffxd` would be be the flags that are available under that mode.
+As noted in [Basics](#basics), `mode`s allow you to group command line components under an initial token on the command line.  A common example of this developers will be aware of is `git`, for example in our parlance `git clean -ffxd`; `clean` would be the mode and `ffxd` would be the flags that are available under that mode.
 
 As an example, let's take the `simple-copy` above and split it into two modes:
 ```
@@ -486,6 +504,69 @@ ar::root(
                        std::filesystem::path src) { ... }}))
 ```
 `ar::list` is a simple `arg` and `flag` container that `mode` and `root` instances detect and add the contents to their child/policy lists.  Also don't be afraid of the copies, the majority of `arg_router` types hold no data (the advantage of compile-time!) and those that do (e.g. `default_value`) generally have small types like primitives or `std::string_view`.
+
+## Enabling/Disabling Nodes at Runtime
+Sometimes features or parameters only make sense within certain environments or scenarios that can only be detected at runtime.  You can use `policy::runtime_enable` to dynamically make a node 'disappear' from the parsing process and help output by the value set at runtime in the policy's constructor.  A trivial example is given by the [runtime_node_enable example](https://cmannett85.github.io/arg_router/c_09_0920_2runtime_node_enable_2main_8cpp-example.html):
+```
+const auto advanced = std::getenv(license_env_var) != nullptr;
+ar::root(
+    arp::validation::default_validator,
+    ar::help("help"_S,
+             "h"_S,
+             "Display this help and exit"_S,
+             arp::flatten_help,
+             arp::program_name_t{"runtime_node_enable"_S},
+             arp::program_version<ar::str<version>>,
+             arp::program_addendum_t{"An example program for arg_router."_S}),
+    ar::flag("version"_S, "Output version information and exit"_S, arp::router{[](bool) { ... }}),
+    ar::mode("advanced"_S,
+             "Advanced features"_S,
+             ar::flag("feature1"_S, "First feature"_S),
+             ar::arg<int>("feature2"_S, "Second feature"_S, arp::default_value{42}),
+             arp::router{[](bool f1, int f2) { ... }},
+             arp::runtime_enable{advanced}),
+    ar::mode(
+        ar::flag("foo"_S, "Foo flag"_S, "f"_S),
+        ar::flag("bar"_S, "Bar flag"_S, "b"_S),
+        ar::arg<std::string_view>("advance-foo"_S,
+                                  "Licensed foo"_S,
+                                  arp::runtime_enable_required<std::string_view>{advanced}),
+        arp::router{[](bool f, bool b, std::string_view advance_foo) { ... }}))
+    .parse(argc, argv);
+```
+Here an environment variable is used to detect if a license is installed (do not use this method in production...) and if it
+is, unlocks 'advanced' features.  If the license is available then the entire `advanced` mode is available and so is the `--advance-foo` `std::string_view` `arg` in the default mode.
+
+The help output adjusts to match:
+```
+$ ./example_runtime_node_enable_cpp20 --help
+runtime_node_enable v3.14
+
+    --help,-h                    Display this help and exit
+    --version                    Output version information and exit
+     
+        --foo,-f                 Foo flag
+        --bar,-b                 Bar flag
+
+An example program for arg_router.
+```
+And with the license:
+```
+$ AR_EXAMPLE_LICENSE=1 ./example_runtime_node_enable_cpp20 --help
+runtime_node_enable v3.14
+
+    --help,-h                    Display this help and exit
+    --version                    Output version information and exit
+    advanced                     Advanced features
+        --feature1               First feature
+        --feature2 <Value>       Second feature
+     
+        --foo,-f                 Foo flag
+        --bar,-b                 Bar flag
+        --advance-foo <Value>    Licensed foo
+
+An example program for arg_router.
+```
 
 ## Help Output
 As shown in prior sections, a `help` node can be a child of the `root` (and only the `root`!), which acts like an `arg`, and generates the help output when requested by the user.  This node is optional, without it there is no help command line argument.  As the node is `arg`-like, it requires a long and/or short name.
@@ -581,7 +662,7 @@ copy              Copy source files to destination
 An example program for arg_router.
 ```
 ### Programmatic Access
-By default when parsed, `help` will output its contents to `std::cout` and then exit the application with `EXIT_SUCCESS`.  Obviously this won't always be desired, so a `router` policy can be attached that will pass a `std::ostringstream` to the user-provided `Callable`.  The stream will have already been populated with the help data shown above, but it can now be appended to or converted to string for use somewhere else.
+By default when parsed, `help` will output its contents to `std::cout` and then exit the application with `EXIT_SUCCESS`.  Obviously this won't always be desired, so a `router` policy can be attached that will pass a `std::ostringstream` to the user-provided `Callable`.  The stream will have already been populated with the help data shown above, but it can now be appended to or converted to a string for use somewhere else.
 
 Often programmatic access is desired for the help output outside of the user requesting it, for example if a parse exception is thrown, generally the exception error is printed to the terminal followed by the help output.  This is exposed by the `help()` or `help(std::ostringstream&)` methods of the root object.
 
@@ -822,15 +903,22 @@ public:
                   str<"最大値を超えました">>,
         std::pair<traits::integral_constant<error_code::minimum_count_not_reached>,
                   str<"最小数に達していません">>,
+        std::pair<traits::integral_constant<error_code::maximum_count_exceeded>,
+                  str<"最大数を超えました">>,
+        std::pair<traits::integral_constant<error_code::unknown_argument_with_suggestion>,
+                  str<"不明な引数 {}。 { } という意味でしたか？">>,
         std::pair<traits::integral_constant<error_code::mode_requires_arguments>,
                   str<"モードには引数が必要です">>,
         std::pair<traits::integral_constant<error_code::missing_required_argument>,
                   str<"必要な引数がありません">>,
         std::pair<traits::integral_constant<error_code::too_few_values_for_alias>,
                   str<"エイリアス値が少なすぎる">>,
-        std::pair<
-            traits::integral_constant<error_code::dependent_argument_missing>,
-            str<"従属引数がありません (コマンドラインで必要なトークンの前に置く必要があります)">>>;
+        std::pair<traits::integral_constant<error_code::dependent_argument_missing>,
+                  str<"従属引数がありません (コマンドラインで必要なトークンの前に置く必要があります)">>,
+        std::pair<traits::integral_constant<error_code::one_of_selected_type_mismatch>,
+                  str<"「One Of」から一度に使用できる引数は 1 つだけです">>,
+        std::pair<traits::integral_constant<error_code::missing_value_separator>,
+                  str<"値の区切り文字が必要です">>>;
 };
 ```
 Could yield:
@@ -840,7 +928,62 @@ terminate called after throwing an instance of 'arg_router::parse_exception'
   what():  不明な引数: -🐱
 ```
 
-### Note ###
+## Translation Generation
+An annoyance of the above is that the translation types are verbose and difficult to read, so as of v1.4 a CMake function is provided by the package config that allows translation type headers to be generated from [TOML](https://en.wikipedia.org/wiki/TOML).
+
+For example the Japanese translation above looks like this:
+```
+# Comments are supported, but only if the # character is the first on the line
+force = "強制"
+force_description = "既存のファイルを強制的に上書きする"
+destination = "先"
+destination_description = "宛先ディレクトリ"
+help = "ヘルプ"
+help_description = "このヘルプを表示して終了"
+program_intro = "ファイルをコピーおよび移動するためのシンプルなプログラム。"
+program_addendum = "「arg_router」のサンプルプログラム。"
+copy = "コピー"
+copy_description = "ソース ファイルを宛先にコピーする"
+source = "出典"
+sources_description = "ソース ファイルのパス"
+move = "移動"
+move_description = "ソース ファイルを宛先に移動する"
+source_description = "ソース ファイル パス"
+
+[error_code]
+unknown_argument = "不明な引数"
+unhandled_arguments = "未処理の引数"
+argument_has_already_been_set = "引数はすでに設定されています"
+failed_to_parse = "解析に失敗しました"
+no_arguments_passed = "引数が渡されませんでした"
+minimum_value_not_reached = "最小値に達していません"
+maximum_value_exceeded = "最大値を超えました"
+minimum_count_not_reached = "最小数に達していません"
+maximum_count_exceeded = "最大数を超えました"
+unknown_argument_with_suggestion = "不明な引数 {}。 { } という意味でしたか？"
+mode_requires_arguments = "モードには引数が必要です"
+missing_required_argument = "必要な引数がありません"
+too_few_values_for_alias = "エイリアス値が少なすぎる"
+dependent_argument_missing = "従属引数がありません (コマンドラインで必要なトークンの前に置く必要があります)"
+one_of_selected_type_mismatch = "「One Of」から一度に使用できる引数は 1 つだけです"
+missing_value_separator = "値の区切り文字が必要です"
+```
+The TOML file name is the language ID.  Calling the CMake function like this:
+```
+arg_router_translation_generator(
+    SOURCES "${CMAKE_SOURCE_DIR}/en_GB.toml"
+            "${CMAKE_SOURCE_DIR}/fr.toml"
+            "${CMAKE_SOURCE_DIR}/ja.toml"
+    OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/translations/"
+    TARGET my_exe_translations
+)
+add_executable(my_exe ...)
+add_dependencies(my_exe my_exe_translations)
+target_include_directories(my_exe PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
+```
+Creates a header for each language with the corresponding translation specialisation that can be included in your root source file.  You can see this in the [buildable example](https://cmannett85.github.io/arg_router/c_09_0920_2simple_ml_gen_2main_8cpp-example.html)).  This is now the recommended approach for writing translations, but is certainly not (and never will be) a requirement.
+
+### Note
 `multi_lang::root_wrapper` from v1.0 is still present and supported, but is now marked as deprecated - new code should use `multi_lang::root`.  It is not supported when using C++20 compile-time strings (see [compile-time string support](#compile-time-string-support)).
 
 ## Compile-time String Support
@@ -851,7 +994,7 @@ For those targetting C++20 with existing v1.0 code, upgrading to a newer library
 **Note** C++17 will be supported as a first class citizen until v2.0, after that C++20 will be the minimum so I can strip out a ton of code and get better diagnostics by using concepts.
 
 ## Error Handling
-Currently `arg_router` only supports exceptions as error handling.  If a parsing fails for some reason a `arg_router::parse_exception` is thrown carrying information on the failure.
+Currently `arg_router` only supports exceptions as error handling.  If parsing fails for some reason a `arg_router::parse_exception` is thrown carrying information on the failure.
 
 ## Configuration
 Low-level tweaking of the library is achieved via some defines and/or CMake variables, documented [here](https://cmannett85.github.io/arg_router/configuration.html).
@@ -862,13 +1005,15 @@ The CI system attached to this repo builds the unit tests and examples with:
 * Windows Server 2022 (Ninja, MSBuild), Clang 14.0.5, MSVC 19.34(C++20 only)
 * MacOS 12 (Ninja), Clang 14
 
-You can build on Windows with using MSBuild but you must set the CMake variable `DEATH_TEST_PARALLEL` to 1 otherwise the parallel tests will attempt to write to the project-wide `lastSuccessfulBuild` file simultaneously, which causes the build to fail. MSVC is supported but only when using the C++20-style compile-time strings due [this](https://developercommunity.visualstudio.com/t/1395099) MSVC bug.
+You can build the unit tests on Windows using MSBuild but you must set the CMake variable `DEATH_TEST_PARALLEL` to 1 otherwise the parallel tests will attempt to write to the project-wide `lastSuccessfulBuild` file simultaneously, which causes the build to fail. MSVC is supported but only when using the C++20-style compile-time strings due [this](https://developercommunity.visualstudio.com/t/1395099) MSVC bug.
 
 Other compiler versions and platform combinations may work, but I'm currently limited by the built-in GitHub runners and how much I'm willing to spend on Actions!
 
 ## Tips for Users
 ### Do **NOT** Make the Parse Tree Type Accessible
 The parse tree is _very_ expensive to construct due to all the compile-time checking and meta-programming shennanigans, so do **NOT** define it in a header and have multiple source files include it - it will cause the tree to be built/checked in every source file it is included in.
+
+This is especially important on Windows as `windows.h` is included (needed for calculating terminal column width) with `NOMINMAX` and `WIN32_LEAN_AND_MEAN` set by default.
 
 ### Minimise Static Storage Bloat
 Despite not using `typeid` or `dynamic_cast` in the library, compilers will still generate class name data if RTTI is enabled, because it is used in the standard library implementations (e.g. `std::function` on Clang).  Due to the highly nested templates that make up the parse tree, these class names can become huge and occupy large amount of static storage in the executable.  As an example, the `basic_cat` project in the repo will create ~100KB of class name data in the binary - this data is not used and cannot be stripped out.

@@ -14,7 +14,7 @@ target_compile_features(example_simple_ml PUBLIC cxx_std_17)
 set_target_properties(example_simple_ml PROPERTIES CXX_EXTENSIONS OFF)
 target_link_libraries(example_simple_ml PRIVATE arg_router)
 
-configure_test_build(example_simple_ml)
+configure_example_build(example_simple_ml)
 add_clangtidy_to_target(example_simple_ml)
 
 add_dependencies(cpp17_examples example_simple_ml)

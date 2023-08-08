@@ -74,6 +74,10 @@ public:
                   S_("Valeur maximale dépassée")>,
         std::pair<traits::integral_constant<error_code::minimum_count_not_reached>,
                   S_("Nombre minimum non atteint")>,
+        std::pair<traits::integral_constant<error_code::maximum_count_exceeded>,
+                  S_("Nombre maximal dépassé")>,
+        std::pair<traits::integral_constant<error_code::unknown_argument_with_suggestion>,
+                  S_("Argument inconnu : {}. Vouliez-vous dire { }?")>,
         std::pair<traits::integral_constant<error_code::mode_requires_arguments>,
                   S_("Le mode nécessite des arguments")>,
         std::pair<traits::integral_constant<error_code::missing_required_argument>,
@@ -84,7 +88,9 @@ public:
                   S_("Argument dépendant manquant (doit être avant le jeton requis sur la ligne de "
                      "commande)")>,
         std::pair<traits::integral_constant<error_code::one_of_selected_type_mismatch>,
-                  S_("Un seul argument d'un \"One Of\" peut être utilisé à la fois")>>;
+                  S_("Un seul argument d'un \"One Of\" peut être utilisé à la fois")>,
+        std::pair<traits::integral_constant<error_code::missing_value_separator>,
+                  S_("Attendu un séparateur de valeur")>>;
 };
 
 template <>
@@ -121,6 +127,10 @@ public:
                   S_("最大値を超えました")>,
         std::pair<traits::integral_constant<error_code::minimum_count_not_reached>,
                   S_("最小数に達していません")>,
+        std::pair<traits::integral_constant<error_code::maximum_count_exceeded>,
+                  S_("最大数を超えました")>,
+        std::pair<traits::integral_constant<error_code::unknown_argument_with_suggestion>,
+                  S_("不明な引数 {}。 { } という意味でしたか？")>,
         std::pair<traits::integral_constant<error_code::mode_requires_arguments>,
                   S_("モードには引数が必要です")>,
         std::pair<traits::integral_constant<error_code::missing_required_argument>,
@@ -131,7 +141,9 @@ public:
             traits::integral_constant<error_code::dependent_argument_missing>,
             S_("従属引数がありません (コマンドラインで必要なトークンの前に置く必要があります)")>,
         std::pair<traits::integral_constant<error_code::one_of_selected_type_mismatch>,
-                  S_("一度に許可される「One Of」引数は1つだけです")>>;
+                  S_("一度に許可される「One Of」引数は1つだけです")>,
+        std::pair<traits::integral_constant<error_code::missing_value_separator>,
+                  S_("値の区切り文字が必要です")>>;
 };
 }  // namespace arg_router::multi_lang
 

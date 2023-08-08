@@ -1,17 +1,20 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #pragma once
 
-#include "arg_router/parsing/parse_target.hpp"
+#include "arg_router/tree_node_fwd.hpp"
 
 #include <boost/mp11/algorithm.hpp>
 #include <boost/mp11/bind.hpp>
 #include <boost/mp11/utility.hpp>
 
 #include <algorithm>
+#include <functional>
 #include <optional>
+#include <ostream>
+#include <tuple>
 #include <type_traits>
 
 // Surprised this is not already done somewhere in mp11, without it using
@@ -33,6 +36,7 @@ namespace arg_router
 {
 class multi_lang_exception;
 
+/** Namespace for type traits. */
 namespace traits
 {
 /** Regardless of @a T, always evaluates to false.
@@ -415,6 +419,25 @@ struct has_value_separator_method {
 template <typename T>
 constexpr bool has_value_separator_method_v = has_value_separator_method<T>::value;
 
+/** Determine if a type has a <TT>token_end_marker()</TT> static method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+struct has_token_end_marker_method {
+    template <typename U>
+    using type = decltype(U::token_end_marker());
+
+    constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
+};
+
+/** Helper variable for has_token_end_marker_method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+constexpr bool has_token_end_marker_method_v = has_token_end_marker_method<T>::value;
+
 /** Determine if a type has a <TT>maximum_count()</TT> static method.
  *
  * @tparam T Type to query
@@ -529,7 +552,36 @@ struct has_help_data_type {
 template <typename T>
 constexpr bool has_help_data_type_v = has_help_data_type<T>::value;
 
-/** Determine if a type has a static <TT>generate_help<Node, Flatten>()</TT>
+/** Determine if a type has a <TT>runtime_children</TT> static method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+class has_runtime_children_method
+{
+    struct fake_tree_node {
+        [[nodiscard]] const std::tuple<>& children() const { return children_; }
+
+        std::tuple<> children_;
+    };
+
+    template <typename U>
+    using type =
+        decltype(U::runtime_children(std::declval<const fake_tree_node&>(),
+                                     std::declval<std::function<bool(const fake_tree_node&)>>()));
+
+public:
+    constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
+};
+
+/** Helper variable for has_runtime_children_method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+constexpr bool has_runtime_children_method_v = has_runtime_children_method<T>::value;
+
+/** Determine if a type has a static <TT>generate_help<Node, HelpNode, Flatten>(std::ostream&)</TT>
  * method.
  *
  * @tparam T Type to query
@@ -549,27 +601,68 @@ struct has_generate_help_method {
 template <typename T>
 constexpr bool has_generate_help_method_v = has_generate_help_method<T>::value;
 
-/** Determine if a node has a <TT>parse</TT> method.
+/** Determine if a type has a static
+ * <TT>generate_help<Node, HelpNode, Flatten>(std::ostream&, const runtime_help_data&)</TT> method.
  *
- * @tparam T Node type to query
+ * @tparam T Type to query
  */
 template <typename T>
-struct has_parse_method {
-    static_assert(is_tree_node_v<T>, "T must be node");
-
+struct has_runtime_generate_help_method {
     template <typename U>
-    using type = decltype(  //
-        std::declval<const U&>().template parse<>(std::declval<parsing::parse_target>()));
+    using type =
+        decltype(U::template generate_help<U, U, false>(std::declval<std::ostream&>(),
+                                                        std::declval<const runtime_help_data&>()));
 
     constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
 };
 
-/** Helper variable for has_parse_method.
+/** Helper variable for has_runtime_generate_help_method.
  *
- * @tparam T Node type to query
+ * @tparam T Type to query
  */
 template <typename T>
-constexpr static bool has_parse_method_v = has_parse_method<T>::value;
+constexpr bool has_runtime_generate_help_method_v = has_runtime_generate_help_method<T>::value;
+
+/** Determine if a type has a
+ * <TT>has_generate_runtime_help_data_method<Flatten, Node>(const Node&)</TT> method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+struct has_generate_runtime_help_data_method {
+    template <typename U>
+    using type = decltype(std::declval<const T&>().template generate_runtime_help_data<true, U>(
+        std::declval<const U&>()));
+
+    constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
+};
+
+/** Helper variable for has_runtime_generate_help_method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+constexpr bool has_generate_runtime_help_data_method_v =
+    has_generate_runtime_help_data_method<T>::value;
+
+/** Determine if a type has a <TT>runtime_enabled()</TT> method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+struct has_runtime_enabled_method {
+    template <typename U>
+    using type = decltype(std::declval<const U&>().runtime_enabled());
+
+    constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
+};
+
+/** Helper variable for has_runtime_enabled_method.
+ *
+ * @tparam T Type to query
+ */
+template <typename T>
+constexpr bool has_runtime_enabled_method_v = has_runtime_enabled_method<T>::value;
 
 /** Determine if a type has a <TT>translate_exception</TT> method.
  *

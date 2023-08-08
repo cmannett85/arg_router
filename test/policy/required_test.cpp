@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -78,7 +78,7 @@ BOOST_AUTO_TEST_CASE(missing_phase_test)
 
 BOOST_AUTO_TEST_SUITE(death_suite)
 
-BOOST_AUTO_TEST_CASE(post_parse_phase_test)
+BOOST_AUTO_TEST_CASE(missing_phase_test)
 {
     test::death_test_compile(
         R"(

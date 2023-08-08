@@ -1,0 +1,37 @@
+# Copyright (C) 2023 by Camden Mannett.
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
+
+force = "forcer"
+force_description = "Forcer l'écrasement des fichiers existants"
+destination = "DST"
+destination_description = "Répertoire de destination"
+help = "aider"
+help_description = "Afficher cette aide et quitter"
+program_intro = "Un simple copieur et déménageur de fichiers."
+program_addendum = "Un exemple de programme pour arg_router."
+copy = "copier"
+copy_description = "Copier les fichiers source vers la destination"
+source = "SRC"
+sources_description = "Chemins des fichiers sources"
+move = "déplacer"
+move_description = "Déplacer le fichier source vers la destination"
+source_description = "Chemin du fichier source"
+
+[error_code]
+unknown_argument = "Argument inconnu"
+unhandled_arguments = "Arguments non gérés"
+argument_has_already_been_set = "L'argument a déjà été défini"
+failed_to_parse = "L'analyse a échoué"
+no_arguments_passed = "Aucun argument passé"
+minimum_value_not_reached = "Valeur minimale non atteinte"
+maximum_value_exceeded = "Valeur maximale dépassée"
+minimum_count_not_reached = "Nombre minimum non atteint"
+maximum_count_exceeded = "Nombre maximal dépassé"
+unknown_argument_with_suggestion = "Argument inconnu : {}. Vouliez-vous dire { }?"
+mode_requires_arguments = "Le mode nécessite des arguments"
+missing_required_argument = "Argument requis manquant"
+too_few_values_for_alias = "Trop peu de valeurs pour l'alias"
+dependent_argument_missing = "Argument dépendant manquant (doit être avant le jeton requis sur la ligne de commande)"
+one_of_selected_type_mismatch = "Un seul argument d'un \"One Of\" peut être utilisé à la fois"
+missing_value_separator = "Attendu un séparateur de valeur"

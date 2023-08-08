@@ -52,24 +52,29 @@ BOOST_AUTO_TEST_CASE(parse_test)
         }
     };
 
-    test::data_set(
-        f,
-        {
-            // English
-            std::tuple{"en_GB", std::vector{"foo", "--hello", "42"}, 42, ""},
-            std::tuple{"en_GB",
-                       std::vector{"foo", "--bonjour", "42"},
-                       42,
-                       "Unknown argument: --bonjour"},
+    test::data_set(f,
+                   {
+                       // English
+                       std::tuple{"en_GB", std::vector{"foo", "--hello", "42"}, 42, ""},
+                       std::tuple{"en_GB",
+                                  std::vector{"foo", "--bonjour", "42"},
+                                  42,
+                                  "Unknown argument: --bonjour. Did you mean --hello?"},
 
-            // French
-            std::tuple{"fr", std::vector{"foo", "--bonjour", "42"}, 42, ""},
-            std::tuple{"fr", std::vector{"foo", "--hello", "42"}, 42, "Unknown argument: --hello"},
+                       // French
+                       std::tuple{"fr", std::vector{"foo", "--bonjour", "42"}, 42, ""},
+                       std::tuple{"fr",
+                                  std::vector{"foo", "--hello", "42"},
+                                  42,
+                                  "Unknown argument: --hello. Did you mean --bonjour?"},
 
-            // Spanish
-            std::tuple{"es", std::vector{"foo", "--hola", "42"}, 42, ""},
-            std::tuple{"es", std::vector{"foo", "--hello", "42"}, 42, "Unknown argument: --hello"},
-        });
+                       // Spanish
+                       std::tuple{"es", std::vector{"foo", "--hola", "42"}, 42, ""},
+                       std::tuple{"es",
+                                  std::vector{"foo", "--hello", "42"},
+                                  42,
+                                  "Unknown argument: --hello. Did you mean --hola?"},
+                   });
 }
 
 BOOST_AUTO_TEST_CASE(parse_default_test)
@@ -139,18 +144,22 @@ BOOST_AUTO_TEST_CASE(help_test)
                        std::tuple{"en_GB",
                                   "foo v3.14\n\nFooooooo\n\n"
                                   "    --help,-h              Display help\n"
+                                  "     \n"
                                   "        --hello <Value>    Hello description\n"},
                        std::tuple{"fr",
                                   "foo v3.14\n\nFooooooo\n\n"
                                   "    --aider,-h               Afficher l'aide\n"
+                                  "     \n"
                                   "        --bonjour <Value>    Bonjour descriptif\n"},
                        std::tuple{"es",
                                   "foo v3.14\n\nFooooooo\n\n"
                                   "    --ayuda,-h            Mostrar ayuda\n"
+                                  "     \n"
                                   "        --hola <Value>    Hola descripción\n"},
                        std::tuple{"en-us",
                                   "foo v3.14\n\nFooooooo\n\n"
                                   "    --help,-h              Display help\n"
+                                  "     \n"
                                   "        --hello <Value>    Hello description\n"},
                    });
 }

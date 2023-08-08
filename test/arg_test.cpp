@@ -3,10 +3,7 @@
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #include "arg_router/arg.hpp"
-#include "arg_router/policy/description.hpp"
-#include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/router.hpp"
-#include "arg_router/policy/short_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 #include "test_helpers.hpp"
@@ -133,7 +130,7 @@ int main() {
     return 0;
 }
     )",
-                                  "Args must only contain policies (not other nodes)",
+                                  "Arg must only contain policies (not other nodes)",
                                   "only_policies_test"},
                               {
                                   R"(
@@ -146,7 +143,7 @@ int main() {
     return 0;
 }
     )",
-                                  "Arg must have a long and/or short name policy",
+                                  "Arg must be named",
                                   "must_be_named_test"},
                               {
                                   R"(

@@ -49,6 +49,32 @@ public:
     std::array<char, N> value;
 };
 
+// This looks pointless - that's because it is!  It's a workaround for a MSVC bug:
+// https://developercommunity.visualstudio.com/t/Uninitialized-read-of-symbol-in-std::arr/10404384
+template <>
+class compile_time_string_storage<0>
+{
+public:
+    struct empty_t {
+        constexpr std::size_t size() const { return 0; }
+        constexpr const char* data() const { return nullptr; }
+        constexpr char operator[](std::size_t) const { return '\n'; }
+    };
+
+    constexpr compile_time_string_storage() = default;
+
+    // NOLINTNEXTLINE(google-explicit-constructor,hicpp-explicit-conversions)
+    constexpr compile_time_string_storage(std::array<char, 0>) {}
+
+    // NOLINTNEXTLINE(google-explicit-constructor,hicpp-explicit-conversions)
+    constexpr compile_time_string_storage(std::span<const char, 0>) {}
+
+    // NOLINTNEXTLINE(google-explicit-constructor,hicpp-explicit-conversions,*-c-arrays)
+    constexpr compile_time_string_storage(const char (&)[0]) {}
+
+    empty_t value;
+};
+
 compile_time_string_storage()->compile_time_string_storage<0>;
 compile_time_string_storage(char)->compile_time_string_storage<1>;
 }  // namespace detail

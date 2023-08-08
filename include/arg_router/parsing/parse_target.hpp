@@ -9,9 +9,13 @@
 #include "arg_router/utility/type_hash.hpp"
 #include "arg_router/utility/unsafe_any.hpp"
 
+#include <boost/mp11/algorithm.hpp>
+
 #include <functional>
 
-namespace arg_router::parsing
+namespace arg_router
+{
+namespace parsing
 {
 /** A parse target i.e. a target node optionally with tokens for parsing.
  *
@@ -135,4 +139,30 @@ private:
     vector<parse_target> sub_targets_;
     std::function<utility::unsafe_any(parse_target)> parse_;
 };
-}  // namespace arg_router::parsing
+}  // namespace parsing
+
+namespace traits
+{
+/** Determine if a node has a <TT>parse</TT> method.
+ *
+ * @tparam T Node type to query
+ */
+template <typename T>
+struct has_parse_method {
+    static_assert(is_tree_node_v<T>, "T must be node");
+
+    template <typename U>
+    using type = decltype(  //
+        std::declval<const U&>().template parse<>(std::declval<parsing::parse_target>()));
+
+    constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
+};
+
+/** Helper variable for has_parse_method.
+ *
+ * @tparam T Node type to query
+ */
+template <typename T>
+constexpr static bool has_parse_method_v = has_parse_method<T>::value;
+}  // namespace traits
+}  // namespace arg_router

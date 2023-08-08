@@ -26,7 +26,7 @@ if((NOT INSTALLATION_ONLY) AND (NOT DISABLE_VCPKG))
 endif()
 
 project(arg_router
-        VERSION 1.3.0
+        VERSION 1.4.0
         DESCRIPTION "C++ command line argument parsing and routing"
         HOMEPAGE_URL "https://github.com/cmannett85/arg_router"
         LANGUAGES CXX)
@@ -68,11 +68,14 @@ path_prefixer(HEADERS
     include/arg_router/dependency/one_of.hpp
     include/arg_router/exception.hpp
     include/arg_router/flag.hpp
+    include/arg_router/forwarding_arg.hpp
     include/arg_router/help.hpp
     include/arg_router/list.hpp
     include/arg_router/literals.hpp
     include/arg_router/math.hpp
     include/arg_router/mode.hpp
+    include/arg_router/multi_arg.hpp
+    include/arg_router/multi_arg_base.hpp
     include/arg_router/multi_lang/iso_locale.hpp
     include/arg_router/multi_lang/root_wrapper.hpp
     include/arg_router/multi_lang/string_selector.hpp
@@ -83,6 +86,7 @@ path_prefixer(HEADERS
     include/arg_router/parsing/parsing.hpp
     include/arg_router/parsing/pre_parse_data.hpp
     include/arg_router/parsing/token_type.hpp
+    include/arg_router/parsing/unknown_argument_handling.hpp
     include/arg_router/policy/alias.hpp
     include/arg_router/policy/colour_help_formatter.hpp
     include/arg_router/policy/custom_parser.hpp
@@ -107,8 +111,10 @@ path_prefixer(HEADERS
     include/arg_router/policy/program_version.hpp
     include/arg_router/policy/required.hpp
     include/arg_router/policy/router.hpp
+    include/arg_router/policy/runtime_enable.hpp
     include/arg_router/policy/short_form_expander.hpp
     include/arg_router/policy/short_name.hpp
+    include/arg_router/policy/token_end_marker.hpp
     include/arg_router/policy/validator.hpp
     include/arg_router/policy/validator_rule_utilities.hpp
     include/arg_router/policy/value_separator.hpp
@@ -119,6 +125,8 @@ path_prefixer(HEADERS
     include/arg_router/tree_node_fwd.hpp
     include/arg_router/utility/compile_time_string.hpp
     include/arg_router/utility/compile_time_optional.hpp
+    include/arg_router/utility/dynamic_string_view.hpp
+    include/arg_router/utility/exception_formatter.hpp
     include/arg_router/utility/result.hpp
     include/arg_router/utility/string_to_policy.hpp
     include/arg_router/utility/string_view_ops.hpp
@@ -131,9 +139,11 @@ path_prefixer(HEADERS
     include/arg_router/utility/utf8/code_point.hpp
     include/arg_router/utility/utf8/double_width.hpp
     include/arg_router/utility/utf8/grapheme_cluster_break.hpp
+    include/arg_router/utility/utf8/levenshtein_distance.hpp
     include/arg_router/utility/utf8/line_break.hpp
     include/arg_router/utility/utf8/whitespace.hpp
     include/arg_router/utility/utf8/zero_width.hpp
+    include/arg_router/utility/win_api.hpp
     include/arg_router/version.hpp
 )
 

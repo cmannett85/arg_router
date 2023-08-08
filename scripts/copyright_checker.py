@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright (C) 2023 by Camden Mannett.
+# Copyright (C) 2022-2023 by Camden Mannett.
 # Distributed under the Boost Software License, Version 1.0.
 # (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -16,9 +16,11 @@ LANGUAGE_COMMENT_ENDS = [('*.sh', '###'),
                          ('*.cpp', '//'),
                          ('*.hpp', '//'),
                          ('*.py', '#'),
+                         ('*.toml', '#'),
                          ('*.cmake', '###'),
-                         ('CMakeLists.txt', '###'),
-                         ('*.doxy', '//')]
+                         ('*CMakeLists.txt', '###'),
+                         ('*.doxy', '//'),
+                         ('*pre-commit', '#')]
 SKIP_PATHS = ['external' + os.sep,
               'test' + os.sep + 'death_test',
               'build' + os.sep,         # VSCode
@@ -118,7 +120,7 @@ def date_checker(args):
         if (prefix == None) or skip_file(file):
             continue
 
-        with open(file, 'r') as f:
+        with open(file, 'r', encoding="utf-8") as f:
             data = f.readlines()
             m = find_copyright(prefix, data)
             if not m:

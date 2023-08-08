@@ -250,4 +250,44 @@ template <typename Tuple, typename Insert>
                                         std::move(insert),
                                         std::make_index_sequence<std::tuple_size_v<Tuple>>{});
 }
+
+namespace detail
+{
+template <std::size_t Count, typename U, std::size_t... I>
+[[nodiscard]] constexpr auto tuple_drop_impl(
+    U&& input,
+    // NOLINTNEXTLINE(*-named-parameter)
+    [[maybe_unused]] std::integer_sequence<std::size_t, I...>) noexcept
+{
+    return std::tuple{std::get<I + Count>(std::forward<U>(input))...};
+}
+}  // namespace detail
+
+/** Remove the first @a Count elements from @a tuple.
+ *
+ * @param input Tuple to remove elements from
+ * @return Tuple with the first @a Count elements removed
+ */
+template <std::size_t Count, typename Tuple>
+[[nodiscard]] constexpr auto tuple_drop(Tuple&& input)
+{
+    return detail::tuple_drop_impl<Count>(
+        std::forward<Tuple>(input),
+        std::make_index_sequence<std::tuple_size_v<Tuple> - Count>{});
+}
+
+/** Convenience function for accessing a reference to the pack element at index @a I.
+ *
+ * Compilation failure if @a I is greater than or equal to the number of elements in @a pack.
+ * @tparam I Index of pack element to access
+ * @tparam T Pack types
+ * @param pack Parameter pack
+ * @return Const reference to the pack element at index @a I
+ */
+template <std::size_t I, typename... T>
+[[nodiscard]] constexpr auto& pack_element(const T&... pack) noexcept
+{
+    static_assert(I < sizeof...(pack), "Index out of bounds for pack");
+    return std::get<I>(std::tuple{std::cref(pack)...}).get();
+}
 }  // namespace arg_router::algorithm

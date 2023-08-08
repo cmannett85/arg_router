@@ -4,7 +4,9 @@
 
 #pragma once
 
+#include "arg_router/parsing/unknown_argument_handling.hpp"
 #include "arg_router/policy/description.hpp"
+#include "arg_router/policy/error_name.hpp"
 #include "arg_router/policy/multi_stage_value.hpp"
 #include "arg_router/policy/no_result_value.hpp"
 #include "arg_router/policy/none_name.hpp"
@@ -16,6 +18,31 @@
 
 namespace arg_router
 {
+namespace detail
+{
+template <typename... Params>
+class add_anonymous_error_name_to_mode
+{
+    using params_tuple = std::tuple<std::decay_t<Params>...>;
+    using policies_tuple = boost::mp11::mp_remove_if<params_tuple, is_tree_node>;
+
+public:
+    constexpr static auto has_none_or_error_name =
+        (boost::mp11::mp_find_if<policies_tuple, traits::has_none_name_method>::value !=
+         std::tuple_size_v<policies_tuple>) ||
+        (boost::mp11::mp_find_if<policies_tuple, traits::has_error_name_method>::value !=
+         std::tuple_size_v<policies_tuple>);
+
+    using error_name_type = policy::error_name_t<AR_STRING("(Anon mode)")>;
+
+    using type = std::conditional_t<
+        has_none_or_error_name,
+        boost::mp11::mp_rename<params_tuple, tree_node>,
+        boost::mp11::mp_rename<boost::mp11::mp_push_front<params_tuple, error_name_type>,
+                               tree_node>>;
+};
+}  // namespace detail
+
 /** Allows the grouping of nodes to define operational modes for a program.
  *
  * If no none name policy is provided, then the node is regarded as 'anonymous', and there can only
@@ -26,9 +53,14 @@ namespace arg_router
  * @tparam Params Policies and child node types for the mode
  */
 template <typename... Params>
-class mode_t : public tree_node<policy::no_result_value<>, std::decay_t<Params>...>
+class mode_t :
+    public detail::add_anonymous_error_name_to_mode<policy::no_result_value<>,
+                                                    std::decay_t<Params>...>::type
 {
-    using parent_type = tree_node<policy::no_result_value<>, std::decay_t<Params>...>;
+    using add_missing_error_name_type =
+        detail::add_anonymous_error_name_to_mode<policy::no_result_value<>,
+                                                 std::decay_t<Params>...>;
+    using parent_type = typename add_missing_error_name_type::type;
 
     static_assert((std::tuple_size_v<typename mode_t::children_type> > 0),
                   "Mode must have at least one child node");
@@ -71,49 +103,65 @@ public:
     /** True if this mode is anonymous. */
     constexpr static bool is_anonymous = !traits::has_none_name_method_v<mode_t>;
 
+    static_assert(!is_anonymous || !traits::has_description_method_v<mode_t>,
+                  "Anonymous modes cannot have a description policy");
+    static_assert(is_anonymous || (!is_anonymous && !traits::has_error_name_method_v<mode_t>),
+                  "Named modes must not have an error name policy");
+
     /** Help data type. */
     template <bool Flatten>
     class help_data_type
     {
-        // The template param shouldn't be necessary, but without it MSVC will always evaluate the
-        // false branch of the if constexpr block
-        template <typename T>
-        [[nodiscard]] constexpr auto static label_generator() noexcept
-        {
-            if constexpr (T::is_anonymous) {
-                return AR_STRING(""){};
-            } else {
-                constexpr auto none_index =
-                    boost::mp11::mp_find_if<typename T::policies_type,
-                                            traits::has_none_name_method>::value;
-                using none_type =
-                    typename std::tuple_element_t<none_index,
-                                                  typename T::policies_type>::string_type;
-
-                return none_type{};
-            }
-        }
-
     public:
-        using label = decltype(label_generator<mode_t>());
-
-        using description = std::conditional_t<
+        /* Provide an 'invisible' label when anonymous to have a preceding blank line, so it's
+         * contents aren't confused with any previously declared named modes (or their contents).
+         */
+        using label = std::conditional_t<
             is_anonymous,
-            AR_STRING(""),
-            typename parent_type::template default_leaf_help_data_type<Flatten>::description>;
+            AR_STRING(' '),
+            typename parent_type::template default_leaf_help_data_type<Flatten>::label>;
+
+        using description =
+            typename parent_type::template default_leaf_help_data_type<Flatten>::description;
 
         using children = std::conditional_t<
             is_anonymous || Flatten,
             typename parent_type::template default_leaf_help_data_type<Flatten>::all_children_help,
             std::tuple<>>;
+
+        template <typename OwnerNode, typename FilterFn>
+        [[nodiscard]] static vector<runtime_help_data> runtime_children(const OwnerNode& owner,
+                                                                        FilterFn&& f)
+        {
+            if constexpr (is_anonymous || Flatten) {
+                return parent_type::template default_leaf_help_data_type<true>::runtime_children(
+                    owner,
+                    std::forward<FilterFn>(f));
+            }
+
+            return {};
+        }
     };
 
     /** Constructor.
      *
      * @param params Policy and child instances
      */
-    constexpr explicit mode_t(Params... params) noexcept :
+    template <auto has_none_or_error_name = add_missing_error_name_type::has_none_or_error_name>
+    constexpr explicit mode_t(Params... params,
+                              // NOLINTNEXTLINE(*-named-parameter)
+                              std::enable_if_t<has_none_or_error_name>* = nullptr) noexcept :
         parent_type{policy::no_result_value<>{}, std::move(params)...}
+    {
+    }
+
+    template <auto has_none_or_error_name = add_missing_error_name_type::has_none_or_error_name>
+    constexpr explicit mode_t(Params... params,
+                              // NOLINTNEXTLINE(*-named-parameter)
+                              std::enable_if_t<!has_none_or_error_name>* = nullptr) noexcept :
+        parent_type{typename add_missing_error_name_type::error_name_type{},
+                    policy::no_result_value<>{},
+                    std::move(params)...}
     {
     }
 
@@ -137,6 +185,56 @@ public:
         parsing::pre_parse_data<Validator, HasTarget> pre_parse_data,
         const Parents&... parents) const
     {
+        return std::apply(
+            [&](auto&&... ancestors) { return pre_parse_impl(pre_parse_data, ancestors.get()...); },
+            parsing::clean_node_ancestry_list(*this, parents...));
+    }
+
+    /** Parse function.
+     *
+     * This function will recurse into child nodes to find matching tokens, a mode must have a
+     * routing phase policy which is why this method does not return the parsed tuple.
+     *
+     * @tparam Parents Pack of parent tree nodes in ascending ancestry order
+     * @param target Parse target
+     * @param parents Parents instances pack
+     * @exception multi_lang_exception Thrown if parsing failed
+     */
+    template <typename... Parents>
+    void parse(parsing::parse_target target, const Parents&... parents) const
+    {
+        return std::apply(
+            [&](auto&&... ancestors) { return parse_impl(target, ancestors.get()...); },
+            parsing::clean_node_ancestry_list(*this, parents...));
+    }
+
+private:
+    static_assert(!is_anonymous || boost::mp11::mp_none_of<children_type, is_child_mode>::value,
+                  "Anonymous mode cannot have a child mode");
+
+    static_assert(!parent_type::template any_phases_v<value_type,
+                                                      policy::has_parse_phase_method,
+                                                      policy::has_validation_phase_method,
+                                                      policy::has_missing_phase_method>,
+                  "Mode does not support policies with parse, validation, or missing phases; as it "
+                  "delegates those to its children");
+
+    template <typename Child>
+    struct child_has_routing_phase {
+        using type = typename Child::template phase_finder_t<policy::has_routing_phase_method>;
+
+        constexpr static bool value = !std::is_void_v<type>;
+    };
+    static_assert(boost::mp11::mp_none_of<boost::mp11::mp_remove_if<children_type, is_child_mode>,
+                                          child_has_routing_phase>::value,
+                  "Non-mode children cannot have routing");
+
+    template <typename Validator, bool HasTarget, typename DerivedMode, typename... Parents>
+    [[nodiscard]] std::optional<parsing::parse_target> pre_parse_impl(
+        parsing::pre_parse_data<Validator, HasTarget> pre_parse_data,
+        const DerivedMode& this_mode,
+        const Parents&... parents) const
+    {
         using namespace utility::string_view_ops;
         using namespace std::string_literals;
 
@@ -151,7 +249,7 @@ public:
         // If we're not anonymous then check the leading token is a match.  We can just delegate to
         // the default implementation for this
         if constexpr (!is_anonymous) {
-            auto match = parent_type::pre_parse(pre_parse_data, *this, parents...);
+            auto match = parent_type::pre_parse(pre_parse_data, this_mode, parents...);
             if (!match) {
                 return match;
             }
@@ -164,7 +262,7 @@ public:
                         using child_type = std::decay_t<decltype(child)>;
                         if constexpr (traits::is_specialisation_of_v<child_type, mode_t>) {
                             if (!match) {
-                                match = child.pre_parse(pre_parse_data, *this, parents...);
+                                match = child.pre_parse(pre_parse_data, this_mode, parents...);
                             }
                         }
                     },
@@ -175,11 +273,11 @@ public:
             }
         }
 
-        if (!pre_parse_data.validator()(*this, parents...)) {
+        if (!pre_parse_data.validator()(this_mode, parents...)) {
             return {};
         }
 
-        auto target = parsing::parse_target{*this, parents...};
+        auto target = parsing::parse_target{this_mode, parents...};
 
         // Iterate over the tokens until consumed, skipping children already processed that cannot
         // be repeated on the command line
@@ -208,7 +306,7 @@ public:
                                     using real_child_type = std::decay_t<decltype(real_child)>;
                                     return verify_match<real_child_type>(matched[i], front_token);
                                 }},
-                            *this,
+                            this_mode,
                             parents...);
 
                         // Update the matched bitset
@@ -223,8 +321,7 @@ public:
                 if (matched.all()) {
                     throw multi_lang_exception{error_code::unhandled_arguments, args};
                 }
-
-                throw multi_lang_exception{error_code::unknown_argument, front_token};
+                parsing::unknown_argument_exception(*this, front_token);
             }
 
             // Flatten out nested sub-targets
@@ -240,18 +337,10 @@ public:
         return target;
     }
 
-    /** Parse function.
-     *
-     * This function will recurse into child nodes to find matching tokens, a mode must have a
-     * routing phase policy which is why this method does not return the parsed tuple.
-     *
-     * @tparam Parents Pack of parent tree nodes in ascending ancestry order
-     * @param target Parse target
-     * @param parents Parents instances pack
-     * @exception multi_lang_exception Thrown if parsing failed
-     */
-    template <typename... Parents>
-    void parse(parsing::parse_target target, const Parents&... parents) const
+    template <typename DerivedMode, typename... Parents>
+    void parse_impl(parsing::parse_target target,
+                    const DerivedMode& this_mode,
+                    const Parents&... parents) const
     {
         // Create an internal-use results tuple, this is made from optional-wrapped children's
         // value_types but any no_result_value children are replaced with skip_tag - this makes it
@@ -289,7 +378,7 @@ public:
                 if constexpr (!is_skip_tag_v<std::decay_t<decltype(result)>>) {
                     if (!result) {
                         const auto& child = std::get<i>(this->children());
-                        process_missing_token(result, child, *this, parents...);
+                        process_missing_token(result, child, this_mode, parents...);
                     }
                 }
             },
@@ -299,7 +388,7 @@ public:
         // processing, as they will likely fail validation when partially processed.  So the
         // multi-stage nodes do not perform validation themselves, but have their owner (i.e. modes)
         // do it at the end of processing - including after any default values have been generated
-        multi_stage_validation(results, *this, parents...);
+        multi_stage_validation(results, this_mode, parents...);
 
         // Routing
         using routing_policy =
@@ -325,28 +414,6 @@ public:
                                        parsing::node_token_type<mode_t>()};
         }
     }
-
-private:
-    static_assert(!is_anonymous || boost::mp11::mp_none_of<children_type, is_child_mode>::value,
-                  "Anonymous mode cannot have a child mode");
-
-    static_assert(!parent_type::template any_phases_v<value_type,
-                                                      policy::has_pre_parse_phase_method,
-                                                      policy::has_parse_phase_method,
-                                                      policy::has_validation_phase_method,
-                                                      policy::has_missing_phase_method>,
-                  "Mode does not support policies with pre-parse, parse, validation, "
-                  "or missing phases; as it delegates those to its children");
-
-    template <typename Child>
-    struct child_has_routing_phase {
-        using type = typename Child::template phase_finder_t<policy::has_routing_phase_method>;
-
-        constexpr static bool value = !std::is_void_v<type>;
-    };
-    static_assert(boost::mp11::mp_none_of<boost::mp11::mp_remove_if<children_type, is_child_mode>,
-                                          child_has_routing_phase>::value,
-                  "Non-mode children cannot have routing");
 
     template <typename Child, typename Handler>
     static void match_child(const Child& child, std::size_t hash, Handler handler)
@@ -383,9 +450,12 @@ private:
             if (already_matched) {
                 throw multi_lang_exception{error_code::argument_has_already_been_set, token};
             }
-        }
 
-        return true;
+            return true;
+        } else {
+            // Just to prevent C4702 errors on MSVC
+            return true;
+        }
     }
 
     template <std::size_t I, typename ResultsType, typename ChildType>
@@ -415,6 +485,10 @@ private:
         }
     }
 
+#ifdef _MSC_VER
+#    pragma warning(push)
+#    pragma warning(disable : 4702)
+#endif
     template <typename ValueType, typename ChildType, typename... Parents>
     void process_missing_token(std::optional<ValueType>& result,
                                const ChildType& child,
@@ -425,6 +499,10 @@ private:
             if constexpr (policy::has_missing_phase_method_v<policy_type, ValueType>) {
                 result = child.policy_type::template missing_phase<ValueType>(child, parents...);
             }
+
+#ifdef _MSC_VER
+#    pragma warning(pop)
+#endif
         });
 
         // If no missing_phase methods were found that made the result valid, then it still needs to
@@ -492,7 +570,10 @@ template <typename... Params>
 constexpr auto mode(Params... params)
 {
     return std::apply(
-        [](auto... converted_params) { return mode_t{std::move(converted_params)...}; },
+        [](auto... converted_params) {
+            return mode_t<std::decay_t<decltype(converted_params)>...>{
+                std::move(converted_params)...};
+        },
         utility::string_to_policy::convert<
             utility::string_to_policy::first_text_mapper<policy::none_name_t>,
             utility::string_to_policy::second_text_mapper<policy::description_t>>(

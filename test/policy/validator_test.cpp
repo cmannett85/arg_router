@@ -4,6 +4,7 @@
 
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/policy/description.hpp"
+#include "arg_router/policy/token_end_marker.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 #include "test_helpers.hpp"
@@ -212,18 +213,16 @@ BOOST_AUTO_TEST_CASE(anonymous_mode_must_be_at_end_test)
                std::decay_t<decltype(policy::validation::default_validator)>>>();
 }
 
-BOOST_AUTO_TEST_CASE(positional_args_must_have_fixed_count_if_not_at_end_test)
+BOOST_AUTO_TEST_CASE(list_like_nodes_must_have_fixed_count_if_not_at_end_test)
 {
-    policy::validation::
-        positional_args_must_have_fixed_count_if_not_at_end<arg_router::positional_arg_t>::check<
-            arg_router::mode_t<
-                flag_t<policy::long_name_t<AR_STRING("test1")>>,
-                arg_t<int, policy::long_name_t<AR_STRING("test2")>>,
-                positional_arg_t<std::vector<int>, policy::display_name_t<AR_STRING("test3")>>>>();
+    policy::validation::list_like_nodes_must_have_fixed_count_if_not_at_end::check<
+        arg_router::mode_t<
+            flag_t<policy::long_name_t<AR_STRING("test1")>>,
+            arg_t<int, policy::long_name_t<AR_STRING("test2")>>,
+            positional_arg_t<std::vector<int>, policy::display_name_t<AR_STRING("test3")>>>>();
 
-    policy::validation::positional_args_must_have_fixed_count_if_not_at_end<
-        arg_router::positional_arg_t>::
-        check<arg_router::mode_t<
+    policy::validation::list_like_nodes_must_have_fixed_count_if_not_at_end::check<
+        arg_router::mode_t<
             flag_t<policy::long_name_t<AR_STRING("test1")>>,
             arg_t<int, policy::long_name_t<AR_STRING("test2")>>,
             positional_arg_t<int,
@@ -232,9 +231,8 @@ BOOST_AUTO_TEST_CASE(positional_args_must_have_fixed_count_if_not_at_end_test)
                                                      traits::integral_constant<std::size_t{1}>>>,
             positional_arg_t<std::vector<int>, policy::display_name_t<AR_STRING("test4")>>>>();
 
-    policy::validation::positional_args_must_have_fixed_count_if_not_at_end<
-        arg_router::positional_arg_t>::
-        check<arg_router::mode_t<
+    policy::validation::list_like_nodes_must_have_fixed_count_if_not_at_end::check<
+        arg_router::mode_t<
             flag_t<policy::long_name_t<AR_STRING("test1")>>,
             arg_t<int, policy::long_name_t<AR_STRING("test2")>>,
             positional_arg_t<int,
@@ -246,6 +244,22 @@ BOOST_AUTO_TEST_CASE(positional_args_must_have_fixed_count_if_not_at_end_test)
                              policy::min_max_count_t<traits::integral_constant<std::size_t{3}>,
                                                      traits::integral_constant<std::size_t{3}>>>,
             positional_arg_t<std::vector<int>, policy::display_name_t<AR_STRING("test5")>>>>();
+
+    policy::validation::list_like_nodes_must_have_fixed_count_if_not_at_end::check<
+        arg_router::mode_t<
+            flag_t<policy::long_name_t<AR_STRING("test1")>>,
+            arg_t<int, policy::long_name_t<AR_STRING("test2")>>,
+            counting_flag_t<int, policy::short_name_t<AR_STRING("a")>>,
+            positional_arg_t<std::vector<int>, policy::display_name_t<AR_STRING("test4")>>>>();
+
+    policy::validation::list_like_nodes_must_have_fixed_count_if_not_at_end::check<
+        arg_router::mode_t<
+            flag_t<policy::long_name_t<AR_STRING("test1")>>,
+            arg_t<int, policy::long_name_t<AR_STRING("test2")>>,
+            positional_arg_t<std::vector<int>,
+                             policy::display_name_t<AR_STRING("test3")>,
+                             policy::token_end_marker_t<AR_STRING("--")>>,
+            positional_arg_t<std::vector<int>, policy::display_name_t<AR_STRING("test4")>>>>();
 }
 
 BOOST_AUTO_TEST_CASE(must_have_at_least_min_count_of_1_if_required_test)
@@ -706,7 +720,7 @@ using namespace arg_router;
 
 int main() {
     policy::validation::
-        positional_args_must_have_fixed_count_if_not_at_end<positional_arg_t>::
+        list_like_nodes_must_have_fixed_count_if_not_at_end::
             check<arg_router::mode_t<
                 flag_t<policy::long_name_t<AR_STRING("test1")>>,
                 arg_t<int, policy::long_name_t<AR_STRING("test2")>>,
@@ -717,8 +731,9 @@ int main() {
     return 0;
 }
     )",
-             "Positional args not at the end of the list must have a fixed count",
-             "positional_args_must_have_fixed_count_if_not_at_end_no_counts_test"},
+             "There can only be one variable length list-like child",
+             "list_like_nodes_must_have_fixed_count_if_not_at_end_multiple_var_length_children_"
+             "test"},
          {
              R"(
 #include "arg_router/policy/validator.hpp"
@@ -728,7 +743,28 @@ using namespace arg_router;
 
 int main() {
     policy::validation::
-        positional_args_must_have_fixed_count_if_not_at_end<positional_arg_t>::
+        list_like_nodes_must_have_fixed_count_if_not_at_end::
+            check<arg_router::mode_t<
+                flag_t<policy::long_name_t<AR_STRING("test1")>>,
+                arg_t<int, policy::long_name_t<AR_STRING("test2")>>,
+                positional_arg_t<std::vector<int>,
+                                 policy::display_name_t<AR_STRING("test3")>>,
+                flag_t<policy::long_name_t<AR_STRING("test4")>>>>();
+    return 0;
+}
+    )",
+             "Variable length list-like child must be at end of children",
+             "list_like_nodes_must_have_fixed_count_if_not_at_end_test"},
+         {
+             R"(
+#include "arg_router/policy/validator.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router;
+
+int main() {
+    policy::validation::
+        list_like_nodes_must_have_fixed_count_if_not_at_end::
             check<arg_router::mode_t<
                 flag_t<policy::long_name_t<AR_STRING("test1")>>,
                 arg_t<int, policy::long_name_t<AR_STRING("test2")>>,
@@ -742,8 +778,8 @@ int main() {
     return 0;
 }
     )",
-             "Positional args not at the end of the list must have a fixed count",
-             "positional_args_must_have_fixed_count_if_not_at_end_last_has_count_test"},
+             "Variable length list-like child must be at end of children",
+             "list_like_nodes_must_have_fixed_count_if_not_at_end_last_has_count_test"},
          {
              R"(
 #include "arg_router/policy/validator.hpp"
@@ -753,7 +789,7 @@ using namespace arg_router;
 
 int main() {
     policy::validation::
-        positional_args_must_have_fixed_count_if_not_at_end<positional_arg_t>::
+        list_like_nodes_must_have_fixed_count_if_not_at_end::
             check<arg_router::mode_t<
                 flag_t<policy::long_name_t<AR_STRING("test1")>>,
                 arg_t<int, policy::long_name_t<AR_STRING("test2")>>,
@@ -761,13 +797,12 @@ int main() {
                     std::vector<int>,
                     policy::display_name_t<AR_STRING("test3")>,
                     std::decay_t<decltype(policy::min_count<1>)>>,
-                positional_arg_t<std::vector<int>,
-                                 policy::display_name_t<AR_STRING("test4")>>>>();
+                flag_t<policy::long_name_t<AR_STRING("test4")>>>>();
     return 0;
 }
     )",
-             "Positional args not at the end of the list must have a fixed count",
-             "positional_args_must_have_fixed_count_if_not_at_end_min_no_max_test"},
+             "Variable length list-like child must be at end of children",
+             "list_like_nodes_must_have_fixed_count_if_not_at_end_min_no_max_test"},
          {
              R"(
 #include "arg_router/policy/validator.hpp"
@@ -777,7 +812,7 @@ using namespace arg_router;
 
 int main() {
     policy::validation::
-        positional_args_must_have_fixed_count_if_not_at_end<positional_arg_t>::
+        list_like_nodes_must_have_fixed_count_if_not_at_end::
             check<arg_router::mode_t<
                 flag_t<policy::long_name_t<AR_STRING("test1")>>,
                 arg_t<int, policy::long_name_t<AR_STRING("test2")>>,
@@ -785,13 +820,12 @@ int main() {
                     std::vector<int>,
                     policy::display_name_t<AR_STRING("test3")>,
                     std::decay_t<decltype(policy::max_count<1>)>>,
-                positional_arg_t<std::vector<int>,
-                                 policy::display_name_t<AR_STRING("test4")>>>>();
+                flag_t<policy::long_name_t<AR_STRING("test4")>>>>();
     return 0;
 }
     )",
-             "Positional args not at the end of the list must have a fixed count",
-             "positional_args_must_have_fixed_count_if_not_at_end_max_no_min_test"},
+             "Variable length list-like child must be at end of children",
+             "list_like_nodes_must_have_fixed_count_if_not_at_end_max_no_min_test"},
          {
              R"(
 #include "arg_router/policy/validator.hpp"
@@ -801,7 +835,7 @@ using namespace arg_router;
 
 int main() {
     policy::validation::
-        positional_args_must_have_fixed_count_if_not_at_end<positional_arg_t>::
+        list_like_nodes_must_have_fixed_count_if_not_at_end::
             check<arg_router::mode_t<
                 flag_t<policy::long_name_t<AR_STRING("test1")>>,
                 arg_t<int, policy::long_name_t<AR_STRING("test2")>>,
@@ -810,13 +844,12 @@ int main() {
                     policy::display_name_t<AR_STRING("test3")>,
                     policy::min_max_count_t<traits::integral_constant<std::size_t{1}>,
                                             traits::integral_constant<std::size_t{3}>>>,
-                positional_arg_t<std::vector<int>,
-                                 policy::display_name_t<AR_STRING("test4")>>>>();
+                flag_t<policy::long_name_t<AR_STRING("test4")>>>>();
     return 0;
 }
     )",
-             "Positional args not at the end of the list must have a fixed count",
-             "positional_args_must_have_fixed_count_if_not_at_end_unequal_min_max_test"},
+             "Variable length list-like child must be at end of children",
+             "list_like_nodes_must_have_fixed_count_if_not_at_end_unequal_min_max_test"},
          {
              R"(
 #include "arg_router/policy/validator.hpp"

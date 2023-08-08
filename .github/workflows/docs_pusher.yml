@@ -8,16 +8,36 @@ on:
 
 env:
   SKIP_COVERAGE_UPDATE: 1
-  NUGET_SOURCE_URL: "https://nuget.pkg.github.com/cmannett85/index.json"
-  VCPKG_BINARY_SOURCES: 'clear;nuget,vcpkg-cache,readwrite'
   BUILD_DIR: ${{ github.workspace }}/build
 
 jobs:
+  # Skip jobs based on what files have changed
+  changes:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      docs_pusher: ${{ steps.filter.outputs.docs_pusher }}
+      source_tests_and_examples: ${{ steps.filter.outputs.source_tests_and_examples }}
+      docs: ${{ steps.filter.outputs.docs }}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        initial-fetch-depth: 2
+        filters: .github/filters.yml
+
   documentation:
     runs-on: ubuntu-latest
+    needs: changes
+    if: |
+      needs.changes.outputs.docs_pusher == 'true' ||
+      needs.changes.outputs.source_tests_and_examples == 'true' ||
+      needs.changes.outputs.docs == 'true'
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: true
 
@@ -26,22 +46,9 @@ jobs:
         sudo apt update
         sudo apt install lcov ninja-build doxygen graphviz
 
-    - name: Bootstrap vcpkg to build the NuGet client
-      run: |
-        ./external/vcpkg/bootstrap-vcpkg.sh -disableMetrics
-
-    - name: Configure NuGet client
-      run: |
-        mono `./external/vcpkg/vcpkg fetch nuget | tail -n 1` \
-          sources add \
-          -source ${{ env.NUGET_SOURCE_URL }} \
-          -storepasswordincleartext \
-          -name "vcpkg-cache" \
-          -username "cmannett85" \
-          -password "${{ secrets.GITHUB_TOKEN }}"
-        mono `./external/vcpkg/vcpkg fetch nuget | tail -n 1` \
-          setapikey "${{ secrets.GITHUB_TOKEN }}" \
-          -source ${{ env.NUGET_SOURCE_URL }}
+    - uses: ./.github/workflows/bootstrap_vcpkg
+      with:
+        token: "${{ secrets.GITHUB_TOKEN }}"
 
     - name: Generate API documentation and build Unit Tests
       timeout-minutes: 30
@@ -59,7 +66,7 @@ jobs:
 
     - name: Generate coverage report
       run: |
-        cd ${{ github.workspace }}/scripts/ci
+        cd ${{ github.workspace }}/ci
         ./calculate_test_coverage.sh ${{ env.BUILD_DIR }}
         cd ${{ env.BUILD_DIR }}
         genhtml arg_router.info --no-function-coverage --title "arg_router Unit Test Code Coverage" --legend --highlight --output-directory gcov_html

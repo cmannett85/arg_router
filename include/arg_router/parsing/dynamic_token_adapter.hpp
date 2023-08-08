@@ -350,7 +350,8 @@ public:
      *
      * @return End iterator
      */
-    [[nodiscard]] static iterator end() { return {}; }
+    // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+    [[nodiscard]] iterator end() { return {}; }
 
     /** Returns the count of all tokens, processed and unprocessed.
      *
@@ -411,6 +412,30 @@ public:
 
         processed_->insert(processed_it, first, last);
         return {this, it.i_};
+    }
+
+    /** Erases the element at @a it.
+     *
+     * Does not perform any transfer between the process and unprocessed sides.
+     * @param it Element to remove.  If one-past-the-end iterator, this method is a no-op
+     * @return Element following the one removed
+     */
+    iterator erase(iterator it)
+    {
+        // If the iterator is an end(), it's a no-op
+        if (it.is_end()) {
+            return it;
+        }
+
+        const auto processed_size = static_cast<iterator::difference_type>(processed_->size());
+        if (it.i_ < processed_size) {
+            processed_->erase(processed_->begin() + it.i_);
+        } else {
+            const auto offset = it.i_ - processed_size;
+            unprocessed_->erase(unprocessed_->begin() + offset);
+        }
+
+        return it;
     }
 
     /** Transfer elements from the raw command line token container to processed one up to and

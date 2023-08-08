@@ -25,10 +25,12 @@ path_prefixer(TEST_SRCS
     dependency/one_of_test.cpp
     flag_same_prefix_test.cpp
     flag_test.cpp
+    forwarding_arg_test.cpp
     help_test.cpp
     list_test.cpp
     math_test.cpp
     mode_test.cpp
+    multi_arg_test.cpp
     multi_lang/iso_locale_test.cpp
     multi_lang/root_test.cpp
     multi_lang/root_wrapper_test.cpp
@@ -54,21 +56,28 @@ path_prefixer(TEST_SRCS
     policy/min_max_value_t_test.cpp
     policy/required_test.cpp
     policy/router_test.cpp
+    policy/runtime_enable_test.cpp
     policy/short_form_expander_test.cpp
     policy/short_name_test.cpp
+    policy/token_end_marker_test.cpp
     policy/validator_rule_utilities_test.cpp
     policy/validator_test.cpp
     policy/value_separator_test.cpp
     positional_arg_test.cpp
+    root_tests/basic_test.cpp
     root_tests/death_test.cpp
     root_tests/positional_arg_test.cpp
+    root_tests/variable_length_test.cpp
     root_tests/top_level_test.cpp
     root_test.cpp
     test_helpers.cpp
     traits_test.cpp
+    translation_generator_test.cpp
     tree_node_test.cpp
     utility/compile_time_string_test.cpp
     utility/compile_time_optional_test.cpp
+    utility/dynamic_string_view_test.cpp
+    utility/exception_formatter_test.cpp
     utility/result_test.cpp
     utility/string_to_policy_test.cpp
     utility/string_view_ops_test.cpp
@@ -77,6 +86,7 @@ path_prefixer(TEST_SRCS
     utility/unsafe_any_test.cpp
     utility/utf8/code_point_test.cpp
     utility/utf8/grapheme_cluster_break_test.cpp
+    utility/utf8/levenshtein_distance_test.cpp
     utility/utf8/line_break_test.cpp
     utility/utf8_test.cpp
 )
@@ -87,8 +97,17 @@ create_clangformat_target(
     SOURCES ${TEST_HEADERS} ${TEST_SRCS}
 )
 
+# Translation generator unit test input files
+include("${CMAKE_SOURCE_DIR}/cmake/translation_generator/translation_generator.cmake")
+arg_router_translation_generator(
+    SOURCES "${CMAKE_SOURCE_DIR}/examples/resources/simple_ml_gen/en_GB.toml"
+            "${CMAKE_SOURCE_DIR}/examples/resources/simple_ml_gen/ja.toml"
+    OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/translations/"
+    TARGET translation_arg_router_test
+)
+
 add_executable(arg_router_test ${TEST_HEADERS} ${TEST_SRCS})
-add_dependencies(arg_router_test clangformat_test arg_router)
+add_dependencies(arg_router_test translation_arg_router_test clangformat_test arg_router)
 
 set_target_properties(arg_router_test PROPERTIES CXX_EXTENSIONS OFF)
 target_compile_definitions(arg_router_test PRIVATE UNIT_TEST_BUILD)
@@ -104,15 +123,15 @@ function(configure_test_build TARGET)
     # Clang can run in different command line argument modes to mimic gcc or cl.exe,
     # so we have to test for a 'frontent variant' too
     if (MSVC_FRONTEND)
-        set(EXTRA_FLAGS /Zc:__cplusplus /W4 /Z7 /GR- /permissive- /bigobj ${ARGN} )
-        set(EXTRA_DEFINES NOMINMAX BOOST_USE_WINDOWS_H WIN32_LEAN_AND_MEAN _CRT_SECURE_NO_WARNINGS)
+        set(EXTRA_FLAGS /MP /Zc:__cplusplus /W4 /Z7 /GR- /permissive- /bigobj /wd4996 ${ARGN})
+        set(EXTRA_DEFINES NOMINMAX WIN32_LEAN_AND_MEAN BOOST_USE_WINDOWS_H _CRT_SECURE_NO_WARNINGS)
 
         # /MT by default as it simplifies the running of the unit tests
         set_property(TARGET ${TARGET} PROPERTY
                      MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
-        if (CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
-            set(EXTRA_FLAGS /clang:-fconstexpr-steps=10000000)
+        if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+            set(EXTRA_FLAGS ${EXTRA_FLAGS} /clang:-fconstexpr-steps=10000000)
         endif()
     else()
         set(EXTRA_FLAGS -Werror -Wall -Wextra -ftemplate-backtrace-limit=0 -fno-rtti
@@ -143,6 +162,7 @@ target_link_libraries(arg_router_test
 target_compile_definitions(arg_router_test PRIVATE
     UNIT_TEST_BUILD
     AR_REPO_PATH="${CMAKE_SOURCE_DIR}"
+    UNIT_TEST_BIN_DIR="${CMAKE_CURRENT_BINARY_DIR}"
 )
 
 add_test(NAME arg_router_test COMMAND arg_router_test -l message)

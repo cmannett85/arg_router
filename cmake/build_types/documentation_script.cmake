@@ -21,7 +21,7 @@ set(NEW_API_MD_PATH "${ROOT}/docs/README_API.md")
 
 file(READ ${API_MD_PATH} MD_DATA)
 
-# Remove the badges, by simply removing the couple of lines
+# Remove the badges, by simply removing the first couple of lines
 string(FIND "${MD_DATA}" "\n\n" NL_IDX)
 if(${NL_IDX} EQUAL -1)
     message(FATAL "Cannot find README.md first newline")

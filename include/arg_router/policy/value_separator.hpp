@@ -96,6 +96,17 @@ public:
         // Find the separator
         const auto separator_index = first_token.name.find_first_of(value_separator());
         if (separator_index == std::string_view::npos) {
+            // If we can't find the separator but the token matches the parent node name, then we
+            // need to throw as the user has just forgotten the separator and needs to be told
+            auto processed_token = first_token;
+            if (first_token.prefix == parsing::prefix_type::none) {
+                processed_token = parsing::get_token_type(first_token.name);
+            }
+            if (parsing::match<owner_type>(processed_token)) {
+                return multi_lang_exception{error_code::missing_value_separator,
+                                            parsing::node_token_type<owner_type>()};
+            }
+
             return parsing::pre_parse_action::skip_node;
         }
 
