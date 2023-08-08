@@ -36,7 +36,7 @@
                         <td id="projectalign" style="padding-left: 0.5em;">
                             <div id="projectname">arg_router
                                 &#160;<span
-                                    id="projectnumber">1.3.0</span>
+                                    id="projectnumber">1.4.0</span>
                             </div>
                             <div id="projectbrief">C++ command line argument parsing and routing</div>
                         </td>
@@ -116,6 +116,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a10bda7370832c6e465b3fd758201c6c6"><td class="memTemplParams" colspan="2">template&lt;auto has_formatter = detail::add_missing_formatter_policy&lt;Policies...&gt;::has_formatter&gt; </td></tr>
 <tr class="memitem:a10bda7370832c6e465b3fd758201c6c6"><td class="memTemplItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1help__t.html#a10bda7370832c6e465b3fd758201c6c6">help_t</a> (Policies... policies, std::enable_if_t&lt; has_formatter &gt; *=nullptr) noexcept</td></tr>
 <tr class="separator:a10bda7370832c6e465b3fd758201c6c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a77f198a9679aa42b452b36854c52014d"><td class="memTemplParams" colspan="2">template&lt;bool Flatten, typename Node &gt; </td></tr>
+<tr class="memitem:a77f198a9679aa42b452b36854c52014d"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structarg__router_1_1runtime__help__data.html">runtime_help_data</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1help__t.html#a77f198a9679aa42b452b36854c52014d">generate_runtime_help_data</a> (const Node &amp;start_node) const noexcept</td></tr>
+<tr class="separator:a77f198a9679aa42b452b36854c52014d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa7913f7fc35e90a05145689e2763df1"><td class="memTemplParams" colspan="2">template&lt;typename... Parents&gt; </td></tr>
 <tr class="memitem:afa7913f7fc35e90a05145689e2763df1"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1help__t.html#afa7913f7fc35e90a05145689e2763df1">parse</a> (<a class="el" href="classarg__router_1_1parsing_1_1parse__target.html">parsing::parse_target</a> &amp;&amp;target, const Parents &amp;... parents) const</td></tr>
 <tr class="separator:afa7913f7fc35e90a05145689e2763df1"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -149,10 +152,9 @@ template&lt;bool Flatten&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Help data type.</p>
-<p>This may seem surprising but of course help is a flag-like type. </p>
+<p>Help data type. </p>
 
-<p class="definition">Definition at line <a class="el" href="help_8hpp_source.html#l00089">89</a> of file <a class="el" href="help_8hpp_source.html">help.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="help_8hpp_source.html#l00086">86</a> of file <a class="el" href="help_8hpp_source.html">help.hpp</a>.</p>
 
 </div>
 </div>
@@ -202,11 +204,58 @@ template&lt;auto has_formatter = detail::add_missing_formatter_policy&lt;Policie
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="help_8hpp_source.html#l00096">96</a> of file <a class="el" href="help_8hpp_source.html">help.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="help_8hpp_source.html#l00093">93</a> of file <a class="el" href="help_8hpp_source.html">help.hpp</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a77f198a9679aa42b452b36854c52014d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a77f198a9679aa42b452b36854c52014d">&#9670;&nbsp;</a></span>generate_runtime_help_data()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename... Policies&gt; </div>
+<div class="memtemplate">
+template&lt;bool Flatten, typename Node &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structarg__router_1_1runtime__help__data.html">runtime_help_data</a> <a class="el" href="classarg__router_1_1help__t.html">arg_router::help_t</a>&lt; Policies &gt;::generate_runtime_help_data </td>
+          <td>(</td>
+          <td class="paramtype">const Node &amp;&#160;</td>
+          <td class="paramname"><em>start_node</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Starting from <em>start_node</em>, iterate down through the tree generating runtime help data.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Flatten</td><td>True to flatten output </td></tr>
+    <tr><td class="paramname">Node</td><td>Start node type </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">start_node</td><td>Tree node to start generating from </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Runtime help data </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="help_8hpp_source.html#l00136">136</a> of file <a class="el" href="help_8hpp_source.html">help.hpp</a>.</p>
+
+</div>
+</div>
 <a id="afa7913f7fc35e90a05145689e2763df1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afa7913f7fc35e90a05145689e2763df1">&#9670;&nbsp;</a></span>parse()</h2>
 
@@ -265,7 +314,7 @@ template&lt;typename... Parents&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="help_8hpp_source.html#l00143">143</a> of file <a class="el" href="help_8hpp_source.html">help.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="help_8hpp_source.html#l00179">179</a> of file <a class="el" href="help_8hpp_source.html">help.hpp</a>.</p>
 
 </div>
 </div>

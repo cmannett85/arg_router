@@ -36,7 +36,7 @@
                         <td id="projectalign" style="padding-left: 0.5em;">
                             <div id="projectname">arg_router
                                 &#160;<span
-                                    id="projectnumber">1.3.0</span>
+                                    id="projectnumber">1.4.0</span>
                             </div>
                             <div id="projectbrief">C++ command line argument parsing and routing</div>
                         </td>
@@ -108,7 +108,8 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <li>Unicode compliant by supporting UTF-8 encoded compile-time strings (<a href="#unicode-compliance">details</a>)</li>
 <li>Support of runtime language selection</li>
 <li>Uses a macro to ease compile-time string generation when using C++17. For C++20 and above, compile-time string literals can be used directly in constructors</li>
-<li>Available on vcpkg!</li>
+<li><a href="https://github.com/microsoft/vcpkg/tree/master/ports/arg-router">Available</a> on vcpkg!</li>
+<li><a href="https://conan.io/center/arg_router">Available</a> on Conan Center!</li>
 </ul>
 <h2>Example of the Benefits of a Compile-Time Parse Tree</h2>
 <p>It's not immediately obvious why defining a parse tree at compile would bring any benefits, so before we show you <em>how</em> <code><a class="el" href="namespacearg__router.html">arg_router</a></code> is used, let us show you <em>why</em>. Here is a very contrived parse tree defined using the very popular and well-made <a href="https://github.com/p-ranav/argparse">argparse</a>: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;argparse/argparse.hpp&gt;</span></div>
@@ -164,9 +165,10 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <h1>Installation</h1>
 <p>There are several ways to install <code><a class="el" href="namespacearg__router.html">arg_router</a></code>, the most appropriate depends on your project's configuration.</p><ul>
 <li>If using vcpkg as your package manager, simply add <code>arg-router</code> (note the hyphen) to <code>dependencies</code> in your <code>vcpkg.json</code></li>
+<li>If using Conan as your package manager, simply add <code><a class="el" href="namespacearg__router.html">arg_router</a></code> to your requirements</li>
 <li>If using a DEB package based Linux distribution, download the <a href="https://github.com/cmannett85/arg_router/releases">release</a> Debian package and install it</li>
 <li>If you just want to do a traditional install then download the <a href="https://github.com/cmannett85/arg_router/releases">release</a> zip file and decompress it where you want. Then point your project at the <code>include/arg_router</code> directory or package config location <code>share/arg_router</code></li>
-<li>Same as above but installed from the checked out repo, i.e. using the invocation <code>cmake ../arg_router -DINSTALLATION_ONLY=ON; cmake --install .</code></li>
+<li>Same as above but installed from the checked out repo, i.e. using the invocation <code>cmake ../arg_router -DINSTALLATION_ONLY=ON; cmake --install .</code> (see <a href="https://github.com/cmannett85/arg_router/wiki/Developer-Installation">developer installation</a>)</li>
 </ul>
 <h2>Dependencies</h2>
 <p>If you're a library user, you will need the following dependencies in order to build:</p><ul>
@@ -177,21 +179,6 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 </ul>
 <p>If you're a vcpkg user, then these will be brought in automatically for you. <code><a class="el" href="namespacearg__router.html">arg_router</a></code> is header-only (due to all the templates) and so are the above dependencies.</p>
 <p><b>Note</b> currently <code><a class="el" href="namespacearg__router.html">arg_router</a></code> requires exception support, but <em>not</em> RTTI.</p>
-<p>To get a pre-release <code><a class="el" href="namespacearg__router.html">arg_router</a></code>, or build the unit tests and examples, simply check out the repo and build via CMake in the usual way - the unit tests will be built by default: </p><div class="fragment"><div class="line">$ cd arg_router</div>
-<div class="line">$ mkdir build</div>
-<div class="line">$ cd ./build</div>
-<div class="line">$ cmake ..</div>
-<div class="line">$ cmake --build .</div>
-<div class="line">$ cmake --install .</div>
-</div><!-- fragment --><p> Building these targets will require more dependencies:</p><ul>
-<li>clang-format</li>
-<li>Python v3 (used for copyright checking)</li>
-<li>Doxygen</li>
-<li>Boost.Test v1.74+</li>
-<li>Boost.Filesystem v1.74+</li>
-<li>Boost.Process v1.74+</li>
-</ul>
-<p>By default all these dependencies are provided by <code>vcpkg</code> automatically, please <b>note</b> that <code>vcpkg</code> is provided via a submodule and therefore will need initialising (<code>git submodule update</code>). If you would rather the dependencies came from the system then simply set <code>-DDISABLE_VCPKG=OFF</code>, and CMake will not bootstrap <code>vcpkg</code> and therefore try to find the packages locally.</p>
 <h1>Basics</h1>
 <p>Let's start simple, with this <code>cat</code>-like program: </p><div class="fragment"><div class="line"><span class="keyword">namespace </span>ar = <a class="code" href="namespacearg__router.html">arg_router</a>;</div>
 <div class="line"><span class="keyword">namespace </span>arp = ar::policy</div>
@@ -242,7 +229,7 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 </div><!-- fragment --><p> Let's start from the top, as the name suggests <code>root</code> is the root of the parse tree and provides the <code>parse(argc, argv)</code> method. Only children of the root can (and must) have a <code>router</code> policy (except for nested <code>mode</code>s, more <a href="#modes">on that later</a>) and therefore act as access points into the program. The root's children are implicitly mutually exclusive, so trying to pass <code>--version --help</code> in the command line is a runtime error.</p>
 <p>The <code>arp::validation::default_validator</code> instance provides the default validator that the root uses to validate the parse tree at compile-time. It is a required policy of the <code>root</code>. Unless you have implemented your own policy or tree node you will never need to specify anything else.</p>
 <p>The <code>help</code> node is used by the <code>root</code> to generate the argument documentation for the help output, by default it just prints directly to the console and then exits, but a <code>router</code> can be attached that accepts the formatted output to do something else with it. The optional <code>program_name_t</code> and <code>program_version_t</code> policies add a header to the help output.</p>
-<p>Now let's introduce some 'policies'. Policies define common behaviours across node types, a basic one is <code>long_name_t</code> which provides long-form argument definition. By default, a standard unix double hyphen prefix for long names is added automatically. Having the name defined at compile-time means we detect duplicate names and fail the build - one less unit test you have to worry about. <code>short_name_t</code> is the single character short-form name, by default a single hyphen is prefixed automatically. <code><a class="el" href="namespacearg__router.html">arg_router</a></code> supports short name collapsing for flags, so if you have defined flags like <code>-a -b -c</code> then <code>-abc</code> will be accepted or <code>-bca</code>, etc. (<b>note</b> short-form name collapsing is disabled if the library has been configured to have the same long and short prefix).</p>
+<p>Now let's introduce some 'policies'. Policies define common behaviours across node types, a basic one is <code>long_name_t</code> which provides long-form argument definition. By default, a standard unix double hyphen prefix for long names is added automatically. <code>short_name_t</code> is the single character short-form name, by default a single hyphen is prefixed automatically. <code><a class="el" href="namespacearg__router.html">arg_router</a></code> supports short name collapsing for flags, so if you have defined flags like <code>-a -b -c</code> then <code>-abc</code> will be accepted or <code>-bca</code>, etc. (<b>note</b> short-form name collapsing is disabled if the library has been configured to have the same long and short prefix, which is common on Windows).</p>
 <p>Compile-time strings are created via the <code>""_S</code> string literal, which creates an instance of a <code>ar::str</code> type. <b>Note</b> Advanced NTTP language support that allows for this is not present until C++20, see <a href="#compile-time-string-support">compile-time string support</a> for what to do in C++17.</p>
 <p>In order to group arguments under a specific operating mode, you put them under a <code>mode</code> instance. In this case our simple cat program only has one mode, so it is anonymous i.e. there's no long name or description associated with it - it is a build error to have more than one anonymous mode under the root of a parse tree.</p>
 <p><code>arg&lt;T&gt;</code> does exactly what you would expect, it defines an argument that expects a value to follow it on the command line. If an argument is not <code>required</code> then it may have a <code>default_value</code> (if neither are set, then a default initialised value is used instead), this is passed to the <code>router</code>'s <code>Callable</code> on parsing if it isn't specified by the user on the command line.</p>
@@ -253,10 +240,10 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <p>Assuming parsing was successful, the final <code>router</code> is called with the parsed argument e.g. if the user passed <code>-E file1 file2</code> then the <code>router</code> is passed <code>(true, false, -1, {"file1", "file2"})</code>.</p>
 <p>You may have noticed that the nodes are constructed with parentheses whilst the policies use braces, this is necessary due to CTAD rules that affect nodes which return a user-defined value type. This can be circumvented using a function to return the required instance, for example the actual type of a flag is <code>flag_t</code>, <code>flag(...)</code> is a factory function.</p>
 <h2>Implicit String Policies</h2>
-<p>Although explicit, which may make it easier to read, the name policies are also verbose. To ease this most of the built-in nodes support implicit string-to-policy mapping, which allows bare compile-time strings to be passed to the node factory functions which are then mapped to appropriate built-in policies. The rules vary from node to node due, but typically they are:</p><ol type="1">
+<p>Although explicit, which may make it easier to read, the name policies are also verbose. To ease this most of the built-in nodes support implicit string-to-policy mapping, which allows bare compile-time strings to be passed to the node factory functions which are then mapped to appropriate built-in policies. The rules vary from node to node, but typically they are:</p><ol type="1">
 <li>The first multi-character string becomes a <code>policy::long_name_t</code></li>
 <li>The second multi-character string becomes a <code>policy::description_t</code></li>
-<li>The first single-charcter string becomes a <code>policy::short_name_t</code> The above are unicode aware. The strings can be passed in any order relative to the other policies, but it is recommended to put them first to ease reading.</li>
+<li>The first single-character string becomes a <code>policy::short_name_t</code> The above are unicode aware. The strings can be passed in any order relative to the other policies, but it is recommended to put them first to ease reading.</li>
 </ol>
 <p>Re-writing the <code>cat</code>-like program using implicit strings shortens it considerably: </p><div class="fragment"><div class="line">ar::root(</div>
 <div class="line">    arp::validation::default_validator,</div>
@@ -334,7 +321,7 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="line">        std::variant&lt;bool, std::string_view&gt; max_line_handling,</div>
 <div class="line">        theme_t theme,</div>
 <div class="line">        std::vector&lt;std::string_view&gt;&gt; files) { ... }}))</div>
-<div class="ttc" id="anamespacearg__router_html_a29537daeb3ba7d1b8749d3e1e9d83f1b"><div class="ttname"><a href="namespacearg__router.html#a29537daeb3ba7d1b8749d3e1e9d83f1b">arg_router::arg</a></div><div class="ttdeci">constexpr auto arg(Policies... policies) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="arg_8hpp_source.html#l00127">arg.hpp:127</a></div></div>
+<div class="ttc" id="anamespacearg__router_html_a29537daeb3ba7d1b8749d3e1e9d83f1b"><div class="ttname"><a href="namespacearg__router.html#a29537daeb3ba7d1b8749d3e1e9d83f1b">arg_router::arg</a></div><div class="ttdeci">constexpr auto arg(Policies... policies) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="arg_8hpp_source.html#l00098">arg.hpp:98</a></div></div>
 </div><!-- fragment --><p> This is a convenient solution to one-off type parsing in-tree, I think it's pretty self-explanatory. However this is not convenient if you have lots of arguments that should return the same custom type, as you would have to copy and paste the lambda or bind calls to the conversion function for each one. In that case we can specialise on the <code>arg_router::parse</code> function. </p><div class="fragment"><div class="line"><span class="keyword">template</span> &lt;&gt;</div>
 <div class="line"><span class="keyword">struct </span><a class="code" href="structarg__router_1_1parser.html">arg_router::parser</a>&lt;theme_t&gt; {</div>
 <div class="line">    [[nodiscard]] <span class="keyword">static</span> <span class="keyword">inline</span> theme_t parse(std::string_view <a class="code" href="namespacearg__router.html#a29537daeb3ba7d1b8749d3e1e9d83f1b">arg</a>)</div>
@@ -379,7 +366,7 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 </div><!-- fragment --><p> The number of times <code>-v</code> appears in the command line will increment the returned value, e.g. <code>-vv</code> will result in <code>verbosity_level_t::INFO</code>.</p>
 <p>Note that even though we are using a custom enum, we haven't specified a <code>custom_parser</code>. <code>counting_flag</code> will count up in <code>std::size_t</code> and then <code>static_cast</code> to the user-specified type, so as long as your requested type is explicitly convertible to/from <code>std::size_t</code> it will just work. If it isn't, then you'll have to modify your type or not use counting arguments, as attaching a <code>custom_parser</code> to any kind of flag will result in a build failure.</p>
 <p>Short name collapsing still works as expected, so passing <code>-Evnv</code> will result in <code>show_ends</code> and <code>show_non_printing</code> being true, and <code>verbosity_level</code> will be <code>verbosity_level_t::INFO</code> in the <code>router</code> call.</p>
-<p>We can constrain the amount of flags the user can provide by using the <code>max_value</code> policy, so passing <code>-vvvv</code> will result in a runtime error. There are min/max and min variants too. Here we are using the compile-time variant of the policy, we can do that because the value type is an integral/enum, but if your value type cannot be used as a template parameter then there equivalent runtime variants that take the paramters as function parameters instead. The compile-time variants should be used when possible due to extra checks e.g. setting the max value less than the min.</p>
+<p>We can constrain the amount of flags the user can provide by using the <code>max_value</code> policy, so passing <code>-vvvv</code> will result in a runtime error. There are min/max and min variants too. Here we are using the compile-time variant of the policy, we can do that because the value type is an integral/enum, but if your value type cannot be used as a template parameter then there equivalent runtime variants that take the parameters as function parameters instead. The compile-time variants should be used when possible due to extra checks e.g. setting the max value less than the min.</p>
 <p>The <code>long_name_t</code> policy is allowed but usually leads to ugly invocations, however there is a better option: </p><div class="fragment"><div class="line">ar::mode(</div>
 <div class="line">    ...</div>
 <div class="line">    ard::alias_group(</div>
@@ -432,10 +419,30 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="line">                       std::vector&lt;std::filesystem::path&gt; srcs) { ... }}))</div>
 </div><!-- fragment --><p> It was noted in the <a href="#basics">Basics</a> section that ordering does matter for positional arguments, so we can see here that the destination path is specified first and therefore comes first on the command line. There can only be one destination path so we specify the <code>count</code> to one. Because the <code>count</code> is 1 the return type doesn't need to be a container.</p>
 <p>Following the destination path are the source paths, we need at least one so we mark it as required, as our range is unbounded the <code>value_type</code> needs to be a container. <code>positional_arg</code> uses a <code>push_back</code> call on the container, so <code>std::vector</code> is the typical type to use.</p>
-<p>Only the last <code>positional_arg</code> may be of variable length. A runtime error will only occur if there are no unbounded variable length <code>postional_arg</code>s and there are more arguments than the maximum or less than the minimum.</p>
+<p>Only the last <code>positional_arg</code> may be of variable length - unless a <code>token_end_maker</code> policy is used. A runtime error will only occur if there are no unbounded variable length <code>postional_arg</code>s and there are more arguments than the maximum or less than the minimum.</p>
 <p>It should be noted that setting a non-zero minimum count (<code>min_count</code>, <code>fixed_count</code>, or <code>min_max_count</code>) does <em>not</em> imply a requirement, the minimum count check only applies when there is at least one argument for the node to process. So as with an <code>arg</code>, you should use a <code>required</code> policy to explicitly state that at least one argument needs to be present, or a <code>default_value</code> policy - otherwise a default initialised value will be used instead. For <code>positional_arg</code> nodes that are marked as <code>required</code>, it is a compile-time error to have a minimum count policy value of 0.</p>
-<h1>Modes</h1>
-<p>As noted in <a href="#basics">Basics</a>, <code>mode</code>s allow you to group command line components under an initial token on the command line. A common example of this developers will be aware of is <code>git</code>, for example in our parlance <code>git clean -ffxd</code>; <code>clean</code> would be the mode and <code>ffxd</code> would be be the flags that are available under that mode.</p>
+<h2>Token End Marker Policy</h2>
+<p>The <code>token_end_maker</code> policy allows for multiple adjacent variable length <code>positional_arg</code> nodes to be defined. It does this by defining a token that marks the end of the value token list for that node. A trivial example could be a simple launcher application (which is available as a <a href="https://cmannett85.github.io/arg_router/c_09_0920_2launcher_2main_8cpp-example.html">buildable example</a>) e.g.: </p><div class="fragment"><div class="line">$ example_launcher_cpp prog1 prog2 prog3 -- arg1 arg2 arg3</div>
+</div><!-- fragment --><p> Where the argument tokens are used invoke the programs as child processes. Here the <code>--</code> token is used to separate the two adjacent <code>positional_args</code>: </p><div class="fragment"><div class="line">ar::positional_arg&lt;std::vector&lt;std::string_view&gt;&gt;(arp::required,</div>
+<div class="line">                                                  &quot;PROGS&quot;_S,</div>
+<div class="line">                                                  &quot;Programs to run&quot;_S,</div>
+<div class="line">                                                  arp::token_end_marker_t{&quot;--&quot;_S},</div>
+<div class="line">                                                  arp::min_count&lt;1&gt;),</div>
+<div class="line">ar::positional_arg&lt;std::vector&lt;std::string_view&gt;&gt;(&quot;ARGS&quot;_S,</div>
+<div class="line">                                                  &quot;Arguments to pass to programs&quot;_S),</div>
+</div><!-- fragment --><p> There is no limit to number of <code>positional_arg</code> nodes that can be chained together like this, but they must still follow <code>positional_arg</code> rules such as being at the end of the child node list.</p>
+<h2>Multi-Arg and Forwarding Arg</h2>
+<p>Another variation of multi-value arguments are <code>multi_arg</code> and <code>forwarding_arg</code>. <code>multi_arg</code> is almost the same as <code>arg</code> but accepts multiple (at least one) value tokens from the command line, you can tune the min/max value token count using the <code>min_max_count_t</code> policy - although you can't use a <code>value_separator</code> policy.</p>
+<p><code>forwarding_arg</code> is similar to <code>multi_arg</code> except that it is tuned for simply forwarding arguments, so has no naming restrictions, no min/max count, and is has a fixed <code>value_type</code> of <code>vector&lt;std::string&gt;</code>. You could re-write the launcher example above to use it: </p><div class="fragment"><div class="line">ar::forwarding_arg(arp::required,</div>
+<div class="line">                   &quot;--&quot;_S,</div>
+<div class="line">                   &quot;Programs to run&quot;_S,</div>
+<div class="line">                   arp::token_end_marker_t{&quot;--&quot;_S},</div>
+<div class="line">                   arp::min_count&lt;1&gt;),</div>
+<div class="line">ar::positional_arg&lt;std::vector&lt;std::string_view&gt;&gt;(&quot;ARGS&quot;_S,</div>
+<div class="line">                                                  &quot;Arguments to pass to programs&quot;_S),</div>
+</div><!-- fragment --><p> Which would look like this on the command line: </p><div class="fragment"><div class="line">$ example_launcher_cpp -f -- prog1 prog2 prog3 -- arg1 arg2 arg3</div>
+</div><!-- fragment --><h1>Modes</h1>
+<p>As noted in <a href="#basics">Basics</a>, <code>mode</code>s allow you to group command line components under an initial token on the command line. A common example of this developers will be aware of is <code>git</code>, for example in our parlance <code>git clean -ffxd</code>; <code>clean</code> would be the mode and <code>ffxd</code> would be the flags that are available under that mode.</p>
 <p>As an example, let's take the <code>simple-copy</code> above and split it into two modes: </p><div class="fragment"><div class="line">$ simple copy -f dest-dir source-path-1 source-path-2</div>
 <div class="line">$ simple move -f dest-dir source-path-1</div>
 </div><!-- fragment --> <div class="fragment"><div class="line">ar::root(</div>
@@ -494,7 +501,58 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="line">                       std::filesystem::path dest,</div>
 <div class="line">                       std::filesystem::path src) { ... }}))</div>
 </div><!-- fragment --><p> <code>ar::list</code> is a simple <code>arg</code> and <code>flag</code> container that <code>mode</code> and <code>root</code> instances detect and add the contents to their child/policy lists. Also don't be afraid of the copies, the majority of <code><a class="el" href="namespacearg__router.html">arg_router</a></code> types hold no data (the advantage of compile-time!) and those that do (e.g. <code>default_value</code>) generally have small types like primitives or <code>std::string_view</code>.</p>
-<h1>Help Output</h1>
+<h1>Enabling/Disabling Nodes at Runtime</h1>
+<p>Sometimes features or parameters only make sense within certain environments or scenarios that can only be detected at runtime. You can use <code>policy::runtime_enable</code> to dynamically make a node 'disappear' from the parsing process and help output by the value set at runtime in the policy's constructor. A trivial example is given by the <a href="https://cmannett85.github.io/arg_router/c_09_0920_2runtime_node_enable_2main_8cpp-example.html">runtime_node_enable example</a>: </p><div class="fragment"><div class="line">const auto advanced = std::getenv(license_env_var) != nullptr;</div>
+<div class="line">ar::root(</div>
+<div class="line">    arp::validation::default_validator,</div>
+<div class="line">    ar::help(&quot;help&quot;_S,</div>
+<div class="line">             &quot;h&quot;_S,</div>
+<div class="line">             &quot;Display this help and exit&quot;_S,</div>
+<div class="line">             arp::flatten_help,</div>
+<div class="line">             arp::program_name_t{&quot;runtime_node_enable&quot;_S},</div>
+<div class="line">             arp::program_version&lt;ar::str&lt;version&gt;&gt;,</div>
+<div class="line">             arp::program_addendum_t{&quot;An example program for arg_router.&quot;_S}),</div>
+<div class="line">    ar::flag(&quot;version&quot;_S, &quot;Output version information and exit&quot;_S, arp::router{[](bool) { ... }}),</div>
+<div class="line">    ar::mode(&quot;advanced&quot;_S,</div>
+<div class="line">             &quot;Advanced features&quot;_S,</div>
+<div class="line">             ar::flag(&quot;feature1&quot;_S, &quot;First feature&quot;_S),</div>
+<div class="line">             ar::arg&lt;int&gt;(&quot;feature2&quot;_S, &quot;Second feature&quot;_S, arp::default_value{42}),</div>
+<div class="line">             arp::router{[](bool f1, int f2) { ... }},</div>
+<div class="line">             arp::runtime_enable{advanced}),</div>
+<div class="line">    ar::mode(</div>
+<div class="line">        ar::flag(&quot;foo&quot;_S, &quot;Foo flag&quot;_S, &quot;f&quot;_S),</div>
+<div class="line">        ar::flag(&quot;bar&quot;_S, &quot;Bar flag&quot;_S, &quot;b&quot;_S),</div>
+<div class="line">        ar::arg&lt;std::string_view&gt;(&quot;advance-foo&quot;_S,</div>
+<div class="line">                                  &quot;Licensed foo&quot;_S,</div>
+<div class="line">                                  arp::runtime_enable_required&lt;std::string_view&gt;{advanced}),</div>
+<div class="line">        arp::router{[](bool f, bool b, std::string_view advance_foo) { ... }}))</div>
+<div class="line">    .parse(argc, argv);</div>
+</div><!-- fragment --><p> Here an environment variable is used to detect if a license is installed (do not use this method in production...) and if it is, unlocks 'advanced' features. If the license is available then the entire <code>advanced</code> mode is available and so is the <code>--advance-foo</code> <code>std::string_view</code> <code>arg</code> in the default mode.</p>
+<p>The help output adjusts to match: </p><div class="fragment"><div class="line">$ ./example_runtime_node_enable_cpp20 --help</div>
+<div class="line">runtime_node_enable v3.14</div>
+<div class="line"> </div>
+<div class="line">    --help,-h                    Display this help and exit</div>
+<div class="line">    --version                    Output version information and exit</div>
+<div class="line">     </div>
+<div class="line">        --foo,-f                 Foo flag</div>
+<div class="line">        --bar,-b                 Bar flag</div>
+<div class="line"> </div>
+<div class="line">An example program for arg_router.</div>
+</div><!-- fragment --><p> And with the license: </p><div class="fragment"><div class="line">$ AR_EXAMPLE_LICENSE=1 ./example_runtime_node_enable_cpp20 --help</div>
+<div class="line">runtime_node_enable v3.14</div>
+<div class="line"> </div>
+<div class="line">    --help,-h                    Display this help and exit</div>
+<div class="line">    --version                    Output version information and exit</div>
+<div class="line">    advanced                     Advanced features</div>
+<div class="line">        --feature1               First feature</div>
+<div class="line">        --feature2 &lt;Value&gt;       Second feature</div>
+<div class="line">     </div>
+<div class="line">        --foo,-f                 Foo flag</div>
+<div class="line">        --bar,-b                 Bar flag</div>
+<div class="line">        --advance-foo &lt;Value&gt;    Licensed foo</div>
+<div class="line"> </div>
+<div class="line">An example program for arg_router.</div>
+</div><!-- fragment --><h1>Help Output</h1>
 <p>As shown in prior sections, a <code>help</code> node can be a child of the <code>root</code> (and only the <code>root</code>!), which acts like an <code>arg</code>, and generates the help output when requested by the user. This node is optional, without it there is no help command line argument. As the node is <code>arg</code>-like, it requires a long and/or short name.</p>
 <p>The output can be embellished with the following policies:</p><ul>
 <li><code>program_name_t</code>, the name of the program as it should be displayed to the user</li>
@@ -573,7 +631,7 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="line"> </div>
 <div class="line">An example program for arg_router.</div>
 </div><!-- fragment --> <h2>Programmatic Access</h2>
-<p>By default when parsed, <code>help</code> will output its contents to <code>std::cout</code> and then exit the application with <code>EXIT_SUCCESS</code>. Obviously this won't always be desired, so a <code>router</code> policy can be attached that will pass a <code>std::ostringstream</code> to the user-provided <code>Callable</code>. The stream will have already been populated with the help data shown above, but it can now be appended to or converted to string for use somewhere else.</p>
+<p>By default when parsed, <code>help</code> will output its contents to <code>std::cout</code> and then exit the application with <code>EXIT_SUCCESS</code>. Obviously this won't always be desired, so a <code>router</code> policy can be attached that will pass a <code>std::ostringstream</code> to the user-provided <code>Callable</code>. The stream will have already been populated with the help data shown above, but it can now be appended to or converted to a string for use somewhere else.</p>
 <p>Often programmatic access is desired for the help output outside of the user requesting it, for example if a parse exception is thrown, generally the exception error is printed to the terminal followed by the help output. This is exposed by the <code>help()</code> or <code>help(std::ostringstream&amp;)</code> methods of the root object.</p>
 <h2>Customisation</h2>
 <p>Help output can be customised in several ways:</p><ol type="1">
@@ -676,7 +734,7 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="ttc" id="anamespacearg__router_1_1multi__lang_html"><div class="ttname"><a href="namespacearg__router_1_1multi__lang.html">arg_router::multi_lang</a></div><div class="ttdef"><b>Definition:</b> <a href="iso__locale_8hpp_source.html#l00009">iso_locale.hpp:10</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1policy_html_a50ebcd2455ba90ecbbcaf7d6aab2dc16"><div class="ttname"><a href="namespacearg__router_1_1policy.html#a50ebcd2455ba90ecbbcaf7d6aab2dc16">arg_router::policy::program_addendum</a></div><div class="ttdeci">constexpr auto program_addendum</div><div class="ttdef"><b>Definition:</b> <a href="program__addendum_8hpp_source.html#l00053">program_addendum.hpp:53</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1policy_html_ae4c0515ad6d58ea37fe121ee3f4a9861"><div class="ttname"><a href="namespacearg__router_1_1policy.html#ae4c0515ad6d58ea37fe121ee3f4a9861">arg_router::policy::program_intro</a></div><div class="ttdeci">constexpr auto program_intro</div><div class="ttdef"><b>Definition:</b> <a href="program__intro_8hpp_source.html#l00053">program_intro.hpp:53</a></div></div>
-<div class="ttc" id="anamespacearg__router_html_a1eb8c408da38619d624f435441efac48"><div class="ttname"><a href="namespacearg__router.html#a1eb8c408da38619d624f435441efac48">arg_router::help</a></div><div class="ttdeci">constexpr auto help(Policies... policies) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="help_8hpp_source.html#l00233">help.hpp:233</a></div></div>
+<div class="ttc" id="anamespacearg__router_html_a1eb8c408da38619d624f435441efac48"><div class="ttname"><a href="namespacearg__router.html#a1eb8c408da38619d624f435441efac48">arg_router::help</a></div><div class="ttdeci">constexpr auto help(Policies... policies) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="help_8hpp_source.html#l00294">help.hpp:294</a></div></div>
 </div><!-- fragment --><p> There is nothing special about the <code>translation</code> type, the unspecialised version will simply static assert if used to remind you to implement specialisations for all language IDs (the template parameter type) - otherwise it is just an empty type. Its use is still recommended though as functionality may be added to it in the future. </p><div class="fragment"><div class="line"><span class="keywordtype">int</span> main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>* argv[])</div>
 <div class="line">{</div>
 <div class="line">    <span class="comment">// Apologies for any translation faux pas - Google Translate did it for me!</span></div>
@@ -796,27 +854,81 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="line">                  str&lt;<span class="stringliteral">&quot;最大値を超えました&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::minimum_count_not_reached&gt;,</div>
 <div class="line">                  str&lt;<span class="stringliteral">&quot;最小数に達していません&quot;</span>&gt;&gt;,</div>
+<div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::maximum_count_exceeded&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;最大数を超えました&quot;</span>&gt;&gt;,</div>
+<div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::unknown_argument_with_suggestion&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;不明な引数 {}。 { } という意味でしたか？&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::mode_requires_arguments&gt;,</div>
 <div class="line">                  str&lt;<span class="stringliteral">&quot;モードには引数が必要です&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::missing_required_argument&gt;,</div>
 <div class="line">                  str&lt;<span class="stringliteral">&quot;必要な引数がありません&quot;</span>&gt;&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::too_few_values_for_alias&gt;,</div>
 <div class="line">                  str&lt;<span class="stringliteral">&quot;エイリアス値が少なすぎる&quot;</span>&gt;&gt;,</div>
-<div class="line">        std::pair&lt;</div>
-<div class="line">            traits::integral_constant&lt;error_code::dependent_argument_missing&gt;,</div>
-<div class="line">            str&lt;<span class="stringliteral">&quot;従属引数がありません (コマンドラインで必要なトークンの前に置く必要があります)&quot;</span>&gt;&gt;&gt;;</div>
+<div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::dependent_argument_missing&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;従属引数がありません (コマンドラインで必要なトークンの前に置く必要があります)&quot;</span>&gt;&gt;,</div>
+<div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::one_of_selected_type_mismatch&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;「One Of」から一度に使用できる引数は 1 つだけです&quot;</span>&gt;&gt;,</div>
+<div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::missing_value_separator&gt;,</div>
+<div class="line">                  str&lt;<span class="stringliteral">&quot;値の区切り文字が必要です&quot;</span>&gt;&gt;&gt;;</div>
 <div class="line">};</div>
 </div><!-- fragment --><p> Could yield: </p><div class="fragment"><div class="line">$ AR_LOCALE_OVERRIDE=ja ./example_simple_ml_cpp20 -🐱</div>
 <div class="line">terminate called after throwing an instance of &#39;arg_router::parse_exception&#39;</div>
 <div class="line">  what():  不明な引数: -🐱</div>
-</div><!-- fragment --><h2>Note</h2>
+</div><!-- fragment --><h1>Translation Generation</h1>
+<p>An annoyance of the above is that the translation types are verbose and difficult to read, so as of v1.4 a CMake function is provided by the package config that allows translation type headers to be generated from <a href="https://en.wikipedia.org/wiki/TOML">TOML</a>.</p>
+<p>For example the Japanese translation above looks like this: </p><div class="fragment"><div class="line"># Comments are supported, but only if the # character is the first on the line</div>
+<div class="line">force = &quot;強制&quot;</div>
+<div class="line">force_description = &quot;既存のファイルを強制的に上書きする&quot;</div>
+<div class="line">destination = &quot;先&quot;</div>
+<div class="line">destination_description = &quot;宛先ディレクトリ&quot;</div>
+<div class="line">help = &quot;ヘルプ&quot;</div>
+<div class="line">help_description = &quot;このヘルプを表示して終了&quot;</div>
+<div class="line">program_intro = &quot;ファイルをコピーおよび移動するためのシンプルなプログラム。&quot;</div>
+<div class="line">program_addendum = &quot;「arg_router」のサンプルプログラム。&quot;</div>
+<div class="line">copy = &quot;コピー&quot;</div>
+<div class="line">copy_description = &quot;ソース ファイルを宛先にコピーする&quot;</div>
+<div class="line">source = &quot;出典&quot;</div>
+<div class="line">sources_description = &quot;ソース ファイルのパス&quot;</div>
+<div class="line">move = &quot;移動&quot;</div>
+<div class="line">move_description = &quot;ソース ファイルを宛先に移動する&quot;</div>
+<div class="line">source_description = &quot;ソース ファイル パス&quot;</div>
+<div class="line"> </div>
+<div class="line">[error_code]</div>
+<div class="line">unknown_argument = &quot;不明な引数&quot;</div>
+<div class="line">unhandled_arguments = &quot;未処理の引数&quot;</div>
+<div class="line">argument_has_already_been_set = &quot;引数はすでに設定されています&quot;</div>
+<div class="line">failed_to_parse = &quot;解析に失敗しました&quot;</div>
+<div class="line">no_arguments_passed = &quot;引数が渡されませんでした&quot;</div>
+<div class="line">minimum_value_not_reached = &quot;最小値に達していません&quot;</div>
+<div class="line">maximum_value_exceeded = &quot;最大値を超えました&quot;</div>
+<div class="line">minimum_count_not_reached = &quot;最小数に達していません&quot;</div>
+<div class="line">maximum_count_exceeded = &quot;最大数を超えました&quot;</div>
+<div class="line">unknown_argument_with_suggestion = &quot;不明な引数 {}。 { } という意味でしたか？&quot;</div>
+<div class="line">mode_requires_arguments = &quot;モードには引数が必要です&quot;</div>
+<div class="line">missing_required_argument = &quot;必要な引数がありません&quot;</div>
+<div class="line">too_few_values_for_alias = &quot;エイリアス値が少なすぎる&quot;</div>
+<div class="line">dependent_argument_missing = &quot;従属引数がありません (コマンドラインで必要なトークンの前に置く必要があります)&quot;</div>
+<div class="line">one_of_selected_type_mismatch = &quot;「One Of」から一度に使用できる引数は 1 つだけです&quot;</div>
+<div class="line">missing_value_separator = &quot;値の区切り文字が必要です&quot;</div>
+</div><!-- fragment --><p> The TOML file name is the language ID. Calling the CMake function like this: </p><div class="fragment"><div class="line">arg_router_translation_generator(</div>
+<div class="line">    SOURCES &quot;${CMAKE_SOURCE_DIR}/en_GB.toml&quot;</div>
+<div class="line">            &quot;${CMAKE_SOURCE_DIR}/fr.toml&quot;</div>
+<div class="line">            &quot;${CMAKE_SOURCE_DIR}/ja.toml&quot;</div>
+<div class="line">    OUTPUT_DIR &quot;${CMAKE_CURRENT_BINARY_DIR}/translations/&quot;</div>
+<div class="line">    TARGET my_exe_translations</div>
+<div class="line">)</div>
+<div class="line">add_executable(my_exe ...)</div>
+<div class="line">add_dependencies(my_exe my_exe_translations)</div>
+<div class="line">target_include_directories(my_exe PRIVATE &quot;${CMAKE_CURRENT_BINARY_DIR}&quot;)</div>
+</div><!-- fragment --><p> Creates a header for each language with the corresponding translation specialisation that can be included in your root source file. You can see this in the <a href="https://cmannett85.github.io/arg_router/c_09_0920_2simple_ml_gen_2main_8cpp-example.html">buildable example</a>). This is now the recommended approach for writing translations, but is certainly not (and never will be) a requirement.</p>
+<h2>Note</h2>
 <p><code>multi_lang::root_wrapper</code> from v1.0 is still present and supported, but is now marked as deprecated - new code should use <code>multi_lang::root</code>. It is not supported when using C++20 compile-time strings (see <a href="#compile-time-string-support">compile-time string support</a>).</p>
 <h1>Compile-time String Support</h1>
 <p>In v1.0 the library exclusively used the <code><a class="el" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_()</a></code> macro for compile-time string generation, this was an almost necessary convenience as that version of C++ had relatively poor NTTP support. In v1.1 we added an alternative for those using C++20 and above, which is the <code>str</code> type and its <code>""_S</code> string literal.</p>
 <p>For those targetting C++20 with existing v1.0 code, upgrading to a newer library version will cause a compilation failure as the two methods are not compatible. But don't worry! Code changes aren't ncessary, but you will need to add the define <code>AR_DISABLE_CPP20_STRINGS=true</code> to your build. Those still targetting C++17 will not need to do anything.</p>
 <p><b>Note</b> C++17 will be supported as a first class citizen until v2.0, after that C++20 will be the minimum so I can strip out a ton of code and get better diagnostics by using concepts.</p>
 <h1>Error Handling</h1>
-<p>Currently <code><a class="el" href="namespacearg__router.html">arg_router</a></code> only supports exceptions as error handling. If a parsing fails for some reason a <code><a class="el" href="classarg__router_1_1parse__exception.html">arg_router::parse_exception</a></code> is thrown carrying information on the failure.</p>
+<p>Currently <code><a class="el" href="namespacearg__router.html">arg_router</a></code> only supports exceptions as error handling. If parsing fails for some reason a <code><a class="el" href="classarg__router_1_1parse__exception.html">arg_router::parse_exception</a></code> is thrown carrying information on the failure.</p>
 <h1>Configuration</h1>
 <p>Low-level tweaking of the library is achieved via some defines and/or CMake variables, documented <a href="https://cmannett85.github.io/arg_router/configuration.html">here</a>.</p>
 <h1>Supported Compilers/Platforms</h1>
@@ -825,11 +937,12 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <li>Windows Server 2022 (Ninja, MSBuild), Clang 14.0.5, MSVC 19.34(C++20 only)</li>
 <li>MacOS 12 (Ninja), Clang 14</li>
 </ul>
-<p>You can build on Windows with using MSBuild but you must set the CMake variable <code>DEATH_TEST_PARALLEL</code> to 1 otherwise the parallel tests will attempt to write to the project-wide <code>lastSuccessfulBuild</code> file simultaneously, which causes the build to fail. MSVC is supported but only when using the C++20-style compile-time strings due <a href="https://developercommunity.visualstudio.com/t/1395099">this</a> MSVC bug.</p>
+<p>You can build the unit tests on Windows using MSBuild but you must set the CMake variable <code>DEATH_TEST_PARALLEL</code> to 1 otherwise the parallel tests will attempt to write to the project-wide <code>lastSuccessfulBuild</code> file simultaneously, which causes the build to fail. MSVC is supported but only when using the C++20-style compile-time strings due <a href="https://developercommunity.visualstudio.com/t/1395099">this</a> MSVC bug.</p>
 <p>Other compiler versions and platform combinations may work, but I'm currently limited by the built-in GitHub runners and how much I'm willing to spend on Actions!</p>
 <h1>Tips for Users</h1>
 <h2>Do <b>NOT</b> Make the Parse Tree Type Accessible</h2>
 <p>The parse tree is <em>very</em> expensive to construct due to all the compile-time checking and meta-programming shennanigans, so do <b>NOT</b> define it in a header and have multiple source files include it - it will cause the tree to be built/checked in every source file it is included in.</p>
+<p>This is especially important on Windows as <code>windows.h</code> is included (needed for calculating terminal column width) with <code>NOMINMAX</code> and <code>WIN32_LEAN_AND_MEAN</code> set by default.</p>
 <h2>Minimise Static Storage Bloat</h2>
 <p>Despite not using <code>typeid</code> or <code>dynamic_cast</code> in the library, compilers will still generate class name data if RTTI is enabled, because it is used in the standard library implementations (e.g. <code>std::function</code> on Clang). Due to the highly nested templates that make up the parse tree, these class names can become huge and occupy large amount of static storage in the executable. As an example, the <code>basic_cat</code> project in the repo will create ~100KB of class name data in the binary - this data is not used and cannot be stripped out.</p>
 <p>Disabling RTTI is rarely feasible for most projects, but it is possible to disable RTTI for a single CMake target. So if it was deemed worth it for the size reduction, the command line parsing could be the application's executable (compiled without RTTI) and then the wider application logic could be in a static library (compiled with RTTI). This does not affect exceptions, as their type information is always added by the compiler regardless of RTTI status.</p>

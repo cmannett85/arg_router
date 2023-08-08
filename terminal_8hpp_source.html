@@ -36,7 +36,7 @@
                         <td id="projectalign" style="padding-left: 0.5em;">
                             <div id="projectname">arg_router
                                 &#160;<span
-                                    id="projectnumber">1.3.0</span>
+                                    id="projectnumber">1.4.0</span>
                             </div>
                             <div id="projectbrief">C++ command line argument parsing and routing</div>
                         </td>
@@ -96,7 +96,7 @@ $(document).ready(function(){initNavTree('terminal_8hpp_source.html',''); initRe
 <div class="title">terminal.hpp</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">// Copyright (C) 2022 by Camden Mannett.</span></div>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">// Copyright (C) 2022-2023 by Camden Mannett.</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">// Distributed under the Boost Software License, Version 1.0.</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">// (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
@@ -107,7 +107,7 @@ $(document).ready(function(){initNavTree('terminal_8hpp_source.html',''); initRe
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#if defined(__linux__) || defined(__APPLE__)</span></div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#    include &lt;sys/ioctl.h&gt;</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#elif _WIN32</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#    include &lt;windows.h&gt;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#    include &quot;<a class="code" href="win__api_8hpp.html">arg_router/utility/win_api.hpp</a>&quot;</span></div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
 <div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1utility_1_1terminal.html">   16</a></span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacearg__router_1_1utility_1_1terminal.html">arg_router::utility::terminal</a></div>
@@ -141,6 +141,7 @@ $(document).ready(function(){initNavTree('terminal_8hpp_source.html',''); initRe
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;}  <span class="comment">// namespace arg_router::utility::terminal</span></div>
 <div class="ttc" id="anamespacearg__router_1_1utility_1_1terminal_html"><div class="ttname"><a href="namespacearg__router_1_1utility_1_1terminal.html">arg_router::utility::terminal</a></div><div class="ttdef"><b>Definition:</b> <a href="terminal_8hpp_source.html#l00016">terminal.hpp:17</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1utility_1_1terminal_html_acd0f8412a18a5275568c0fa51a64bf04"><div class="ttname"><a href="namespacearg__router_1_1utility_1_1terminal.html#acd0f8412a18a5275568c0fa51a64bf04">arg_router::utility::terminal::columns</a></div><div class="ttdeci">std::size_t columns()</div><div class="ttdef"><b>Definition:</b> <a href="terminal_8hpp_source.html#l00026">terminal.hpp:26</a></div></div>
+<div class="ttc" id="awin__api_8hpp_html"><div class="ttname"><a href="win__api_8hpp.html">win_api.hpp</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

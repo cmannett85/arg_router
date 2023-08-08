@@ -36,7 +36,7 @@
                         <td id="projectalign" style="padding-left: 0.5em;">
                             <div id="projectname">arg_router
                                 &#160;<span
-                                    id="projectnumber">1.3.0</span>
+                                    id="projectnumber">1.4.0</span>
                             </div>
                             <div id="projectbrief">C++ command line argument parsing and routing</div>
                         </td>
@@ -96,78 +96,120 @@ $(document).ready(function(){initNavTree('parsing_8hpp_source.html',''); initRes
 <div class="title">parsing.hpp</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">// Copyright (C) 2022 by Camden Mannett.</span></div>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">// Copyright (C) 2022-2023 by Camden Mannett.</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">// Distributed under the Boost Software License, Version 1.0.</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">// (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;arg_router/traits.hpp&quot;</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;arg_router/utility/result.hpp&quot;</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacearg__router_1_1parsing.html">arg_router::parsing</a></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;{</div>
-<div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1parsing.html#a425dc604db76181e7af022986d3015a5">   14</a></span>&#160;<span class="keyword">enum class</span> <a class="code" href="namespacearg__router_1_1parsing.html#a425dc604db76181e7af022986d3015a5">pre_parse_action</a> : std::uint8_t {</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <a class="code" href="namespacearg__router_1_1parsing.html#a425dc604db76181e7af022986d3015a5af40dea4ad62e2a0d088148f25444da03">skip_node</a>,</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <a class="code" href="namespacearg__router_1_1parsing.html#a425dc604db76181e7af022986d3015a5a28a603d48cf5ab4504b3bd1abfe13963">valid_node</a>,</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <a class="code" href="namespacearg__router_1_1parsing.html#a425dc604db76181e7af022986d3015a5a28b41fbca9cd22a8f8cb871a07b90b16">skip_node_but_use_sub_targets</a></div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;};</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
-<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1parsing.html#ab63dd5f7e3abd113f9b7d578cec0fe02">   26</a></span>&#160;<span class="keyword">using</span> <a class="code" href="classarg__router_1_1utility_1_1result.html">pre_parse_result</a> = <a class="code" href="classarg__router_1_1utility_1_1result.html">utility::result&lt;pre_parse_action, multi_lang_exception&gt;</a>;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1parsing.html#ae2cbfdf6379f66e446801b6a915e3144">   35</a></span>&#160;[[nodiscard]] constexpr <span class="keywordtype">bool</span> <a class="code" href="namespacearg__router_1_1parsing.html#ae2cbfdf6379f66e446801b6a915e3144">match</a>(<a class="code" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> token) noexcept</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;{</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keyword">using namespace </span>std::string_literals;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keywordflow">if</span> constexpr (traits::has_long_name_method_v&lt;T&gt;) {</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="keywordflow">if</span> ((token.prefix == prefix_type::long_) &amp;&amp; (token.name == T::long_name())) {</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        }</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    }</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keywordflow">if</span> constexpr (traits::has_short_name_method_v&lt;T&gt;) {</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="keywordflow">if</span> ((token.prefix == <a class="code" href="namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3a16466420ab71d5feae928666169b405c">prefix_type::short_</a>) &amp;&amp; (token.name == T::short_name())) {</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        }</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    }</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keywordflow">if</span> constexpr (traits::has_none_name_method_v&lt;T&gt;) {</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="keywordflow">if</span> ((token.prefix == <a class="code" href="namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3a334c4a4c42fdb79d7ebc3e73b517e6f8">prefix_type::none</a>) &amp;&amp; (token.name == T::none_name())) {</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        }</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    }</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;}</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Node&gt;</div>
-<div class="line"><a name="l00067"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1parsing.html#a8389f839b76e96cfadf1b7527ef2e651">   67</a></span>&#160;[[nodiscard]] constexpr <a class="code" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> <a class="code" href="namespacearg__router_1_1parsing.html#a8389f839b76e96cfadf1b7527ef2e651">node_token_type</a>() noexcept</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;{</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keywordflow">if</span> constexpr (traits::has_error_name_method_v&lt;Node&gt;) {</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keywordflow">return</span> {<a class="code" href="namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3a334c4a4c42fdb79d7ebc3e73b517e6f8">prefix_type::none</a>, Node::error_name()};</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> constexpr (traits::has_display_name_method_v&lt;Node&gt;) {</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        <span class="keywordflow">return</span> {<a class="code" href="namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3a334c4a4c42fdb79d7ebc3e73b517e6f8">prefix_type::none</a>, Node::display_name()};</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> constexpr (traits::has_long_name_method_v&lt;Node&gt;) {</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        <span class="keywordflow">return</span> {prefix_type::long_, Node::long_name()};</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> constexpr (traits::has_short_name_method_v&lt;Node&gt;) {</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        <span class="keywordflow">return</span> {<a class="code" href="namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3a16466420ab71d5feae928666169b405c">prefix_type::short_</a>, Node::short_name()};</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> constexpr (traits::has_none_name_method_v&lt;Node&gt;) {</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        <span class="keywordflow">return</span> {<a class="code" href="namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3a334c4a4c42fdb79d7ebc3e73b517e6f8">prefix_type::none</a>, Node::none_name()};</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        static_assert(traits::always_false_v&lt;Node&gt;, <span class="stringliteral">&quot;Node does not have a name&quot;</span>);</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    }</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;}</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;}  <span class="comment">// namespace arg_router::parsing</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;arg_router/algorithm.hpp&quot;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;arg_router/traits.hpp&quot;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;arg_router/utility/result.hpp&quot;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacearg__router_1_1parsing.html">arg_router::parsing</a></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;{</div>
+<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1parsing.html#a425dc604db76181e7af022986d3015a5">   15</a></span>&#160;<span class="keyword">enum class</span> <a class="code" href="namespacearg__router_1_1parsing.html#a425dc604db76181e7af022986d3015a5">pre_parse_action</a> : std::uint8_t {</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <a class="code" href="namespacearg__router_1_1parsing.html#a425dc604db76181e7af022986d3015a5af40dea4ad62e2a0d088148f25444da03">skip_node</a>,</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <a class="code" href="namespacearg__router_1_1parsing.html#a425dc604db76181e7af022986d3015a5a28a603d48cf5ab4504b3bd1abfe13963">valid_node</a>,</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <a class="code" href="namespacearg__router_1_1parsing.html#a425dc604db76181e7af022986d3015a5a28b41fbca9cd22a8f8cb871a07b90b16">skip_node_but_use_sub_targets</a></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;};</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1parsing.html#ab63dd5f7e3abd113f9b7d578cec0fe02">   27</a></span>&#160;<span class="keyword">using</span> <a class="code" href="classarg__router_1_1utility_1_1result.html">pre_parse_result</a> = <a class="code" href="classarg__router_1_1utility_1_1result.html">utility::result&lt;pre_parse_action, multi_lang_exception&gt;</a>;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1parsing.html#ae2cbfdf6379f66e446801b6a915e3144">   36</a></span>&#160;[[nodiscard]] constexpr <span class="keywordtype">bool</span> <a class="code" href="namespacearg__router_1_1parsing.html#ae2cbfdf6379f66e446801b6a915e3144">match</a>(<a class="code" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> token) noexcept</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;{</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keyword">using namespace </span>std::string_literals;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordflow">if</span> constexpr (traits::has_long_name_method_v&lt;T&gt;) {</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="keywordflow">if</span> ((token.prefix == prefix_type::long_) &amp;&amp; (token.name == T::long_name())) {</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        }</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    }</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keywordflow">if</span> constexpr (traits::has_short_name_method_v&lt;T&gt;) {</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="keywordflow">if</span> ((token.prefix == <a class="code" href="namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3a16466420ab71d5feae928666169b405c">prefix_type::short_</a>) &amp;&amp; (token.name == T::short_name())) {</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        }</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    }</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keywordflow">if</span> constexpr (traits::has_none_name_method_v&lt;T&gt;) {</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <span class="keywordflow">if</span> ((token.prefix == <a class="code" href="namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3a334c4a4c42fdb79d7ebc3e73b517e6f8">prefix_type::none</a>) &amp;&amp; (token.name == T::none_name())) {</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        }</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    }</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;}</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Node&gt;</div>
+<div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1parsing.html#a8389f839b76e96cfadf1b7527ef2e651">   68</a></span>&#160;[[nodiscard]] constexpr <a class="code" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> <a class="code" href="namespacearg__router_1_1parsing.html#a8389f839b76e96cfadf1b7527ef2e651">node_token_type</a>() noexcept</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;{</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="keywordflow">if</span> constexpr (traits::has_error_name_method_v&lt;Node&gt;) {</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <span class="keywordflow">return</span> {<a class="code" href="namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3a334c4a4c42fdb79d7ebc3e73b517e6f8">prefix_type::none</a>, Node::error_name()};</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> constexpr (traits::has_display_name_method_v&lt;Node&gt;) {</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        <span class="keywordflow">return</span> {<a class="code" href="namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3a334c4a4c42fdb79d7ebc3e73b517e6f8">prefix_type::none</a>, Node::display_name()};</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> constexpr (traits::has_long_name_method_v&lt;Node&gt;) {</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        <span class="keywordflow">return</span> {prefix_type::long_, Node::long_name()};</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> constexpr (traits::has_short_name_method_v&lt;Node&gt;) {</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        <span class="keywordflow">return</span> {<a class="code" href="namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3a16466420ab71d5feae928666169b405c">prefix_type::short_</a>, Node::short_name()};</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> constexpr (traits::has_none_name_method_v&lt;Node&gt;) {</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        <span class="keywordflow">return</span> {<a class="code" href="namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3a334c4a4c42fdb79d7ebc3e73b517e6f8">prefix_type::none</a>, Node::none_name()};</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        static_assert(traits::always_false_v&lt;Node&gt;, <span class="stringliteral">&quot;Node does not have a name&quot;</span>);</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    }</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;}</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> BaseNode, <span class="keyword">typename</span>... DerivedAndParents&gt;</div>
+<div class="line"><a name="l00105"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1parsing.html#afa1189f2ca42b0a28c5506d85ad61e66">  105</a></span>&#160;[[nodiscard]] constexpr <span class="keyword">auto</span> <a class="code" href="namespacearg__router_1_1parsing.html#afa1189f2ca42b0a28c5506d85ad61e66">clean_node_ancestry_list</a>(</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    <span class="keyword">const</span> BaseNode&amp; base_node,</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <span class="keyword">const</span> DerivedAndParents&amp;... derived_and_parents)</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;{</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    <span class="comment">// Iterate along the ancestry until you hit a node type that is _not_ a base of Node, then</span></div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    <span class="comment">// remove the elements up to that element</span></div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <span class="keyword">using</span> parents_tuple = std::tuple&lt;std::decay_t&lt;DerivedAndParents&gt;...&gt;;</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    constexpr <span class="keyword">auto</span> remove_n = boost::mp11::mp_find_if_q&lt;</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;        parents_tuple,</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        boost::mp11::mp_not_fn_q&lt;</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;            boost::mp11::mp_bind&lt;std::is_base_of, std::decay_t&lt;BaseNode&gt;, boost::mp11::_1&gt;&gt;&gt;::value;</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    <span class="keywordflow">if</span> constexpr (remove_n == 0) {</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        <span class="keywordflow">return</span> std::tuple{std::cref(base_node), std::cref(derived_and_parents)...};</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespacearg__router_1_1algorithm.html#a37e9b838f46a937706b8d36268a18e99">algorithm::tuple_drop</a>&lt;remove_n - 1&gt;(std::tuple{std::cref(derived_and_parents)...});</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    }</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;}</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160; </div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Node, <span class="keyword">typename</span>... Parents&gt;</div>
+<div class="line"><a name="l00133"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1parsing.html#a672a253d033254abb79f0850efeefcd7">  133</a></span>&#160;[[nodiscard]] <span class="keywordtype">bool</span> <a class="code" href="namespacearg__router_1_1parsing.html#a672a253d033254abb79f0850efeefcd7">is_runtime_disabled</a>(<span class="keyword">const</span> Node&amp; node, <span class="keyword">const</span> Parents&amp;... parents) noexcept</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;{</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    <span class="keyword">auto</span> any_disabled = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    <a class="code" href="namespacearg__router_1_1utility.html#a99e297c7383915d8754a23f4dcfa07b5">utility::tuple_iterator</a>(</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;        [&amp;]([[maybe_unused]] <span class="keyword">auto</span> i, <span class="keyword">auto</span> entry) {</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;            <span class="keyword">using</span> entry_type = <span class="keyword">typename</span> std::decay_t&lt;decltype(entry)&gt;::type;</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160; </div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;            <span class="keywordflow">if</span> constexpr (traits::has_runtime_enabled_method_v&lt;entry_type&gt;) {</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;                any_disabled = any_disabled || !entry.get().runtime_enabled();</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;            }</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;        },</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;        std::tuple{std::cref(node), std::cref(parents)...});</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160; </div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    <span class="keywordflow">return</span> any_disabled;</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;}</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;}  <span class="comment">// namespace arg_router::parsing</span></div>
 <div class="ttc" id="aclassarg__router_1_1utility_1_1result_html"><div class="ttname"><a href="classarg__router_1_1utility_1_1result.html">arg_router::utility::result</a></div><div class="ttdef"><b>Definition:</b> <a href="result_8hpp_source.html#l00019">result.hpp:20</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1algorithm_html_a37e9b838f46a937706b8d36268a18e99"><div class="ttname"><a href="namespacearg__router_1_1algorithm.html#a37e9b838f46a937706b8d36268a18e99">arg_router::algorithm::tuple_drop</a></div><div class="ttdeci">constexpr auto tuple_drop(Tuple &amp;&amp;input)</div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00272">algorithm.hpp:272</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1parsing_html"><div class="ttname"><a href="namespacearg__router_1_1parsing.html">arg_router::parsing</a></div><div class="ttdef"><b>Definition:</b> <a href="dynamic__token__adapter_8hpp_source.html#l00009">dynamic_token_adapter.hpp:10</a></div></div>
-<div class="ttc" id="anamespacearg__router_1_1parsing_html_a425dc604db76181e7af022986d3015a5"><div class="ttname"><a href="namespacearg__router_1_1parsing.html#a425dc604db76181e7af022986d3015a5">arg_router::parsing::pre_parse_action</a></div><div class="ttdeci">pre_parse_action</div><div class="ttdef"><b>Definition:</b> <a href="parsing_8hpp_source.html#l00014">parsing.hpp:14</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1parsing_html_a425dc604db76181e7af022986d3015a5"><div class="ttname"><a href="namespacearg__router_1_1parsing.html#a425dc604db76181e7af022986d3015a5">arg_router::parsing::pre_parse_action</a></div><div class="ttdeci">pre_parse_action</div><div class="ttdef"><b>Definition:</b> <a href="parsing_8hpp_source.html#l00015">parsing.hpp:15</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1parsing_html_a425dc604db76181e7af022986d3015a5a28a603d48cf5ab4504b3bd1abfe13963"><div class="ttname"><a href="namespacearg__router_1_1parsing.html#a425dc604db76181e7af022986d3015a5a28a603d48cf5ab4504b3bd1abfe13963">arg_router::parsing::pre_parse_action::valid_node</a></div><div class="ttdeci">@ valid_node</div></div>
 <div class="ttc" id="anamespacearg__router_1_1parsing_html_a425dc604db76181e7af022986d3015a5a28b41fbca9cd22a8f8cb871a07b90b16"><div class="ttname"><a href="namespacearg__router_1_1parsing.html#a425dc604db76181e7af022986d3015a5a28b41fbca9cd22a8f8cb871a07b90b16">arg_router::parsing::pre_parse_action::skip_node_but_use_sub_targets</a></div><div class="ttdeci">@ skip_node_but_use_sub_targets</div></div>
 <div class="ttc" id="anamespacearg__router_1_1parsing_html_a425dc604db76181e7af022986d3015a5af40dea4ad62e2a0d088148f25444da03"><div class="ttname"><a href="namespacearg__router_1_1parsing.html#a425dc604db76181e7af022986d3015a5af40dea4ad62e2a0d088148f25444da03">arg_router::parsing::pre_parse_action::skip_node</a></div><div class="ttdeci">@ skip_node</div></div>
 <div class="ttc" id="anamespacearg__router_1_1parsing_html_a6587078e07827bbbbabeae32b3ed2dd3a16466420ab71d5feae928666169b405c"><div class="ttname"><a href="namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3a16466420ab71d5feae928666169b405c">arg_router::parsing::prefix_type::short_</a></div><div class="ttdeci">@ short_</div><div class="ttdoc">Long prefix.</div></div>
 <div class="ttc" id="anamespacearg__router_1_1parsing_html_a6587078e07827bbbbabeae32b3ed2dd3a334c4a4c42fdb79d7ebc3e73b517e6f8"><div class="ttname"><a href="namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3a334c4a4c42fdb79d7ebc3e73b517e6f8">arg_router::parsing::prefix_type::none</a></div><div class="ttdeci">@ none</div><div class="ttdoc">Short prefix.</div></div>
-<div class="ttc" id="anamespacearg__router_1_1parsing_html_a8389f839b76e96cfadf1b7527ef2e651"><div class="ttname"><a href="namespacearg__router_1_1parsing.html#a8389f839b76e96cfadf1b7527ef2e651">arg_router::parsing::node_token_type</a></div><div class="ttdeci">constexpr token_type node_token_type() noexcept</div><div class="ttdef"><b>Definition:</b> <a href="parsing_8hpp_source.html#l00067">parsing.hpp:67</a></div></div>
-<div class="ttc" id="anamespacearg__router_1_1parsing_html_ae2cbfdf6379f66e446801b6a915e3144"><div class="ttname"><a href="namespacearg__router_1_1parsing.html#ae2cbfdf6379f66e446801b6a915e3144">arg_router::parsing::match</a></div><div class="ttdeci">constexpr bool match(token_type token) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="parsing_8hpp_source.html#l00035">parsing.hpp:35</a></div></div>
-<div class="ttc" id="astructarg__router_1_1parsing_1_1token__type_html"><div class="ttname"><a href="structarg__router_1_1parsing_1_1token__type.html">arg_router::parsing::token_type</a></div><div class="ttdef"><b>Definition:</b> <a href="token__type_8hpp_source.html#l00035">token_type.hpp:35</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1parsing_html_a672a253d033254abb79f0850efeefcd7"><div class="ttname"><a href="namespacearg__router_1_1parsing.html#a672a253d033254abb79f0850efeefcd7">arg_router::parsing::is_runtime_disabled</a></div><div class="ttdeci">bool is_runtime_disabled(const Node &amp;node, const Parents &amp;... parents) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="parsing_8hpp_source.html#l00133">parsing.hpp:133</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1parsing_html_a8389f839b76e96cfadf1b7527ef2e651"><div class="ttname"><a href="namespacearg__router_1_1parsing.html#a8389f839b76e96cfadf1b7527ef2e651">arg_router::parsing::node_token_type</a></div><div class="ttdeci">constexpr token_type node_token_type() noexcept</div><div class="ttdef"><b>Definition:</b> <a href="parsing_8hpp_source.html#l00068">parsing.hpp:68</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1parsing_html_ae2cbfdf6379f66e446801b6a915e3144"><div class="ttname"><a href="namespacearg__router_1_1parsing.html#ae2cbfdf6379f66e446801b6a915e3144">arg_router::parsing::match</a></div><div class="ttdeci">constexpr bool match(token_type token) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="parsing_8hpp_source.html#l00036">parsing.hpp:36</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1parsing_html_afa1189f2ca42b0a28c5506d85ad61e66"><div class="ttname"><a href="namespacearg__router_1_1parsing.html#afa1189f2ca42b0a28c5506d85ad61e66">arg_router::parsing::clean_node_ancestry_list</a></div><div class="ttdeci">constexpr auto clean_node_ancestry_list(const BaseNode &amp;base_node, const DerivedAndParents &amp;... derived_and_parents)</div><div class="ttdef"><b>Definition:</b> <a href="parsing_8hpp_source.html#l00105">parsing.hpp:105</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1utility_html_a99e297c7383915d8754a23f4dcfa07b5"><div class="ttname"><a href="namespacearg__router_1_1utility.html#a99e297c7383915d8754a23f4dcfa07b5">arg_router::utility::tuple_iterator</a></div><div class="ttdeci">constexpr std::enable_if_t&lt; traits::is_tuple_like_v&lt; std::decay_t&lt; Tuple &gt; &gt; &gt; tuple_iterator(F &amp;&amp;f, Tuple &amp;&amp;tuple)</div><div class="ttdef"><b>Definition:</b> <a href="tuple__iterator_8hpp_source.html#l00033">tuple_iterator.hpp:33</a></div></div>
+<div class="ttc" id="astructarg__router_1_1parsing_1_1token__type_html"><div class="ttname"><a href="structarg__router_1_1parsing_1_1token__type.html">arg_router::parsing::token_type</a></div><div class="ttdef"><b>Definition:</b> <a href="token__type_8hpp_source.html#l00036">token_type.hpp:36</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

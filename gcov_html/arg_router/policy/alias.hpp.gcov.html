@@ -31,13 +31,13 @@
             <td class="headerValue">arg_router Unit Test Code Coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">39</td>
-            <td class="headerCovTableEntry">39</td>
+            <td class="headerCovTableEntry">41</td>
+            <td class="headerCovTableEntry">41</td>
             <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2023-03-26 16:12:00</td>
+            <td class="headerValue">2023-08-08 16:25:45</td>
             <td></td>
           </tr>
           <tr>
@@ -169,170 +169,172 @@
 <a name="103"><span class="lineNum">     103 </span>            :         {</a>
 <a name="104"><span class="lineNum">     104 </span><span class="lineCov">         28 :             auto alias_label = *tokens.begin();</span></a>
 <a name="105"><span class="lineNum">     105 </span><span class="lineCov">         28 :             if (alias_label.prefix == parsing::prefix_type::none) {</span></a>
-<a name="106"><span class="lineNum">     106 </span><span class="lineCov">         17 :                 alias_label = parsing::get_token_type(alias_label.name);</span></a>
-<a name="107"><span class="lineNum">     107 </span><span class="lineCov">         17 :             }</span></a>
-<a name="108"><span class="lineNum">     108 </span>            : </a>
-<a name="109"><span class="lineNum">     109 </span><span class="lineCov">         28 :             if (!parsing::match&lt;node_type&gt;(alias_label)) {</span></a>
-<a name="110"><span class="lineNum">     110 </span><span class="lineCov">          6 :                 return parsing::pre_parse_action::skip_node;</span></a>
-<a name="111"><span class="lineNum">     111 </span>            :             }</a>
-<a name="112"><span class="lineNum">     112 </span>            :         }</a>
-<a name="113"><span class="lineNum">     113 </span>            : </a>
-<a name="114"><span class="lineNum">     114 </span>            :         // Attempt a transfer so we can guarantee that the original tokens are in the processed</a>
-<a name="115"><span class="lineNum">     115 </span>            :         // container (this is a no-op if they already are)</a>
-<a name="116"><span class="lineNum">     116 </span><span class="lineCov">         22 :         tokens.transfer(tokens.begin() + count);</span></a>
-<a name="117"><span class="lineNum">     117 </span>            : </a>
-<a name="118"><span class="lineNum">     118 </span>            :         // Now do the runtime target building</a>
-<a name="119"><span class="lineNum">     119 </span><span class="lineCov">        112 :         const auto visitor = [&amp;](const auto&amp; current, [[maybe_unused]] const auto&amp;... parents) {</span></a>
-<a name="120"><span class="lineNum">     120 </span>            :             using policies_type = typename std::decay_t&lt;decltype(current)&gt;::policies_type;</a>
-<a name="121"><span class="lineNum">     121 </span>            : </a>
-<a name="122"><span class="lineNum">     122 </span>            :             using intersection =</a>
-<a name="123"><span class="lineNum">     123 </span>            :                 boost::mp11::mp_set_intersection&lt;aliased_policies_type, policies_type&gt;;</a>
-<a name="124"><span class="lineNum">     124 </span>            : </a>
-<a name="125"><span class="lineNum">     125 </span>            :             if constexpr ((std::tuple_size_v&lt;intersection&gt;) &gt; 0) {</a>
-<a name="126"><span class="lineNum">     126 </span><span class="lineCov">         31 :                 auto target_tokens = vector&lt;parsing::token_type&gt;{};</span></a>
-<a name="127"><span class="lineNum">     127 </span><span class="lineCov">         31 :                 target_tokens.reserve(count);</span></a>
-<a name="128"><span class="lineNum">     128 </span>            : </a>
-<a name="129"><span class="lineNum">     129 </span><span class="lineCov">         31 :                 auto value_it = tokens.begin();</span></a>
-<a name="130"><span class="lineNum">     130 </span><span class="lineCov">         47 :                 for (auto j = 0u; j &lt; count; ++j) {</span></a>
-<a name="131"><span class="lineNum">     131 </span>            :                     // Pre-increment the value iterator so we skip over the label token</a>
-<a name="132"><span class="lineNum">     132 </span><span class="lineCov">         16 :                     target_tokens.push_back(*(++value_it));</span></a>
-<a name="133"><span class="lineNum">     133 </span><span class="lineCov">         16 :                 }</span></a>
-<a name="134"><span class="lineNum">     134 </span>            : </a>
-<a name="135"><span class="lineNum">     135 </span><span class="lineCov">         62 :                 target.add_sub_target({std::move(target_tokens),  //</span></a>
-<a name="136"><span class="lineNum">     136 </span><span class="lineCov">         31 :                                        current,</span></a>
-<a name="137"><span class="lineNum">     137 </span><span class="lineCov">         31 :                                        parents...});</span></a>
-<a name="138"><span class="lineNum">     138 </span><span class="lineCov">         31 :             }</span></a>
-<a name="139"><span class="lineNum">     139 </span><span class="lineCov">         90 :         };</span></a>
-<a name="140"><span class="lineNum">     140 </span><span class="lineCov">         22 :         const auto&amp; mode =</span></a>
-<a name="141"><span class="lineNum">     141 </span><span class="lineCov">         22 :             std::get&lt;mode_data::index::value&gt;(std::tuple{std::cref(parents)...}).get();</span></a>
-<a name="142"><span class="lineNum">     142 </span><span class="lineCov">         22 :         utility::tree_recursor(visitor, mode);</span></a>
-<a name="143"><span class="lineNum">     143 </span>            : </a>
-<a name="144"><span class="lineNum">     144 </span>            :         // Now remove the original tokens as they refer to the aliased node</a>
-<a name="145"><span class="lineNum">     145 </span><span class="lineCov">         44 :         tokens.processed().erase(tokens.processed().begin(),</span></a>
-<a name="146"><span class="lineNum">     146 </span><span class="lineCov">         22 :                                  tokens.processed().begin() + count + 1);</span></a>
-<a name="147"><span class="lineNum">     147 </span>            : </a>
-<a name="148"><span class="lineNum">     148 </span>            :         // The owning node's name checker will fail us now (because we removed this node's label</a>
-<a name="149"><span class="lineNum">     149 </span>            :         // token), but we still want to keep the processed and unprocessed container changes for</a>
-<a name="150"><span class="lineNum">     150 </span>            :         // later processing</a>
-<a name="151"><span class="lineNum">     151 </span><span class="lineCov">         22 :         return parsing::pre_parse_action::skip_node_but_use_sub_targets;</span></a>
-<a name="152"><span class="lineNum">     152 </span><span class="lineCov">         29 :     }</span></a>
-<a name="153"><span class="lineNum">     153 </span>            : </a>
-<a name="154"><span class="lineNum">     154 </span>            : private:</a>
-<a name="155"><span class="lineNum">     155 </span>            :     template &lt;typename T&gt;</a>
-<a name="156"><span class="lineNum">     156 </span>            :     struct policy_checker {</a>
-<a name="157"><span class="lineNum">     157 </span>            :         constexpr static auto value =</a>
-<a name="158"><span class="lineNum">     158 </span>            :             traits::has_long_name_method_v&lt;T&gt; || traits::has_short_name_method_v&lt;T&gt;;</a>
-<a name="159"><span class="lineNum">     159 </span>            :     };</a>
-<a name="160"><span class="lineNum">     160 </span>            : </a>
-<a name="161"><span class="lineNum">     161 </span>            :     static_assert((sizeof...(AliasedPolicies) &gt; 0), &quot;At least one name needed for alias&quot;);</a>
-<a name="162"><span class="lineNum">     162 </span>            :     static_assert(policy::is_all_policies_v&lt;aliased_policies_type&gt;,</a>
-<a name="163"><span class="lineNum">     163 </span>            :                   &quot;All parameters must be policies&quot;);</a>
-<a name="164"><span class="lineNum">     164 </span>            :     static_assert(boost::mp11::mp_all_of&lt;aliased_policies_type, policy_checker&gt;::value,</a>
-<a name="165"><span class="lineNum">     165 </span>            :                   &quot;All parameters must provide a long and/or short form name&quot;);</a>
-<a name="166"><span class="lineNum">     166 </span>            : </a>
-<a name="167"><span class="lineNum">     167 </span>            :     template &lt;typename NodeType&gt;</a>
-<a name="168"><span class="lineNum">     168 </span>            :     [[nodiscard]] constexpr static std::size_t node_fixed_count() noexcept</a>
-<a name="169"><span class="lineNum">     169 </span>            :     {</a>
-<a name="170"><span class="lineNum">     170 </span>            :         static_assert(traits::has_minimum_count_method_v&lt;NodeType&gt; &amp;&amp;</a>
-<a name="171"><span class="lineNum">     171 </span>            :                           traits::has_maximum_count_method_v&lt;NodeType&gt;,</a>
-<a name="172"><span class="lineNum">     172 </span>            :                       &quot;Aliased nodes must have minimum and maximum count methods&quot;);</a>
-<a name="173"><span class="lineNum">     173 </span>            :         static_assert(NodeType::minimum_count() == NodeType::maximum_count(),</a>
-<a name="174"><span class="lineNum">     174 </span>            :                       &quot;Aliased nodes must have a fixed count&quot;);</a>
-<a name="175"><span class="lineNum">     175 </span>            : </a>
-<a name="176"><span class="lineNum">     176 </span>            :         return NodeType::minimum_count();</a>
-<a name="177"><span class="lineNum">     177 </span>            :     }</a>
-<a name="178"><span class="lineNum">     178 </span>            : </a>
-<a name="179"><span class="lineNum">     179 </span>            :     // Starting from ModeType, recurse down through the tree and find all the nodes referred to in</a>
-<a name="180"><span class="lineNum">     180 </span>            :     // AliasPolicies</a>
-<a name="181"><span class="lineNum">     181 </span>            :     template &lt;typename AliasPoliciesTuple, typename ModeType&gt;</a>
-<a name="182"><span class="lineNum">     182 </span>            :     struct alias_targets {</a>
-<a name="183"><span class="lineNum">     183 </span>            :         template &lt;typename Current, typename... Parents&gt;</a>
-<a name="184"><span class="lineNum">     184 </span>            :         struct visitor {</a>
-<a name="185"><span class="lineNum">     185 </span>            :             // If current is one of the AliasedPolicies and Parents is not empty, then use the first</a>
-<a name="186"><span class="lineNum">     186 </span>            :             // element of Parents (i.e. the owning node of the name policy).  If not, then set to</a>
-<a name="187"><span class="lineNum">     187 </span>            :             // void</a>
-<a name="188"><span class="lineNum">     188 </span>            :             using type = boost::mp11::mp_eval_if_c&lt;</a>
-<a name="189"><span class="lineNum">     189 </span>            :                 !(boost::mp11::mp_contains&lt;AliasPoliciesTuple, Current&gt;::value &amp;&amp;</a>
-<a name="190"><span class="lineNum">     190 </span>            :                   (sizeof...(Parents) &gt; 0)),</a>
-<a name="191"><span class="lineNum">     191 </span>            :                 void,</a>
-<a name="192"><span class="lineNum">     192 </span>            :                 boost::mp11::mp_at,</a>
-<a name="193"><span class="lineNum">     193 </span>            :                 std::tuple&lt;Parents...&gt;,</a>
-<a name="194"><span class="lineNum">     194 </span>            :                 traits::integral_constant&lt;std::size_t{0}&gt;&gt;;</a>
-<a name="195"><span class="lineNum">     195 </span>            :         };</a>
-<a name="196"><span class="lineNum">     196 </span>            : </a>
-<a name="197"><span class="lineNum">     197 </span>            :         using type =</a>
-<a name="198"><span class="lineNum">     198 </span>            :             boost::mp11::mp_remove_if&lt;utility::tree_type_recursor_collector_t&lt;visitor, ModeType&gt;,</a>
-<a name="199"><span class="lineNum">     199 </span>            :                                       std::is_void&gt;;</a>
-<a name="200"><span class="lineNum">     200 </span>            : </a>
-<a name="201"><span class="lineNum">     201 </span>            :         static_assert(std::tuple_size_v&lt;type&gt; == std::tuple_size_v&lt;AliasPoliciesTuple&gt;,</a>
-<a name="202"><span class="lineNum">     202 </span>            :                       &quot;Number of found modes must match alias policy count&quot;);</a>
-<a name="203"><span class="lineNum">     203 </span>            :         static_assert(std::tuple_size_v&lt;boost::mp11::mp_unique&lt;type&gt;&gt; == std::tuple_size_v&lt;type&gt;,</a>
-<a name="204"><span class="lineNum">     204 </span>            :                       &quot;Node alias list must be unique, do you have short and long &quot;</a>
-<a name="205"><span class="lineNum">     205 </span>            :                       &quot;names from the same node?&quot;);</a>
-<a name="206"><span class="lineNum">     206 </span>            :     };</a>
-<a name="207"><span class="lineNum">     207 </span>            : </a>
-<a name="208"><span class="lineNum">     208 </span>            :     template &lt;typename AliasNodesTuple, typename ModeType&gt;</a>
-<a name="209"><span class="lineNum">     209 </span>            :     struct cyclic_dependency_checker {</a>
-<a name="210"><span class="lineNum">     210 </span>            :         // For each alias, find all of its alias, stop when there are no more or if you hit this</a>
-<a name="211"><span class="lineNum">     211 </span>            :         // policy - static_assert</a>
-<a name="212"><span class="lineNum">     212 </span>            :         template &lt;std::size_t I, typename Nodes&gt;</a>
-<a name="213"><span class="lineNum">     213 </span>            :         [[nodiscard]] constexpr static bool check() noexcept</a>
-<a name="214"><span class="lineNum">     214 </span>            :         {</a>
-<a name="215"><span class="lineNum">     215 </span>            :             if constexpr (I &gt;= std::tuple_size_v&lt;Nodes&gt;) {</a>
-<a name="216"><span class="lineNum">     216 </span>            :                 return true;</a>
-<a name="217"><span class="lineNum">     217 </span>            :             } else {</a>
-<a name="218"><span class="lineNum">     218 </span>            :                 using aliased_type = std::tuple_element_t&lt;I, Nodes&gt;;</a>
-<a name="219"><span class="lineNum">     219 </span>            :                 if constexpr (algorithm::has_specialisation_v&lt;</a>
-<a name="220"><span class="lineNum">     220 </span>            :                                   alias_t,</a>
-<a name="221"><span class="lineNum">     221 </span>            :                                   typename aliased_type::policies_type&gt;) {</a>
-<a name="222"><span class="lineNum">     222 </span>            :                     if constexpr (boost::mp11::mp_contains&lt;typename aliased_type::policies_type,</a>
-<a name="223"><span class="lineNum">     223 </span>            :                                                            alias_t&gt;::value) {</a>
-<a name="224"><span class="lineNum">     224 </span>            :                         return false;</a>
-<a name="225"><span class="lineNum">     225 </span>            :                     } else {</a>
-<a name="226"><span class="lineNum">     226 </span>            :                         using targets =</a>
-<a name="227"><span class="lineNum">     227 </span>            :                             typename alias_targets&lt;typename aliased_type::aliased_policies_type,</a>
-<a name="228"><span class="lineNum">     228 </span>            :                                                    ModeType&gt;::type;</a>
-<a name="229"><span class="lineNum">     229 </span>            : </a>
-<a name="230"><span class="lineNum">     230 </span>            :                         return check&lt;I + 1, boost::mp11::mp_append&lt;Nodes, targets&gt;&gt;();</a>
-<a name="231"><span class="lineNum">     231 </span>            :                     }</a>
-<a name="232"><span class="lineNum">     232 </span>            :                 }</a>
-<a name="233"><span class="lineNum">     233 </span>            : </a>
-<a name="234"><span class="lineNum">     234 </span>            :                 return check&lt;I + 1, Nodes&gt;();</a>
-<a name="235"><span class="lineNum">     235 </span>            :             }</a>
-<a name="236"><span class="lineNum">     236 </span>            :         }</a>
-<a name="237"><span class="lineNum">     237 </span>            : </a>
-<a name="238"><span class="lineNum">     238 </span>            :         constexpr static bool value = check&lt;0, AliasNodesTuple&gt;();</a>
-<a name="239"><span class="lineNum">     239 </span>            :     };</a>
-<a name="240"><span class="lineNum">     240 </span>            : </a>
-<a name="241"><span class="lineNum">     241 </span>            :     template &lt;std::size_t Count, typename TargetsTuple&gt;</a>
-<a name="242"><span class="lineNum">     242 </span><span class="lineCov">         29 :     constexpr static void check_target_counts() noexcept</span></a>
-<a name="243"><span class="lineNum">     243 </span>            :     {</a>
-<a name="244"><span class="lineNum">     244 </span><span class="lineCov">         67 :         utility::tuple_type_iterator&lt;TargetsTuple&gt;([](auto i) {</span></a>
-<a name="245"><span class="lineNum">     245 </span>            :             using target_type = std::tuple_element_t&lt;i, TargetsTuple&gt;;</a>
-<a name="246"><span class="lineNum">     246 </span>            : </a>
-<a name="247"><span class="lineNum">     247 </span>            :             static_assert(node_fixed_count&lt;target_type&gt;() == Count,</a>
-<a name="248"><span class="lineNum">     248 </span>            :                           &quot;All alias targets must have a count that matches the owner&quot;);</a>
-<a name="249"><span class="lineNum">     249 </span><span class="lineCov">         38 :         });</span></a>
-<a name="250"><span class="lineNum">     250 </span><span class="lineCov">         29 :     }</span></a>
-<a name="251"><span class="lineNum">     251 </span>            : };</a>
-<a name="252"><span class="lineNum">     252 </span>            : </a>
-<a name="253"><span class="lineNum">     253 </span>            : /** Constructs a alias_t with the given policies.</a>
-<a name="254"><span class="lineNum">     254 </span>            :  *</a>
-<a name="255"><span class="lineNum">     255 </span>            :  * This is used for similarity with arg_t.</a>
-<a name="256"><span class="lineNum">     256 </span>            :  * @tparam AliasedPolicies Pack of policies that define its behaviour</a>
-<a name="257"><span class="lineNum">     257 </span>            :  * @param policies Pack of policy instances</a>
-<a name="258"><span class="lineNum">     258 </span>            :  * @return Alias instance</a>
-<a name="259"><span class="lineNum">     259 </span>            :  */</a>
-<a name="260"><span class="lineNum">     260 </span>            : template &lt;typename... AliasedPolicies&gt;</a>
-<a name="261"><span class="lineNum">     261 </span><span class="lineCov">         14 : [[nodiscard]] constexpr auto alias(AliasedPolicies... policies) noexcept</span></a>
-<a name="262"><span class="lineNum">     262 </span>            : {</a>
-<a name="263"><span class="lineNum">     263 </span><span class="lineCov">         14 :     return alias_t{std::move(policies)...};</span></a>
-<a name="264"><span class="lineNum">     264 </span>            : }</a>
-<a name="265"><span class="lineNum">     265 </span>            : </a>
-<a name="266"><span class="lineNum">     266 </span>            : template &lt;typename... AliasedPolicies&gt;</a>
-<a name="267"><span class="lineNum">     267 </span>            : struct is_policy&lt;alias_t&lt;AliasedPolicies...&gt;&gt; : std::true_type {</a>
-<a name="268"><span class="lineNum">     268 </span>            : };</a>
-<a name="269"><span class="lineNum">     269 </span>            : }  // namespace arg_router::policy</a>
+<a name="106"><span class="lineNum">     106 </span><span class="lineCov">         17 :                 alias_label =</span></a>
+<a name="107"><span class="lineNum">     107 </span><span class="lineCov">         34 :                     parsing::get_token_type(std::get&lt;0&gt;(std::tuple{std::cref(parents)...}).get(),</span></a>
+<a name="108"><span class="lineNum">     108 </span><span class="lineCov">         17 :                                             alias_label.name);</span></a>
+<a name="109"><span class="lineNum">     109 </span><span class="lineCov">         17 :             }</span></a>
+<a name="110"><span class="lineNum">     110 </span>            : </a>
+<a name="111"><span class="lineNum">     111 </span><span class="lineCov">         28 :             if (!parsing::match&lt;node_type&gt;(alias_label)) {</span></a>
+<a name="112"><span class="lineNum">     112 </span><span class="lineCov">          6 :                 return parsing::pre_parse_action::skip_node;</span></a>
+<a name="113"><span class="lineNum">     113 </span>            :             }</a>
+<a name="114"><span class="lineNum">     114 </span>            :         }</a>
+<a name="115"><span class="lineNum">     115 </span>            : </a>
+<a name="116"><span class="lineNum">     116 </span>            :         // Attempt a transfer so we can guarantee that the original tokens are in the processed</a>
+<a name="117"><span class="lineNum">     117 </span>            :         // container (this is a no-op if they already are)</a>
+<a name="118"><span class="lineNum">     118 </span><span class="lineCov">         22 :         tokens.transfer(tokens.begin() + count);</span></a>
+<a name="119"><span class="lineNum">     119 </span>            : </a>
+<a name="120"><span class="lineNum">     120 </span>            :         // Now do the runtime target building</a>
+<a name="121"><span class="lineNum">     121 </span><span class="lineCov">        112 :         const auto visitor = [&amp;](const auto&amp; current, [[maybe_unused]] const auto&amp;... parents) {</span></a>
+<a name="122"><span class="lineNum">     122 </span>            :             using policies_type = typename std::decay_t&lt;decltype(current)&gt;::policies_type;</a>
+<a name="123"><span class="lineNum">     123 </span>            : </a>
+<a name="124"><span class="lineNum">     124 </span>            :             using intersection =</a>
+<a name="125"><span class="lineNum">     125 </span>            :                 boost::mp11::mp_set_intersection&lt;aliased_policies_type, policies_type&gt;;</a>
+<a name="126"><span class="lineNum">     126 </span>            : </a>
+<a name="127"><span class="lineNum">     127 </span>            :             if constexpr ((std::tuple_size_v&lt;intersection&gt;) &gt; 0) {</a>
+<a name="128"><span class="lineNum">     128 </span><span class="lineCov">         31 :                 auto target_tokens = vector&lt;parsing::token_type&gt;{};</span></a>
+<a name="129"><span class="lineNum">     129 </span><span class="lineCov">         31 :                 target_tokens.reserve(count);</span></a>
+<a name="130"><span class="lineNum">     130 </span>            : </a>
+<a name="131"><span class="lineNum">     131 </span><span class="lineCov">         31 :                 auto value_it = tokens.begin();</span></a>
+<a name="132"><span class="lineNum">     132 </span><span class="lineCov">         47 :                 for (auto j = 0u; j &lt; count; ++j) {</span></a>
+<a name="133"><span class="lineNum">     133 </span>            :                     // Pre-increment the value iterator so we skip over the label token</a>
+<a name="134"><span class="lineNum">     134 </span><span class="lineCov">         16 :                     target_tokens.push_back(*(++value_it));</span></a>
+<a name="135"><span class="lineNum">     135 </span><span class="lineCov">         16 :                 }</span></a>
+<a name="136"><span class="lineNum">     136 </span>            : </a>
+<a name="137"><span class="lineNum">     137 </span><span class="lineCov">         62 :                 target.add_sub_target({std::move(target_tokens),  //</span></a>
+<a name="138"><span class="lineNum">     138 </span><span class="lineCov">         31 :                                        current,</span></a>
+<a name="139"><span class="lineNum">     139 </span><span class="lineCov">         31 :                                        parents...});</span></a>
+<a name="140"><span class="lineNum">     140 </span><span class="lineCov">         31 :             }</span></a>
+<a name="141"><span class="lineNum">     141 </span><span class="lineCov">         90 :         };</span></a>
+<a name="142"><span class="lineNum">     142 </span><span class="lineCov">         22 :         const auto&amp; mode =</span></a>
+<a name="143"><span class="lineNum">     143 </span><span class="lineCov">         22 :             std::get&lt;mode_data::index::value&gt;(std::tuple{std::cref(parents)...}).get();</span></a>
+<a name="144"><span class="lineNum">     144 </span><span class="lineCov">         22 :         utility::tree_recursor(visitor, mode);</span></a>
+<a name="145"><span class="lineNum">     145 </span>            : </a>
+<a name="146"><span class="lineNum">     146 </span>            :         // Now remove the original tokens as they refer to the aliased node</a>
+<a name="147"><span class="lineNum">     147 </span><span class="lineCov">         44 :         tokens.processed().erase(tokens.processed().begin(),</span></a>
+<a name="148"><span class="lineNum">     148 </span><span class="lineCov">         22 :                                  tokens.processed().begin() + count + 1);</span></a>
+<a name="149"><span class="lineNum">     149 </span>            : </a>
+<a name="150"><span class="lineNum">     150 </span>            :         // The owning node's name checker will fail us now (because we removed this node's label</a>
+<a name="151"><span class="lineNum">     151 </span>            :         // token), but we still want to keep the processed and unprocessed container changes for</a>
+<a name="152"><span class="lineNum">     152 </span>            :         // later processing</a>
+<a name="153"><span class="lineNum">     153 </span><span class="lineCov">         22 :         return parsing::pre_parse_action::skip_node_but_use_sub_targets;</span></a>
+<a name="154"><span class="lineNum">     154 </span><span class="lineCov">         29 :     }</span></a>
+<a name="155"><span class="lineNum">     155 </span>            : </a>
+<a name="156"><span class="lineNum">     156 </span>            : private:</a>
+<a name="157"><span class="lineNum">     157 </span>            :     template &lt;typename T&gt;</a>
+<a name="158"><span class="lineNum">     158 </span>            :     struct policy_checker {</a>
+<a name="159"><span class="lineNum">     159 </span>            :         constexpr static auto value =</a>
+<a name="160"><span class="lineNum">     160 </span>            :             traits::has_long_name_method_v&lt;T&gt; || traits::has_short_name_method_v&lt;T&gt;;</a>
+<a name="161"><span class="lineNum">     161 </span>            :     };</a>
+<a name="162"><span class="lineNum">     162 </span>            : </a>
+<a name="163"><span class="lineNum">     163 </span>            :     static_assert((sizeof...(AliasedPolicies) &gt; 0), &quot;At least one name needed for alias&quot;);</a>
+<a name="164"><span class="lineNum">     164 </span>            :     static_assert(policy::is_all_policies_v&lt;aliased_policies_type&gt;,</a>
+<a name="165"><span class="lineNum">     165 </span>            :                   &quot;All parameters must be policies&quot;);</a>
+<a name="166"><span class="lineNum">     166 </span>            :     static_assert(boost::mp11::mp_all_of&lt;aliased_policies_type, policy_checker&gt;::value,</a>
+<a name="167"><span class="lineNum">     167 </span>            :                   &quot;All parameters must provide a long and/or short form name&quot;);</a>
+<a name="168"><span class="lineNum">     168 </span>            : </a>
+<a name="169"><span class="lineNum">     169 </span>            :     template &lt;typename NodeType&gt;</a>
+<a name="170"><span class="lineNum">     170 </span>            :     [[nodiscard]] constexpr static std::size_t node_fixed_count() noexcept</a>
+<a name="171"><span class="lineNum">     171 </span>            :     {</a>
+<a name="172"><span class="lineNum">     172 </span>            :         static_assert(traits::has_minimum_count_method_v&lt;NodeType&gt; &amp;&amp;</a>
+<a name="173"><span class="lineNum">     173 </span>            :                           traits::has_maximum_count_method_v&lt;NodeType&gt;,</a>
+<a name="174"><span class="lineNum">     174 </span>            :                       &quot;Aliased nodes must have minimum and maximum count methods&quot;);</a>
+<a name="175"><span class="lineNum">     175 </span>            :         static_assert(NodeType::minimum_count() == NodeType::maximum_count(),</a>
+<a name="176"><span class="lineNum">     176 </span>            :                       &quot;Aliased nodes must have a fixed count&quot;);</a>
+<a name="177"><span class="lineNum">     177 </span>            : </a>
+<a name="178"><span class="lineNum">     178 </span>            :         return NodeType::minimum_count();</a>
+<a name="179"><span class="lineNum">     179 </span>            :     }</a>
+<a name="180"><span class="lineNum">     180 </span>            : </a>
+<a name="181"><span class="lineNum">     181 </span>            :     // Starting from ModeType, recurse down through the tree and find all the nodes referred to in</a>
+<a name="182"><span class="lineNum">     182 </span>            :     // AliasPolicies</a>
+<a name="183"><span class="lineNum">     183 </span>            :     template &lt;typename AliasPoliciesTuple, typename ModeType&gt;</a>
+<a name="184"><span class="lineNum">     184 </span>            :     struct alias_targets {</a>
+<a name="185"><span class="lineNum">     185 </span>            :         template &lt;typename Current, typename... Parents&gt;</a>
+<a name="186"><span class="lineNum">     186 </span>            :         struct visitor {</a>
+<a name="187"><span class="lineNum">     187 </span>            :             // If current is one of the AliasedPolicies and Parents is not empty, then use the first</a>
+<a name="188"><span class="lineNum">     188 </span>            :             // element of Parents (i.e. the owning node of the name policy).  If not, then set to</a>
+<a name="189"><span class="lineNum">     189 </span>            :             // void</a>
+<a name="190"><span class="lineNum">     190 </span>            :             using type = boost::mp11::mp_eval_if_c&lt;</a>
+<a name="191"><span class="lineNum">     191 </span>            :                 !(boost::mp11::mp_contains&lt;AliasPoliciesTuple, Current&gt;::value &amp;&amp;</a>
+<a name="192"><span class="lineNum">     192 </span>            :                   (sizeof...(Parents) &gt; 0)),</a>
+<a name="193"><span class="lineNum">     193 </span>            :                 void,</a>
+<a name="194"><span class="lineNum">     194 </span>            :                 boost::mp11::mp_at,</a>
+<a name="195"><span class="lineNum">     195 </span>            :                 std::tuple&lt;Parents...&gt;,</a>
+<a name="196"><span class="lineNum">     196 </span>            :                 traits::integral_constant&lt;std::size_t{0}&gt;&gt;;</a>
+<a name="197"><span class="lineNum">     197 </span>            :         };</a>
+<a name="198"><span class="lineNum">     198 </span>            : </a>
+<a name="199"><span class="lineNum">     199 </span>            :         using type =</a>
+<a name="200"><span class="lineNum">     200 </span>            :             boost::mp11::mp_remove_if&lt;utility::tree_type_recursor_collector_t&lt;visitor, ModeType&gt;,</a>
+<a name="201"><span class="lineNum">     201 </span>            :                                       std::is_void&gt;;</a>
+<a name="202"><span class="lineNum">     202 </span>            : </a>
+<a name="203"><span class="lineNum">     203 </span>            :         static_assert(std::tuple_size_v&lt;type&gt; == std::tuple_size_v&lt;AliasPoliciesTuple&gt;,</a>
+<a name="204"><span class="lineNum">     204 </span>            :                       &quot;Number of found modes must match alias policy count&quot;);</a>
+<a name="205"><span class="lineNum">     205 </span>            :         static_assert(std::tuple_size_v&lt;boost::mp11::mp_unique&lt;type&gt;&gt; == std::tuple_size_v&lt;type&gt;,</a>
+<a name="206"><span class="lineNum">     206 </span>            :                       &quot;Node alias list must be unique, do you have short and long &quot;</a>
+<a name="207"><span class="lineNum">     207 </span>            :                       &quot;names from the same node?&quot;);</a>
+<a name="208"><span class="lineNum">     208 </span>            :     };</a>
+<a name="209"><span class="lineNum">     209 </span>            : </a>
+<a name="210"><span class="lineNum">     210 </span>            :     template &lt;typename AliasNodesTuple, typename ModeType&gt;</a>
+<a name="211"><span class="lineNum">     211 </span>            :     struct cyclic_dependency_checker {</a>
+<a name="212"><span class="lineNum">     212 </span>            :         // For each alias, find all of its alias, stop when there are no more or if you hit this</a>
+<a name="213"><span class="lineNum">     213 </span>            :         // policy - static_assert</a>
+<a name="214"><span class="lineNum">     214 </span>            :         template &lt;std::size_t I, typename Nodes&gt;</a>
+<a name="215"><span class="lineNum">     215 </span>            :         [[nodiscard]] constexpr static bool check() noexcept</a>
+<a name="216"><span class="lineNum">     216 </span>            :         {</a>
+<a name="217"><span class="lineNum">     217 </span>            :             if constexpr (I &gt;= std::tuple_size_v&lt;Nodes&gt;) {</a>
+<a name="218"><span class="lineNum">     218 </span>            :                 return true;</a>
+<a name="219"><span class="lineNum">     219 </span>            :             } else {</a>
+<a name="220"><span class="lineNum">     220 </span>            :                 using aliased_type = std::tuple_element_t&lt;I, Nodes&gt;;</a>
+<a name="221"><span class="lineNum">     221 </span>            :                 if constexpr (algorithm::has_specialisation_v&lt;</a>
+<a name="222"><span class="lineNum">     222 </span>            :                                   alias_t,</a>
+<a name="223"><span class="lineNum">     223 </span>            :                                   typename aliased_type::policies_type&gt;) {</a>
+<a name="224"><span class="lineNum">     224 </span>            :                     if constexpr (boost::mp11::mp_contains&lt;typename aliased_type::policies_type,</a>
+<a name="225"><span class="lineNum">     225 </span>            :                                                            alias_t&gt;::value) {</a>
+<a name="226"><span class="lineNum">     226 </span>            :                         return false;</a>
+<a name="227"><span class="lineNum">     227 </span>            :                     } else {</a>
+<a name="228"><span class="lineNum">     228 </span>            :                         using targets =</a>
+<a name="229"><span class="lineNum">     229 </span>            :                             typename alias_targets&lt;typename aliased_type::aliased_policies_type,</a>
+<a name="230"><span class="lineNum">     230 </span>            :                                                    ModeType&gt;::type;</a>
+<a name="231"><span class="lineNum">     231 </span>            : </a>
+<a name="232"><span class="lineNum">     232 </span>            :                         return check&lt;I + 1, boost::mp11::mp_append&lt;Nodes, targets&gt;&gt;();</a>
+<a name="233"><span class="lineNum">     233 </span>            :                     }</a>
+<a name="234"><span class="lineNum">     234 </span>            :                 }</a>
+<a name="235"><span class="lineNum">     235 </span>            : </a>
+<a name="236"><span class="lineNum">     236 </span>            :                 return check&lt;I + 1, Nodes&gt;();</a>
+<a name="237"><span class="lineNum">     237 </span>            :             }</a>
+<a name="238"><span class="lineNum">     238 </span>            :         }</a>
+<a name="239"><span class="lineNum">     239 </span>            : </a>
+<a name="240"><span class="lineNum">     240 </span>            :         constexpr static bool value = check&lt;0, AliasNodesTuple&gt;();</a>
+<a name="241"><span class="lineNum">     241 </span>            :     };</a>
+<a name="242"><span class="lineNum">     242 </span>            : </a>
+<a name="243"><span class="lineNum">     243 </span>            :     template &lt;std::size_t Count, typename TargetsTuple&gt;</a>
+<a name="244"><span class="lineNum">     244 </span><span class="lineCov">         29 :     constexpr static void check_target_counts() noexcept</span></a>
+<a name="245"><span class="lineNum">     245 </span>            :     {</a>
+<a name="246"><span class="lineNum">     246 </span><span class="lineCov">         67 :         utility::tuple_type_iterator&lt;TargetsTuple&gt;([](auto i) {</span></a>
+<a name="247"><span class="lineNum">     247 </span>            :             using target_type = std::tuple_element_t&lt;i, TargetsTuple&gt;;</a>
+<a name="248"><span class="lineNum">     248 </span>            : </a>
+<a name="249"><span class="lineNum">     249 </span>            :             static_assert(node_fixed_count&lt;target_type&gt;() == Count,</a>
+<a name="250"><span class="lineNum">     250 </span>            :                           &quot;All alias targets must have a count that matches the owner&quot;);</a>
+<a name="251"><span class="lineNum">     251 </span><span class="lineCov">         38 :         });</span></a>
+<a name="252"><span class="lineNum">     252 </span><span class="lineCov">         29 :     }</span></a>
+<a name="253"><span class="lineNum">     253 </span>            : };</a>
+<a name="254"><span class="lineNum">     254 </span>            : </a>
+<a name="255"><span class="lineNum">     255 </span>            : /** Constructs a alias_t with the given policies.</a>
+<a name="256"><span class="lineNum">     256 </span>            :  *</a>
+<a name="257"><span class="lineNum">     257 </span>            :  * This is used for similarity with arg_t.</a>
+<a name="258"><span class="lineNum">     258 </span>            :  * @tparam AliasedPolicies Pack of policies that define its behaviour</a>
+<a name="259"><span class="lineNum">     259 </span>            :  * @param policies Pack of policy instances</a>
+<a name="260"><span class="lineNum">     260 </span>            :  * @return Alias instance</a>
+<a name="261"><span class="lineNum">     261 </span>            :  */</a>
+<a name="262"><span class="lineNum">     262 </span>            : template &lt;typename... AliasedPolicies&gt;</a>
+<a name="263"><span class="lineNum">     263 </span><span class="lineCov">         14 : [[nodiscard]] constexpr auto alias(AliasedPolicies... policies) noexcept</span></a>
+<a name="264"><span class="lineNum">     264 </span>            : {</a>
+<a name="265"><span class="lineNum">     265 </span><span class="lineCov">         14 :     return alias_t{std::move(policies)...};</span></a>
+<a name="266"><span class="lineNum">     266 </span>            : }</a>
+<a name="267"><span class="lineNum">     267 </span>            : </a>
+<a name="268"><span class="lineNum">     268 </span>            : template &lt;typename... AliasedPolicies&gt;</a>
+<a name="269"><span class="lineNum">     269 </span>            : struct is_policy&lt;alias_t&lt;AliasedPolicies...&gt;&gt; : std::true_type {</a>
+<a name="270"><span class="lineNum">     270 </span>            : };</a>
+<a name="271"><span class="lineNum">     271 </span>            : }  // namespace arg_router::policy</a>
 </pre>
       </td>
     </tr>

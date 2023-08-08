@@ -31,13 +31,13 @@
             <td class="headerValue">arg_router Unit Test Code Coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">81</td>
-            <td class="headerCovTableEntry">81</td>
+            <td class="headerCovTableEntry">92</td>
+            <td class="headerCovTableEntry">92</td>
             <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2023-03-26 16:12:00</td>
+            <td class="headerValue">2023-08-08 16:25:45</td>
             <td></td>
           </tr>
           <tr>
@@ -113,10 +113,10 @@
 <a name="47"><span class="lineNum">      47 </span>            :          * @param offset Increment offset (can be negative)</a>
 <a name="48"><span class="lineNum">      48 </span>            :          * @return Reference to this</a>
 <a name="49"><span class="lineNum">      49 </span>            :          */</a>
-<a name="50"><span class="lineNum">      50 </span><span class="lineCov">       1111 :         iterator&amp; operator+=(difference_type offset) noexcept</span></a>
+<a name="50"><span class="lineNum">      50 </span><span class="lineCov">       1505 :         iterator&amp; operator+=(difference_type offset) noexcept</span></a>
 <a name="51"><span class="lineNum">      51 </span>            :         {</a>
-<a name="52"><span class="lineNum">      52 </span><span class="lineCov">       1111 :             i_ += offset;</span></a>
-<a name="53"><span class="lineNum">      53 </span><span class="lineCov">       1111 :             return *this;</span></a>
+<a name="52"><span class="lineNum">      52 </span><span class="lineCov">       1505 :             i_ += offset;</span></a>
+<a name="53"><span class="lineNum">      53 </span><span class="lineCov">       1505 :             return *this;</span></a>
 <a name="54"><span class="lineNum">      54 </span>            :         }</a>
 <a name="55"><span class="lineNum">      55 </span>            : </a>
 <a name="56"><span class="lineNum">      56 </span>            :         /** In-place decrement operator.</a>
@@ -132,9 +132,9 @@
 <a name="66"><span class="lineNum">      66 </span>            :          * @param offset</a>
 <a name="67"><span class="lineNum">      67 </span>            :          * @return Iterator</a>
 <a name="68"><span class="lineNum">      68 </span>            :          */</a>
-<a name="69"><span class="lineNum">      69 </span><span class="lineCov">       1060 :         [[nodiscard]] friend iterator operator+(iterator it, difference_type offset) noexcept</span></a>
+<a name="69"><span class="lineNum">      69 </span><span class="lineCov">       1340 :         [[nodiscard]] friend iterator operator+(iterator it, difference_type offset) noexcept</span></a>
 <a name="70"><span class="lineNum">      70 </span>            :         {</a>
-<a name="71"><span class="lineNum">      71 </span><span class="lineCov">       1060 :             return it += offset;</span></a>
+<a name="71"><span class="lineNum">      71 </span><span class="lineCov">       1340 :             return it += offset;</span></a>
 <a name="72"><span class="lineNum">      72 </span>            :         }</a>
 <a name="73"><span class="lineNum">      73 </span>            : </a>
 <a name="74"><span class="lineNum">      74 </span>            :         /** Decrement operator.</a>
@@ -238,7 +238,7 @@
 <a name="172"><span class="lineNum">     172 </span>            :          *</a>
 <a name="173"><span class="lineNum">     173 </span>            :          * @return Reference to this</a>
 <a name="174"><span class="lineNum">     174 </span>            :          */</a>
-<a name="175"><span class="lineNum">     175 </span><span class="lineCov">         23 :         iterator&amp; operator++() noexcept { return (*this += 1); }</span></a>
+<a name="175"><span class="lineNum">     175 </span><span class="lineCov">        137 :         iterator&amp; operator++() noexcept { return (*this += 1); }</span></a>
 <a name="176"><span class="lineNum">     176 </span>            : </a>
 <a name="177"><span class="lineNum">     177 </span>            :         /** Post-increment operator.</a>
 <a name="178"><span class="lineNum">     178 </span>            :          *</a>
@@ -273,15 +273,15 @@
 <a name="207"><span class="lineNum">     207 </span>            :          * @note Undefined if iterator is out of bounds</a>
 <a name="208"><span class="lineNum">     208 </span>            :          * @return Reference to element</a>
 <a name="209"><span class="lineNum">     209 </span>            :          */</a>
-<a name="210"><span class="lineNum">     210 </span><span class="lineCov">        444 :         [[nodiscard]] reference operator*() const noexcept</span></a>
+<a name="210"><span class="lineNum">     210 </span><span class="lineCov">        635 :         [[nodiscard]] reference operator*() const noexcept</span></a>
 <a name="211"><span class="lineNum">     211 </span>            :         {</a>
-<a name="212"><span class="lineNum">     212 </span><span class="lineCov">        444 :             if (i_ &gt;= static_cast&lt;difference_type&gt;(processed().size())) {</span></a>
-<a name="213"><span class="lineNum">     213 </span><span class="lineCov">        395 :                 const auto i = i_ - processed().size();</span></a>
-<a name="214"><span class="lineNum">     214 </span><span class="lineCov">        395 :                 return unprocessed()[i];</span></a>
+<a name="212"><span class="lineNum">     212 </span><span class="lineCov">        635 :             if (i_ &gt;= static_cast&lt;difference_type&gt;(processed().size())) {</span></a>
+<a name="213"><span class="lineNum">     213 </span><span class="lineCov">        586 :                 const auto i = i_ - processed().size();</span></a>
+<a name="214"><span class="lineNum">     214 </span><span class="lineCov">        586 :                 return unprocessed()[i];</span></a>
 <a name="215"><span class="lineNum">     215 </span>            :             }</a>
 <a name="216"><span class="lineNum">     216 </span>            : </a>
 <a name="217"><span class="lineNum">     217 </span><span class="lineCov">         49 :             return processed()[i_];</span></a>
-<a name="218"><span class="lineNum">     218 </span><span class="lineCov">        444 :         }</span></a>
+<a name="218"><span class="lineNum">     218 </span><span class="lineCov">        635 :         }</span></a>
 <a name="219"><span class="lineNum">     219 </span>            : </a>
 <a name="220"><span class="lineNum">     220 </span>            :         /** Structure dereference operator.</a>
 <a name="221"><span class="lineNum">     221 </span>            :          *</a>
@@ -308,21 +308,21 @@
 <a name="242"><span class="lineNum">     242 </span>            :          * @param other Instance to compare against</a>
 <a name="243"><span class="lineNum">     243 </span>            :          * @return True if equal</a>
 <a name="244"><span class="lineNum">     244 </span>            :          */</a>
-<a name="245"><span class="lineNum">     245 </span><span class="lineCov">         18 :         [[nodiscard]] bool operator==(iterator other) const noexcept</span></a>
+<a name="245"><span class="lineNum">     245 </span><span class="lineCov">        200 :         [[nodiscard]] bool operator==(iterator other) const noexcept</span></a>
 <a name="246"><span class="lineNum">     246 </span>            :         {</a>
-<a name="247"><span class="lineNum">     247 </span><span class="lineCov">         18 :             const auto is_this_end = is_end();</span></a>
-<a name="248"><span class="lineNum">     248 </span><span class="lineCov">         18 :             const auto is_other_end = other.is_end();</span></a>
+<a name="247"><span class="lineNum">     247 </span><span class="lineCov">        200 :             const auto is_this_end = is_end();</span></a>
+<a name="248"><span class="lineNum">     248 </span><span class="lineCov">        200 :             const auto is_other_end = other.is_end();</span></a>
 <a name="249"><span class="lineNum">     249 </span>            : </a>
 <a name="250"><span class="lineNum">     250 </span>            :             // Both end() iterators</a>
-<a name="251"><span class="lineNum">     251 </span><span class="lineCov">         18 :             if (is_this_end &amp;&amp; is_other_end) {</span></a>
-<a name="252"><span class="lineNum">     252 </span><span class="lineCov">          8 :                 return true;</span></a>
+<a name="251"><span class="lineNum">     251 </span><span class="lineCov">        200 :             if (is_this_end &amp;&amp; is_other_end) {</span></a>
+<a name="252"><span class="lineNum">     252 </span><span class="lineCov">         42 :                 return true;</span></a>
 <a name="253"><span class="lineNum">     253 </span>            :             }</a>
-<a name="254"><span class="lineNum">     254 </span><span class="lineCov">         10 :             if (is_this_end || is_other_end) {</span></a>
-<a name="255"><span class="lineNum">     255 </span><span class="lineCov">          9 :                 return false;</span></a>
+<a name="254"><span class="lineNum">     254 </span><span class="lineCov">        158 :             if (is_this_end || is_other_end) {</span></a>
+<a name="255"><span class="lineNum">     255 </span><span class="lineCov">        157 :                 return false;</span></a>
 <a name="256"><span class="lineNum">     256 </span>            :             }</a>
 <a name="257"><span class="lineNum">     257 </span>            : </a>
 <a name="258"><span class="lineNum">     258 </span><span class="lineCov">          1 :             return (owner_ == other.owner_) &amp;&amp; (i_ == other.i_);</span></a>
-<a name="259"><span class="lineNum">     259 </span><span class="lineCov">         18 :         }</span></a>
+<a name="259"><span class="lineNum">     259 </span><span class="lineCov">        200 :         }</span></a>
 <a name="260"><span class="lineNum">     260 </span>            : </a>
 <a name="261"><span class="lineNum">     261 </span>            :         /** Inequality operator.</a>
 <a name="262"><span class="lineNum">     262 </span>            :          *</a>
@@ -331,7 +331,7 @@
 <a name="265"><span class="lineNum">     265 </span>            :          * @param other Instance to compare against</a>
 <a name="266"><span class="lineNum">     266 </span>            :          * @return True if not equal</a>
 <a name="267"><span class="lineNum">     267 </span>            :          */</a>
-<a name="268"><span class="lineNum">     268 </span><span class="lineCov">         10 :         [[nodiscard]] bool operator!=(iterator other) const noexcept { return !(*this == other); }</span></a>
+<a name="268"><span class="lineNum">     268 </span><span class="lineCov">        190 :         [[nodiscard]] bool operator!=(iterator other) const noexcept { return !(*this == other); }</span></a>
 <a name="269"><span class="lineNum">     269 </span>            : </a>
 <a name="270"><span class="lineNum">     270 </span>            :         /** Updates the element with @a value.</a>
 <a name="271"><span class="lineNum">     271 </span>            :          *</a>
@@ -352,18 +352,18 @@
 <a name="286"><span class="lineNum">     286 </span>            :     private:</a>
 <a name="287"><span class="lineNum">     287 </span>            :         friend class dynamic_token_adapter;</a>
 <a name="288"><span class="lineNum">     288 </span>            : </a>
-<a name="289"><span class="lineNum">     289 </span><span class="lineCov">         14 :         iterator() : owner_{nullptr}, i_{0} {}</span></a>
+<a name="289"><span class="lineNum">     289 </span><span class="lineCov">         83 :         iterator() : owner_{nullptr}, i_{0} {}</span></a>
 <a name="290"><span class="lineNum">     290 </span>            : </a>
-<a name="291"><span class="lineNum">     291 </span><span class="lineCov">       1506 :         iterator(dynamic_token_adapter* owner, difference_type i) : owner_{owner}, i_{i} {}</span></a>
+<a name="291"><span class="lineNum">     291 </span><span class="lineCov">       1828 :         iterator(dynamic_token_adapter* owner, difference_type i) : owner_{owner}, i_{i} {}</span></a>
 <a name="292"><span class="lineNum">     292 </span>            : </a>
-<a name="293"><span class="lineNum">     293 </span><span class="lineCov">       1171 :         [[nodiscard]] bool is_end() const noexcept</span></a>
+<a name="293"><span class="lineNum">     293 </span><span class="lineCov">       1883 :         [[nodiscard]] bool is_end() const noexcept</span></a>
 <a name="294"><span class="lineNum">     294 </span>            :         {</a>
-<a name="295"><span class="lineNum">     295 </span><span class="lineCov">       1171 :             return !owner_ || (i_ &gt;= static_cast&lt;difference_type&gt;(owner_-&gt;size()));</span></a>
+<a name="295"><span class="lineNum">     295 </span><span class="lineCov">       1883 :             return !owner_ || (i_ &gt;= static_cast&lt;difference_type&gt;(owner_-&gt;size()));</span></a>
 <a name="296"><span class="lineNum">     296 </span>            :         }</a>
 <a name="297"><span class="lineNum">     297 </span>            : </a>
-<a name="298"><span class="lineNum">     298 </span><span class="lineCov">        927 :         [[nodiscard]] vector&lt;token_type&gt;&amp; processed() const { return *(owner_-&gt;processed_); }</span></a>
+<a name="298"><span class="lineNum">     298 </span><span class="lineCov">       1309 :         [[nodiscard]] vector&lt;token_type&gt;&amp; processed() const { return *(owner_-&gt;processed_); }</span></a>
 <a name="299"><span class="lineNum">     299 </span>            : </a>
-<a name="300"><span class="lineNum">     300 </span><span class="lineCov">        395 :         [[nodiscard]] vector&lt;token_type&gt;&amp; unprocessed() const { return *(owner_-&gt;unprocessed_); }</span></a>
+<a name="300"><span class="lineNum">     300 </span><span class="lineCov">        586 :         [[nodiscard]] vector&lt;token_type&gt;&amp; unprocessed() const { return *(owner_-&gt;unprocessed_); }</span></a>
 <a name="301"><span class="lineNum">     301 </span>            : </a>
 <a name="302"><span class="lineNum">     302 </span>            :         dynamic_token_adapter* owner_;</a>
 <a name="303"><span class="lineNum">     303 </span>            :         difference_type i_;</a>
@@ -374,14 +374,14 @@
 <a name="308"><span class="lineNum">     308 </span>            :      * @param processed Processed tokens container</a>
 <a name="309"><span class="lineNum">     309 </span>            :      * @param unprocessed Unprocessed tokens container</a>
 <a name="310"><span class="lineNum">     310 </span>            :      */</a>
-<a name="311"><span class="lineNum">     311 </span><span class="lineCov">       1251 :     dynamic_token_adapter(vector&lt;token_type&gt;&amp; processed, vector&lt;token_type&gt;&amp; unprocessed) :</span></a>
-<a name="312"><span class="lineNum">     312 </span><span class="lineCov">       1251 :         processed_{&amp;processed}, unprocessed_{&amp;unprocessed}</span></a>
+<a name="311"><span class="lineNum">     311 </span><span class="lineCov">       1516 :     dynamic_token_adapter(vector&lt;token_type&gt;&amp; processed, vector&lt;token_type&gt;&amp; unprocessed) :</span></a>
+<a name="312"><span class="lineNum">     312 </span><span class="lineCov">       1516 :         processed_{&amp;processed}, unprocessed_{&amp;unprocessed}</span></a>
 <a name="313"><span class="lineNum">     313 </span>            :     {</a>
 <a name="314"><span class="lineNum">     314 </span>            :         // Perform a reserve for all the tokens.  There is a resonable chance that more processed</a>
 <a name="315"><span class="lineNum">     315 </span>            :         // than unprocessed tokens will be needed (due to short-form expansion, value separation,</a>
 <a name="316"><span class="lineNum">     316 </span>            :         // etc.), but this should still dramatically reduce the number of allocations needed</a>
-<a name="317"><span class="lineNum">     317 </span><span class="lineCov">       1251 :         unprocessed_-&gt;reserve(size());</span></a>
-<a name="318"><span class="lineNum">     318 </span><span class="lineCov">       1251 :     }</span></a>
+<a name="317"><span class="lineNum">     317 </span><span class="lineCov">       1516 :         unprocessed_-&gt;reserve(size());</span></a>
+<a name="318"><span class="lineNum">     318 </span><span class="lineCov">       1516 :     }</span></a>
 <a name="319"><span class="lineNum">     319 </span>            : </a>
 <a name="320"><span class="lineNum">     320 </span>            :     /** Equality operator.</a>
 <a name="321"><span class="lineNum">     321 </span>            :      *</a>
@@ -410,102 +410,127 @@
 <a name="344"><span class="lineNum">     344 </span>            :      * front of the raw command line token container into it, using prefix_type::none.</a>
 <a name="345"><span class="lineNum">     345 </span>            :      * @return Begin iterator</a>
 <a name="346"><span class="lineNum">     346 </span>            :      */</a>
-<a name="347"><span class="lineNum">     347 </span><span class="lineCov">       1489 :     [[nodiscard]] iterator begin() { return {this, 0}; }</span></a>
+<a name="347"><span class="lineNum">     347 </span><span class="lineCov">       1811 :     [[nodiscard]] iterator begin() { return {this, 0}; }</span></a>
 <a name="348"><span class="lineNum">     348 </span>            : </a>
 <a name="349"><span class="lineNum">     349 </span>            :     /** Returns a one-past-the-end iterator.</a>
 <a name="350"><span class="lineNum">     350 </span>            :      *</a>
 <a name="351"><span class="lineNum">     351 </span>            :      * @return End iterator</a>
 <a name="352"><span class="lineNum">     352 </span>            :      */</a>
-<a name="353"><span class="lineNum">     353 </span><span class="lineCov">         14 :     [[nodiscard]] static iterator end() { return {}; }</span></a>
-<a name="354"><span class="lineNum">     354 </span>            : </a>
-<a name="355"><span class="lineNum">     355 </span>            :     /** Returns the count of all tokens, processed and unprocessed.</a>
-<a name="356"><span class="lineNum">     356 </span>            :      *</a>
-<a name="357"><span class="lineNum">     357 </span>            :      * @return Number of components</a>
-<a name="358"><span class="lineNum">     358 </span>            :      */</a>
-<a name="359"><span class="lineNum">     359 </span><span class="lineCov">       4536 :     [[nodiscard]] size_type size() const { return processed_-&gt;size() + unprocessed_-&gt;size(); }</span></a>
-<a name="360"><span class="lineNum">     360 </span>            : </a>
-<a name="361"><span class="lineNum">     361 </span>            :     /** @return True if there are no processed or unprocessed tokens.</a>
-<a name="362"><span class="lineNum">     362 </span>            :      */</a>
-<a name="363"><span class="lineNum">     363 </span><span class="lineCov">        387 :     [[nodiscard]] bool empty() const { return processed_-&gt;empty() &amp;&amp; unprocessed_-&gt;empty(); }</span></a>
-<a name="364"><span class="lineNum">     364 </span>            : </a>
-<a name="365"><span class="lineNum">     365 </span>            :     /** The underlying processed container.</a>
-<a name="366"><span class="lineNum">     366 </span>            :      *</a>
-<a name="367"><span class="lineNum">     367 </span>            :      * @return Processed container reference</a>
-<a name="368"><span class="lineNum">     368 </span>            :      */</a>
-<a name="369"><span class="lineNum">     369 </span><span class="lineCov">         66 :     [[nodiscard]] vector&lt;value_type&gt;&amp; processed() { return *processed_; }</span></a>
-<a name="370"><span class="lineNum">     370 </span>            : </a>
-<a name="371"><span class="lineNum">     371 </span>            :     /** The underlying unprocessed container.</a>
-<a name="372"><span class="lineNum">     372 </span>            :      *</a>
-<a name="373"><span class="lineNum">     373 </span>            :      * @return Unprocessed container reference</a>
-<a name="374"><span class="lineNum">     374 </span>            :      */</a>
-<a name="375"><span class="lineNum">     375 </span><span class="lineCov">        134 :     [[nodiscard]] vector&lt;value_type&gt;&amp; unprocessed() { return *unprocessed_; }</span></a>
-<a name="376"><span class="lineNum">     376 </span>            : </a>
-<a name="377"><span class="lineNum">     377 </span>            :     /** Inserts @a token at position @a it.</a>
-<a name="378"><span class="lineNum">     378 </span>            :      *</a>
-<a name="379"><span class="lineNum">     379 </span>            :      * @note No checking is performed that the iterator was created from the same adapter</a>
-<a name="380"><span class="lineNum">     380 </span>            :      * @param it Position to insert at</a>
-<a name="381"><span class="lineNum">     381 </span>            :      * @param value Value to insert</a>
-<a name="382"><span class="lineNum">     382 </span>            :      * @return Iterator to inserted value</a>
-<a name="383"><span class="lineNum">     383 </span>            :      */</a>
-<a name="384"><span class="lineNum">     384 </span><span class="lineCov">         17 :     iterator insert(iterator it, value_type value)</span></a>
-<a name="385"><span class="lineNum">     385 </span>            :     {</a>
-<a name="386"><span class="lineNum">     386 </span>            :         // Only transfer up to the element before the target position, otherwise we transfer that</a>
-<a name="387"><span class="lineNum">     387 </span>            :         // and then insert the new value, which isn't expected</a>
-<a name="388"><span class="lineNum">     388 </span><span class="lineCov">         17 :         transfer(it - 1);</span></a>
-<a name="389"><span class="lineNum">     389 </span><span class="lineCov">         17 :         auto processed_it = it.is_end() ? processed_-&gt;end() :  //</span></a>
-<a name="390"><span class="lineNum">     390 </span><span class="lineCov">          4 :                                           processed_-&gt;begin() + it.i_;</span></a>
-<a name="391"><span class="lineNum">     391 </span>            : </a>
-<a name="392"><span class="lineNum">     392 </span><span class="lineCov">         17 :         processed_-&gt;insert(processed_it, value);</span></a>
-<a name="393"><span class="lineNum">     393 </span><span class="lineCov">         17 :         return {this, it.i_};</span></a>
-<a name="394"><span class="lineNum">     394 </span>            :     }</a>
-<a name="395"><span class="lineNum">     395 </span>            : </a>
-<a name="396"><span class="lineNum">     396 </span>            :     /** Inserts the value in the range [ @a first, @a last ) at position @a it.</a>
-<a name="397"><span class="lineNum">     397 </span>            :      *</a>
-<a name="398"><span class="lineNum">     398 </span>            :      * @param it Position to start inserting at</a>
-<a name="399"><span class="lineNum">     399 </span>            :      * @param first Iterator to first instance in range to insert</a>
-<a name="400"><span class="lineNum">     400 </span>            :      * @param last One-past-the-end iterator of range to insert</a>
-<a name="401"><span class="lineNum">     401 </span>            :      * @return Iterator to first of the range inserted</a>
-<a name="402"><span class="lineNum">     402 </span>            :      */</a>
-<a name="403"><span class="lineNum">     403 </span>            :     template &lt;typename Iter&gt;</a>
-<a name="404"><span class="lineNum">     404 </span>            :     iterator insert(iterator it, Iter first, Iter last)</a>
-<a name="405"><span class="lineNum">     405 </span>            :     {</a>
-<a name="406"><span class="lineNum">     406 </span>            :         // Only transfer up to the element before the target position, otherwise we transfer that</a>
-<a name="407"><span class="lineNum">     407 </span>            :         // and then insert the new value, which isn't expected</a>
-<a name="408"><span class="lineNum">     408 </span>            :         transfer(it - 1);</a>
-<a name="409"><span class="lineNum">     409 </span>            :         auto processed_it = it.is_end() ? processed_-&gt;end() :  //</a>
-<a name="410"><span class="lineNum">     410 </span>            :                                           processed_-&gt;begin() + it.i_;</a>
-<a name="411"><span class="lineNum">     411 </span>            : </a>
-<a name="412"><span class="lineNum">     412 </span>            :         processed_-&gt;insert(processed_it, first, last);</a>
-<a name="413"><span class="lineNum">     413 </span>            :         return {this, it.i_};</a>
-<a name="414"><span class="lineNum">     414 </span>            :     }</a>
-<a name="415"><span class="lineNum">     415 </span>            : </a>
-<a name="416"><span class="lineNum">     416 </span>            :     /** Transfer elements from the raw command line token container to processed one up to and</a>
-<a name="417"><span class="lineNum">     417 </span>            :      * including the one represented by @a it.</a>
+<a name="353"><span class="lineNum">     353 </span>            :     // NOLINTNEXTLINE(readability-convert-member-functions-to-static)</a>
+<a name="354"><span class="lineNum">     354 </span><span class="lineCov">         83 :     [[nodiscard]] iterator end() { return {}; }</span></a>
+<a name="355"><span class="lineNum">     355 </span>            : </a>
+<a name="356"><span class="lineNum">     356 </span>            :     /** Returns the count of all tokens, processed and unprocessed.</a>
+<a name="357"><span class="lineNum">     357 </span>            :      *</a>
+<a name="358"><span class="lineNum">     358 </span>            :      * @return Number of components</a>
+<a name="359"><span class="lineNum">     359 </span>            :      */</a>
+<a name="360"><span class="lineNum">     360 </span><span class="lineCov">       4551 :     [[nodiscard]] size_type size() const { return processed_-&gt;size() + unprocessed_-&gt;size(); }</span></a>
+<a name="361"><span class="lineNum">     361 </span>            : </a>
+<a name="362"><span class="lineNum">     362 </span>            :     /** @return True if there are no processed or unprocessed tokens.</a>
+<a name="363"><span class="lineNum">     363 </span>            :      */</a>
+<a name="364"><span class="lineNum">     364 </span><span class="lineCov">        429 :     [[nodiscard]] bool empty() const { return processed_-&gt;empty() &amp;&amp; unprocessed_-&gt;empty(); }</span></a>
+<a name="365"><span class="lineNum">     365 </span>            : </a>
+<a name="366"><span class="lineNum">     366 </span>            :     /** The underlying processed container.</a>
+<a name="367"><span class="lineNum">     367 </span>            :      *</a>
+<a name="368"><span class="lineNum">     368 </span>            :      * @return Processed container reference</a>
+<a name="369"><span class="lineNum">     369 </span>            :      */</a>
+<a name="370"><span class="lineNum">     370 </span><span class="lineCov">        134 :     [[nodiscard]] vector&lt;value_type&gt;&amp; processed() { return *processed_; }</span></a>
+<a name="371"><span class="lineNum">     371 </span>            : </a>
+<a name="372"><span class="lineNum">     372 </span>            :     /** The underlying unprocessed container.</a>
+<a name="373"><span class="lineNum">     373 </span>            :      *</a>
+<a name="374"><span class="lineNum">     374 </span>            :      * @return Unprocessed container reference</a>
+<a name="375"><span class="lineNum">     375 </span>            :      */</a>
+<a name="376"><span class="lineNum">     376 </span><span class="lineCov">        134 :     [[nodiscard]] vector&lt;value_type&gt;&amp; unprocessed() { return *unprocessed_; }</span></a>
+<a name="377"><span class="lineNum">     377 </span>            : </a>
+<a name="378"><span class="lineNum">     378 </span>            :     /** Inserts @a token at position @a it.</a>
+<a name="379"><span class="lineNum">     379 </span>            :      *</a>
+<a name="380"><span class="lineNum">     380 </span>            :      * @note No checking is performed that the iterator was created from the same adapter</a>
+<a name="381"><span class="lineNum">     381 </span>            :      * @param it Position to insert at</a>
+<a name="382"><span class="lineNum">     382 </span>            :      * @param value Value to insert</a>
+<a name="383"><span class="lineNum">     383 </span>            :      * @return Iterator to inserted value</a>
+<a name="384"><span class="lineNum">     384 </span>            :      */</a>
+<a name="385"><span class="lineNum">     385 </span><span class="lineCov">         17 :     iterator insert(iterator it, value_type value)</span></a>
+<a name="386"><span class="lineNum">     386 </span>            :     {</a>
+<a name="387"><span class="lineNum">     387 </span>            :         // Only transfer up to the element before the target position, otherwise we transfer that</a>
+<a name="388"><span class="lineNum">     388 </span>            :         // and then insert the new value, which isn't expected</a>
+<a name="389"><span class="lineNum">     389 </span><span class="lineCov">         17 :         transfer(it - 1);</span></a>
+<a name="390"><span class="lineNum">     390 </span><span class="lineCov">         17 :         auto processed_it = it.is_end() ? processed_-&gt;end() :  //</span></a>
+<a name="391"><span class="lineNum">     391 </span><span class="lineCov">          4 :                                           processed_-&gt;begin() + it.i_;</span></a>
+<a name="392"><span class="lineNum">     392 </span>            : </a>
+<a name="393"><span class="lineNum">     393 </span><span class="lineCov">         17 :         processed_-&gt;insert(processed_it, value);</span></a>
+<a name="394"><span class="lineNum">     394 </span><span class="lineCov">         17 :         return {this, it.i_};</span></a>
+<a name="395"><span class="lineNum">     395 </span>            :     }</a>
+<a name="396"><span class="lineNum">     396 </span>            : </a>
+<a name="397"><span class="lineNum">     397 </span>            :     /** Inserts the value in the range [ @a first, @a last ) at position @a it.</a>
+<a name="398"><span class="lineNum">     398 </span>            :      *</a>
+<a name="399"><span class="lineNum">     399 </span>            :      * @param it Position to start inserting at</a>
+<a name="400"><span class="lineNum">     400 </span>            :      * @param first Iterator to first instance in range to insert</a>
+<a name="401"><span class="lineNum">     401 </span>            :      * @param last One-past-the-end iterator of range to insert</a>
+<a name="402"><span class="lineNum">     402 </span>            :      * @return Iterator to first of the range inserted</a>
+<a name="403"><span class="lineNum">     403 </span>            :      */</a>
+<a name="404"><span class="lineNum">     404 </span>            :     template &lt;typename Iter&gt;</a>
+<a name="405"><span class="lineNum">     405 </span>            :     iterator insert(iterator it, Iter first, Iter last)</a>
+<a name="406"><span class="lineNum">     406 </span>            :     {</a>
+<a name="407"><span class="lineNum">     407 </span>            :         // Only transfer up to the element before the target position, otherwise we transfer that</a>
+<a name="408"><span class="lineNum">     408 </span>            :         // and then insert the new value, which isn't expected</a>
+<a name="409"><span class="lineNum">     409 </span>            :         transfer(it - 1);</a>
+<a name="410"><span class="lineNum">     410 </span>            :         auto processed_it = it.is_end() ? processed_-&gt;end() :  //</a>
+<a name="411"><span class="lineNum">     411 </span>            :                                           processed_-&gt;begin() + it.i_;</a>
+<a name="412"><span class="lineNum">     412 </span>            : </a>
+<a name="413"><span class="lineNum">     413 </span>            :         processed_-&gt;insert(processed_it, first, last);</a>
+<a name="414"><span class="lineNum">     414 </span>            :         return {this, it.i_};</a>
+<a name="415"><span class="lineNum">     415 </span>            :     }</a>
+<a name="416"><span class="lineNum">     416 </span>            : </a>
+<a name="417"><span class="lineNum">     417 </span>            :     /** Erases the element at @a it.</a>
 <a name="418"><span class="lineNum">     418 </span>            :      *</a>
-<a name="419"><span class="lineNum">     419 </span>            :      * If @a it is before or within the processed container, then this is a no-op.</a>
-<a name="420"><span class="lineNum">     420 </span>            :      * @param it Iterator, and the preceding elements too, to transfer</a>
-<a name="421"><span class="lineNum">     421 </span>            :      */</a>
-<a name="422"><span class="lineNum">     422 </span><span class="lineCov">       1118 :     void transfer(iterator it)</span></a>
-<a name="423"><span class="lineNum">     423 </span>            :     {</a>
-<a name="424"><span class="lineNum">     424 </span>            :         // If the iterator is an end(), then consume all the unprocessed tokens</a>
-<a name="425"><span class="lineNum">     425 </span><span class="lineCov">       1118 :         if (it.is_end()) {</span></a>
-<a name="426"><span class="lineNum">     426 </span><span class="lineCov">         33 :             it.i_ = size() - 1;</span></a>
-<a name="427"><span class="lineNum">     427 </span><span class="lineCov">         33 :         }</span></a>
-<a name="428"><span class="lineNum">     428 </span>            : </a>
-<a name="429"><span class="lineNum">     429 </span><span class="lineCov">       1118 :         if ((it.i_ &lt; 0) || (it.i_ &lt; static_cast&lt;iterator::difference_type&gt;(processed_-&gt;size()))) {</span></a>
-<a name="430"><span class="lineNum">     430 </span><span class="lineCov">         80 :             return;</span></a>
-<a name="431"><span class="lineNum">     431 </span>            :         }</a>
-<a name="432"><span class="lineNum">     432 </span>            : </a>
-<a name="433"><span class="lineNum">     433 </span><span class="lineCov">       1038 :         const auto count = (it.i_ + 1) - processed_-&gt;size();</span></a>
-<a name="434"><span class="lineNum">     434 </span><span class="lineCov">       1038 :         processed_-&gt;insert(processed_-&gt;end(), unprocessed_-&gt;begin(), unprocessed_-&gt;begin() + count);</span></a>
-<a name="435"><span class="lineNum">     435 </span><span class="lineCov">       1038 :         unprocessed_-&gt;erase(unprocessed_-&gt;begin(), unprocessed_-&gt;begin() + count);</span></a>
-<a name="436"><span class="lineNum">     436 </span><span class="lineCov">       1118 :     }</span></a>
+<a name="419"><span class="lineNum">     419 </span>            :      * Does not perform any transfer between the process and unprocessed sides.</a>
+<a name="420"><span class="lineNum">     420 </span>            :      * @param it Element to remove.  If one-past-the-end iterator, this method is a no-op</a>
+<a name="421"><span class="lineNum">     421 </span>            :      * @return Element following the one removed</a>
+<a name="422"><span class="lineNum">     422 </span>            :      */</a>
+<a name="423"><span class="lineNum">     423 </span><span class="lineCov">         69 :     iterator erase(iterator it)</span></a>
+<a name="424"><span class="lineNum">     424 </span>            :     {</a>
+<a name="425"><span class="lineNum">     425 </span>            :         // If the iterator is an end(), it's a no-op</a>
+<a name="426"><span class="lineNum">     426 </span><span class="lineCov">         69 :         if (it.is_end()) {</span></a>
+<a name="427"><span class="lineNum">     427 </span><span class="lineCov">         33 :             return it;</span></a>
+<a name="428"><span class="lineNum">     428 </span>            :         }</a>
+<a name="429"><span class="lineNum">     429 </span>            : </a>
+<a name="430"><span class="lineNum">     430 </span><span class="lineCov">         36 :         const auto processed_size = static_cast&lt;iterator::difference_type&gt;(processed_-&gt;size());</span></a>
+<a name="431"><span class="lineNum">     431 </span><span class="lineCov">         36 :         if (it.i_ &lt; processed_size) {</span></a>
+<a name="432"><span class="lineNum">     432 </span><span class="lineCov">         35 :             processed_-&gt;erase(processed_-&gt;begin() + it.i_);</span></a>
+<a name="433"><span class="lineNum">     433 </span><span class="lineCov">         35 :         } else {</span></a>
+<a name="434"><span class="lineNum">     434 </span><span class="lineCov">          1 :             const auto offset = it.i_ - processed_size;</span></a>
+<a name="435"><span class="lineNum">     435 </span><span class="lineCov">          1 :             unprocessed_-&gt;erase(unprocessed_-&gt;begin() + offset);</span></a>
+<a name="436"><span class="lineNum">     436 </span>            :         }</a>
 <a name="437"><span class="lineNum">     437 </span>            : </a>
-<a name="438"><span class="lineNum">     438 </span>            : private:</a>
-<a name="439"><span class="lineNum">     439 </span>            :     vector&lt;token_type&gt;* processed_;</a>
-<a name="440"><span class="lineNum">     440 </span>            :     vector&lt;token_type&gt;* unprocessed_;</a>
-<a name="441"><span class="lineNum">     441 </span>            : };</a>
-<a name="442"><span class="lineNum">     442 </span>            : }  // namespace arg_router::parsing</a>
+<a name="438"><span class="lineNum">     438 </span><span class="lineCov">         36 :         return it;</span></a>
+<a name="439"><span class="lineNum">     439 </span><span class="lineCov">         69 :     }</span></a>
+<a name="440"><span class="lineNum">     440 </span>            : </a>
+<a name="441"><span class="lineNum">     441 </span>            :     /** Transfer elements from the raw command line token container to processed one up to and</a>
+<a name="442"><span class="lineNum">     442 </span>            :      * including the one represented by @a it.</a>
+<a name="443"><span class="lineNum">     443 </span>            :      *</a>
+<a name="444"><span class="lineNum">     444 </span>            :      * If @a it is before or within the processed container, then this is a no-op.</a>
+<a name="445"><span class="lineNum">     445 </span>            :      * @param it Iterator, and the preceding elements too, to transfer</a>
+<a name="446"><span class="lineNum">     446 </span>            :      */</a>
+<a name="447"><span class="lineNum">     447 </span><span class="lineCov">       1397 :     void transfer(iterator it)</span></a>
+<a name="448"><span class="lineNum">     448 </span>            :     {</a>
+<a name="449"><span class="lineNum">     449 </span>            :         // If the iterator is an end(), then consume all the unprocessed tokens</a>
+<a name="450"><span class="lineNum">     450 </span><span class="lineCov">       1397 :         if (it.is_end()) {</span></a>
+<a name="451"><span class="lineNum">     451 </span><span class="lineCov">         36 :             it.i_ = size() - 1;</span></a>
+<a name="452"><span class="lineNum">     452 </span><span class="lineCov">         36 :         }</span></a>
+<a name="453"><span class="lineNum">     453 </span>            : </a>
+<a name="454"><span class="lineNum">     454 </span><span class="lineCov">       1397 :         if ((it.i_ &lt; 0) || (it.i_ &lt; static_cast&lt;iterator::difference_type&gt;(processed_-&gt;size()))) {</span></a>
+<a name="455"><span class="lineNum">     455 </span><span class="lineCov">        141 :             return;</span></a>
+<a name="456"><span class="lineNum">     456 </span>            :         }</a>
+<a name="457"><span class="lineNum">     457 </span>            : </a>
+<a name="458"><span class="lineNum">     458 </span><span class="lineCov">       1256 :         const auto count = (it.i_ + 1) - processed_-&gt;size();</span></a>
+<a name="459"><span class="lineNum">     459 </span><span class="lineCov">       1256 :         processed_-&gt;insert(processed_-&gt;end(), unprocessed_-&gt;begin(), unprocessed_-&gt;begin() + count);</span></a>
+<a name="460"><span class="lineNum">     460 </span><span class="lineCov">       1256 :         unprocessed_-&gt;erase(unprocessed_-&gt;begin(), unprocessed_-&gt;begin() + count);</span></a>
+<a name="461"><span class="lineNum">     461 </span><span class="lineCov">       1397 :     }</span></a>
+<a name="462"><span class="lineNum">     462 </span>            : </a>
+<a name="463"><span class="lineNum">     463 </span>            : private:</a>
+<a name="464"><span class="lineNum">     464 </span>            :     vector&lt;token_type&gt;* processed_;</a>
+<a name="465"><span class="lineNum">     465 </span>            :     vector&lt;token_type&gt;* unprocessed_;</a>
+<a name="466"><span class="lineNum">     466 </span>            : };</a>
+<a name="467"><span class="lineNum">     467 </span>            : }  // namespace arg_router::parsing</a>
 </pre>
       </td>
     </tr>

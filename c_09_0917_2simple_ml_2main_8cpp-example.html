@@ -36,7 +36,7 @@
                         <td id="projectalign" style="padding-left: 0.5em;">
                             <div id="projectname">arg_router
                                 &#160;<span
-                                    id="projectnumber">1.3.0</span>
+                                    id="projectnumber">1.4.0</span>
                             </div>
                             <div id="projectbrief">C++ command line argument parsing and routing</div>
                         </td>
@@ -172,6 +172,10 @@ $(document).ready(function(){initNavTree('c_09_0917_2simple_ml_2main_8cpp-exampl
 <div class="line">                  <a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Valeur maximale dépassée&quot;</span>)&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::minimum_count_not_reached&gt;,</div>
 <div class="line">                  <a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Nombre minimum non atteint&quot;</span>)&gt;,</div>
+<div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::maximum_count_exceeded&gt;,</div>
+<div class="line">                  <a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Nombre maximal dépassé&quot;</span>)&gt;,</div>
+<div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::unknown_argument_with_suggestion&gt;,</div>
+<div class="line">                  <a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Argument inconnu : {}. Vouliez-vous dire { }?&quot;</span>)&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::mode_requires_arguments&gt;,</div>
 <div class="line">                  <a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Le mode nécessite des arguments&quot;</span>)&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::missing_required_argument&gt;,</div>
@@ -182,7 +186,9 @@ $(document).ready(function(){initNavTree('c_09_0917_2simple_ml_2main_8cpp-exampl
 <div class="line">                  <a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Argument dépendant manquant (doit être avant le jeton requis sur la ligne de &quot;</span></div>
 <div class="line">                     <span class="stringliteral">&quot;commande)&quot;</span>)&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::one_of_selected_type_mismatch&gt;,</div>
-<div class="line">                  <a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Un seul argument d&#39;un \&quot;One Of\&quot; peut être utilisé à la fois&quot;</span>)&gt;&gt;;</div>
+<div class="line">                  <a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Un seul argument d&#39;un \&quot;One Of\&quot; peut être utilisé à la fois&quot;</span>)&gt;,</div>
+<div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::missing_value_separator&gt;,</div>
+<div class="line">                  <a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;Attendu un séparateur de valeur&quot;</span>)&gt;&gt;;</div>
 <div class="line">};</div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">template</span> &lt;&gt;</div>
@@ -219,6 +225,10 @@ $(document).ready(function(){initNavTree('c_09_0917_2simple_ml_2main_8cpp-exampl
 <div class="line">                  <a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;最大値を超えました&quot;</span>)&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::minimum_count_not_reached&gt;,</div>
 <div class="line">                  <a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;最小数に達していません&quot;</span>)&gt;,</div>
+<div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::maximum_count_exceeded&gt;,</div>
+<div class="line">                  <a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;最大数を超えました&quot;</span>)&gt;,</div>
+<div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::unknown_argument_with_suggestion&gt;,</div>
+<div class="line">                  <a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;不明な引数 {}。 { } という意味でしたか？&quot;</span>)&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::mode_requires_arguments&gt;,</div>
 <div class="line">                  <a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;モードには引数が必要です&quot;</span>)&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::missing_required_argument&gt;,</div>
@@ -229,7 +239,9 @@ $(document).ready(function(){initNavTree('c_09_0917_2simple_ml_2main_8cpp-exampl
 <div class="line">            traits::integral_constant&lt;error_code::dependent_argument_missing&gt;,</div>
 <div class="line">            <a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;従属引数がありません (コマンドラインで必要なトークンの前に置く必要があります)&quot;</span>)&gt;,</div>
 <div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::one_of_selected_type_mismatch&gt;,</div>
-<div class="line">                  <a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;一度に許可される「One Of」引数は1つだけです&quot;</span>)&gt;&gt;;</div>
+<div class="line">                  <a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;一度に許可される「One Of」引数は1つだけです&quot;</span>)&gt;,</div>
+<div class="line">        std::pair&lt;traits::integral_constant&lt;error_code::missing_value_separator&gt;,</div>
+<div class="line">                  <a class="code" href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a>(<span class="stringliteral">&quot;値の区切り文字が必要です&quot;</span>)&gt;&gt;;</div>
 <div class="line">};</div>
 <div class="line">}  <span class="comment">// namespace arg_router::multi_lang</span></div>
 <div class="line"> </div>
@@ -320,13 +332,13 @@ $(document).ready(function(){initNavTree('c_09_0917_2simple_ml_2main_8cpp-exampl
 <div class="line">        })</div>
 <div class="line">        .parse(argc, argv);</div>
 <div class="line">}</div>
-<div class="ttc" id="acompile__time__string_8hpp_html_a741f251b243f90ef2b4d915e50d40bac"><div class="ttname"><a href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a></div><div class="ttdeci">#define S_(tok)</div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00546">compile_time_string.hpp:546</a></div></div>
+<div class="ttc" id="acompile__time__string_8hpp_html_a741f251b243f90ef2b4d915e50d40bac"><div class="ttname"><a href="compile__time__string_8hpp.html#a741f251b243f90ef2b4d915e50d40bac">S_</a></div><div class="ttdeci">#define S_(tok)</div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00572">compile_time_string.hpp:572</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1multi__lang_html"><div class="ttname"><a href="namespacearg__router_1_1multi__lang.html">arg_router::multi_lang</a></div><div class="ttdef"><b>Definition:</b> <a href="iso__locale_8hpp_source.html#l00009">iso_locale.hpp:10</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1policy_html_a50ebcd2455ba90ecbbcaf7d6aab2dc16"><div class="ttname"><a href="namespacearg__router_1_1policy.html#a50ebcd2455ba90ecbbcaf7d6aab2dc16">arg_router::policy::program_addendum</a></div><div class="ttdeci">constexpr auto program_addendum</div><div class="ttdef"><b>Definition:</b> <a href="program__addendum_8hpp_source.html#l00053">program_addendum.hpp:53</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1policy_html_ae4c0515ad6d58ea37fe121ee3f4a9861"><div class="ttname"><a href="namespacearg__router_1_1policy.html#ae4c0515ad6d58ea37fe121ee3f4a9861">arg_router::policy::program_intro</a></div><div class="ttdeci">constexpr auto program_intro</div><div class="ttdef"><b>Definition:</b> <a href="program__intro_8hpp_source.html#l00053">program_intro.hpp:53</a></div></div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00015">algorithm.hpp:16</a></div></div>
-<div class="ttc" id="anamespacearg__router_html_a1eb8c408da38619d624f435441efac48"><div class="ttname"><a href="namespacearg__router.html#a1eb8c408da38619d624f435441efac48">arg_router::help</a></div><div class="ttdeci">constexpr auto help(Policies... policies) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="help_8hpp_source.html#l00233">help.hpp:233</a></div></div>
-<div class="ttc" id="anamespacearg__router_html_a29537daeb3ba7d1b8749d3e1e9d83f1b"><div class="ttname"><a href="namespacearg__router.html#a29537daeb3ba7d1b8749d3e1e9d83f1b">arg_router::arg</a></div><div class="ttdeci">constexpr auto arg(Policies... policies) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="arg_8hpp_source.html#l00127">arg.hpp:127</a></div></div>
+<div class="ttc" id="anamespacearg__router_html_a1eb8c408da38619d624f435441efac48"><div class="ttname"><a href="namespacearg__router.html#a1eb8c408da38619d624f435441efac48">arg_router::help</a></div><div class="ttdeci">constexpr auto help(Policies... policies) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="help_8hpp_source.html#l00294">help.hpp:294</a></div></div>
+<div class="ttc" id="anamespacearg__router_html_a29537daeb3ba7d1b8749d3e1e9d83f1b"><div class="ttname"><a href="namespacearg__router.html#a29537daeb3ba7d1b8749d3e1e9d83f1b">arg_router::arg</a></div><div class="ttdeci">constexpr auto arg(Policies... policies) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="arg_8hpp_source.html#l00098">arg.hpp:98</a></div></div>
 </div><!-- fragment --> </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

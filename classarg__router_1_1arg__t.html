@@ -36,7 +36,7 @@
                         <td id="projectalign" style="padding-left: 0.5em;">
                             <div id="projectname">arg_router
                                 &#160;<span
-                                    id="projectnumber">1.3.0</span>
+                                    id="projectnumber">1.4.0</span>
                             </div>
                             <div id="projectbrief">C++ command line argument parsing and routing</div>
                         </td>
@@ -105,63 +105,42 @@ $(document).ready(function(){initNavTree('classarg__router_1_1arg__t.html',''); 
 <div class="dynheader">
 Inheritance diagram for arg_router::arg_t&lt; T, Policies &gt;:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="classarg__router_1_1arg__t__inherit__graph.svg" width="100%" height="383"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="classarg__router_1_1arg__t__inherit__graph.svg" width="420" height="126"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a76aed7b7c7feda5d7416f67fe0984a3c"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1arg__t.html#a76aed7b7c7feda5d7416f67fe0984a3c">value_type</a> = T</td></tr>
-<tr class="separator:a76aed7b7c7feda5d7416f67fe0984a3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4abf07952460156844b6c56b10e0d2f6"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1arg__t.html#a4abf07952460156844b6c56b10e0d2f6">value_type</a> = typename <a class="el" href="classarg__router_1_1multi__arg__base__t.html#a0662a098e302bc165783de0c3aeabcd7">parent_type::value_type</a></td></tr>
+<tr class="separator:a4abf07952460156844b6c56b10e0d2f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac0aa679a3badd50be31e252047f50462"><td class="memTemplParams" colspan="2">template&lt;bool Flatten&gt; </td></tr>
 <tr class="memitem:ac0aa679a3badd50be31e252047f50462"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1arg__t.html#ac0aa679a3badd50be31e252047f50462">help_data_type</a> = typename parent_type::template default_leaf_help_data_type&lt; Flatten &gt;</td></tr>
 <tr class="separator:ac0aa679a3badd50be31e252047f50462"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_types_classarg__router_1_1tree__node"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classarg__router_1_1tree__node')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node&lt; policy::min_max_count_t&lt; traits::integral_constant&lt; std::size_t{1}&gt;, traits::integral_constant&lt; std::size_t{1}&gt; &gt;, std::decay_t&lt; Policies &gt;... &gt;</a></td></tr>
-<tr class="memitem:a5a12205635e06b3b4ace0d8101419bcd inherit pub_types_classarg__router_1_1tree__node"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#a5a12205635e06b3b4ace0d8101419bcd">parameters_type</a> = std::tuple&lt; std::decay_t&lt; Params &gt;... &gt;</td></tr>
-<tr class="separator:a5a12205635e06b3b4ace0d8101419bcd inherit pub_types_classarg__router_1_1tree__node"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aec3a4f4e8c0b7d0b7a5d911b18fb9bc3 inherit pub_types_classarg__router_1_1tree__node"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#aec3a4f4e8c0b7d0b7a5d911b18fb9bc3">policies_type</a> = boost::mp11::mp_filter&lt; <a class="el" href="structarg__router_1_1policy_1_1is__policy.html">policy::is_policy</a>, <a class="el" href="classarg__router_1_1tree__node.html#a5a12205635e06b3b4ace0d8101419bcd">parameters_type</a> &gt;</td></tr>
-<tr class="separator:aec3a4f4e8c0b7d0b7a5d911b18fb9bc3 inherit pub_types_classarg__router_1_1tree__node"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4de37c3f0f065a96f2313d75dc154b1c inherit pub_types_classarg__router_1_1tree__node"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#a4de37c3f0f065a96f2313d75dc154b1c">priority_ordered_policies_type</a> = boost::mp11::mp_sort&lt; <a class="el" href="classarg__router_1_1tree__node.html#aec3a4f4e8c0b7d0b7a5d911b18fb9bc3">policies_type</a>, priority_order &gt;</td></tr>
-<tr class="separator:a4de37c3f0f065a96f2313d75dc154b1c inherit pub_types_classarg__router_1_1tree__node"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaaca33de60d8e9aad70c49df0b053b87 inherit pub_types_classarg__router_1_1tree__node"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#aaaca33de60d8e9aad70c49df0b053b87">children_type</a> = boost::mp11::mp_filter&lt; <a class="el" href="structarg__router_1_1is__tree__node.html">is_tree_node</a>, std::decay_t&lt; decltype(list_expander(std::declval&lt; std::decay_t&lt; Params &gt; &gt;()...))&gt; &gt;</td></tr>
-<tr class="separator:aaaca33de60d8e9aad70c49df0b053b87 inherit pub_types_classarg__router_1_1tree__node"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a86e94be4e7ea24708d9b6e7240393ea1 inherit pub_types_classarg__router_1_1tree__node"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#a86e94be4e7ea24708d9b6e7240393ea1">phase_finder_t</a> = typename phase_finder&lt; PolicyChecker, Args... &gt;::type</td></tr>
-<tr class="separator:a86e94be4e7ea24708d9b6e7240393ea1 inherit pub_types_classarg__router_1_1tree__node"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aebaa2b40574b8b3a7bf19b90b459b181"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1arg__t.html#aebaa2b40574b8b3a7bf19b90b459b181">arg_t</a> (Policies... policies) noexcept</td></tr>
 <tr class="separator:aebaa2b40574b8b3a7bf19b90b459b181"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acfda4ddc3ec2497e830c500477265daa"><td class="memTemplParams" colspan="2">template&lt;typename... Parents&gt; </td></tr>
-<tr class="memitem:acfda4ddc3ec2497e830c500477265daa"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classarg__router_1_1arg__t.html#a76aed7b7c7feda5d7416f67fe0984a3c">value_type</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1arg__t.html#acfda4ddc3ec2497e830c500477265daa">parse</a> (<a class="el" href="classarg__router_1_1parsing_1_1parse__target.html">parsing::parse_target</a> &amp;&amp;target, const Parents &amp;... parents) const</td></tr>
-<tr class="separator:acfda4ddc3ec2497e830c500477265daa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_methods_classarg__router_1_1tree__node"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classarg__router_1_1tree__node')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node&lt; policy::min_max_count_t&lt; traits::integral_constant&lt; std::size_t{1}&gt;, traits::integral_constant&lt; std::size_t{1}&gt; &gt;, std::decay_t&lt; Policies &gt;... &gt;</a></td></tr>
-<tr class="memitem:af215c7c6d0b8639df1b7dab770803884 inherit pub_methods_classarg__router_1_1tree__node"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classarg__router_1_1tree__node.html#aaaca33de60d8e9aad70c49df0b053b87">children_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#af215c7c6d0b8639df1b7dab770803884">children</a> () noexcept</td></tr>
-<tr class="separator:af215c7c6d0b8639df1b7dab770803884 inherit pub_methods_classarg__router_1_1tree__node"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aad874ddd4fb241b3e162f10d1528fa9f inherit pub_methods_classarg__router_1_1tree__node"><td class="memItemLeft" align="right" valign="top">constexpr const <a class="el" href="classarg__router_1_1tree__node.html#aaaca33de60d8e9aad70c49df0b053b87">children_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#aad874ddd4fb241b3e162f10d1528fa9f">children</a> () const noexcept</td></tr>
-<tr class="separator:aad874ddd4fb241b3e162f10d1528fa9f inherit pub_methods_classarg__router_1_1tree__node"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
-<tr class="inherit_header pub_static_attribs_classarg__router_1_1tree__node"><td colspan="2" onclick="javascript:toggleInherit('pub_static_attribs_classarg__router_1_1tree__node')"><img src="closed.png" alt="-"/>&#160;Static Public Attributes inherited from <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node&lt; policy::min_max_count_t&lt; traits::integral_constant&lt; std::size_t{1}&gt;, traits::integral_constant&lt; std::size_t{1}&gt; &gt;, std::decay_t&lt; Policies &gt;... &gt;</a></td></tr>
-<tr class="memitem:a399a9b60dfad8f22bc587615e250bed7 inherit pub_static_attribs_classarg__router_1_1tree__node"><td class="memItemLeft" align="right" valign="top">constexpr static auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#a399a9b60dfad8f22bc587615e250bed7">is_named</a></td></tr>
-<tr class="separator:a399a9b60dfad8f22bc587615e250bed7 inherit pub_static_attribs_classarg__router_1_1tree__node"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a52b234a753c4866025c339a29ca0197c inherit pub_static_attribs_classarg__router_1_1tree__node"><td class="memItemLeft" align="right" valign="top">constexpr static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#a52b234a753c4866025c339a29ca0197c">any_phases_v</a></td></tr>
-<tr class="separator:a52b234a753c4866025c339a29ca0197c inherit pub_static_attribs_classarg__router_1_1tree__node"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pro_methods_classarg__router_1_1tree__node"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classarg__router_1_1tree__node')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node&lt; policy::min_max_count_t&lt; traits::integral_constant&lt; std::size_t{1}&gt;, traits::integral_constant&lt; std::size_t{1}&gt; &gt;, std::decay_t&lt; Policies &gt;... &gt;</a></td></tr>
-<tr class="memitem:a9a32b8c521d12ba9f8880805f905ef33 inherit pro_methods_classarg__router_1_1tree__node"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#a9a32b8c521d12ba9f8880805f905ef33">tree_node</a> (Params... params) noexcept</td></tr>
-<tr class="separator:a9a32b8c521d12ba9f8880805f905ef33 inherit pro_methods_classarg__router_1_1tree__node"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af40bd11c46f72002e5a32f5c5d3c830e inherit pro_methods_classarg__router_1_1tree__node"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="classarg__router_1_1parsing_1_1parse__target.html">parsing::parse_target</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#af40bd11c46f72002e5a32f5c5d3c830e">pre_parse</a> (<a class="el" href="classarg__router_1_1parsing_1_1pre__parse__data.html">parsing::pre_parse_data</a>&lt; Validator, HasTarget &gt; pre_parse_data, const Node &amp;node, const Parents &amp;... parents) const</td></tr>
-<tr class="separator:af40bd11c46f72002e5a32f5c5d3c830e inherit pro_methods_classarg__router_1_1tree__node"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2a8f5775af1259c3c3363160456dd94e inherit pro_methods_classarg__router_1_1tree__node"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node.html#a2a8f5775af1259c3c3363160456dd94e">parse</a> (std::string_view token, const Parents &amp;... parents) const</td></tr>
-<tr class="separator:a2a8f5775af1259c3c3363160456dd94e inherit pro_methods_classarg__router_1_1tree__node"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_types_classarg__router_1_1multi__arg__base__t"><td colspan="2" onclick="javascript:toggleInherit('pro_types_classarg__router_1_1multi__arg__base__t')"><img src="closed.png" alt="-"/>&#160;Protected Types inherited from <a class="el" href="classarg__router_1_1multi__arg__base__t.html">arg_router::multi_arg_base_t&lt; T, 1, policy::min_max_count_t&lt; traits::integral_constant&lt; std::size_t{1}&gt;, traits::integral_constant&lt; std::size_t{1}&gt; &gt;, std::decay_t&lt; Policies &gt;... &gt;</a></td></tr>
+<tr class="memitem:a0662a098e302bc165783de0c3aeabcd7 inherit pro_types_classarg__router_1_1multi__arg__base__t"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1multi__arg__base__t.html#a0662a098e302bc165783de0c3aeabcd7">value_type</a> = T</td></tr>
+<tr class="separator:a0662a098e302bc165783de0c3aeabcd7 inherit pro_types_classarg__router_1_1multi__arg__base__t"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af43f139aef14bc4d5385ec62517811a5 inherit pro_types_classarg__router_1_1multi__arg__base__t"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1multi__arg__base__t.html#af43f139aef14bc4d5385ec62517811a5">help_data_type</a> = typename parent_type::template default_leaf_help_data_type&lt; Flatten &gt;</td></tr>
+<tr class="separator:af43f139aef14bc4d5385ec62517811a5 inherit pro_types_classarg__router_1_1multi__arg__base__t"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_methods_classarg__router_1_1multi__arg__base__t"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classarg__router_1_1multi__arg__base__t')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classarg__router_1_1multi__arg__base__t.html">arg_router::multi_arg_base_t&lt; T, 1, policy::min_max_count_t&lt; traits::integral_constant&lt; std::size_t{1}&gt;, traits::integral_constant&lt; std::size_t{1}&gt; &gt;, std::decay_t&lt; Policies &gt;... &gt;</a></td></tr>
+<tr class="memitem:a219b24b8fd5f2cd79c294d071b2fefa0 inherit pro_methods_classarg__router_1_1multi__arg__base__t"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1multi__arg__base__t.html#a219b24b8fd5f2cd79c294d071b2fefa0">multi_arg_base_t</a> (Policies... policies, std::enable_if_t&lt; has_min_max &gt; *=nullptr) noexcept</td></tr>
+<tr class="separator:a219b24b8fd5f2cd79c294d071b2fefa0 inherit pro_methods_classarg__router_1_1multi__arg__base__t"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a204ae61a8301fa4d9572ec6dc60b1a16 inherit pro_methods_classarg__router_1_1multi__arg__base__t"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classarg__router_1_1multi__arg__base__t.html#a0662a098e302bc165783de0c3aeabcd7">value_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1multi__arg__base__t.html#a204ae61a8301fa4d9572ec6dc60b1a16">parse</a> (<a class="el" href="classarg__router_1_1parsing_1_1parse__target.html">parsing::parse_target</a> target, const Parents &amp;... parents) const</td></tr>
+<tr class="separator:a204ae61a8301fa4d9572ec6dc60b1a16 inherit pro_methods_classarg__router_1_1multi__arg__base__t"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename T, typename... Policies&gt;<br />
 class arg_router::arg_t&lt; T, Policies &gt;</h3>
 
-<p>Represents an argument on the command line that has a value that needs parsing.</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
+<p>Represents a named argument on the command line that has a value that needs parsing.</p>
+<p>Cannot have a none name or display name policy. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">T</td><td>Argument value type </td></tr>
     <tr><td class="paramname">Policies</td><td>Pack of policies that define its behaviour </td></tr>
@@ -188,12 +167,12 @@ template&lt;bool Flatten&gt; </div>
 </div><div class="memdoc">
 <p>Help data type. </p>
 
-<p class="definition">Definition at line <a class="el" href="arg_8hpp_source.html#l00049">49</a> of file <a class="el" href="arg_8hpp_source.html">arg.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="arg_8hpp_source.html#l00048">48</a> of file <a class="el" href="arg_8hpp_source.html">arg.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a76aed7b7c7feda5d7416f67fe0984a3c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a76aed7b7c7feda5d7416f67fe0984a3c">&#9670;&nbsp;</a></span>value_type</h2>
+<a id="a4abf07952460156844b6c56b10e0d2f6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4abf07952460156844b6c56b10e0d2f6">&#9670;&nbsp;</a></span>value_type</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -201,13 +180,13 @@ template&lt;bool Flatten&gt; </div>
 template&lt;typename T , typename... Policies&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="classarg__router_1_1arg__t.html">arg_router::arg_t</a>&lt; T, Policies &gt;::<a class="el" href="classarg__router_1_1arg__t.html#a76aed7b7c7feda5d7416f67fe0984a3c">value_type</a> =  T</td>
+          <td class="memname">using <a class="el" href="classarg__router_1_1arg__t.html">arg_router::arg_t</a>&lt; T, Policies &gt;::<a class="el" href="classarg__router_1_1arg__t.html#a4abf07952460156844b6c56b10e0d2f6">value_type</a> =  typename <a class="el" href="classarg__router_1_1multi__arg__base__t.html#a0662a098e302bc165783de0c3aeabcd7">parent_type::value_type</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p>Argument value type. </p>
 
-<p class="definition">Definition at line <a class="el" href="arg_8hpp_source.html#l00045">45</a> of file <a class="el" href="arg_8hpp_source.html">arg.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="arg_8hpp_source.html#l00044">44</a> of file <a class="el" href="arg_8hpp_source.html">arg.hpp</a>.</p>
 
 </div>
 </div>
@@ -245,71 +224,7 @@ template&lt;typename T , typename... Policies&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="arg_8hpp_source.html#l00055">55</a> of file <a class="el" href="arg_8hpp_source.html">arg.hpp</a>.</p>
-
-</div>
-</div>
-<h2 class="groupheader">Member Function Documentation</h2>
-<a id="acfda4ddc3ec2497e830c500477265daa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acfda4ddc3ec2497e830c500477265daa">&#9670;&nbsp;</a></span>parse()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T , typename... Policies&gt; </div>
-<div class="memtemplate">
-template&lt;typename... Parents&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classarg__router_1_1arg__t.html#a76aed7b7c7feda5d7416f67fe0984a3c">value_type</a> <a class="el" href="classarg__router_1_1arg__t.html">arg_router::arg_t</a>&lt; T, Policies &gt;::parse </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classarg__router_1_1parsing_1_1parse__target.html">parsing::parse_target</a> &amp;&amp;&#160;</td>
-          <td class="paramname"><em>target</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const Parents &amp;...&#160;</td>
-          <td class="paramname"><em>parents</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Parse function.</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">Parents</td><td>Pack of parent tree nodes in ascending ancestry order </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">target</td><td>Parse target </td></tr>
-    <tr><td class="paramname">parents</td><td>Parents instances pack </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Parsed result </dd></dl>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname"><a class="el" href="classarg__router_1_1multi__lang__exception.html">multi_lang_exception</a></td><td>Thrown if parsing failed </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="definition">Definition at line <a class="el" href="arg_8hpp_source.html#l00080">80</a> of file <a class="el" href="arg_8hpp_source.html">arg.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="arg_8hpp_source.html#l00054">54</a> of file <a class="el" href="arg_8hpp_source.html">arg.hpp</a>.</p>
 
 </div>
 </div>

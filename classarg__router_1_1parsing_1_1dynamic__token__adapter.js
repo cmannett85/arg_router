@@ -6,6 +6,8 @@ var classarg__router_1_1parsing_1_1dynamic__token__adapter =
     [ "dynamic_token_adapter", "classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a17882ec1fcfc2585fd92690c8ade4773", null ],
     [ "begin", "classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a04b621b16771796e5ab0156db3b2d2f3", null ],
     [ "empty", "classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a6cc731859742b7a38cdd8fae825d6e10", null ],
+    [ "end", "classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a2869a46bcc1f314f7123696b6914da5e", null ],
+    [ "erase", "classarg__router_1_1parsing_1_1dynamic__token__adapter.html#ac3144d4a8fb61b37fdbf6bd1d04004e2", null ],
     [ "insert", "classarg__router_1_1parsing_1_1dynamic__token__adapter.html#af812e6d9acacbaf22e122fc430f5449a", null ],
     [ "insert", "classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a60e1970a9326292a69012bb03631f09c", null ],
     [ "operator!=", "classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a58f0334ec34a75363d5b65376ae19cef", null ],

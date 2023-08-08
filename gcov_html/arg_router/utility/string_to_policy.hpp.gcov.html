@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2023-03-26 16:12:00</td>
+            <td class="headerValue">2023-08-08 16:25:45</td>
             <td></td>
           </tr>
           <tr>
@@ -102,9 +102,9 @@
 <a name="36"><span class="lineNum">      36 </span>            : };</a>
 <a name="37"><span class="lineNum">      37 </span>            : </a>
 <a name="38"><span class="lineNum">      38 </span>            : template &lt;typename U, typename... I&gt;</a>
-<a name="39"><span class="lineNum">      39 </span><span class="lineCov">        527 : [[nodiscard]] constexpr auto tuple_builder(U&amp;&amp; input, [[maybe_unused]] std::tuple&lt;I...&gt; Is) noexcept</span></a>
+<a name="39"><span class="lineNum">      39 </span><span class="lineCov">        784 : [[nodiscard]] constexpr auto tuple_builder(U&amp;&amp; input, [[maybe_unused]] std::tuple&lt;I...&gt; Is) noexcept</span></a>
 <a name="40"><span class="lineNum">      40 </span>            : {</a>
-<a name="41"><span class="lineNum">      41 </span><span class="lineCov">        527 :     return std::tuple{std::get&lt;I::value&gt;(std::forward&lt;U&gt;(input))...};</span></a>
+<a name="41"><span class="lineNum">      41 </span><span class="lineCov">        784 :     return std::tuple{std::get&lt;I::value&gt;(std::forward&lt;U&gt;(input))...};</span></a>
 <a name="42"><span class="lineNum">      42 </span>            : }</a>
 <a name="43"><span class="lineNum">      43 </span>            : }  // namespace detail</a>
 <a name="44"><span class="lineNum">      44 </span>            : </a>
@@ -249,7 +249,7 @@
 <a name="183"><span class="lineNum">     183 </span>            :  * @return Tuple of parameters</a>
 <a name="184"><span class="lineNum">     184 </span>            :  */</a>
 <a name="185"><span class="lineNum">     185 </span>            : template &lt;typename... Mappings, typename... Params&gt;</a>
-<a name="186"><span class="lineNum">     186 </span><span class="lineCov">        527 : [[nodiscard]] constexpr auto convert(Params&amp;&amp;... params) noexcept</span></a>
+<a name="186"><span class="lineNum">     186 </span><span class="lineCov">        784 : [[nodiscard]] constexpr auto convert(Params&amp;&amp;... params) noexcept</span></a>
 <a name="187"><span class="lineNum">     187 </span>            : {</a>
 <a name="188"><span class="lineNum">     188 </span>            :     // Zip together an index-sequence of ParamTuple and the elements of it</a>
 <a name="189"><span class="lineNum">     189 </span>            :     using zipped = algorithm::zip_t&lt;boost::mp11::mp_iota_c&lt;sizeof...(Params)&gt;,</a>
@@ -274,9 +274,9 @@
 <a name="208"><span class="lineNum">     208 </span>            :     static_assert(std::tuple_size_v&lt;strings&gt; == std::tuple_size_v&lt;mapped_tuple&gt;,</a>
 <a name="209"><span class="lineNum">     209 </span>            :                   &quot;Unhandled bare strings passed&quot;);</a>
 <a name="210"><span class="lineNum">     210 </span>            : </a>
-<a name="211"><span class="lineNum">     211 </span><span class="lineCov">        527 :     return std::tuple_cat(</span></a>
-<a name="212"><span class="lineNum">     212 </span><span class="lineCov">         41 :         mapped_tuple{},</span></a>
-<a name="213"><span class="lineNum">     213 </span><span class="lineCov">        527 :         detail::tuple_builder(std::tuple{std::forward&lt;Params&gt;(params)...}, not_string_indices{}));</span></a>
+<a name="211"><span class="lineNum">     211 </span><span class="lineCov">        784 :     return std::tuple_cat(</span></a>
+<a name="212"><span class="lineNum">     212 </span><span class="lineCov">         49 :         mapped_tuple{},</span></a>
+<a name="213"><span class="lineNum">     213 </span><span class="lineCov">        784 :         detail::tuple_builder(std::tuple{std::forward&lt;Params&gt;(params)...}, not_string_indices{}));</span></a>
 <a name="214"><span class="lineNum">     214 </span><span class="lineNoCov">          0 : }</span></a>
 <a name="215"><span class="lineNum">     215 </span>            : }  // namespace arg_router::utility::string_to_policy</a>
 </pre>

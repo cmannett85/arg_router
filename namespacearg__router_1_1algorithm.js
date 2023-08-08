@@ -7,6 +7,8 @@ var namespacearg__router_1_1algorithm =
     [ "zip", "classarg__router_1_1algorithm_1_1zip.html", "classarg__router_1_1algorithm_1_1zip" ],
     [ "unzip", "structarg__router_1_1algorithm_1_1unzip.html", "structarg__router_1_1algorithm_1_1unzip" ],
     [ "zip_t", "namespacearg__router_1_1algorithm.html#ae0c6e74281c42f23d11e9fc509f8d04e", null ],
+    [ "pack_element", "namespacearg__router_1_1algorithm.html#ab1b7ae507a6e1cc74c67fd8d3a1d0530", null ],
+    [ "tuple_drop", "namespacearg__router_1_1algorithm.html#a37e9b838f46a937706b8d36268a18e99", null ],
     [ "tuple_filter_and_construct", "namespacearg__router_1_1algorithm.html#afee764743bed099238c6c61bc6a0eb3e", null ],
     [ "tuple_push_back", "namespacearg__router_1_1algorithm.html#af16789df8b243585c3d1227368f46db1", null ],
     [ "count_despecialised_v", "namespacearg__router_1_1algorithm.html#a3d10a30c1904ec37a18ac240745029f1", null ],

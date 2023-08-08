@@ -1,13 +1,14 @@
 var searchData=
 [
-  ['decode_651',['decode',['../namespacearg__router_1_1utility_1_1utf8_1_1code__point.html#a33d5bdc2b5eda93913986b3a09ab0801',1,'arg_router::utility::utf8::code_point']]],
-  ['default_5fvalue_652',['default_value',['../classarg__router_1_1policy_1_1default__value.html#a2eb6d4062fd6aedfd256dd277ae0c390',1,'arg_router::policy::default_value']]],
-  ['dependent_653',['dependent',['../namespacearg__router_1_1policy.html#a0a1111553167ea9adc65c215f75c7f06',1,'arg_router::policy']]],
-  ['dependent_5ft_654',['dependent_t',['../classarg__router_1_1policy_1_1dependent__t.html#a316586bc2513b3036a26ec420ceb4a7a',1,'arg_router::policy::dependent_t']]],
-  ['description_655',['description',['../classarg__router_1_1policy_1_1description__t.html#aa39629c6d444bebb06149be2038dd11c',1,'arg_router::policy::description_t']]],
-  ['description_5fgenerator_656',['description_generator',['../classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html#a49d38138d669309d0ca415ef8bb4bd59',1,'arg_router::tree_node::default_leaf_help_data_type']]],
-  ['description_5ft_657',['description_t',['../classarg__router_1_1policy_1_1description__t.html#a622d6ea10c5883d4102005b3257a26e7',1,'arg_router::policy::description_t']]],
-  ['display_5fname_658',['display_name',['../classarg__router_1_1policy_1_1display__name__t.html#ab35dbd20fa97173c4e575750b6ed7adc',1,'arg_router::policy::display_name_t']]],
-  ['display_5fname_5ft_659',['display_name_t',['../classarg__router_1_1policy_1_1display__name__t.html#a251923e455d05557f2cb16a9ab703703',1,'arg_router::policy::display_name_t']]],
-  ['dynamic_5ftoken_5fadapter_660',['dynamic_token_adapter',['../classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a17882ec1fcfc2585fd92690c8ade4773',1,'arg_router::parsing::dynamic_token_adapter']]]
+  ['decode_752',['decode',['../namespacearg__router_1_1utility_1_1utf8_1_1code__point.html#a33d5bdc2b5eda93913986b3a09ab0801',1,'arg_router::utility::utf8::code_point']]],
+  ['default_5fvalue_753',['default_value',['../classarg__router_1_1policy_1_1default__value.html#a2eb6d4062fd6aedfd256dd277ae0c390',1,'arg_router::policy::default_value']]],
+  ['dependent_754',['dependent',['../namespacearg__router_1_1policy.html#a0a1111553167ea9adc65c215f75c7f06',1,'arg_router::policy']]],
+  ['dependent_5ft_755',['dependent_t',['../classarg__router_1_1policy_1_1dependent__t.html#a316586bc2513b3036a26ec420ceb4a7a',1,'arg_router::policy::dependent_t']]],
+  ['description_756',['description',['../classarg__router_1_1policy_1_1description__t.html#aa39629c6d444bebb06149be2038dd11c',1,'arg_router::policy::description_t']]],
+  ['description_5fgenerator_757',['description_generator',['../classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html#a49d38138d669309d0ca415ef8bb4bd59',1,'arg_router::tree_node::default_leaf_help_data_type']]],
+  ['description_5ft_758',['description_t',['../classarg__router_1_1policy_1_1description__t.html#a622d6ea10c5883d4102005b3257a26e7',1,'arg_router::policy::description_t']]],
+  ['display_5fname_759',['display_name',['../classarg__router_1_1policy_1_1display__name__t.html#ab35dbd20fa97173c4e575750b6ed7adc',1,'arg_router::policy::display_name_t']]],
+  ['display_5fname_5ft_760',['display_name_t',['../classarg__router_1_1policy_1_1display__name__t.html#a251923e455d05557f2cb16a9ab703703',1,'arg_router::policy::display_name_t']]],
+  ['dynamic_5fstring_5fview_761',['dynamic_string_view',['../classarg__router_1_1utility_1_1dynamic__string__view.html#aecd30dad1b7b1c1b1ca7e2db59053108',1,'arg_router::utility::dynamic_string_view::dynamic_string_view(std::string_view sv={}) noexcept'],['../classarg__router_1_1utility_1_1dynamic__string__view.html#ac6ea6e5ae0e27ec0601b55d80179382f',1,'arg_router::utility::dynamic_string_view::dynamic_string_view(const char *str) noexcept'],['../classarg__router_1_1utility_1_1dynamic__string__view.html#a6961e26afc443af02f1fc6678306e83d',1,'arg_router::utility::dynamic_string_view::dynamic_string_view(string &amp;&amp;str) noexcept'],['../classarg__router_1_1utility_1_1dynamic__string__view.html#abd4c76d1c7d375756eb1a2411270840b',1,'arg_router::utility::dynamic_string_view::dynamic_string_view(const dynamic_string_view &amp;other)'],['../classarg__router_1_1utility_1_1dynamic__string__view.html#a0b3e6c3a4fbf7549556825dd20be55aa',1,'arg_router::utility::dynamic_string_view::dynamic_string_view(dynamic_string_view &amp;&amp;other) noexcept']]],
+  ['dynamic_5ftoken_5fadapter_762',['dynamic_token_adapter',['../classarg__router_1_1parsing_1_1dynamic__token__adapter.html#a17882ec1fcfc2585fd92690c8ade4773',1,'arg_router::parsing::dynamic_token_adapter']]]
 ];

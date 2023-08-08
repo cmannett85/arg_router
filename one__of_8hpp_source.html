@@ -36,7 +36,7 @@
                         <td id="projectalign" style="padding-left: 0.5em;">
                             <div id="projectname">arg_router
                                 &#160;<span
-                                    id="projectnumber">1.3.0</span>
+                                    id="projectnumber">1.4.0</span>
                             </div>
                             <div id="projectbrief">C++ command line argument parsing and routing</div>
                         </td>
@@ -96,7 +96,7 @@ $(document).ready(function(){initNavTree('one__of_8hpp_source.html',''); initRes
 <div class="title">one_of.hpp</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">// Copyright (C) 2022 by Camden Mannett.</span></div>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">// Copyright (C) 2022-2023 by Camden Mannett.</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">// Distributed under the Boost Software License, Version 1.0.</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">// (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
@@ -138,82 +138,91 @@ $(document).ready(function(){initNavTree('one__of_8hpp_source.html',''); initRes
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keyword">public</span>:</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <span class="keyword">using</span> label = AR_STRING_SV(parent_type::display_name());</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <span class="keyword">using</span> description = AR_STRING(<span class="stringliteral">&quot;&quot;</span>);</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="keyword">using</span> children = <span class="keyword">typename</span> parent_type::template  <span class="comment">//</span></div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;            children_help_data_type&lt;Flatten&gt;::children;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    };</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
-<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="classarg__router_1_1dependency_1_1one__of__t.html#afac07df1bd7b42212ebe5230adbccc08">   61</a></span>&#160;    constexpr <span class="keyword">explicit</span> <a class="code" href="classarg__router_1_1dependency_1_1one__of__t.html#afac07df1bd7b42212ebe5230adbccc08">one_of_t</a>(Params... params) noexcept : parent_type{std::move(params)...} {}</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Validator, <span class="keywordtype">bool</span> HasTarget, <span class="keyword">typename</span>... Parents&gt;</div>
-<div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="classarg__router_1_1dependency_1_1one__of__t.html#a819700be1a3a8ebad828b0aa8a5d3501">   76</a></span>&#160;    [[nodiscard]] std::optional&lt;parsing::parse_target&gt; <a class="code" href="classarg__router_1_1dependency_1_1one__of__t.html#a819700be1a3a8ebad828b0aa8a5d3501">pre_parse</a>(</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        <a class="code" href="classarg__router_1_1parsing_1_1pre__parse__data.html">parsing::pre_parse_data&lt;Validator, HasTarget&gt;</a> pre_parse_data,</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        <span class="keyword">const</span> Parents&amp;... parents)<span class="keyword"> const</span></div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="keyword">    </span>{</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        <span class="comment">// We need to wrap the pre_parse_data validator so that we can catch child type mismatches</span></div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        <span class="comment">// before the caller&#39;s validation, otherwise the user can get misleading error messages</span></div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        <span class="keyword">const</span> <span class="keyword">auto</span> validator = [&amp;](<span class="keyword">const</span> <span class="keyword">auto</span>&amp; child, <span class="keyword">const</span> <span class="keyword">auto</span>&amp;... parents) {</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;            <span class="keyword">using</span> child_type = std::decay_t&lt;decltype(child)&gt;;</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;            <span class="keyword">auto</span> type_hash = utility::type_hash&lt;child_type&gt;();</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;            <span class="keywordflow">if</span> (last_typeid_) {</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                <span class="keywordflow">if</span> (type_hash != *last_typeid_) {</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                    <span class="keywordflow">throw</span> <a class="code" href="classarg__router_1_1multi__lang__exception.html">multi_lang_exception</a>{<a class="code" href="namespacearg__router.html#ab3c79c3c1cb22d86d1dac370a8733e56a6523b27f920fc7e96d93cc40a551a247">error_code::one_of_selected_type_mismatch</a>,</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;                                               parsing::node_token_type&lt;one_of_t&gt;()};</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;                }</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;            } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;                last_typeid_ = type_hash;</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;            }</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;            <span class="keywordflow">return</span> pre_parse_data.validator()(child, parents...);</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        };</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        <span class="keyword">auto</span> wrapper =</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;            std::optional&lt;<a class="code" href="classarg__router_1_1parsing_1_1pre__parse__data.html">parsing::pre_parse_data</a>&lt;std::decay_t&lt;decltype(validator)&gt;, HasTarget&gt;&gt;{};</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        <span class="keywordflow">if</span> constexpr (pre_parse_data.has_target) {</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;            wrapper =</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;                <a class="code" href="classarg__router_1_1parsing_1_1pre__parse__data.html">parsing::pre_parse_data</a>{pre_parse_data.args(), pre_parse_data.target(), validator};</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;            wrapper = <a class="code" href="classarg__router_1_1parsing_1_1pre__parse__data.html">parsing::pre_parse_data</a>{pre_parse_data.args(), validator};</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        }</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        <span class="keyword">auto</span> found = std::optional&lt;parsing::parse_target&gt;{};</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        <a class="code" href="namespacearg__router_1_1utility.html#a99e297c7383915d8754a23f4dcfa07b5">utility::tuple_iterator</a>(</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;            [&amp;](<span class="keyword">auto</span> <span class="comment">/*i*/</span>, <span class="keyword">const</span> <span class="keyword">auto</span>&amp; child) {</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;                <span class="keywordflow">if</span> (!found) {</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;                    found = child.pre_parse(*wrapper, parents...);</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;                    if (found) {</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;                        <span class="comment">// There is no requirement to use pre_parse_data validation, so we also</span></div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;                        <span class="comment">// need to manually check here</span></div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;                        validator(child, parents...);</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;                    }</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;                }</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;            },</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;            this-&gt;children());</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160; </div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;        <span class="keywordflow">return</span> found;</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    }</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160; </div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    <span class="keyword">mutable</span> std::optional&lt;std::size_t&gt; last_typeid_;</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;};</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160; </div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Params&gt;</div>
-<div class="line"><a name="l00135"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1dependency.html#ad9e4a23a552a65c5b7a7f66d3c63117a">  135</a></span>&#160;[[nodiscard]] constexpr <span class="keyword">auto</span> <a class="code" href="namespacearg__router_1_1dependency.html#ad9e4a23a552a65c5b7a7f66d3c63117a">one_of</a>(Params... params) noexcept</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;{</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classarg__router_1_1dependency_1_1one__of__t.html">one_of_t</a>{std::move(params)...};</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;}</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;}  <span class="comment">// namespace arg_router::dependency</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="keyword">using</span> children = <span class="keyword">typename</span> parent_type::template children_help_data_type&lt;Flatten&gt;::children;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> OwnerNode, <span class="keyword">typename</span> FilterFn&gt;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        [[nodiscard]] <span class="keyword">static</span> <a class="code" href="namespacearg__router.html#a3d789cf2175008b4124de867a13a2edf">vector&lt;runtime_help_data&gt;</a> runtime_children(<span class="keyword">const</span> OwnerNode&amp; owner,</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                                                                        FilterFn&amp;&amp; f)</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        {</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;            <span class="keywordflow">return</span> parent_type::template children_help_data_type&lt;Flatten&gt;::runtime_children(</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                owner,</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                std::forward&lt;FilterFn&gt;(f));</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        }</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    };</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00069"></a><span class="lineno"><a class="line" href="classarg__router_1_1dependency_1_1one__of__t.html#afac07df1bd7b42212ebe5230adbccc08">   69</a></span>&#160;    constexpr <span class="keyword">explicit</span> <a class="code" href="classarg__router_1_1dependency_1_1one__of__t.html#afac07df1bd7b42212ebe5230adbccc08">one_of_t</a>(Params... params) noexcept : parent_type{std::move(params)...} {}</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Validator, <span class="keywordtype">bool</span> HasTarget, <span class="keyword">typename</span>... Parents&gt;</div>
+<div class="line"><a name="l00084"></a><span class="lineno"><a class="line" href="classarg__router_1_1dependency_1_1one__of__t.html#a819700be1a3a8ebad828b0aa8a5d3501">   84</a></span>&#160;    [[nodiscard]] std::optional&lt;parsing::parse_target&gt; <a class="code" href="classarg__router_1_1dependency_1_1one__of__t.html#a819700be1a3a8ebad828b0aa8a5d3501">pre_parse</a>(</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        <a class="code" href="classarg__router_1_1parsing_1_1pre__parse__data.html">parsing::pre_parse_data&lt;Validator, HasTarget&gt;</a> pre_parse_data,</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        <span class="keyword">const</span> Parents&amp;... parents)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="keyword">    </span>{</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        <span class="comment">// We need to wrap the pre_parse_data validator so that we can catch child type mismatches</span></div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        <span class="comment">// before the caller&#39;s validation, otherwise the user can get misleading error messages</span></div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        <span class="keyword">const</span> <span class="keyword">auto</span> validator = [&amp;](<span class="keyword">const</span> <span class="keyword">auto</span>&amp; child, <span class="keyword">const</span> <span class="keyword">auto</span>&amp;... parents) {</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;            <span class="keyword">using</span> child_type = std::decay_t&lt;decltype(child)&gt;;</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;            <span class="keyword">auto</span> type_hash = utility::type_hash&lt;child_type&gt;();</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;            <span class="keywordflow">if</span> (last_typeid_) {</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;                <span class="keywordflow">if</span> (type_hash != *last_typeid_) {</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;                    <span class="keywordflow">throw</span> <a class="code" href="classarg__router_1_1multi__lang__exception.html">multi_lang_exception</a>{<a class="code" href="namespacearg__router.html#ab3c79c3c1cb22d86d1dac370a8733e56a6523b27f920fc7e96d93cc40a551a247">error_code::one_of_selected_type_mismatch</a>,</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;                                               parsing::node_token_type&lt;one_of_t&gt;()};</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;                }</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;            } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;                last_typeid_ = type_hash;</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;            }</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160; </div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;            <span class="keywordflow">return</span> pre_parse_data.validator()(child, parents...);</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        };</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;        <span class="keyword">auto</span> wrapper =</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;            std::optional&lt;<a class="code" href="classarg__router_1_1parsing_1_1pre__parse__data.html">parsing::pre_parse_data</a>&lt;std::decay_t&lt;decltype(validator)&gt;, HasTarget&gt;&gt;{};</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        <span class="keywordflow">if</span> constexpr (pre_parse_data.has_target) {</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;            wrapper =</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;                <a class="code" href="classarg__router_1_1parsing_1_1pre__parse__data.html">parsing::pre_parse_data</a>{pre_parse_data.args(), pre_parse_data.target(), validator};</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;            wrapper = <a class="code" href="classarg__router_1_1parsing_1_1pre__parse__data.html">parsing::pre_parse_data</a>{pre_parse_data.args(), validator};</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        }</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;        <span class="keyword">auto</span> found = std::optional&lt;parsing::parse_target&gt;{};</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        <a class="code" href="namespacearg__router_1_1utility.html#a99e297c7383915d8754a23f4dcfa07b5">utility::tuple_iterator</a>(</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;            [&amp;](<span class="keyword">auto</span> <span class="comment">/*i*/</span>, <span class="keyword">const</span> <span class="keyword">auto</span>&amp; child) {</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;                <span class="keywordflow">if</span> (!found) {</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;                    found = child.pre_parse(*wrapper, parents...);</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;                    if (found) {</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;                        <span class="comment">// There is no requirement to use pre_parse_data validation, so we also</span></div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;                        <span class="comment">// need to manually check here</span></div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;                        validator(child, parents...);</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;                    }</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;                }</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;            },</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;            this-&gt;children());</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160; </div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;        <span class="keywordflow">return</span> found;</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    }</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160; </div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    <span class="keyword">mutable</span> std::optional&lt;std::size_t&gt; last_typeid_;</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;};</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160; </div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Params&gt;</div>
+<div class="line"><a name="l00143"></a><span class="lineno"><a class="line" href="namespacearg__router_1_1dependency.html#ad9e4a23a552a65c5b7a7f66d3c63117a">  143</a></span>&#160;[[nodiscard]] constexpr <span class="keyword">auto</span> <a class="code" href="namespacearg__router_1_1dependency.html#ad9e4a23a552a65c5b7a7f66d3c63117a">one_of</a>(Params... params) noexcept</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;{</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classarg__router_1_1dependency_1_1one__of__t.html">one_of_t</a>{std::move(params)...};</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;}</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;}  <span class="comment">// namespace arg_router::dependency</span></div>
 <div class="ttc" id="aclassarg__router_1_1dependency_1_1one__of__t_1_1help__data__type_html"><div class="ttname"><a href="classarg__router_1_1dependency_1_1one__of__t_1_1help__data__type.html">arg_router::dependency::one_of_t::help_data_type</a></div><div class="ttdef"><b>Definition:</b> <a href="one__of_8hpp_source.html#l00048">one_of.hpp:49</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1dependency_1_1one__of__t_html"><div class="ttname"><a href="classarg__router_1_1dependency_1_1one__of__t.html">arg_router::dependency::one_of_t</a></div><div class="ttdef"><b>Definition:</b> <a href="one__of_8hpp_source.html#l00020">one_of.hpp:21</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1dependency_1_1one__of__t_html_a1fadcefcfd0836ed6b779ab777ce0ff3"><div class="ttname"><a href="classarg__router_1_1dependency_1_1one__of__t.html#a1fadcefcfd0836ed6b779ab777ce0ff3">arg_router::dependency::one_of_t::value_type</a></div><div class="ttdeci">std::conditional_t&lt;(std::variant_size_v&lt; variant_type &gt;==1), std::variant_alternative_t&lt; 0, variant_type &gt;, variant_type &gt; value_type</div><div class="ttdef"><b>Definition:</b> <a href="one__of_8hpp_source.html#l00042">one_of.hpp:44</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1dependency_1_1one__of__t_html_a819700be1a3a8ebad828b0aa8a5d3501"><div class="ttname"><a href="classarg__router_1_1dependency_1_1one__of__t.html#a819700be1a3a8ebad828b0aa8a5d3501">arg_router::dependency::one_of_t::pre_parse</a></div><div class="ttdeci">std::optional&lt; parsing::parse_target &gt; pre_parse(parsing::pre_parse_data&lt; Validator, HasTarget &gt; pre_parse_data, const Parents &amp;... parents) const</div><div class="ttdef"><b>Definition:</b> <a href="one__of_8hpp_source.html#l00076">one_of.hpp:76</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1dependency_1_1one__of__t_html_afac07df1bd7b42212ebe5230adbccc08"><div class="ttname"><a href="classarg__router_1_1dependency_1_1one__of__t.html#afac07df1bd7b42212ebe5230adbccc08">arg_router::dependency::one_of_t::one_of_t</a></div><div class="ttdeci">constexpr one_of_t(Params... params) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="one__of_8hpp_source.html#l00061">one_of.hpp:61</a></div></div>
-<div class="ttc" id="aclassarg__router_1_1multi__lang__exception_html"><div class="ttname"><a href="classarg__router_1_1multi__lang__exception.html">arg_router::multi_lang_exception</a></div><div class="ttdef"><b>Definition:</b> <a href="exception_8hpp_source.html#l00100">exception.hpp:101</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1dependency_1_1one__of__t_html_a819700be1a3a8ebad828b0aa8a5d3501"><div class="ttname"><a href="classarg__router_1_1dependency_1_1one__of__t.html#a819700be1a3a8ebad828b0aa8a5d3501">arg_router::dependency::one_of_t::pre_parse</a></div><div class="ttdeci">std::optional&lt; parsing::parse_target &gt; pre_parse(parsing::pre_parse_data&lt; Validator, HasTarget &gt; pre_parse_data, const Parents &amp;... parents) const</div><div class="ttdef"><b>Definition:</b> <a href="one__of_8hpp_source.html#l00084">one_of.hpp:84</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1dependency_1_1one__of__t_html_afac07df1bd7b42212ebe5230adbccc08"><div class="ttname"><a href="classarg__router_1_1dependency_1_1one__of__t.html#afac07df1bd7b42212ebe5230adbccc08">arg_router::dependency::one_of_t::one_of_t</a></div><div class="ttdeci">constexpr one_of_t(Params... params) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="one__of_8hpp_source.html#l00069">one_of.hpp:69</a></div></div>
+<div class="ttc" id="aclassarg__router_1_1multi__lang__exception_html"><div class="ttname"><a href="classarg__router_1_1multi__lang__exception.html">arg_router::multi_lang_exception</a></div><div class="ttdef"><b>Definition:</b> <a href="exception_8hpp_source.html#l00110">exception.hpp:111</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1parsing_1_1pre__parse__data_html"><div class="ttname"><a href="classarg__router_1_1parsing_1_1pre__parse__data.html">arg_router::parsing::pre_parse_data</a></div><div class="ttdef"><b>Definition:</b> <a href="pre__parse__data_8hpp_source.html#l00090">pre_parse_data.hpp:90</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1dependency_html"><div class="ttname"><a href="namespacearg__router_1_1dependency.html">arg_router::dependency</a></div><div class="ttdef"><b>Definition:</b> <a href="alias__group_8hpp_source.html#l00013">alias_group.hpp:14</a></div></div>
-<div class="ttc" id="anamespacearg__router_1_1dependency_html_ad9e4a23a552a65c5b7a7f66d3c63117a"><div class="ttname"><a href="namespacearg__router_1_1dependency.html#ad9e4a23a552a65c5b7a7f66d3c63117a">arg_router::dependency::one_of</a></div><div class="ttdeci">constexpr auto one_of(Params... params) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="one__of_8hpp_source.html#l00135">one_of.hpp:135</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1dependency_html_ad9e4a23a552a65c5b7a7f66d3c63117a"><div class="ttname"><a href="namespacearg__router_1_1dependency.html#ad9e4a23a552a65c5b7a7f66d3c63117a">arg_router::dependency::one_of</a></div><div class="ttdeci">constexpr auto one_of(Params... params) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="one__of_8hpp_source.html#l00143">one_of.hpp:143</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1utility_html_a99e297c7383915d8754a23f4dcfa07b5"><div class="ttname"><a href="namespacearg__router_1_1utility.html#a99e297c7383915d8754a23f4dcfa07b5">arg_router::utility::tuple_iterator</a></div><div class="ttdeci">constexpr std::enable_if_t&lt; traits::is_tuple_like_v&lt; std::decay_t&lt; Tuple &gt; &gt; &gt; tuple_iterator(F &amp;&amp;f, Tuple &amp;&amp;tuple)</div><div class="ttdef"><b>Definition:</b> <a href="tuple__iterator_8hpp_source.html#l00033">tuple_iterator.hpp:33</a></div></div>
+<div class="ttc" id="anamespacearg__router_html_a3d789cf2175008b4124de867a13a2edf"><div class="ttname"><a href="namespacearg__router.html#a3d789cf2175008b4124de867a13a2edf">arg_router::vector</a></div><div class="ttdeci">std::vector&lt; T, config::allocator&lt; T &gt; &gt; vector</div><div class="ttdef"><b>Definition:</b> <a href="basic__types_8hpp_source.html#l00039">basic_types.hpp:39</a></div></div>
 <div class="ttc" id="anamespacearg__router_html_ab3c79c3c1cb22d86d1dac370a8733e56a6523b27f920fc7e96d93cc40a551a247"><div class="ttname"><a href="namespacearg__router.html#ab3c79c3c1cb22d86d1dac370a8733e56a6523b27f920fc7e96d93cc40a551a247">arg_router::error_code::one_of_selected_type_mismatch</a></div><div class="ttdeci">@ one_of_selected_type_mismatch</div></div>
-<div class="ttc" id="astructarg__router_1_1policy_1_1has__multi__stage__value_html"><div class="ttname"><a href="structarg__router_1_1policy_1_1has__multi__stage__value.html">arg_router::policy::has_multi_stage_value</a></div><div class="ttdef"><b>Definition:</b> <a href="multi__stage__value_8hpp_source.html#l00064">multi_stage_value.hpp:64</a></div></div>
+<div class="ttc" id="astructarg__router_1_1policy_1_1has__multi__stage__value_html"><div class="ttname"><a href="structarg__router_1_1policy_1_1has__multi__stage__value.html">arg_router::policy::has_multi_stage_value</a></div><div class="ttdef"><b>Definition:</b> <a href="multi__stage__value_8hpp_source.html#l00063">multi_stage_value.hpp:63</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

@@ -36,7 +36,7 @@
                         <td id="projectalign" style="padding-left: 0.5em;">
                             <div id="projectname">arg_router
                                 &#160;<span
-                                    id="projectnumber">1.3.0</span>
+                                    id="projectnumber">1.4.0</span>
                             </div>
                             <div id="projectbrief">C++ command line argument parsing and routing</div>
                         </td>
@@ -120,10 +120,10 @@ $(document).ready(function(){initNavTree('string__to__policy_8hpp_source.html','
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">using</span> string_finder = <a class="code" href="structarg__router_1_1traits_1_1is__compile__time__string__like.html">traits::is_compile_time_string_like&lt;boost::mp11::mp_second&lt;T&gt;</a>&gt;;</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keyword">using</span> multi_char_finder = traits::integral_constant&lt;(<a class="code" href="namespacearg__router_1_1utility_1_1utf8.html#ac9a049d9d3ff4a27fc2ad80cefcad4d9">utility::utf8::count</a>(T::get()) &gt; 1)&gt;;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keyword">using</span> multi_char_finder = <a class="code" href="namespacearg__router_1_1traits.html#ab335cfad0ef1eeed3ad34d06694b0244">traits::integral_constant</a>&lt;(<a class="code" href="namespacearg__router_1_1utility_1_1utf8.html#ac9a049d9d3ff4a27fc2ad80cefcad4d9">utility::utf8::count</a>(T::get()) &gt; 1)&gt;;</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keyword">using</span> single_char_finder = traits::integral_constant&lt;(<a class="code" href="namespacearg__router_1_1utility_1_1utf8.html#ac9a049d9d3ff4a27fc2ad80cefcad4d9">utility::utf8::count</a>(T::get()) == 1)&gt;;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keyword">using</span> single_char_finder = <a class="code" href="namespacearg__router_1_1traits.html#ab335cfad0ef1eeed3ad34d06694b0244">traits::integral_constant</a>&lt;(<a class="code" href="namespacearg__router_1_1utility_1_1utf8.html#ac9a049d9d3ff4a27fc2ad80cefcad4d9">utility::utf8::count</a>(T::get()) == 1)&gt;;</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Strings&gt;</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword">struct </span>mapping_fn {</div>
@@ -170,7 +170,7 @@ $(document).ready(function(){initNavTree('string__to__policy_8hpp_source.html','
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;                                      std::tuple&lt;&gt;,</div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                                      boost::mp11::mp_drop,</div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                                      Strings,</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                                      traits::integral_constant&lt;first_index + 1&gt;&gt;;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                                      <a class="code" href="namespacearg__router_1_1traits.html#ab335cfad0ef1eeed3ad34d06694b0244">traits::integral_constant&lt;first_index + 1&gt;</a>&gt;;</div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        <span class="keyword">using</span> index = boost::mp11::mp_find_if&lt;dropped_first_strings, detail::multi_char_finder&gt;;</div>
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        <span class="keyword">using</span> string_type =</div>
@@ -283,11 +283,12 @@ $(document).ready(function(){initNavTree('string__to__policy_8hpp_source.html','
 <div class="ttc" id="aclassarg__router_1_1utility_1_1string__to__policy_1_1single__char__mapper_html_ade4330e740ff11b114d42e1a5863be4a"><div class="ttname"><a href="classarg__router_1_1utility_1_1string__to__policy_1_1single__char__mapper.html#ade4330e740ff11b114d42e1a5863be4a">arg_router::utility::string_to_policy::single_char_mapper::type</a></div><div class="ttdeci">typename inner&lt; Strings &gt;::type type</div><div class="ttdef"><b>Definition:</b> <a href="string__to__policy_8hpp_source.html#l00130">string_to_policy.hpp:130</a></div></div>
 <div class="ttc" id="acompile__time__string_8hpp_html"><div class="ttname"><a href="compile__time__string_8hpp.html">compile_time_string.hpp</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1algorithm_html_ae0c6e74281c42f23d11e9fc509f8d04e"><div class="ttname"><a href="namespacearg__router_1_1algorithm.html#ae0c6e74281c42f23d11e9fc509f8d04e">arg_router::algorithm::zip_t</a></div><div class="ttdeci">typename zip&lt; First, Second &gt;::type zip_t</div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00158">algorithm.hpp:158</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1traits_html_ab335cfad0ef1eeed3ad34d06694b0244"><div class="ttname"><a href="namespacearg__router_1_1traits.html#ab335cfad0ef1eeed3ad34d06694b0244">arg_router::traits::integral_constant</a></div><div class="ttdeci">std::integral_constant&lt; decltype(Value), Value &gt; integral_constant</div><div class="ttdef"><b>Definition:</b> <a href="traits_8hpp_source.html#l00210">traits.hpp:210</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1utility_1_1string__to__policy_html"><div class="ttname"><a href="namespacearg__router_1_1utility_1_1string__to__policy.html">arg_router::utility::string_to_policy</a></div><div class="ttdef"><b>Definition:</b> <a href="string__to__policy_8hpp_source.html#l00013">string_to_policy.hpp:14</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1utility_1_1string__to__policy_html_a3cbf1d00dd2b5d3c9f62f59e9e9fd2c2"><div class="ttname"><a href="namespacearg__router_1_1utility_1_1string__to__policy.html#a3cbf1d00dd2b5d3c9f62f59e9e9fd2c2">arg_router::utility::string_to_policy::convert</a></div><div class="ttdeci">constexpr auto convert(Params &amp;&amp;... params) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="string__to__policy_8hpp_source.html#l00186">string_to_policy.hpp:186</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1utility_1_1utf8_html_ac9a049d9d3ff4a27fc2ad80cefcad4d9"><div class="ttname"><a href="namespacearg__router_1_1utility_1_1utf8.html#ac9a049d9d3ff4a27fc2ad80cefcad4d9">arg_router::utility::utf8::count</a></div><div class="ttdeci">constexpr std::size_t count(std::string_view str) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="utf8_8hpp_source.html#l00278">utf8.hpp:278</a></div></div>
 <div class="ttc" id="astructarg__router_1_1algorithm_1_1unzip_html"><div class="ttname"><a href="structarg__router_1_1algorithm_1_1unzip.html">arg_router::algorithm::unzip</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00165">algorithm.hpp:165</a></div></div>
-<div class="ttc" id="astructarg__router_1_1traits_1_1is__compile__time__string__like_html"><div class="ttname"><a href="structarg__router_1_1traits_1_1is__compile__time__string__like.html">arg_router::traits::is_compile_time_string_like</a></div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00515">compile_time_string.hpp:515</a></div></div>
+<div class="ttc" id="astructarg__router_1_1traits_1_1is__compile__time__string__like_html"><div class="ttname"><a href="structarg__router_1_1traits_1_1is__compile__time__string__like.html">arg_router::traits::is_compile_time_string_like</a></div><div class="ttdef"><b>Definition:</b> <a href="compile__time__string_8hpp_source.html#l00541">compile_time_string.hpp:541</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

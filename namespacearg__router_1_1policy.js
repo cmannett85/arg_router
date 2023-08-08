@@ -34,8 +34,10 @@ var namespacearg__router_1_1policy =
     [ "program_version_t", "classarg__router_1_1policy_1_1program__version__t.html", "classarg__router_1_1policy_1_1program__version__t" ],
     [ "required_t", "classarg__router_1_1policy_1_1required__t.html", "classarg__router_1_1policy_1_1required__t" ],
     [ "router", "classarg__router_1_1policy_1_1router.html", "classarg__router_1_1policy_1_1router" ],
+    [ "runtime_enable", "classarg__router_1_1policy_1_1runtime__enable.html", "classarg__router_1_1policy_1_1runtime__enable" ],
     [ "short_form_expander_t", "classarg__router_1_1policy_1_1short__form__expander__t.html", "classarg__router_1_1policy_1_1short__form__expander__t" ],
     [ "short_name_t", "classarg__router_1_1policy_1_1short__name__t.html", "classarg__router_1_1policy_1_1short__name__t" ],
+    [ "token_end_marker_t", "classarg__router_1_1policy_1_1token__end__marker__t.html", "classarg__router_1_1policy_1_1token__end__marker__t" ],
     [ "value_separator_t", "classarg__router_1_1policy_1_1value__separator__t.html", "classarg__router_1_1policy_1_1value__separator__t" ],
     [ "colour_help_formatter_t", "namespacearg__router_1_1policy.html#afb0a4e0030ab0111d18634aca333054c", null ],
     [ "has_no_result_value", "namespacearg__router_1_1policy.html#a985a31d1991b66211625593d1b07dff9", null ],
@@ -74,6 +76,7 @@ var namespacearg__router_1_1policy =
     [ "short_form_expander", "namespacearg__router_1_1policy.html#a81a4ab36b8c2048a8c7ec0429c98f23e", null ],
     [ "short_name", "namespacearg__router_1_1policy.html#a5eeeaadd8d711b8a761c57fbbc8c312c", null ],
     [ "short_name_utf8", "namespacearg__router_1_1policy.html#a1dc9ac0e0bdbce33a18e8c0bcaed7613", null ],
+    [ "token_end_marker", "namespacearg__router_1_1policy.html#a7fcfc0f7d064b3d354e8982c6cefe49b", null ],
     [ "value_separator", "namespacearg__router_1_1policy.html#a91d73d78aa19f0189ea82fcd0ac61b00", null ],
     [ "value_separator_utf8", "namespacearg__router_1_1policy.html#ad5ce0b39180396992dbc774579235547", null ]
 ];

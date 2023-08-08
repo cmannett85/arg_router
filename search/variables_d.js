@@ -1,7 +1,8 @@
 var searchData=
 [
-  ['short_5fform_5fexpander_869',['short_form_expander',['../namespacearg__router_1_1policy.html#a81a4ab36b8c2048a8c7ec0429c98f23e',1,'arg_router::policy']]],
-  ['short_5fname_870',['short_name',['../namespacearg__router_1_1policy.html#a5eeeaadd8d711b8a761c57fbbc8c312c',1,'arg_router::policy']]],
-  ['short_5fname_5futf8_871',['short_name_utf8',['../namespacearg__router_1_1policy.html#a1dc9ac0e0bdbce33a18e8c0bcaed7613',1,'arg_router::policy']]],
-  ['short_5fprefix_872',['short_prefix',['../namespacearg__router_1_1config.html#a46080eba5c23480d20901c2c412a8eed',1,'arg_router::config']]]
+  ['short_5fform_5fexpander_1020',['short_form_expander',['../namespacearg__router_1_1policy.html#a81a4ab36b8c2048a8c7ec0429c98f23e',1,'arg_router::policy']]],
+  ['short_5fname_1021',['short_name',['../namespacearg__router_1_1policy.html#a5eeeaadd8d711b8a761c57fbbc8c312c',1,'arg_router::policy']]],
+  ['short_5fname_5futf8_1022',['short_name_utf8',['../namespacearg__router_1_1policy.html#a1dc9ac0e0bdbce33a18e8c0bcaed7613',1,'arg_router::policy']]],
+  ['short_5fprefix_1023',['short_prefix',['../namespacearg__router_1_1config.html#a46080eba5c23480d20901c2c412a8eed',1,'arg_router::config']]],
+  ['supports_5fstatic_5fcast_5fconversion_5fv_1024',['supports_static_cast_conversion_v',['../namespacearg__router_1_1traits.html#a297f44147f20027fdaa4eed223980213',1,'arg_router::traits']]]
 ];

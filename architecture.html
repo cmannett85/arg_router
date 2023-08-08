@@ -36,7 +36,7 @@
                         <td id="projectalign" style="padding-left: 0.5em;">
                             <div id="projectname">arg_router
                                 &#160;<span
-                                    id="projectnumber">1.3.0</span>
+                                    id="projectnumber">1.4.0</span>
                             </div>
                             <div id="projectbrief">C++ command line argument parsing and routing</div>
                         </td>
@@ -130,12 +130,25 @@ Validation</h2>
 <p>To prevent this, <em>inter-node</em> validation is done separately by a special policy called <a class="el" href="classarg__router_1_1policy_1_1validation_1_1validator.html">policy::validation::validator</a> that can only be derived from by the root node (<a class="el" href="classarg__router_1_1root__t.html">root_t</a>). As the root is the last to be instantiated (the leaves are created first), it has all the information needed to check the entire tree, <em>and</em> because nothing depends on the validator it can know about all the other nodes without causing dependency loops.</p>
 <h1><a class="anchor" id="node_relationships_parsing"></a>
 Parsing</h1>
-<p>Parsing starts at the root node, and follows these basic steps:</p><ol type="1">
-<li>Push the tokens down the parse tree for the pre-parsing phase. Each node will inspect the leading token to see if it can be handled by the node, if so the correct number of tokens are pre-processed (e.g. short form expansion) and stored in a <a class="el" href="classarg__router_1_1parsing_1_1parse__target.html">parsing::parse_target</a> and returned to the root or parent mode.</li>
-<li>The <a class="el" href="classarg__router_1_1parsing_1_1parse__target.html">parsing::parse_target</a> initiates the parsing using the node that created it and the pre-processed tokens (if any). A validation phase is ran on the result if present (e.g. <a class="el" href="namespacearg__router_1_1policy.html#a6f394eb493fca6969c7de2ad48004f8f">policy::min_max_value</a>)</li>
-<li>If the target node is top-level, then the target's <a class="el" href="classarg__router_1_1policy_1_1router.html">policy::router</a> is then called by the node with the parse result. If not, the parent mode collects the results for all the <a class="el" href="classarg__router_1_1parsing_1_1parse__target.html">parsing::parse_target</a> instances it collected</li>
-<li>If applicable, any nodes under the parent mode that did not have an associated <a class="el" href="classarg__router_1_1parsing_1_1parse__target.html">parsing::parse_target</a>, have the missing phase ran on them (e.g. <a class="el" href="classarg__router_1_1policy_1_1default__value.html">policy::default_value</a>)</li>
-</ol>
+<pre class="fragment">["my_app" "mode1" "-f" "--arg" "42"]
+            |
+            V
+          ______
+         | Root |  -&gt; [{none, "mode1"}, {none, "-f"}, {none, "--arg"}, {none, "42}]
+         |______|
+</pre><p> Parsing starts at the root node, where initially the tokens from the shell are converted into an array of <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a> instances each with a type of <a class="el" href="namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3a334c4a4c42fdb79d7ebc3e73b517e6f8" title="Short prefix.">parsing::prefix_type::none</a> because we don't know what they are yet. You're probably thinking "can't it be inferred from the prefix?", sadly not as the type is also context-dependent e.g. you could have an <a class="el" href="classarg__router_1_1arg__t.html">arg_t</a> that expects a string, but if that string just happened to have the same prefix as a flag then the prefix would be stripped at this stage. </p><pre class="fragment">  ______
+ | Root |
+ |______|     _______
+    |-------&gt;| Child | std::optional&lt;parsing::parse_target&gt; pre_parse(
+             |_______|      parsing::pre_parse_data&lt;Validator, HasTarget&gt; pre_parse_data,
+                            const Parents&amp;... parents) const
+</pre><p> The root then iterates through its children calling <code>pre_parse(..)</code> on each until a valid <a class="el" href="classarg__router_1_1parsing_1_1parse__target.html">parsing::parse_target</a> is returned. A <a class="el" href="classarg__router_1_1parsing_1_1parse__target.html">parsing::parse_target</a> is a function object that executes the appropriate node's <code>parse(..)</code> method with the now fully processed <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">parsing::token_type</a> instances.</p>
+<p>How a child node decides if it is the correct target and how it processes the tokens is entirely node (and it's policies) dependent. For example an <a class="el" href="classarg__router_1_1arg__t.html">arg_t</a> checks that there are enough unprocessed tokens for the number of value tokens it expects (1 in the case of <a class="el" href="classarg__router_1_1arg__t.html">arg_t</a> via a <a class="el" href="namespacearg__router_1_1policy.html#a41f72699e6e7b4f8f76a8bd4b80ee34c">policy::min_max_count</a>), and then checks that the label token matches the <a class="el" href="classarg__router_1_1arg__t.html">arg_t</a> short or long name. There could be other steps if there are policies that handle the pre-parse phase.</p>
+<p>Mode-like types (e.g. <a class="el" href="classarg__router_1_1mode__t.html">mode_t</a>) are complication to this because they need to collect all the valid <a class="el" href="classarg__router_1_1parsing_1_1parse__target.html">parsing::parse_target</a> of their non-mode children - but ultimately follow the same pattern. You'll notice that a mode still follows the same interface for the pre-parse method so how does it return multiple <a class="el" href="classarg__router_1_1parsing_1_1parse__target.html">parsing::parse_target</a> instances? Because you can add sub-targets to it! The top-level target is the mode node itself, and all the subtargets are for the children. </p><pre class="fragment">  ______
+ | Root | ------&gt; (*returned_parse_target)()
+ |______|
+</pre><p> Once the valid <a class="el" href="classarg__router_1_1parsing_1_1parse__target.html">parsing::parse_target</a> is returned to the root, it executes like any other function object. It should be noted that there various scenarios along this path where nodes and policies throw an exception, we'll ignore that here for brevity.</p>
+<p>Taking our <a class="el" href="classarg__router_1_1arg__t.html">arg_t</a> example again, the <code>value_type parse(parsing::parse_target target, const Parents&amp;... parents) const</code> method takes the value token and converts it to the expected type. If the node has policies that support the validation phase, then the parsed value is validated by them. If the node has a routing policy attached (only for top-level nodes) then the validated result value is dispatched to it for handling by the library user - otherwise it is returned to the caller (usually for collection by a mode).</p>
 <p>As you have probably gathered from the above, the pre-processing and parsing within a node is split up into 'phases' which different policies implement different parts of. </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->

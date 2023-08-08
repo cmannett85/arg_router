@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2023-03-26 16:12:00</td>
+            <td class="headerValue">2023-08-08 16:25:45</td>
             <td></td>
           </tr>
           <tr>
@@ -64,7 +64,7 @@
       <td>
 <pre class="sourceHeading">          Line data    Source code</pre>
 <pre class="source">
-<a name="1"><span class="lineNum">       1 </span>            : // Copyright (C) 2022 by Camden Mannett.</a>
+<a name="1"><span class="lineNum">       1 </span>            : // Copyright (C) 2022-2023 by Camden Mannett.</a>
 <a name="2"><span class="lineNum">       2 </span>            : // Distributed under the Boost Software License, Version 1.0.</a>
 <a name="3"><span class="lineNum">       3 </span>            : // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)</a>
 <a name="4"><span class="lineNum">       4 </span>            : </a>
@@ -120,16 +120,16 @@
 <a name="54"><span class="lineNum">      54 </span>            :      */</a>
 <a name="55"><span class="lineNum">      55 </span><span class="lineCov">          4 :     [[noreturn]] static void translate_exception(const multi_lang_exception&amp; e)</span></a>
 <a name="56"><span class="lineNum">      56 </span>            :     {</a>
-<a name="57"><span class="lineNum">      57 </span><span class="lineCov">        482 :         utility::tuple_type_iterator&lt;translations&gt;([&amp;](auto i) {</span></a>
+<a name="57"><span class="lineNum">      57 </span><span class="lineCov">       1038 :         utility::tuple_type_iterator&lt;translations&gt;([&amp;](auto i) {</span></a>
 <a name="58"><span class="lineNum">      58 </span>            :             using entry_type = std::tuple_element_t&lt;i, translations&gt;;</a>
 <a name="59"><span class="lineNum">      59 </span>            : </a>
-<a name="60"><span class="lineNum">      60 </span><span class="lineCov">        478 :             constexpr auto this_ec = boost::mp11::mp_front&lt;entry_type&gt;::value;</span></a>
+<a name="60"><span class="lineNum">      60 </span><span class="lineCov">       1034 :             constexpr auto this_ec = boost::mp11::mp_front&lt;entry_type&gt;::value;</span></a>
 <a name="61"><span class="lineNum">      61 </span>            :             using this_msg = boost::mp11::mp_back&lt;entry_type&gt;;</a>
 <a name="62"><span class="lineNum">      62 </span>            : </a>
-<a name="63"><span class="lineNum">      63 </span><span class="lineCov">        478 :             if (this_ec == e.ec()) {</span></a>
-<a name="64"><span class="lineNum">      64 </span><span class="lineCov">        117 :                 throw parse_exception{string{this_msg::get()}, e.tokens()};</span></a>
+<a name="63"><span class="lineNum">      63 </span><span class="lineCov">       1034 :             if (this_ec == e.ec()) {</span></a>
+<a name="64"><span class="lineNum">      64 </span><span class="lineCov">        137 :                 throw parse_exception{utility::exception_formatter&lt;this_msg&gt;{}, e.tokens()};</span></a>
 <a name="65"><span class="lineNum">      65 </span>            :             }</a>
-<a name="66"><span class="lineNum">      66 </span><span class="lineCov">        478 :         });</span></a>
+<a name="66"><span class="lineNum">      66 </span><span class="lineCov">        897 :         });</span></a>
 <a name="67"><span class="lineNum">      67 </span>            : </a>
 <a name="68"><span class="lineNum">      68 </span><span class="lineCov">          4 :         const auto ec = static_cast&lt;std::underlying_type_t&lt;error_code&gt;&gt;(e.ec());</span></a>
 <a name="69"><span class="lineNum">      69 </span>            : </a>

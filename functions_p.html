@@ -36,7 +36,7 @@
                         <td id="projectalign" style="padding-left: 0.5em;">
                             <div id="projectname">arg_router
                                 &#160;<span
-                                    id="projectnumber">1.3.0</span>
+                                    id="projectnumber">1.4.0</span>
                             </div>
                             <div id="projectbrief">C++ command line argument parsing and routing</div>
                         </td>
@@ -99,19 +99,18 @@ $(document).ready(function(){initNavTree('functions_p.html',''); initResizable()
 : <a class="el" href="classarg__router_1_1tree__node.html#a5a12205635e06b3b4ace0d8101419bcd">arg_router::tree_node&lt; Params &gt;</a>
 </li>
 <li>parse()
-: <a class="el" href="classarg__router_1_1arg__t.html#acfda4ddc3ec2497e830c500477265daa">arg_router::arg_t&lt; T, Policies &gt;</a>
-, <a class="el" href="classarg__router_1_1counting__flag__t.html#a02899b205fdb38de2af0ac30e916b09f">arg_router::counting_flag_t&lt; T, Policies &gt;</a>
+: <a class="el" href="classarg__router_1_1counting__flag__t.html#a02899b205fdb38de2af0ac30e916b09f">arg_router::counting_flag_t&lt; T, Policies &gt;</a>
 , <a class="el" href="classarg__router_1_1flag__t.html#a34e904282f2dc7d05c5d47e866e12bb4">arg_router::flag_t&lt; Policies &gt;</a>
 , <a class="el" href="classarg__router_1_1help__t.html#afa7913f7fc35e90a05145689e2763df1">arg_router::help_t&lt; Policies &gt;</a>
 , <a class="el" href="classarg__router_1_1mode__t.html#a0fdefd57e614209aea132334d12ced6e">arg_router::mode_t&lt; Params &gt;</a>
+, <a class="el" href="classarg__router_1_1multi__arg__base__t.html#a204ae61a8301fa4d9572ec6dc60b1a16">arg_router::multi_arg_base_t&lt; T, MinCount, Policies &gt;</a>
 , <a class="el" href="classarg__router_1_1multi__lang_1_1root__t.html#a18c78b19b6efb79e4395b58a9b77a4e8">arg_router::multi_lang::root_t&lt; RootFactory, DefaultLanguageID, SupportedLanguageIDs &gt;</a>
 , <a class="el" href="classarg__router_1_1multi__lang_1_1root__wrapper__t.html#aad57cf0aac27b91b73044e3c5f9f4c96">arg_router::multi_lang::root_wrapper_t&lt; Fn, SupportedISOLanguageCodes &gt;</a>
-, <a class="el" href="classarg__router_1_1positional__arg__t.html#afe7b6b24baef5bd68067bf059cd3e0db">arg_router::positional_arg_t&lt; T, Policies &gt;</a>
 , <a class="el" href="classarg__router_1_1root__t.html#a9e70cf821683c5e31cbf87d804f6b303">arg_router::root_t&lt; Params &gt;</a>
-, <a class="el" href="classarg__router_1_1tree__node.html#a2a8f5775af1259c3c3363160456dd94e">arg_router::tree_node&lt; Params &gt;</a>
+, <a class="el" href="classarg__router_1_1tree__node.html#aba46f577b78229302d47247ced9799a8">arg_router::tree_node&lt; Params &gt;</a>
 </li>
 <li>parse_exception()
-: <a class="el" href="classarg__router_1_1parse__exception.html#a76ed5071caf8afe84ab96b950b8e1ba2">arg_router::parse_exception</a>
+: <a class="el" href="classarg__router_1_1parse__exception.html#a4a830ce4a207c239a0f381c1f5319bc9">arg_router::parse_exception</a>
 </li>
 <li>parse_phase()
 : <a class="el" href="classarg__router_1_1policy_1_1custom__parser.html#af43003cfe8f7482b7e5d6c348f49fd4c">arg_router::policy::custom_parser&lt; T &gt;</a>
@@ -135,7 +134,7 @@ $(document).ready(function(){initNavTree('functions_p.html',''); initResizable()
 : <a class="el" href="classarg__router_1_1tree__node.html#aec3a4f4e8c0b7d0b7a5d911b18fb9bc3">arg_router::tree_node&lt; Params &gt;</a>
 </li>
 <li>positional_arg_t()
-: <a class="el" href="classarg__router_1_1positional__arg__t.html#a483bb866a87ba806a487b38de085751f">arg_router::positional_arg_t&lt; T, Policies &gt;</a>
+: <a class="el" href="classarg__router_1_1positional__arg__t.html#a6786f9784afddcefa4fbb975de8f1a19">arg_router::positional_arg_t&lt; T, Policies &gt;</a>
 </li>
 <li>pre_parse()
 : <a class="el" href="classarg__router_1_1dependency_1_1alias__group__t.html#a075c92decfca9d5d4203baf694e4de9d">arg_router::dependency::alias_group_t&lt; Params &gt;</a>
@@ -151,7 +150,9 @@ $(document).ready(function(){initNavTree('functions_p.html',''); initResizable()
 : <a class="el" href="classarg__router_1_1policy_1_1alias__t.html#a244aad905750fd3b2858ea3d8596bb77">arg_router::policy::alias_t&lt; AliasedPolicies &gt;</a>
 , <a class="el" href="classarg__router_1_1policy_1_1dependent__t.html#aeaa87c4c140e7f05a00119063c3a79b6">arg_router::policy::dependent_t&lt; DependsPolicies &gt;</a>
 , <a class="el" href="classarg__router_1_1policy_1_1min__max__count__t.html#a52f4d7361a8e0a1653e53327fe9552a2">arg_router::policy::min_max_count_t&lt; MinType, MaxType &gt;</a>
+, <a class="el" href="classarg__router_1_1policy_1_1runtime__enable.html#a46ab5a476f4688d5c0f98825e6f13df1">arg_router::policy::runtime_enable&lt; T &gt;</a>
 , <a class="el" href="classarg__router_1_1policy_1_1short__form__expander__t.html#a8e0be2701792d888107faad6c165a511">arg_router::policy::short_form_expander_t&lt; typename &gt;</a>
+, <a class="el" href="classarg__router_1_1policy_1_1token__end__marker__t.html#a862ba8b459f38ba06605acc4d837125e">arg_router::policy::token_end_marker_t&lt; S &gt;</a>
 , <a class="el" href="classarg__router_1_1policy_1_1value__separator__t.html#abfe4a7c761b176212c60c1f65c4c9b2f">arg_router::policy::value_separator_t&lt; S &gt;</a>
 </li>
 <li>prefix
@@ -162,7 +163,9 @@ $(document).ready(function(){initNavTree('functions_p.html',''); initResizable()
 , <a class="el" href="classarg__router_1_1policy_1_1default__value.html#a37215097822e8de5ab59034aaedcf8c9">arg_router::policy::default_value&lt; T &gt;</a>
 , <a class="el" href="classarg__router_1_1policy_1_1min__max__count__t.html#affa1fb83fd4097fe7384a1e5fa515a0f">arg_router::policy::min_max_count_t&lt; MinType, MaxType &gt;</a>
 , <a class="el" href="classarg__router_1_1policy_1_1required__t.html#a1b883d060a9fa67e6c32f5aa93861213">arg_router::policy::required_t&lt; typename &gt;</a>
+, <a class="el" href="classarg__router_1_1policy_1_1runtime__enable.html#a3f89232644acefc641cc656e5b46c704">arg_router::policy::runtime_enable&lt; T &gt;</a>
 , <a class="el" href="classarg__router_1_1policy_1_1short__form__expander__t.html#ac1100f4bc0e76b5c230b319e22c3e0a4">arg_router::policy::short_form_expander_t&lt; typename &gt;</a>
+, <a class="el" href="classarg__router_1_1policy_1_1token__end__marker__t.html#a741010c8599a5f6298b187c4ab49b0b2">arg_router::policy::token_end_marker_t&lt; S &gt;</a>
 , <a class="el" href="classarg__router_1_1policy_1_1value__separator__t.html#a5b2bb8b3ea4bdff97385b2774770f7a6">arg_router::policy::value_separator_t&lt; S &gt;</a>
 </li>
 <li>priority_ordered_policies_type

@@ -36,7 +36,7 @@
                         <td id="projectalign" style="padding-left: 0.5em;">
                             <div id="projectname">arg_router
                                 &#160;<span
-                                    id="projectnumber">1.3.0</span>
+                                    id="projectnumber">1.4.0</span>
                             </div>
                             <div id="projectbrief">C++ command line argument parsing and routing</div>
                         </td>
@@ -126,6 +126,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a49d38138d669309d0ca415ef8bb4bd59"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5b3186572044b01afd880d4f69cebd77"><td class="memItemLeft" align="right" valign="top">constexpr static auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html#a5b3186572044b01afd880d4f69cebd77">count_suffix</a> () noexcept</td></tr>
 <tr class="separator:a5b3186572044b01afd880d4f69cebd77"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a92513170a813b8c30a4a02cc79883ea2"><td class="memTemplParams" colspan="2">template&lt;typename OwnerNode , typename FilterFn &gt; </td></tr>
+<tr class="memitem:a92513170a813b8c30a4a02cc79883ea2"><td class="memTemplItemLeft" align="right" valign="top">static <a class="el" href="namespacearg__router.html#a3d789cf2175008b4124de867a13a2edf">vector</a>&lt; <a class="el" href="structarg__router_1_1runtime__help__data.html">runtime_help_data</a> &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html#a92513170a813b8c30a4a02cc79883ea2">runtime_children</a> (const OwnerNode &amp;owner, FilterFn &amp;&amp;f)</td></tr>
+<tr class="separator:a92513170a813b8c30a4a02cc79883ea2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename... Params&gt;<br />
@@ -159,7 +162,7 @@ template&lt;bool Flatten&gt; </div>
 </div><div class="memdoc">
 <p>Collects the help data from all the children that have a help_data_type. </p>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00351">351</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00407">407</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>
@@ -181,7 +184,7 @@ template&lt;bool Flatten&gt; </div>
 <p>Children help data tuple.</p>
 <p>Empty as this is the default for leaf types. </p>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00372">372</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00428">428</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>
@@ -203,7 +206,7 @@ template&lt;bool Flatten&gt; </div>
 <p>Description compile time string.</p>
 <p>Evaluates to a the description time, or an empty string if none is available. </p>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00366">366</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00422">422</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>
@@ -225,7 +228,7 @@ template&lt;bool Flatten&gt; </div>
 <p>Label compile time string.</p>
 <p>Evaluates to a string of the form "&lt;short name&gt;,&lt;long_name&gt;", or only of them if only one available, or an empty string if none are available. </p>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00360">360</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00416">416</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>
@@ -258,7 +261,7 @@ template&lt;bool Flatten&gt; </div>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>Minimum and/or maximum count suffix string </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00308">308</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00313">313</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>
@@ -290,7 +293,7 @@ template&lt;bool Flatten&gt; </div>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>Description text for string, or empty string if providing policy not present </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00293">293</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00298">298</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>
@@ -323,6 +326,61 @@ template&lt;bool Flatten&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>Long and short name label(s) for node with value suffix if present, or empty string if not present </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00266">266</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a92513170a813b8c30a4a02cc79883ea2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a92513170a813b8c30a4a02cc79883ea2">&#9670;&nbsp;</a></span>runtime_children()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename... Params&gt; </div>
+<div class="memtemplate">
+template&lt;bool Flatten&gt; </div>
+<div class="memtemplate">
+template&lt;typename OwnerNode , typename FilterFn &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="namespacearg__router.html#a3d789cf2175008b4124de867a13a2edf">vector</a>&lt;<a class="el" href="structarg__router_1_1runtime__help__data.html">runtime_help_data</a>&gt; <a class="el" href="classarg__router_1_1tree__node.html">arg_router::tree_node</a>&lt; Params &gt;::<a class="el" href="classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html">default_leaf_help_data_type</a>&lt; Flatten &gt;::runtime_children </td>
+          <td>(</td>
+          <td class="paramtype">const OwnerNode &amp;&#160;</td>
+          <td class="paramname"><em>owner</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">FilterFn &amp;&amp;&#160;</td>
+          <td class="paramname"><em>f</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Generates a vector of <a class="el" href="structarg__router_1_1runtime__help__data.html">runtime_help_data</a> instances representing the children of <em>owner</em>.</p>
+<p>This is the runtime equivalent of the help_data_type::children member. Children can be filtered using <em>f</em> that must have the equivalent signature to: </p><div class="fragment"><div class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> Child&gt;</div>
+<div class="line"><span class="keywordtype">bool</span> operator()(<span class="keyword">const</span> Child&amp;) <span class="keyword">const</span>;</div>
+</div><!-- fragment --><p> Only if the return is true is the child added to the return list. If a child help_data_type does not have an implementation of this function, then this function will just call itself on the child node in order to provide a sensible default implementation. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">owner</td><td>Node whose children are to be converted if approved by <em>f</em> </td></tr>
+    <tr><td class="paramname">f</td><td>A filter function that determines if the child should be shown </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="structarg__router_1_1runtime__help__data.html">runtime_help_data</a> instances representing the unfiltered children </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="tree__node_8hpp_source.html#l00371">371</a> of file <a class="el" href="tree__node_8hpp_source.html">tree_node.hpp</a>.</p>
 
 </div>
 </div>

@@ -31,13 +31,13 @@
             <td class="headerValue">arg_router Unit Test Code Coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">6</td>
-            <td class="headerCovTableEntry">6</td>
-            <td class="headerCovTableEntryHi">100.0 %</td>
+            <td class="headerCovTableEntry">19</td>
+            <td class="headerCovTableEntry">21</td>
+            <td class="headerCovTableEntryHi">90.5 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2023-03-26 16:12:00</td>
+            <td class="headerValue">2023-08-08 16:25:45</td>
             <td></td>
           </tr>
           <tr>
@@ -233,43 +233,73 @@
 <a name="167"><span class="lineNum">     167 </span>            :             using children = std::tuple&lt;&gt;;</a>
 <a name="168"><span class="lineNum">     168 </span>            :         };</a>
 <a name="169"><span class="lineNum">     169 </span>            : </a>
-<a name="170"><span class="lineNum">     170 </span>            :         template &lt;typename Child&gt;</a>
-<a name="171"><span class="lineNum">     171 </span>            :         using first_prefixer = prefixer&lt;Child, AR_STRING(&quot;┌ &quot;)&gt;;</a>
-<a name="172"><span class="lineNum">     172 </span>            : </a>
-<a name="173"><span class="lineNum">     173 </span>            :         template &lt;typename Child&gt;</a>
-<a name="174"><span class="lineNum">     174 </span>            :         using middle_prefixer = prefixer&lt;Child, AR_STRING(&quot;├ &quot;)&gt;;</a>
-<a name="175"><span class="lineNum">     175 </span>            : </a>
-<a name="176"><span class="lineNum">     176 </span>            :         template &lt;typename Child&gt;</a>
-<a name="177"><span class="lineNum">     177 </span>            :         using last_prefixer = prefixer&lt;Child, AR_STRING(&quot;└ &quot;)&gt;;</a>
-<a name="178"><span class="lineNum">     178 </span>            : </a>
-<a name="179"><span class="lineNum">     179 </span>            :     public:</a>
-<a name="180"><span class="lineNum">     180 </span>            :         using children = boost::mp11::mp_replace_at_c&lt;</a>
-<a name="181"><span class="lineNum">     181 </span>            :             boost::mp11::mp_replace_first&lt;boost::mp11::mp_transform&lt;middle_prefixer, children_type&gt;,</a>
-<a name="182"><span class="lineNum">     182 </span>            :                                           first_prefixer&lt;boost::mp11::mp_first&lt;children_type&gt;&gt;&gt;,</a>
-<a name="183"><span class="lineNum">     183 </span>            :             std::tuple_size_v&lt;children_type&gt; - 1,</a>
-<a name="184"><span class="lineNum">     184 </span>            :             last_prefixer&lt;boost::mp11::mp_back&lt;children_type&gt;&gt;&gt;;</a>
-<a name="185"><span class="lineNum">     185 </span>            :     };</a>
-<a name="186"><span class="lineNum">     186 </span>            : </a>
-<a name="187"><span class="lineNum">     187 </span>            :     template &lt;auto has_display_name = add_names&lt;ParentDocName, Params...&gt;::has_display_name&gt;</a>
-<a name="188"><span class="lineNum">     188 </span>            :     constexpr explicit basic_one_of_t(Params... params,</a>
-<a name="189"><span class="lineNum">     189 </span>            :                                       // NOLINTNEXTLINE(*-named-parameter)</a>
-<a name="190"><span class="lineNum">     190 </span>            :                                       std::enable_if_t&lt;has_display_name&gt;* = nullptr) noexcept :</a>
-<a name="191"><span class="lineNum">     191 </span>            :         parent_type{std::tuple_element_t&lt;0, policies_type&gt;{},  // Error name</a>
-<a name="192"><span class="lineNum">     192 </span>            :                     std::move(params)...}</a>
-<a name="193"><span class="lineNum">     193 </span>            :     {</a>
-<a name="194"><span class="lineNum">     194 </span>            :     }</a>
-<a name="195"><span class="lineNum">     195 </span>            : </a>
-<a name="196"><span class="lineNum">     196 </span>            :     template &lt;auto has_display_name = add_names&lt;ParentDocName, Params...&gt;::has_display_name&gt;</a>
-<a name="197"><span class="lineNum">     197 </span><span class="lineCov">         27 :     constexpr explicit basic_one_of_t(Params... params,</span></a>
-<a name="198"><span class="lineNum">     198 </span>            :                                       // NOLINTNEXTLINE(*-named-parameter)</a>
-<a name="199"><span class="lineNum">     199 </span>            :                                       std::enable_if_t&lt;!has_display_name&gt;* = nullptr) noexcept :</a>
-<a name="200"><span class="lineNum">     200 </span><span class="lineCov">         54 :         parent_type{std::tuple_element_t&lt;0, policies_type&gt;{},  // Display name</span></a>
-<a name="201"><span class="lineNum">     201 </span><span class="lineCov">         27 :                     std::tuple_element_t&lt;1, policies_type&gt;{},  // Error name</span></a>
-<a name="202"><span class="lineNum">     202 </span><span class="lineCov">         27 :                     std::move(params)...}</span></a>
-<a name="203"><span class="lineNum">     203 </span><span class="lineCov">         27 :     {</span></a>
-<a name="204"><span class="lineNum">     204 </span><span class="lineCov">         27 :     }</span></a>
-<a name="205"><span class="lineNum">     205 </span>            : };</a>
-<a name="206"><span class="lineNum">     206 </span>            : }  // namespace arg_router::dependency::detail</a>
+<a name="170"><span class="lineNum">     170 </span>            :         using top_bar = AR_STRING(&quot;┌ &quot;);</a>
+<a name="171"><span class="lineNum">     171 </span>            :         using middle_bar = AR_STRING(&quot;├ &quot;);</a>
+<a name="172"><span class="lineNum">     172 </span>            :         using bottom_bar = AR_STRING(&quot;└ &quot;);</a>
+<a name="173"><span class="lineNum">     173 </span>            : </a>
+<a name="174"><span class="lineNum">     174 </span>            :         template &lt;typename Child&gt;</a>
+<a name="175"><span class="lineNum">     175 </span>            :         using first_prefixer = prefixer&lt;Child, top_bar&gt;;</a>
+<a name="176"><span class="lineNum">     176 </span>            : </a>
+<a name="177"><span class="lineNum">     177 </span>            :         template &lt;typename Child&gt;</a>
+<a name="178"><span class="lineNum">     178 </span>            :         using middle_prefixer = prefixer&lt;Child, middle_bar&gt;;</a>
+<a name="179"><span class="lineNum">     179 </span>            : </a>
+<a name="180"><span class="lineNum">     180 </span>            :         template &lt;typename Child&gt;</a>
+<a name="181"><span class="lineNum">     181 </span>            :         using last_prefixer = prefixer&lt;Child, bottom_bar&gt;;</a>
+<a name="182"><span class="lineNum">     182 </span>            : </a>
+<a name="183"><span class="lineNum">     183 </span>            :     public:</a>
+<a name="184"><span class="lineNum">     184 </span>            :         using children = boost::mp11::mp_replace_at_c&lt;</a>
+<a name="185"><span class="lineNum">     185 </span>            :             boost::mp11::mp_replace_first&lt;boost::mp11::mp_transform&lt;middle_prefixer, children_type&gt;,</a>
+<a name="186"><span class="lineNum">     186 </span>            :                                           first_prefixer&lt;boost::mp11::mp_first&lt;children_type&gt;&gt;&gt;,</a>
+<a name="187"><span class="lineNum">     187 </span>            :             std::tuple_size_v&lt;children_type&gt; - 1,</a>
+<a name="188"><span class="lineNum">     188 </span>            :             last_prefixer&lt;boost::mp11::mp_back&lt;children_type&gt;&gt;&gt;;</a>
+<a name="189"><span class="lineNum">     189 </span>            : </a>
+<a name="190"><span class="lineNum">     190 </span>            :         template &lt;typename OwnerNode, typename FilterFn&gt;</a>
+<a name="191"><span class="lineNum">     191 </span><span class="lineCov">         12 :         [[nodiscard]] static vector&lt;runtime_help_data&gt; runtime_children(const OwnerNode&amp; owner,</span></a>
+<a name="192"><span class="lineNum">     192 </span>            :                                                                         FilterFn&amp;&amp; f)</a>
+<a name="193"><span class="lineNum">     193 </span>            :         {</a>
+<a name="194"><span class="lineNum">     194 </span>            :             // Gather the basic data</a>
+<a name="195"><span class="lineNum">     195 </span><span class="lineCov">         24 :             auto result = parent_type::template default_leaf_help_data_type&lt;true&gt;::runtime_children(</span></a>
+<a name="196"><span class="lineNum">     196 </span><span class="lineCov">         12 :                 owner,</span></a>
+<a name="197"><span class="lineNum">     197 </span><span class="lineCov">         12 :                 std::forward&lt;FilterFn&gt;(f));</span></a>
+<a name="198"><span class="lineNum">     198 </span>            : </a>
+<a name="199"><span class="lineNum">     199 </span>            :             // Don't prepend bars if there are zero or one children</a>
+<a name="200"><span class="lineNum">     200 </span><span class="lineCov">         12 :             if (result.size() &lt;= 1) {</span></a>
+<a name="201"><span class="lineNum">     201 </span><span class="lineCov">          6 :                 return result;</span></a>
+<a name="202"><span class="lineNum">     202 </span>            :             }</a>
+<a name="203"><span class="lineNum">     203 </span>            : </a>
+<a name="204"><span class="lineNum">     204 </span>            :             // Prepend the bars</a>
+<a name="205"><span class="lineNum">     205 </span><span class="lineCov">          6 :             result.front().label =</span></a>
+<a name="206"><span class="lineNum">     206 </span><span class="lineCov">          6 :                 utility::dynamic_string_view{top_bar::get()} + result.front().label;</span></a>
+<a name="207"><span class="lineNum">     207 </span><span class="lineCov">          6 :             for (auto i = 1u; i &lt; (result.size() - 1); ++i) {</span></a>
+<a name="208"><span class="lineNum">     208 </span><span class="lineNoCov">          0 :                 result[i].label = utility::dynamic_string_view{middle_bar::get()} + result[i].label;</span></a>
+<a name="209"><span class="lineNum">     209 </span><span class="lineNoCov">          0 :             }</span></a>
+<a name="210"><span class="lineNum">     210 </span><span class="lineCov">          6 :             result.back().label =</span></a>
+<a name="211"><span class="lineNum">     211 </span><span class="lineCov">          6 :                 utility::dynamic_string_view{bottom_bar::get()} + result.back().label;</span></a>
+<a name="212"><span class="lineNum">     212 </span>            : </a>
+<a name="213"><span class="lineNum">     213 </span><span class="lineCov">          6 :             return result;</span></a>
+<a name="214"><span class="lineNum">     214 </span><span class="lineCov">         12 :         }</span></a>
+<a name="215"><span class="lineNum">     215 </span>            :     };</a>
+<a name="216"><span class="lineNum">     216 </span>            : </a>
+<a name="217"><span class="lineNum">     217 </span>            :     template &lt;auto has_display_name = add_names&lt;ParentDocName, Params...&gt;::has_display_name&gt;</a>
+<a name="218"><span class="lineNum">     218 </span>            :     constexpr explicit basic_one_of_t(Params... params,</a>
+<a name="219"><span class="lineNum">     219 </span>            :                                       // NOLINTNEXTLINE(*-named-parameter)</a>
+<a name="220"><span class="lineNum">     220 </span>            :                                       std::enable_if_t&lt;has_display_name&gt;* = nullptr) noexcept :</a>
+<a name="221"><span class="lineNum">     221 </span>            :         parent_type{std::tuple_element_t&lt;0, policies_type&gt;{},  // Error name</a>
+<a name="222"><span class="lineNum">     222 </span>            :                     std::move(params)...}</a>
+<a name="223"><span class="lineNum">     223 </span>            :     {</a>
+<a name="224"><span class="lineNum">     224 </span>            :     }</a>
+<a name="225"><span class="lineNum">     225 </span>            : </a>
+<a name="226"><span class="lineNum">     226 </span>            :     template &lt;auto has_display_name = add_names&lt;ParentDocName, Params...&gt;::has_display_name&gt;</a>
+<a name="227"><span class="lineNum">     227 </span><span class="lineCov">         40 :     constexpr explicit basic_one_of_t(Params... params,</span></a>
+<a name="228"><span class="lineNum">     228 </span>            :                                       // NOLINTNEXTLINE(*-named-parameter)</a>
+<a name="229"><span class="lineNum">     229 </span>            :                                       std::enable_if_t&lt;!has_display_name&gt;* = nullptr) noexcept :</a>
+<a name="230"><span class="lineNum">     230 </span><span class="lineCov">         80 :         parent_type{std::tuple_element_t&lt;0, policies_type&gt;{},  // Display name</span></a>
+<a name="231"><span class="lineNum">     231 </span><span class="lineCov">         40 :                     std::tuple_element_t&lt;1, policies_type&gt;{},  // Error name</span></a>
+<a name="232"><span class="lineNum">     232 </span><span class="lineCov">         40 :                     std::move(params)...}</span></a>
+<a name="233"><span class="lineNum">     233 </span><span class="lineCov">         40 :     {</span></a>
+<a name="234"><span class="lineNum">     234 </span><span class="lineCov">         40 :     }</span></a>
+<a name="235"><span class="lineNum">     235 </span>            : };</a>
+<a name="236"><span class="lineNum">     236 </span>            : }  // namespace arg_router::dependency::detail</a>
 </pre>
       </td>
     </tr>

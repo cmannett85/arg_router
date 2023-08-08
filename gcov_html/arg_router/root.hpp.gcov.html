@@ -31,13 +31,13 @@
             <td class="headerValue">arg_router Unit Test Code Coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">61</td>
             <td class="headerCovTableEntry">63</td>
-            <td class="headerCovTableEntryHi">96.8 %</td>
+            <td class="headerCovTableEntry">65</td>
+            <td class="headerCovTableEntryHi">96.9 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2023-03-26 16:12:00</td>
+            <td class="headerValue">2023-08-08 16:25:45</td>
             <td></td>
           </tr>
           <tr>
@@ -70,291 +70,299 @@
 <a name="4"><span class="lineNum">       4 </span>            : </a>
 <a name="5"><span class="lineNum">       5 </span>            : #pragma once</a>
 <a name="6"><span class="lineNum">       6 </span>            : </a>
-<a name="7"><span class="lineNum">       7 </span>            : #include &quot;arg_router/policy/exception_translator.hpp&quot;</a>
-<a name="8"><span class="lineNum">       8 </span>            : #include &quot;arg_router/policy/flatten_help.hpp&quot;</a>
-<a name="9"><span class="lineNum">       9 </span>            : #include &quot;arg_router/policy/no_result_value.hpp&quot;</a>
-<a name="10"><span class="lineNum">      10 </span>            : #include &quot;arg_router/tree_node.hpp&quot;</a>
-<a name="11"><span class="lineNum">      11 </span>            : </a>
-<a name="12"><span class="lineNum">      12 </span>            : #include &lt;utility&gt;</a>
-<a name="13"><span class="lineNum">      13 </span>            : #include &lt;variant&gt;</a>
-<a name="14"><span class="lineNum">      14 </span>            : </a>
-<a name="15"><span class="lineNum">      15 </span>            : namespace arg_router</a>
-<a name="16"><span class="lineNum">      16 </span>            : {</a>
-<a name="17"><span class="lineNum">      17 </span>            : namespace policy::validation</a>
-<a name="18"><span class="lineNum">      18 </span>            : {</a>
-<a name="19"><span class="lineNum">      19 </span>            : template &lt;typename... Rules&gt;</a>
-<a name="20"><span class="lineNum">      20 </span>            : class validator;</a>
-<a name="21"><span class="lineNum">      21 </span>            : }  // namespace policy::validation</a>
-<a name="22"><span class="lineNum">      22 </span>            : </a>
-<a name="23"><span class="lineNum">      23 </span>            : namespace detail</a>
-<a name="24"><span class="lineNum">      24 </span>            : {</a>
-<a name="25"><span class="lineNum">      25 </span>            : template &lt;typename... Params&gt;</a>
-<a name="26"><span class="lineNum">      26 </span>            : class add_missing_exception_translator</a>
-<a name="27"><span class="lineNum">      27 </span>            : {</a>
-<a name="28"><span class="lineNum">      28 </span>            :     using params_tuple = std::tuple&lt;std::decay_t&lt;Params&gt;...&gt;;</a>
-<a name="29"><span class="lineNum">      29 </span>            :     using policies_tuple = boost::mp11::mp_copy_if&lt;params_tuple, policy::is_policy&gt;;</a>
-<a name="30"><span class="lineNum">      30 </span>            : </a>
-<a name="31"><span class="lineNum">      31 </span>            : public:</a>
-<a name="32"><span class="lineNum">      32 </span>            :     constexpr static auto exception_translator =</a>
-<a name="33"><span class="lineNum">      33 </span>            :         policy::exception_translator&lt;default_error_code_translations, void&gt;;</a>
-<a name="34"><span class="lineNum">      34 </span>            : </a>
-<a name="35"><span class="lineNum">      35 </span>            :     constexpr static auto has_exception_translator =</a>
-<a name="36"><span class="lineNum">      36 </span>            :         boost::mp11::mp_find_if&lt;policies_tuple, traits::has_translate_exception_method&gt;::value !=</a>
-<a name="37"><span class="lineNum">      37 </span>            :         std::tuple_size_v&lt;policies_tuple&gt;;</a>
-<a name="38"><span class="lineNum">      38 </span>            : </a>
-<a name="39"><span class="lineNum">      39 </span>            :     using type = std::conditional_t&lt;</a>
-<a name="40"><span class="lineNum">      40 </span>            :         has_exception_translator,</a>
-<a name="41"><span class="lineNum">      41 </span>            :         boost::mp11::mp_rename&lt;params_tuple, tree_node&gt;,</a>
-<a name="42"><span class="lineNum">      42 </span>            :         boost::mp11::mp_rename&lt;</a>
-<a name="43"><span class="lineNum">      43 </span>            :             boost::mp11::mp_push_back&lt;params_tuple, std::decay_t&lt;decltype(exception_translator)&gt;&gt;,</a>
-<a name="44"><span class="lineNum">      44 </span>            :             tree_node&gt;&gt;;</a>
-<a name="45"><span class="lineNum">      45 </span>            : };</a>
-<a name="46"><span class="lineNum">      46 </span>            : }  // namespace detail</a>
-<a name="47"><span class="lineNum">      47 </span>            : </a>
-<a name="48"><span class="lineNum">      48 </span>            : /** The root of the parse tree.</a>
-<a name="49"><span class="lineNum">      49 </span>            :  *</a>
-<a name="50"><span class="lineNum">      50 </span>            :  * @tparam Params The top-level policies and child node types</a>
-<a name="51"><span class="lineNum">      51 </span>            :  */</a>
-<a name="52"><span class="lineNum">      52 </span>            : template &lt;typename... Params&gt;</a>
-<a name="53"><span class="lineNum">      53 </span>            : class root_t : public detail::add_missing_exception_translator&lt;Params...&gt;::type</a>
-<a name="54"><span class="lineNum">      54 </span>            : {</a>
-<a name="55"><span class="lineNum">      55 </span>            :     using parent_type = typename detail::add_missing_exception_translator&lt;Params...&gt;::type;</a>
-<a name="56"><span class="lineNum">      56 </span>            : </a>
-<a name="57"><span class="lineNum">      57 </span>            : public:</a>
-<a name="58"><span class="lineNum">      58 </span>            :     using typename parent_type::policies_type;</a>
-<a name="59"><span class="lineNum">      59 </span>            :     using typename parent_type::children_type;</a>
-<a name="60"><span class="lineNum">      60 </span>            : </a>
-<a name="61"><span class="lineNum">      61 </span>            : private:</a>
-<a name="62"><span class="lineNum">      62 </span>            :     static_assert(</a>
-<a name="63"><span class="lineNum">      63 </span>            :         !parent_type::template any_phases_v&lt;bool,  // Type doesn't matter, as long as it isn't void</a>
-<a name="64"><span class="lineNum">      64 </span>            :                                             policy::has_pre_parse_phase_method,</a>
-<a name="65"><span class="lineNum">      65 </span>            :                                             policy::has_parse_phase_method,</a>
-<a name="66"><span class="lineNum">      66 </span>            :                                             policy::has_validation_phase_method,</a>
-<a name="67"><span class="lineNum">      67 </span>            :                                             policy::has_routing_phase_method,</a>
-<a name="68"><span class="lineNum">      68 </span>            :                                             policy::has_missing_phase_method&gt;,</a>
-<a name="69"><span class="lineNum">      69 </span>            :         &quot;Root does not support policies with any parsing phases&quot;);</a>
-<a name="70"><span class="lineNum">      70 </span>            : </a>
-<a name="71"><span class="lineNum">      71 </span>            :     static_assert(!traits::has_long_name_method_v&lt;parent_type&gt; &amp;&amp;</a>
-<a name="72"><span class="lineNum">      72 </span>            :                       !traits::has_short_name_method_v&lt;parent_type&gt; &amp;&amp;</a>
-<a name="73"><span class="lineNum">      73 </span>            :                       !traits::has_display_name_method_v&lt;parent_type&gt; &amp;&amp;</a>
-<a name="74"><span class="lineNum">      74 </span>            :                       !traits::has_none_name_method_v&lt;parent_type&gt; &amp;&amp;</a>
-<a name="75"><span class="lineNum">      75 </span>            :                       !traits::has_error_name_method_v&lt;parent_type&gt; &amp;&amp;</a>
-<a name="76"><span class="lineNum">      76 </span>            :                       !traits::has_description_method_v&lt;parent_type&gt;,</a>
-<a name="77"><span class="lineNum">      77 </span>            :                   &quot;Root cannot have name or description policies&quot;);</a>
-<a name="78"><span class="lineNum">      78 </span>            : </a>
-<a name="79"><span class="lineNum">      79 </span>            :     constexpr static auto validator_index =</a>
-<a name="80"><span class="lineNum">      80 </span>            :         algorithm::find_specialisation_v&lt;policy::validation::validator, policies_type&gt;;</a>
-<a name="81"><span class="lineNum">      81 </span>            :     static_assert(validator_index != std::tuple_size_v&lt;policies_type&gt;,</a>
-<a name="82"><span class="lineNum">      82 </span>            :                   &quot;Root must have a validator policy, use &quot;</a>
-<a name="83"><span class="lineNum">      83 </span>            :                   &quot;policy::validation::default_validator unless you have &quot;</a>
-<a name="84"><span class="lineNum">      84 </span>            :                   &quot;created a custom one&quot;);</a>
-<a name="85"><span class="lineNum">      85 </span>            : </a>
-<a name="86"><span class="lineNum">      86 </span>            :     static_assert(std::tuple_size_v&lt;children_type&gt; &gt;= 1, &quot;Root must have at least one child&quot;);</a>
-<a name="87"><span class="lineNum">      87 </span>            : </a>
-<a name="88"><span class="lineNum">      88 </span>            :     template &lt;typename Child&gt;</a>
-<a name="89"><span class="lineNum">      89 </span>            :     struct router_checker {</a>
-<a name="90"><span class="lineNum">      90 </span>            :         constexpr static bool has_router = !std::is_void_v&lt;</a>
-<a name="91"><span class="lineNum">      91 </span>            :             typename Child::template phase_finder_t&lt;policy::has_routing_phase_method&gt;&gt;;</a>
-<a name="92"><span class="lineNum">      92 </span>            : </a>
-<a name="93"><span class="lineNum">      93 </span>            :         constexpr static bool value = policy::has_no_result_value_v&lt;Child&gt; || has_router;</a>
-<a name="94"><span class="lineNum">      94 </span>            :     };</a>
-<a name="95"><span class="lineNum">      95 </span>            :     static_assert(boost::mp11::mp_all_of&lt;children_type, router_checker&gt;::value,</a>
-<a name="96"><span class="lineNum">      96 </span>            :                   &quot;All root children must have routers, unless they have no value&quot;);</a>
-<a name="97"><span class="lineNum">      97 </span>            : </a>
-<a name="98"><span class="lineNum">      98 </span>            : public:</a>
-<a name="99"><span class="lineNum">      99 </span>            :     /** Validator type. */</a>
-<a name="100"><span class="lineNum">     100 </span>            :     // Initially I wanted the default_validator to be used if one isn't user specified, but you get</a>
-<a name="101"><span class="lineNum">     101 </span>            :     // into a circular dependency as the validator needs the root first</a>
-<a name="102"><span class="lineNum">     102 </span>            :     using validator_type = std::tuple_element_t&lt;validator_index, policies_type&gt;;</a>
-<a name="103"><span class="lineNum">     103 </span>            : </a>
-<a name="104"><span class="lineNum">     104 </span>            :     /** Help data type. */</a>
-<a name="105"><span class="lineNum">     105 </span>            :     template &lt;bool Flatten&gt;</a>
-<a name="106"><span class="lineNum">     106 </span>            :     class help_data_type</a>
-<a name="107"><span class="lineNum">     107 </span>            :     {</a>
-<a name="108"><span class="lineNum">     108 </span>            :     public:</a>
-<a name="109"><span class="lineNum">     109 </span>            :         using label = AR_STRING(&quot;&quot;);</a>
-<a name="110"><span class="lineNum">     110 </span>            :         using description = AR_STRING(&quot;&quot;);</a>
-<a name="111"><span class="lineNum">     111 </span>            :         using children = typename parent_type::template  //</a>
-<a name="112"><span class="lineNum">     112 </span>            :             default_leaf_help_data_type&lt;Flatten&gt;::all_children_help;</a>
-<a name="113"><span class="lineNum">     113 </span>            :     };</a>
-<a name="114"><span class="lineNum">     114 </span>            : </a>
-<a name="115"><span class="lineNum">     115 </span>            :     /** Constructor.</a>
-<a name="116"><span class="lineNum">     116 </span>            :      *</a>
-<a name="117"><span class="lineNum">     117 </span>            :      * @param params Policy and child instances</a>
-<a name="118"><span class="lineNum">     118 </span>            :      */</a>
-<a name="119"><span class="lineNum">     119 </span>            :     template &lt;auto has_exception_translator =</a>
-<a name="120"><span class="lineNum">     120 </span>            :                   detail::add_missing_exception_translator&lt;Params...&gt;::has_exception_translator&gt;</a>
-<a name="121"><span class="lineNum">     121 </span><span class="lineCov">          6 :     constexpr explicit root_t(Params... params,</span></a>
-<a name="122"><span class="lineNum">     122 </span>            :                               // NOLINTNEXTLINE(*-named-parameter)</a>
-<a name="123"><span class="lineNum">     123 </span>            :                               std::enable_if_t&lt;has_exception_translator&gt;* = nullptr) noexcept :</a>
-<a name="124"><span class="lineNum">     124 </span><span class="lineCov">          6 :         parent_type{std::move(params)...}</span></a>
-<a name="125"><span class="lineNum">     125 </span><span class="lineCov">          6 :     {</span></a>
-<a name="126"><span class="lineNum">     126 </span><span class="lineCov">          6 :         validator_type::template validate&lt;std::decay_t&lt;decltype(*this)&gt;&gt;();</span></a>
-<a name="127"><span class="lineNum">     127 </span><span class="lineCov">          6 :     }</span></a>
-<a name="128"><span class="lineNum">     128 </span>            : </a>
-<a name="129"><span class="lineNum">     129 </span>            :     template &lt;auto has_exception_translator =</a>
-<a name="130"><span class="lineNum">     130 </span>            :                   detail::add_missing_exception_translator&lt;Params...&gt;::has_exception_translator&gt;</a>
-<a name="131"><span class="lineNum">     131 </span><span class="lineCov">         53 :     constexpr explicit root_t(Params... params,</span></a>
-<a name="132"><span class="lineNum">     132 </span>            :                               // NOLINTNEXTLINE(*-named-parameter)</a>
-<a name="133"><span class="lineNum">     133 </span>            :                               std::enable_if_t&lt;!has_exception_translator&gt;* = nullptr) noexcept :</a>
-<a name="134"><span class="lineNum">     134 </span><span class="lineCov">         53 :         parent_type{std::move(params)...,</span></a>
-<a name="135"><span class="lineNum">     135 </span>            :                     detail::add_missing_exception_translator&lt;Params...&gt;::exception_translator}</a>
-<a name="136"><span class="lineNum">     136 </span><span class="lineCov">         53 :     {</span></a>
-<a name="137"><span class="lineNum">     137 </span><span class="lineCov">         53 :         validator_type::template validate&lt;std::decay_t&lt;decltype(*this)&gt;&gt;();</span></a>
-<a name="138"><span class="lineNum">     138 </span><span class="lineCov">         53 :     }</span></a>
-<a name="139"><span class="lineNum">     139 </span>            : </a>
-<a name="140"><span class="lineNum">     140 </span>            :     /** Parse the unprocessed token_types.</a>
-<a name="141"><span class="lineNum">     141 </span>            :      *</a>
-<a name="142"><span class="lineNum">     142 </span>            :      * The first element is @em not expected to be the executable name.</a>
-<a name="143"><span class="lineNum">     143 </span>            :      * @param args Vector of tokens</a>
-<a name="144"><span class="lineNum">     144 </span>            :      * @exception parse_exception Thrown if parsing has failed</a>
-<a name="145"><span class="lineNum">     145 </span>            :      */</a>
-<a name="146"><span class="lineNum">     146 </span><span class="lineCov">        243 :     void parse(vector&lt;parsing::token_type&gt; args) const</span></a>
-<a name="147"><span class="lineNum">     147 </span>            :     {</a>
-<a name="148"><span class="lineNum">     148 </span>            :         try {</a>
-<a name="149"><span class="lineNum">     149 </span>            :             // Take a copy of the front token for the error messages</a>
-<a name="150"><span class="lineNum">     150 </span><span class="lineCov">        243 :             const auto front_token = args.empty() ?  //</span></a>
-<a name="151"><span class="lineNum">     151 </span><span class="lineCov">         10 :                                          parsing::token_type{parsing::prefix_type::none, &quot;&quot;} :</span></a>
-<a name="152"><span class="lineNum">     152 </span><span class="lineCov">        233 :                                          args.front();</span></a>
-<a name="153"><span class="lineNum">     153 </span>            : </a>
-<a name="154"><span class="lineNum">     154 </span>            :             // Find a matching child</a>
-<a name="155"><span class="lineNum">     155 </span><span class="lineCov">        243 :             auto match = std::optional&lt;parsing::parse_target&gt;{};</span></a>
-<a name="156"><span class="lineNum">     156 </span><span class="lineCov">        243 :             utility::tuple_iterator(</span></a>
-<a name="157"><span class="lineNum">     157 </span><span class="lineCov">        571 :                 [&amp;](auto /*i*/, const auto&amp; child) {</span></a>
-<a name="158"><span class="lineNum">     158 </span>            :                     // Skip any remaining children if one has been found</a>
-<a name="159"><span class="lineNum">     159 </span><span class="lineCov">        328 :                     if (!match &amp;&amp; (match = child.pre_parse(parsing::pre_parse_data{args}, *this))) {</span></a>
-<a name="160"><span class="lineNum">     160 </span><span class="lineCov">        164 :                         if (!args.empty()) {</span></a>
-<a name="161"><span class="lineNum">     161 </span><span class="lineCov">          1 :                             throw multi_lang_exception{error_code::unhandled_arguments, args};</span></a>
-<a name="162"><span class="lineNum">     162 </span>            :                         }</a>
-<a name="163"><span class="lineNum">     163 </span><span class="lineCov">        163 :                         (*match)();</span></a>
-<a name="164"><span class="lineNum">     164 </span><span class="lineCov">        163 :                     }</span></a>
-<a name="165"><span class="lineNum">     165 </span><span class="lineCov">        328 :                 },</span></a>
-<a name="166"><span class="lineNum">     166 </span><span class="lineCov">        243 :                 this-&gt;children());</span></a>
-<a name="167"><span class="lineNum">     167 </span><span class="lineCov">        157 :             if (!match) {</span></a>
-<a name="168"><span class="lineNum">     168 </span><span class="lineCov">          6 :                 if (front_token.name.empty()) {</span></a>
-<a name="169"><span class="lineNum">     169 </span><span class="lineCov">          1 :                     throw multi_lang_exception{error_code::no_arguments_passed};</span></a>
-<a name="170"><span class="lineNum">     170 </span>            :                 }</a>
-<a name="171"><span class="lineNum">     171 </span><span class="lineCov">          5 :                 throw multi_lang_exception{error_code::unknown_argument, front_token};</span></a>
-<a name="172"><span class="lineNum">     172 </span>            :             }</a>
-<a name="173"><span class="lineNum">     173 </span><span class="lineCov">        335 :         } catch (multi_lang_exception&amp; e) {</span></a>
-<a name="174"><span class="lineNum">     174 </span>            :             // Convert the error code exception to a parse_exception.  This method will always be</a>
-<a name="175"><span class="lineNum">     175 </span>            :             // present because even if an exception_translator-like policy is not specified by the</a>
-<a name="176"><span class="lineNum">     176 </span>            :             // user, a default en_GB one is added</a>
-<a name="177"><span class="lineNum">     177 </span><span class="lineCov">         92 :             this-&gt;translate_exception(e);</span></a>
-<a name="178"><span class="lineNum">     178 </span><span class="lineCov">         92 :         }</span></a>
-<a name="179"><span class="lineNum">     179 </span><span class="lineCov">        335 :     }</span></a>
-<a name="180"><span class="lineNum">     180 </span>            : </a>
-<a name="181"><span class="lineNum">     181 </span>            :     /** Parse the &lt;TT&gt;std::string_view&lt;/TT&gt; convertible elements between @a begin and @a end.</a>
-<a name="182"><span class="lineNum">     182 </span>            :      *</a>
-<a name="183"><span class="lineNum">     183 </span>            :      * The first element is @em not expected to be the executable name.</a>
-<a name="184"><span class="lineNum">     184 </span>            :      * @note The strings must out live the parse process as they are not copied.</a>
-<a name="185"><span class="lineNum">     185 </span>            :      * @tparam Iter Iterator type to &lt;TT&gt;std::string_view&lt;/TT&gt; convertible elements</a>
-<a name="186"><span class="lineNum">     186 </span>            :      * @param begin Iterator to the first element</a>
-<a name="187"><span class="lineNum">     187 </span>            :      * @param end Iterator to the one-past-the-end element</a>
-<a name="188"><span class="lineNum">     188 </span>            :      */</a>
-<a name="189"><span class="lineNum">     189 </span>            :     template &lt;typename Iter, typename = std::enable_if_t&lt;!std::is_same_v&lt;std::decay_t&lt;Iter&gt;, int&gt;&gt;&gt;</a>
-<a name="190"><span class="lineNum">     190 </span><span class="lineCov">        222 :     void parse(Iter begin, Iter end) const</span></a>
-<a name="191"><span class="lineNum">     191 </span>            :     {</a>
-<a name="192"><span class="lineNum">     192 </span><span class="lineCov">        222 :         auto args = vector&lt;parsing::token_type&gt;{};</span></a>
-<a name="193"><span class="lineNum">     193 </span><span class="lineCov">        725 :         for (; begin != end; ++begin) {</span></a>
-<a name="194"><span class="lineNum">     194 </span><span class="lineCov">        503 :             args.emplace_back(parsing::prefix_type::none, *begin);</span></a>
-<a name="195"><span class="lineNum">     195 </span><span class="lineCov">        503 :         }</span></a>
-<a name="196"><span class="lineNum">     196 </span><span class="lineCov">        222 :         args.shrink_to_fit();</span></a>
-<a name="197"><span class="lineNum">     197 </span>            : </a>
-<a name="198"><span class="lineNum">     198 </span><span class="lineCov">        222 :         parse(std::move(args));</span></a>
-<a name="199"><span class="lineNum">     199 </span><span class="lineCov">        222 :     }</span></a>
-<a name="200"><span class="lineNum">     200 </span>            : </a>
-<a name="201"><span class="lineNum">     201 </span>            :     /** Parse all &lt;TT&gt;std::string_view&lt;/TT&gt; convertible elements in @a c.</a>
-<a name="202"><span class="lineNum">     202 </span>            :      *</a>
-<a name="203"><span class="lineNum">     203 </span>            :      * The first element is @em not expected to be the executable name.</a>
-<a name="204"><span class="lineNum">     204 </span>            :      * @note This does not take part in overload resolution if @a c is a</a>
-<a name="205"><span class="lineNum">     205 </span>            :      * &lt;TT&gt;vector\&lt;parsing::token_type\&gt;&lt;/TT&gt;</a>
-<a name="206"><span class="lineNum">     206 </span>            :      * @tparam Container</a>
-<a name="207"><span class="lineNum">     207 </span>            :      * @param c Elements to parse</a>
-<a name="208"><span class="lineNum">     208 </span>            :      */</a>
-<a name="209"><span class="lineNum">     209 </span>            :     template &lt;typename Container,</a>
-<a name="210"><span class="lineNum">     210 </span>            :               typename = std::enable_if_t&lt;</a>
-<a name="211"><span class="lineNum">     211 </span>            :                   !std::is_same_v&lt;std::decay_t&lt;Container&gt;, vector&lt;parsing::token_type&gt;&gt;&gt;&gt;</a>
-<a name="212"><span class="lineNum">     212 </span><span class="lineCov">         42 :     void parse(const Container&amp; c) const</span></a>
-<a name="213"><span class="lineNum">     213 </span>            :     {</a>
-<a name="214"><span class="lineNum">     214 </span>            :         using std::begin;</a>
-<a name="215"><span class="lineNum">     215 </span>            :         using std::end;</a>
-<a name="216"><span class="lineNum">     216 </span>            : </a>
-<a name="217"><span class="lineNum">     217 </span><span class="lineCov">         42 :         parse(std::begin(c), std::end(c));</span></a>
-<a name="218"><span class="lineNum">     218 </span><span class="lineCov">         42 :     }</span></a>
-<a name="219"><span class="lineNum">     219 </span>            : </a>
-<a name="220"><span class="lineNum">     220 </span>            :     /** Parse the raw command line arguments.</a>
-<a name="221"><span class="lineNum">     221 </span>            :      *</a>
-<a name="222"><span class="lineNum">     222 </span>            :      * The first element is expected to be the executable name.</a>
-<a name="223"><span class="lineNum">     223 </span>            :      * @param argc Number of arguments</a>
-<a name="224"><span class="lineNum">     224 </span>            :      * @param argv Array of char pointers to the command line tokens</a>
-<a name="225"><span class="lineNum">     225 </span>            :      * @exception parse_exception Thrown if parsing has failed</a>
-<a name="226"><span class="lineNum">     226 </span>            :      */</a>
-<a name="227"><span class="lineNum">     227 </span><span class="lineCov">        159 :     void parse(int argc, char** argv) const</span></a>
-<a name="228"><span class="lineNum">     228 </span>            :     {</a>
-<a name="229"><span class="lineNum">     229 </span>            :         // Skip the program name</a>
-<a name="230"><span class="lineNum">     230 </span><span class="lineCov">        159 :         parse(&amp;argv[1], &amp;argv[argc]);</span></a>
-<a name="231"><span class="lineNum">     231 </span><span class="lineCov">        159 :     }</span></a>
-<a name="232"><span class="lineNum">     232 </span>            : </a>
-<a name="233"><span class="lineNum">     233 </span>            :     /** Generates a root-level help string and writes it into @a stream.</a>
-<a name="234"><span class="lineNum">     234 </span>            :      *</a>
-<a name="235"><span class="lineNum">     235 </span>            :      * Does nothing if a help node is not present.</a>
-<a name="236"><span class="lineNum">     236 </span>            :      * @param stream Output stream to write into</a>
-<a name="237"><span class="lineNum">     237 </span>            :      */</a>
-<a name="238"><span class="lineNum">     238 </span><span class="lineCov">          7 :     void help([[maybe_unused]] std::ostream&amp; stream) const</span></a>
-<a name="239"><span class="lineNum">     239 </span>            :     {</a>
-<a name="240"><span class="lineNum">     240 </span>            :         // Have to lambda wrap here due to an MSVC bug where the false if constexpr branch is</a>
-<a name="241"><span class="lineNum">     241 </span>            :         // evaluated</a>
-<a name="242"><span class="lineNum">     242 </span><span class="lineCov">         14 :         [&amp;](auto* type_ptr) {</span></a>
-<a name="243"><span class="lineNum">     243 </span>            :             using root_type = std::remove_pointer_t&lt;decltype(type_ptr)&gt;;</a>
-<a name="244"><span class="lineNum">     244 </span>            : </a>
-<a name="245"><span class="lineNum">     245 </span>            :             constexpr static auto help_index =</a>
-<a name="246"><span class="lineNum">     246 </span>            :                 boost::mp11::mp_find_if&lt;typename root_type::children_type,</a>
-<a name="247"><span class="lineNum">     247 </span>            :                                         traits::has_generate_help_method&gt;::value;</a>
-<a name="248"><span class="lineNum">     248 </span>            : </a>
-<a name="249"><span class="lineNum">     249 </span>            :             if constexpr (help_index &lt; std::tuple_size_v&lt;typename root_type::children_type&gt;) {</a>
-<a name="250"><span class="lineNum">     250 </span>            :                 using help_type =</a>
-<a name="251"><span class="lineNum">     251 </span>            :                     std::tuple_element_t&lt;help_index, typename root_type::children_type&gt;;</a>
-<a name="252"><span class="lineNum">     252 </span><span class="lineCov">          6 :                 constexpr auto flatten =</span></a>
+<a name="7"><span class="lineNum">       7 </span>            : #include &quot;arg_router/parsing/unknown_argument_handling.hpp&quot;</a>
+<a name="8"><span class="lineNum">       8 </span>            : #include &quot;arg_router/policy/exception_translator.hpp&quot;</a>
+<a name="9"><span class="lineNum">       9 </span>            : #include &quot;arg_router/policy/flatten_help.hpp&quot;</a>
+<a name="10"><span class="lineNum">      10 </span>            : #include &quot;arg_router/policy/no_result_value.hpp&quot;</a>
+<a name="11"><span class="lineNum">      11 </span>            : #include &quot;arg_router/tree_node.hpp&quot;</a>
+<a name="12"><span class="lineNum">      12 </span>            : </a>
+<a name="13"><span class="lineNum">      13 </span>            : #include &lt;utility&gt;</a>
+<a name="14"><span class="lineNum">      14 </span>            : #include &lt;variant&gt;</a>
+<a name="15"><span class="lineNum">      15 </span>            : </a>
+<a name="16"><span class="lineNum">      16 </span>            : namespace arg_router</a>
+<a name="17"><span class="lineNum">      17 </span>            : {</a>
+<a name="18"><span class="lineNum">      18 </span>            : namespace policy::validation</a>
+<a name="19"><span class="lineNum">      19 </span>            : {</a>
+<a name="20"><span class="lineNum">      20 </span>            : template &lt;typename... Rules&gt;</a>
+<a name="21"><span class="lineNum">      21 </span>            : class validator;</a>
+<a name="22"><span class="lineNum">      22 </span>            : }  // namespace policy::validation</a>
+<a name="23"><span class="lineNum">      23 </span>            : </a>
+<a name="24"><span class="lineNum">      24 </span>            : namespace detail</a>
+<a name="25"><span class="lineNum">      25 </span>            : {</a>
+<a name="26"><span class="lineNum">      26 </span>            : template &lt;typename... Params&gt;</a>
+<a name="27"><span class="lineNum">      27 </span>            : class add_missing_exception_translator</a>
+<a name="28"><span class="lineNum">      28 </span>            : {</a>
+<a name="29"><span class="lineNum">      29 </span>            :     using params_tuple = std::tuple&lt;std::decay_t&lt;Params&gt;...&gt;;</a>
+<a name="30"><span class="lineNum">      30 </span>            :     using policies_tuple = boost::mp11::mp_copy_if&lt;params_tuple, policy::is_policy&gt;;</a>
+<a name="31"><span class="lineNum">      31 </span>            : </a>
+<a name="32"><span class="lineNum">      32 </span>            : public:</a>
+<a name="33"><span class="lineNum">      33 </span>            :     constexpr static auto exception_translator =</a>
+<a name="34"><span class="lineNum">      34 </span>            :         policy::exception_translator&lt;default_error_code_translations, void&gt;;</a>
+<a name="35"><span class="lineNum">      35 </span>            : </a>
+<a name="36"><span class="lineNum">      36 </span>            :     constexpr static auto has_exception_translator =</a>
+<a name="37"><span class="lineNum">      37 </span>            :         boost::mp11::mp_find_if&lt;policies_tuple, traits::has_translate_exception_method&gt;::value !=</a>
+<a name="38"><span class="lineNum">      38 </span>            :         std::tuple_size_v&lt;policies_tuple&gt;;</a>
+<a name="39"><span class="lineNum">      39 </span>            : </a>
+<a name="40"><span class="lineNum">      40 </span>            :     using type = std::conditional_t&lt;</a>
+<a name="41"><span class="lineNum">      41 </span>            :         has_exception_translator,</a>
+<a name="42"><span class="lineNum">      42 </span>            :         boost::mp11::mp_rename&lt;params_tuple, tree_node&gt;,</a>
+<a name="43"><span class="lineNum">      43 </span>            :         boost::mp11::mp_rename&lt;</a>
+<a name="44"><span class="lineNum">      44 </span>            :             boost::mp11::mp_push_back&lt;params_tuple, std::decay_t&lt;decltype(exception_translator)&gt;&gt;,</a>
+<a name="45"><span class="lineNum">      45 </span>            :             tree_node&gt;&gt;;</a>
+<a name="46"><span class="lineNum">      46 </span>            : };</a>
+<a name="47"><span class="lineNum">      47 </span>            : }  // namespace detail</a>
+<a name="48"><span class="lineNum">      48 </span>            : </a>
+<a name="49"><span class="lineNum">      49 </span>            : /** The root of the parse tree.</a>
+<a name="50"><span class="lineNum">      50 </span>            :  *</a>
+<a name="51"><span class="lineNum">      51 </span>            :  * @tparam Params The top-level policies and child node types</a>
+<a name="52"><span class="lineNum">      52 </span>            :  */</a>
+<a name="53"><span class="lineNum">      53 </span>            : template &lt;typename... Params&gt;</a>
+<a name="54"><span class="lineNum">      54 </span>            : class root_t : public detail::add_missing_exception_translator&lt;Params...&gt;::type</a>
+<a name="55"><span class="lineNum">      55 </span>            : {</a>
+<a name="56"><span class="lineNum">      56 </span>            :     using parent_type = typename detail::add_missing_exception_translator&lt;Params...&gt;::type;</a>
+<a name="57"><span class="lineNum">      57 </span>            : </a>
+<a name="58"><span class="lineNum">      58 </span>            : public:</a>
+<a name="59"><span class="lineNum">      59 </span>            :     using typename parent_type::policies_type;</a>
+<a name="60"><span class="lineNum">      60 </span>            :     using typename parent_type::children_type;</a>
+<a name="61"><span class="lineNum">      61 </span>            : </a>
+<a name="62"><span class="lineNum">      62 </span>            : private:</a>
+<a name="63"><span class="lineNum">      63 </span>            :     static_assert(</a>
+<a name="64"><span class="lineNum">      64 </span>            :         !parent_type::template any_phases_v&lt;bool,  // Type doesn't matter, as long as it isn't void</a>
+<a name="65"><span class="lineNum">      65 </span>            :                                             policy::has_pre_parse_phase_method,</a>
+<a name="66"><span class="lineNum">      66 </span>            :                                             policy::has_parse_phase_method,</a>
+<a name="67"><span class="lineNum">      67 </span>            :                                             policy::has_validation_phase_method,</a>
+<a name="68"><span class="lineNum">      68 </span>            :                                             policy::has_routing_phase_method,</a>
+<a name="69"><span class="lineNum">      69 </span>            :                                             policy::has_missing_phase_method&gt;,</a>
+<a name="70"><span class="lineNum">      70 </span>            :         &quot;Root does not support policies with any parsing phases&quot;);</a>
+<a name="71"><span class="lineNum">      71 </span>            : </a>
+<a name="72"><span class="lineNum">      72 </span>            :     static_assert(!traits::has_long_name_method_v&lt;parent_type&gt; &amp;&amp;</a>
+<a name="73"><span class="lineNum">      73 </span>            :                       !traits::has_short_name_method_v&lt;parent_type&gt; &amp;&amp;</a>
+<a name="74"><span class="lineNum">      74 </span>            :                       !traits::has_display_name_method_v&lt;parent_type&gt; &amp;&amp;</a>
+<a name="75"><span class="lineNum">      75 </span>            :                       !traits::has_none_name_method_v&lt;parent_type&gt; &amp;&amp;</a>
+<a name="76"><span class="lineNum">      76 </span>            :                       !traits::has_error_name_method_v&lt;parent_type&gt; &amp;&amp;</a>
+<a name="77"><span class="lineNum">      77 </span>            :                       !traits::has_description_method_v&lt;parent_type&gt;,</a>
+<a name="78"><span class="lineNum">      78 </span>            :                   &quot;Root cannot have name or description policies&quot;);</a>
+<a name="79"><span class="lineNum">      79 </span>            : </a>
+<a name="80"><span class="lineNum">      80 </span>            :     constexpr static auto validator_index =</a>
+<a name="81"><span class="lineNum">      81 </span>            :         algorithm::find_specialisation_v&lt;policy::validation::validator, policies_type&gt;;</a>
+<a name="82"><span class="lineNum">      82 </span>            :     static_assert(validator_index != std::tuple_size_v&lt;policies_type&gt;,</a>
+<a name="83"><span class="lineNum">      83 </span>            :                   &quot;Root must have a validator policy, use &quot;</a>
+<a name="84"><span class="lineNum">      84 </span>            :                   &quot;policy::validation::default_validator unless you have &quot;</a>
+<a name="85"><span class="lineNum">      85 </span>            :                   &quot;created a custom one&quot;);</a>
+<a name="86"><span class="lineNum">      86 </span>            : </a>
+<a name="87"><span class="lineNum">      87 </span>            :     static_assert(std::tuple_size_v&lt;children_type&gt; &gt;= 1, &quot;Root must have at least one child&quot;);</a>
+<a name="88"><span class="lineNum">      88 </span>            : </a>
+<a name="89"><span class="lineNum">      89 </span>            :     template &lt;typename Child&gt;</a>
+<a name="90"><span class="lineNum">      90 </span>            :     struct router_checker {</a>
+<a name="91"><span class="lineNum">      91 </span>            :         constexpr static bool has_router = !std::is_void_v&lt;</a>
+<a name="92"><span class="lineNum">      92 </span>            :             typename Child::template phase_finder_t&lt;policy::has_routing_phase_method&gt;&gt;;</a>
+<a name="93"><span class="lineNum">      93 </span>            : </a>
+<a name="94"><span class="lineNum">      94 </span>            :         constexpr static bool value = policy::has_no_result_value_v&lt;Child&gt; || has_router;</a>
+<a name="95"><span class="lineNum">      95 </span>            :     };</a>
+<a name="96"><span class="lineNum">      96 </span>            :     static_assert(boost::mp11::mp_all_of&lt;children_type, router_checker&gt;::value,</a>
+<a name="97"><span class="lineNum">      97 </span>            :                   &quot;All root children must have routers, unless they have no value&quot;);</a>
+<a name="98"><span class="lineNum">      98 </span>            : </a>
+<a name="99"><span class="lineNum">      99 </span>            : public:</a>
+<a name="100"><span class="lineNum">     100 </span>            :     /** Validator type. */</a>
+<a name="101"><span class="lineNum">     101 </span>            :     // Initially I wanted the default_validator to be used if one isn't user specified, but you get</a>
+<a name="102"><span class="lineNum">     102 </span>            :     // into a circular dependency as the validator needs the root first</a>
+<a name="103"><span class="lineNum">     103 </span>            :     using validator_type = std::tuple_element_t&lt;validator_index, policies_type&gt;;</a>
+<a name="104"><span class="lineNum">     104 </span>            : </a>
+<a name="105"><span class="lineNum">     105 </span>            :     /** Help data type. */</a>
+<a name="106"><span class="lineNum">     106 </span>            :     template &lt;bool Flatten&gt;</a>
+<a name="107"><span class="lineNum">     107 </span>            :     class help_data_type</a>
+<a name="108"><span class="lineNum">     108 </span>            :     {</a>
+<a name="109"><span class="lineNum">     109 </span>            :     public:</a>
+<a name="110"><span class="lineNum">     110 </span>            :         using label = AR_STRING(&quot;&quot;);</a>
+<a name="111"><span class="lineNum">     111 </span>            :         using description = AR_STRING(&quot;&quot;);</a>
+<a name="112"><span class="lineNum">     112 </span>            :         using children =</a>
+<a name="113"><span class="lineNum">     113 </span>            :             typename parent_type::template default_leaf_help_data_type&lt;Flatten&gt;::all_children_help;</a>
+<a name="114"><span class="lineNum">     114 </span>            :     };</a>
+<a name="115"><span class="lineNum">     115 </span>            : </a>
+<a name="116"><span class="lineNum">     116 </span>            :     /** Constructor.</a>
+<a name="117"><span class="lineNum">     117 </span>            :      *</a>
+<a name="118"><span class="lineNum">     118 </span>            :      * @param params Policy and child instances</a>
+<a name="119"><span class="lineNum">     119 </span>            :      */</a>
+<a name="120"><span class="lineNum">     120 </span>            :     template &lt;auto has_exception_translator =</a>
+<a name="121"><span class="lineNum">     121 </span>            :                   detail::add_missing_exception_translator&lt;Params...&gt;::has_exception_translator&gt;</a>
+<a name="122"><span class="lineNum">     122 </span><span class="lineCov">          6 :     constexpr explicit root_t(Params... params,</span></a>
+<a name="123"><span class="lineNum">     123 </span>            :                               // NOLINTNEXTLINE(*-named-parameter)</a>
+<a name="124"><span class="lineNum">     124 </span>            :                               std::enable_if_t&lt;has_exception_translator&gt;* = nullptr) noexcept :</a>
+<a name="125"><span class="lineNum">     125 </span><span class="lineCov">          6 :         parent_type{std::move(params)...}</span></a>
+<a name="126"><span class="lineNum">     126 </span><span class="lineCov">          6 :     {</span></a>
+<a name="127"><span class="lineNum">     127 </span><span class="lineCov">          6 :         validator_type::template validate&lt;std::decay_t&lt;decltype(*this)&gt;&gt;();</span></a>
+<a name="128"><span class="lineNum">     128 </span><span class="lineCov">          6 :     }</span></a>
+<a name="129"><span class="lineNum">     129 </span>            : </a>
+<a name="130"><span class="lineNum">     130 </span>            :     template &lt;auto has_exception_translator =</a>
+<a name="131"><span class="lineNum">     131 </span>            :                   detail::add_missing_exception_translator&lt;Params...&gt;::has_exception_translator&gt;</a>
+<a name="132"><span class="lineNum">     132 </span><span class="lineCov">         90 :     constexpr explicit root_t(Params... params,</span></a>
+<a name="133"><span class="lineNum">     133 </span>            :                               // NOLINTNEXTLINE(*-named-parameter)</a>
+<a name="134"><span class="lineNum">     134 </span>            :                               std::enable_if_t&lt;!has_exception_translator&gt;* = nullptr) noexcept :</a>
+<a name="135"><span class="lineNum">     135 </span><span class="lineCov">         90 :         parent_type{std::move(params)...,</span></a>
+<a name="136"><span class="lineNum">     136 </span>            :                     detail::add_missing_exception_translator&lt;Params...&gt;::exception_translator}</a>
+<a name="137"><span class="lineNum">     137 </span><span class="lineCov">         90 :     {</span></a>
+<a name="138"><span class="lineNum">     138 </span><span class="lineCov">         90 :         validator_type::template validate&lt;std::decay_t&lt;decltype(*this)&gt;&gt;();</span></a>
+<a name="139"><span class="lineNum">     139 </span><span class="lineCov">         90 :     }</span></a>
+<a name="140"><span class="lineNum">     140 </span>            : </a>
+<a name="141"><span class="lineNum">     141 </span>            :     /** Parse the unprocessed token_types.</a>
+<a name="142"><span class="lineNum">     142 </span>            :      *</a>
+<a name="143"><span class="lineNum">     143 </span>            :      * The first element is @em not expected to be the executable name.</a>
+<a name="144"><span class="lineNum">     144 </span>            :      * @param args Vector of tokens</a>
+<a name="145"><span class="lineNum">     145 </span>            :      * @exception parse_exception Thrown if parsing has failed</a>
+<a name="146"><span class="lineNum">     146 </span>            :      */</a>
+<a name="147"><span class="lineNum">     147 </span><span class="lineCov">        315 :     void parse(vector&lt;parsing::token_type&gt; args) const</span></a>
+<a name="148"><span class="lineNum">     148 </span>            :     {</a>
+<a name="149"><span class="lineNum">     149 </span>            :         try {</a>
+<a name="150"><span class="lineNum">     150 </span>            :             // Take a copy of the front token for the error messages</a>
+<a name="151"><span class="lineNum">     151 </span><span class="lineCov">        315 :             const auto front_token = args.empty() ?  //</span></a>
+<a name="152"><span class="lineNum">     152 </span><span class="lineCov">         12 :                                          parsing::token_type{parsing::prefix_type::none, &quot;&quot;} :</span></a>
+<a name="153"><span class="lineNum">     153 </span><span class="lineCov">        303 :                                          args.front();</span></a>
+<a name="154"><span class="lineNum">     154 </span>            : </a>
+<a name="155"><span class="lineNum">     155 </span>            :             // Find a matching child</a>
+<a name="156"><span class="lineNum">     156 </span><span class="lineCov">        315 :             auto match = std::optional&lt;parsing::parse_target&gt;{};</span></a>
+<a name="157"><span class="lineNum">     157 </span><span class="lineCov">        315 :             utility::tuple_iterator(</span></a>
+<a name="158"><span class="lineNum">     158 </span><span class="lineCov">        741 :                 [&amp;](auto /*i*/, const auto&amp; child) {</span></a>
+<a name="159"><span class="lineNum">     159 </span>            :                     // Skip any remaining children if one has been found</a>
+<a name="160"><span class="lineNum">     160 </span><span class="lineCov">        426 :                     if (!match &amp;&amp; (match = child.pre_parse(parsing::pre_parse_data{args}, *this))) {</span></a>
+<a name="161"><span class="lineNum">     161 </span><span class="lineCov">        219 :                         if (!args.empty()) {</span></a>
+<a name="162"><span class="lineNum">     162 </span><span class="lineCov">          1 :                             throw multi_lang_exception{error_code::unhandled_arguments, args};</span></a>
+<a name="163"><span class="lineNum">     163 </span>            :                         }</a>
+<a name="164"><span class="lineNum">     164 </span><span class="lineCov">        218 :                         (*match)();</span></a>
+<a name="165"><span class="lineNum">     165 </span><span class="lineCov">        218 :                     }</span></a>
+<a name="166"><span class="lineNum">     166 </span><span class="lineCov">        426 :                 },</span></a>
+<a name="167"><span class="lineNum">     167 </span><span class="lineCov">        315 :                 this-&gt;children());</span></a>
+<a name="168"><span class="lineNum">     168 </span><span class="lineCov">        213 :             if (!match) {</span></a>
+<a name="169"><span class="lineNum">     169 </span><span class="lineCov">         10 :                 if (front_token.name.empty()) {</span></a>
+<a name="170"><span class="lineNum">     170 </span><span class="lineCov">          1 :                     throw multi_lang_exception{error_code::no_arguments_passed};</span></a>
+<a name="171"><span class="lineNum">     171 </span>            :                 }</a>
+<a name="172"><span class="lineNum">     172 </span><span class="lineCov">          9 :                 parsing::unknown_argument_exception(*this, front_token);</span></a>
+<a name="173"><span class="lineNum">     173 </span>            :             }</a>
+<a name="174"><span class="lineNum">     174 </span><span class="lineCov">        427 :         } catch (multi_lang_exception&amp; e) {</span></a>
+<a name="175"><span class="lineNum">     175 </span>            :             // Convert the error code exception to a parse_exception.  This method will always be</a>
+<a name="176"><span class="lineNum">     176 </span>            :             // present because even if an exception_translator-like policy is not specified by the</a>
+<a name="177"><span class="lineNum">     177 </span>            :             // user, a default en_GB one is added</a>
+<a name="178"><span class="lineNum">     178 </span><span class="lineCov">        112 :             this-&gt;translate_exception(e);</span></a>
+<a name="179"><span class="lineNum">     179 </span><span class="lineCov">        112 :         }</span></a>
+<a name="180"><span class="lineNum">     180 </span><span class="lineCov">        427 :     }</span></a>
+<a name="181"><span class="lineNum">     181 </span>            : </a>
+<a name="182"><span class="lineNum">     182 </span>            :     /** Parse the &lt;TT&gt;std::string_view&lt;/TT&gt; convertible elements between @a begin and @a end.</a>
+<a name="183"><span class="lineNum">     183 </span>            :      *</a>
+<a name="184"><span class="lineNum">     184 </span>            :      * The first element is @em not expected to be the executable name.</a>
+<a name="185"><span class="lineNum">     185 </span>            :      * @note The strings must out live the parse process as they are not copied.</a>
+<a name="186"><span class="lineNum">     186 </span>            :      * @tparam Iter Iterator type to &lt;TT&gt;std::string_view&lt;/TT&gt; convertible elements</a>
+<a name="187"><span class="lineNum">     187 </span>            :      * @param begin Iterator to the first element</a>
+<a name="188"><span class="lineNum">     188 </span>            :      * @param end Iterator to the one-past-the-end element</a>
+<a name="189"><span class="lineNum">     189 </span>            :      */</a>
+<a name="190"><span class="lineNum">     190 </span>            :     template &lt;typename Iter, typename = std::enable_if_t&lt;!std::is_same_v&lt;std::decay_t&lt;Iter&gt;, int&gt;&gt;&gt;</a>
+<a name="191"><span class="lineNum">     191 </span><span class="lineCov">        294 :     void parse(Iter begin, Iter end) const</span></a>
+<a name="192"><span class="lineNum">     192 </span>            :     {</a>
+<a name="193"><span class="lineNum">     193 </span><span class="lineCov">        294 :         auto args = vector&lt;parsing::token_type&gt;{};</span></a>
+<a name="194"><span class="lineNum">     194 </span><span class="lineCov">       1015 :         for (; begin != end; ++begin) {</span></a>
+<a name="195"><span class="lineNum">     195 </span><span class="lineCov">        721 :             args.emplace_back(parsing::prefix_type::none, *begin);</span></a>
+<a name="196"><span class="lineNum">     196 </span><span class="lineCov">        721 :         }</span></a>
+<a name="197"><span class="lineNum">     197 </span><span class="lineCov">        294 :         args.shrink_to_fit();</span></a>
+<a name="198"><span class="lineNum">     198 </span>            : </a>
+<a name="199"><span class="lineNum">     199 </span><span class="lineCov">        294 :         parse(std::move(args));</span></a>
+<a name="200"><span class="lineNum">     200 </span><span class="lineCov">        294 :     }</span></a>
+<a name="201"><span class="lineNum">     201 </span>            : </a>
+<a name="202"><span class="lineNum">     202 </span>            :     /** Parse all &lt;TT&gt;std::string_view&lt;/TT&gt; convertible elements in @a c.</a>
+<a name="203"><span class="lineNum">     203 </span>            :      *</a>
+<a name="204"><span class="lineNum">     204 </span>            :      * The first element is @em not expected to be the executable name.</a>
+<a name="205"><span class="lineNum">     205 </span>            :      * @note This does not take part in overload resolution if @a c is a</a>
+<a name="206"><span class="lineNum">     206 </span>            :      * &lt;TT&gt;vector\&lt;parsing::token_type\&gt;&lt;/TT&gt;</a>
+<a name="207"><span class="lineNum">     207 </span>            :      * @tparam Container</a>
+<a name="208"><span class="lineNum">     208 </span>            :      * @param c Elements to parse</a>
+<a name="209"><span class="lineNum">     209 </span>            :      */</a>
+<a name="210"><span class="lineNum">     210 </span>            :     template &lt;typename Container,</a>
+<a name="211"><span class="lineNum">     211 </span>            :               typename = std::enable_if_t&lt;</a>
+<a name="212"><span class="lineNum">     212 </span>            :                   !std::is_same_v&lt;std::decay_t&lt;Container&gt;, vector&lt;parsing::token_type&gt;&gt;&gt;&gt;</a>
+<a name="213"><span class="lineNum">     213 </span><span class="lineCov">         55 :     void parse(const Container&amp; c) const</span></a>
+<a name="214"><span class="lineNum">     214 </span>            :     {</a>
+<a name="215"><span class="lineNum">     215 </span>            :         using std::begin;</a>
+<a name="216"><span class="lineNum">     216 </span>            :         using std::end;</a>
+<a name="217"><span class="lineNum">     217 </span>            : </a>
+<a name="218"><span class="lineNum">     218 </span><span class="lineCov">         55 :         parse(std::begin(c), std::end(c));</span></a>
+<a name="219"><span class="lineNum">     219 </span><span class="lineCov">         55 :     }</span></a>
+<a name="220"><span class="lineNum">     220 </span>            : </a>
+<a name="221"><span class="lineNum">     221 </span>            :     /** Parse the raw command line arguments.</a>
+<a name="222"><span class="lineNum">     222 </span>            :      *</a>
+<a name="223"><span class="lineNum">     223 </span>            :      * The first element is expected to be the executable name.</a>
+<a name="224"><span class="lineNum">     224 </span>            :      * @param argc Number of arguments</a>
+<a name="225"><span class="lineNum">     225 </span>            :      * @param argv Array of char pointers to the command line tokens</a>
+<a name="226"><span class="lineNum">     226 </span>            :      * @exception parse_exception Thrown if parsing has failed</a>
+<a name="227"><span class="lineNum">     227 </span>            :      */</a>
+<a name="228"><span class="lineNum">     228 </span><span class="lineCov">        218 :     void parse(int argc, char** argv) const</span></a>
+<a name="229"><span class="lineNum">     229 </span>            :     {</a>
+<a name="230"><span class="lineNum">     230 </span>            :         // Skip the program name</a>
+<a name="231"><span class="lineNum">     231 </span><span class="lineCov">        218 :         parse(&amp;argv[1], &amp;argv[argc]);</span></a>
+<a name="232"><span class="lineNum">     232 </span><span class="lineCov">        218 :     }</span></a>
+<a name="233"><span class="lineNum">     233 </span>            : </a>
+<a name="234"><span class="lineNum">     234 </span>            :     /** Generates a root-level help string and writes it into @a stream.</a>
+<a name="235"><span class="lineNum">     235 </span>            :      *</a>
+<a name="236"><span class="lineNum">     236 </span>            :      * Does nothing if a help node is not present.</a>
+<a name="237"><span class="lineNum">     237 </span>            :      * @param stream Output stream to write into</a>
+<a name="238"><span class="lineNum">     238 </span>            :      */</a>
+<a name="239"><span class="lineNum">     239 </span><span class="lineCov">         15 :     void help([[maybe_unused]] std::ostream&amp; stream) const</span></a>
+<a name="240"><span class="lineNum">     240 </span>            :     {</a>
+<a name="241"><span class="lineNum">     241 </span>            :         // Have to lambda wrap here due to MSVC where the if constexpr branch is evaluated even when</a>
+<a name="242"><span class="lineNum">     242 </span>            :         // false</a>
+<a name="243"><span class="lineNum">     243 </span><span class="lineCov">         30 :         [&amp;](auto* type_ptr) {</span></a>
+<a name="244"><span class="lineNum">     244 </span>            :             using root_type = std::decay_t&lt;std::remove_pointer_t&lt;decltype(type_ptr)&gt;&gt;;</a>
+<a name="245"><span class="lineNum">     245 </span>            :             using root_children = typename root_type::children_type;</a>
+<a name="246"><span class="lineNum">     246 </span>            : </a>
+<a name="247"><span class="lineNum">     247 </span>            :             constexpr static auto help_index =</a>
+<a name="248"><span class="lineNum">     248 </span>            :                 boost::mp11::mp_find_if&lt;root_children, traits::has_generate_help_method&gt;::value;</a>
+<a name="249"><span class="lineNum">     249 </span>            : </a>
+<a name="250"><span class="lineNum">     250 </span>            :             if constexpr (help_index &lt; std::tuple_size_v&lt;root_children&gt;) {</a>
+<a name="251"><span class="lineNum">     251 </span>            :                 using help_type = std::tuple_element_t&lt;help_index, root_children&gt;;</a>
+<a name="252"><span class="lineNum">     252 </span><span class="lineCov">         12 :                 constexpr auto flatten =</span></a>
 <a name="253"><span class="lineNum">     253 </span>            :                     algorithm::has_specialisation_v&lt;policy::flatten_help_t,</a>
 <a name="254"><span class="lineNum">     254 </span>            :                                                     typename help_type::policies_type&gt;;</a>
 <a name="255"><span class="lineNum">     255 </span>            : </a>
-<a name="256"><span class="lineNum">     256 </span>            :                 try {</a>
-<a name="257"><span class="lineNum">     257 </span><span class="lineCov">         12 :                     std::get&lt;help_index&gt;(this-&gt;children())</span></a>
-<a name="258"><span class="lineNum">     258 </span><span class="lineCov">          6 :                         .template generate_help&lt;root_type, help_type, flatten&gt;(stream);</span></a>
-<a name="259"><span class="lineNum">     259 </span><span class="lineCov">          6 :                 } catch (multi_lang_exception&amp; e) {</span></a>
-<a name="260"><span class="lineNum">     260 </span><span class="lineNoCov">          0 :                     this-&gt;translate_exception(e);</span></a>
-<a name="261"><span class="lineNum">     261 </span><span class="lineNoCov">          0 :                 }</span></a>
-<a name="262"><span class="lineNum">     262 </span>            :             }</a>
-<a name="263"><span class="lineNum">     263 </span><span class="lineCov">          7 :         }(static_cast&lt;root_t*&gt;(nullptr));</span></a>
-<a name="264"><span class="lineNum">     264 </span><span class="lineCov">          7 :     }</span></a>
-<a name="265"><span class="lineNum">     265 </span>            : </a>
-<a name="266"><span class="lineNum">     266 </span>            :     /** Overload that writes into a string and returns it.</a>
-<a name="267"><span class="lineNum">     267 </span>            :      *</a>
-<a name="268"><span class="lineNum">     268 </span>            :      * @return String holding the help output</a>
-<a name="269"><span class="lineNum">     269 </span>            :      */</a>
-<a name="270"><span class="lineNum">     270 </span><span class="lineCov">          3 :     [[nodiscard]] string help() const</span></a>
-<a name="271"><span class="lineNum">     271 </span>            :     {</a>
-<a name="272"><span class="lineNum">     272 </span><span class="lineCov">          3 :         auto stream = ostringstream{};</span></a>
-<a name="273"><span class="lineNum">     273 </span><span class="lineCov">          3 :         help(stream);</span></a>
-<a name="274"><span class="lineNum">     274 </span>            : </a>
-<a name="275"><span class="lineNum">     275 </span><span class="lineCov">          3 :         return stream.str();</span></a>
-<a name="276"><span class="lineNum">     276 </span><span class="lineCov">          3 :     }</span></a>
-<a name="277"><span class="lineNum">     277 </span>            : };</a>
-<a name="278"><span class="lineNum">     278 </span>            : </a>
-<a name="279"><span class="lineNum">     279 </span>            : /** Constructs a root_t with the given policies and children.</a>
-<a name="280"><span class="lineNum">     280 </span>            :  *</a>
-<a name="281"><span class="lineNum">     281 </span>            :  * This is used for similarity with arg_t.</a>
-<a name="282"><span class="lineNum">     282 </span>            :  * @tparam Params Policies and child node types for the mode</a>
-<a name="283"><span class="lineNum">     283 </span>            :  * @param params Pack of policy and child node instances</a>
-<a name="284"><span class="lineNum">     284 </span>            :  * @return Root instance</a>
-<a name="285"><span class="lineNum">     285 </span>            :  */</a>
-<a name="286"><span class="lineNum">     286 </span>            : template &lt;typename... Params&gt;</a>
-<a name="287"><span class="lineNum">     287 </span><span class="lineCov">         59 : [[nodiscard]] constexpr auto root(Params... params) noexcept</span></a>
-<a name="288"><span class="lineNum">     288 </span>            : {</a>
-<a name="289"><span class="lineNum">     289 </span><span class="lineCov">         59 :     return root_t&lt;std::decay_t&lt;Params&gt;...&gt;{std::move(params)...};</span></a>
-<a name="290"><span class="lineNum">     290 </span>            : }</a>
-<a name="291"><span class="lineNum">     291 </span>            : }  // namespace arg_router</a>
+<a name="256"><span class="lineNum">     256 </span><span class="lineCov">         12 :                 const auto&amp; help_node = std::get&lt;help_index&gt;(this-&gt;children());</span></a>
+<a name="257"><span class="lineNum">     257 </span>            :                 try {</a>
+<a name="258"><span class="lineNum">     258 </span>            :                     if constexpr (traits::has_generate_runtime_help_data_method_v&lt;help_type&gt; &amp;&amp;</a>
+<a name="259"><span class="lineNum">     259 </span>            :                                   traits::has_runtime_generate_help_method_v&lt;help_type&gt;) {</a>
+<a name="260"><span class="lineNum">     260 </span>            :                         const auto rhd =</a>
+<a name="261"><span class="lineNum">     261 </span><span class="lineCov">         12 :                             help_node.template generate_runtime_help_data&lt;flatten&gt;(*this);</span></a>
+<a name="262"><span class="lineNum">     262 </span><span class="lineCov">         12 :                         help_node.template generate_help&lt;root_type, help_type, flatten&gt;(stream,</span></a>
+<a name="263"><span class="lineNum">     263 </span>            :                                                                                         rhd);</a>
+<a name="264"><span class="lineNum">     264 </span><span class="lineCov">         12 :                     } else {</span></a>
+<a name="265"><span class="lineNum">     265 </span>            :                         help_node.template generate_help&lt;root_type, help_type, flatten&gt;(stream);</a>
+<a name="266"><span class="lineNum">     266 </span>            :                     }</a>
+<a name="267"><span class="lineNum">     267 </span><span class="lineCov">         12 :                 } catch (multi_lang_exception&amp; e) {</span></a>
+<a name="268"><span class="lineNum">     268 </span><span class="lineNoCov">          0 :                     this-&gt;translate_exception(e);</span></a>
+<a name="269"><span class="lineNum">     269 </span><span class="lineNoCov">          0 :                 }</span></a>
+<a name="270"><span class="lineNum">     270 </span>            :             }</a>
+<a name="271"><span class="lineNum">     271 </span><span class="lineCov">         15 :         }(this);</span></a>
+<a name="272"><span class="lineNum">     272 </span><span class="lineCov">         15 :     }</span></a>
+<a name="273"><span class="lineNum">     273 </span>            : </a>
+<a name="274"><span class="lineNum">     274 </span>            :     /** Overload that writes into a string and returns it.</a>
+<a name="275"><span class="lineNum">     275 </span>            :      *</a>
+<a name="276"><span class="lineNum">     276 </span>            :      * @return String holding the help output</a>
+<a name="277"><span class="lineNum">     277 </span>            :      */</a>
+<a name="278"><span class="lineNum">     278 </span><span class="lineCov">         11 :     [[nodiscard]] string help() const</span></a>
+<a name="279"><span class="lineNum">     279 </span>            :     {</a>
+<a name="280"><span class="lineNum">     280 </span><span class="lineCov">         11 :         auto stream = ostringstream{};</span></a>
+<a name="281"><span class="lineNum">     281 </span><span class="lineCov">         11 :         help(stream);</span></a>
+<a name="282"><span class="lineNum">     282 </span>            : </a>
+<a name="283"><span class="lineNum">     283 </span><span class="lineCov">         11 :         return stream.str();</span></a>
+<a name="284"><span class="lineNum">     284 </span><span class="lineCov">         11 :     }</span></a>
+<a name="285"><span class="lineNum">     285 </span>            : };</a>
+<a name="286"><span class="lineNum">     286 </span>            : </a>
+<a name="287"><span class="lineNum">     287 </span>            : /** Constructs a root_t with the given policies and children.</a>
+<a name="288"><span class="lineNum">     288 </span>            :  *</a>
+<a name="289"><span class="lineNum">     289 </span>            :  * This is used for similarity with arg_t.</a>
+<a name="290"><span class="lineNum">     290 </span>            :  * @tparam Params Policies and child node types for the mode</a>
+<a name="291"><span class="lineNum">     291 </span>            :  * @param params Pack of policy and child node instances</a>
+<a name="292"><span class="lineNum">     292 </span>            :  * @return Root instance</a>
+<a name="293"><span class="lineNum">     293 </span>            :  */</a>
+<a name="294"><span class="lineNum">     294 </span>            : template &lt;typename... Params&gt;</a>
+<a name="295"><span class="lineNum">     295 </span><span class="lineCov">         96 : [[nodiscard]] constexpr auto root(Params... params) noexcept</span></a>
+<a name="296"><span class="lineNum">     296 </span>            : {</a>
+<a name="297"><span class="lineNum">     297 </span><span class="lineCov">         96 :     return root_t&lt;std::decay_t&lt;Params&gt;...&gt;{std::move(params)...};</span></a>
+<a name="298"><span class="lineNum">     298 </span>            : }</a>
+<a name="299"><span class="lineNum">     299 </span>            : }  // namespace arg_router</a>
 </pre>
       </td>
     </tr>

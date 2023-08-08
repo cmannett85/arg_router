@@ -31,13 +31,13 @@
             <td class="headerValue">arg_router Unit Test Code Coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">25</td>
-            <td class="headerCovTableEntry">25</td>
+            <td class="headerCovTableEntry">26</td>
+            <td class="headerCovTableEntry">26</td>
             <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2023-03-26 16:12:00</td>
+            <td class="headerValue">2023-08-08 16:25:45</td>
             <td></td>
           </tr>
           <tr>
@@ -112,7 +112,7 @@
 <a name="46"><span class="lineNum">      46 </span>            :      * may have a long form one that does.  No exception is stored in the return value</a>
 <a name="47"><span class="lineNum">      47 </span>            :      */</a>
 <a name="48"><span class="lineNum">      48 </span>            :     template &lt;typename ProcessedTarget, typename... Parents&gt;</a>
-<a name="49"><span class="lineNum">      49 </span><span class="lineCov">        356 :     [[nodiscard]] parsing::pre_parse_result pre_parse_phase(</span></a>
+<a name="49"><span class="lineNum">      49 </span><span class="lineCov">        398 :     [[nodiscard]] parsing::pre_parse_result pre_parse_phase(</span></a>
 <a name="50"><span class="lineNum">      50 </span>            :         parsing::dynamic_token_adapter&amp; tokens,</a>
 <a name="51"><span class="lineNum">      51 </span>            :         [[maybe_unused]] utility::compile_time_optional&lt;ProcessedTarget&gt; processed_target,</a>
 <a name="52"><span class="lineNum">      52 </span>            :         [[maybe_unused]] parsing::parse_target&amp; target,</a>
@@ -134,59 +134,60 @@
 <a name="68"><span class="lineNum">      68 </span>            :         static_assert((sizeof...(Parents) &gt; 0) &amp;&amp; (config::short_prefix != config::long_prefix),</a>
 <a name="69"><span class="lineNum">      69 </span>            :                       &quot;Short and long prefixes cannot be the same&quot;);</a>
 <a name="70"><span class="lineNum">      70 </span>            : </a>
-<a name="71"><span class="lineNum">      71 </span><span class="lineCov">        356 :         if (tokens.empty()) {</span></a>
+<a name="71"><span class="lineNum">      71 </span><span class="lineCov">        398 :         if (tokens.empty()) {</span></a>
 <a name="72"><span class="lineNum">      72 </span><span class="lineCov">          1 :             return parsing::pre_parse_action::valid_node;</span></a>
 <a name="73"><span class="lineNum">      73 </span>            :         }</a>
 <a name="74"><span class="lineNum">      74 </span>            : </a>
-<a name="75"><span class="lineNum">      75 </span><span class="lineCov">        355 :         auto first = tokens.begin();</span></a>
-<a name="76"><span class="lineNum">      76 </span><span class="lineCov">        355 :         auto first_token = *first;</span></a>
-<a name="77"><span class="lineNum">      77 </span><span class="lineCov">        355 :         if (first_token.prefix == parsing::prefix_type::none) {</span></a>
+<a name="75"><span class="lineNum">      75 </span><span class="lineCov">        397 :         auto first = tokens.begin();</span></a>
+<a name="76"><span class="lineNum">      76 </span><span class="lineCov">        397 :         auto first_token = *first;</span></a>
+<a name="77"><span class="lineNum">      77 </span><span class="lineCov">        397 :         if (first_token.prefix == parsing::prefix_type::none) {</span></a>
 <a name="78"><span class="lineNum">      78 </span>            :             // The token has _probably_ not been processed yet, so try to convert to short form</a>
-<a name="79"><span class="lineNum">      79 </span><span class="lineCov">        268 :             const auto tt = parsing::get_token_type(first_token.name);</span></a>
-<a name="80"><span class="lineNum">      80 </span><span class="lineCov">        268 :             if (tt.prefix != parsing::prefix_type::short_) {</span></a>
-<a name="81"><span class="lineNum">      81 </span><span class="lineCov">        100 :                 return parsing::pre_parse_action::valid_node;</span></a>
-<a name="82"><span class="lineNum">      82 </span>            :             }</a>
-<a name="83"><span class="lineNum">      83 </span>            : </a>
-<a name="84"><span class="lineNum">      84 </span><span class="lineCov">        168 :             first_token = tt;</span></a>
-<a name="85"><span class="lineNum">      85 </span><span class="lineCov">        255 :         } else if (first_token.prefix == parsing::prefix_type::long_) {</span></a>
-<a name="86"><span class="lineNum">      86 </span><span class="lineCov">         13 :             return parsing::pre_parse_action::valid_node;</span></a>
-<a name="87"><span class="lineNum">      87 </span>            :         }</a>
-<a name="88"><span class="lineNum">      88 </span>            : </a>
-<a name="89"><span class="lineNum">      89 </span>            :         // Exit early if there's no expansion to be done</a>
-<a name="90"><span class="lineNum">      90 </span><span class="lineCov">        242 :         if (first_token.name.size() == owner_type::short_name().size()) {</span></a>
-<a name="91"><span class="lineNum">      91 </span><span class="lineCov">        220 :             return parsing::pre_parse_action::valid_node;</span></a>
-<a name="92"><span class="lineNum">      92 </span>            :         }</a>
-<a name="93"><span class="lineNum">      93 </span>            : </a>
-<a name="94"><span class="lineNum">      94 </span>            :         // Move the token to the processed container</a>
-<a name="95"><span class="lineNum">      95 </span><span class="lineCov">         22 :         tokens.transfer(first);</span></a>
-<a name="96"><span class="lineNum">      96 </span>            : </a>
-<a name="97"><span class="lineNum">      97 </span>            :         // Insert the extra flags at the front of the unprocessed section, so they will be processed</a>
-<a name="98"><span class="lineNum">      98 </span>            :         // independently</a>
-<a name="99"><span class="lineNum">      99 </span><span class="lineCov">         22 :         tokens.unprocessed().reserve(tokens.unprocessed().size() + first_token.name.size() - 1);</span></a>
-<a name="100"><span class="lineNum">     100 </span><span class="lineCov">         22 :         auto it = tokens.unprocessed().begin();</span></a>
-<a name="101"><span class="lineNum">     101 </span>            : </a>
-<a name="102"><span class="lineNum">     102 </span>            :         // Skip past the first grapheme cluster as we'll re-use the existing short form token for</a>
-<a name="103"><span class="lineNum">     103 </span>            :         // that</a>
-<a name="104"><span class="lineNum">     104 </span><span class="lineCov">         90 :         for (auto gc_it = ++utility::utf8::iterator{first_token.name};</span></a>
-<a name="105"><span class="lineNum">     105 </span><span class="lineCov">         90 :              gc_it != utility::utf8::iterator{};</span></a>
-<a name="106"><span class="lineNum">     106 </span><span class="lineCov">         68 :              ++gc_it, ++it) {</span></a>
-<a name="107"><span class="lineNum">     107 </span><span class="lineCov">         68 :             it = tokens.unprocessed().insert(it, {parsing::prefix_type::short_, *gc_it});</span></a>
-<a name="108"><span class="lineNum">     108 </span><span class="lineCov">         68 :         }</span></a>
-<a name="109"><span class="lineNum">     109 </span>            : </a>
-<a name="110"><span class="lineNum">     110 </span>            :         // Shrink the first to a single grapheme cluster</a>
-<a name="111"><span class="lineNum">     111 </span><span class="lineCov">         22 :         first.set({parsing::prefix_type::short_, *utility::utf8::iterator{first_token.name}});</span></a>
-<a name="112"><span class="lineNum">     112 </span>            : </a>
-<a name="113"><span class="lineNum">     113 </span><span class="lineCov">         22 :         return parsing::pre_parse_action::valid_node;</span></a>
-<a name="114"><span class="lineNum">     114 </span><span class="lineCov">        356 :     }</span></a>
-<a name="115"><span class="lineNum">     115 </span>            : };</a>
-<a name="116"><span class="lineNum">     116 </span>            : </a>
-<a name="117"><span class="lineNum">     117 </span>            : /** Constant variable helper. */</a>
-<a name="118"><span class="lineNum">     118 </span>            : constexpr auto short_form_expander = short_form_expander_t&lt;&gt;{};</a>
-<a name="119"><span class="lineNum">     119 </span>            : </a>
-<a name="120"><span class="lineNum">     120 </span>            : template &lt;&gt;</a>
-<a name="121"><span class="lineNum">     121 </span>            : struct is_policy&lt;short_form_expander_t&lt;&gt;&gt; : std::true_type {</a>
-<a name="122"><span class="lineNum">     122 </span>            : };</a>
-<a name="123"><span class="lineNum">     123 </span>            : }  // namespace arg_router::policy</a>
+<a name="79"><span class="lineNum">      79 </span><span class="lineCov">        310 :             const auto&amp; owner = algorithm::pack_element&lt;0&gt;(parents...);</span></a>
+<a name="80"><span class="lineNum">      80 </span><span class="lineCov">        310 :             const auto tt = parsing::get_token_type(owner, first_token.name);</span></a>
+<a name="81"><span class="lineNum">      81 </span><span class="lineCov">        310 :             if (tt.prefix != parsing::prefix_type::short_) {</span></a>
+<a name="82"><span class="lineNum">      82 </span><span class="lineCov">        132 :                 return parsing::pre_parse_action::valid_node;</span></a>
+<a name="83"><span class="lineNum">      83 </span>            :             }</a>
+<a name="84"><span class="lineNum">      84 </span>            : </a>
+<a name="85"><span class="lineNum">      85 </span><span class="lineCov">        178 :             first_token = tt;</span></a>
+<a name="86"><span class="lineNum">      86 </span><span class="lineCov">        265 :         } else if (first_token.prefix == parsing::prefix_type::long_) {</span></a>
+<a name="87"><span class="lineNum">      87 </span><span class="lineCov">         13 :             return parsing::pre_parse_action::valid_node;</span></a>
+<a name="88"><span class="lineNum">      88 </span>            :         }</a>
+<a name="89"><span class="lineNum">      89 </span>            : </a>
+<a name="90"><span class="lineNum">      90 </span>            :         // Exit early if there's no expansion to be done</a>
+<a name="91"><span class="lineNum">      91 </span><span class="lineCov">        252 :         if (first_token.name.size() == owner_type::short_name().size()) {</span></a>
+<a name="92"><span class="lineNum">      92 </span><span class="lineCov">        230 :             return parsing::pre_parse_action::valid_node;</span></a>
+<a name="93"><span class="lineNum">      93 </span>            :         }</a>
+<a name="94"><span class="lineNum">      94 </span>            : </a>
+<a name="95"><span class="lineNum">      95 </span>            :         // Move the token to the processed container</a>
+<a name="96"><span class="lineNum">      96 </span><span class="lineCov">         22 :         tokens.transfer(first);</span></a>
+<a name="97"><span class="lineNum">      97 </span>            : </a>
+<a name="98"><span class="lineNum">      98 </span>            :         // Insert the extra flags at the front of the unprocessed section, so they will be processed</a>
+<a name="99"><span class="lineNum">      99 </span>            :         // independently</a>
+<a name="100"><span class="lineNum">     100 </span><span class="lineCov">         22 :         tokens.unprocessed().reserve(tokens.unprocessed().size() + first_token.name.size() - 1);</span></a>
+<a name="101"><span class="lineNum">     101 </span><span class="lineCov">         22 :         auto it = tokens.unprocessed().begin();</span></a>
+<a name="102"><span class="lineNum">     102 </span>            : </a>
+<a name="103"><span class="lineNum">     103 </span>            :         // Skip past the first grapheme cluster as we'll re-use the existing short form token for</a>
+<a name="104"><span class="lineNum">     104 </span>            :         // that</a>
+<a name="105"><span class="lineNum">     105 </span><span class="lineCov">         90 :         for (auto gc_it = ++utility::utf8::iterator{first_token.name};</span></a>
+<a name="106"><span class="lineNum">     106 </span><span class="lineCov">         90 :              gc_it != utility::utf8::iterator{};</span></a>
+<a name="107"><span class="lineNum">     107 </span><span class="lineCov">         68 :              ++gc_it, ++it) {</span></a>
+<a name="108"><span class="lineNum">     108 </span><span class="lineCov">         68 :             it = tokens.unprocessed().insert(it, {parsing::prefix_type::short_, *gc_it});</span></a>
+<a name="109"><span class="lineNum">     109 </span><span class="lineCov">         68 :         }</span></a>
+<a name="110"><span class="lineNum">     110 </span>            : </a>
+<a name="111"><span class="lineNum">     111 </span>            :         // Shrink the first to a single grapheme cluster</a>
+<a name="112"><span class="lineNum">     112 </span><span class="lineCov">         22 :         first.set({parsing::prefix_type::short_, *utility::utf8::iterator{first_token.name}});</span></a>
+<a name="113"><span class="lineNum">     113 </span>            : </a>
+<a name="114"><span class="lineNum">     114 </span><span class="lineCov">         22 :         return parsing::pre_parse_action::valid_node;</span></a>
+<a name="115"><span class="lineNum">     115 </span><span class="lineCov">        398 :     }</span></a>
+<a name="116"><span class="lineNum">     116 </span>            : };</a>
+<a name="117"><span class="lineNum">     117 </span>            : </a>
+<a name="118"><span class="lineNum">     118 </span>            : /** Constant variable helper. */</a>
+<a name="119"><span class="lineNum">     119 </span>            : constexpr auto short_form_expander = short_form_expander_t&lt;&gt;{};</a>
+<a name="120"><span class="lineNum">     120 </span>            : </a>
+<a name="121"><span class="lineNum">     121 </span>            : template &lt;&gt;</a>
+<a name="122"><span class="lineNum">     122 </span>            : struct is_policy&lt;short_form_expander_t&lt;&gt;&gt; : std::true_type {</a>
+<a name="123"><span class="lineNum">     123 </span>            : };</a>
+<a name="124"><span class="lineNum">     124 </span>            : }  // namespace arg_router::policy</a>
 </pre>
       </td>
     </tr>

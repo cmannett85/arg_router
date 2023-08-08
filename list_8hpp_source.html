@@ -36,7 +36,7 @@
                         <td id="projectalign" style="padding-left: 0.5em;">
                             <div id="projectname">arg_router
                                 &#160;<span
-                                    id="projectnumber">1.3.0</span>
+                                    id="projectnumber">1.4.0</span>
                             </div>
                             <div id="projectbrief">C++ command line argument parsing and routing</div>
                         </td>
@@ -96,7 +96,7 @@ $(document).ready(function(){initNavTree('list_8hpp_source.html',''); initResiza
 <div class="title">list.hpp</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">// Copyright (C) 2022 by Camden Mannett.</span></div>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">// Copyright (C) 2022-2023 by Camden Mannett.</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">// Distributed under the Boost Software License, Version 1.0.</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">// (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
@@ -153,7 +153,7 @@ $(document).ready(function(){initNavTree('list_8hpp_source.html',''); initResiza
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Result, <span class="keyword">typename</span> Next, <span class="keyword">typename</span>... Others&gt;</div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;[[nodiscard]] constexpr <span class="keyword">auto</span> list_expander_impl(Result result, Next next, Others... others) noexcept</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;{</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <span class="keywordflow">if</span> constexpr (traits::is_specialisation_of_v&lt;std::decay_t&lt;Next&gt;, list&gt;) {</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <span class="keywordflow">if</span> constexpr (<a class="code" href="namespacearg__router_1_1traits.html#a0c88d306f10e622c055813569ae5e502">traits::is_specialisation_of_v</a>&lt;std::decay_t&lt;Next&gt;, list&gt;) {</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        <span class="keywordflow">return</span> list_expander_impl(</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;            list_expander_unpacker(</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                std::move(result),</div>
@@ -189,6 +189,7 @@ $(document).ready(function(){initNavTree('list_8hpp_source.html',''); initResiza
 <div class="ttc" id="aclassarg__router_1_1list_html_ab729aaae40238d5d0721697390ad6254"><div class="ttname"><a href="classarg__router_1_1list.html#ab729aaae40238d5d0721697390ad6254">arg_router::list::children</a></div><div class="ttdeci">const children_type &amp; children() const noexcept</div><div class="ttdef"><b>Definition:</b> <a href="list_8hpp_source.html#l00046">list.hpp:46</a></div></div>
 <div class="ttc" id="aclassarg__router_1_1list_html_ad033067c4496dd4c8908685e53e75767"><div class="ttname"><a href="classarg__router_1_1list.html#ad033067c4496dd4c8908685e53e75767">arg_router::list::children</a></div><div class="ttdeci">children_type &amp; children() noexcept</div><div class="ttdef"><b>Definition:</b> <a href="list_8hpp_source.html#l00040">list.hpp:40</a></div></div>
 <div class="ttc" id="anamespacearg__router_1_1algorithm_html_af16789df8b243585c3d1227368f46db1"><div class="ttname"><a href="namespacearg__router_1_1algorithm.html#af16789df8b243585c3d1227368f46db1">arg_router::algorithm::tuple_push_back</a></div><div class="ttdeci">constexpr auto tuple_push_back(Tuple tuple, Insert insert) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00246">algorithm.hpp:246</a></div></div>
+<div class="ttc" id="anamespacearg__router_1_1traits_html_a0c88d306f10e622c055813569ae5e502"><div class="ttname"><a href="namespacearg__router_1_1traits.html#a0c88d306f10e622c055813569ae5e502">arg_router::traits::is_specialisation_of_v</a></div><div class="ttdeci">constexpr bool is_specialisation_of_v</div><div class="ttdef"><b>Definition:</b> <a href="traits_8hpp_source.html#l00175">traits.hpp:175</a></div></div>
 <div class="ttc" id="anamespacearg__router_html"><div class="ttname"><a href="namespacearg__router.html">arg_router</a></div><div class="ttdef"><b>Definition:</b> <a href="algorithm_8hpp_source.html#l00015">algorithm.hpp:16</a></div></div>
 <div class="ttc" id="anamespacearg__router_html_ae81e77bc890bd12a9a4913497d94ca10"><div class="ttname"><a href="namespacearg__router.html#ae81e77bc890bd12a9a4913497d94ca10">arg_router::list_expander</a></div><div class="ttdeci">constexpr auto list_expander(Params... params) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="list_8hpp_source.html#l00098">list.hpp:98</a></div></div>
 </div><!-- fragment --></div><!-- contents -->

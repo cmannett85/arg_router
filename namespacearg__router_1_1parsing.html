@@ -36,7 +36,7 @@
                         <td id="projectalign" style="padding-left: 0.5em;">
                             <div id="projectname">arg_router
                                 &#160;<span
-                                    id="projectnumber">1.3.0</span>
+                                    id="projectnumber">1.4.0</span>
                             </div>
                             <div id="projectbrief">C++ command line argument parsing and routing</div>
                         </td>
@@ -142,6 +142,12 @@ Functions</h2></td></tr>
 <tr class="memitem:a8389f839b76e96cfadf1b7527ef2e651"><td class="memTemplParams" colspan="2">template&lt;typename Node &gt; </td></tr>
 <tr class="memitem:a8389f839b76e96cfadf1b7527ef2e651"><td class="memTemplItemLeft" align="right" valign="top">constexpr <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a8389f839b76e96cfadf1b7527ef2e651">node_token_type</a> () noexcept</td></tr>
 <tr class="separator:a8389f839b76e96cfadf1b7527ef2e651"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa1189f2ca42b0a28c5506d85ad61e66"><td class="memTemplParams" colspan="2">template&lt;typename BaseNode , typename... DerivedAndParents&gt; </td></tr>
+<tr class="memitem:afa1189f2ca42b0a28c5506d85ad61e66"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#afa1189f2ca42b0a28c5506d85ad61e66">clean_node_ancestry_list</a> (const BaseNode &amp;base_node, const DerivedAndParents &amp;... derived_and_parents)</td></tr>
+<tr class="separator:afa1189f2ca42b0a28c5506d85ad61e66"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a672a253d033254abb79f0850efeefcd7"><td class="memTemplParams" colspan="2">template&lt;typename Node , typename... Parents&gt; </td></tr>
+<tr class="memitem:a672a253d033254abb79f0850efeefcd7"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a672a253d033254abb79f0850efeefcd7">is_runtime_disabled</a> (const Node &amp;node, const Parents &amp;... parents) noexcept</td></tr>
+<tr class="separator:a672a253d033254abb79f0850efeefcd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3f0c82064ba9f3aa78edec0f67383516"><td class="memItemLeft" align="right" valign="top">constexpr std::string_view&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a3f0c82064ba9f3aa78edec0f67383516">to_string</a> (<a class="el" href="namespacearg__router_1_1parsing.html#a6587078e07827bbbbabeae32b3ed2dd3">prefix_type</a> prefix) noexcept</td></tr>
 <tr class="separator:a3f0c82064ba9f3aa78edec0f67383516"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a75eafb76ba98b2b1a08953b4029a86ad"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacearg__router.html#abafabad5af18e8dda89e6b568b594738">string</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a75eafb76ba98b2b1a08953b4029a86ad">to_string</a> (const <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> &amp;token)</td></tr>
@@ -150,6 +156,12 @@ Functions</h2></td></tr>
 <tr class="separator:a3e91ad1aecfc7ff6e40f0d4918d88f96"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a71a7566d5831eeeb4c5cd1cdaad216be"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a71a7566d5831eeeb4c5cd1cdaad216be">get_token_type</a> (std::string_view token)</td></tr>
 <tr class="separator:a71a7566d5831eeeb4c5cd1cdaad216be"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a031f95981f2d0795da429d11f06b2b97"><td class="memTemplParams" colspan="2">template&lt;typename Node &gt; </td></tr>
+<tr class="memitem:a031f95981f2d0795da429d11f06b2b97"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a031f95981f2d0795da429d11f06b2b97">get_token_type</a> ([[maybe_unused]] const Node &amp;node, std::string_view token)</td></tr>
+<tr class="separator:a031f95981f2d0795da429d11f06b2b97"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a267baa75a71f42a3e3ab64f23c4035"><td class="memTemplParams" colspan="2">template&lt;typename Node &gt; </td></tr>
+<tr class="memitem:a6a267baa75a71f42a3e3ab64f23c4035"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1parsing.html#a6a267baa75a71f42a3e3ab64f23c4035">unknown_argument_exception</a> (const Node &amp;node, <a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> unknown_token)</td></tr>
+<tr class="separator:a6a267baa75a71f42a3e3ab64f23c4035"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Namespace containing types and functions to aid parsing. </p>
@@ -167,7 +179,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Policy-level pre-parse phase result type. </p>
 
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00026">26</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00027">27</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
 
 </div>
 </div>
@@ -201,7 +213,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00014">14</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00015">15</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
 
 </div>
 </div>
@@ -233,13 +245,125 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00012">12</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00013">13</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="afa1189f2ca42b0a28c5506d85ad61e66"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afa1189f2ca42b0a28c5506d85ad61e66">&#9670;&nbsp;</a></span>clean_node_ancestry_list()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename BaseNode , typename... DerivedAndParents&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr auto arg_router::parsing::clean_node_ancestry_list </td>
+          <td>(</td>
+          <td class="paramtype">const BaseNode &amp;&#160;</td>
+          <td class="paramname"><em>base_node</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const DerivedAndParents &amp;...&#160;</td>
+          <td class="paramname"><em>derived_and_parents</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Remove the leading entries from the node ancestry list that are derived from <em>BaseNode</em>.</p>
+<p>To allow derived types to call the inherited implementations of the pre-parse and parse stages, we need to clean the multiple leading <code>*this</code> references that each parent method call will add. Due to the use of policies we can <em>almost</em> guarantee that OOP parents will not be confused with structural parents (i.e. parents in the tree). It is an <em>almost</em> guarantee because someone could create a custom node that allows for identical policies to it's tree parent and then not define a validator rule to prevent this - but I'd consider that to have bigger problems...</p>
+<p>This method is used in <a class="el" href="classarg__router_1_1tree__node.html">tree_node</a>, so anything derived from that that uses its inherited pre-parse and parse methods will not need to use this function. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">BaseNode</td><td>Base node type to be used to find derived types in <em>derived_and_parents</em> </td></tr>
+    <tr><td class="paramname">DerivedAndParents</td><td>Pack of (possibly) derived types in descending OOP ancestry order, and then parent tree nodes in ascending ancestry order </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">base_node</td><td>Base node instance </td></tr>
+    <tr><td class="paramname">derived_and_parents</td><td>Derived type and parent node instances </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Tuple of cleaned const reference ancestors in <code>std::reference_wrapper</code> </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00105">105</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a031f95981f2d0795da429d11f06b2b97"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a031f95981f2d0795da429d11f06b2b97">&#9670;&nbsp;</a></span>get_token_type() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Node &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> arg_router::parsing::get_token_type </td>
+          <td>(</td>
+          <td class="paramtype">[[maybe_unused] ] const Node &amp;&#160;</td>
+          <td class="paramname"><em>node</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramname"><em>token</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Overload that uses the naming policies of <em>node</em> to control the output.</p>
+<p>If the target node is available, this should be the preferred overload. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Node</td><td>Target node type </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">node</td><td>Node instance </td></tr>
+    <tr><td class="paramname">token</td><td>Token to analyse </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Token type </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00127">127</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+
+</div>
+</div>
 <a id="a71a7566d5831eeeb4c5cd1cdaad216be"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a71a7566d5831eeeb4c5cd1cdaad216be">&#9670;&nbsp;</a></span>get_token_type()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a71a7566d5831eeeb4c5cd1cdaad216be">&#9670;&nbsp;</a></span>get_token_type() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -270,7 +394,63 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Token type </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00102">102</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00103">103</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a672a253d033254abb79f0850efeefcd7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a672a253d033254abb79f0850efeefcd7">&#9670;&nbsp;</a></span>is_runtime_disabled()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Node , typename... Parents&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool arg_router::parsing::is_runtime_disabled </td>
+          <td>(</td>
+          <td class="paramtype">const Node &amp;&#160;</td>
+          <td class="paramname"><em>node</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Parents &amp;...&#160;</td>
+          <td class="paramname"><em>parents</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns true if <em>node</em> or any of its <em>parents</em> are marked as runtime disabled.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Node</td><td>Current node type </td></tr>
+    <tr><td class="paramname">Parents</td><td>Parent nodes' type </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">node</td><td>Current node instance </td></tr>
+    <tr><td class="paramname">parents</td><td>Parent nodes of <em>node</em> </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if the ancestry chain is effectively runtime disabled </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00133">133</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
 
 </div>
 </div>
@@ -314,7 +494,7 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if token matches </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00035">35</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00036">36</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
 
 </div>
 </div>
@@ -352,7 +532,7 @@ template&lt;typename Node &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00067">67</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="parsing_8hpp_source.html#l00068">68</a> of file <a class="el" href="parsing_8hpp_source.html">parsing.hpp</a>.</p>
 
 </div>
 </div>
@@ -388,7 +568,7 @@ template&lt;typename Node &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>String representation of <em>token</em> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00073">73</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00074">74</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -424,7 +604,7 @@ template&lt;typename Node &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>String representation of <em>view</em> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00084">84</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00085">85</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -460,7 +640,53 @@ template&lt;typename Node &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>String version of <em>prefix</em> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00024">24</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token__type_8hpp_source.html#l00025">25</a> of file <a class="el" href="token__type_8hpp_source.html">token_type.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a6a267baa75a71f42a3e3ab64f23c4035"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6a267baa75a71f42a3e3ab64f23c4035">&#9670;&nbsp;</a></span>unknown_argument_exception()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Node &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void arg_router::parsing::unknown_argument_exception </td>
+          <td>(</td>
+          <td class="paramtype">const Node &amp;&#160;</td>
+          <td class="paramname"><em>node</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structarg__router_1_1parsing_1_1token__type.html">token_type</a>&#160;</td>
+          <td class="paramname"><em>unknown_token</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Throws a <a class="el" href="classarg__router_1_1multi__lang__exception.html">multi_lang_exception</a> with either a <a class="el" href="namespacearg__router.html#ab3c79c3c1cb22d86d1dac370a8733e56a5d6d4ba8d16899f978957a98cbedee54">error_code::unknown_argument</a> or a <a class="el" href="namespacearg__router.html#ab3c79c3c1cb22d86d1dac370a8733e56a4b64a80cc326ca89f5bf26791dba5b1b">error_code::unknown_argument_with_suggestion</a> if the data is available.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Node</td><td>Node type throwing the exception </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">node</td><td>Node throwing the exception, used as a source for the <a class="el" href="namespacearg__router_1_1utility_1_1utf8.html#aadad4db916b2395e9c4276ace47f6022">utility::utf8::closest_matching_child_node(const Node&amp; node, parsing::token_type token)</a> </td></tr>
+    <tr><td class="paramname">unknown_token</td><td>The token that caused the exception to be thrown </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="unknown__argument__handling_8hpp_source.html#l00020">20</a> of file <a class="el" href="unknown__argument__handling_8hpp_source.html">unknown_argument_handling.hpp</a>.</p>
 
 </div>
 </div>

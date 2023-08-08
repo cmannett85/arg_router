@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['zero_5fwidth_5ftable_878',['zero_width_table',['../namespacearg__router_1_1utility_1_1utf8.html#a627dd8d5ea668412ed688c023d2b390b',1,'arg_router::utility::utf8']]]
+  ['whitespace_5ftable_1030',['whitespace_table',['../namespacearg__router_1_1utility_1_1utf8.html#a7ffc697e54df9179d94bb905da750d49',1,'arg_router::utility::utf8']]]
 ];

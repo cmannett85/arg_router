@@ -31,13 +31,13 @@
             <td class="headerValue">arg_router Unit Test Code Coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">21</td>
-            <td class="headerCovTableEntry">22</td>
-            <td class="headerCovTableEntryHi">95.5 %</td>
+            <td class="headerCovTableEntry">16</td>
+            <td class="headerCovTableEntry">18</td>
+            <td class="headerCovTableEntryMed">88.9 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2023-03-26 16:12:00</td>
+            <td class="headerValue">2023-08-08 16:25:45</td>
             <td></td>
           </tr>
           <tr>
@@ -70,140 +70,111 @@
 <a name="4"><span class="lineNum">       4 </span>            : </a>
 <a name="5"><span class="lineNum">       5 </span>            : #pragma once</a>
 <a name="6"><span class="lineNum">       6 </span>            : </a>
-<a name="7"><span class="lineNum">       7 </span>            : #include &quot;arg_router/policy/description.hpp&quot;</a>
-<a name="8"><span class="lineNum">       8 </span>            : #include &quot;arg_router/policy/long_name.hpp&quot;</a>
-<a name="9"><span class="lineNum">       9 </span>            : #include &quot;arg_router/policy/min_max_count.hpp&quot;</a>
+<a name="7"><span class="lineNum">       7 </span>            : #include &quot;arg_router/multi_arg_base.hpp&quot;</a>
+<a name="8"><span class="lineNum">       8 </span>            : #include &quot;arg_router/policy/description.hpp&quot;</a>
+<a name="9"><span class="lineNum">       9 </span>            : #include &quot;arg_router/policy/long_name.hpp&quot;</a>
 <a name="10"><span class="lineNum">      10 </span>            : #include &quot;arg_router/policy/short_name.hpp&quot;</a>
-<a name="11"><span class="lineNum">      11 </span>            : #include &quot;arg_router/tree_node.hpp&quot;</a>
-<a name="12"><span class="lineNum">      12 </span>            : #include &quot;arg_router/utility/string_to_policy.hpp&quot;</a>
-<a name="13"><span class="lineNum">      13 </span>            : </a>
-<a name="14"><span class="lineNum">      14 </span>            : namespace arg_router</a>
-<a name="15"><span class="lineNum">      15 </span>            : {</a>
-<a name="16"><span class="lineNum">      16 </span>            : /** Represents an argument on the command line that has a value that needs parsing.</a>
-<a name="17"><span class="lineNum">      17 </span>            :  *</a>
+<a name="11"><span class="lineNum">      11 </span>            : #include &quot;arg_router/utility/string_to_policy.hpp&quot;</a>
+<a name="12"><span class="lineNum">      12 </span>            : </a>
+<a name="13"><span class="lineNum">      13 </span>            : namespace arg_router</a>
+<a name="14"><span class="lineNum">      14 </span>            : {</a>
+<a name="15"><span class="lineNum">      15 </span>            : /** Represents a named argument on the command line that has a value that needs parsing.</a>
+<a name="16"><span class="lineNum">      16 </span>            :  *</a>
+<a name="17"><span class="lineNum">      17 </span>            :  * Cannot have a none name or display name policy.</a>
 <a name="18"><span class="lineNum">      18 </span>            :  * @tparam T Argument value type</a>
 <a name="19"><span class="lineNum">      19 </span>            :  * @tparam Policies Pack of policies that define its behaviour</a>
 <a name="20"><span class="lineNum">      20 </span>            :  */</a>
 <a name="21"><span class="lineNum">      21 </span>            : template &lt;typename T, typename... Policies&gt;</a>
 <a name="22"><span class="lineNum">      22 </span>            : class arg_t :</a>
-<a name="23"><span class="lineNum">      23 </span>            :     public tree_node&lt;policy::min_max_count_t&lt;traits::integral_constant&lt;std::size_t{1}&gt;,</a>
-<a name="24"><span class="lineNum">      24 </span>            :                                              traits::integral_constant&lt;std::size_t{1}&gt;&gt;,</a>
-<a name="25"><span class="lineNum">      25 </span>            :                      std::decay_t&lt;Policies&gt;...&gt;</a>
-<a name="26"><span class="lineNum">      26 </span>            : {</a>
-<a name="27"><span class="lineNum">      27 </span>            :     static_assert(policy::is_all_policies_v&lt;std::tuple&lt;std::decay_t&lt;Policies&gt;...&gt;&gt;,</a>
-<a name="28"><span class="lineNum">      28 </span>            :                   &quot;Args must only contain policies (not other nodes)&quot;);</a>
-<a name="29"><span class="lineNum">      29 </span>            : </a>
-<a name="30"><span class="lineNum">      30 </span>            :     using parent_type =</a>
-<a name="31"><span class="lineNum">      31 </span>            :         tree_node&lt;policy::min_max_count_t&lt;traits::integral_constant&lt;std::size_t{1}&gt;,</a>
-<a name="32"><span class="lineNum">      32 </span>            :                                           traits::integral_constant&lt;std::size_t{1}&gt;&gt;,</a>
-<a name="33"><span class="lineNum">      33 </span>            :                   std::decay_t&lt;Policies&gt;...&gt;;</a>
-<a name="34"><span class="lineNum">      34 </span>            : </a>
-<a name="35"><span class="lineNum">      35 </span>            :     static_assert(traits::has_long_name_method_v&lt;arg_t&gt; || traits::has_short_name_method_v&lt;arg_t&gt;,</a>
-<a name="36"><span class="lineNum">      36 </span>            :                   &quot;Arg must have a long and/or short name policy&quot;);</a>
+<a name="23"><span class="lineNum">      23 </span>            :     public multi_arg_base_t&lt;T,</a>
+<a name="24"><span class="lineNum">      24 </span>            :                             1,</a>
+<a name="25"><span class="lineNum">      25 </span>            :                             policy::min_max_count_t&lt;traits::integral_constant&lt;std::size_t{1}&gt;,</a>
+<a name="26"><span class="lineNum">      26 </span>            :                                                     traits::integral_constant&lt;std::size_t{1}&gt;&gt;,</a>
+<a name="27"><span class="lineNum">      27 </span>            :                             std::decay_t&lt;Policies&gt;...&gt;</a>
+<a name="28"><span class="lineNum">      28 </span>            : {</a>
+<a name="29"><span class="lineNum">      29 </span>            :     using parent_type =</a>
+<a name="30"><span class="lineNum">      30 </span>            :         multi_arg_base_t&lt;T,</a>
+<a name="31"><span class="lineNum">      31 </span>            :                          1,</a>
+<a name="32"><span class="lineNum">      32 </span>            :                          policy::min_max_count_t&lt;traits::integral_constant&lt;std::size_t{1}&gt;,</a>
+<a name="33"><span class="lineNum">      33 </span>            :                                                  traits::integral_constant&lt;std::size_t{1}&gt;&gt;,</a>
+<a name="34"><span class="lineNum">      34 </span>            :                          std::decay_t&lt;Policies&gt;...&gt;;</a>
+<a name="35"><span class="lineNum">      35 </span>            : </a>
+<a name="36"><span class="lineNum">      36 </span>            :     static_assert(!traits::has_none_name_method_v&lt;arg_t&gt;, &quot;Arg must not have a none name policy&quot;);</a>
 <a name="37"><span class="lineNum">      37 </span>            :     static_assert(!traits::has_display_name_method_v&lt;arg_t&gt;,</a>
 <a name="38"><span class="lineNum">      38 </span>            :                   &quot;Arg must not have a display name policy&quot;);</a>
-<a name="39"><span class="lineNum">      39 </span>            :     static_assert(!traits::has_none_name_method_v&lt;arg_t&gt;, &quot;Arg must not have a none name policy&quot;);</a>
-<a name="40"><span class="lineNum">      40 </span>            : </a>
-<a name="41"><span class="lineNum">      41 </span>            : public:</a>
-<a name="42"><span class="lineNum">      42 </span>            :     using typename parent_type::policies_type;</a>
-<a name="43"><span class="lineNum">      43 </span>            : </a>
-<a name="44"><span class="lineNum">      44 </span>            :     /** Argument value type. */</a>
-<a name="45"><span class="lineNum">      45 </span>            :     using value_type = T;</a>
-<a name="46"><span class="lineNum">      46 </span>            : </a>
-<a name="47"><span class="lineNum">      47 </span>            :     /** Help data type. */</a>
-<a name="48"><span class="lineNum">      48 </span>            :     template &lt;bool Flatten&gt;</a>
-<a name="49"><span class="lineNum">      49 </span>            :     using help_data_type = typename parent_type::template default_leaf_help_data_type&lt;Flatten&gt;;</a>
-<a name="50"><span class="lineNum">      50 </span>            : </a>
-<a name="51"><span class="lineNum">      51 </span>            :     /** Constructor.</a>
-<a name="52"><span class="lineNum">      52 </span>            :      *</a>
-<a name="53"><span class="lineNum">      53 </span>            :      * @param policies Policy instances</a>
-<a name="54"><span class="lineNum">      54 </span>            :      */</a>
-<a name="55"><span class="lineNum">      55 </span><span class="lineCov">        125 :     constexpr explicit arg_t(Policies... policies) noexcept :</span></a>
-<a name="56"><span class="lineNum">      56 </span><span class="lineCov">        125 :         parent_type{policy::min_max_count_t&lt;traits::integral_constant&lt;std::size_t{1}&gt;,</span></a>
-<a name="57"><span class="lineNum">      57 </span>            :                                             traits::integral_constant&lt;std::size_t{1}&gt;&gt;{},</a>
-<a name="58"><span class="lineNum">      58 </span><span class="lineCov">        125 :                     std::move(policies)...}</span></a>
-<a name="59"><span class="lineNum">      59 </span><span class="lineCov">        125 :     {</span></a>
-<a name="60"><span class="lineNum">      60 </span><span class="lineCov">        125 :     }</span></a>
-<a name="61"><span class="lineNum">      61 </span>            : </a>
-<a name="62"><span class="lineNum">      62 </span>            :     template &lt;typename Validator, bool HasTarget, typename... Parents&gt;</a>
-<a name="63"><span class="lineNum">      63 </span><span class="lineCov">        217 :     [[nodiscard]] std::optional&lt;parsing::parse_target&gt; pre_parse(</span></a>
-<a name="64"><span class="lineNum">      64 </span>            :         parsing::pre_parse_data&lt;Validator, HasTarget&gt; pre_parse_data,</a>
-<a name="65"><span class="lineNum">      65 </span>            :         const Parents&amp;... parents) const</a>
-<a name="66"><span class="lineNum">      66 </span>            : </a>
-<a name="67"><span class="lineNum">      67 </span>            :     {</a>
-<a name="68"><span class="lineNum">      68 </span><span class="lineCov">        217 :         return parent_type::pre_parse(pre_parse_data, *this, parents...);</span></a>
-<a name="69"><span class="lineNum">      69 </span>            :     }</a>
-<a name="70"><span class="lineNum">      70 </span>            : </a>
-<a name="71"><span class="lineNum">      71 </span>            :     /** Parse function.</a>
-<a name="72"><span class="lineNum">      72 </span>            :      *</a>
-<a name="73"><span class="lineNum">      73 </span>            :      * @tparam Parents Pack of parent tree nodes in ascending ancestry order</a>
-<a name="74"><span class="lineNum">      74 </span>            :      * @param target Parse target</a>
-<a name="75"><span class="lineNum">      75 </span>            :      * @param parents Parents instances pack</a>
-<a name="76"><span class="lineNum">      76 </span>            :      * @return Parsed result</a>
-<a name="77"><span class="lineNum">      77 </span>            :      * @exception multi_lang_exception Thrown if parsing failed</a>
-<a name="78"><span class="lineNum">      78 </span>            :      */</a>
-<a name="79"><span class="lineNum">      79 </span>            :     template &lt;typename... Parents&gt;</a>
-<a name="80"><span class="lineNum">      80 </span><span class="lineCov">         80 :     value_type parse(parsing::parse_target&amp;&amp; target, const Parents&amp;... parents) const</span></a>
-<a name="81"><span class="lineNum">      81 </span>            :     {</a>
-<a name="82"><span class="lineNum">      82 </span>            :         // Parse the value token</a>
-<a name="83"><span class="lineNum">      83 </span><span class="lineCov">        157 :         auto result = parent_type::template parse&lt;value_type&gt;(target.tokens().front().name,</span></a>
-<a name="84"><span class="lineNum">      84 </span>            :                                                               *this,</a>
-<a name="85"><span class="lineNum">      85 </span><span class="lineCov">         77 :                                                               parents...);</span></a>
-<a name="86"><span class="lineNum">      86 </span>            : </a>
-<a name="87"><span class="lineNum">      87 </span>            :         // Validation</a>
-<a name="88"><span class="lineNum">      88 </span><span class="lineCov">        385 :         utility::tuple_type_iterator&lt;policies_type&gt;([&amp;](auto i) {</span></a>
-<a name="89"><span class="lineNum">      89 </span>            :             using policy_type = std::tuple_element_t&lt;i, policies_type&gt;;</a>
-<a name="90"><span class="lineNum">      90 </span>            :             if constexpr (policy::has_validation_phase_method_v&lt;policy_type, value_type&gt;) {</a>
-<a name="91"><span class="lineNum">      91 </span>            :                 this-&gt;policy_type::validation_phase(result, *this, parents...);</a>
-<a name="92"><span class="lineNum">      92 </span>            :             }</a>
-<a name="93"><span class="lineNum">      93 </span><span class="lineCov">        305 :         });</span></a>
-<a name="94"><span class="lineNum">      94 </span>            : </a>
-<a name="95"><span class="lineNum">      95 </span>            :         // Routing</a>
-<a name="96"><span class="lineNum">      96 </span>            :         using routing_policy =</a>
-<a name="97"><span class="lineNum">      97 </span>            :             typename parent_type::template phase_finder_t&lt;policy::has_routing_phase_method&gt;;</a>
-<a name="98"><span class="lineNum">      98 </span>            :         if constexpr (!std::is_void_v&lt;routing_policy&gt;) {</a>
-<a name="99"><span class="lineNum">      99 </span><span class="lineCov">         15 :             this-&gt;routing_policy::routing_phase(std::move(result));</span></a>
-<a name="100"><span class="lineNum">     100 </span>            :         }</a>
-<a name="101"><span class="lineNum">     101 </span>            : </a>
-<a name="102"><span class="lineNum">     102 </span><span class="lineCov">         80 :         return result;</span></a>
-<a name="103"><span class="lineNum">     103 </span>            :     }</a>
-<a name="104"><span class="lineNum">     104 </span>            : };</a>
-<a name="105"><span class="lineNum">     105 </span>            : </a>
-<a name="106"><span class="lineNum">     106 </span>            : /** Constructs an arg_t with the given policies and value type.</a>
-<a name="107"><span class="lineNum">     107 </span>            :  *</a>
-<a name="108"><span class="lineNum">     108 </span>            :  * This is necessary due to CTAD being required for all template parameters or none, and</a>
-<a name="109"><span class="lineNum">     109 </span>            :  * unfortunately in our case we need @a T to be explicitly set by the user whilst @a Policies should</a>
-<a name="110"><span class="lineNum">     110 </span>            :  * be deduced.</a>
-<a name="111"><span class="lineNum">     111 </span>            :  *</a>
-<a name="112"><span class="lineNum">     112 </span>            :  * Compile-time strings can be passed in directly and will be converted to the appropriate policies</a>
-<a name="113"><span class="lineNum">     113 </span>            :  * automatically.  The rules are:</a>
-<a name="114"><span class="lineNum">     114 </span>            :  * -# The first multi-character string becomes a policy::long_name_t</a>
-<a name="115"><span class="lineNum">     115 </span>            :  * -# The second multi-character string becomes a policy::description_t</a>
-<a name="116"><span class="lineNum">     116 </span>            :  * -# The first single-charcter string becomes a policy::short_name_t</a>
-<a name="117"><span class="lineNum">     117 </span>            :  *</a>
-<a name="118"><span class="lineNum">     118 </span>            :  * The above are unicode aware.  The strings can be passed in any order relative to the other</a>
-<a name="119"><span class="lineNum">     119 </span>            :  * policies, but it is recommended to put them first to ease reading.</a>
-<a name="120"><span class="lineNum">     120 </span>            :  *</a>
-<a name="121"><span class="lineNum">     121 </span>            :  * @tparam T Argument value type</a>
-<a name="122"><span class="lineNum">     122 </span>            :  * @tparam Policies Pack of policies that define its behaviour</a>
-<a name="123"><span class="lineNum">     123 </span>            :  * @param policies Pack of policy instances</a>
-<a name="124"><span class="lineNum">     124 </span>            :  * @return Argument instance</a>
-<a name="125"><span class="lineNum">     125 </span>            :  */</a>
-<a name="126"><span class="lineNum">     126 </span>            : template &lt;typename T, typename... Policies&gt;</a>
-<a name="127"><span class="lineNum">     127 </span><span class="lineCov">        125 : [[nodiscard]] constexpr auto arg(Policies... policies) noexcept</span></a>
-<a name="128"><span class="lineNum">     128 </span>            : {</a>
-<a name="129"><span class="lineNum">     129 </span><span class="lineCov">        125 :     return std::apply(</span></a>
-<a name="130"><span class="lineNum">     130 </span><span class="lineCov">        125 :         [](auto... converted_policies) {</span></a>
-<a name="131"><span class="lineNum">     131 </span><span class="lineCov">        125 :             return arg_t&lt;T, std::decay_t&lt;decltype(converted_policies)&gt;...&gt;{</span></a>
-<a name="132"><span class="lineNum">     132 </span><span class="lineCov">        125 :                 std::move(converted_policies)...};</span></a>
-<a name="133"><span class="lineNum">     133 </span>            :         },</a>
-<a name="134"><span class="lineNum">     134 </span><span class="lineCov">        125 :         utility::string_to_policy::convert&lt;</span></a>
-<a name="135"><span class="lineNum">     135 </span>            :             utility::string_to_policy::first_string_mapper&lt;policy::long_name_t&gt;,</a>
-<a name="136"><span class="lineNum">     136 </span>            :             utility::string_to_policy::second_string_mapper&lt;policy::description_t&gt;,</a>
-<a name="137"><span class="lineNum">     137 </span>            :             utility::string_to_policy::single_char_mapper&lt;policy::short_name_t&gt;&gt;(</a>
-<a name="138"><span class="lineNum">     138 </span><span class="lineCov">        125 :             std::move(policies)...));</span></a>
-<a name="139"><span class="lineNum">     139 </span><span class="lineNoCov">          0 : }</span></a>
-<a name="140"><span class="lineNum">     140 </span>            : }  // namespace arg_router</a>
+<a name="39"><span class="lineNum">      39 </span>            : </a>
+<a name="40"><span class="lineNum">      40 </span>            : public:</a>
+<a name="41"><span class="lineNum">      41 </span>            :     using typename parent_type::policies_type;</a>
+<a name="42"><span class="lineNum">      42 </span>            : </a>
+<a name="43"><span class="lineNum">      43 </span>            :     /** Argument value type. */</a>
+<a name="44"><span class="lineNum">      44 </span>            :     using value_type = typename parent_type::value_type;</a>
+<a name="45"><span class="lineNum">      45 </span>            : </a>
+<a name="46"><span class="lineNum">      46 </span>            :     /** Help data type. */</a>
+<a name="47"><span class="lineNum">      47 </span>            :     template &lt;bool Flatten&gt;</a>
+<a name="48"><span class="lineNum">      48 </span>            :     using help_data_type = typename parent_type::template default_leaf_help_data_type&lt;Flatten&gt;;</a>
+<a name="49"><span class="lineNum">      49 </span>            : </a>
+<a name="50"><span class="lineNum">      50 </span>            :     /** Constructor.</a>
+<a name="51"><span class="lineNum">      51 </span>            :      *</a>
+<a name="52"><span class="lineNum">      52 </span>            :      * @param policies Policy instances</a>
+<a name="53"><span class="lineNum">      53 </span>            :      */</a>
+<a name="54"><span class="lineNum">      54 </span><span class="lineCov">        174 :     constexpr explicit arg_t(Policies... policies) noexcept :</span></a>
+<a name="55"><span class="lineNum">      55 </span><span class="lineCov">        174 :         parent_type{policy::min_max_count_t&lt;traits::integral_constant&lt;std::size_t{1}&gt;,</span></a>
+<a name="56"><span class="lineNum">      56 </span>            :                                             traits::integral_constant&lt;std::size_t{1}&gt;&gt;{},</a>
+<a name="57"><span class="lineNum">      57 </span><span class="lineCov">        174 :                     std::move(policies)...}</span></a>
+<a name="58"><span class="lineNum">      58 </span><span class="lineCov">        174 :     {</span></a>
+<a name="59"><span class="lineNum">      59 </span><span class="lineCov">        174 :     }</span></a>
+<a name="60"><span class="lineNum">      60 </span>            : </a>
+<a name="61"><span class="lineNum">      61 </span>            :     template &lt;typename Validator, bool HasTarget, typename... Parents&gt;</a>
+<a name="62"><span class="lineNum">      62 </span><span class="lineCov">        239 :     [[nodiscard]] std::optional&lt;parsing::parse_target&gt; pre_parse(</span></a>
+<a name="63"><span class="lineNum">      63 </span>            :         parsing::pre_parse_data&lt;Validator, HasTarget&gt; pre_parse_data,</a>
+<a name="64"><span class="lineNum">      64 </span>            :         const Parents&amp;... parents) const</a>
+<a name="65"><span class="lineNum">      65 </span>            : </a>
+<a name="66"><span class="lineNum">      66 </span>            :     {</a>
+<a name="67"><span class="lineNum">      67 </span><span class="lineCov">        239 :         return parent_type::pre_parse(pre_parse_data, *this, parents...);</span></a>
+<a name="68"><span class="lineNum">      68 </span>            :     }</a>
+<a name="69"><span class="lineNum">      69 </span>            : </a>
+<a name="70"><span class="lineNum">      70 </span>            :     template &lt;typename... Parents&gt;</a>
+<a name="71"><span class="lineNum">      71 </span><span class="lineCov">         85 :     value_type parse(parsing::parse_target&amp;&amp; target, const Parents&amp;... parents) const</span></a>
+<a name="72"><span class="lineNum">      72 </span>            :     {</a>
+<a name="73"><span class="lineNum">      73 </span><span class="lineCov">         85 :         return parent_type::parse(target, *this, parents...);</span></a>
+<a name="74"><span class="lineNum">      74 </span><span class="lineNoCov">          0 :     }</span></a>
+<a name="75"><span class="lineNum">      75 </span>            : };</a>
+<a name="76"><span class="lineNum">      76 </span>            : </a>
+<a name="77"><span class="lineNum">      77 </span>            : /** Constructs an arg_t with the given policies and value type.</a>
+<a name="78"><span class="lineNum">      78 </span>            :  *</a>
+<a name="79"><span class="lineNum">      79 </span>            :  * This is necessary due to CTAD being required for all template parameters or none, and</a>
+<a name="80"><span class="lineNum">      80 </span>            :  * unfortunately in our case we need @a T to be explicitly set by the user whilst @a Policies should</a>
+<a name="81"><span class="lineNum">      81 </span>            :  * be deduced.</a>
+<a name="82"><span class="lineNum">      82 </span>            :  *</a>
+<a name="83"><span class="lineNum">      83 </span>            :  * Compile-time strings can be passed in directly and will be converted to the appropriate policies</a>
+<a name="84"><span class="lineNum">      84 </span>            :  * automatically.  The rules are:</a>
+<a name="85"><span class="lineNum">      85 </span>            :  * -# The first multi-character string becomes a policy::long_name_t</a>
+<a name="86"><span class="lineNum">      86 </span>            :  * -# The second multi-character string becomes a policy::description_t</a>
+<a name="87"><span class="lineNum">      87 </span>            :  * -# The first single-charcter string becomes a policy::short_name_t</a>
+<a name="88"><span class="lineNum">      88 </span>            :  *</a>
+<a name="89"><span class="lineNum">      89 </span>            :  * The above are unicode aware.  The strings can be passed in any order relative to the other</a>
+<a name="90"><span class="lineNum">      90 </span>            :  * policies, but it is recommended to put them first to ease reading.</a>
+<a name="91"><span class="lineNum">      91 </span>            :  *</a>
+<a name="92"><span class="lineNum">      92 </span>            :  * @tparam T Argument value type</a>
+<a name="93"><span class="lineNum">      93 </span>            :  * @tparam Policies Pack of policies that define its behaviour</a>
+<a name="94"><span class="lineNum">      94 </span>            :  * @param policies Pack of policy instances</a>
+<a name="95"><span class="lineNum">      95 </span>            :  * @return Argument instance</a>
+<a name="96"><span class="lineNum">      96 </span>            :  */</a>
+<a name="97"><span class="lineNum">      97 </span>            : template &lt;typename T, typename... Policies&gt;</a>
+<a name="98"><span class="lineNum">      98 </span><span class="lineCov">        174 : [[nodiscard]] constexpr auto arg(Policies... policies) noexcept</span></a>
+<a name="99"><span class="lineNum">      99 </span>            : {</a>
+<a name="100"><span class="lineNum">     100 </span><span class="lineCov">        174 :     return std::apply(</span></a>
+<a name="101"><span class="lineNum">     101 </span><span class="lineCov">        174 :         [](auto... converted_policies) {</span></a>
+<a name="102"><span class="lineNum">     102 </span><span class="lineCov">        174 :             return arg_t&lt;T, std::decay_t&lt;decltype(converted_policies)&gt;...&gt;{</span></a>
+<a name="103"><span class="lineNum">     103 </span><span class="lineCov">        174 :                 std::move(converted_policies)...};</span></a>
+<a name="104"><span class="lineNum">     104 </span>            :         },</a>
+<a name="105"><span class="lineNum">     105 </span><span class="lineCov">        174 :         utility::string_to_policy::convert&lt;</span></a>
+<a name="106"><span class="lineNum">     106 </span>            :             utility::string_to_policy::first_string_mapper&lt;policy::long_name_t&gt;,</a>
+<a name="107"><span class="lineNum">     107 </span>            :             utility::string_to_policy::second_string_mapper&lt;policy::description_t&gt;,</a>
+<a name="108"><span class="lineNum">     108 </span>            :             utility::string_to_policy::single_char_mapper&lt;policy::short_name_t&gt;&gt;(</a>
+<a name="109"><span class="lineNum">     109 </span><span class="lineCov">        174 :             std::move(policies)...));</span></a>
+<a name="110"><span class="lineNum">     110 </span><span class="lineNoCov">          0 : }</span></a>
+<a name="111"><span class="lineNum">     111 </span>            : }  // namespace arg_router</a>
 </pre>
       </td>
     </tr>

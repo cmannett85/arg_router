@@ -36,7 +36,7 @@
                         <td id="projectalign" style="padding-left: 0.5em;">
                             <div id="projectname">arg_router
                                 &#160;<span
-                                    id="projectnumber">1.3.0</span>
+                                    id="projectnumber">1.4.0</span>
                             </div>
                             <div id="projectbrief">C++ command line argument parsing and routing</div>
                         </td>
@@ -107,16 +107,32 @@ $(document).ready(function(){initNavTree('help.html',''); initResizable(); });
 </div>
 <div class="textblock"><h1><a class="anchor" id="help_hdt"></a>
 help_data_type</h1>
-<p>Help output is crucial for most application's command line interface, in <a class="el" href="namespacearg__router.html">arg_router</a> this is implemented by defining a public type called <code>help_data_type</code> that is struct with a boolean NTTP providing up to three <a class="el" href="classarg__router_1_1utility_1_1compile__time__string.html">utility::compile_time_string</a> type aliases:</p><ol type="1">
-<li><code>label</code> which provides the node name(s)</li>
-<li><code>description</code> which provides the help blurb</li>
+<p>Help output is crucial for most application's command line interface, in <a class="el" href="namespacearg__router.html">arg_router</a> this is implemented by defining a public type called <code>help_data_type</code> that is equivalent to: </p><div class="fragment"><div class="line"><span class="keyword">template</span> &lt;<span class="keywordtype">bool</span> Flatten&gt;</div>
+<div class="line"><span class="keyword">struct </span>help_data_type {</div>
+<div class="line">    <span class="keyword">using</span> label = ...; <span class="comment">// Compile-time string</span></div>
+<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacearg__router_1_1policy.html#adeab7d3692839fb3dcc864b5cc1730b7">description</a> = ...; <span class="comment">// Compile-time string</span></div>
+<div class="line">    <span class="keyword">using</span> children = std::tuple&lt;help_data_type&lt;...&gt;, ...&gt;;</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// New in v1.4!</span></div>
+<div class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> OwnerNode, <span class="keyword">typename</span> FilterFn&gt;</div>
+<div class="line">    [[nodiscard]] <span class="keyword">static</span> vector&lt;runtime_help_data&gt; runtime_children(<span class="keyword">const</span> OwnerNode&amp; owner,</div>
+<div class="line">                                                                    FilterFn&amp;&amp; f)</div>
+<div class="line">    {</div>
+<div class="line">        <span class="keywordflow">return</span> ...;</div>
+<div class="line">    }</div>
+<div class="line">}</div>
+<div class="ttc" id="anamespacearg__router_1_1policy_html_adeab7d3692839fb3dcc864b5cc1730b7"><div class="ttname"><a href="namespacearg__router_1_1policy.html#adeab7d3692839fb3dcc864b5cc1730b7">arg_router::policy::description</a></div><div class="ttdeci">constexpr auto description</div><div class="ttdef"><b>Definition:</b> <a href="description_8hpp_source.html#l00050">description.hpp:50</a></div></div>
+</div><!-- fragment --><ol type="1">
+<li><code>label</code> which provides the node name, and may be empty</li>
+<li><code>description</code> which provides the help blurb, and may be empty</li>
 <li><code>children</code> which provides a tuple of other <code>help_data_type</code> compatible structure types defining child help data</li>
+<li><code>runtime_children(..)</code> is an optional method that is new for v1.4. It allows for runtime modification of the help output (initially to support <a class="el" href="classarg__router_1_1policy_1_1runtime__enable.html">policy::runtime_enable</a>), via skipping child output if the filter parameter returns false for a given child - see <a class="el" href="structarg__router_1_1runtime__help__data.html">runtime_help_data</a> and <a class="el" href="classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html">tree_node::default_leaf_help_data_type</a> for more information</li>
 </ol>
 <p>Help data is all generated at compile-time and the result held in program static read-only memory. For parse tree leaf-level nodes (e.g. <a class="el" href="classarg__router_1_1flag__t.html">flag_t</a>), the library provides a default alias that generates this data for you: <a class="el" href="classarg__router_1_1tree__node_1_1default__leaf__help__data__type.html">tree_node::default_leaf_help_data_type</a>.</p>
 <h2><a class="anchor" id="help_node_children"></a>
 help_data_type::children</h2>
 <p>The <code>help_data_type::children</code> type can be seen as the child nodes in a 'help tree'. Typically it will carry nothing as not flattening is the default and most nodes in the parse tree are leaves (flags, args, etc.), the most common scenario where this is <em>not</em> true is when defined by a mode-like type in which case <code>children</code> will be a tuple of the child parse tree node's <code>help_data_type</code>s.</p>
-<p>An outlier to the above is <a class="el" href="classarg__router_1_1dependency_1_1one__of__t.html">dependency::one_of_t</a>, where the <code>help_data_type::children</code> tuple elements are the still the node's children, but it will ignore the flattening NTTP.</p>
+<p>An outlier to the above is <a class="el" href="classarg__router_1_1dependency_1_1one__of__t.html">dependency::one_of_t</a> and <a class="el" href="classarg__router_1_1dependency_1_1alias__group__t.html">dependency::alias_group_t</a>, where the <code>help_data_type::children</code> tuple elements are the still the node's children, but it will ignore the flattening NTTP.</p>
 <h2><a class="anchor" id="help_hdt_flatten"></a>
 Flattening</h2>
 <p>The boolean NTTP the <code>help_data_type</code> accepts is for 'flattening'. 'Flattened' help output is where all the child help data is displayed with the parent, rather than only the parent output being displayed and the children help data having to be explicitly requested through the command line - see the README.md for examples of this.</p>

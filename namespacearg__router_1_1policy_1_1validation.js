@@ -33,7 +33,7 @@ var namespacearg__router_1_1policy_1_1validation =
     [ "at_least_one_of_policies", "structarg__router_1_1policy_1_1validation_1_1at__least__one__of__policies.html", null ],
     [ "node_types_must_be_at_end", "structarg__router_1_1policy_1_1validation_1_1node__types__must__be__at__end.html", null ],
     [ "anonymous_mode_must_be_at_end", "structarg__router_1_1policy_1_1validation_1_1anonymous__mode__must__be__at__end.html", null ],
-    [ "positional_args_must_have_fixed_count_if_not_at_end", "structarg__router_1_1policy_1_1validation_1_1positional__args__must__have__fixed__count__if__not__at__end.html", null ],
+    [ "list_like_nodes_must_have_fixed_count_if_not_at_end", "structarg__router_1_1policy_1_1validation_1_1list__like__nodes__must__have__fixed__count__if__not__at__end.html", null ],
     [ "must_have_at_least_min_count_of_1_if_required", "structarg__router_1_1policy_1_1validation_1_1must__have__at__least__min__count__of__1__if__required.html", null ],
     [ "rule", "namespacearg__router_1_1policy_1_1validation.html#a9526b062af79c0a8922ccbc564ab6788", null ],
     [ "rule_q", "namespacearg__router_1_1policy_1_1validation.html#a410fa61e93ec809d3b66448f7d0c8789", null ],

@@ -31,13 +31,13 @@
             <td class="headerValue">arg_router Unit Test Code Coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">11</td>
-            <td class="headerCovTableEntry">11</td>
+            <td class="headerCovTableEntry">18</td>
+            <td class="headerCovTableEntry">18</td>
             <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2023-03-26 16:12:00</td>
+            <td class="headerValue">2023-08-08 16:25:45</td>
             <td></td>
           </tr>
           <tr>
@@ -239,11 +239,11 @@
 <a name="173"><span class="lineNum">     173 </span>            : namespace detail</a>
 <a name="174"><span class="lineNum">     174 </span>            : {</a>
 <a name="175"><span class="lineNum">     175 </span>            : template &lt;typename U, typename... I&gt;</a>
-<a name="176"><span class="lineNum">     176 </span><span class="lineCov">       1726 : [[nodiscard]] constexpr auto tuple_filter_and_construct_impl(</span></a>
+<a name="176"><span class="lineNum">     176 </span><span class="lineCov">       2466 : [[nodiscard]] constexpr auto tuple_filter_and_construct_impl(</span></a>
 <a name="177"><span class="lineNum">     177 </span>            :     U&amp;&amp; input,</a>
 <a name="178"><span class="lineNum">     178 </span>            :     [[maybe_unused]] std::tuple&lt;I...&gt; Is) noexcept</a>
 <a name="179"><span class="lineNum">     179 </span>            : {</a>
-<a name="180"><span class="lineNum">     180 </span><span class="lineCov">       1726 :     return std::tuple{std::get&lt;I::value&gt;(std::forward&lt;U&gt;(input))...};</span></a>
+<a name="180"><span class="lineNum">     180 </span><span class="lineCov">       2466 :     return std::tuple{std::get&lt;I::value&gt;(std::forward&lt;U&gt;(input))...};</span></a>
 <a name="181"><span class="lineNum">     181 </span>            : }</a>
 <a name="182"><span class="lineNum">     182 </span>            : }  // namespace detail</a>
 <a name="183"><span class="lineNum">     183 </span>            : </a>
@@ -259,7 +259,7 @@
 <a name="193"><span class="lineNum">     193 </span>            :  * @return Result tuple</a>
 <a name="194"><span class="lineNum">     194 </span>            :  */</a>
 <a name="195"><span class="lineNum">     195 </span>            : template &lt;template &lt;typename...&gt; typename Fn, typename U&gt;</a>
-<a name="196"><span class="lineNum">     196 </span><span class="lineCov">       1726 : [[nodiscard]] constexpr auto tuple_filter_and_construct(U&amp;&amp; input) noexcept</span></a>
+<a name="196"><span class="lineNum">     196 </span><span class="lineCov">       2466 : [[nodiscard]] constexpr auto tuple_filter_and_construct(U&amp;&amp; input) noexcept</span></a>
 <a name="197"><span class="lineNum">     197 </span>            : {</a>
 <a name="198"><span class="lineNum">     198 </span>            :     // Zip together an index-sequence of U and the elements of it</a>
 <a name="199"><span class="lineNum">     199 </span>            :     using zipped =</a>
@@ -272,7 +272,7 @@
 <a name="206"><span class="lineNum">     206 </span>            :     using filtered = boost::mp11::mp_filter_q&lt;wrapped_fn, zipped&gt;;</a>
 <a name="207"><span class="lineNum">     207 </span>            : </a>
 <a name="208"><span class="lineNum">     208 </span>            :     // Fold construct the return value using the zip indices as accessors to input</a>
-<a name="209"><span class="lineNum">     209 </span><span class="lineCov">       1726 :     return detail::tuple_filter_and_construct_impl(input, typename unzip&lt;filtered&gt;::first_type{});</span></a>
+<a name="209"><span class="lineNum">     209 </span><span class="lineCov">       2466 :     return detail::tuple_filter_and_construct_impl(input, typename unzip&lt;filtered&gt;::first_type{});</span></a>
 <a name="210"><span class="lineNum">     210 </span>            : }</a>
 <a name="211"><span class="lineNum">     211 </span>            : </a>
 <a name="212"><span class="lineNum">     212 </span>            : namespace detail</a>
@@ -281,22 +281,22 @@
 <a name="215"><span class="lineNum">     215 </span>            :           typename Insert,</a>
 <a name="216"><span class="lineNum">     216 </span>            :           typename... Args,</a>
 <a name="217"><span class="lineNum">     217 </span>            :           std::size_t... I&gt;</a>
-<a name="218"><span class="lineNum">     218 </span><span class="lineCov">       2275 : [[nodiscard]] constexpr auto tuple_push_back_impl(</span></a>
+<a name="218"><span class="lineNum">     218 </span><span class="lineCov">       3449 : [[nodiscard]] constexpr auto tuple_push_back_impl(</span></a>
 <a name="219"><span class="lineNum">     219 </span>            :     Tuple&lt;Args...&gt; tuple,</a>
 <a name="220"><span class="lineNum">     220 </span>            :     Insert insert,</a>
 <a name="221"><span class="lineNum">     221 </span>            :     [[maybe_unused]] std::integer_sequence&lt;std::size_t, I...&gt; Is) noexcept</a>
 <a name="222"><span class="lineNum">     222 </span>            : {</a>
-<a name="223"><span class="lineNum">     223 </span><span class="lineCov">       2275 :     return Tuple{std::move(std::get&lt;I&gt;(tuple))..., std::move(insert)};</span></a>
+<a name="223"><span class="lineNum">     223 </span><span class="lineCov">       3449 :     return Tuple{std::move(std::get&lt;I&gt;(tuple))..., std::move(insert)};</span></a>
 <a name="224"><span class="lineNum">     224 </span>            : }</a>
 <a name="225"><span class="lineNum">     225 </span>            : </a>
 <a name="226"><span class="lineNum">     226 </span>            : // Empty tuple specialisation</a>
 <a name="227"><span class="lineNum">     227 </span>            : template &lt;template &lt;typename...&gt; typename Tuple, typename Insert&gt;</a>
-<a name="228"><span class="lineNum">     228 </span><span class="lineCov">        782 : [[nodiscard]] constexpr auto tuple_push_back_impl(</span></a>
+<a name="228"><span class="lineNum">     228 </span><span class="lineCov">       1128 : [[nodiscard]] constexpr auto tuple_push_back_impl(</span></a>
 <a name="229"><span class="lineNum">     229 </span>            :     [[maybe_unused]] Tuple&lt;&gt; t,</a>
 <a name="230"><span class="lineNum">     230 </span>            :     Insert insert,</a>
 <a name="231"><span class="lineNum">     231 </span>            :     [[maybe_unused]] std::integer_sequence&lt;std::size_t&gt; Is) noexcept</a>
 <a name="232"><span class="lineNum">     232 </span>            : {</a>
-<a name="233"><span class="lineNum">     233 </span><span class="lineCov">        782 :     return Tuple{std::move(insert)};</span></a>
+<a name="233"><span class="lineNum">     233 </span><span class="lineCov">       1128 :     return Tuple{std::move(insert)};</span></a>
 <a name="234"><span class="lineNum">     234 </span>            : }</a>
 <a name="235"><span class="lineNum">     235 </span>            : }  // namespace detail</a>
 <a name="236"><span class="lineNum">     236 </span>            : </a>
@@ -309,14 +309,54 @@
 <a name="243"><span class="lineNum">     243 </span>            :  * @return A Tuple with @a insert appended</a>
 <a name="244"><span class="lineNum">     244 </span>            :  */</a>
 <a name="245"><span class="lineNum">     245 </span>            : template &lt;typename Tuple, typename Insert&gt;</a>
-<a name="246"><span class="lineNum">     246 </span><span class="lineCov">       3057 : [[nodiscard]] constexpr auto tuple_push_back(Tuple tuple, Insert insert) noexcept</span></a>
+<a name="246"><span class="lineNum">     246 </span><span class="lineCov">       4577 : [[nodiscard]] constexpr auto tuple_push_back(Tuple tuple, Insert insert) noexcept</span></a>
 <a name="247"><span class="lineNum">     247 </span>            : {</a>
 <a name="248"><span class="lineNum">     248 </span>            :     // Cannot use std::tuple_cat as it causes infinite compiler loops in MSVC</a>
-<a name="249"><span class="lineNum">     249 </span><span class="lineCov">       6114 :     return detail::tuple_push_back_impl(std::move(tuple),</span></a>
-<a name="250"><span class="lineNum">     250 </span><span class="lineCov">       3057 :                                         std::move(insert),</span></a>
+<a name="249"><span class="lineNum">     249 </span><span class="lineCov">       9154 :     return detail::tuple_push_back_impl(std::move(tuple),</span></a>
+<a name="250"><span class="lineNum">     250 </span><span class="lineCov">       4577 :                                         std::move(insert),</span></a>
 <a name="251"><span class="lineNum">     251 </span>            :                                         std::make_index_sequence&lt;std::tuple_size_v&lt;Tuple&gt;&gt;{});</a>
 <a name="252"><span class="lineNum">     252 </span>            : }</a>
-<a name="253"><span class="lineNum">     253 </span>            : }  // namespace arg_router::algorithm</a>
+<a name="253"><span class="lineNum">     253 </span>            : </a>
+<a name="254"><span class="lineNum">     254 </span>            : namespace detail</a>
+<a name="255"><span class="lineNum">     255 </span>            : {</a>
+<a name="256"><span class="lineNum">     256 </span>            : template &lt;std::size_t Count, typename U, std::size_t... I&gt;</a>
+<a name="257"><span class="lineNum">     257 </span><span class="lineCov">        761 : [[nodiscard]] constexpr auto tuple_drop_impl(</span></a>
+<a name="258"><span class="lineNum">     258 </span>            :     U&amp;&amp; input,</a>
+<a name="259"><span class="lineNum">     259 </span>            :     // NOLINTNEXTLINE(*-named-parameter)</a>
+<a name="260"><span class="lineNum">     260 </span>            :     [[maybe_unused]] std::integer_sequence&lt;std::size_t, I...&gt;) noexcept</a>
+<a name="261"><span class="lineNum">     261 </span>            : {</a>
+<a name="262"><span class="lineNum">     262 </span><span class="lineCov">        761 :     return std::tuple{std::get&lt;I + Count&gt;(std::forward&lt;U&gt;(input))...};</span></a>
+<a name="263"><span class="lineNum">     263 </span>            : }</a>
+<a name="264"><span class="lineNum">     264 </span>            : }  // namespace detail</a>
+<a name="265"><span class="lineNum">     265 </span>            : </a>
+<a name="266"><span class="lineNum">     266 </span>            : /** Remove the first @a Count elements from @a tuple.</a>
+<a name="267"><span class="lineNum">     267 </span>            :  *</a>
+<a name="268"><span class="lineNum">     268 </span>            :  * @param input Tuple to remove elements from</a>
+<a name="269"><span class="lineNum">     269 </span>            :  * @return Tuple with the first @a Count elements removed</a>
+<a name="270"><span class="lineNum">     270 </span>            :  */</a>
+<a name="271"><span class="lineNum">     271 </span>            : template &lt;std::size_t Count, typename Tuple&gt;</a>
+<a name="272"><span class="lineNum">     272 </span><span class="lineCov">        761 : [[nodiscard]] constexpr auto tuple_drop(Tuple&amp;&amp; input)</span></a>
+<a name="273"><span class="lineNum">     273 </span>            : {</a>
+<a name="274"><span class="lineNum">     274 </span><span class="lineCov">        761 :     return detail::tuple_drop_impl&lt;Count&gt;(</span></a>
+<a name="275"><span class="lineNum">     275 </span><span class="lineCov">        761 :         std::forward&lt;Tuple&gt;(input),</span></a>
+<a name="276"><span class="lineNum">     276 </span>            :         std::make_index_sequence&lt;std::tuple_size_v&lt;Tuple&gt; - Count&gt;{});</a>
+<a name="277"><span class="lineNum">     277 </span>            : }</a>
+<a name="278"><span class="lineNum">     278 </span>            : </a>
+<a name="279"><span class="lineNum">     279 </span>            : /** Convenience function for accessing a reference to the pack element at index @a I.</a>
+<a name="280"><span class="lineNum">     280 </span>            :  *</a>
+<a name="281"><span class="lineNum">     281 </span>            :  * Compilation failure if @a I is greater than or equal to the number of elements in @a pack.</a>
+<a name="282"><span class="lineNum">     282 </span>            :  * @tparam I Index of pack element to access</a>
+<a name="283"><span class="lineNum">     283 </span>            :  * @tparam T Pack types</a>
+<a name="284"><span class="lineNum">     284 </span>            :  * @param pack Parameter pack</a>
+<a name="285"><span class="lineNum">     285 </span>            :  * @return Const reference to the pack element at index @a I</a>
+<a name="286"><span class="lineNum">     286 </span>            :  */</a>
+<a name="287"><span class="lineNum">     287 </span>            : template &lt;std::size_t I, typename... T&gt;</a>
+<a name="288"><span class="lineNum">     288 </span><span class="lineCov">        313 : [[nodiscard]] constexpr auto&amp; pack_element(const T&amp;... pack) noexcept</span></a>
+<a name="289"><span class="lineNum">     289 </span>            : {</a>
+<a name="290"><span class="lineNum">     290 </span>            :     static_assert(I &lt; sizeof...(pack), &quot;Index out of bounds for pack&quot;);</a>
+<a name="291"><span class="lineNum">     291 </span><span class="lineCov">        313 :     return std::get&lt;I&gt;(std::tuple{std::cref(pack)...}).get();</span></a>
+<a name="292"><span class="lineNum">     292 </span>            : }</a>
+<a name="293"><span class="lineNum">     293 </span>            : }  // namespace arg_router::algorithm</a>
 </pre>
       </td>
     </tr>

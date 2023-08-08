@@ -36,7 +36,7 @@
                         <td id="projectalign" style="padding-left: 0.5em;">
                             <div id="projectname">arg_router
                                 &#160;<span
-                                    id="projectnumber">1.3.0</span>
+                                    id="projectnumber">1.4.0</span>
                             </div>
                             <div id="projectbrief">C++ command line argument parsing and routing</div>
                         </td>
@@ -176,9 +176,13 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1router.html">router</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1runtime__enable.html">runtime_enable</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1short__form__expander__t.html">short_form_expander_t</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1short__name__t.html">short_name_t</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1token__end__marker__t.html">token_end_marker_t</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classarg__router_1_1policy_1_1value__separator__t.html">value_separator_t</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -297,6 +301,9 @@ Variables</h2></td></tr>
 <tr class="memitem:a1dc9ac0e0bdbce33a18e8c0bcaed7613"><td class="memTemplParams" colspan="2">template&lt;typename S &gt; </td></tr>
 <tr class="memitem:a1dc9ac0e0bdbce33a18e8c0bcaed7613"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#a1dc9ac0e0bdbce33a18e8c0bcaed7613">short_name_utf8</a> = <a class="el" href="classarg__router_1_1policy_1_1short__name__t.html">short_name_t</a>&lt;S&gt;{}</td></tr>
 <tr class="separator:a1dc9ac0e0bdbce33a18e8c0bcaed7613"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7fcfc0f7d064b3d354e8982c6cefe49b"><td class="memTemplParams" colspan="2">template&lt;typename S &gt; </td></tr>
+<tr class="memitem:a7fcfc0f7d064b3d354e8982c6cefe49b"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#a7fcfc0f7d064b3d354e8982c6cefe49b">token_end_marker</a> = <a class="el" href="classarg__router_1_1policy_1_1token__end__marker__t.html">token_end_marker_t</a>&lt;S&gt;{}</td></tr>
+<tr class="separator:a7fcfc0f7d064b3d354e8982c6cefe49b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a91d73d78aa19f0189ea82fcd0ac61b00"><td class="memTemplParams" colspan="2">template&lt;char S&gt; </td></tr>
 <tr class="memitem:a91d73d78aa19f0189ea82fcd0ac61b00"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacearg__router_1_1policy.html#a91d73d78aa19f0189ea82fcd0ac61b00">value_separator</a> = <a class="el" href="classarg__router_1_1policy_1_1value__separator__t.html">value_separator_t</a>&lt;AR_STRING(S)&gt;{}</td></tr>
 <tr class="separator:a91d73d78aa19f0189ea82fcd0ac61b00"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -342,7 +349,7 @@ template&lt;typename Indent  = traits::integral_constant&lt;std::size_t{4}&gt;, 
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="colour__help__formatter_8hpp_source.html#l00097">97</a> of file <a class="el" href="colour__help__formatter_8hpp_source.html">colour_help_formatter.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="colour__help__formatter_8hpp_source.html#l00140">140</a> of file <a class="el" href="colour__help__formatter_8hpp_source.html">colour_help_formatter.hpp</a>.</p>
 
 </div>
 </div>
@@ -437,7 +444,7 @@ template&lt;typename... AliasedPolicies&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Alias instance </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="alias_8hpp_source.html#l00261">261</a> of file <a class="el" href="alias_8hpp_source.html">alias.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="alias_8hpp_source.html#l00263">263</a> of file <a class="el" href="alias_8hpp_source.html">alias.hpp</a>.</p>
 
 </div>
 </div>
@@ -794,7 +801,7 @@ template&lt;typename ValueType , typename LessThanCompare  = std::less&lt;ValueT
 </div><div class="memdoc">
 <p>Constant variable helper. </p>
 
-<p class="definition">Definition at line <a class="el" href="colour__help__formatter_8hpp_source.html#l00105">105</a> of file <a class="el" href="colour__help__formatter_8hpp_source.html">colour_help_formatter.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="colour__help__formatter_8hpp_source.html#l00148">148</a> of file <a class="el" href="colour__help__formatter_8hpp_source.html">colour_help_formatter.hpp</a>.</p>
 
 </div>
 </div>
@@ -819,7 +826,7 @@ template&lt;typename ValueType , typename LessThanCompare  = std::less&lt;ValueT
 </div><div class="memdoc">
 <p>Constant variable helper. </p>
 
-<p class="definition">Definition at line <a class="el" href="default__help__formatter_8hpp_source.html#l00266">266</a> of file <a class="el" href="default__help__formatter_8hpp_source.html">default_help_formatter.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="default__help__formatter_8hpp_source.html#l00372">372</a> of file <a class="el" href="default__help__formatter_8hpp_source.html">default_help_formatter.hpp</a>.</p>
 
 </div>
 </div>
@@ -989,7 +996,7 @@ template&lt;std::size_t Value&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00164">164</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00150">150</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
 
 </div>
 </div>
@@ -1047,7 +1054,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="multi__stage__value_8hpp_source.html#l00081">81</a> of file <a class="el" href="multi__stage__value_8hpp_source.html">multi_stage_value.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="multi__stage__value_8hpp_source.html#l00080">80</a> of file <a class="el" href="multi__stage__value_8hpp_source.html">multi_stage_value.hpp</a>.</p>
 
 </div>
 </div>
@@ -1247,7 +1254,7 @@ template&lt;std::size_t Value&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00156">156</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00142">142</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
 
 </div>
 </div>
@@ -1283,7 +1290,7 @@ template&lt;std::size_t Value&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00147">147</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00133">133</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
 
 </div>
 </div>
@@ -1319,7 +1326,7 @@ template&lt;std::size_t MinValue, std::size_t MaxValue&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00139">139</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="min__max__count_8hpp_source.html#l00125">125</a> of file <a class="el" href="min__max__count_8hpp_source.html">min_max_count.hpp</a>.</p>
 
 </div>
 </div>
@@ -1534,7 +1541,7 @@ template&lt;typename S &gt; </div>
 </div><div class="memdoc">
 <p>Constant variable helper. </p>
 
-<p class="definition">Definition at line <a class="el" href="short__form__expander_8hpp_source.html#l00118">118</a> of file <a class="el" href="short__form__expander_8hpp_source.html">short_form_expander.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="short__form__expander_8hpp_source.html#l00119">119</a> of file <a class="el" href="short__form__expander_8hpp_source.html">short_form_expander.hpp</a>.</p>
 
 </div>
 </div>
@@ -1604,6 +1611,39 @@ template&lt;typename S &gt; </div>
 
 </div>
 </div>
+<a id="a7fcfc0f7d064b3d354e8982c6cefe49b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7fcfc0f7d064b3d354e8982c6cefe49b">&#9670;&nbsp;</a></span>token_end_marker</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename S &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr auto arg_router::policy::token_end_marker = <a class="el" href="classarg__router_1_1policy_1_1token__end__marker__t.html">token_end_marker_t</a>&lt;S&gt;{}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Constant variable helper.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">S</td><td>compile_time_string </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="token__end__marker_8hpp_source.html#l00108">108</a> of file <a class="el" href="token__end__marker_8hpp_source.html">token_end_marker.hpp</a>.</p>
+
+</div>
+</div>
 <a id="a91d73d78aa19f0189ea82fcd0ac61b00"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a91d73d78aa19f0189ea82fcd0ac61b00">&#9670;&nbsp;</a></span>value_separator</h2>
 
@@ -1633,7 +1673,7 @@ template&lt;char S&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="value__separator_8hpp_source.html#l00123">123</a> of file <a class="el" href="value__separator_8hpp_source.html">value_separator.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="value__separator_8hpp_source.html#l00134">134</a> of file <a class="el" href="value__separator_8hpp_source.html">value_separator.hpp</a>.</p>
 
 </div>
 </div>
@@ -1666,7 +1706,7 @@ template&lt;typename S &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="value__separator_8hpp_source.html#l00130">130</a> of file <a class="el" href="value__separator_8hpp_source.html">value_separator.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="value__separator_8hpp_source.html#l00141">141</a> of file <a class="el" href="value__separator_8hpp_source.html">value_separator.hpp</a>.</p>
 
 </div>
 </div>

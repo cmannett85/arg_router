@@ -31,13 +31,13 @@
             <td class="headerValue">arg_router Unit Test Code Coverage</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">19</td>
-            <td class="headerCovTableEntry">19</td>
+            <td class="headerCovTableEntry">15</td>
+            <td class="headerCovTableEntry">15</td>
             <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2023-03-26 16:12:00</td>
+            <td class="headerValue">2023-08-08 16:25:45</td>
             <td></td>
           </tr>
           <tr>
@@ -71,169 +71,222 @@
 <a name="5"><span class="lineNum">       5 </span>            : #pragma once</a>
 <a name="6"><span class="lineNum">       6 </span>            : </a>
 <a name="7"><span class="lineNum">       7 </span>            : #include &quot;arg_router/exception.hpp&quot;</a>
-<a name="8"><span class="lineNum">       8 </span>            : #include &quot;arg_router/parsing/parse_target.hpp&quot;</a>
-<a name="9"><span class="lineNum">       9 </span>            : #include &quot;arg_router/parsing/parsing.hpp&quot;</a>
-<a name="10"><span class="lineNum">      10 </span>            : #include &quot;arg_router/policy/policy.hpp&quot;</a>
+<a name="8"><span class="lineNum">       8 </span>            : #include &quot;arg_router/parsing/parsing.hpp&quot;</a>
+<a name="9"><span class="lineNum">       9 </span>            : #include &quot;arg_router/policy/policy.hpp&quot;</a>
+<a name="10"><span class="lineNum">      10 </span>            : #include &quot;arg_router/traits.hpp&quot;</a>
 <a name="11"><span class="lineNum">      11 </span>            : #include &quot;arg_router/utility/compile_time_optional.hpp&quot;</a>
 <a name="12"><span class="lineNum">      12 </span>            : </a>
 <a name="13"><span class="lineNum">      13 </span>            : #include &lt;limits&gt;</a>
 <a name="14"><span class="lineNum">      14 </span>            : </a>
-<a name="15"><span class="lineNum">      15 </span>            : namespace arg_router::policy</a>
+<a name="15"><span class="lineNum">      15 </span>            : namespace arg_router</a>
 <a name="16"><span class="lineNum">      16 </span>            : {</a>
-<a name="17"><span class="lineNum">      17 </span>            : /** Exposes the number of tokens the owning node will consume.</a>
-<a name="18"><span class="lineNum">      18 </span>            :  *</a>
-<a name="19"><span class="lineNum">      19 </span>            :  * It also checks that there are enough pending tokens available to reach the minimum in the</a>
-<a name="20"><span class="lineNum">      20 </span>            :  * pre-parse phase.</a>
-<a name="21"><span class="lineNum">      21 </span>            :  * @tparam MinType Compile-time integral constant value representing the minimum</a>
-<a name="22"><span class="lineNum">      22 </span>            :  * @tparam MaxType Compile-time integral constant value representing the maximum</a>
-<a name="23"><span class="lineNum">      23 </span>            :  */</a>
-<a name="24"><span class="lineNum">      24 </span>            : template &lt;typename MinType, typename MaxType&gt;</a>
-<a name="25"><span class="lineNum">      25 </span>            : class min_max_count_t</a>
-<a name="26"><span class="lineNum">      26 </span>            : {</a>
-<a name="27"><span class="lineNum">      27 </span>            :     static_assert(traits::has_value_type_v&lt;MinType&gt; &amp;&amp; traits::has_value_type_v&lt;MaxType&gt;,</a>
-<a name="28"><span class="lineNum">      28 </span>            :                   &quot;MinType and MaxType must have a value_type&quot;);</a>
-<a name="29"><span class="lineNum">      29 </span>            :     static_assert(std::is_convertible_v&lt;typename MinType::value_type, std::size_t&gt; &amp;&amp;</a>
-<a name="30"><span class="lineNum">      30 </span>            :                       std::is_convertible_v&lt;typename MaxType::value_type, std::size_t&gt;,</a>
-<a name="31"><span class="lineNum">      31 </span>            :                   &quot;MinType and MaxType must have a value_type that is implicitly &quot;</a>
-<a name="32"><span class="lineNum">      32 </span>            :                   &quot;convertible to std::size_t&quot;);</a>
-<a name="33"><span class="lineNum">      33 </span>            :     static_assert(std::is_integral_v&lt;typename MinType::value_type&gt; &amp;&amp;</a>
-<a name="34"><span class="lineNum">      34 </span>            :                       std::is_integral_v&lt;typename MaxType::value_type&gt;,</a>
-<a name="35"><span class="lineNum">      35 </span>            :                   &quot;MinType and MaxType value_types must be integrals&quot;);</a>
-<a name="36"><span class="lineNum">      36 </span>            :     static_assert((MinType::value &gt;= 0) &amp;&amp; (MaxType::value &gt;= 0),</a>
-<a name="37"><span class="lineNum">      37 </span>            :                   &quot;MinType and MaxType must have a value that is a positive number&quot;);</a>
-<a name="38"><span class="lineNum">      38 </span>            :     static_assert(MinType::value &lt;= MaxType::value,</a>
-<a name="39"><span class="lineNum">      39 </span>            :                   &quot;MinType must be less than or equal to MaxType&quot;);</a>
-<a name="40"><span class="lineNum">      40 </span>            : </a>
-<a name="41"><span class="lineNum">      41 </span>            : public:</a>
-<a name="42"><span class="lineNum">      42 </span>            :     /** Policy priority. */</a>
-<a name="43"><span class="lineNum">      43 </span>            :     constexpr static auto priority = std::size_t{750};</a>
-<a name="44"><span class="lineNum">      44 </span>            : </a>
-<a name="45"><span class="lineNum">      45 </span>            :     /** @return Minimum count value. */</a>
-<a name="46"><span class="lineNum">      46 </span>            :     [[nodiscard]] constexpr static std::size_t minimum_count() noexcept { return MinType::value; }</a>
-<a name="47"><span class="lineNum">      47 </span>            : </a>
-<a name="48"><span class="lineNum">      48 </span>            :     /** @return Maximum count value. */</a>
-<a name="49"><span class="lineNum">      49 </span>            :     [[nodiscard]] constexpr static std::size_t maximum_count() noexcept { return MaxType::value; }</a>
-<a name="50"><span class="lineNum">      50 </span>            : </a>
-<a name="51"><span class="lineNum">      51 </span>            :     /** Copies an appropriate amount of tokens from @a args to @a result.</a>
-<a name="52"><span class="lineNum">      52 </span>            :      *</a>
-<a name="53"><span class="lineNum">      53 </span>            :      * This policy performs label and bulk value token processing.  If the owning node is named,</a>
-<a name="54"><span class="lineNum">      54 </span>            :      * then the first token is expected to match, if not then false is returned immediately.</a>
-<a name="55"><span class="lineNum">      55 </span>            :      *</a>
-<a name="56"><span class="lineNum">      56 </span>            :      * Then up to maximum_count() @result the @arg tokens are processed.  If the maximum available</a>
-<a name="57"><span class="lineNum">      57 </span>            :      * is less than minimum_count(), a parse error will occur.</a>
-<a name="58"><span class="lineNum">      58 </span>            :      *</a>
-<a name="59"><span class="lineNum">      59 </span>            :      * @tparam ProcessedTarget @a processed_target payload type</a>
-<a name="60"><span class="lineNum">      60 </span>            :      * @tparam Parents Pack of parent tree nodes in ascending ancestry order</a>
-<a name="61"><span class="lineNum">      61 </span>            :      * @param tokens Currently processed tokens</a>
-<a name="62"><span class="lineNum">      62 </span>            :      * @param processed_target Previously processed parse_target of parent node, or empty is there</a>
-<a name="63"><span class="lineNum">      63 </span>            :      * is no non-root parent</a>
-<a name="64"><span class="lineNum">      64 </span>            :      * @param target Pre-parse generated target</a>
-<a name="65"><span class="lineNum">      65 </span>            :      * @param parents Parent node instances</a>
-<a name="66"><span class="lineNum">      66 </span>            :      * @return Either true if successful, or a multi_lang_exception if the minimum count is not</a>
-<a name="67"><span class="lineNum">      67 </span>            :      * reached</a>
-<a name="68"><span class="lineNum">      68 </span>            :      */</a>
-<a name="69"><span class="lineNum">      69 </span>            :     template &lt;typename ProcessedTarget, typename... Parents&gt;</a>
-<a name="70"><span class="lineNum">      70 </span><span class="lineCov">       1065 :     [[nodiscard]] parsing::pre_parse_result pre_parse_phase(</span></a>
-<a name="71"><span class="lineNum">      71 </span>            :         parsing::dynamic_token_adapter&amp; tokens,</a>
-<a name="72"><span class="lineNum">      72 </span>            :         [[maybe_unused]] utility::compile_time_optional&lt;ProcessedTarget&gt; processed_target,</a>
-<a name="73"><span class="lineNum">      73 </span>            :         [[maybe_unused]] parsing::parse_target&amp; target,</a>
-<a name="74"><span class="lineNum">      74 </span>            :         [[maybe_unused]] const Parents&amp;... parents) const</a>
-<a name="75"><span class="lineNum">      75 </span>            :     {</a>
-<a name="76"><span class="lineNum">      76 </span>            :         static_assert((sizeof...(Parents) &gt;= 1), &quot;At least one parent needed for min_max_count_t&quot;);</a>
-<a name="77"><span class="lineNum">      77 </span>            : </a>
-<a name="78"><span class="lineNum">      78 </span>            :         using owner_type = boost::mp11::mp_first&lt;std::tuple&lt;Parents...&gt;&gt;;</a>
+<a name="17"><span class="lineNum">      17 </span>            : namespace policy</a>
+<a name="18"><span class="lineNum">      18 </span>            : {</a>
+<a name="19"><span class="lineNum">      19 </span>            : /** Exposes the number of tokens the owning node will consume.</a>
+<a name="20"><span class="lineNum">      20 </span>            :  *</a>
+<a name="21"><span class="lineNum">      21 </span>            :  * It also checks that there are enough pending tokens available to reach the minimum in the</a>
+<a name="22"><span class="lineNum">      22 </span>            :  * pre-parse phase.</a>
+<a name="23"><span class="lineNum">      23 </span>            :  * @tparam MinType Compile-time integral constant value representing the minimum</a>
+<a name="24"><span class="lineNum">      24 </span>            :  * @tparam MaxType Compile-time integral constant value representing the maximum</a>
+<a name="25"><span class="lineNum">      25 </span>            :  */</a>
+<a name="26"><span class="lineNum">      26 </span>            : template &lt;typename MinType, typename MaxType&gt;</a>
+<a name="27"><span class="lineNum">      27 </span>            : class min_max_count_t</a>
+<a name="28"><span class="lineNum">      28 </span>            : {</a>
+<a name="29"><span class="lineNum">      29 </span>            :     static_assert(traits::has_value_type_v&lt;MinType&gt; &amp;&amp; traits::has_value_type_v&lt;MaxType&gt;,</a>
+<a name="30"><span class="lineNum">      30 </span>            :                   &quot;MinType and MaxType must have a value_type&quot;);</a>
+<a name="31"><span class="lineNum">      31 </span>            :     static_assert(std::is_convertible_v&lt;typename MinType::value_type, std::size_t&gt; &amp;&amp;</a>
+<a name="32"><span class="lineNum">      32 </span>            :                       std::is_convertible_v&lt;typename MaxType::value_type, std::size_t&gt;,</a>
+<a name="33"><span class="lineNum">      33 </span>            :                   &quot;MinType and MaxType must have a value_type that is implicitly &quot;</a>
+<a name="34"><span class="lineNum">      34 </span>            :                   &quot;convertible to std::size_t&quot;);</a>
+<a name="35"><span class="lineNum">      35 </span>            :     static_assert(std::is_integral_v&lt;typename MinType::value_type&gt; &amp;&amp;</a>
+<a name="36"><span class="lineNum">      36 </span>            :                       std::is_integral_v&lt;typename MaxType::value_type&gt;,</a>
+<a name="37"><span class="lineNum">      37 </span>            :                   &quot;MinType and MaxType value_types must be integrals&quot;);</a>
+<a name="38"><span class="lineNum">      38 </span>            :     static_assert((MinType::value &gt;= 0) &amp;&amp; (MaxType::value &gt;= 0),</a>
+<a name="39"><span class="lineNum">      39 </span>            :                   &quot;MinType and MaxType must have a value that is a positive number&quot;);</a>
+<a name="40"><span class="lineNum">      40 </span>            :     static_assert(MinType::value &lt;= MaxType::value,</a>
+<a name="41"><span class="lineNum">      41 </span>            :                   &quot;MinType must be less than or equal to MaxType&quot;);</a>
+<a name="42"><span class="lineNum">      42 </span>            : </a>
+<a name="43"><span class="lineNum">      43 </span>            : public:</a>
+<a name="44"><span class="lineNum">      44 </span>            :     /** Policy priority. */</a>
+<a name="45"><span class="lineNum">      45 </span>            :     constexpr static auto priority = std::size_t{750};</a>
+<a name="46"><span class="lineNum">      46 </span>            : </a>
+<a name="47"><span class="lineNum">      47 </span>            :     /** @return Minimum count value. */</a>
+<a name="48"><span class="lineNum">      48 </span>            :     [[nodiscard]] constexpr static std::size_t minimum_count() noexcept { return MinType::value; }</a>
+<a name="49"><span class="lineNum">      49 </span>            : </a>
+<a name="50"><span class="lineNum">      50 </span>            :     /** @return Maximum count value. */</a>
+<a name="51"><span class="lineNum">      51 </span>            :     [[nodiscard]] constexpr static std::size_t maximum_count() noexcept { return MaxType::value; }</a>
+<a name="52"><span class="lineNum">      52 </span>            : </a>
+<a name="53"><span class="lineNum">      53 </span>            :     /** Copies an appropriate amount of tokens from @a args to @a result.</a>
+<a name="54"><span class="lineNum">      54 </span>            :      *</a>
+<a name="55"><span class="lineNum">      55 </span>            :      * This policy performs label and bulk value token processing.  If the owning node is named,</a>
+<a name="56"><span class="lineNum">      56 </span>            :      * then the first token is expected to match, if not then false is returned immediately.</a>
+<a name="57"><span class="lineNum">      57 </span>            :      *</a>
+<a name="58"><span class="lineNum">      58 </span>            :      * Then up to maximum_count() @result the @arg tokens are processed.  If the maximum available</a>
+<a name="59"><span class="lineNum">      59 </span>            :      * is less than minimum_count(), a parse error will occur.</a>
+<a name="60"><span class="lineNum">      60 </span>            :      *</a>
+<a name="61"><span class="lineNum">      61 </span>            :      * @tparam ProcessedTarget @a processed_target payload type</a>
+<a name="62"><span class="lineNum">      62 </span>            :      * @tparam Parents Pack of parent tree nodes in ascending ancestry order</a>
+<a name="63"><span class="lineNum">      63 </span>            :      * @param tokens Currently processed tokens</a>
+<a name="64"><span class="lineNum">      64 </span>            :      * @param processed_target Previously processed parse_target of parent node, or empty is there</a>
+<a name="65"><span class="lineNum">      65 </span>            :      * is no non-root parent</a>
+<a name="66"><span class="lineNum">      66 </span>            :      * @param target Pre-parse generated target</a>
+<a name="67"><span class="lineNum">      67 </span>            :      * @param parents Parent node instances</a>
+<a name="68"><span class="lineNum">      68 </span>            :      * @return Either true if successful, or a multi_lang_exception if the minimum count is not</a>
+<a name="69"><span class="lineNum">      69 </span>            :      * reached</a>
+<a name="70"><span class="lineNum">      70 </span>            :      */</a>
+<a name="71"><span class="lineNum">      71 </span>            :     template &lt;typename ProcessedTarget, typename... Parents&gt;</a>
+<a name="72"><span class="lineNum">      72 </span><span class="lineCov">       1292 :     [[nodiscard]] parsing::pre_parse_result pre_parse_phase(</span></a>
+<a name="73"><span class="lineNum">      73 </span>            :         parsing::dynamic_token_adapter&amp; tokens,</a>
+<a name="74"><span class="lineNum">      74 </span>            :         [[maybe_unused]] utility::compile_time_optional&lt;ProcessedTarget&gt; processed_target,</a>
+<a name="75"><span class="lineNum">      75 </span>            :         [[maybe_unused]] parsing::parse_target&amp; target,</a>
+<a name="76"><span class="lineNum">      76 </span>            :         [[maybe_unused]] const Parents&amp;... parents) const</a>
+<a name="77"><span class="lineNum">      77 </span>            :     {</a>
+<a name="78"><span class="lineNum">      78 </span>            :         static_assert((sizeof...(Parents) &gt;= 1), &quot;At least one parent needed for min_max_count_t&quot;);</a>
 <a name="79"><span class="lineNum">      79 </span>            : </a>
-<a name="80"><span class="lineNum">      80 </span>            :         // The min/max values are for argument counts, and so need adjusting to accomodate the label</a>
-<a name="81"><span class="lineNum">      81 </span>            :         // tokens</a>
-<a name="82"><span class="lineNum">      82 </span><span class="lineCov">       1065 :         constexpr auto mn_count = minimum_count() + (owner_type::is_named ? 1 : 0);</span></a>
-<a name="83"><span class="lineNum">      83 </span><span class="lineCov">       1065 :         constexpr auto mx_count = maximum_count() == 0 ?</span></a>
-<a name="84"><span class="lineNum">      84 </span>            :                                       maximum_count() :</a>
-<a name="85"><span class="lineNum">      85 </span>            :                                       (maximum_count() - (owner_type::is_named ? 0 : 1));</a>
-<a name="86"><span class="lineNum">      86 </span>            : </a>
-<a name="87"><span class="lineNum">      87 </span>            :         // If we are unnamed then check that tokens haven't already been parsed for the owner.  This</a>
-<a name="88"><span class="lineNum">      88 </span>            :         // is for the scenario where there are multiple positional arg-like types under a mode, and</a>
-<a name="89"><span class="lineNum">      89 </span>            :         // once one has been processed, then it should be skipped so subsequent ones are used</a>
-<a name="90"><span class="lineNum">      90 </span>            :         // instead</a>
-<a name="91"><span class="lineNum">      91 </span>            :         if constexpr (!owner_type::is_named) {</a>
-<a name="92"><span class="lineNum">      92 </span>            :             static_assert(!processed_target.empty, &quot;processed_target cannot be empty&quot;);</a>
-<a name="93"><span class="lineNum">      93 </span>            : </a>
-<a name="94"><span class="lineNum">      94 </span><span class="lineCov">         32 :             if (has_filled_tokens(*processed_target, utility::type_hash&lt;owner_type&gt;(), mx_count)) {</span></a>
-<a name="95"><span class="lineNum">      95 </span><span class="lineCov">          5 :                 return parsing::pre_parse_action::skip_node;</span></a>
-<a name="96"><span class="lineNum">      96 </span>            :             }</a>
-<a name="97"><span class="lineNum">      97 </span>            :         }</a>
-<a name="98"><span class="lineNum">      98 </span>            : </a>
-<a name="99"><span class="lineNum">      99 </span>            :         // Check that we are in the bounds.  We can't check that we have exceeded the maximum</a>
-<a name="100"><span class="lineNum">     100 </span>            :         // because there may be other nodes that will consume tokens, so this node will take its</a>
-<a name="101"><span class="lineNum">     101 </span>            :         // maximum (potentially) and any left over tokens will be trigger an error later in the</a>
-<a name="102"><span class="lineNum">     102 </span>            :         // processing</a>
-<a name="103"><span class="lineNum">     103 </span><span class="lineCov">       1060 :         if (tokens.size() &lt; mn_count) {</span></a>
-<a name="104"><span class="lineNum">     104 </span><span class="lineCov">         47 :             return multi_lang_exception{error_code::minimum_count_not_reached,</span></a>
-<a name="105"><span class="lineNum">     105 </span><span class="lineCov">         47 :                                         parsing::node_token_type&lt;owner_type&gt;()};</span></a>
-<a name="106"><span class="lineNum">     106 </span>            :         }</a>
-<a name="107"><span class="lineNum">     107 </span>            : </a>
-<a name="108"><span class="lineNum">     108 </span>            :         // Transfer any remaining up to the maximum count</a>
-<a name="109"><span class="lineNum">     109 </span><span class="lineCov">       1013 :         tokens.transfer(tokens.begin() + std::min(mx_count, tokens.size()));</span></a>
-<a name="110"><span class="lineNum">     110 </span>            : </a>
-<a name="111"><span class="lineNum">     111 </span><span class="lineCov">       1013 :         return parsing::pre_parse_action::valid_node;</span></a>
-<a name="112"><span class="lineNum">     112 </span><span class="lineCov">       1065 :     }</span></a>
-<a name="113"><span class="lineNum">     113 </span>            : </a>
-<a name="114"><span class="lineNum">     114 </span>            : private:</a>
-<a name="115"><span class="lineNum">     115 </span><span class="lineCov">         55 :     [[nodiscard]] static bool has_filled_tokens(const parsing::parse_target&amp; target,</span></a>
-<a name="116"><span class="lineNum">     116 </span>            :                                                 std::size_t owner_hash_code,</a>
-<a name="117"><span class="lineNum">     117 </span>            :                                                 std::size_t mx_count) noexcept</a>
-<a name="118"><span class="lineNum">     118 </span>            :     {</a>
-<a name="119"><span class="lineNum">     119 </span><span class="lineCov">         55 :         if (target.node_type() == owner_hash_code) {</span></a>
-<a name="120"><span class="lineNum">     120 </span><span class="lineCov">          9 :             return target.tokens().size() &gt;= mx_count;</span></a>
-<a name="121"><span class="lineNum">     121 </span>            :         }</a>
-<a name="122"><span class="lineNum">     122 </span>            : </a>
-<a name="123"><span class="lineNum">     123 </span><span class="lineCov">         65 :         for (const auto&amp; sub_target : target.sub_targets()) {</span></a>
-<a name="124"><span class="lineNum">     124 </span><span class="lineCov">         23 :             if (has_filled_tokens(sub_target, owner_hash_code, mx_count)) {</span></a>
-<a name="125"><span class="lineNum">     125 </span><span class="lineCov">          4 :                 return true;</span></a>
-<a name="126"><span class="lineNum">     126 </span>            :             }</a>
-<a name="127"><span class="lineNum">     127 </span>            :         }</a>
-<a name="128"><span class="lineNum">     128 </span>            : </a>
-<a name="129"><span class="lineNum">     129 </span><span class="lineCov">         42 :         return false;</span></a>
-<a name="130"><span class="lineNum">     130 </span><span class="lineCov">         55 :     }</span></a>
-<a name="131"><span class="lineNum">     131 </span>            : };</a>
-<a name="132"><span class="lineNum">     132 </span>            : </a>
-<a name="133"><span class="lineNum">     133 </span>            : /** Constant variable helper.</a>
-<a name="134"><span class="lineNum">     134 </span>            :  *</a>
-<a name="135"><span class="lineNum">     135 </span>            :  * @tparam MinValue Minimum count value</a>
-<a name="136"><span class="lineNum">     136 </span>            :  * @tparam MaxValue Maximum count value</a>
-<a name="137"><span class="lineNum">     137 </span>            :  */</a>
-<a name="138"><span class="lineNum">     138 </span>            : template &lt;std::size_t MinValue, std::size_t MaxValue&gt;</a>
-<a name="139"><span class="lineNum">     139 </span>            : constexpr auto min_max_count =</a>
-<a name="140"><span class="lineNum">     140 </span>            :     min_max_count_t&lt;traits::integral_constant&lt;MinValue&gt;, traits::integral_constant&lt;MaxValue&gt;&gt;{};</a>
-<a name="141"><span class="lineNum">     141 </span>            : </a>
-<a name="142"><span class="lineNum">     142 </span>            : /** Constant variable helper for a minimum count with an unbounded maximum count.</a>
-<a name="143"><span class="lineNum">     143 </span>            :  *</a>
-<a name="144"><span class="lineNum">     144 </span>            :  * @tparam Value Minimum count value</a>
-<a name="145"><span class="lineNum">     145 </span>            :  */</a>
-<a name="146"><span class="lineNum">     146 </span>            : template &lt;std::size_t Value&gt;</a>
-<a name="147"><span class="lineNum">     147 </span>            : constexpr auto min_count =</a>
-<a name="148"><span class="lineNum">     148 </span>            :     min_max_count_t&lt;traits::integral_constant&lt;Value&gt;,</a>
-<a name="149"><span class="lineNum">     149 </span>            :                     traits::integral_constant&lt;std::numeric_limits&lt;std::size_t&gt;::max()&gt;&gt;{};</a>
-<a name="150"><span class="lineNum">     150 </span>            : </a>
-<a name="151"><span class="lineNum">     151 </span>            : /** Constant variable helper for a maximum count with a minimum count of zero.</a>
-<a name="152"><span class="lineNum">     152 </span>            :  *</a>
-<a name="153"><span class="lineNum">     153 </span>            :  * @tparam Value Maximum count value</a>
-<a name="154"><span class="lineNum">     154 </span>            :  */</a>
-<a name="155"><span class="lineNum">     155 </span>            : template &lt;std::size_t Value&gt;</a>
-<a name="156"><span class="lineNum">     156 </span>            : constexpr auto max_count =</a>
-<a name="157"><span class="lineNum">     157 </span>            :     min_max_count_t&lt;traits::integral_constant&lt;std::size_t{0}&gt;, traits::integral_constant&lt;Value&gt;&gt;{};</a>
-<a name="158"><span class="lineNum">     158 </span>            : </a>
-<a name="159"><span class="lineNum">     159 </span>            : /** Constant variable helper for a count of fixed size.</a>
+<a name="80"><span class="lineNum">      80 </span>            :         using owner_type = boost::mp11::mp_first&lt;std::tuple&lt;Parents...&gt;&gt;;</a>
+<a name="81"><span class="lineNum">      81 </span>            : </a>
+<a name="82"><span class="lineNum">      82 </span>            :         // The min/max values are for argument counts, and so need adjusting to accomodate the label</a>
+<a name="83"><span class="lineNum">      83 </span>            :         // tokens</a>
+<a name="84"><span class="lineNum">      84 </span><span class="lineCov">       1292 :         constexpr auto named_offset = owner_type::is_named ? 1u : 0u;</span></a>
+<a name="85"><span class="lineNum">      85 </span><span class="lineCov">       1292 :         constexpr auto mn_count = minimum_count() == std::numeric_limits&lt;std::size_t&gt;::max() ?</span></a>
+<a name="86"><span class="lineNum">      86 </span>            :                                       minimum_count() :</a>
+<a name="87"><span class="lineNum">      87 </span>            :                                       minimum_count() + named_offset;</a>
+<a name="88"><span class="lineNum">      88 </span><span class="lineCov">       1292 :         constexpr auto mx_count = maximum_count() == std::numeric_limits&lt;std::size_t&gt;::max() ?</span></a>
+<a name="89"><span class="lineNum">      89 </span>            :                                       maximum_count() :</a>
+<a name="90"><span class="lineNum">      90 </span>            :                                       maximum_count() + named_offset;</a>
+<a name="91"><span class="lineNum">      91 </span>            : </a>
+<a name="92"><span class="lineNum">      92 </span><span class="lineCov">       1292 :         auto num_tokens = tokens.size();</span></a>
+<a name="93"><span class="lineNum">      93 </span>            :         if constexpr (traits::has_token_end_marker_method_v&lt;owner_type&gt;) {</a>
+<a name="94"><span class="lineNum">      94 </span>            :             // If there's a token end marker attached, then it will have already processed the</a>
+<a name="95"><span class="lineNum">      95 </span>            :             // tokens as it is a higher priority policy</a>
+<a name="96"><span class="lineNum">      96 </span><span class="lineCov">         68 :             num_tokens = tokens.processed().size();</span></a>
+<a name="97"><span class="lineNum">      97 </span>            : </a>
+<a name="98"><span class="lineNum">      98 </span>            :             // We can only check that we have exceeded the maximum if there's a token end marker</a>
+<a name="99"><span class="lineNum">      99 </span>            :             // because know that all the tokens preceding it are for the owner</a>
+<a name="100"><span class="lineNum">     100 </span><span class="lineCov">         68 :             if (num_tokens &gt; mx_count) {</span></a>
+<a name="101"><span class="lineNum">     101 </span><span class="lineCov">          6 :                 return multi_lang_exception{error_code::maximum_count_exceeded,</span></a>
+<a name="102"><span class="lineNum">     102 </span><span class="lineCov">          6 :                                             parsing::node_token_type&lt;owner_type&gt;()};</span></a>
+<a name="103"><span class="lineNum">     103 </span>            :             }</a>
+<a name="104"><span class="lineNum">     104 </span>            :         }</a>
+<a name="105"><span class="lineNum">     105 </span>            : </a>
+<a name="106"><span class="lineNum">     106 </span>            :         // Check that we are within the minimum bound</a>
+<a name="107"><span class="lineNum">     107 </span><span class="lineCov">       1286 :         if (num_tokens &lt; mn_count) {</span></a>
+<a name="108"><span class="lineNum">     108 </span><span class="lineCov">         60 :             return multi_lang_exception{error_code::minimum_count_not_reached,</span></a>
+<a name="109"><span class="lineNum">     109 </span><span class="lineCov">         60 :                                         parsing::node_token_type&lt;owner_type&gt;()};</span></a>
+<a name="110"><span class="lineNum">     110 </span>            :         }</a>
+<a name="111"><span class="lineNum">     111 </span>            : </a>
+<a name="112"><span class="lineNum">     112 </span>            :         // Transfer any remaining up to the maximum count</a>
+<a name="113"><span class="lineNum">     113 </span><span class="lineCov">       1226 :         tokens.transfer(tokens.begin() + std::min(mx_count - 1, num_tokens - 1));</span></a>
+<a name="114"><span class="lineNum">     114 </span>            : </a>
+<a name="115"><span class="lineNum">     115 </span><span class="lineCov">       1226 :         return parsing::pre_parse_action::valid_node;</span></a>
+<a name="116"><span class="lineNum">     116 </span><span class="lineCov">       1292 :     }</span></a>
+<a name="117"><span class="lineNum">     117 </span>            : };</a>
+<a name="118"><span class="lineNum">     118 </span>            : </a>
+<a name="119"><span class="lineNum">     119 </span>            : /** Constant variable helper.</a>
+<a name="120"><span class="lineNum">     120 </span>            :  *</a>
+<a name="121"><span class="lineNum">     121 </span>            :  * @tparam MinValue Minimum count value</a>
+<a name="122"><span class="lineNum">     122 </span>            :  * @tparam MaxValue Maximum count value</a>
+<a name="123"><span class="lineNum">     123 </span>            :  */</a>
+<a name="124"><span class="lineNum">     124 </span>            : template &lt;std::size_t MinValue, std::size_t MaxValue&gt;</a>
+<a name="125"><span class="lineNum">     125 </span>            : constexpr auto min_max_count =</a>
+<a name="126"><span class="lineNum">     126 </span>            :     min_max_count_t&lt;traits::integral_constant&lt;MinValue&gt;, traits::integral_constant&lt;MaxValue&gt;&gt;{};</a>
+<a name="127"><span class="lineNum">     127 </span>            : </a>
+<a name="128"><span class="lineNum">     128 </span>            : /** Constant variable helper for a minimum count with an unbounded maximum count.</a>
+<a name="129"><span class="lineNum">     129 </span>            :  *</a>
+<a name="130"><span class="lineNum">     130 </span>            :  * @tparam Value Minimum count value</a>
+<a name="131"><span class="lineNum">     131 </span>            :  */</a>
+<a name="132"><span class="lineNum">     132 </span>            : template &lt;std::size_t Value&gt;</a>
+<a name="133"><span class="lineNum">     133 </span>            : constexpr auto min_count =</a>
+<a name="134"><span class="lineNum">     134 </span>            :     min_max_count_t&lt;traits::integral_constant&lt;Value&gt;,</a>
+<a name="135"><span class="lineNum">     135 </span>            :                     traits::integral_constant&lt;std::numeric_limits&lt;std::size_t&gt;::max()&gt;&gt;{};</a>
+<a name="136"><span class="lineNum">     136 </span>            : </a>
+<a name="137"><span class="lineNum">     137 </span>            : /** Constant variable helper for a maximum count with a minimum count of zero.</a>
+<a name="138"><span class="lineNum">     138 </span>            :  *</a>
+<a name="139"><span class="lineNum">     139 </span>            :  * @tparam Value Maximum count value</a>
+<a name="140"><span class="lineNum">     140 </span>            :  */</a>
+<a name="141"><span class="lineNum">     141 </span>            : template &lt;std::size_t Value&gt;</a>
+<a name="142"><span class="lineNum">     142 </span>            : constexpr auto max_count =</a>
+<a name="143"><span class="lineNum">     143 </span>            :     min_max_count_t&lt;traits::integral_constant&lt;std::size_t{0}&gt;, traits::integral_constant&lt;Value&gt;&gt;{};</a>
+<a name="144"><span class="lineNum">     144 </span>            : </a>
+<a name="145"><span class="lineNum">     145 </span>            : /** Constant variable helper for a count of fixed size.</a>
+<a name="146"><span class="lineNum">     146 </span>            :  *</a>
+<a name="147"><span class="lineNum">     147 </span>            :  * @tparam Value Minimum and maximum count value</a>
+<a name="148"><span class="lineNum">     148 </span>            :  */</a>
+<a name="149"><span class="lineNum">     149 </span>            : template &lt;std::size_t Value&gt;</a>
+<a name="150"><span class="lineNum">     150 </span>            : constexpr auto fixed_count =</a>
+<a name="151"><span class="lineNum">     151 </span>            :     min_max_count_t&lt;traits::integral_constant&lt;Value&gt;, traits::integral_constant&lt;Value&gt;&gt;{};</a>
+<a name="152"><span class="lineNum">     152 </span>            : </a>
+<a name="153"><span class="lineNum">     153 </span>            : template &lt;typename MinType, typename MaxType&gt;</a>
+<a name="154"><span class="lineNum">     154 </span>            : struct is_policy&lt;min_max_count_t&lt;MinType, MaxType&gt;&gt; : std::true_type {</a>
+<a name="155"><span class="lineNum">     155 </span>            : };</a>
+<a name="156"><span class="lineNum">     156 </span>            : }  // namespace policy</a>
+<a name="157"><span class="lineNum">     157 </span>            : </a>
+<a name="158"><span class="lineNum">     158 </span>            : /** Provides a tree_node type with an unbounded policy::min_max_count_t if a compatible one is not</a>
+<a name="159"><span class="lineNum">     159 </span>            :  * present in @a Policies.</a>
 <a name="160"><span class="lineNum">     160 </span>            :  *</a>
-<a name="161"><span class="lineNum">     161 </span>            :  * @tparam Value Minimum and maximum count value</a>
-<a name="162"><span class="lineNum">     162 </span>            :  */</a>
-<a name="163"><span class="lineNum">     163 </span>            : template &lt;std::size_t Value&gt;</a>
-<a name="164"><span class="lineNum">     164 </span>            : constexpr auto fixed_count =</a>
-<a name="165"><span class="lineNum">     165 </span>            :     min_max_count_t&lt;traits::integral_constant&lt;Value&gt;, traits::integral_constant&lt;Value&gt;&gt;{};</a>
-<a name="166"><span class="lineNum">     166 </span>            : </a>
-<a name="167"><span class="lineNum">     167 </span>            : template &lt;typename MinType, typename MaxType&gt;</a>
-<a name="168"><span class="lineNum">     168 </span>            : struct is_policy&lt;min_max_count_t&lt;MinType, MaxType&gt;&gt; : std::true_type {</a>
-<a name="169"><span class="lineNum">     169 </span>            : };</a>
-<a name="170"><span class="lineNum">     170 </span>            : }  // namespace arg_router::policy</a>
+<a name="161"><span class="lineNum">     161 </span>            :  * If no policy implementing &lt;TT&gt;minimum_count()&lt;/TT&gt; and &lt;TT&gt;maximum_count()&lt;/TT&gt; methods is in</a>
+<a name="162"><span class="lineNum">     162 </span>            :  * @a Policies (e.g. policy::min_max_count_t), then an unbounded policy::min_max_count_t is</a>
+<a name="163"><span class="lineNum">     163 </span>            :  * prepended to @a Policies.</a>
+<a name="164"><span class="lineNum">     164 </span>            :  *</a>
+<a name="165"><span class="lineNum">     165 </span>            :  * This is used via inheritance in nodes, e.g.:</a>
+<a name="166"><span class="lineNum">     166 </span>            :  * @code</a>
+<a name="167"><span class="lineNum">     167 </span>            :  * template &lt;typename T, typename... Policies&gt;</a>
+<a name="168"><span class="lineNum">     168 </span>            :  * class my_arg_t : public add_missing_min_max_policy&lt;0, Policies...&gt;::type</a>
+<a name="169"><span class="lineNum">     169 </span>            :  * {</a>
+<a name="170"><span class="lineNum">     170 </span>            :  * public:</a>
+<a name="171"><span class="lineNum">     171 </span>            :  *  template &lt;auto has_min_max = add_missing_min_max_policy&lt;0, Policies...&gt;::has_min_max&gt;</a>
+<a name="172"><span class="lineNum">     172 </span>            :  *  constexpr explicit my_arg_t(Policies... policies,</a>
+<a name="173"><span class="lineNum">     173 </span>            :  *                              std::enable_if_t&lt;has_min_max&gt;* = nullptr) noexcept :</a>
+<a name="174"><span class="lineNum">     174 </span>            :  *      parent_type{std::move(policies)...}</a>
+<a name="175"><span class="lineNum">     175 </span>            :  * {</a>
+<a name="176"><span class="lineNum">     176 </span>            :  * }</a>
+<a name="177"><span class="lineNum">     177 </span>            :  *</a>
+<a name="178"><span class="lineNum">     178 </span>            :  * template &lt;auto has_min_max = add_missing_min_max_policy&lt;0, Policies...&gt;::has_min_max&gt;</a>
+<a name="179"><span class="lineNum">     179 </span>            :  * constexpr explicit multi_arg_base_t(Policies... policies,</a>
+<a name="180"><span class="lineNum">     180 </span>            :  *                                     std::enable_if_t&lt;!has_min_max&gt;* = nullptr) noexcept :</a>
+<a name="181"><span class="lineNum">     181 </span>            :  *   parent_type{policy::min_count&lt;0&gt;, std::move(policies)...}</a>
+<a name="182"><span class="lineNum">     182 </span>            :  * {</a>
+<a name="183"><span class="lineNum">     183 </span>            :  * }</a>
+<a name="184"><span class="lineNum">     184 </span>            :  * };</a>
+<a name="185"><span class="lineNum">     185 </span>            :  * @endcode</a>
+<a name="186"><span class="lineNum">     186 </span>            :  * The constructor specialisation is needed because the parent constructor calls need to match the</a>
+<a name="187"><span class="lineNum">     187 </span>            :  * inherited policies count and order.</a>
+<a name="188"><span class="lineNum">     188 </span>            :  *</a>
+<a name="189"><span class="lineNum">     189 </span>            :  * @tparam MinCount Minimum count value to use if one not specified by user</a>
+<a name="190"><span class="lineNum">     190 </span>            :  * @tparam Policies Pack of policies that define its behaviour</a>
+<a name="191"><span class="lineNum">     191 </span>            :  */</a>
+<a name="192"><span class="lineNum">     192 </span>            : template &lt;std::size_t MinCount, typename... Policies&gt;</a>
+<a name="193"><span class="lineNum">     193 </span>            : class add_missing_min_max_policy</a>
+<a name="194"><span class="lineNum">     194 </span>            : {</a>
+<a name="195"><span class="lineNum">     195 </span>            :     template &lt;typename Policy&gt;</a>
+<a name="196"><span class="lineNum">     196 </span>            :     struct has_min_max_t {</a>
+<a name="197"><span class="lineNum">     197 </span>            :         constexpr static bool value = traits::has_minimum_count_method_v&lt;Policy&gt; &amp;&amp;</a>
+<a name="198"><span class="lineNum">     198 </span>            :                                       traits::has_maximum_count_method_v&lt;Policy&gt;;</a>
+<a name="199"><span class="lineNum">     199 </span>            :     };</a>
+<a name="200"><span class="lineNum">     200 </span>            : </a>
+<a name="201"><span class="lineNum">     201 </span>            :     using policies_tuple = std::tuple&lt;std::decay_t&lt;Policies&gt;...&gt;;</a>
+<a name="202"><span class="lineNum">     202 </span>            :     using range_policy_type =</a>
+<a name="203"><span class="lineNum">     203 </span>            :         policy::min_max_count_t&lt;traits::integral_constant&lt;MinCount&gt;,</a>
+<a name="204"><span class="lineNum">     204 </span>            :                                 traits::integral_constant&lt;std::numeric_limits&lt;std::size_t&gt;::max()&gt;&gt;;</a>
+<a name="205"><span class="lineNum">     205 </span>            : </a>
+<a name="206"><span class="lineNum">     206 </span>            : public:</a>
+<a name="207"><span class="lineNum">     207 </span>            :     /** True if there is no policy implementing &lt;TT&gt;minimum_count()&lt;/TT&gt; and</a>
+<a name="208"><span class="lineNum">     208 </span>            :      * &lt;TT&gt;maximum_count()&lt;/TT&gt; methods in @a Policies.</a>
+<a name="209"><span class="lineNum">     209 </span>            :      */</a>
+<a name="210"><span class="lineNum">     210 </span>            :     constexpr static auto has_min_max =</a>
+<a name="211"><span class="lineNum">     211 </span>            :         boost::mp11::mp_find_if&lt;policies_tuple, has_min_max_t&gt;::value !=</a>
+<a name="212"><span class="lineNum">     212 </span>            :         std::tuple_size_v&lt;policies_tuple&gt;;</a>
+<a name="213"><span class="lineNum">     213 </span>            : </a>
+<a name="214"><span class="lineNum">     214 </span>            :     /** Equivalent to &lt;TT&gt;tree_node\&lt;decltype(policy::min_count(0)), Policies...\&gt;&lt;/TT&gt; if</a>
+<a name="215"><span class="lineNum">     215 </span>            :      * has_min_max is false, otherwise &lt;TT&gt;tree_node\&lt;Policies...\&gt;&lt;/TT&gt;</a>
+<a name="216"><span class="lineNum">     216 </span>            :      */</a>
+<a name="217"><span class="lineNum">     217 </span>            :     using type = std::conditional_t&lt;</a>
+<a name="218"><span class="lineNum">     218 </span>            :         has_min_max,</a>
+<a name="219"><span class="lineNum">     219 </span>            :         boost::mp11::mp_rename&lt;policies_tuple, tree_node&gt;,</a>
+<a name="220"><span class="lineNum">     220 </span>            :         boost::mp11::mp_rename&lt;boost::mp11::mp_push_front&lt;policies_tuple, range_policy_type&gt;,</a>
+<a name="221"><span class="lineNum">     221 </span>            :                                tree_node&gt;&gt;;</a>
+<a name="222"><span class="lineNum">     222 </span>            : };</a>
+<a name="223"><span class="lineNum">     223 </span>            : }  // namespace arg_router</a>
 </pre>
       </td>
     </tr>
