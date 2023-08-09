@@ -273,3 +273,26 @@ jobs:
         cd ${{ env.BUILD_DIR }}
         cmake ${{ github.workspace }} -DINSTALLATION_ONLY=ON
         cmake --build . --target documentation
+
+  # Temporary addition for test, remove before merging!
+  vcpkg_test_package:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: true
+
+    - name: Update packages
+      run: |
+        sudo apt update
+        sudo apt install ninja-build
+
+    - uses: ./.github/workflows/bootstrap_vcpkg
+      with:
+        token: "${{ secrets.GITHUB_TOKEN }}"
+
+    - name: Build
+      timeout-minutes: 10
+      run: |
+        ${{ github.workspace }}/ci/vcpkg_package_updater.sh ${{ github.sha }}
