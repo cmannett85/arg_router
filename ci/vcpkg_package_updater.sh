@@ -33,6 +33,11 @@ git add ports/arg-router/vcpkg.json
 git commit -m "[arg-router] Update to v${version}"
 ./vcpkg x-add-version arg-router
 
+# If this run is for a test build, then update the REF entry to the specified hash
+if [ ! -z "$ref_hash" ]; then
+    sed -ri "s/^    REF v.*$/    REF ${ref_hash}/" ${root_dir}/external/vcpkg/ports/arg-router/portfile.cmake
+fi
+
 # Manually build the test package, this will fail due to an incorrect SHA but we need it to for
 # vcpkg to give us the correct one
 cd ${root_dir}/ci/vcpkg_test_project
@@ -46,11 +51,6 @@ set -e
 cd ${root_dir}/external/vcpkg
 new_sha=`echo "$sha_output" | sed -n -e 's/^Actual hash: \(.*\)$/\1/p'`
 sed -ri "s/^    SHA512 [0-9a-f]{128}$/    SHA512 ${new_sha}/" ports/arg-router/portfile.cmake
-
-# If this run is for a test build, then update the REF entry to the specified hash
-if [ ! -z "$ref_hash" ]; then
-    sed -ri "s/^    REF v.*$/    REF ${ref_hash}/" ports/arg-router/portfile.cmake
-fi
 
 # Re-run the build to confirm
 echo "Testing project against updated vcpkg..."
