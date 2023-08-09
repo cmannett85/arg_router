@@ -295,4 +295,6 @@ jobs:
     - name: Build
       timeout-minutes: 10
       run: |
+        git config --global user.email "arg_router.ci@gha.com"
+        git config --global user.name "arg_router CI"
         ${{ github.workspace }}/ci/vcpkg_package_updater.sh ${{ github.sha }}
