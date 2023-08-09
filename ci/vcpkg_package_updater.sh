@@ -53,6 +53,7 @@ if [ ! -z "$ref_hash" ]; then
 fi
 
 # Re-run the build to confirm
+echo "Testing project against updated vcpkg..."
 cd ${root_dir}/ci/vcpkg_test_project/build
 cmake -G "Ninja" -DCMAKE_CXX_STANDARD=20 -B . -S ..
 cmake --build .
