@@ -22,7 +22,7 @@ target_compile_features(vcpkg_test_project PUBLIC cxx_std_20)
 set_target_properties(vcpkg_test_project PROPERTIES CXX_EXTENSIONS OFF)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" OR CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
-    target_compile_options(vcpkg_test_project PRIVATE /W4 /Z7 /GR- /permissive-)
+    target_compile_options(vcpkg_test_project PRIVATE /Zc:__cplusplus /W4 /Z7 /GR- /permissive-)
 else()
     target_compile_options(vcpkg_test_project PRIVATE -Werror -Wall -Wextra)
 endif()
