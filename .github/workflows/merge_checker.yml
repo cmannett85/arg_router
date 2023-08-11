@@ -276,10 +276,7 @@ jobs:
     - name: Build
       timeout-minutes: 10
       run: |
-        mkdir -p ${{ env.BUILD_DIR }}
-        cd ${{ env.BUILD_DIR }}
-        cmake ${{ github.workspace }}/ci/vcpkg_test_project -G "Ninja" -DCMAKE_CXX_STANDARD=20
-        cmake --build .
+        ${{ github.workspace }}/ci/vcpkg_package_updater.sh ${{ github.sha }}
 
   # Temporarily disabled until vcpkg is updated to v1.4.0 due to MSVC compiler changes (bugs?)
   # rendering v1.3.0 broken
