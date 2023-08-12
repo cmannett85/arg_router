@@ -76,3 +76,9 @@ cmake --build .
 
 Set-Location ..
 Remove-Item -Path .\build -Recurse -Force
+
+# Update the version hash for the SHA update
+Set-Location $root_dir\external\vcpkg
+git add ports\arg-router\portfile.cmake
+git commit -m "WIP"
+.\vcpkg x-add-version arg-router --overwrite-version

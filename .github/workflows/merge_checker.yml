@@ -23,6 +23,7 @@ jobs:
       source_tests_and_examples: ${{ steps.filter.outputs.source_tests_and_examples }}
       docs: ${{ steps.filter.outputs.docs }}
       vcpkg_test_project: ${{ steps.filter.outputs.vcpkg_test_project }}
+      conan_test_project: ${{ steps.filter.outputs.conan_test_project }}
     steps:
     - uses: actions/checkout@v3
     - uses: dorny/paths-filter@v2

@@ -59,3 +59,9 @@ cmake -G "Ninja" -DCMAKE_CXX_STANDARD=20 -B . -S ..
 cmake --build .
 cd ..
 rm -rf ./build
+
+# Update the version hash for the SHA update
+cd ${root_dir}/external/vcpkg
+git add ports/arg-router/portfile.cmake
+git commit -m "WIP"
+./vcpkg x-add-version arg-router --overwrite-version
