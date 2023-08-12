@@ -21,9 +21,10 @@ namespace arg_router::utility::utf8
  */
 [[nodiscard]] inline std::size_t levenshtein_distance(std::string_view a, std::string_view b)
 {
-    if (a.size() == 0) {
+    if (a.empty()) {
         return count(b);
-    } else if (b.size() == 0) {
+    }
+    if (b.empty()) {
         return count(a);
     }
 

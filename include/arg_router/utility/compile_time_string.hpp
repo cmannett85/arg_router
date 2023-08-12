@@ -56,21 +56,23 @@ class compile_time_string_storage<0>
 {
 public:
     struct empty_t {
-        constexpr std::size_t size() const { return 0; }
-        constexpr const char* data() const { return nullptr; }
-        constexpr char operator[](std::size_t) const { return '\n'; }
+        // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+        [[nodiscard]] constexpr std::size_t size() const { return 0; }
+        // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+        [[nodiscard]] constexpr const char* data() const { return nullptr; }
+        constexpr char operator[]([[maybe_unused]] std::size_t i) const { return '\n'; }
     };
 
     constexpr compile_time_string_storage() = default;
 
     // NOLINTNEXTLINE(google-explicit-constructor,hicpp-explicit-conversions)
-    constexpr compile_time_string_storage(std::array<char, 0>) {}
+    constexpr compile_time_string_storage([[maybe_unused]] std::array<char, 0> str) {}
 
     // NOLINTNEXTLINE(google-explicit-constructor,hicpp-explicit-conversions)
-    constexpr compile_time_string_storage(std::span<const char, 0>) {}
+    constexpr compile_time_string_storage([[maybe_unused]] std::span<const char, 0> str) {}
 
     // NOLINTNEXTLINE(google-explicit-constructor,hicpp-explicit-conversions,*-c-arrays)
-    constexpr compile_time_string_storage(const char (&)[0]) {}
+    constexpr compile_time_string_storage([[maybe_unused]] const char (&str)[0]) {}
 
     empty_t value;
 };
