@@ -1023,6 +1023,21 @@ Disabling RTTI is rarely feasible for most projects, but it is possible to disab
 ### Newer Compilers are Better with Templates
 This may seem like an obvious point, but people need reminding: The rise of TMP use has been quicker than the compiler optimisations for it.  In practice this means that although `arg_router` can be compiled on e.g. GCC v9, it will use staggeringly more memory than e.g. GCC v11.
 
+### Tips for Windows Users
+If you see a compilation error like this when building with `clang-cl`:
+```
+In file included from D:/a/arg_router/arg_router/install/include\arg_router/utility/utf8.hpp:9:
+D:/a/arg_router/arg_router/install/include\arg_router/utility/utf8/line_break.hpp(700,16): error : constexpr variable 'line_break_table' must be initialized by a constant expression [D:\a\arg_router\arg_router\package_build\package_test_project.vcxproj]
+D:/a/arg_router/arg_router/install/include\arg_router/utility/utf8/code_point.hpp(50,9): message : constexpr evaluation hit maximum step limit; possible infinite loop? [D:\a\arg_router\arg_router\package_build\package_test_project.vcxproj] 
+```
+Then `/clang:-fconstexpr-steps=10000000` (or the lowest number that passes) will need adding to the compiler invocation.
+
+If compiling with MSVC, you may see:
+```
+include\arg_router/basic_types.hpp(49,22): error C3083: 'span_lite': the symbol to the left of a '::' must be a type
+```
+This is due to another MSVC compiler bug where it doesn't recognise the `__cpluplus` define, fix by adding `/Zc:__cplusplus` to the compiler invocation.
+
 ## Extra Documentation
 Complete Doxygen-generated API documentation is available [here](https://cmannett85.github.io/arg_router/).  Examples are provided in the `examples` directory of the repo or online [here](https://cmannett85.github.io/arg_router/examples.html).  Doxygen theming is provided by [Doxygen Awesome CSS](https://github.com/jothepro/doxygen-awesome-css).
 
