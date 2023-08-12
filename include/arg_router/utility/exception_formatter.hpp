@@ -61,8 +61,8 @@ class exception_formatter
     template <typename Str, typename PHs, std::size_t Current>
     [[nodiscard]] static constexpr auto placeholders_impl() noexcept
     {
-        constexpr auto start = Str::get().find("{", Current);
-        constexpr auto end = Str::get().find("}", Current + 1);
+        constexpr auto start = Str::get().find('{', Current);
+        constexpr auto end = Str::get().find('}', Current + 1);
 
         if constexpr ((start != std::string_view::npos) && (end != std::string_view::npos)) {
             return placeholders_impl<

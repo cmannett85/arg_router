@@ -23,14 +23,14 @@ template <typename Node>
         utility::utf8::closest_matching_child_node(node, unknown_token);
     if (matching_node_and_parents.empty()) {
         throw multi_lang_exception{error_code::unknown_argument, unknown_token};
-    } else {
-        auto tokens = vector<parsing::token_type>{unknown_token};
-        tokens.reserve(matching_node_and_parents.size() + 1);
-        tokens.insert(tokens.end(),
-                      matching_node_and_parents.rbegin(),
-                      matching_node_and_parents.rend());
-
-        throw multi_lang_exception{error_code::unknown_argument_with_suggestion, tokens};
     }
+
+    auto tokens = vector<parsing::token_type>{unknown_token};
+    tokens.reserve(matching_node_and_parents.size() + 1);
+    tokens.insert(tokens.end(),
+                  matching_node_and_parents.rbegin(),
+                  matching_node_and_parents.rend());
+
+    throw multi_lang_exception{error_code::unknown_argument_with_suggestion, tokens};
 }
 }  // namespace arg_router::parsing

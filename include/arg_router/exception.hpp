@@ -188,8 +188,8 @@ public:
      * @param tokens Tokens to pass to the formatter's placeholders
      */
     template <typename S>
-    parse_exception(utility::exception_formatter<S> cts,
-                    const vector<parsing::token_type>& tokens = {}) :
+    explicit parse_exception(utility::exception_formatter<S> cts,
+                             const vector<parsing::token_type>& tokens = {}) :
         message_{cts.format(tokens)}
     {
     }

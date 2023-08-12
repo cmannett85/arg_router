@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -24,6 +24,8 @@ namespace
 {
 static_assert(AR_DEATH_TEST_PARALLEL <= std::numeric_limits<std::uint8_t>::max(),
               "AR_DEATH_TEST_PARALLEL must be less than or equal to 255");
+
+const auto repo_sub_path = fs::path{"test/death_test"};
 
 auto compile_mtx = std::mutex{};
 auto general_mtx = std::mutex{};
@@ -53,7 +55,7 @@ std::string_view project_repo()
 fs::path main_file(std::uint8_t i)
 {
     // This must match the DEATH_TEST_SRC variable in death_test.cmake
-    return fs::path{"test/death_test/main_" + std::to_string(i) + ".cpp"};
+    return repo_sub_path / ("main_" + std::to_string(i) + ".cpp");
 }
 
 std::string target_name(std::uint8_t i)
@@ -99,13 +101,14 @@ void compile(std::uint8_t i,
 
     if (!fs::exists(parent_path)) {
         auto ec = std::error_code{};
-        BOOST_REQUIRE_MESSAGE(fs::create_directory(file_path.parent_path(), ec), ec.message());
+        fs::create_directory(file_path.parent_path(), ec);
+        BOOST_REQUIRE_MESSAGE(!ec, ec.message());
     }
     {
         // The mutex is purely for Boost.Test, without it spurious failures occur
         auto lk = std::lock_guard{general_mtx};
 
-        auto stream = std::ofstream{file_path};
+        auto stream = std::ofstream{file_path, std::ios::trunc};
         BOOST_REQUIRE_MESSAGE(stream, "Failed to open: " << file_path.string());
 
         stream << code;
@@ -128,7 +131,6 @@ void compile(std::uint8_t i,
     }
 
     cmake.wait();
-    fs::remove(file_path);
 
     BOOST_CHECK_NE(cmake.exit_code(), 0);
     if (cmake.exit_code() == 0) {
@@ -206,9 +208,13 @@ void test::death_test_compile(std::forward_list<death_test_info> tests)
             thread.join();
         }
     }
+
+    // Remove death_test folder
+    fs::remove_all(project_repo() / repo_sub_path);
 }
 
 void test::death_test_compile(std::string_view code, std::string_view expected_error)
 {
     compile(0, code, expected_error);
+    fs::remove_all(project_repo() / repo_sub_path);
 }
