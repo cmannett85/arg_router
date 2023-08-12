@@ -33,6 +33,13 @@ string(
     "${DOXYFILE_DATA}"
 )
 
+# Escape any semi-colons otherwise CMake will treat the string as an array of strings
+string(
+    REPLACE ";" "\;"
+    UPDATED_DOXYFILE_DATA
+    "${UPDATED_DOXYFILE_DATA}"
+)
+
 if(NOT "${DOXYFILE_DATA}" STREQUAL "${UPDATED_DOXYFILE_DATA}")
     message(STATUS "Updating Doxyfile library version")
     file(WRITE "${CMAKE_SOURCE_DIR}/docs/Doxyfile" ${UPDATED_DOXYFILE_DATA})

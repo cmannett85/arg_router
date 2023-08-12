@@ -71,7 +71,7 @@ jobs:
         token: "${{ secrets.GITHUB_TOKEN }}"
 
     - name: Build
-      timeout-minutes: 30
+      timeout-minutes: 45
       run: |
         mkdir -p ${{ env.BUILD_DIR }}
         cd ${{ env.BUILD_DIR }}
