@@ -42,8 +42,8 @@ public:
             Flatten>::all_children_help;
 
         template <typename OwnerNode, typename FilterFn>
-        [[nodiscard]] static vector<runtime_help_data> runtime_children(const OwnerNode& owner,
-                                                                        FilterFn&& f)
+        [[nodiscard]] static std::vector<runtime_help_data> runtime_children(const OwnerNode& owner,
+                                                                             FilterFn&& f)
         {
             return parent_type::template default_leaf_help_data_type<Flatten>::runtime_children(
                 owner,
@@ -699,7 +699,7 @@ int main() {
                                 help(policy::long_name<AR_STRING("help")>)};
     const auto& h = std::get<1>(root.children());
 
-    auto stream = ostringstream{};
+    auto stream = std::ostringstream{};
     h.generate_help<std::decay_t<decltype(root)>, std::decay_t<decltype(h)>, false>(stream);
     return 0;
 }

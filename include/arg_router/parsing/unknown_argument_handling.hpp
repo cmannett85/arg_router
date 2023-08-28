@@ -25,7 +25,7 @@ template <typename Node>
         throw multi_lang_exception{error_code::unknown_argument, unknown_token};
     }
 
-    auto tokens = vector<parsing::token_type>{unknown_token};
+    auto tokens = std::vector<parsing::token_type>{unknown_token};
     tokens.reserve(matching_node_and_parents.size() + 1);
     tokens.insert(tokens.end(),
                   matching_node_and_parents.rbegin(),

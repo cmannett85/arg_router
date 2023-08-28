@@ -7,6 +7,7 @@
 #include "arg_router/utility/dynamic_string_view.hpp"
 
 #include <utility>
+#include <vector>
 
 namespace arg_router
 {
@@ -19,7 +20,7 @@ namespace arg_router
 struct runtime_help_data {
     utility::dynamic_string_view label;        //!< Node name
     utility::dynamic_string_view description;  //!< Node description
-    vector<runtime_help_data> children;        //!< Child node help data
+    std::vector<runtime_help_data> children;   //!< Child node help data
 };
 
 template <typename... Params>

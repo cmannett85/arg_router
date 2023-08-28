@@ -1,4 +1,4 @@
-### Copyright (C) 2022 by Camden Mannett.
+### Copyright (C) 2022-2023 by Camden Mannett.
 ### Distributed under the Boost Software License, Version 1.0.
 ### (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -13,10 +13,6 @@ add_compile_definitions(AR_LONG_PREFIX="${LONG_PREFIX}")
 set(SHORT_PREFIX "-"
     CACHE STRING "Short flag or argument prefix, defaults to '-'")
 add_compile_definitions(AR_SHORT_PREFIX="${SHORT_PREFIX}")
-
-set(ALLOCATOR "std::allocator"
-    CACHE STRING "Container allocator, defaults to std::allocator")
-add_compile_definitions(AR_ALLOCATOR=${ALLOCATOR})
 
 set(UTF8_TRAILING_WINDOW_SIZE 16
     CACHE STRING "Trailing window size for grapheme cluster and line break algorithms, defaults to 16")

@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -263,13 +263,13 @@ public:
 
     template <typename... Parents>
     void pre_parse_phase(
-        vector<parsing::token_type>& result,
+        std::vector<parsing::token_type>& result,
         [[maybe_unused]] const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<0, typename stub_node::policies_type>;
 
-        auto args = vector<parsing::token_type>{};
+        auto args = std::vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
         auto target = parsing::parse_target{*this, parents...};
         auto processed_target = utility::compile_time_optional{};
@@ -286,7 +286,7 @@ int main() {
     const auto root = stub_node{
         policy::dependent(policy::long_name<AR_STRING("flag2")>)};
 
-    auto tokens = vector<parsing::token_type>{
+    auto tokens = std::vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "flag2"},
                     {parsing::prefix_type::long_, "flag3"}};
     root.pre_parse_phase(tokens);
@@ -316,13 +316,13 @@ public:
 
     template <typename... Parents>
     void pre_parse_phase(
-        vector<parsing::token_type>& result,
+        std::vector<parsing::token_type>& result,
         [[maybe_unused]] const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<1, typename stub_node::policies_type>;
 
-        auto args = vector<parsing::token_type>{};
+        auto args = std::vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
         auto target = parsing::parse_target{*this, parents...};
         auto processed_target = utility::compile_time_optional{
@@ -344,7 +344,7 @@ int main() {
               stub_node{policy::long_name<AR_STRING("flag2")>},
               stub_node{policy::long_name<AR_STRING("flag3")>}};
 
-    auto tokens = vector<parsing::token_type>{
+    auto tokens = std::vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "flag2"},
                     {parsing::prefix_type::long_, "flag3"}};
     const auto& owner = std::get<0>(root.children());
@@ -377,13 +377,13 @@ public:
 
     template <typename... Parents>
     void pre_parse_phase(
-        vector<parsing::token_type>& result,
+        std::vector<parsing::token_type>& result,
         [[maybe_unused]] const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<1, typename stub_node::policies_type>;
 
-        auto args = vector<parsing::token_type>{};
+        auto args = std::vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
         auto target = parsing::parse_target{*this, parents...};
         auto processed_target = utility::compile_time_optional{};
@@ -405,7 +405,7 @@ int main() {
                   stub_node{policy::long_name<AR_STRING("flag3")>},
                   policy::router{[](bool, bool, bool) {}}};
 
-    auto tokens = vector<parsing::token_type>{
+    auto tokens = std::vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "flag2"},
                     {parsing::prefix_type::long_, "flag3"}};
     const auto& owner = std::get<0>(root.children());
@@ -438,13 +438,13 @@ public:
 
     template <typename... Parents>
     void pre_parse_phase(
-        vector<parsing::token_type>& result,
+        std::vector<parsing::token_type>& result,
         [[maybe_unused]] const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<1, typename stub_node::policies_type>;
 
-        auto args = vector<parsing::token_type>{};
+        auto args = std::vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
         auto target = parsing::parse_target{*this, parents...};
         auto processed_target = utility::compile_time_optional{
@@ -469,7 +469,7 @@ int main() {
                             policy::dependent(policy::long_name<AR_STRING("flag1")>)},
                   policy::router{[](bool, bool, bool) {}}};
 
-    auto tokens = vector<parsing::token_type>{
+    auto tokens = std::vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "flag2"},
                     {parsing::prefix_type::long_, "flag3"}};
     const auto& owner = std::get<0>(root.children());
@@ -502,13 +502,13 @@ public:
 
     template <typename... Parents>
     void pre_parse_phase(
-        vector<parsing::token_type>& result,
+        std::vector<parsing::token_type>& result,
         [[maybe_unused]] const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<1, typename stub_node::policies_type>;
 
-        auto args = vector<parsing::token_type>{};
+        auto args = std::vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
         auto target = parsing::parse_target{*this, parents...};
         auto processed_target = utility::compile_time_optional{
@@ -531,7 +531,7 @@ int main() {
                   stub_node{policy::long_name<AR_STRING("flag3")>},
                   policy::router{[](bool, bool, bool) {}}};
 
-    auto tokens = vector<parsing::token_type>{
+    auto tokens = std::vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "flag2"},
                     {parsing::prefix_type::long_, "flag3"}};
     const auto& owner = std::get<0>(root.children());
@@ -564,13 +564,13 @@ public:
 
     template <typename... Parents>
     void pre_parse_phase(
-        vector<parsing::token_type>& result,
+        std::vector<parsing::token_type>& result,
         [[maybe_unused]] const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<1, typename stub_node::policies_type>;
 
-        auto args = vector<parsing::token_type>{};
+        auto args = std::vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
         auto target = parsing::parse_target{*this, parents...};
         auto processed_target = utility::compile_time_optional{
@@ -594,7 +594,7 @@ int main() {
                   stub_node{policy::long_name<AR_STRING("flag3")>},
                   policy::router{[](bool, bool, bool) {}}};
 
-    auto tokens = vector<parsing::token_type>{
+    auto tokens = std::vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "flag2"},
                     {parsing::prefix_type::long_, "flag3"}};
     const auto& owner = std::get<0>(root.children());
@@ -628,13 +628,13 @@ public:
 
     template <typename... Parents>
     void pre_parse_phase(
-        vector<parsing::token_type>& result,
+        std::vector<parsing::token_type>& result,
         [[maybe_unused]] const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<1, typename stub_node::policies_type>;
 
-        auto args = vector<parsing::token_type>{};
+        auto args = std::vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
         auto target = parsing::parse_target{*this, parents...};
         auto processed_target = utility::compile_time_optional{
@@ -659,7 +659,7 @@ int main() {
                   stub_node{policy::long_name<AR_STRING("flag3")>},
                   policy::router{[](bool, bool, bool) {}}};
 
-    auto tokens = vector<parsing::token_type>{
+    auto tokens = std::vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "flag2"},
                     {parsing::prefix_type::long_, "flag3"}};
     const auto& owner = std::get<0>(root.children());

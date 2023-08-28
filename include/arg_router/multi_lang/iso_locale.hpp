@@ -1,10 +1,11 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #pragma once
 
-#include "arg_router/basic_types.hpp"
+#include <string>
+#include <string_view>
 
 namespace arg_router::multi_lang
 {
@@ -32,11 +33,11 @@ namespace arg_router::multi_lang
  * @param locale_name Local name to standardise
  * @return Standardised locale name
  */
-inline string iso_locale(std::string_view locale_name)
+inline std::string iso_locale(std::string_view locale_name)
 {
     // No need to worry about UTF-8 here as the codes are required to be ASCII
     // Start by stripping off the encoding
-    auto result = string{};
+    auto result = std::string{};
     {
         const auto pos = locale_name.find('.');
         result = locale_name.substr(0, pos);

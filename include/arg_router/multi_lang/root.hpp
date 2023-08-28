@@ -134,7 +134,7 @@ public:
      * @param args Vector of tokens
      * @exception parse_exception Thrown if parsing has failed
      */
-    void parse(vector<parsing::token_type> args) const
+    void parse(std::vector<parsing::token_type> args) const
     {
         std::visit([&](const auto& root) { root.parse(std::move(args)); }, *root_);
     }
@@ -163,7 +163,7 @@ public:
      */
     template <typename Container,
               typename = std::enable_if_t<
-                  !std::is_same_v<std::decay_t<Container>, vector<parsing::token_type>>>>
+                  !std::is_same_v<std::decay_t<Container>, std::vector<parsing::token_type>>>>
     void parse(const Container& c) const
     {
         std::visit([&](const auto& root) { root.parse(c); }, *root_);
@@ -192,7 +192,7 @@ public:
      *
      * @return String holding the help output
      */
-    [[nodiscard]] string help() const
+    [[nodiscard]] std::string help() const
     {
         return std::visit([](const auto& root) { root.help(); }, *root_);
     }

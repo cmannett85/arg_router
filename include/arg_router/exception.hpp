@@ -130,7 +130,7 @@ public:
      * @param ec Error code
      * @param tokens Tokens that caused the error
      */
-    multi_lang_exception(error_code ec, vector<parsing::token_type> tokens) noexcept :
+    multi_lang_exception(error_code ec, std::vector<parsing::token_type> tokens) noexcept :
         ec_{ec}, tokens_(std::move(tokens))
     {
     }
@@ -141,11 +141,14 @@ public:
 
     /** @return Token list
      */
-    [[nodiscard]] const vector<parsing::token_type>& tokens() const noexcept { return tokens_; }
+    [[nodiscard]] const std::vector<parsing::token_type>& tokens() const noexcept
+    {
+        return tokens_;
+    }
 
 private:
     error_code ec_;
-    vector<parsing::token_type> tokens_;
+    std::vector<parsing::token_type> tokens_;
 };
 
 /** An exception that represents a parsing failure.
@@ -165,8 +168,8 @@ public:
      * @param message Error message
      * @param tokens Tokens that caused the error
      */
-    explicit parse_exception(const string& message,
-                             const vector<parsing::token_type>& tokens = {}) :
+    explicit parse_exception(const std::string& message,
+                             const std::vector<parsing::token_type>& tokens = {}) :
         message_{message + (tokens.empty() ? "" : ": " + parsing::to_string(tokens))}
     {
     }
@@ -176,7 +179,7 @@ public:
      * @param message Error message
      * @param token Token that caused the error
      */
-    parse_exception(const string& message, const parsing::token_type& token) :
+    parse_exception(const std::string& message, const parsing::token_type& token) :
         message_{message + ": " + parsing::to_string(token)}
     {
     }
@@ -189,7 +192,7 @@ public:
      */
     template <typename S>
     explicit parse_exception(utility::exception_formatter<S> cts,
-                             const vector<parsing::token_type>& tokens = {}) :
+                             const std::vector<parsing::token_type>& tokens = {}) :
         message_{cts.format(tokens)}
     {
     }
@@ -197,6 +200,6 @@ public:
     [[nodiscard]] const char* what() const noexcept override { return message_.data(); }
 
 private:
-    string message_;
+    std::string message_;
 };
 }  // namespace arg_router

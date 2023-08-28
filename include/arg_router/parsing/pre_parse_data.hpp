@@ -36,13 +36,13 @@ public:
      *
      * @return Arg list
      */
-    [[nodiscard]] vector<parsing::token_type>& args() noexcept { return args_; }
+    [[nodiscard]] std::vector<parsing::token_type>& args() noexcept { return args_; }
 
     /** Const overload.
      *
      * @return Arg list
      */
-    [[nodiscard]] const vector<parsing::token_type>& args() const noexcept { return args_; }
+    [[nodiscard]] const std::vector<parsing::token_type>& args() const noexcept { return args_; }
 
     /** Returns the validator reference.
      *
@@ -52,7 +52,7 @@ public:
 
 protected:
     explicit pre_parse_data_base(
-        vector<parsing::token_type>& args,
+        std::vector<parsing::token_type>& args,
         const Validator& validator = [](const auto&...) { return true; }) noexcept :
         args_{args},
         validator_{validator}
@@ -60,7 +60,7 @@ protected:
     }
 
 private:
-    std::reference_wrapper<vector<parsing::token_type>> args_;
+    std::reference_wrapper<std::vector<parsing::token_type>> args_;
     std::reference_wrapper<const Validator> validator_;
 };
 
@@ -113,7 +113,7 @@ public:
      * @param args Unprocessed tokens
      * @param validator Validator instance, defaults to always returning true
      */
-    explicit pre_parse_data(vector<parsing::token_type>& args,
+    explicit pre_parse_data(std::vector<parsing::token_type>& args,
                             const Validator& validator = detail::always_returns_true{}) noexcept :
         pre_parse_data_base<Validator, false>{args, validator}
     {
@@ -145,7 +145,7 @@ public:
      * @param target Processed parse target from parent
      * @param validator Validator instance, defaults to always returning true
      */
-    pre_parse_data(vector<parsing::token_type>& args,
+    pre_parse_data(std::vector<parsing::token_type>& args,
                    const parse_target& target,
                    const Validator& validator = detail::always_returns_true{}) noexcept :
         pre_parse_data_base<Validator, true>{args, validator},
@@ -165,16 +165,17 @@ private:
 
 // Deduction guides
 template <typename... T>
-pre_parse_data(vector<parsing::token_type>&) -> pre_parse_data<detail::always_returns_true, false>;
+pre_parse_data(std::vector<parsing::token_type>&)
+    -> pre_parse_data<detail::always_returns_true, false>;
 
 template <typename T>
-pre_parse_data(vector<parsing::token_type>&, const T&) -> pre_parse_data<T, false>;
+pre_parse_data(std::vector<parsing::token_type>&, const T&) -> pre_parse_data<T, false>;
 
 template <typename... T>
-pre_parse_data(vector<parsing::token_type>&, const parse_target&)
+pre_parse_data(std::vector<parsing::token_type>&, const parse_target&)
     -> pre_parse_data<detail::always_returns_true, true>;
 
 template <typename T>
-pre_parse_data(vector<parsing::token_type>&, const parse_target&, const T&)
+pre_parse_data(std::vector<parsing::token_type>&, const parse_target&, const T&)
     -> pre_parse_data<T, true>;
 }  // namespace arg_router::parsing

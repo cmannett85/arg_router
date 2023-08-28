@@ -66,12 +66,7 @@ public:
         });
 
         const auto ec = static_cast<std::underlying_type_t<error_code>>(e.ec());
-
-        // We use boost::lexical_cast here instead of std::to_string as arg_router::string may have
-        // a non-std::allocator allocator type
-        // NOLINTNEXTLINE(boost-use-to-string)
-        throw parse_exception{"Untranslated error code (" + boost::lexical_cast<string>(ec) + ")",
-                              e.tokens()};
+        throw parse_exception{"Untranslated error code (" + std::to_string(ec) + ")", e.tokens()};
     }
 };
 

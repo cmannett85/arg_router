@@ -295,9 +295,12 @@ public:
             return !owner_ || (i_ >= static_cast<difference_type>(owner_->size()));
         }
 
-        [[nodiscard]] vector<token_type>& processed() const { return *(owner_->processed_); }
+        [[nodiscard]] std::vector<token_type>& processed() const { return *(owner_->processed_); }
 
-        [[nodiscard]] vector<token_type>& unprocessed() const { return *(owner_->unprocessed_); }
+        [[nodiscard]] std::vector<token_type>& unprocessed() const
+        {
+            return *(owner_->unprocessed_);
+        }
 
         dynamic_token_adapter* owner_;
         difference_type i_;
@@ -308,8 +311,10 @@ public:
      * @param processed Processed tokens container
      * @param unprocessed Unprocessed tokens container
      */
-    dynamic_token_adapter(vector<token_type>& processed, vector<token_type>& unprocessed) :
-        processed_{&processed}, unprocessed_{&unprocessed}
+    dynamic_token_adapter(std::vector<token_type>& processed,
+                          std::vector<token_type>& unprocessed) :
+        processed_{&processed},
+        unprocessed_{&unprocessed}
     {
         // Perform a reserve for all the tokens.  There is a resonable chance that more processed
         // than unprocessed tokens will be needed (due to short-form expansion, value separation,
@@ -367,13 +372,13 @@ public:
      *
      * @return Processed container reference
      */
-    [[nodiscard]] vector<value_type>& processed() { return *processed_; }
+    [[nodiscard]] std::vector<value_type>& processed() { return *processed_; }
 
     /** The underlying unprocessed container.
      *
      * @return Unprocessed container reference
      */
-    [[nodiscard]] vector<value_type>& unprocessed() { return *unprocessed_; }
+    [[nodiscard]] std::vector<value_type>& unprocessed() { return *unprocessed_; }
 
     /** Inserts @a token at position @a it.
      *
@@ -461,7 +466,7 @@ public:
     }
 
 private:
-    vector<token_type>* processed_;
-    vector<token_type>* unprocessed_;
+    std::vector<token_type>* processed_;
+    std::vector<token_type>* unprocessed_;
 };
 }  // namespace arg_router::parsing

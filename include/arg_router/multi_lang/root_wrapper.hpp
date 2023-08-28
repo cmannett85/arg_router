@@ -129,7 +129,7 @@ public:
      *
      * @return String holding the help output
      */
-    [[nodiscard]] string help() const
+    [[nodiscard]] std::string help() const
     {
         return std::visit([](const auto& root) { root.help(); }, *root_);
     }

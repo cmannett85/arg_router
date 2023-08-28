@@ -463,7 +463,7 @@ BOOST_AUTO_TEST_CASE(parse_overloads_test)
             {"vector<parsing::token_type> overload",
              [&](std::vector<const char*> args) {
                  args.erase(args.begin());
-                 auto tt = vector<parsing::token_type>{};
+                 auto tt = std::vector<parsing::token_type>{};
                  for (auto arg : args) {
                      tt.emplace_back(parsing::prefix_type::none, arg);
                  }
@@ -486,7 +486,7 @@ BOOST_AUTO_TEST_CASE(parse_overloads_test)
             {"Container overload (with strings)",  //
              [&](std::vector<const char*> args) {
                  args.erase(args.begin());
-                 auto strings = vector<string>{};
+                 auto strings = std::vector<std::string>{};
                  for (auto arg : args) {
                      strings.push_back(arg);
                  }

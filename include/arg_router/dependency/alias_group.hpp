@@ -78,8 +78,8 @@ public:
             children_help_data_type<Flatten>::children;
 
         template <typename OwnerNode, typename FilterFn>
-        [[nodiscard]] static vector<runtime_help_data> runtime_children(const OwnerNode& owner,
-                                                                        FilterFn&& f)
+        [[nodiscard]] static std::vector<runtime_help_data> runtime_children(const OwnerNode& owner,
+                                                                             FilterFn&& f)
         {
             return parent_type::template children_help_data_type<Flatten>::runtime_children(
                 owner,

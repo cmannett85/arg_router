@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "arg_router/config.hpp"
 #include "arg_router/traits.hpp"
 #include "arg_router/utility/string_view_ops.hpp"
 
@@ -71,7 +72,7 @@ struct token_type {
  * @param token Token to convert
  * @return String representation of @a token
  */
-[[nodiscard]] inline string to_string(const token_type& token)
+[[nodiscard]] inline std::string to_string(const token_type& token)
 {
     using namespace utility::string_view_ops;
     return to_string(token.prefix) + token.name;
@@ -82,9 +83,9 @@ struct token_type {
  * @param view Processed tokens to convert
  * @return String representation of @a view
  */
-[[nodiscard]] inline string to_string(const vector<token_type>& view)
+[[nodiscard]] inline std::string to_string(const std::vector<token_type>& view)
 {
-    auto str = string{};
+    auto str = std::string{};
     for (auto i = 0u; i < view.size(); ++i) {
         str += to_string(view[i]);
         if (i != (view.size() - 1)) {

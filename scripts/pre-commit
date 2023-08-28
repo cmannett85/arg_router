@@ -15,9 +15,14 @@ python ./scripts/copyright_checker.py date ${files[@]}
 # Run clang-format
 source_files=()
 for file in "${files[@]}"; do
+    if [ ! -f "$file" ]; then
+        continue
+    fi
+
     extension="${file#*.}"
     if [ "$extension" = "hpp" ] || [ "$extension" = "cpp" ]; then
-        source_files+=($file)
+        source_files+=("$file")
+        echo $file
     fi
 done
 
