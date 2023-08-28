@@ -125,7 +125,7 @@ public:
                 boost::mp11::mp_set_intersection<aliased_policies_type, policies_type>;
 
             if constexpr ((std::tuple_size_v<intersection>) > 0) {
-                auto target_tokens = vector<parsing::token_type>{};
+                auto target_tokens = std::vector<parsing::token_type>{};
                 target_tokens.reserve(count);
 
                 auto value_it = tokens.begin();

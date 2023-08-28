@@ -188,8 +188,8 @@ protected:
             last_prefixer<boost::mp11::mp_back<children_type>>>;
 
         template <typename OwnerNode, typename FilterFn>
-        [[nodiscard]] static vector<runtime_help_data> runtime_children(const OwnerNode& owner,
-                                                                        FilterFn&& f)
+        [[nodiscard]] static std::vector<runtime_help_data> runtime_children(const OwnerNode& owner,
+                                                                             FilterFn&& f)
         {
             // Gather the basic data
             auto result = parent_type::template default_leaf_help_data_type<true>::runtime_children(

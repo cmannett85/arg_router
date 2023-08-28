@@ -30,7 +30,7 @@ namespace arg_router::utility::utf8
 
     const auto n = count(b);
 
-    auto costs = vector<std::size_t>(n + 1);
+    auto costs = std::vector<std::size_t>(n + 1);
     std::iota(costs.begin(), costs.end(), 0);
 
     auto i = std::size_t{0};
@@ -68,13 +68,14 @@ namespace arg_router::utility::utf8
  * available children are runtime disabled
  */
 template <typename Node>
-[[nodiscard]] vector<parsing::token_type> closest_matching_child_node(const Node& node,
-                                                                      parsing::token_type token)
+[[nodiscard]] std::vector<parsing::token_type> closest_matching_child_node(
+    const Node& node,
+    parsing::token_type token)
 {
     static_assert(std::tuple_size_v<typename Node::children_type> > 0,
                   "Node must have at least one child");
 
-    auto best_token = vector<parsing::token_type>{};
+    auto best_token = std::vector<parsing::token_type>{};
     auto best_score = std::numeric_limits<std::size_t>::max();
 
     // The token may not have been processed yet, so do a type conversion to be sure
@@ -96,7 +97,7 @@ template <typename Node>
                 [[maybe_unused]] const auto append_parents = [](parsing::token_type child_token) {
                     return std::apply(
                         [&](auto... parents_without_root) {
-                            return vector<parsing::token_type>{
+                            return std::vector<parsing::token_type>{
                                 child_token,
                                 parsing::node_token_type<std::decay_t<
                                     std::remove_pointer_t<decltype(parents_without_root)>>>()...};

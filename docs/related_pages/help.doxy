@@ -19,8 +19,8 @@ namespace arg_router
  *
  *     // New in v1.4!
  *     template <typename OwnerNode, typename FilterFn>
- *     [[nodiscard]] static vector<runtime_help_data> runtime_children(const OwnerNode& owner,
- *                                                                     FilterFn&& f)
+ *     [[nodiscard]] static std::vector<runtime_help_data> runtime_children(const OwnerNode& owner,
+ *                                                                          FilterFn&& f)
  *     {
  *         return ...;
  *     }

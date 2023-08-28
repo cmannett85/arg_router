@@ -1,13 +1,12 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #pragma once
 
-#include "arg_router/config.hpp"
-
 #include <cstring>
 #include <functional>
+#include <string_view>
 
 namespace arg_router::utility
 {
@@ -70,7 +69,7 @@ public:
      * @param alloc Allocator instance
      */
     template <typename T,
-              typename Allocator = config::allocator<std::decay_t<T>>,
+              typename Allocator = std::allocator<std::decay_t<T>>,
               typename = std::enable_if_t<!use_internal_storage<T> &&
                                           !std::is_same_v<std::decay_t<T>, unsafe_any_t>>>
     // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)

@@ -489,7 +489,7 @@ struct mock_root {};
 int main() {
     const auto m = help(policy::long_name<AR_STRING("help")>);
 
-    auto tokens = vector<parsing::token_type>{};
+    auto tokens = std::vector<parsing::token_type>{};
     const auto result = m.pre_parse(parsing::pre_parse_data{tokens});
     return 0;
 }

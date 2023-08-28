@@ -368,10 +368,10 @@ protected:
          * @return runtime_help_data instances representing the unfiltered children
          */
         template <typename OwnerNode, typename FilterFn>
-        [[nodiscard]] static vector<runtime_help_data> runtime_children(const OwnerNode& owner,
-                                                                        FilterFn&& f)
+        [[nodiscard]] static std::vector<runtime_help_data> runtime_children(const OwnerNode& owner,
+                                                                             FilterFn&& f)
         {
-            auto result = vector<runtime_help_data>{};
+            auto result = std::vector<runtime_help_data>{};
             utility::tuple_iterator(
                 [&](auto, auto& child) {
                     using child_type = std::decay_t<decltype(child)>;
@@ -384,7 +384,7 @@ protected:
                                       "Help descriptions cannot contain tabs");
 
                         if (f(child)) {
-                            auto child_result = vector<runtime_help_data>{};
+                            auto child_result = std::vector<runtime_help_data>{};
                             if constexpr (traits::has_runtime_children_method_v<
                                               child_help_data_type>) {
                                 child_result = child_help_data_type::runtime_children(child, f);
@@ -550,7 +550,7 @@ private:
         const Node& node,
         const Parents&... parents) const
     {
-        auto result = vector<parsing::token_type>{};
+        auto result = std::vector<parsing::token_type>{};
         auto tmp_args = pre_parse_data.args();
         auto adapter = parsing::dynamic_token_adapter{result, tmp_args};
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -21,10 +21,6 @@ namespace arg_router
  * 
  * <TT>AR_SHORT_PREFIX</TT> is the character string that defines the prefix of <I>short</I>-form
  * token labels e.g. "-h".  It defaults to one hyphen.  It must have one character in it.
- * 
- * <TT>AR_ALLOCATOR</TT> sets the allocator for all allocating types in arg_router (e.g.
- * <TT>std::vector</TT>, <TT>std::string</TT>, etc.).  It defaults to <TT>std::allocator</TT>, i.e.
- * heap allocation.
  *
  * <TT>AR_UTF8_TRAILING_WINDOW_SIZE</TT> sets the Trailing window size for the grapheme cluster and
  * line break algorithms, defaults to 16.  Each entry in the trailing window is a break property of

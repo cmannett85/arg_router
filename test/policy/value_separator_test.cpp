@@ -236,13 +236,13 @@ public:
 
     template <typename... Parents>
     void pre_parse_phase(
-        vector<parsing::token_type>& result,
+        std::vector<parsing::token_type>& result,
         [[maybe_unused]] const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<1, typename stub_node::policies_type>;
 
-        auto args = vector<parsing::token_type>{};
+        auto args = std::vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
         auto processed_target = utility::compile_time_optional{};
         auto target = parsing::parse_target{*this, parents...};
@@ -256,7 +256,7 @@ public:
 int main() {
     const auto node = stub_node{policy::long_name<AR_STRING("test")>,
                                 policy::value_separator<'='>};
-    auto tokens = vector<parsing::token_type>{
+    auto tokens = std::vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "hello"},
                     {parsing::prefix_type::none, "42"}};
     node.pre_parse_phase(tokens);
@@ -288,13 +288,13 @@ public:
 
     template <typename... Parents>
     void pre_parse_phase(
-        vector<parsing::token_type>& result,
+        std::vector<parsing::token_type>& result,
         [[maybe_unused]] const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<1, typename stub_node::policies_type>;
 
-        auto args = vector<parsing::token_type>{};
+        auto args = std::vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
         auto processed_target = utility::compile_time_optional{};
         auto target = parsing::parse_target{*this, parents...};
@@ -310,7 +310,7 @@ public:
 int main() {
     const auto node = stub_node{policy::long_name<AR_STRING("hello")>,
                                 policy::value_separator<'='>};
-    auto tokens = vector<parsing::token_type>{
+    auto tokens = std::vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "hello"}};
     node.pre_parse_phase(tokens);
     return 0;
@@ -343,13 +343,13 @@ public:
 
     template <typename... Parents>
     void pre_parse_phase(
-        vector<parsing::token_type>& result,
+        std::vector<parsing::token_type>& result,
         [[maybe_unused]] const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<2, typename stub_node::policies_type>;
 
-        auto args = vector<parsing::token_type>{};
+        auto args = std::vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
         auto processed_target = utility::compile_time_optional{};
         auto target = parsing::parse_target{*this, parents...};
@@ -366,7 +366,7 @@ int main() {
     const auto node = stub_node{policy::long_name<AR_STRING("hello")>,
                                 policy::max_count<3>,
                                 policy::value_separator<'='>};
-    auto tokens = vector<parsing::token_type>{
+    auto tokens = std::vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "hello"}};
     node.pre_parse_phase(tokens);
     return 0;
@@ -399,13 +399,13 @@ public:
 
     template <typename... Parents>
     void pre_parse_phase(
-        vector<parsing::token_type>& result,
+        std::vector<parsing::token_type>& result,
         [[maybe_unused]] const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<2, typename stub_node::policies_type>;
 
-        auto args = vector<parsing::token_type>{};
+        auto args = std::vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
         auto processed_target = utility::compile_time_optional{};
         auto target = parsing::parse_target{*this, parents...};
@@ -422,7 +422,7 @@ int main() {
     const auto node = stub_node{policy::long_name<AR_STRING("hello")>,
                                 policy::fixed_count<3>,
                                 policy::value_separator<'='>};
-    auto tokens = vector<parsing::token_type>{
+    auto tokens = std::vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "hello"}};
     node.pre_parse_phase(tokens);
     return 0;

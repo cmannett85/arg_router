@@ -17,7 +17,7 @@ namespace fs = std::filesystem;
 
 namespace
 {
-[[nodiscard]] string load_translation(std::string_view name)
+[[nodiscard]] std::string load_translation(std::string_view name)
 {
     const auto path = fs::path{UNIT_TEST_BIN_DIR} / "translations" / (name + ".hpp"sv);
     auto stream = std::ifstream{path};

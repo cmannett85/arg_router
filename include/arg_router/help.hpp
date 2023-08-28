@@ -205,7 +205,7 @@ public:
                                                                                        rhd);
                     std::exit(EXIT_SUCCESS);
                 } else {
-                    auto stream = ostringstream{};
+                    auto stream = std::ostringstream{};
                     formatter_type::template generate_help<node_type, help_t, flatten>(stream, rhd);
                     this->routing_policy::routing_phase(std::move(stream));
                 }
@@ -216,7 +216,7 @@ public:
                     formatter_type::template generate_help<node_type, help_t, flatten>(std::cout);
                     std::exit(EXIT_SUCCESS);
                 } else {
-                    auto stream = ostringstream{};
+                    auto stream = std::ostringstream{};
                     formatter_type::template generate_help<node_type, help_t, flatten>(stream);
                     this->routing_policy::routing_phase(std::move(stream));
                 }
@@ -233,7 +233,7 @@ private:
         "Help only supports policies with pre-parse and routing phases");
 
     template <typename Node, typename TargetFn>
-    static void find_help_target(vector<parsing::token_type>& tokens,
+    static void find_help_target(std::vector<parsing::token_type>& tokens,
                                  const Node& node,
                                  const TargetFn& fn)
     {

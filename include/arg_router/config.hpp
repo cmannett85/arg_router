@@ -24,10 +24,6 @@
 #    define AR_SHORT_PREFIX "-"
 #endif
 
-#ifndef AR_ALLOCATOR
-#    define AR_ALLOCATOR std::allocator
-#endif
-
 #ifndef AR_UTF8_TRAILING_WINDOW_SIZE
 #    define AR_UTF8_TRAILING_WINDOW_SIZE 16
 #endif
@@ -61,13 +57,6 @@ static_assert(utility::utf8::count(short_prefix) == 1, "Short prefix must be one
 
 static_assert(utility::utf8::count(long_prefix) >= utility::utf8::count(short_prefix),
               "Long prefix must be longer or the same as short prefix");
-
-/** Allocator for all STL types.
- *
- * @tparam T Type to allocate for
- */
-template <typename T>
-using allocator = AR_ALLOCATOR<T>;
 
 #if (__cplusplus >= 202002L) && !AR_DISABLE_CPP20_STRINGS
 #    define AR_ENABLE_CPP20_STRINGS

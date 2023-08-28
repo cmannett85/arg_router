@@ -4,8 +4,7 @@
 
 #pragma once
 
-#include "arg_router/basic_types.hpp"
-
+#include <string>
 #include <string_view>
 
 namespace arg_router::utility
@@ -19,12 +18,12 @@ namespace arg_router::utility
 class dynamic_string_view
 {
 public:
-    using value_type = string::value_type;                    ///<! Value type
-    using allocator_type = string::allocator_type;            ///<! Allocator type
-    using size_type = string::size_type;                      ///<! Size type
-    using difference_type = string::difference_type;          ///<! Difference type
-    using const_reference = string::const_reference;          ///<! Reference type
-    using const_pointer = string::const_pointer;              ///<! Pointer type
+    using value_type = std::string::value_type;               ///<! Value type
+    using allocator_type = std::string::allocator_type;       ///<! Allocator type
+    using size_type = std::string::size_type;                 ///<! Size type
+    using difference_type = std::string::difference_type;     ///<! Difference type
+    using const_reference = std::string::const_reference;     ///<! Reference type
+    using const_pointer = std::string::const_pointer;         ///<! Pointer type
     using const_iterator = std::string_view::const_iterator;  ///<! Iterator type
 
     /** Default constructor.
@@ -49,7 +48,7 @@ public:
      * @param str Initial string data
      */
     // NOLINTNEXTLINE(google-explicit-constructor,hicpp-explicit-conversions)
-    dynamic_string_view(string&& str) noexcept : str_{std::move(str)} { update_view(); }
+    dynamic_string_view(std::string&& str) noexcept : str_{std::move(str)} { update_view(); }
 
     /** Copy constructor.
      *
@@ -185,7 +184,7 @@ private:
     void update_view() { view_ = str_; }
 
     std::string_view view_;
-    string str_;
+    std::string str_;
 };
 
 /** Textual streaming operator.

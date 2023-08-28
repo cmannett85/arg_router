@@ -89,25 +89,25 @@ BOOST_AUTO_TEST_CASE(closest_matching_child_node_test)
         f,
         {
             std::tuple{parsing::token_type{parsing::prefix_type::none, "--cat"},
-                       vector<parsing::token_type>{{parsing::prefix_type::long_, "cat"}}},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::long_, "cat"}}},
             std::tuple{parsing::token_type{parsing::prefix_type::none, "--bat"},
-                       vector<parsing::token_type>{{parsing::prefix_type::long_, "cat"}}},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::long_, "cat"}}},
             std::tuple{parsing::token_type{parsing::prefix_type::none, "--blob"},
-                       vector<parsing::token_type>{{parsing::prefix_type::long_, "dog"}}},
-            std::tuple{
-                parsing::token_type{parsing::prefix_type::none, "--Ella"},
-                vector<parsing::token_type>{{parsing::prefix_type::long_, "hello"},
-                                            {parsing::prefix_type::none, "One of: --hello,-w"}}},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::long_, "dog"}}},
+            std::tuple{parsing::token_type{parsing::prefix_type::none, "--Ella"},
+                       std::vector<parsing::token_type>{
+                           {parsing::prefix_type::long_, "hello"},
+                           {parsing::prefix_type::none, "One of: --hello,-w"}}},
             std::tuple{parsing::token_type{parsing::prefix_type::none, "Spam"},
-                       vector<parsing::token_type>{{parsing::prefix_type::none, "Cam"}}},
-            std::tuple{
-                parsing::token_type{parsing::prefix_type::none, "Yellow"},
-                vector<parsing::token_type>{{parsing::prefix_type::long_, "hello"},
-                                            {parsing::prefix_type::none, "One of: --hello,-w"}}},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "Cam"}}},
+            std::tuple{parsing::token_type{parsing::prefix_type::none, "Yellow"},
+                       std::vector<parsing::token_type>{
+                           {parsing::prefix_type::long_, "hello"},
+                           {parsing::prefix_type::none, "One of: --hello,-w"}}},
             std::tuple{parsing::token_type{parsing::prefix_type::none, "-f"},
-                       vector<parsing::token_type>{{parsing::prefix_type::short_, "c"}}},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::short_, "c"}}},
             std::tuple{parsing::token_type{parsing::prefix_type::none, "-b"},
-                       vector<parsing::token_type>{{parsing::prefix_type::short_, "c"}}},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::short_, "c"}}},
         });
 }
 

@@ -23,9 +23,10 @@ namespace arg_router
  */
 template <typename... Policies>
 class forwarding_arg_t :
-    public multi_arg_base_t<vector<std::string_view>, 0, std::decay_t<Policies>...>
+    public multi_arg_base_t<std::vector<std::string_view>, 0, std::decay_t<Policies>...>
 {
-    using parent_type = multi_arg_base_t<vector<std::string_view>, 0, std::decay_t<Policies>...>;
+    using parent_type =
+        multi_arg_base_t<std::vector<std::string_view>, 0, std::decay_t<Policies>...>;
 
     static_assert(!traits::has_display_name_method_v<forwarding_arg_t> &&
                       !traits::has_long_name_method_v<forwarding_arg_t> &&
