@@ -1,9 +1,9 @@
-# This workflow runs a barrage of tests in order to validate a PR into the develop branch
-name: Pull Request Checker
+# This workflow runs a barrage of tests in order to validate a PR into the develop_v2 branch
+name: Pull Request Checker (develop_v2)
 
 on:
   pull_request:
-    branches: [ develop ]
+    branches: [ develop_v2 ]
 
 env:
   SKIP_COVERAGE_UPDATE: 0
@@ -123,41 +123,6 @@ jobs:
       with:
         commit_message: Updating README.md unit test coverage badge
         file_pattern: README.md ci/old_coverage
-
-  old_gcc_compiler_test:
-    runs-on: ubuntu-22.04
-    needs: changes
-    if: |
-      needs.changes.outputs.pr_checker == 'true' ||
-      needs.changes.outputs.source_tests_and_examples == 'true'
-
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: true
-
-    - name: Update packages
-      run: |
-        sudo apt update
-        sudo apt install ninja-build
-
-    - uses: ./.github/workflows/bootstrap_vcpkg
-      with:
-        token: "${{ secrets.GITHUB_TOKEN }}"
-
-    - name: Build
-      timeout-minutes: 30
-      run: |
-        mkdir -p ${{ env.BUILD_DIR }}
-        cd ${{ env.BUILD_DIR }}
-        cmake ${{ github.workspace }} -G "Ninja" -DCMAKE_CXX_COMPILER=g++-9 -DDEATH_TEST_PARALLEL=2 -DCMAKE_CXX_STANDARD=17
-        cmake --build . --target arg_router_test cpp17_examples
-
-    - name: Run unit tests
-      timeout-minutes: 30
-      run: |
-        cd ${{ env.BUILD_DIR }}/test
-        ./arg_router_test -l test_suite
 
   windows_msvc_compiler_tests:
    runs-on: windows-2022

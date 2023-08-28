@@ -1,9 +1,9 @@
-# Runs more expensive, less likely to fail tests, when merging to main
-name: Merge to main Checker
+# Runs more expensive, less likely to fail tests, when merging to develop_v2
+name: Merge to develop_v2 Checker
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ develop_v2 ]
 
 env:
   SKIP_COVERAGE_UPDATE: 1
