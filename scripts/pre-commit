@@ -22,7 +22,6 @@ for file in "${files[@]}"; do
     extension="${file#*.}"
     if [ "$extension" = "hpp" ] || [ "$extension" = "cpp" ]; then
         source_files+=("$file")
-        echo $file
     fi
 done
 

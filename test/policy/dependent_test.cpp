@@ -3,6 +3,7 @@
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #include "arg_router/policy/dependent.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/router.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
@@ -11,6 +12,7 @@
 #include "test_printers.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 namespace
 {
@@ -82,39 +84,39 @@ BOOST_AUTO_TEST_CASE(is_policy_test)
 BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
 {
     const auto root = stub_node{
-        policy::long_name<AR_STRING("test_root")>,
-        stub_node{policy::long_name<AR_STRING("test1")>,
-                  stub_node{policy::long_name<AR_STRING("flag1")>,
-                            policy::dependent(policy::long_name<AR_STRING("flag2")>)},
-                  stub_node{policy::long_name<AR_STRING("flag2")>},
-                  stub_node{policy::long_name<AR_STRING("flag3")>},
+        policy::long_name_t{"test_root"_S},
+        stub_node{policy::long_name_t{"test1"_S},
+                  stub_node{policy::long_name_t{"flag1"_S},
+                            policy::dependent(policy::long_name_t{"flag2"_S})},
+                  stub_node{policy::long_name_t{"flag2"_S}},
+                  stub_node{policy::long_name_t{"flag3"_S}},
                   policy::router{[](bool, bool, bool) {}}},
-        stub_node{policy::long_name<AR_STRING("test2")>,
-                  stub_node{policy::long_name<AR_STRING("one_of")>,
-                            stub_node{policy::long_name<AR_STRING("flag1")>,
-                                      policy::dependent(policy::long_name<AR_STRING("flag2")>)},
-                            stub_node{policy::long_name<AR_STRING("flag3")>}},
-                  stub_node{policy::long_name<AR_STRING("flag2")>},
+        stub_node{policy::long_name_t{"test2"_S},
+                  stub_node{policy::long_name_t{"one_of"_S},
+                            stub_node{policy::long_name_t{"flag1"_S},
+                                      policy::dependent(policy::long_name_t{"flag2"_S})},
+                            stub_node{policy::long_name_t{"flag3"_S}}},
+                  stub_node{policy::long_name_t{"flag2"_S}},
                   policy::router{[](bool, bool, bool) {}}},
-        stub_node{policy::long_name<AR_STRING("test4")>,
-                  stub_node{policy::long_name<AR_STRING("flag1")>,
-                            policy::dependent(policy::long_name<AR_STRING("flag2")>),
-                            policy::dependent(policy::long_name<AR_STRING("flag3")>)},
-                  stub_node{policy::long_name<AR_STRING("flag2")>},
-                  stub_node{policy::long_name<AR_STRING("flag3")>},
+        stub_node{policy::long_name_t{"test4"_S},
+                  stub_node{policy::long_name_t{"flag1"_S},
+                            policy::dependent(policy::long_name_t{"flag2"_S}),
+                            policy::dependent(policy::long_name_t{"flag3"_S})},
+                  stub_node{policy::long_name_t{"flag2"_S}},
+                  stub_node{policy::long_name_t{"flag3"_S}},
                   policy::router{[](bool, bool, bool) {}}},
-        stub_node{policy::long_name<AR_STRING("test5")>,
-                  stub_node{policy::long_name<AR_STRING("flag1")>,
-                            policy::dependent(policy::long_name<AR_STRING("flag2")>)},
-                  stub_node{policy::long_name<AR_STRING("flag2")>,
-                            policy::dependent(policy::long_name<AR_STRING("flag3")>)},
-                  stub_node{policy::long_name<AR_STRING("flag3")>},
+        stub_node{policy::long_name_t{"test5"_S},
+                  stub_node{policy::long_name_t{"flag1"_S},
+                            policy::dependent(policy::long_name_t{"flag2"_S})},
+                  stub_node{policy::long_name_t{"flag2"_S},
+                            policy::dependent(policy::long_name_t{"flag3"_S})},
+                  stub_node{policy::long_name_t{"flag3"_S}},
                   policy::router{[](bool, bool, bool) {}}},
-        stub_node{policy::long_name<AR_STRING("test6")>,
-                  stub_node{policy::long_name<AR_STRING("flag1")>,
-                            policy::dependent(policy::long_name<AR_STRING("パラメータニ")>)},
-                  stub_node{policy::long_name<AR_STRING("パラメータニ")>},
-                  stub_node{policy::long_name<AR_STRING("flag3")>},
+        stub_node{policy::long_name_t{"test6"_S},
+                  stub_node{policy::long_name_t{"flag1"_S},
+                            policy::dependent(policy::long_name_t{"パラメータニ"_S})},
+                  stub_node{policy::long_name_t{"パラメータニ"_S}},
+                  stub_node{policy::long_name_t{"flag3"_S}},
                   policy::router{[](bool, bool, bool) {}}},
     };
 
@@ -214,14 +216,16 @@ int main() {
          {
              R"(
 #include "arg_router/flag.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/dependent.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 int main() {
-    auto a = policy::dependent(flag(policy::long_name<AR_STRING("flag1")>));
+    auto a = policy::dependent(flag(policy::long_name_t{"flag1"_S}));
     return 0;
 }
     )",
@@ -229,14 +233,16 @@ int main() {
              "all_params_must_be_policies_test"},
          {
              R"(
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/dependent.hpp"
 #include "arg_router/policy/display_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 int main() {
-    auto a = policy::dependent(policy::display_name<AR_STRING("hello")>);
+    auto a = policy::dependent(policy::display_name_t{"hello"_S});
     return 0;
 }
     )",
@@ -244,11 +250,13 @@ int main() {
              "all_params_must_be_names_test"},
          {
              R"(
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/dependent.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 namespace
 {
@@ -284,7 +292,7 @@ public:
 
 int main() {
     const auto root = stub_node{
-        policy::dependent(policy::long_name<AR_STRING("flag2")>)};
+        policy::dependent(policy::long_name_t{"flag2"_S})};
 
     auto tokens = std::vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "flag2"},
@@ -297,11 +305,13 @@ int main() {
              "cannot_find_parent_node_empty_test"},
          {
              R"(
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/dependent.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 namespace
 {
@@ -338,11 +348,11 @@ public:
 
 int main() {
     const auto root =
-        stub_node{policy::long_name<AR_STRING("mode")>,
-              stub_node{policy::long_name<AR_STRING("flag1")>,
-                        policy::dependent(policy::long_name<AR_STRING("flag2")>)},
-              stub_node{policy::long_name<AR_STRING("flag2")>},
-              stub_node{policy::long_name<AR_STRING("flag3")>}};
+        stub_node{policy::long_name_t{"mode"_S},
+              stub_node{policy::long_name_t{"flag1"_S},
+                        policy::dependent(policy::long_name_t{"flag2"_S})},
+              stub_node{policy::long_name_t{"flag2"_S}},
+              stub_node{policy::long_name_t{"flag3"_S}}};
 
     auto tokens = std::vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "flag2"},
@@ -357,12 +367,14 @@ int main() {
              "cannot_find_parent_node_missing_test"},
          {
              R"(
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/dependent.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/router.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 namespace
 {
@@ -398,11 +410,11 @@ public:
 
 int main() {
     const auto root =
-        stub_node{policy::long_name<AR_STRING("mode")>,
-                  stub_node{policy::long_name<AR_STRING("flag1")>,
-                            policy::dependent(policy::long_name<AR_STRING("flag2")>)},
-                  stub_node{policy::long_name<AR_STRING("flag2")>},
-                  stub_node{policy::long_name<AR_STRING("flag3")>},
+        stub_node{policy::long_name_t{"mode"_S},
+                  stub_node{policy::long_name_t{"flag1"_S},
+                            policy::dependent(policy::long_name_t{"flag2"_S})},
+                  stub_node{policy::long_name_t{"flag2"_S}},
+                  stub_node{policy::long_name_t{"flag3"_S}},
                   policy::router{[](bool, bool, bool) {}}};
 
     auto tokens = std::vector<parsing::token_type>{
@@ -418,12 +430,14 @@ int main() {
              "processed_target_cannot_be_empty_test"},
          {
              R"(
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/dependent.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/router.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 namespace
 {
@@ -460,13 +474,13 @@ public:
 
 int main() {
     const auto root =
-        stub_node{policy::long_name<AR_STRING("mode")>,
-                  stub_node{policy::long_name<AR_STRING("flag1")>,
-                            policy::dependent(policy::long_name<AR_STRING("flag2")>)},
-                  stub_node{policy::long_name<AR_STRING("flag2")>,
-                            policy::dependent(policy::long_name<AR_STRING("flag3")>)},
-                  stub_node{policy::long_name<AR_STRING("flag3")>,
-                            policy::dependent(policy::long_name<AR_STRING("flag1")>)},
+        stub_node{policy::long_name_t{"mode"_S},
+                  stub_node{policy::long_name_t{"flag1"_S},
+                            policy::dependent(policy::long_name_t{"flag2"_S})},
+                  stub_node{policy::long_name_t{"flag2"_S},
+                            policy::dependent(policy::long_name_t{"flag3"_S})},
+                  stub_node{policy::long_name_t{"flag3"_S},
+                            policy::dependent(policy::long_name_t{"flag1"_S})},
                   policy::router{[](bool, bool, bool) {}}};
 
     auto tokens = std::vector<parsing::token_type>{
@@ -482,12 +496,14 @@ int main() {
              "cyclic_dependency_test"},
          {
              R"(
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/dependent.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/router.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 namespace
 {
@@ -524,11 +540,11 @@ public:
 
 int main() {
     const auto root =
-        stub_node{policy::long_name<AR_STRING("mode")>,
-                  stub_node{policy::long_name<AR_STRING("flag1")>,
-                            policy::dependent(policy::long_name<AR_STRING("flag4")>)},
-                  stub_node{policy::long_name<AR_STRING("flag2")>},
-                  stub_node{policy::long_name<AR_STRING("flag3")>},
+        stub_node{policy::long_name_t{"mode"_S},
+                  stub_node{policy::long_name_t{"flag1"_S},
+                            policy::dependent(policy::long_name_t{"flag4"_S})},
+                  stub_node{policy::long_name_t{"flag2"_S}},
+                  stub_node{policy::long_name_t{"flag3"_S}},
                   policy::router{[](bool, bool, bool) {}}};
 
     auto tokens = std::vector<parsing::token_type>{
@@ -544,12 +560,14 @@ int main() {
              "missing_target_test"},
          {
              R"(
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/dependent.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/router.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 namespace
 {
@@ -586,12 +604,12 @@ public:
 
 int main() {
     const auto root =
-        stub_node{policy::long_name<AR_STRING("mode")>,
-                  stub_node{policy::long_name<AR_STRING("flag1")>,
-                            policy::dependent(policy::long_name<AR_STRING("flag2")>,
-                                              policy::long_name<AR_STRING("flag2")>)},
-                  stub_node{policy::long_name<AR_STRING("flag2")>},
-                  stub_node{policy::long_name<AR_STRING("flag3")>},
+        stub_node{policy::long_name_t{"mode"_S},
+                  stub_node{policy::long_name_t{"flag1"_S},
+                            policy::dependent(policy::long_name_t{"flag2"_S},
+                                              policy::long_name_t{"flag2"_S})},
+                  stub_node{policy::long_name_t{"flag2"_S}},
+                  stub_node{policy::long_name_t{"flag3"_S}},
                   policy::router{[](bool, bool, bool) {}}};
 
     auto tokens = std::vector<parsing::token_type>{
@@ -607,6 +625,7 @@ int main() {
              "duplicate_targets_test"},
          {
              R"(
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/dependent.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/router.hpp"
@@ -614,6 +633,7 @@ int main() {
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 namespace
 {
@@ -650,13 +670,13 @@ public:
 
 int main() {
     const auto root =
-        stub_node{policy::long_name<AR_STRING("mode")>,
-                  stub_node{policy::long_name<AR_STRING("flag1")>,
-                            policy::dependent(policy::long_name<AR_STRING("flag2")>,
-                                              policy::short_name<'a'>)},
-                  stub_node{policy::long_name<AR_STRING("flag2")>,
-                            policy::short_name<'a'>},
-                  stub_node{policy::long_name<AR_STRING("flag3")>},
+        stub_node{policy::long_name_t{"mode"_S},
+                  stub_node{policy::long_name_t{"flag1"_S},
+                            policy::dependent(policy::long_name_t{"flag2"_S},
+                                              policy::short_name_t{"a"_S})},
+                  stub_node{policy::long_name_t{"flag2"_S},
+                            policy::short_name_t{"a"_S}},
+                  stub_node{policy::long_name_t{"flag3"_S}},
                   policy::router{[](bool, bool, bool) {}}};
 
     auto tokens = std::vector<parsing::token_type>{

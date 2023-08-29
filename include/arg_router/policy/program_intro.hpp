@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -12,10 +12,7 @@ namespace arg_router::policy
  *
  * Used by help nodes to display a brief description about the program.
  *
- * If using C++17 then use the template variable helper with the <TT>S_</TT> macro; for C++20 and
- * higher, use the constructor directly with a compile-time string literal:
  * @code
- * constexpr auto a = ar::policy::program_intro<S_("hello")>;
  * constexpr auto b = ar::policy::program_intro_t{"hello"_S};
  * @endcode
  * @note Must be greater than one character
@@ -44,13 +41,6 @@ private:
     static_assert(utility::utf8::count(program_intro()) > 1,
                   "Program intro must be longer than one character");
 };
-
-/** Constant variable helper.
- *
- * @tparam S Compile-time string
- */
-template <typename S>
-constexpr auto program_intro = program_intro_t<S>{};
 
 template <typename S>
 struct is_policy<program_intro_t<S>> : std::true_type {

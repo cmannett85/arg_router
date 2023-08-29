@@ -3,10 +3,12 @@
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #include "arg_router/utility/exception_formatter.hpp"
+#include "arg_router/literals.hpp"
 
 #include "test_helpers.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 using namespace std::string_view_literals;
 
 BOOST_AUTO_TEST_SUITE(utility_suite)
@@ -22,50 +24,49 @@ BOOST_AUTO_TEST_CASE(single_token_placeholder_test)
         BOOST_CHECK_EQUAL(formatted, expected);
     };
 
-    test::data_set(
-        f,
-        std::tuple{
-            std::tuple{AR_STRING("Hello {}"){},
-                       std::vector<parsing::token_type>{
-                           {parsing::prefix_type::long_, "world"},
-                       },
-                       "Hello --world"sv},
-            std::tuple{AR_STRING("Hello {}!"){},
-                       std::vector<parsing::token_type>{
-                           {parsing::prefix_type::long_, "world"},
-                       },
-                       "Hello --world!"sv},
-            std::tuple{AR_STRING("{} world!"){},
-                       std::vector<parsing::token_type>{
-                           {parsing::prefix_type::none, "Hello"},
-                       },
-                       "Hello world!"sv},
-            std::tuple{AR_STRING("{} {}!"){},
-                       std::vector<parsing::token_type>{
-                           {parsing::prefix_type::none, "Hello"},
-                           {parsing::prefix_type::long_, "world"},
-                       },
-                       "Hello --world!"sv},
-            std::tuple{AR_STRING("Hello {}, {}, {}"){},
-                       std::vector<parsing::token_type>{
-                           {parsing::prefix_type::short_, "a"},
-                           {parsing::prefix_type::long_, "b"},
-                           {parsing::prefix_type::none, "c"},
-                       },
-                       "Hello -a, --b, c"sv},
-            std::tuple{AR_STRING("{} Cam!"){},
-                       std::vector<parsing::token_type>{
-                           {parsing::prefix_type::none, "Hello"},
-                           {parsing::prefix_type::long_, "world"},
-                       },
-                       "Hello Cam!"sv},
-            std::tuple{AR_STRING("{} {}!"){},
-                       std::vector<parsing::token_type>{
-                           {parsing::prefix_type::none, "Hello"},
-                       },
-                       "Hello !"sv},
-            std::tuple{AR_STRING("{} {}!"){}, std::vector<parsing::token_type>{}, " !"sv},
-        });
+    test::data_set(f,
+                   std::tuple{
+                       std::tuple{"Hello {}"_S,
+                                  std::vector<parsing::token_type>{
+                                      {parsing::prefix_type::long_, "world"},
+                                  },
+                                  "Hello --world"sv},
+                       std::tuple{"Hello {}!"_S,
+                                  std::vector<parsing::token_type>{
+                                      {parsing::prefix_type::long_, "world"},
+                                  },
+                                  "Hello --world!"sv},
+                       std::tuple{"{} world!"_S,
+                                  std::vector<parsing::token_type>{
+                                      {parsing::prefix_type::none, "Hello"},
+                                  },
+                                  "Hello world!"sv},
+                       std::tuple{"{} {}!"_S,
+                                  std::vector<parsing::token_type>{
+                                      {parsing::prefix_type::none, "Hello"},
+                                      {parsing::prefix_type::long_, "world"},
+                                  },
+                                  "Hello --world!"sv},
+                       std::tuple{"Hello {}, {}, {}"_S,
+                                  std::vector<parsing::token_type>{
+                                      {parsing::prefix_type::short_, "a"},
+                                      {parsing::prefix_type::long_, "b"},
+                                      {parsing::prefix_type::none, "c"},
+                                  },
+                                  "Hello -a, --b, c"sv},
+                       std::tuple{"{} Cam!"_S,
+                                  std::vector<parsing::token_type>{
+                                      {parsing::prefix_type::none, "Hello"},
+                                      {parsing::prefix_type::long_, "world"},
+                                  },
+                                  "Hello Cam!"sv},
+                       std::tuple{"{} {}!"_S,
+                                  std::vector<parsing::token_type>{
+                                      {parsing::prefix_type::none, "Hello"},
+                                  },
+                                  "Hello !"sv},
+                       std::tuple{"{} {}!"_S, std::vector<parsing::token_type>{}, " !"sv},
+                   });
 }
 
 BOOST_AUTO_TEST_CASE(mixed_placeholder_test)
@@ -79,37 +80,37 @@ BOOST_AUTO_TEST_CASE(mixed_placeholder_test)
 
     test::data_set(f,
                    std::tuple{
-                       std::tuple{AR_STRING("Hello {, }"){},
+                       std::tuple{"Hello {, }"_S,
                                   std::vector<parsing::token_type>{
                                       {parsing::prefix_type::short_, "a"},
                                       {parsing::prefix_type::long_, "b"},
                                       {parsing::prefix_type::none, "c"},
                                   },
                                   "Hello -a, --b, c"sv},
-                       std::tuple{AR_STRING("Hello {}, {, }"){},
+                       std::tuple{"Hello {}, {, }"_S,
                                   std::vector<parsing::token_type>{
                                       {parsing::prefix_type::short_, "a"},
                                       {parsing::prefix_type::long_, "b"},
                                   },
                                   "Hello -a, --b"sv},
-                       std::tuple{AR_STRING("Hello {}, {, }, d"){},
+                       std::tuple{"Hello {}, {, }, d"_S,
                                   std::vector<parsing::token_type>{
                                       {parsing::prefix_type::short_, "a"},
                                       {parsing::prefix_type::long_, "b"},
                                       {parsing::prefix_type::none, "c"},
                                   },
                                   "Hello -a, --b, c, d"sv},
-                       std::tuple{AR_STRING("Hello {}, {} - {, }, d"){},
+                       std::tuple{"Hello {}, {} - {, }, d"_S,
                                   std::vector<parsing::token_type>{
                                       {parsing::prefix_type::short_, "a"},
                                       {parsing::prefix_type::long_, "b"},
                                       {parsing::prefix_type::none, "c"},
                                   },
                                   "Hello -a, --b - c, d"sv},
-                       std::tuple{AR_STRING("Hello {}, {} - {, }, d"){},
+                       std::tuple{"Hello {}, {} - {, }, d"_S,
                                   std::vector<parsing::token_type>{},
                                   "Hello ,  - , d"sv},
-                       std::tuple{AR_STRING("Hello {}, { -> }"){},
+                       std::tuple{"Hello {}, { -> }"_S,
                                   std::vector<parsing::token_type>{
                                       {parsing::prefix_type::short_, "a"},
                                       {parsing::prefix_type::long_, "b"},
@@ -128,18 +129,17 @@ BOOST_AUTO_TEST_CASE(no_placeholder_test)
         BOOST_CHECK_EQUAL(formatted, expected);
     };
 
-    test::data_set(
-        f,
-        std::tuple{
-            std::tuple{AR_STRING("Hello"){},
-                       std::vector<parsing::token_type>{
-                           {parsing::prefix_type::short_, "a"},
-                           {parsing::prefix_type::long_, "b"},
-                           {parsing::prefix_type::none, "c"},
-                       },
-                       "Hello: -a, --b, c"sv},
-            std::tuple{AR_STRING("Hello"){}, std::vector<parsing::token_type>{}, "Hello"sv},
-        });
+    test::data_set(f,
+                   std::tuple{
+                       std::tuple{"Hello"_S,
+                                  std::vector<parsing::token_type>{
+                                      {parsing::prefix_type::short_, "a"},
+                                      {parsing::prefix_type::long_, "b"},
+                                      {parsing::prefix_type::none, "c"},
+                                  },
+                                  "Hello: -a, --b, c"sv},
+                       std::tuple{"Hello"_S, std::vector<parsing::token_type>{}, "Hello"sv},
+                   });
 }
 
 BOOST_AUTO_TEST_CASE(death_test)
@@ -147,8 +147,11 @@ BOOST_AUTO_TEST_CASE(death_test)
     test::death_test_compile({
         {R"(
 #include "arg_router/utility/exception_formatter.hpp"
+
+using namespace arg_router;
+
 int main() {
-    const auto fmt = arg_router::utility::exception_formatter<AR_STRING("{...} {...}")>{};
+    const auto fmt = utility::exception_formatter<str<"{...} {...}">>{};
     return 0;
 }
     )",
@@ -156,8 +159,11 @@ int main() {
          "can_only_be_one_greedy_placeholder_test"},
         {R"(
 #include "arg_router/utility/exception_formatter.hpp"
+
+using namespace arg_router;
+
 int main() {
-    const auto fmt = arg_router::utility::exception_formatter<AR_STRING("{...} {}")>{};
+    const auto fmt = utility::exception_formatter<str<"{...} {}">>{};
     return 0;
 }
     )",

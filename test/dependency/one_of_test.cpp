@@ -5,6 +5,7 @@
 #include "arg_router/dependency/one_of.hpp"
 #include "arg_router/arg.hpp"
 #include "arg_router/flag.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/default_value.hpp"
 #include "arg_router/policy/description.hpp"
@@ -18,6 +19,7 @@
 #include "test_printers.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 namespace ard = arg_router::dependency;
 
 namespace
@@ -67,30 +69,28 @@ BOOST_AUTO_TEST_SUITE(one_of_suite)
 
 BOOST_AUTO_TEST_CASE(is_tree_node_test)
 {
-    static_assert(
-        is_tree_node_v<ard::one_of_t<arg_t<int, policy::long_name_t<AR_STRING("arg1")>>,
-                                     arg_t<double, policy::long_name_t<AR_STRING("arg2")>>,
-                                     policy::default_value<int>>>,
-        "Tree node test has failed");
+    static_assert(is_tree_node_v<ard::one_of_t<arg_t<int, policy::long_name_t<str<"arg1">>>,
+                                               arg_t<double, policy::long_name_t<str<"arg2">>>,
+                                               policy::default_value<int>>>,
+                  "Tree node test has failed");
 }
 
 BOOST_AUTO_TEST_CASE(value_type_test)
 {
     {
-        using one_of_type = ard::one_of_t<arg_t<int, policy::long_name_t<AR_STRING("arg1")>>,
-                                          arg_t<double, policy::long_name_t<AR_STRING("arg2")>>,
+        using one_of_type = ard::one_of_t<arg_t<int, policy::long_name_t<str<"arg1">>>,
+                                          arg_t<double, policy::long_name_t<str<"arg2">>>,
                                           policy::default_value<int>>;
         static_assert(std::is_same_v<typename one_of_type::value_type, std::variant<int, double>>,
                       "value_type test fail");
     }
 
     {
-        using one_of_type =
-            ard::one_of_t<arg_t<int, policy::long_name_t<AR_STRING("arg1")>>,
-                          arg_t<double,
-                                policy::long_name_t<AR_STRING("arg2")>,
-                                policy::alias_t<policy::long_name_t<AR_STRING("arg1")>>>,
-                          policy::default_value<int>>;
+        using one_of_type = ard::one_of_t<arg_t<int, policy::long_name_t<str<"arg1">>>,
+                                          arg_t<double,
+                                                policy::long_name_t<str<"arg2">>,
+                                                policy::alias_t<policy::long_name_t<str<"arg1">>>>,
+                                          policy::default_value<int>>;
         static_assert(std::is_same_v<typename one_of_type::value_type, int>,
                       "value_type test fail");
     }
@@ -99,20 +99,19 @@ BOOST_AUTO_TEST_CASE(value_type_test)
 BOOST_AUTO_TEST_CASE(name_test)
 {
     {
-        const auto of = ard::one_of(arg<int>(policy::long_name<AR_STRING("arg1")>),
-                                    arg<double>(policy::long_name<AR_STRING("arg2")>),
+        const auto of = ard::one_of(arg<int>(policy::long_name_t{"arg1"_S}),
+                                    arg<double>(policy::long_name_t{"arg2"_S}),
                                     policy::required);
         static_assert(of.display_name() == "One of: ");
         static_assert(of.error_name() == "One of: --arg1,--arg2");
     }
 
     {
-        const auto of =
-            ard::one_of(arg<int>(policy::long_name<AR_STRING("arg1")>),
-                        arg<double>(policy::long_name<AR_STRING("arg2")>,
-                                    policy::alias(policy::long_name<AR_STRING("arg1")>)),
-                        flag(policy::short_name<'f'>),
-                        policy::required);
+        const auto of = ard::one_of(arg<int>(policy::long_name_t{"arg1"_S}),
+                                    arg<double>(policy::long_name_t{"arg2"_S},
+                                                policy::alias(policy::long_name_t{"arg1"_S})),
+                                    flag(policy::short_name_t{"f"_S}),
+                                    policy::required);
         static_assert(of.display_name() == "One of: ");
         static_assert(of.error_name() == "One of: --arg1,--arg2,-f");
     }
@@ -121,7 +120,7 @@ BOOST_AUTO_TEST_CASE(name_test)
 BOOST_AUTO_TEST_CASE(pre_parse_test)
 {
     auto f = [](auto node, auto child_index, auto expected_args, auto expected_result) {
-        auto fake_parent = stub_node{policy::long_name<AR_STRING("parent")>};
+        auto fake_parent = stub_node{policy::long_name_t{"parent"_S}};
 
         auto& expected_child = std::get<child_index>(node.children());
         expected_child.return_value = expected_result;
@@ -150,20 +149,20 @@ BOOST_AUTO_TEST_CASE(pre_parse_test)
     test::data_set(
         f,
         std::tuple{
-            std::tuple{ard::one_of(stub_node{policy::long_name<AR_STRING("arg1")>},
-                                   stub_node{policy::long_name<AR_STRING("arg2")>},
+            std::tuple{ard::one_of(stub_node{policy::long_name_t{"arg1"_S}},
+                                   stub_node{policy::long_name_t{"arg2"_S}},
                                    policy::required),
                        traits::integral_constant<0>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "hello1"}},
                        true},
-            std::tuple{ard::one_of(stub_node{policy::long_name<AR_STRING("arg1")>},
-                                   stub_node{policy::long_name<AR_STRING("arg2")>},
+            std::tuple{ard::one_of(stub_node{policy::long_name_t{"arg1"_S}},
+                                   stub_node{policy::long_name_t{"arg2"_S}},
                                    policy::required),
                        traits::integral_constant<1>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "hello2"}},
                        true},
-            std::tuple{ard::one_of(stub_node{policy::long_name<AR_STRING("arg1")>},
-                                   stub_node{policy::long_name<AR_STRING("arg2")>},
+            std::tuple{ard::one_of(stub_node{policy::long_name_t{"arg1"_S}},
+                                   stub_node{policy::long_name_t{"arg2"_S}},
                                    policy::required),
                        traits::integral_constant<0>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "hello3"}},
@@ -173,9 +172,9 @@ BOOST_AUTO_TEST_CASE(pre_parse_test)
 
 BOOST_AUTO_TEST_CASE(one_of_fail_test)
 {
-    auto fake_parent = stub_node{policy::long_name<AR_STRING("parent")>};
-    auto node = ard::one_of(stub_node{policy::long_name<AR_STRING("arg1")>},
-                            stub_node{policy::long_name<AR_STRING("arg2")>},
+    auto fake_parent = stub_node{policy::long_name_t{"parent"_S}};
+    auto node = ard::one_of(stub_node{policy::long_name_t{"arg1"_S}},
+                            stub_node{policy::long_name_t{"arg2"_S}},
                             policy::required);
 
     std::get<0>(node.children()).return_value = true;
@@ -205,11 +204,11 @@ BOOST_AUTO_TEST_CASE(help_test)
         using help_data = typename node_type::template help_data_type<false>;
         using flattened_help_data = typename node_type::template help_data_type<true>;
 
-        static_assert(help_data::label::get() == AR_STRING("One of: ")::get());
+        static_assert(help_data::label::get() == str<"One of: ">::get());
         static_assert(
             std::is_same_v<typename help_data::label, typename flattened_help_data::label>);
 
-        static_assert(std::is_same_v<typename help_data::description, AR_STRING("")>);
+        static_assert(std::is_same_v<typename help_data::description, str<"">>);
         static_assert(std::is_same_v<typename help_data::description,
                                      typename flattened_help_data::description>);
 
@@ -226,27 +225,27 @@ BOOST_AUTO_TEST_CASE(help_test)
 
     test::data_set(f,
                    std::tuple{
-                       std::tuple{ard::one_of(arg<int>(policy::long_name<AR_STRING("arg1")>),
-                                              arg<double>(policy::long_name<AR_STRING("arg2")>),
+                       std::tuple{ard::one_of(arg<int>(policy::long_name_t{"arg1"_S}),
+                                              arg<double>(policy::long_name_t{"arg2"_S}),
                                               policy::required),
                                   std::vector{
                                       std::pair{"┌ --arg1 <Value>", ""},
                                       std::pair{"└ --arg2 <Value>", ""},
                                   }},
-                       std::tuple{ard::one_of(arg<int>(policy::long_name<AR_STRING("arg1")>),
-                                              arg<double>(policy::short_name<'b'>,
-                                                          policy::description<AR_STRING("A desc")>),
+                       std::tuple{ard::one_of(arg<int>(policy::long_name_t{"arg1"_S}),
+                                              arg<double>(policy::short_name_t{"b"_S},
+                                                          policy::description_t{"A desc"_S}),
                                               policy::required),
                                   std::vector{
                                       std::pair{"┌ --arg1 <Value>", ""},
                                       std::pair{"└ -b <Value>", "A desc"},
                                   }},
-                       std::tuple{ard::one_of(arg<int>(policy::long_name<AR_STRING("arg1")>),
-                                              flag(policy::long_name<AR_STRING("flag")>,
-                                                   policy::short_name<'f'>,
-                                                   policy::description<AR_STRING("Hello")>),
-                                              arg<double>(policy::short_name<'b'>,
-                                                          policy::description<AR_STRING("A desc")>),
+                       std::tuple{ard::one_of(arg<int>(policy::long_name_t{"arg1"_S}),
+                                              flag(policy::long_name_t{"flag"_S},
+                                                   policy::short_name_t{"f"_S},
+                                                   policy::description_t{"Hello"_S}),
+                                              arg<double>(policy::short_name_t{"b"_S},
+                                                          policy::description_t{"A desc"_S}),
                                               policy::required),
                                   std::vector{
                                       std::pair{"┌ --arg1 <Value>", ""},
@@ -282,47 +281,45 @@ BOOST_AUTO_TEST_CASE(runtime_help_test)
     test::data_set(
         f,
         std::tuple{
-            std::tuple{ard::one_of(arg<int>(policy::long_name<AR_STRING("arg1")>),
-                                   arg<double>(policy::long_name<AR_STRING("arg2")>),
+            std::tuple{ard::one_of(arg<int>(policy::long_name_t{"arg1"_S}),
+                                   arg<double>(policy::long_name_t{"arg2"_S}),
                                    policy::required),
+                       std::vector{
+                           std::pair{"┌ --arg1 <Value>", ""},
+                           std::pair{"└ --arg2 <Value>", ""},
+                       }},
+            std::tuple{ard::one_of(
+                           arg<int>(policy::long_name_t{"arg1"_S}, policy::runtime_enable{true}),
+                           arg<double>(policy::long_name_t{"arg2"_S}, policy::runtime_enable{true}),
+                           policy::required),
                        std::vector{
                            std::pair{"┌ --arg1 <Value>", ""},
                            std::pair{"└ --arg2 <Value>", ""},
                        }},
             std::tuple{
                 ard::one_of(
-                    arg<int>(policy::long_name<AR_STRING("arg1")>, policy::runtime_enable{true}),
-                    arg<double>(policy::long_name<AR_STRING("arg2")>, policy::runtime_enable{true}),
+                    arg<int>(policy::long_name_t{"arg1"_S}, policy::runtime_enable{true}),
+                    arg<double>(policy::long_name_t{"arg2"_S}, policy::runtime_enable{false}),
                     policy::required),
-                std::vector{
-                    std::pair{"┌ --arg1 <Value>", ""},
-                    std::pair{"└ --arg2 <Value>", ""},
-                }},
-            std::tuple{ard::one_of(arg<int>(policy::long_name<AR_STRING("arg1")>,
-                                            policy::runtime_enable{true}),
-                                   arg<double>(policy::long_name<AR_STRING("arg2")>,
-                                               policy::runtime_enable{false}),
-                                   policy::required),
-                       std::vector{std::pair{"--arg1 <Value>", ""}}},
+                std::vector{std::pair{"--arg1 <Value>", ""}}},
+            std::tuple{ard::one_of(
+                           arg<int>(policy::long_name_t{"arg1"_S}, policy::runtime_enable{false}),
+                           arg<double>(policy::long_name_t{"arg2"_S}, policy::runtime_enable{true}),
+                           policy::required),
+                       std::vector{std::pair{"--arg2 <Value>", ""}}},
             std::tuple{
                 ard::one_of(
-                    arg<int>(policy::long_name<AR_STRING("arg1")>, policy::runtime_enable{false}),
-                    arg<double>(policy::long_name<AR_STRING("arg2")>, policy::runtime_enable{true}),
+                    arg<int>(policy::long_name_t{"arg1"_S}, policy::runtime_enable{false}),
+                    arg<double>(policy::long_name_t{"arg2"_S}, policy::runtime_enable{false}),
                     policy::required),
-                std::vector{std::pair{"--arg2 <Value>", ""}}},
-            std::tuple{ard::one_of(arg<int>(policy::long_name<AR_STRING("arg1")>,
-                                            policy::runtime_enable{false}),
-                                   arg<double>(policy::long_name<AR_STRING("arg2")>,
-                                               policy::runtime_enable{false}),
-                                   policy::required),
-                       std::vector<std::pair<const char*, const char*>>{}},
-            std::tuple{ard::one_of(arg<int>(policy::long_name<AR_STRING("arg1")>),
-                                   flag(policy::long_name<AR_STRING("flag")>,
-                                        policy::short_name<'f'>,
-                                        policy::description<AR_STRING("Hello")>,
+                std::vector<std::pair<const char*, const char*>>{}},
+            std::tuple{ard::one_of(arg<int>(policy::long_name_t{"arg1"_S}),
+                                   flag(policy::long_name_t{"flag"_S},
+                                        policy::short_name_t{"f"_S},
+                                        policy::description_t{"Hello"_S},
                                         policy::runtime_enable{false}),
-                                   arg<double>(policy::short_name<'b'>,
-                                               policy::description<AR_STRING("A desc")>),
+                                   arg<double>(policy::short_name_t{"b"_S},
+                                               policy::description_t{"A desc"_S}),
                                    policy::required),
                        std::vector{
                            std::pair{"┌ --arg1 <Value>", ""},
@@ -337,14 +334,16 @@ BOOST_AUTO_TEST_CASE(death_test)
         {{R"(
 #include "arg_router/arg.hpp"
 #include "arg_router/dependency/one_of.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 namespace ard = arg_router::dependency;
 
 int main() {
-    auto f = ard::one_of(arg<int>(policy::long_name<AR_STRING("arg1")>));
+    auto f = ard::one_of(arg<int>(policy::long_name_t{"arg1"_S}));
     return 0;
 }
     )",
@@ -354,16 +353,18 @@ int main() {
              R"(
 #include "arg_router/arg.hpp"
 #include "arg_router/dependency/one_of.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 namespace ard = arg_router::dependency;
 
 int main() {
-    auto f = ard::one_of(arg<int>(policy::long_name<AR_STRING("arg1")>),
-                         arg<double>(policy::long_name<AR_STRING("arg2")>),
-                         policy::long_name<AR_STRING("one_of")>);
+    auto f = ard::one_of(arg<int>(policy::long_name_t{"arg1"_S}),
+                         arg<double>(policy::long_name_t{"arg2"_S}),
+                         policy::long_name_t{"one_of"_S});
     return 0;
 }
     )",
@@ -373,17 +374,19 @@ int main() {
              R"(
 #include "arg_router/arg.hpp"
 #include "arg_router/dependency/one_of.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/short_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 namespace ard = arg_router::dependency;
 
 int main() {
-    auto f = ard::one_of(arg<int>(policy::long_name<AR_STRING("arg1")>),
-                         arg<double>(policy::long_name<AR_STRING("arg2")>),
-                         policy::short_name<'o'>);
+    auto f = ard::one_of(arg<int>(policy::long_name_t{"arg1"_S}),
+                         arg<double>(policy::long_name_t{"arg2"_S}),
+                         policy::short_name_t{"o"_S});
     return 0;
 }
     )",
@@ -393,17 +396,19 @@ int main() {
              R"(
 #include "arg_router/arg.hpp"
 #include "arg_router/dependency/one_of.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/none_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 namespace ard = arg_router::dependency;
 
 int main() {
-    auto f = ard::one_of(arg<int>(policy::long_name<AR_STRING("arg1")>),
-                         arg<double>(policy::long_name<AR_STRING("arg2")>),
-                         policy::none_name<AR_STRING("none")>);
+    auto f = ard::one_of(arg<int>(policy::long_name_t{"arg1"_S}),
+                         arg<double>(policy::long_name_t{"arg2"_S}),
+                         policy::none_name_t{"none"_S});
     return 0;
 }
     )",
@@ -413,17 +418,19 @@ int main() {
              R"(
 #include "arg_router/arg.hpp"
 #include "arg_router/dependency/one_of.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/description.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 namespace ard = arg_router::dependency;
 
 int main() {
-    auto f = ard::one_of(arg<int>(policy::long_name<AR_STRING("arg1")>),
-                         arg<double>(policy::long_name<AR_STRING("arg2")>),
-                         policy::description<AR_STRING("description")>);
+    auto f = ard::one_of(arg<int>(policy::long_name_t{"arg1"_S}),
+                         arg<double>(policy::long_name_t{"arg2"_S}),
+                         policy::description_t{"description"_S});
     return 0;
 }
     )",
@@ -433,12 +440,14 @@ int main() {
              R"(
 #include "arg_router/arg.hpp"
 #include "arg_router/dependency/one_of.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/default_value.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/short_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 namespace ard = arg_router::dependency;
 
 namespace
@@ -456,8 +465,8 @@ public:
 } // namespace
 
 int main() {
-    auto f = ard::one_of(arg<int>(policy::long_name<AR_STRING("arg1")>),
-                         arg<bool>(policy::short_name<'b'>),
+    auto f = ard::one_of(arg<int>(policy::long_name_t{"arg1"_S}),
+                         arg<bool>(policy::short_name_t{"b"_S}),
                          stub_node{},
                          policy::default_value{42});
     return 0;
@@ -469,19 +478,21 @@ int main() {
              R"(
 #include "arg_router/arg.hpp"
 #include "arg_router/dependency/one_of.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/default_value.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 namespace ard = arg_router::dependency;
 
 int main() {
-    auto f = ard::one_of(arg<int>(policy::long_name<AR_STRING("arg1")>,
-                                  policy::alias(policy::long_name<AR_STRING("arg2")>)),
-                         arg<double>(policy::long_name<AR_STRING("arg2")>,
-                                     policy::alias(policy::long_name<AR_STRING("arg1")>)),
+    auto f = ard::one_of(arg<int>(policy::long_name_t{"arg1"_S},
+                                  policy::alias(policy::long_name_t{"arg2"_S})),
+                         arg<double>(policy::long_name_t{"arg2"_S},
+                                     policy::alias(policy::long_name_t{"arg1"_S})),
                          policy::default_value{42});
     return 0;
 }
@@ -492,11 +503,13 @@ int main() {
              R"(
 #include "arg_router/arg.hpp"
 #include "arg_router/dependency/one_of.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 namespace ard = arg_router::dependency;
 
 namespace
@@ -516,8 +529,8 @@ public:
 } // namespace
 
 int main() {
-    auto f = ard::one_of(arg<int>(policy::long_name<AR_STRING("arg1")>),
-                         stub_node(policy::long_name<AR_STRING("arg2")>));
+    auto f = ard::one_of(arg<int>(policy::long_name_t{"arg1"_S}),
+                         stub_node(policy::long_name_t{"arg2"_S}));
     return 0;
 }
     )",
@@ -527,15 +540,17 @@ int main() {
              R"(
 #include "arg_router/arg.hpp"
 #include "arg_router/dependency/one_of.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 namespace ard = arg_router::dependency;
 
 int main() {
-    auto f = ard::one_of(arg<int>(policy::long_name<AR_STRING("arg1")>),
-                         arg<double>(policy::long_name<AR_STRING("arg2")>));
+    auto f = ard::one_of(arg<int>(policy::long_name_t{"arg1"_S}),
+                         arg<double>(policy::long_name_t{"arg2"_S}));
     return 0;
 }
     )",
@@ -546,20 +561,22 @@ int main() {
              R"(
 #include "arg_router/arg.hpp"
 #include "arg_router/dependency/one_of.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/required.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 namespace ard = arg_router::dependency;
 
 int main() {
     const auto of = ard::one_of(
-        arg<int>(policy::long_name<AR_STRING("arg1")>),
-        arg<double>(policy::long_name<AR_STRING("arg2")>),
+        arg<int>(policy::long_name_t{"arg1"_S}),
+        arg<double>(policy::long_name_t{"arg2"_S}),
         policy::required,
-        policy::alias(policy::long_name<AR_STRING("arg3")>));
+        policy::alias(policy::long_name_t{"arg3"_S}));
     return 0;
 }
     )",
@@ -570,18 +587,20 @@ int main() {
              R"(
 #include "arg_router/arg.hpp"
 #include "arg_router/dependency/one_of.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/custom_parser.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/required.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 namespace ard = arg_router::dependency;
 
 int main() {
     const auto of = ard::one_of(
-        arg<int>(policy::long_name<AR_STRING("arg1")>),
-        arg<double>(policy::long_name<AR_STRING("arg2")>),
+        arg<int>(policy::long_name_t{"arg1"_S}),
+        arg<double>(policy::long_name_t{"arg2"_S}),
         policy::required,
         policy::custom_parser<std::variant<int, double>>{[](std::string_view) {
             return std::variant<int, double>{}; }});
@@ -595,18 +614,20 @@ int main() {
              R"(
 #include "arg_router/arg.hpp"
 #include "arg_router/dependency/one_of.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_value.hpp"
 #include "arg_router/policy/required.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 namespace ard = arg_router::dependency;
 
 int main() {
     const auto of = ard::one_of(
-        arg<int>(policy::long_name<AR_STRING("arg1")>),
-        arg<double>(policy::long_name<AR_STRING("arg2")>),
+        arg<int>(policy::long_name_t{"arg1"_S}),
+        arg<double>(policy::long_name_t{"arg2"_S}),
         policy::required,
         policy::min_max_value<42, 84>());
     return 0;
@@ -619,18 +640,20 @@ int main() {
              R"(
 #include "arg_router/arg.hpp"
 #include "arg_router/dependency/one_of.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/required.hpp"
 #include "arg_router/policy/router.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 namespace ard = arg_router::dependency;
 
 int main() {
     const auto of = ard::one_of(
-        arg<int>(policy::long_name<AR_STRING("arg1")>),
-        arg<double>(policy::long_name<AR_STRING("arg2")>),
+        arg<int>(policy::long_name_t{"arg1"_S}),
+        arg<double>(policy::long_name_t{"arg2"_S}),
         policy::required,
         policy::router{[](std::variant<int, double>) {}});
     return 0;

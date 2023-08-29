@@ -22,30 +22,21 @@ BOOST_AUTO_TEST_CASE(is_policy_test)
 
 BOOST_AUTO_TEST_CASE(constructor_and_get_test)
 {
-    constexpr auto c_a = policy::short_name<'a'>;
+    constexpr auto c_a = policy::short_name_t{"a"_S};
     static_assert(c_a.short_name() == "a");
 
-    constexpr auto c_4 = policy::short_name<'4'>;
-    static_assert(c_4.short_name() == "4");
-
-    constexpr auto s_a = policy::short_name_t{AR_STRING("a"){}};
-    static_assert(s_a.short_name() == "a");
+    constexpr auto s_4 = policy::short_name_t{"4"_S};
+    static_assert(s_4.short_name() == "4");
 }
-
-#ifdef AR_ENABLE_CPP20_STRINGS
-BOOST_AUTO_TEST_CASE(string_literal_test)
-{
-    const auto s_a = policy::short_name_t{"a"_S};
-    static_assert(s_a.short_name() == "a");
-}
-#endif
 
 BOOST_AUTO_TEST_CASE(death_test)
 {
     test::death_test_compile({{R"(
 #include "arg_router/policy/short_name.hpp"
+#include "arg_router/literals.hpp"
+using namespace arg_router::literals;
 int main() {
-    const auto ln = arg_router::policy::short_name_utf8<AR_STRING("")>;
+    const auto ln = arg_router::policy::short_name_t{""_S};
     return 0;
 }
     )",
@@ -54,8 +45,10 @@ int main() {
                               {
                                   R"(
 #include "arg_router/policy/short_name.hpp"
+#include "arg_router/literals.hpp"
+using namespace arg_router::literals;
 int main() {
-    const auto ln = arg_router::policy::short_name<'-'>;
+    const auto ln = arg_router::policy::short_name_t{"-"_S};
     return 0;
 }
     )",

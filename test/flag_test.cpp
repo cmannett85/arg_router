@@ -3,6 +3,7 @@
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #include "arg_router/flag.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/description.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/router.hpp"
@@ -12,19 +13,20 @@
 #include "test_helpers.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 using namespace std::string_view_literals;
 
 BOOST_AUTO_TEST_SUITE(flag_suite)
 
 BOOST_AUTO_TEST_CASE(is_tree_node_test)
 {
-    static_assert(is_tree_node_v<flag_t<policy::long_name_t<AR_STRING("hello")>>>,
+    static_assert(is_tree_node_v<flag_t<policy::long_name_t<str<"hello">>>>,
                   "Tree node test has failed");
 }
 
 BOOST_AUTO_TEST_CASE(policies_test)
 {
-    [[maybe_unused]] auto f = flag(policy::long_name<AR_STRING("hello")>, policy::short_name<'H'>);
+    [[maybe_unused]] auto f = flag(policy::long_name_t{"hello"_S}, policy::short_name_t{"H"_S});
     static_assert(f.long_name() == "hello"sv, "Long name test fail");
     static_assert(f.short_name() == "H", "Short name test fail");
     static_assert(f.minimum_count() == 0, "Minimum count test fail");
@@ -50,8 +52,8 @@ BOOST_AUTO_TEST_CASE(parse_test)
     };
 
     test::data_set(f,
-                   std::tuple{std::tuple{flag(AR_STRING("a"){}), false},
-                              std::tuple{flag(AR_STRING("a"){}, policy::router{[&](bool result) {
+                   std::tuple{std::tuple{flag("a"_S), false},
+                              std::tuple{flag("a"_S, policy::router{[&](bool result) {
                                                   BOOST_CHECK(result);
                                                   router_hit = true;
                                               }}),
@@ -80,22 +82,19 @@ BOOST_AUTO_TEST_CASE(help_test)
     test::data_set(
         f,
         std::tuple{
-            std::tuple{flag(policy::short_name<'h'>,
-                            policy::long_name<AR_STRING("hello")>,
-                            policy::description<AR_STRING("A flag!")>),
+            std::tuple{flag(policy::short_name_t{"h"_S},
+                            policy::long_name_t{"hello"_S},
+                            policy::description_t{"A flag!"_S}),
                        "--hello,-h",
                        "A flag!"},
-            std::tuple{flag(policy::long_name<AR_STRING("hello")>,
-                            policy::description<AR_STRING("A flag!")>),
+            std::tuple{flag(policy::long_name_t{"hello"_S}, policy::description_t{"A flag!"_S}),
                        "--hello",
                        "A flag!"},
-            std::tuple{flag(policy::short_name<'h'>, policy::description<AR_STRING("A flag!")>),
+            std::tuple{flag(policy::short_name_t{"h"_S}, policy::description_t{"A flag!"_S}),
                        "-h",
                        "A flag!"},
-            std::tuple{flag(policy::short_name<'h'>), "-h", ""},
-            std::tuple{flag(AR_STRING("h"){}, AR_STRING("hello"){}, AR_STRING("A flag!"){}),
-                       "--hello,-h",
-                       "A flag!"},
+            std::tuple{flag(policy::short_name_t{"h"_S}), "-h", ""},
+            std::tuple{flag("h"_S, "hello"_S, "A flag!"_S), "--hello,-h", "A flag!"},
         });
 }
 
@@ -103,17 +102,19 @@ BOOST_AUTO_TEST_CASE(death_test)
 {
     test::death_test_compile({{R"(
 #include "arg_router/flag.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/short_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 int main() {
     auto f = flag(
-        policy::long_name<AR_STRING("hello")>,
-        flag(policy::short_name<'b'>),
-        policy::short_name<'H'>
+        policy::long_name_t{"hello"_S},
+        flag(policy::short_name_t{"b"_S}),
+        policy::short_name_t{"H"_S}
     );
     return 0;
 }
@@ -136,15 +137,17 @@ int main() {
                               {
                                   R"(
 #include "arg_router/flag.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/display_name.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 int main() {
-    auto f = flag(policy::long_name<AR_STRING("hello")>,
-                  policy::display_name<AR_STRING("hello2")>);
+    auto f = flag(policy::long_name_t{"hello"_S},
+                  policy::display_name_t{"hello2"_S});
     return 0;
 }
     )",
@@ -153,15 +156,17 @@ int main() {
                               {
                                   R"(
 #include "arg_router/flag.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/none_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 int main() {
-    auto f = flag(policy::long_name<AR_STRING("hello")>,
-                  policy::none_name<AR_STRING("hello2")>);
+    auto f = flag(policy::long_name_t{"hello"_S},
+                  policy::none_name_t{"hello2"_S});
     return 0;
 }
     )",
@@ -170,14 +175,16 @@ int main() {
                               {
                                   R"(
 #include "arg_router/flag.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/custom_parser.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 int main() {
-    auto f = flag(policy::long_name<AR_STRING("hello")>,
+    auto f = flag(policy::long_name_t{"hello"_S},
                   policy::custom_parser<bool>{[](std::string_view) { return true; }});
     return 0;
 }
@@ -188,14 +195,16 @@ int main() {
                               {
                                   R"(
 #include "arg_router/flag.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_value.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 int main() {
-    auto f = flag(policy::long_name<AR_STRING("hello")>,
+    auto f = flag(policy::long_name_t{"hello"_S},
                   policy::min_max_value<true, true>());
     return 0;
 }

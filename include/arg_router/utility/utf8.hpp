@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -206,23 +206,14 @@ private:
 
     constexpr void fill_trailing_window() noexcept
     {
-        // array::fill(..) is only constexpr in C++20
-        for (auto& p : trailing_window_) {
-            p = grapheme_cluster_break_class::any;
-        }
+        trailing_window_.fill(grapheme_cluster_break_class::any);
     }
 
     constexpr void rotate_trailing_window() noexcept
     {
-        // Right rotate the window, std::rotate isn't constexpr in C++17
-        auto it = trailing_window_.rbegin();
-        while (true) {
-            auto prev = it++;
-            if (it == trailing_window_.rend()) {
-                break;
-            }
-            *prev = *it;
-        }
+        std::rotate(trailing_window_.rbegin(),
+                    trailing_window_.rbegin() + 1,
+                    trailing_window_.rend());
     }
 
     constexpr void update_current() noexcept
@@ -461,25 +452,13 @@ private:
         return true;
     }
 
-    constexpr void fill_trailing_window() noexcept
-    {
-        // array::fill(..) is only constexpr in C++20
-        for (auto& p : trailing_window_) {
-            p = line_break_class::any;
-        }
-    }
+    constexpr void fill_trailing_window() noexcept { trailing_window_.fill(line_break_class::any); }
 
     constexpr void rotate_trailing_window() noexcept
     {
-        // Right rotate the window, std::rotate isn't constexpr in C++17
-        auto it = trailing_window_.rbegin();
-        while (true) {
-            auto prev = it++;
-            if (it == trailing_window_.rend()) {
-                break;
-            }
-            *prev = *it;
-        }
+        std::rotate(trailing_window_.rbegin(),
+                    trailing_window_.rbegin() + 1,
+                    trailing_window_.rend());
     }
 
     constexpr void consume() noexcept

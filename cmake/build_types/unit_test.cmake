@@ -32,8 +32,6 @@ path_prefixer(TEST_SRCS
     multi_arg_test.cpp
     multi_lang/iso_locale_test.cpp
     multi_lang/root_test.cpp
-    multi_lang/root_wrapper_test.cpp
-    multi_lang/string_selector_test.cpp
     parsing/dynamic_token_adapter_test.cpp
     parsing/global_parser_test.cpp
     parsing/parse_target_test.cpp
@@ -52,7 +50,7 @@ path_prefixer(TEST_SRCS
     policy/long_name_test.cpp
     policy/min_max_count_test.cpp
     policy/min_max_value_ct_test.cpp
-    policy/min_max_value_t_test.cpp
+    policy/min_max_value_test.cpp
     policy/required_test.cpp
     policy/router_test.cpp
     policy/runtime_enable_test.cpp
@@ -99,8 +97,8 @@ create_clangformat_target(
 # Translation generator unit test input files
 include("${CMAKE_SOURCE_DIR}/cmake/translation_generator/translation_generator.cmake")
 arg_router_translation_generator(
-    SOURCES "${CMAKE_SOURCE_DIR}/examples/resources/simple_ml_gen/en_GB.toml"
-            "${CMAKE_SOURCE_DIR}/examples/resources/simple_ml_gen/ja.toml"
+    SOURCES "${CMAKE_SOURCE_DIR}/examples/simple_ml_gen/en_GB.toml"
+            "${CMAKE_SOURCE_DIR}/examples/simple_ml_gen/ja.toml"
     OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/translations/"
     TARGET translation_arg_router_test
 )
@@ -110,18 +108,14 @@ add_dependencies(arg_router_test translation_arg_router_test clangformat_test ar
 
 set_target_properties(arg_router_test PROPERTIES CXX_EXTENSIONS OFF)
 target_compile_definitions(arg_router_test PRIVATE UNIT_TEST_BUILD)
-
-# Default to C++20
-if(NOT DEFINED CMAKE_CXX_STANDARD)
-    target_compile_features(arg_router_test PUBLIC cxx_std_20)
-endif()
+target_compile_features(arg_router_test PUBLIC cxx_std_20)
 
 set(DEATH_TEST_PARALLEL 8 CACHE STRING "Maximum number of parallel death tests to perform per suite")
 
 function(configure_test_build TARGET)
     # Clang can run in different command line argument modes to mimic gcc or cl.exe,
     # so we have to test for a 'frontent variant' too
-    if (MSVC_FRONTEND)
+    if(MSVC_FRONTEND)
         set(EXTRA_FLAGS /MP /Zc:__cplusplus /W4 /Z7 /GR- /permissive- /bigobj /wd4996 ${ARGN})
         set(EXTRA_DEFINES NOMINMAX WIN32_LEAN_AND_MEAN BOOST_USE_WINDOWS_H _CRT_SECURE_NO_WARNINGS)
 
@@ -129,7 +123,7 @@ function(configure_test_build TARGET)
         set_property(TARGET ${TARGET} PROPERTY
                      MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
-        if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
             set(EXTRA_FLAGS ${EXTRA_FLAGS} /clang:-fconstexpr-steps=10000000)
         endif()
     else()

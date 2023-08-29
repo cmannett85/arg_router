@@ -16,26 +16,18 @@ BOOST_AUTO_TEST_SUITE(error_name_suite)
 
 BOOST_AUTO_TEST_CASE(is_policy_test)
 {
-    static_assert(policy::is_policy_v<policy::error_name_t<AR_STRING("hello")>>,
+    static_assert(policy::is_policy_v<policy::error_name_t<str<"hello">>>,
                   "Policy test has failed");
 }
 
 BOOST_AUTO_TEST_CASE(constructor_and_get_test)
 {
-    constexpr auto hello_str = policy::error_name<AR_STRING("hello")>;
+    constexpr auto hello_str = policy::error_name_t{"hello"_S};
     static_assert(hello_str.error_name() == "hello");
 
-    constexpr auto world_str = policy::error_name_t{AR_STRING("world"){}};
+    constexpr auto world_str = policy::error_name_t{"world"_S};
     static_assert(world_str.error_name() == "world");
 }
-
-#ifdef AR_ENABLE_CPP20_STRINGS
-BOOST_AUTO_TEST_CASE(string_literal_test)
-{
-    const auto world_str = policy::error_name_t{"world"_S};
-    static_assert(world_str.error_name() == "world");
-}
-#endif
 
 BOOST_AUTO_TEST_SUITE(death_suite)
 
@@ -45,8 +37,10 @@ BOOST_AUTO_TEST_CASE(empty_test)
         R"(
 #include "arg_router/policy/error_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
+#include "arg_router/literals.hpp"
+using namespace arg_router::literals;
 int main() {
-    const auto des = arg_router::policy::error_name<AR_STRING("")>;
+    const auto des = arg_router::policy::error_name_t{""_S};
     return 0;
 }
     )",

@@ -23,4 +23,4 @@ ReferenceAlignment: Pointer
 ReflowComments: true
 SortUsingDeclarations: false
 SpacesInContainerLiterals: false
-Standard: Latest
+Standard: c++20

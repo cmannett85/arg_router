@@ -3,6 +3,7 @@
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #include "arg_router/policy/runtime_enable.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/tree_node.hpp"
 
@@ -10,6 +11,7 @@
 #include "test_printers.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 using namespace std::string_literals;
 
 namespace
@@ -83,7 +85,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
 BOOST_AUTO_TEST_CASE(missing_phase_test)
 {
     auto f = [&](auto enabled) {
-        auto node = stub_node{policy::long_name<AR_STRING("hello")>};
+        auto node = stub_node{policy::long_name_t{"hello"_S}};
 
         try {
             const auto r = policy::runtime_enable_required{enabled, 42};
@@ -106,6 +108,7 @@ BOOST_AUTO_TEST_CASE(missing_phase_test)
 BOOST_AUTO_TEST_CASE(death_test)
 {
     test::death_test_compile({{R"(
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/runtime_enable.hpp"
 #include "arg_router/tree_node.hpp"
@@ -114,6 +117,8 @@ BOOST_AUTO_TEST_CASE(death_test)
 #include <vector>
 
 using namespace arg_router;
+using namespace arg_router::literals;
+
 namespace
 {
 template <typename... Policies>
@@ -145,7 +150,7 @@ public:
 }  // namespace
 
 int main() {
-    const auto node = stub_node{policy::long_name<AR_STRING("test")>,
+    const auto node = stub_node{policy::long_name_t{"test"_S},
                                 policy::runtime_enable{true}};
     node.pre_parse();
     return 0;
@@ -154,6 +159,7 @@ int main() {
                                "Runtime enable requires at least 1 parent",
                                "runtime_enable_at_least_1_parent"},
                               {R"(
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/runtime_enable.hpp"
 #include "arg_router/tree_node.hpp"
@@ -162,6 +168,8 @@ int main() {
 #include <vector>
 
 using namespace arg_router;
+using namespace arg_router::literals;
+
 namespace
 {
 template <typename... Policies>
@@ -194,7 +202,7 @@ public:
 }  // namespace
 
 int main() {
-    const auto node = stub_node{policy::long_name<AR_STRING("test")>,
+    const auto node = stub_node{policy::long_name_t{"test"_S},
                                 policy::required,
                                 policy::runtime_enable{true}};
     node.pre_parse();

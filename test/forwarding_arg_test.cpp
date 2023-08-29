@@ -3,12 +3,14 @@
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #include "arg_router/forwarding_arg.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 #include "test_helpers.hpp"
 #include "test_printers.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 using namespace std::string_literals;
 using namespace std::string_view_literals;
 
@@ -16,13 +18,13 @@ BOOST_AUTO_TEST_SUITE(forwarding_arg_suite)
 
 BOOST_AUTO_TEST_CASE(is_tree_node_test)
 {
-    static_assert(is_tree_node_v<forwarding_arg_t<policy::none_name_t<AR_STRING("--")>>>,
+    static_assert(is_tree_node_v<forwarding_arg_t<policy::none_name_t<str<"--">>>>,
                   "Tree node test has failed");
 }
 
 BOOST_AUTO_TEST_CASE(policies_test)
 {
-    [[maybe_unused]] auto f = forwarding_arg(policy::none_name<AR_STRING("--")>);
+    [[maybe_unused]] auto f = forwarding_arg(policy::none_name_t{"--"_S});
     static_assert(f.none_name() == "--", "Long name test fail");
 }
 
@@ -37,13 +39,13 @@ BOOST_AUTO_TEST_CASE(parse_test)
     test::data_set(
         f,
         std::tuple{
-            std::tuple{forwarding_arg(policy::none_name<AR_STRING("--")>),
+            std::tuple{forwarding_arg(policy::none_name_t{"--"_S}),
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "hello"}},
                        std::vector<std::string_view>{"hello"}},
-            std::tuple{forwarding_arg(AR_STRING("--"){}),
+            std::tuple{forwarding_arg("--"_S),
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "hello"}},
                        std::vector<std::string_view>{"hello"}},
-            std::tuple{forwarding_arg(policy::none_name<AR_STRING("--")>),
+            std::tuple{forwarding_arg(policy::none_name_t{"--"_S}),
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "hello"},
                                                         {parsing::prefix_type::none, "world"},
                                                         {parsing::prefix_type::none, "goodbye"}},
@@ -72,27 +74,25 @@ BOOST_AUTO_TEST_CASE(help_test)
 
     test::data_set(f,
                    std::tuple{
-                       std::tuple{forwarding_arg(policy::none_name<AR_STRING("--")>,
-                                                 policy::description<AR_STRING("An arg!")>),
+                       std::tuple{forwarding_arg(policy::none_name_t{"--"_S},
+                                                 policy::description_t{"An arg!"_S}),
                                   "-- [0,N]",
                                   "An arg!"},
-                       std::tuple{forwarding_arg(policy::none_name<AR_STRING("--")>,
+                       std::tuple{forwarding_arg(policy::none_name_t{"--"_S},
                                                  policy::min_count<4>,
-                                                 policy::description<AR_STRING("An arg!")>),
+                                                 policy::description_t{"An arg!"_S}),
                                   "-- [4,N]",
                                   "An arg!"},
-                       std::tuple{forwarding_arg(policy::none_name<AR_STRING("--")>,
+                       std::tuple{forwarding_arg(policy::none_name_t{"--"_S},
                                                  policy::min_max_count<1, 4>,
-                                                 policy::description<AR_STRING("An arg!")>),
+                                                 policy::description_t{"An arg!"_S}),
                                   "-- [1,4]",
                                   "An arg!"},
-                       std::tuple{forwarding_arg(policy::none_name<AR_STRING("--")>,
-                                                 policy::description<AR_STRING("An arg!")>),
+                       std::tuple{forwarding_arg(policy::none_name_t{"--"_S},
+                                                 policy::description_t{"An arg!"_S}),
                                   "-- [0,N]",
                                   "An arg!"},
-                       std::tuple{forwarding_arg(AR_STRING("--"){}, AR_STRING("An arg!"){}),
-                                  "-- [0,N]",
-                                  "An arg!"},
+                       std::tuple{forwarding_arg("--"_S, "An arg!"_S), "-- [0,N]", "An arg!"},
                    });
 }
 
@@ -103,16 +103,18 @@ BOOST_AUTO_TEST_CASE(death_test)
             R"(
 #include "arg_router/forwarding_arg.hpp"
 #include "arg_router/flag.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/none_name.hpp"
 #include "arg_router/policy/short_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 int main() {
     auto f = forwarding_arg(
-        policy::none_name<AR_STRING("--")>,
-        flag(policy::short_name<'b'>)
+        policy::none_name_t{"--"_S},
+        flag(policy::short_name_t{"b"_S})
     );
     return 0;
 }
@@ -135,15 +137,17 @@ int main() {
         {
             R"(
 #include "arg_router/forwarding_arg.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/none_name.hpp"
 #include "arg_router/policy/display_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 int main() {
-    auto f = forwarding_arg(policy::none_name<AR_STRING("--")>,
-                            policy::display_name<AR_STRING("hello")>);
+    auto f = forwarding_arg(policy::none_name_t{"--"_S},
+                            policy::display_name_t{"hello"_S});
     return 0;
 }
     )",
@@ -152,15 +156,17 @@ int main() {
         {
             R"(
 #include "arg_router/forwarding_arg.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/none_name.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 int main() {
-    auto f = forwarding_arg(policy::none_name<AR_STRING("--")>,
-                            policy::long_name<AR_STRING("hello")>);
+    auto f = forwarding_arg(policy::none_name_t{"--"_S},
+                            policy::long_name_t{"hello"_S});
     return 0;
 }
     )",
@@ -169,15 +175,17 @@ int main() {
         {
             R"(
 #include "arg_router/forwarding_arg.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/none_name.hpp"
 #include "arg_router/policy/short_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 int main() {
-    auto f = forwarding_arg(policy::none_name<AR_STRING("--")>,
-                            policy::short_name<'A'>);
+    auto f = forwarding_arg(policy::none_name_t{"--"_S},
+                            policy::short_name_t{"A"_S});
     return 0;
 }
     )",
@@ -186,14 +194,16 @@ int main() {
         {
             R"(
 #include "arg_router/policy/none_name.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/router.hpp"
 #include "arg_router/forwarding_arg.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 int main() {
-    auto f = forwarding_arg(policy::none_name<AR_STRING("--")>,
+    auto f = forwarding_arg(policy::none_name_t{"--"_S},
                             policy::router{[](int) {}});
     return 0;
 }

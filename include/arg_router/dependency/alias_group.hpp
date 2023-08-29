@@ -31,9 +31,9 @@ namespace arg_router::dependency
  * @tparam Params Policies and child node types for the mode
  */
 template <typename... Params>
-class alias_group_t : public detail::basic_one_of_t<AR_STRING("Alias Group: "), Params...>
+class alias_group_t : public detail::basic_one_of_t<str<"Alias Group: ">, Params...>
 {
-    using parent_type = detail::basic_one_of_t<AR_STRING("Alias Group: "), Params...>;
+    using parent_type = detail::basic_one_of_t<str<"Alias Group: ">, Params...>;
 
 public:
     using typename parent_type::children_type;
@@ -73,7 +73,7 @@ public:
         using label =
             decltype(AR_STRING_SV(parent_type::display_name()){} +
                      parent_type::template default_leaf_help_data_type<Flatten>::value_suffix());
-        using description = AR_STRING("");
+        using description = str<"">;
         using children = typename parent_type::template  //
             children_help_data_type<Flatten>::children;
 

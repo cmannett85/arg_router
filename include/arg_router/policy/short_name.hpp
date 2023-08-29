@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -14,12 +14,7 @@ namespace arg_router::policy
  * Although this type only accepts a single UTF-8 character, the parser expects it (or the short
  * name group it is a part of) to be preceded by the short prefix.
  *
- * If using C++17 then use the template variable helper with the <TT>S_</TT> macro or char; for
- * C++20 and higher, use the char variable helper or the constructor directly with a compile-time
- * string literal:
  * @code
- * constexpr auto a = ar::policy::short_name<'h'>;
- * constexpr auto b = ar::policy::short_name_utf8<S_("h")>;
  * constexpr auto c = ar::policy::short_name_t{"h"_S};
  * @endcode
  * @tparam S Compile-time string
@@ -50,20 +45,6 @@ private:
     static_assert(full_name_type::get() != config::long_prefix,
                   "Short name with short prefix cannot match the long prefix");
 };
-
-/** Constant variable helper.
- *
- * @tparam S Short name character
- */
-template <char S>
-constexpr auto short_name = short_name_t<AR_STRING(S)>{};
-
-/** Constant variable helper that supports UTF-8 code points.
- *
- * @tparam S Compile-time string
- */
-template <typename S>
-constexpr auto short_name_utf8 = short_name_t<S>{};
 
 template <typename S>
 struct is_policy<short_name_t<S>> : std::true_type {

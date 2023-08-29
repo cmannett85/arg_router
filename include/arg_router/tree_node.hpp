@@ -197,9 +197,9 @@ protected:
                         using max_value_type = traits::underlying_type_t<
                             std::decay_t<decltype(node_type::maximum_value())>>;
                         if constexpr (std::is_unsigned_v<max_value_type>) {
-                            return AR_STRING("0"){};
+                            return str<"0">{};
                         } else {
-                            return AR_STRING("-N"){};
+                            return str<"-N">{};
                         }
                     }
                 }(static_cast<tree_node*>(nullptr));
@@ -212,14 +212,13 @@ protected:
                         return utility::convert_integral_to_cts_t<static_cast<
                             traits::underlying_type_t<std::decay_t<decltype(value)>>>(value)>{};
                     } else {
-                        return AR_STRING("N"){};
+                        return str<"N">{};
                     }
                 }(static_cast<tree_node*>(nullptr));
 
-                return AR_STRING("<"){} + min_value + AR_STRING("-"){} + max_value +
-                       AR_STRING(">"){};
+                return str<"<">{} + min_value + str<"-">{} + max_value + str<">">{};
             } else {
-                return AR_STRING(""){};
+                return str<"">{};
             }
         }
 
@@ -240,8 +239,8 @@ protected:
 
             [[maybe_unused]] constexpr auto value_str = []() {
                 constexpr auto min_max_str = value_suffix();
-                if constexpr (std::is_same_v<std::decay_t<decltype(min_max_str)>, AR_STRING("")>) {
-                    return AR_STRING("<Value>"){};
+                if constexpr (std::is_same_v<std::decay_t<decltype(min_max_str)>, str<"">>) {
+                    return str<"<Value>">{};
                 } else {
                     return min_max_str;
                 }
@@ -254,9 +253,9 @@ protected:
             if constexpr (has_separator) {
                 return AR_STRING_SV(tree_node::value_separator()){} + value_str;
             } else if constexpr (fixed_count_of_one) {
-                return AR_STRING(" "){} + value_str;
+                return str<" ">{} + value_str;
             } else {
-                return AR_STRING(""){};
+                return str<"">{};
             }
         }
 
@@ -277,7 +276,7 @@ protected:
 
             if constexpr (has_long_name && has_short_name) {
                 return AR_STRING_SV(config::long_prefix){} +
-                       AR_STRING_SV(tree_node::long_name()){} + AR_STRING(","){} +
+                       AR_STRING_SV(tree_node::long_name()){} + str<",">{} +
                        AR_STRING_SV(config::short_prefix){} +
                        AR_STRING_SV(tree_node::short_name()){} + value_separator_suffix();
             } else if constexpr (has_long_name) {
@@ -289,7 +288,7 @@ protected:
             } else if constexpr (has_none_name) {
                 return AR_STRING_SV(tree_node::none_name()){} + value_separator_suffix();
             } else {
-                return AR_STRING(""){};
+                return str<"">{};
             }
         }
 
@@ -304,7 +303,7 @@ protected:
             if constexpr (has_description) {
                 return AR_STRING_SV(tree_node::description()){};
             } else {
-                return AR_STRING(""){};
+                return str<"">{};
             }
         }
 
@@ -321,17 +320,17 @@ protected:
                 return false;
             }();
 
-            constexpr auto prefix = AR_STRING("["){};
+            constexpr auto prefix = str<"[">{};
 
             if constexpr (fixed_count) {
                 return prefix + utility::convert_integral_to_cts_t<tree_node::minimum_count()>{} +
-                       AR_STRING("]"){};
+                       str<"]">{};
             } else {
                 constexpr auto min_count = []() {
                     if constexpr (traits::has_minimum_count_method_v<tree_node>) {
                         return utility::convert_integral_to_cts_t<tree_node::minimum_count()>{};
                     } else {
-                        return AR_STRING("0"){};
+                        return str<"0">{};
                     }
                 }();
 
@@ -339,16 +338,16 @@ protected:
                     if constexpr (traits::has_maximum_count_method_v<tree_node>) {
                         if constexpr (tree_node::maximum_count() ==
                                       decltype(policy::min_count<0>)::maximum_count()) {
-                            return AR_STRING("N"){};
+                            return str<"N">{};
                         } else {
                             return utility::convert_integral_to_cts_t<tree_node::maximum_count()>{};
                         }
                     } else {
-                        return AR_STRING("N"){};
+                        return str<"N">{};
                     }
                 }();
 
-                return prefix + min_count + AR_STRING(","){} + max_count + AR_STRING("]"){};
+                return prefix + min_count + str<",">{} + max_count + str<"]">{};
             }
         }
 

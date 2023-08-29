@@ -39,6 +39,11 @@ string(
     UPDATED_DOXYFILE_DATA
     "${UPDATED_DOXYFILE_DATA}"
 )
+string(
+    REPLACE ";" "\;"
+    DOXYFILE_DATA
+    "${DOXYFILE_DATA}"
+)
 
 if(NOT "${DOXYFILE_DATA}" STREQUAL "${UPDATED_DOXYFILE_DATA}")
     message(STATUS "Updating Doxyfile library version")

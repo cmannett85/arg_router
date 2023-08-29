@@ -50,7 +50,7 @@ public:
     public:
         using label = std::decay_t<decltype(
             parent_type::template default_leaf_help_data_type<Flatten>::label_generator() +
-            AR_STRING(" "){} +
+            str<" ">{} +
             parent_type::template default_leaf_help_data_type<Flatten>::count_suffix())>;
         using description =
             typename parent_type::template default_leaf_help_data_type<Flatten>::description;
