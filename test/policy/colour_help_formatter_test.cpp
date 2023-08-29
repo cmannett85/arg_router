@@ -6,6 +6,7 @@
 #include "arg_router/arg.hpp"
 #include "arg_router/flag.hpp"
 #include "arg_router/help.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/description.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/short_name.hpp"
@@ -14,6 +15,7 @@
 #include "test_helpers.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 using namespace std::string_view_literals;
 
 namespace
@@ -30,14 +32,14 @@ public:
     class help_data_type
     {
     public:
-        using label = AR_STRING("");
-        using description = AR_STRING("");
+        using label = str<"">;
+        using description = str<"">;
         using children = typename tree_node<Params...>::template default_leaf_help_data_type<
             Flatten>::all_children_help;
 
         template <typename OwnerNode, typename FilterFn>
-        [[nodiscard]] static vector<runtime_help_data> runtime_children(const OwnerNode& owner,
-                                                                        FilterFn&& f)
+        [[nodiscard]] static std::vector<runtime_help_data> runtime_children(const OwnerNode& owner,
+                                                                             FilterFn&& f)
         {
             return parent_type::template default_leaf_help_data_type<true>::runtime_children(
                 owner,
@@ -59,18 +61,18 @@ BOOST_AUTO_TEST_CASE(is_policy_test)
 BOOST_AUTO_TEST_CASE(generate_help_test)
 {
     const auto root =
-        mock_root{flag(policy::long_name<AR_STRING("flag1")>,
-                       policy::short_name<'a'>,
-                       policy::description<AR_STRING("Flag1 description")>),
-                  flag(policy::long_name<AR_STRING("flag2")>),
-                  flag(policy::short_name<'b'>, policy::description<AR_STRING("b description")>),
-                  arg<int>(policy::long_name<AR_STRING("arg1")>, policy::value_separator<'='>),
-                  help(policy::long_name<AR_STRING("help")>,
-                       policy::short_name<'h'>,
-                       policy::description<AR_STRING("Help output")>,
-                       policy::program_name<AR_STRING("foo")>,
-                       policy::program_version<AR_STRING("v3.14")>,
-                       policy::program_intro<AR_STRING("My foo is good for you")>,
+        mock_root{flag(policy::long_name_t{"flag1"_S},
+                       policy::short_name_t{"a"_S},
+                       policy::description_t{"Flag1 description"_S}),
+                  flag(policy::long_name_t{"flag2"_S}),
+                  flag(policy::short_name_t{"b"_S}, policy::description_t{"b description"_S}),
+                  arg<int>(policy::long_name_t{"arg1"_S}, policy::value_separator_t{"="_S}),
+                  help(policy::long_name_t{"help"_S},
+                       policy::short_name_t{"h"_S},
+                       policy::description_t{"Help output"_S},
+                       policy::program_name_t{"foo"_S},
+                       policy::program_version_t{"v3.14"_S},
+                       policy::program_intro_t{"My foo is good for you"_S},
                        policy::colour_help_formatter)};
 
     constexpr auto expected_result =
@@ -95,18 +97,18 @@ BOOST_AUTO_TEST_CASE(generate_help_test)
 BOOST_AUTO_TEST_CASE(generate_runtime_help_test)
 {
     const auto root =
-        mock_root{flag(policy::long_name<AR_STRING("flag1")>,
-                       policy::short_name<'a'>,
-                       policy::description<AR_STRING("Flag1 description")>),
-                  flag(policy::long_name<AR_STRING("flag2")>),
-                  flag(policy::short_name<'b'>, policy::description<AR_STRING("b description")>),
-                  arg<int>(policy::long_name<AR_STRING("arg1")>, policy::value_separator<'='>),
-                  help(policy::long_name<AR_STRING("help")>,
-                       policy::short_name<'h'>,
-                       policy::description<AR_STRING("Help output")>,
-                       policy::program_name<AR_STRING("foo")>,
-                       policy::program_version<AR_STRING("v3.14")>,
-                       policy::program_intro<AR_STRING("My foo is good for you")>,
+        mock_root{flag(policy::long_name_t{"flag1"_S},
+                       policy::short_name_t{"a"_S},
+                       policy::description_t{"Flag1 description"_S}),
+                  flag(policy::long_name_t{"flag2"_S}),
+                  flag(policy::short_name_t{"b"_S}, policy::description_t{"b description"_S}),
+                  arg<int>(policy::long_name_t{"arg1"_S}, policy::value_separator_t{"="_S}),
+                  help(policy::long_name_t{"help"_S},
+                       policy::short_name_t{"h"_S},
+                       policy::description_t{"Help output"_S},
+                       policy::program_name_t{"foo"_S},
+                       policy::program_version_t{"v3.14"_S},
+                       policy::program_intro_t{"My foo is good for you"_S},
                        policy::colour_help_formatter)};
 
     constexpr auto expected_result =

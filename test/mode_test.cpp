@@ -8,6 +8,7 @@
 #include "arg_router/dependency/alias_group.hpp"
 #include "arg_router/flag.hpp"
 #include "arg_router/list.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/description.hpp"
 #include "arg_router/policy/display_name.hpp"
 #include "arg_router/policy/long_name.hpp"
@@ -23,6 +24,7 @@
 #include "test_printers.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 namespace ard = arg_router::dependency;
 using namespace std::string_literals;
 
@@ -59,26 +61,24 @@ BOOST_AUTO_TEST_SUITE(mode_suite)
 
 BOOST_AUTO_TEST_CASE(is_tree_node_test)
 {
-    static_assert(
-        is_tree_node_v<arg_router::mode_t<flag_t<policy::long_name_t<AR_STRING("hello")>>>>,
-        "Tree node test has failed");
+    static_assert(is_tree_node_v<arg_router::mode_t<flag_t<policy::long_name_t<str<"hello">>>>>,
+                  "Tree node test has failed");
 }
 
 BOOST_AUTO_TEST_CASE(anonymous_test)
 {
-    static_assert(
-        !arg_router::mode_t<policy::none_name_t<AR_STRING("mode")>,
-                            flag_t<policy::long_name_t<AR_STRING("hello")>>>::is_anonymous,
-        "Fail");
-    static_assert(arg_router::mode_t<flag_t<policy::long_name_t<AR_STRING("hello")>>>::is_anonymous,
+    static_assert(!arg_router::mode_t<policy::none_name_t<str<"mode">>,
+                                      flag_t<policy::long_name_t<str<"hello">>>>::is_anonymous,
+                  "Fail");
+    static_assert(arg_router::mode_t<flag_t<policy::long_name_t<str<"hello">>>>::is_anonymous,
                   "Fail");
 }
 
 BOOST_AUTO_TEST_CASE(anonymous_single_flag_pre_parse_test)
 {
-    const auto m = mode(flag(policy::long_name<AR_STRING("hello")>,
-                             policy::short_name<'l'>,
-                             policy::description<AR_STRING("Hello arg")>),
+    const auto m = mode(flag(policy::long_name_t{"hello"_S},
+                             policy::short_name_t{"l"_S},
+                             policy::description_t{"Hello arg"_S}),
                         policy::router{[](auto) {}});
 
     auto f = [&](auto args, auto expected_args, auto expected_result, auto ec) {
@@ -162,9 +162,9 @@ BOOST_AUTO_TEST_CASE(anonymous_single_flag_pre_parse_test)
 BOOST_AUTO_TEST_CASE(anonymous_single_flag_parse_test)
 {
     auto result = false;
-    const auto m = mode(flag(policy::long_name<AR_STRING("hello")>,
-                             policy::short_name<'l'>,
-                             policy::description<AR_STRING("Hello arg")>),
+    const auto m = mode(flag(policy::long_name_t{"hello"_S},
+                             policy::short_name_t{"l"_S},
+                             policy::description_t{"Hello arg"_S}),
                         policy::router([&](bool f1) { result = f1; }));
 
     auto target = parsing::parse_target{m};
@@ -182,8 +182,8 @@ BOOST_AUTO_TEST_CASE(anonymous_single_flag_parse_test)
 BOOST_AUTO_TEST_CASE(anonymous_single_positional_single_count_arg_parse_test)
 {
     auto result = 0;
-    const auto m = mode(positional_arg<int>(policy::display_name<AR_STRING("hello")>,
-                                            policy::description<AR_STRING("Hello arg")>,
+    const auto m = mode(positional_arg<int>(policy::display_name_t{"hello"_S},
+                                            policy::description_t{"Hello arg"_S},
                                             policy::fixed_count<1>),
                         policy::router([&](int f1) { result = f1; }));
 
@@ -207,15 +207,15 @@ BOOST_AUTO_TEST_CASE(anonymous_single_positional_single_count_arg_parse_test)
 
 BOOST_AUTO_TEST_CASE(anonymous_triple_child_pre_parse_test)
 {
-    const auto m = mode(flag(policy::long_name<AR_STRING("hello")>,
-                             policy::short_name<'l'>,
-                             policy::description<AR_STRING("Hello arg")>),
-                        arg<int>(policy::long_name<AR_STRING("フー")>,
-                                 policy::description<AR_STRING("フー arg")>,
-                                 policy::default_value{42}),
-                        counting_flag<std::size_t>(policy::short_name<'b'>,
-                                                   policy::description<AR_STRING("b arg")>),
-                        policy::router{[](bool, int, std::size_t) {}});
+    const auto m = mode(
+        flag(policy::long_name_t{"hello"_S},
+             policy::short_name_t{"l"_S},
+             policy::description_t{"Hello arg"_S}),
+        arg<int>(policy::long_name_t{"フー"_S},
+                 policy::description_t{"フー arg"_S},
+                 policy::default_value{42}),
+        counting_flag<std::size_t>(policy::short_name_t{"b"_S}, policy::description_t{"b arg"_S}),
+        policy::router{[](bool, int, std::size_t) {}});
 
     auto f = [&](auto args, auto expected_args, const auto& expected_results, auto ec) {
         try {
@@ -314,13 +314,13 @@ BOOST_AUTO_TEST_CASE(anonymous_triple_child_pre_parse_test)
 BOOST_AUTO_TEST_CASE(anonymous_triple_child_parse_test)
 {
     auto result = std::optional<std::tuple<bool, int, bool>>{};
-    const auto m = mode(flag(policy::long_name<AR_STRING("hello")>,
-                             policy::short_name<'l'>,
-                             policy::description<AR_STRING("Hello arg")>),
-                        arg<int>(policy::long_name<AR_STRING("foo")>,
-                                 policy::description<AR_STRING("Foo arg")>,
+    const auto m = mode(flag(policy::long_name_t{"hello"_S},
+                             policy::short_name_t{"l"_S},
+                             policy::description_t{"Hello arg"_S}),
+                        arg<int>(policy::long_name_t{"foo"_S},
+                                 policy::description_t{"Foo arg"_S},
                                  policy::default_value{42}),
-                        flag(policy::short_name<'b'>, policy::description<AR_STRING("b arg")>),
+                        flag(policy::short_name_t{"b"_S}, policy::description_t{"b arg"_S}),
                         policy::router([&](bool f1, int f2, bool f3) {
                             result = std::tuple{f1, f2, f3};
                         }));
@@ -379,10 +379,10 @@ BOOST_AUTO_TEST_CASE(anonymous_triple_child_parse_test)
 BOOST_AUTO_TEST_CASE(named_single_flag_parse_test)
 {
     auto result = std::optional<bool>{};
-    const auto m = mode(AR_STRING("my-mode"){},
-                        flag(policy::long_name<AR_STRING("hello")>,
-                             policy::short_name<'l'>,
-                             policy::description<AR_STRING("Hello arg")>),
+    const auto m = mode("my-mode"_S,
+                        flag(policy::long_name_t{"hello"_S},
+                             policy::short_name_t{"l"_S},
+                             policy::description_t{"Hello arg"_S}),
                         policy::router([&](bool f1) { result = f1; }));
 
     auto f = [&](auto tokens, auto expected_result, auto ec) {
@@ -421,14 +421,14 @@ BOOST_AUTO_TEST_CASE(named_single_flag_parse_test)
 
 BOOST_AUTO_TEST_CASE(named_triple_arg_pre_parse_test)
 {
-    const auto m = mode(AR_STRING("my-mode"){},
-                        flag(policy::long_name<AR_STRING("hello")>,
-                             policy::short_name<'l'>,
-                             policy::description<AR_STRING("Hello arg")>),
-                        arg<int>(policy::long_name<AR_STRING("foo")>,
-                                 policy::description<AR_STRING("Foo arg")>,
+    const auto m = mode("my-mode"_S,
+                        flag(policy::long_name_t{"hello"_S},
+                             policy::short_name_t{"l"_S},
+                             policy::description_t{"Hello arg"_S}),
+                        arg<int>(policy::long_name_t{"foo"_S},
+                                 policy::description_t{"Foo arg"_S},
                                  policy::default_value{42}),
-                        flag(policy::short_name<'b'>, policy::description<AR_STRING("b arg")>),
+                        flag(policy::short_name_t{"b"_S}, policy::description_t{"b arg"_S}),
                         policy::router{[](bool, int, bool) {}});
 
     auto f = [&](auto args, auto expected_args, const auto& expected_results, auto ec) {
@@ -531,14 +531,14 @@ BOOST_AUTO_TEST_CASE(named_triple_arg_pre_parse_test)
 BOOST_AUTO_TEST_CASE(named_triple_arg_parse_test)
 {
     auto result = std::optional<std::tuple<bool, int, bool>>{};
-    const auto m = mode(AR_STRING("my-mode"){},
-                        flag(policy::long_name<AR_STRING("hello")>,
-                             policy::short_name<'l'>,
-                             policy::description<AR_STRING("Hello arg")>),
-                        arg<int>(policy::long_name<AR_STRING("フー")>,
-                                 policy::description<AR_STRING("Foo arg")>,
+    const auto m = mode("my-mode"_S,
+                        flag(policy::long_name_t{"hello"_S},
+                             policy::short_name_t{"l"_S},
+                             policy::description_t{"Hello arg"_S}),
+                        arg<int>(policy::long_name_t{"フー"_S},
+                                 policy::description_t{"Foo arg"_S},
                                  policy::default_value{42}),
-                        flag(policy::short_name<'b'>, policy::description<AR_STRING("b arg")>),
+                        flag(policy::short_name_t{"b"_S}, policy::description_t{"b arg"_S}),
                         policy::router([&](bool f1, int f2, bool f3) {
                             result = std::tuple{f1, f2, f3};
                         }));
@@ -603,11 +603,11 @@ BOOST_AUTO_TEST_CASE(named_triple_arg_parse_test)
 BOOST_AUTO_TEST_CASE(anonymous_triple_flag_single_list_pre_parse_test)
 {
     const auto flags = list{
-        flag(policy::long_name<AR_STRING("hello")>,
-             policy::short_name<'l'>,
-             policy::description<AR_STRING("Hello arg")>),
-        flag(policy::long_name<AR_STRING("foo")>, policy::description<AR_STRING("Foo arg")>),
-        flag(policy::short_name<'b'>, policy::description<AR_STRING("b arg")>),
+        flag(policy::long_name_t{"hello"_S},
+             policy::short_name_t{"l"_S},
+             policy::description_t{"Hello arg"_S}),
+        flag(policy::long_name_t{"foo"_S}, policy::description_t{"Foo arg"_S}),
+        flag(policy::short_name_t{"b"_S}, policy::description_t{"b arg"_S}),
     };
     const auto m = mode(flags, policy::router{[](bool, bool, bool) {}});
 
@@ -661,16 +661,14 @@ BOOST_AUTO_TEST_CASE(anonymous_triple_flag_single_list_pre_parse_test)
 
 BOOST_AUTO_TEST_CASE(named_triple_flag_double_list_pre_parse_test)
 {
-    const auto list1 =
-        list{flag(policy::long_name<AR_STRING("hello")>,
-                  policy::short_name<'l'>,
-                  policy::description<AR_STRING("Hello arg")>),
-             flag(policy::long_name<AR_STRING("foo")>, policy::description<AR_STRING("Foo arg")>)};
-    const auto list2 = list{flag(policy::short_name<'b'>, policy::description<AR_STRING("b arg")>)};
-    const auto m = mode(policy::none_name<AR_STRING("my-mode")>,
-                        list1,
-                        list2,
-                        policy::router{[](bool, bool, bool) {}});
+    const auto list1 = list{flag(policy::long_name_t{"hello"_S},
+                                 policy::short_name_t{"l"_S},
+                                 policy::description_t{"Hello arg"_S}),
+                            flag(policy::long_name_t{"foo"_S}, policy::description_t{"Foo arg"_S})};
+    const auto list2 = list{flag(policy::short_name_t{"b"_S}, policy::description_t{"b arg"_S})};
+    const auto m =
+        mode(policy::none_name_t{"my-mode"_S}, list1, list2, policy::router{[](bool, bool, bool) {
+             }});
 
     auto f = [&](auto args, auto expected_args, const auto& expected_results, auto ec) {
         try {
@@ -736,14 +734,14 @@ BOOST_AUTO_TEST_CASE(named_triple_flag_double_list_pre_parse_test)
 
 BOOST_AUTO_TEST_CASE(nested_modes_pre_parse_test)
 {
-    const auto m = mode(policy::none_name<AR_STRING("mode1")>,
-                        mode(policy::none_name<AR_STRING("mode2")>,
-                             mode(policy::none_name<AR_STRING("mode3")>,
-                                  flag(policy::long_name<AR_STRING("hello")>,
-                                       policy::short_name<'l'>,
-                                       policy::description<AR_STRING("Hello arg")>),
-                                  arg<int>(policy::long_name<AR_STRING("フー")>,
-                                           policy::description<AR_STRING("Foo arg")>,
+    const auto m = mode(policy::none_name_t{"mode1"_S},
+                        mode(policy::none_name_t{"mode2"_S},
+                             mode(policy::none_name_t{"mode3"_S},
+                                  flag(policy::long_name_t{"hello"_S},
+                                       policy::short_name_t{"l"_S},
+                                       policy::description_t{"Hello arg"_S}),
+                                  arg<int>(policy::long_name_t{"フー"_S},
+                                           policy::description_t{"Foo arg"_S},
                                            policy::default_value{42}),
                                   policy::router{[](bool, int) {}})));
 
@@ -856,14 +854,14 @@ BOOST_AUTO_TEST_CASE(nested_modes_pre_parse_test)
 BOOST_AUTO_TEST_CASE(nested_modes_parse_test)
 {
     auto result = std::optional<std::tuple<bool, int>>{};
-    const auto m = mode(policy::none_name<AR_STRING("mode1")>,
-                        mode(policy::none_name<AR_STRING("mode2")>,
-                             mode(policy::none_name<AR_STRING("mode3")>,
-                                  flag(policy::long_name<AR_STRING("hello")>,
-                                       policy::short_name<'l'>,
-                                       policy::description<AR_STRING("Hello arg")>),
-                                  arg<int>(policy::long_name<AR_STRING("フー")>,
-                                           policy::description<AR_STRING("Foo arg")>,
+    const auto m = mode(policy::none_name_t{"mode1"_S},
+                        mode(policy::none_name_t{"mode2"_S},
+                             mode(policy::none_name_t{"mode3"_S},
+                                  flag(policy::long_name_t{"hello"_S},
+                                       policy::short_name_t{"l"_S},
+                                       policy::description_t{"Hello arg"_S}),
+                                  arg<int>(policy::long_name_t{"フー"_S},
+                                           policy::description_t{"Foo arg"_S},
                                            policy::default_value{42}),
                                   policy::router([&](bool f1, int f2) {
                                       result = std::tuple{f1, f2};
@@ -925,7 +923,7 @@ BOOST_AUTO_TEST_CASE(no_missing_phase_test)
 {
     {
         auto result = 42;
-        const auto m = mode(arg<int>(policy::long_name<AR_STRING("hello")>),
+        const auto m = mode(arg<int>(policy::long_name_t{"hello"_S}),
                             policy::router([&](int arg1) { result = arg1; }));
 
         m.parse({{}, m});
@@ -934,7 +932,7 @@ BOOST_AUTO_TEST_CASE(no_missing_phase_test)
 
     {
         auto result = 3.14;
-        const auto m = mode(arg<int>(policy::long_name<AR_STRING("hello")>),
+        const auto m = mode(arg<int>(policy::long_name_t{"hello"_S}),
                             policy::router([&](double arg1) { result = arg1; }));
 
         m.parse({{}, m});
@@ -943,9 +941,8 @@ BOOST_AUTO_TEST_CASE(no_missing_phase_test)
 
     {
         auto result = std::vector<int>{3, 4, 5};
-        const auto m =
-            mode(positional_arg<std::vector<int>>(policy::display_name<AR_STRING("hello")>),
-                 policy::router([&](std::vector<int> arg1) { result = arg1; }));
+        const auto m = mode(positional_arg<std::vector<int>>(policy::display_name_t{"hello"_S}),
+                            policy::router([&](std::vector<int> arg1) { result = arg1; }));
 
         m.parse({{}, m});
         BOOST_CHECK_EQUAL(result, std::vector<int>{});
@@ -966,125 +963,123 @@ BOOST_AUTO_TEST_CASE(help_test)
     test::data_set(
         f,
         std::tuple{
-            std::tuple{mode(flag(policy::long_name<AR_STRING("hello")>,
-                                 policy::short_name<'h'>,
-                                 policy::description<AR_STRING("Hello desc")>),
-                            policy::router([](bool) {})),
-                       std::true_type{},
-                       test_help_data<AR_STRING(" "),
-                                      AR_STRING(""),
-                                      std::tuple<test_help_data<AR_STRING("--hello,-h"),
-                                                                AR_STRING("Hello desc"),
-                                                                std::tuple<>>>>{}},
-            std::tuple{mode(flag(policy::long_name<AR_STRING("hello")>,
-                                 policy::short_name<'h'>,
-                                 policy::description<AR_STRING("Hello desc")>),
-                            policy::router([](bool) {})),
-                       std::false_type{},
-                       test_help_data<AR_STRING(" "),
-                                      AR_STRING(""),
-                                      std::tuple<test_help_data<AR_STRING("--hello,-h"),
-                                                                AR_STRING("Hello desc"),
-                                                                std::tuple<>>>>{}},
-            std::tuple{mode(flag(policy::long_name<AR_STRING("hello")>,
-                                 policy::short_name<'h'>,
-                                 policy::description<AR_STRING("Hello desc")>),
-                            flag(policy::long_name<AR_STRING("flag1")>,
-                                 policy::short_name<'a'>,
-                                 policy::description<AR_STRING("Flag1 desc")>),
-                            policy::router([](bool, bool) {})),
-                       std::true_type{},
-                       test_help_data<AR_STRING(" "),
-                                      AR_STRING(""),
-                                      std::tuple<test_help_data<AR_STRING("--hello,-h"),
-                                                                AR_STRING("Hello desc"),
-                                                                std::tuple<>>,
-                                                 test_help_data<AR_STRING("--flag1,-a"),
-                                                                AR_STRING("Flag1 desc"),
-                                                                std::tuple<>>>>{}},
-            std::tuple{mode(AR_STRING("mode1"){},
-                            AR_STRING("Mode desc"){},
-                            flag(policy::long_name<AR_STRING("hello")>,
-                                 policy::short_name<'h'>,
-                                 policy::description<AR_STRING("Hello desc")>),
-                            flag(policy::long_name<AR_STRING("flag1")>,
-                                 policy::short_name<'a'>,
-                                 policy::description<AR_STRING("Flag1 desc")>),
-                            policy::router([](bool, bool) {})),
-                       std::false_type{},
-                       test_help_data<AR_STRING("mode1"), AR_STRING("Mode desc"), std::tuple<>>{}},
-            std::tuple{mode(policy::none_name<AR_STRING("mode1")>,
-                            policy::description<AR_STRING("Mode desc")>,
-                            flag(policy::long_name<AR_STRING("hello")>,
-                                 policy::short_name<'h'>,
-                                 policy::description<AR_STRING("Hello desc")>),
-                            flag(policy::long_name<AR_STRING("flag1")>,
-                                 policy::short_name<'a'>,
-                                 policy::description<AR_STRING("Flag1 desc")>),
-                            policy::router([](bool, bool) {})),
-                       std::true_type{},
-                       test_help_data<AR_STRING("mode1"),
-                                      AR_STRING("Mode desc"),
-                                      std::tuple<test_help_data<AR_STRING("--hello,-h"),
-                                                                AR_STRING("Hello desc"),
-                                                                std::tuple<>>,
-                                                 test_help_data<AR_STRING("--flag1,-a"),
-                                                                AR_STRING("Flag1 desc"),
-                                                                std::tuple<>>>>{}},
             std::tuple{
-                mode(policy::none_name<AR_STRING("mode1")>,
-                     policy::description<AR_STRING("Mode1 desc")>,
-                     flag(policy::long_name<AR_STRING("hello")>,
-                          policy::short_name<'h'>,
-                          policy::description<AR_STRING("Hello desc")>),
-                     mode(policy::none_name<AR_STRING("mode2")>,
-                          policy::description<AR_STRING("Mode2 desc")>,
-                          flag(policy::long_name<AR_STRING("goodbye")>,
-                               policy::short_name<'g'>,
-                               policy::description<AR_STRING("Goodbye desc")>),
-                          flag(policy::long_name<AR_STRING("flag2")>,
-                               policy::short_name<'b'>,
-                               policy::description<AR_STRING("Flag2 desc")>)),
+                mode(flag(policy::long_name_t{"hello"_S},
+                          policy::short_name_t{"h"_S},
+                          policy::description_t{"Hello desc"_S}),
                      policy::router([](bool) {})),
                 std::true_type{},
                 test_help_data<
-                    AR_STRING("mode1"),
-                    AR_STRING("Mode1 desc"),
-                    std::tuple<test_help_data<AR_STRING("--hello,-h"),
-                                              AR_STRING("Hello desc"),
-                                              std::tuple<>>,
-                               test_help_data<AR_STRING("mode2"),
-                                              AR_STRING("Mode2 desc"),
-                                              std::tuple<test_help_data<AR_STRING("--goodbye,-g"),
-                                                                        AR_STRING("Goodbye desc"),
+                    str<" ">,
+                    str<"">,
+                    std::tuple<
+                        test_help_data<str<"--hello,-h">, str<"Hello desc">, std::tuple<>>>>{}},
+            std::tuple{
+                mode(flag(policy::long_name_t{"hello"_S},
+                          policy::short_name_t{"h"_S},
+                          policy::description_t{"Hello desc"_S}),
+                     policy::router([](bool) {})),
+                std::false_type{},
+                test_help_data<
+                    str<" ">,
+                    str<"">,
+                    std::tuple<
+                        test_help_data<str<"--hello,-h">, str<"Hello desc">, std::tuple<>>>>{}},
+            std::tuple{
+                mode(flag(policy::long_name_t{"hello"_S},
+                          policy::short_name_t{"h"_S},
+                          policy::description_t{"Hello desc"_S}),
+                     flag(policy::long_name_t{"flag1"_S},
+                          policy::short_name_t{"a"_S},
+                          policy::description_t{"Flag1 desc"_S}),
+                     policy::router([](bool, bool) {})),
+                std::true_type{},
+                test_help_data<
+                    str<" ">,
+                    str<"">,
+                    std::tuple<
+                        test_help_data<str<"--hello,-h">, str<"Hello desc">, std::tuple<>>,
+                        test_help_data<str<"--flag1,-a">, str<"Flag1 desc">, std::tuple<>>>>{}},
+            std::tuple{mode("mode1"_S,
+                            "Mode desc"_S,
+                            flag(policy::long_name_t{"hello"_S},
+                                 policy::short_name_t{"h"_S},
+                                 policy::description_t{"Hello desc"_S}),
+                            flag(policy::long_name_t{"flag1"_S},
+                                 policy::short_name_t{"a"_S},
+                                 policy::description_t{"Flag1 desc"_S}),
+                            policy::router([](bool, bool) {})),
+                       std::false_type{},
+                       test_help_data<str<"mode1">, str<"Mode desc">, std::tuple<>>{}},
+            std::tuple{
+                mode(policy::none_name_t{"mode1"_S},
+                     policy::description_t{"Mode desc"_S},
+                     flag(policy::long_name_t{"hello"_S},
+                          policy::short_name_t{"h"_S},
+                          policy::description_t{"Hello desc"_S}),
+                     flag(policy::long_name_t{"flag1"_S},
+                          policy::short_name_t{"a"_S},
+                          policy::description_t{"Flag1 desc"_S}),
+                     policy::router([](bool, bool) {})),
+                std::true_type{},
+                test_help_data<
+                    str<"mode1">,
+                    str<"Mode desc">,
+                    std::tuple<
+                        test_help_data<str<"--hello,-h">, str<"Hello desc">, std::tuple<>>,
+                        test_help_data<str<"--flag1,-a">, str<"Flag1 desc">, std::tuple<>>>>{}},
+            std::tuple{
+                mode(policy::none_name_t{"mode1"_S},
+                     policy::description_t{"Mode1 desc"_S},
+                     flag(policy::long_name_t{"hello"_S},
+                          policy::short_name_t{"h"_S},
+                          policy::description_t{"Hello desc"_S}),
+                     mode(policy::none_name_t{"mode2"_S},
+                          policy::description_t{"Mode2 desc"_S},
+                          flag(policy::long_name_t{"goodbye"_S},
+                               policy::short_name_t{"g"_S},
+                               policy::description_t{"Goodbye desc"_S}),
+                          flag(policy::long_name_t{"flag2"_S},
+                               policy::short_name_t{"b"_S},
+                               policy::description_t{"Flag2 desc"_S})),
+                     policy::router([](bool) {})),
+                std::true_type{},
+                test_help_data<
+                    str<"mode1">,
+                    str<"Mode1 desc">,
+                    std::tuple<test_help_data<str<"--hello,-h">, str<"Hello desc">, std::tuple<>>,
+                               test_help_data<str<"mode2">,
+                                              str<"Mode2 desc">,
+                                              std::tuple<test_help_data<str<"--goodbye,-g">,
+                                                                        str<"Goodbye desc">,
                                                                         std::tuple<>>,
-                                                         test_help_data<AR_STRING("--flag2,-b"),
-                                                                        AR_STRING("Flag2 desc"),
+                                                         test_help_data<str<"--flag2,-b">,
+                                                                        str<"Flag2 desc">,
                                                                         std::tuple<>>>>>>{}},
-            std::tuple{mode(policy::none_name<AR_STRING("mode1")>,
-                            policy::description<AR_STRING("Mode1 desc")>,
-                            flag(policy::long_name<AR_STRING("hello")>,
-                                 policy::short_name<'h'>,
-                                 policy::description<AR_STRING("Hello desc")>),
-                            mode(policy::none_name<AR_STRING("mode2")>,
-                                 policy::description<AR_STRING("Mode2 desc")>,
-                                 flag(policy::long_name<AR_STRING("goodbye")>,
-                                      policy::short_name<'g'>,
-                                      policy::description<AR_STRING("Goodbye desc")>),
-                                 flag(policy::long_name<AR_STRING("flag2")>,
-                                      policy::short_name<'b'>,
-                                      policy::description<AR_STRING("Flag2 desc")>)),
+            std::tuple{mode(policy::none_name_t{"mode1"_S},
+                            policy::description_t{"Mode1 desc"_S},
+                            flag(policy::long_name_t{"hello"_S},
+                                 policy::short_name_t{"h"_S},
+                                 policy::description_t{"Hello desc"_S}),
+                            mode(policy::none_name_t{"mode2"_S},
+                                 policy::description_t{"Mode2 desc"_S},
+                                 flag(policy::long_name_t{"goodbye"_S},
+                                      policy::short_name_t{"g"_S},
+                                      policy::description_t{"Goodbye desc"_S}),
+                                 flag(policy::long_name_t{"flag2"_S},
+                                      policy::short_name_t{"b"_S},
+                                      policy::description_t{"Flag2 desc"_S})),
                             policy::router([](bool) {})),
                        std::false_type{},
-                       test_help_data<AR_STRING("mode1"), AR_STRING("Mode1 desc"), std::tuple<>>{}},
+                       test_help_data<str<"mode1">, str<"Mode1 desc">, std::tuple<>>{}},
         });
 }
 
 BOOST_AUTO_TEST_CASE(multi_stage_alias_group_test)
 {
     auto result = 0;
-    const auto m = mode(ard::alias_group(arg<int>(policy::long_name<AR_STRING("arg")>),
-                                         counting_flag<int>(policy::short_name<'a'>),
+    const auto m = mode(ard::alias_group(arg<int>(policy::long_name_t{"arg"_S}),
+                                         counting_flag<int>(policy::short_name_t{"a"_S}),
                                          policy::required),
                         policy::router([&](int value) { result = value; }));
 
@@ -1102,8 +1097,8 @@ BOOST_AUTO_TEST_CASE(multi_stage_alias_group_test)
 BOOST_AUTO_TEST_CASE(multi_stage_validated_alias_group_test)
 {
     auto result = 0;
-    const auto m = mode(ard::alias_group(arg<int>(policy::long_name<AR_STRING("arg")>),
-                                         counting_flag<int>(policy::short_name<'a'>),
+    const auto m = mode(ard::alias_group(arg<int>(policy::long_name_t{"arg"_S}),
+                                         counting_flag<int>(policy::short_name_t{"a"_S}),
                                          policy::min_max_value<1, 3>(),
                                          policy::required),
                         policy::router([&](int value) { result = value; }));
@@ -1196,16 +1191,18 @@ int main() {
          {
              R"(
 #include "arg_router/flag.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 int main() {
     auto tokens = std::vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "hello"}};
-    const auto m = mode(flag(policy::long_name<AR_STRING("hello")>));
+    const auto m = mode(flag(policy::long_name_t{"hello"_S}));
     auto target = m.pre_parse(parsing::pre_parse_data{tokens});
     (*target)();
     return 0;
@@ -1216,15 +1213,17 @@ int main() {
          {
              R"(
 #include "arg_router/flag.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 int main() {
-    const auto m = mode(policy::long_name<AR_STRING("my-mode")>,
-                        flag(policy::long_name<AR_STRING("hello")>));
+    const auto m = mode(policy::long_name_t{"my-mode"_S},
+                        flag(policy::long_name_t{"hello"_S}));
     return 0;
 }
     )",
@@ -1233,16 +1232,18 @@ int main() {
          {
              R"(
 #include "arg_router/flag.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/short_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 int main() {
-    const auto m = mode(policy::short_name<'l'>,
-                        flag(policy::long_name<AR_STRING("hello")>));
+    const auto m = mode(policy::short_name_t{"l"_S},
+                        flag(policy::long_name_t{"hello"_S}));
     return 0;
 }
     )",
@@ -1251,16 +1252,18 @@ int main() {
          {
              R"(
 #include "arg_router/flag.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/display_name.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 int main() {
-    const auto m = mode(policy::display_name<AR_STRING("mode")>,
-                        flag(policy::long_name<AR_STRING("hello")>));
+    const auto m = mode(policy::display_name_t{"mode"_S},
+                        flag(policy::long_name_t{"hello"_S}));
     return 0;
 }
     )",
@@ -1269,6 +1272,7 @@ int main() {
          {
              R"(
 #include "arg_router/flag.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/none_name.hpp"
@@ -1277,6 +1281,8 @@ int main() {
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
+
 namespace
 {
 template <typename... Params>
@@ -1308,8 +1314,8 @@ public:
 
 int main() {
     const auto m = stub_node(
-                        mode(policy::none_name<AR_STRING("mode")>,
-                             mode(flag(policy::long_name<AR_STRING("hello")>),
+                        mode(policy::none_name_t{"mode"_S},
+                             mode(flag(policy::long_name_t{"hello"_S}),
                                   policy::router([&](bool) {}))));
 
     auto tokens = std::vector<parsing::token_type>{
@@ -1323,18 +1329,20 @@ int main() {
          {
              R"(
 #include "arg_router/flag.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/none_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 int main() {
     [[maybe_unused]] const auto m = mode(
-                    flag(policy::long_name<AR_STRING("flag")>),
-                    mode(policy::none_name<AR_STRING("mode")>,
-                         flag(policy::long_name<AR_STRING("hello")>)));
+                    flag(policy::long_name_t{"flag"_S}),
+                    mode(policy::none_name_t{"mode"_S},
+                         flag(policy::long_name_t{"hello"_S})));
     return 0;
 }
     )",
@@ -1343,6 +1351,7 @@ int main() {
          {
              R"(
 #include "arg_router/flag.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/none_name.hpp"
@@ -1351,6 +1360,8 @@ int main() {
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
+
 namespace
 {
 template <typename... Params>
@@ -1382,9 +1393,9 @@ public:
 
 int main() {
     const auto m = stub_node(
-                        mode(policy::none_name<AR_STRING("mode")>,
-                             flag(policy::long_name<AR_STRING("f1")>),
-                             mode(flag(policy::long_name<AR_STRING("f2")>),
+                        mode(policy::none_name_t{"mode"_S},
+                             flag(policy::long_name_t{"f1"_S}),
+                             mode(flag(policy::long_name_t{"f2"_S}),
                                   policy::router([&](bool) {}))));
                              
 
@@ -1400,15 +1411,17 @@ int main() {
          {
              R"(
 #include "arg_router/flag.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/router.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 int main() {
-    const auto m = mode(flag(policy::long_name<AR_STRING("hello")>,
+    const auto m = mode(flag(policy::long_name_t{"hello"_S},
                              policy::router([&](bool) {})),
                         policy::router([&](bool) {}));
     return 0;
@@ -1419,16 +1432,18 @@ int main() {
          {
              R"(
 #include "arg_router/flag.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/custom_parser.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 int main() {
     const auto m = mode(policy::custom_parser<int>{[](auto) { return false; }},
-                        flag(policy::long_name<AR_STRING("hello")>));
+                        flag(policy::long_name_t{"hello"_S}));
     return 0;
 }
     )",
@@ -1438,16 +1453,18 @@ int main() {
          {
              R"(
 #include "arg_router/flag.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_value.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 int main() {
     const auto m = mode(policy::min_max_value<1, 3>(),
-                        flag(policy::long_name<AR_STRING("hello")>));
+                        flag(policy::long_name_t{"hello"_S}));
     return 0;
 }
     )",
@@ -1457,16 +1474,18 @@ int main() {
          {
              R"(
 #include "arg_router/flag.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/required.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 int main() {
     const auto m = mode(policy::required,
-                        flag(policy::long_name<AR_STRING("hello")>));
+                        flag(policy::long_name_t{"hello"_S}));
     return 0;
 }
     )",
@@ -1476,15 +1495,17 @@ int main() {
          {
              R"(
 #include "arg_router/flag.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 int main() {
-    const auto fake_parent = flag(policy::long_name<AR_STRING("fake")>);
-    const auto m = mode(flag(policy::long_name<AR_STRING("hello")>));
+    const auto fake_parent = flag(policy::long_name_t{"fake"_S});
+    const auto m = mode(flag(policy::long_name_t{"hello"_S}));
 
     auto tokens = std::vector<parsing::token_type>{
                         {parsing::prefix_type::none, "--hello"}};
@@ -1500,17 +1521,19 @@ int main() {
          {
              R"(
 #include "arg_router/flag.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/none_name.hpp"
 #include "arg_router/policy/error_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 int main() {
-    const auto m = mode(policy::none_name<AR_STRING("my-mode")>,
-                        policy::error_name<AR_STRING("error!")>,
-                        flag(policy::long_name<AR_STRING("hello")>));
+    const auto m = mode(policy::none_name_t{"my-mode"_S},
+                        policy::error_name_t{"error!"_S},
+                        flag(policy::long_name_t{"hello"_S}));
     return 0;
 }
     )",

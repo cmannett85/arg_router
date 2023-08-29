@@ -55,7 +55,7 @@ sed -ri "s/^    SHA512 [0-9a-f]{128}$/    SHA512 ${new_sha}/" ports/arg-router/p
 # Re-run the build to confirm
 echo "Testing project against updated vcpkg..."
 cd ${root_dir}/ci/vcpkg_test_project/build
-cmake -G "Ninja" -DCMAKE_CXX_STANDARD=20 -B . -S ..
+cmake -G "Ninja" -B . -S ..
 cmake --build .
 cd ..
 rm -rf ./build

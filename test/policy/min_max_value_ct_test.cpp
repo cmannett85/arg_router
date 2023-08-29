@@ -1,7 +1,8 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_value.hpp"
 #include "arg_router/tree_node.hpp"
@@ -11,6 +12,7 @@
 #include "test_printers.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 namespace
 {
@@ -103,70 +105,66 @@ BOOST_AUTO_TEST_CASE(validation_phase_test)
     test::data_set(
         f,
         std::tuple{
+            std::tuple{stub_node{policy::min_max_value<1, 4>(), policy::long_name_t{"node"_S}},
+                       2,
+                       true,
+                       std::optional<multi_lang_exception>{}},
+            std::tuple{stub_node{policy::min_max_value<1, 4>(), policy::long_name_t{"node"_S}},
+                       1,
+                       true,
+                       std::optional<multi_lang_exception>{}},
+            std::tuple{stub_node{policy::min_max_value<1, 4>(), policy::long_name_t{"node"_S}},
+                       4,
+                       true,
+                       std::optional<multi_lang_exception>{}},
             std::tuple{
-                stub_node{policy::min_max_value<1, 4>(), policy::long_name<AR_STRING("node")>},
-                2,
-                true,
-                std::optional<multi_lang_exception>{}},
-            std::tuple{
-                stub_node{policy::min_max_value<1, 4>(), policy::long_name<AR_STRING("node")>},
-                1,
-                true,
-                std::optional<multi_lang_exception>{}},
-            std::tuple{
-                stub_node{policy::min_max_value<1, 4>(), policy::long_name<AR_STRING("node")>},
-                4,
-                true,
-                std::optional<multi_lang_exception>{}},
-            std::tuple{
-                stub_node{policy::min_max_value<1, 4>(), policy::long_name<AR_STRING("node")>},
+                stub_node{policy::min_max_value<1, 4>(), policy::long_name_t{"node"_S}},
                 0,
                 true,
                 std::optional<multi_lang_exception>{
                     test::create_exception(error_code::minimum_value_not_reached, {"--node"})}},
             std::tuple{
-                stub_node{policy::min_max_value<1, 4>(), policy::long_name<AR_STRING("node")>},
+                stub_node{policy::min_max_value<1, 4>(), policy::long_name_t{"node"_S}},
                 -5,
                 true,
                 std::optional<multi_lang_exception>{
                     test::create_exception(error_code::minimum_value_not_reached, {"--node"})}},
-            std::tuple{
-                stub_node{policy::min_max_value<1, 4>(), policy::long_name<AR_STRING("node")>},
-                6,
-                true,
-                std::optional<multi_lang_exception>{
-                    test::create_exception(error_code::maximum_value_exceeded, {"--node"})}},
+            std::tuple{stub_node{policy::min_max_value<1, 4>(), policy::long_name_t{"node"_S}},
+                       6,
+                       true,
+                       std::optional<multi_lang_exception>{
+                           test::create_exception(error_code::maximum_value_exceeded, {"--node"})}},
 
-            std::tuple{stub_node{policy::min_value<2>(), policy::long_name<AR_STRING("node")>},  //
+            std::tuple{stub_node{policy::min_value<2>(), policy::long_name_t{"node"_S}},  //
                        2,
                        true,
                        std::optional<multi_lang_exception>{}},
-            std::tuple{stub_node{policy::min_value<2>(), policy::long_name<AR_STRING("node")>},  //
+            std::tuple{stub_node{policy::min_value<2>(), policy::long_name_t{"node"_S}},  //
                        20,
                        true,
                        std::optional<multi_lang_exception>{}},
             std::tuple{
-                stub_node{policy::min_value<2>(), policy::long_name<AR_STRING("node")>},
+                stub_node{policy::min_value<2>(), policy::long_name_t{"node"_S}},
                 1,
                 true,
                 std::optional<multi_lang_exception>{
                     test::create_exception(error_code::minimum_value_not_reached, {"--node"})}},
 
-            std::tuple{stub_node{policy::max_value<2>(), policy::long_name<AR_STRING("node")>},  //
+            std::tuple{stub_node{policy::max_value<2>(), policy::long_name_t{"node"_S}},  //
                        2,
                        true,
                        std::optional<multi_lang_exception>{}},
-            std::tuple{stub_node{policy::max_value<2>(), policy::long_name<AR_STRING("node")>},  //
+            std::tuple{stub_node{policy::max_value<2>(), policy::long_name_t{"node"_S}},  //
                        1,
                        true,
                        std::optional<multi_lang_exception>{}},
-            std::tuple{stub_node{policy::max_value<2>(), policy::long_name<AR_STRING("node")>},
+            std::tuple{stub_node{policy::max_value<2>(), policy::long_name_t{"node"_S}},
                        20,
                        true,
                        std::optional<multi_lang_exception>{
                            test::create_exception(error_code::maximum_value_exceeded, {"--node"})}},
 
-            std::tuple{stub_node{policy::long_name<AR_STRING("node")>},
+            std::tuple{stub_node{policy::long_name_t{"node"_S}},
                        0,
                        false,
                        std::optional<multi_lang_exception>{}},
@@ -179,6 +177,7 @@ BOOST_AUTO_TEST_CASE(at_least_one_parent_test)
 {
     test::death_test_compile(
         R"(
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_value.hpp"
 #include "arg_router/tree_node.hpp"
@@ -187,6 +186,8 @@ BOOST_AUTO_TEST_CASE(at_least_one_parent_test)
 #include <vector>
 
 using namespace arg_router;
+using namespace arg_router::literals;
+
 namespace
 {
 template <typename... Policies>
@@ -210,7 +211,7 @@ public:
 }  // namespace
 
 int main() {
-    const auto node = stub_node{policy::long_name<AR_STRING("test")>,
+    const auto node = stub_node{policy::long_name_t{"test"_S},
                                 policy::min_max_value<1, 4>()};
     node.validation_phase(2);
     return 0;
@@ -223,6 +224,7 @@ BOOST_AUTO_TEST_CASE(mintype_and_maxtype_cannot_both_be_void_test)
 {
     test::death_test_compile(
         R"(
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_value.hpp"
 #include "arg_router/tree_node.hpp"
@@ -231,6 +233,8 @@ BOOST_AUTO_TEST_CASE(mintype_and_maxtype_cannot_both_be_void_test)
 #include <vector>
 
 using namespace arg_router;
+using namespace arg_router::literals;
+
 namespace
 {
 template <typename... Policies>
@@ -249,7 +253,7 @@ struct bad {
 }  // namespace
 
 int main() {
-    const auto node = stub_node{policy::long_name<AR_STRING("test")>,
+    const auto node = stub_node{policy::long_name_t{"test"_S},
                                 policy::min_max_value_ct<void, void>()};
     return 0;
 }
@@ -261,6 +265,7 @@ BOOST_AUTO_TEST_CASE(mintype_must_have_value_type_test)
 {
     test::death_test_compile(
         R"(
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_value.hpp"
 #include "arg_router/tree_node.hpp"
@@ -269,6 +274,8 @@ BOOST_AUTO_TEST_CASE(mintype_must_have_value_type_test)
 #include <vector>
 
 using namespace arg_router;
+using namespace arg_router::literals;
+
 namespace
 {
 template <typename... Policies>
@@ -283,7 +290,7 @@ public:
 }  // namespace
 
 int main() {
-    const auto node = stub_node{policy::long_name<AR_STRING("test")>,
+    const auto node = stub_node{policy::long_name_t{"test"_S},
                                 policy::min_max_value_ct<int, void>()};
     return 0;
 }
@@ -295,6 +302,7 @@ BOOST_AUTO_TEST_CASE(maxtype_must_have_value_type_test)
 {
     test::death_test_compile(
         R"(
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_value.hpp"
 #include "arg_router/tree_node.hpp"
@@ -303,6 +311,8 @@ BOOST_AUTO_TEST_CASE(maxtype_must_have_value_type_test)
 #include <vector>
 
 using namespace arg_router;
+using namespace arg_router::literals;
+
 namespace
 {
 template <typename... Policies>
@@ -317,7 +327,7 @@ public:
 }  // namespace
 
 int main() {
-    const auto node = stub_node{policy::long_name<AR_STRING("test")>,
+    const auto node = stub_node{policy::long_name_t{"test"_S},
                                 policy::min_max_value_ct<void, int>()};
     return 0;
 }
@@ -329,6 +339,7 @@ BOOST_AUTO_TEST_CASE(mintype_must_be_integrals_or_enums_test)
 {
     test::death_test_compile(
         R"(
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_value.hpp"
 #include "arg_router/tree_node.hpp"
@@ -337,6 +348,8 @@ BOOST_AUTO_TEST_CASE(mintype_must_be_integrals_or_enums_test)
 #include <vector>
 
 using namespace arg_router;
+using namespace arg_router::literals;
+
 namespace
 {
 template <typename... Policies>
@@ -355,7 +368,7 @@ struct bad {
 }  // namespace
 
 int main() {
-    const auto node = stub_node{policy::long_name<AR_STRING("test")>,
+    const auto node = stub_node{policy::long_name_t{"test"_S},
                                 policy::min_max_value_ct<bad, void>()};
     return 0;
 }
@@ -367,6 +380,7 @@ BOOST_AUTO_TEST_CASE(maxtype_must_be_integrals_or_enums_test)
 {
     test::death_test_compile(
         R"(
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_value.hpp"
 #include "arg_router/tree_node.hpp"
@@ -375,6 +389,8 @@ BOOST_AUTO_TEST_CASE(maxtype_must_be_integrals_or_enums_test)
 #include <vector>
 
 using namespace arg_router;
+using namespace arg_router::literals;
+
 namespace
 {
 template <typename... Policies>
@@ -393,7 +409,7 @@ struct bad {
 }  // namespace
 
 int main() {
-    const auto node = stub_node{policy::long_name<AR_STRING("test")>,
+    const auto node = stub_node{policy::long_name_t{"test"_S},
                                 policy::min_max_value_ct<void, bad>()};
     return 0;
 }
@@ -405,6 +421,7 @@ BOOST_AUTO_TEST_CASE(min_must_be_less_than_max_test)
 {
     test::death_test_compile(
         R"(
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_value.hpp"
 #include "arg_router/tree_node.hpp"
@@ -413,6 +430,8 @@ BOOST_AUTO_TEST_CASE(min_must_be_less_than_max_test)
 #include <vector>
 
 using namespace arg_router;
+using namespace arg_router::literals;
+
 namespace
 {
 template <typename... Policies>
@@ -427,7 +446,7 @@ public:
 }  // namespace
 
 int main() {
-    const auto node = stub_node{policy::long_name<AR_STRING("test")>,
+    const auto node = stub_node{policy::long_name_t{"test"_S},
                                 policy::min_max_value<4, 1>()};
     return 0;
 }
@@ -439,6 +458,7 @@ BOOST_AUTO_TEST_CASE(mintype_and_maxtype_must_have_same_value_type_test)
 {
     test::death_test_compile(
         R"(
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_value.hpp"
 #include "arg_router/tree_node.hpp"
@@ -447,6 +467,8 @@ BOOST_AUTO_TEST_CASE(mintype_and_maxtype_must_have_same_value_type_test)
 #include <vector>
 
 using namespace arg_router;
+using namespace arg_router::literals;
+
 namespace
 {
 template <typename... Policies>
@@ -461,7 +483,7 @@ public:
 }  // namespace
 
 int main() {
-    const auto node = stub_node{policy::long_name<AR_STRING("test")>,
+    const auto node = stub_node{policy::long_name_t{"test"_S},
                                 policy::min_max_value<0u, 3>()};
     return 0;
 }

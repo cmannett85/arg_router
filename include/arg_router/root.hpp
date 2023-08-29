@@ -107,8 +107,8 @@ public:
     class help_data_type
     {
     public:
-        using label = AR_STRING("");
-        using description = AR_STRING("");
+        using label = str<"">;
+        using description = str<"">;
         using children =
             typename parent_type::template default_leaf_help_data_type<Flatten>::all_children_help;
     };
@@ -144,7 +144,7 @@ public:
      * @param args Vector of tokens
      * @exception parse_exception Thrown if parsing has failed
      */
-    void parse(vector<parsing::token_type> args) const
+    void parse(std::vector<parsing::token_type> args) const
     {
         try {
             // Take a copy of the front token for the error messages
@@ -190,7 +190,7 @@ public:
     template <typename Iter, typename = std::enable_if_t<!std::is_same_v<std::decay_t<Iter>, int>>>
     void parse(Iter begin, Iter end) const
     {
-        auto args = vector<parsing::token_type>{};
+        auto args = std::vector<parsing::token_type>{};
         for (; begin != end; ++begin) {
             args.emplace_back(parsing::prefix_type::none, *begin);
         }
@@ -209,7 +209,7 @@ public:
      */
     template <typename Container,
               typename = std::enable_if_t<
-                  !std::is_same_v<std::decay_t<Container>, vector<parsing::token_type>>>>
+                  !std::is_same_v<std::decay_t<Container>, std::vector<parsing::token_type>>>>
     void parse(const Container& c) const
     {
         using std::begin;
@@ -275,9 +275,9 @@ public:
      *
      * @return String holding the help output
      */
-    [[nodiscard]] string help() const
+    [[nodiscard]] std::string help() const
     {
-        auto stream = ostringstream{};
+        auto stream = std::ostringstream{};
         help(stream);
 
         return stream.str();

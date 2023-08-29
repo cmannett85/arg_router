@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -14,12 +14,14 @@ BOOST_AUTO_TEST_CASE(death_test)
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
+using namespace arg_router;
+
 int main() {
-    arg_router::root_t<
-        arg_router::flag_t<
-            arg_router::policy::short_name_t<AR_STRING('a')>,
-            arg_router::policy::long_name_t<AR_STRING("test")>,
-            arg_router::policy::router<std::less<>>>>();
+    root_t<
+        flag_t<
+            policy::short_name_t<str<'a'>>,
+            policy::long_name_t<str<"test">>,
+            policy::router<std::less<>>>>();
     return 0;
 }
     )",
@@ -55,7 +57,7 @@ using default_validator_type =
 
 int main() {
     arg_router::root_t<default_validator_type,
-                       flag_t<policy::long_name_t<AR_STRING("f1")>>>();
+                       flag_t<policy::long_name_t<str<"f1">>>>();
     return 0;
 }
     )",
@@ -64,16 +66,18 @@ int main() {
                               {
                                   R"(
 #include "arg_router/flag.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/root.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 int main() {
-    const auto m = root(policy::alias(policy::long_name<AR_STRING("foo")>),
-                        flag(policy::long_name<AR_STRING("hello")>));
+    const auto m = root(policy::alias(policy::long_name_t{"foo"_S}),
+                        flag(policy::long_name_t{"hello"_S}));
     return 0;
 }
     )",
@@ -82,16 +86,18 @@ int main() {
                               {
                                   R"(
 #include "arg_router/flag.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/custom_parser.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/root.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 int main() {
     const auto m = root(policy::custom_parser<int>{[](auto) { return false; }},
-                        flag(policy::long_name<AR_STRING("hello")>));
+                        flag(policy::long_name_t{"hello"_S}));
     return 0;
 }
     )",
@@ -100,16 +106,18 @@ int main() {
                               {
                                   R"(
 #include "arg_router/flag.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_value.hpp"
 #include "arg_router/root.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 int main() {
     const auto m = root(policy::min_max_value<1, 3>(),
-                        flag(policy::long_name<AR_STRING("hello")>));
+                        flag(policy::long_name_t{"hello"_S}));
     return 0;
 }
     )",
@@ -118,16 +126,18 @@ int main() {
                               {
                                   R"(
 #include "arg_router/flag.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/router.hpp"
 #include "arg_router/root.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 int main() {
     const auto m = root(policy::router{[](std::string_view) { return true; }},
-                        flag(policy::long_name<AR_STRING("hello")>));
+                        flag(policy::long_name_t{"hello"_S}));
     return 0;
 }
     )",
@@ -136,16 +146,18 @@ int main() {
                               {
                                   R"(
 #include "arg_router/flag.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/required.hpp"
 #include "arg_router/root.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 int main() {
     const auto m = root(policy::required,
-                        flag(policy::long_name<AR_STRING("hello")>));
+                        flag(policy::long_name_t{"hello"_S}));
     return 0;
 }
     )",
@@ -154,17 +166,19 @@ int main() {
                               {
                                   R"(
 #include "arg_router/flag.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/root.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 int main() {
-    const auto m = root(policy::long_name<AR_STRING("root")>,
+    const auto m = root(policy::long_name_t{"root"_S},
                         policy::validation::default_validator,
-                        flag(policy::long_name<AR_STRING("hello")>));
+                        flag(policy::long_name_t{"hello"_S}));
     return 0;
 }
     )",
@@ -173,17 +187,19 @@ int main() {
                               {
                                   R"(
 #include "arg_router/flag.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/short_name.hpp"
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/root.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 int main() {
-    const auto m = root(policy::short_name<'r'>,
+    const auto m = root(policy::short_name_t{"r"_S},
                         policy::validation::default_validator,
-                        flag(policy::long_name<AR_STRING("hello")>));
+                        flag(policy::long_name_t{"hello"_S}));
     return 0;
 }
     )",
@@ -192,17 +208,19 @@ int main() {
                               {
                                   R"(
 #include "arg_router/flag.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/display_name.hpp"
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/root.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 int main() {
-    const auto m = root(policy::display_name<AR_STRING("root")>,
+    const auto m = root(policy::display_name_t{"root"_S},
                         policy::validation::default_validator,
-                        flag(policy::long_name<AR_STRING("hello")>));
+                        flag(policy::long_name_t{"hello"_S}));
     return 0;
 }
     )",
@@ -211,17 +229,19 @@ int main() {
                               {
                                   R"(
 #include "arg_router/flag.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/none_name.hpp"
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/root.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 int main() {
-    const auto m = root(policy::none_name<AR_STRING("root")>,
+    const auto m = root(policy::none_name_t{"root"_S},
                         policy::validation::default_validator,
-                        flag(policy::long_name<AR_STRING("hello")>));
+                        flag(policy::long_name_t{"hello"_S}));
     return 0;
 }
     )",
@@ -230,17 +250,19 @@ int main() {
                               {
                                   R"(
 #include "arg_router/flag.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/error_name.hpp"
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/root.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 int main() {
-    const auto m = root(policy::error_name<AR_STRING("root")>,
+    const auto m = root(policy::error_name_t{"root"_S},
                         policy::validation::default_validator,
-                        flag(policy::long_name<AR_STRING("hello")>));
+                        flag(policy::long_name_t{"hello"_S}));
     return 0;
 }
     )",
@@ -249,17 +271,19 @@ int main() {
                               {
                                   R"(
 #include "arg_router/flag.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/description.hpp"
 #include "arg_router/policy/validator.hpp"
 #include "arg_router/root.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 int main() {
-    const auto m = root(policy::description<AR_STRING("root")>,
+    const auto m = root(policy::description_t{"root"_S},
                         policy::validation::default_validator,
-                        flag(policy::long_name<AR_STRING("hello")>));
+                        flag(policy::long_name_t{"hello"_S}));
     return 0;
 }
     )",

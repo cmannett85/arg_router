@@ -1,14 +1,16 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #include "arg_router/utility/type_hash.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/description.hpp"
 #include "arg_router/policy/validator.hpp"
 
 #include "test_helpers.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 namespace
 {
@@ -49,14 +51,14 @@ BOOST_AUTO_TEST_CASE(positive_primitives_test)
 
 BOOST_AUTO_TEST_CASE(node_test)
 {
-    const auto a = root(mode(arg<int>(policy::long_name<AR_STRING("hello")>,
+    const auto a = root(mode(arg<int>(policy::long_name_t{"hello"_S},
                                       policy::required,
-                                      policy::description<AR_STRING("Hello description")>),
+                                      policy::description_t{"Hello description"_S}),
                              policy::router{[&](auto) {}}),
                         policy::validation::default_validator);
-    const auto b = root(mode(arg<int>(policy::long_name<AR_STRING("goodbye")>,
+    const auto b = root(mode(arg<int>(policy::long_name_t{"goodbye"_S},
                                       policy::required,
-                                      policy::description<AR_STRING("Hello description")>),
+                                      policy::description_t{"Hello description"_S}),
                              policy::router{[&](auto) {}}),
                         policy::validation::default_validator);
 
@@ -78,8 +80,8 @@ BOOST_AUTO_TEST_CASE(alias_test)
 
 BOOST_AUTO_TEST_CASE(short_name_test)
 {
-    auto a = flag(policy::short_name<'a'>);
-    auto b = flag(policy::short_name<'b'>);
+    auto a = flag(policy::short_name_t{"a"_S});
+    auto b = flag(policy::short_name_t{"b"_S});
     BOOST_CHECK_NE(utility::type_hash<decltype(a)>(), utility::type_hash<decltype(b)>());
 }
 

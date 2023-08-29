@@ -4,21 +4,12 @@
 
 /** List of example source files.
  *
- * @example c++17/basic_cat/main.cpp
- * @example c++17/custom_policy_and_node/main.cpp
- * @example c++17/just_cats/main.cpp
- * @example c++17/launcher/main.cpp
- * @example c++17/runtime_node_enable/main.cpp
- * @example c++17/simple/main.cpp
- * @example c++17/simple_ml/main.cpp
- * @example c++17/simple_ml_gen/main.cpp
- *
- * @example c++20/basic_cat/main.cpp
- * @example c++20/custom_policy_and_node/main.cpp
- * @example c++20/just_cats/main.cpp
- * @example c++20/launcher/main.cpp
- * @example c++20/runtime_node_enable/main.cpp
- * @example c++20/simple/main.cpp
- * @example c++20/simple_ml/main.cpp
- * @example c++20/simple_ml_gen/main.cpp
+ * @example basic_cat/main.cpp
+ * @example custom_policy_and_node/main.cpp
+ * @example just_cats/main.cpp
+ * @example launcher/main.cpp
+ * @example runtime_node_enable/main.cpp
+ * @example simple/main.cpp
+ * @example simple_ml/main.cpp
+ * @example simple_ml_gen/main.cpp
  */

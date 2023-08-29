@@ -109,8 +109,7 @@ struct parser<std::optional<T>> {
 template <typename T>
 struct parser<T,
               typename std::enable_if_t<traits::has_push_back_method_v<T> &&
-                                        !traits::is_specialisation_of_v<T, std::basic_string> &&
-                                        !std::is_same_v<T, string>>> {
+                                        !traits::is_specialisation_of_v<T, std::basic_string>>> {
     [[nodiscard]] static typename T::value_type parse(std::string_view token)
     {
         return parser<typename T::value_type>::parse(token);

@@ -18,26 +18,20 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 find_package(arg_router REQUIRED)
 
 arg_router_translation_generator(
-    SOURCES "${ROOT_DIR}/examples/resources/simple_ml_gen/en_GB.toml"
-            "${ROOT_DIR}/examples/resources/simple_ml_gen/fr.toml"
-            "${ROOT_DIR}/examples/resources/simple_ml_gen/ja.toml"
+    SOURCES "${ROOT_DIR}/examples/simple_ml_gen/en_GB.toml"
+            "${ROOT_DIR}/examples/simple_ml_gen/fr.toml"
+            "${ROOT_DIR}/examples/simple_ml_gen/ja.toml"
     OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/translations/"
     TARGET translation_package_test_project
 )
 
-# Default to C++20
-if(NOT DEFINED CMAKE_CXX_STANDARD)
-    set(CMAKE_CXX_STANDARD "20")
-endif()
-
 add_executable(package_test_project
-    $<IF:$<STREQUAL:"${CMAKE_CXX_STANDARD}","17">,
-        "${ROOT_DIR}/examples/c++17/simple_ml_gen/main.cpp" ,
-        "${ROOT_DIR}/examples/c++20/simple_ml_gen/main.cpp" >
+    "${ROOT_DIR}/examples/simple_ml_gen/main.cpp"
     ${translation_files}
     "${CMAKE_CURRENT_SOURCE_DIR}/vcpkg.json")
 
 target_link_libraries(package_test_project PUBLIC arg_router::arg_router)
+target_compile_features(package_test_project PUBLIC cxx_std_20)
 set_target_properties(package_test_project PROPERTIES CXX_EXTENSIONS OFF)
 add_dependencies(package_test_project translation_package_test_project)
 target_include_directories(package_test_project PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")

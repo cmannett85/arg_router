@@ -17,12 +17,7 @@ namespace arg_router::policy
  * Your terminal will separate tokens using whitespace by default, but often a different character
  * is used e.g. <TT>--arg=42</TT> - this policy specifies that character.
  *
- * If using C++17 then use the template variable helper with the <TT>S_</TT> macro or char; for
- * C++20 and higher, use the char variable helper or the constructor directly with a compile-time
- * string literal:
  * @code
- * constexpr auto a = ar::policy::value_separator<'='>;
- * constexpr auto b = ar::policy::value_separator_utf8<S_("=")>;
  * constexpr auto c = ar::policy::value_separator_t{"="_S};
  * @endcode
  * @tparam S Compile-time string
@@ -125,20 +120,6 @@ public:
         return parsing::pre_parse_action::valid_node;
     }
 };
-
-/** Constant variable helper.
- *
- * @tparam S Arg/value separator character
- */
-template <char S>
-constexpr auto value_separator = value_separator_t<AR_STRING(S)>{};
-
-/** Constant variable helper that supports UTF-8 code points.
- *
- * @tparam S UTF-8 code point
- */
-template <typename S>
-constexpr auto value_separator_utf8 = value_separator_t<S>{};
 
 template <typename S>
 struct is_policy<value_separator_t<S>> : std::true_type {

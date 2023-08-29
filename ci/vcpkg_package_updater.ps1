@@ -70,7 +70,6 @@ Write-Host "Testing project against updated vcpkg..."
 Set-Location $root_dir\ci\vcpkg_test_project\build
 cmake -G 'Ninja' `
     -DVCPKG_TARGET_TRIPLET=x64-windows-static `
-    -DCMAKE_CXX_STANDARD=20 `
     -B . -S ..
 cmake --build .
 

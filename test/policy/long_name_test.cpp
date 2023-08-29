@@ -16,29 +16,20 @@ BOOST_AUTO_TEST_SUITE(long_name_suite)
 
 BOOST_AUTO_TEST_CASE(is_policy_test)
 {
-    static_assert(policy::is_policy_v<policy::long_name_t<AR_STRING("hello")>>,
-                  "Policy test has failed");
+    static_assert(policy::is_policy_v<policy::long_name_t<str<"hello">>>, "Policy test has failed");
 }
 
 BOOST_AUTO_TEST_CASE(constructor_and_get_test)
 {
-    constexpr auto hello_str = policy::long_name<AR_STRING("hello")>;
+    constexpr auto hello_str = policy::long_name_t{"hello"_S};
     static_assert(hello_str.long_name() == "hello");
 
-    constexpr auto three_char_str = policy::long_name<AR_STRING("boo")>;
+    constexpr auto three_char_str = policy::long_name_t{"boo"_S};
     static_assert(three_char_str.long_name() == "boo");
 
-    constexpr auto world_str = policy::long_name_t{AR_STRING("world"){}};
+    constexpr auto world_str = policy::long_name_t{"world"_S};
     static_assert(world_str.long_name() == "world");
 }
-
-#ifdef AR_ENABLE_CPP20_STRINGS
-BOOST_AUTO_TEST_CASE(string_literal_test)
-{
-    const auto world_str = policy::long_name_t{"world"_S};
-    static_assert(world_str.long_name() == "world");
-}
-#endif
 
 BOOST_AUTO_TEST_CASE(death_test)
 {
@@ -46,8 +37,10 @@ BOOST_AUTO_TEST_CASE(death_test)
                                   R"(
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
+#include "arg_router/literals.hpp"
+using namespace arg_router::literals;
 int main() {
-    const auto ln = arg_router::policy::long_name<AR_STRING("")>;
+    const auto ln = arg_router::policy::long_name_t{""_S};
     return 0;
 }
     )",
@@ -57,8 +50,10 @@ int main() {
                                   R"(
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
+#include "arg_router/literals.hpp"
+using namespace arg_router::literals;
 int main() {
-    const auto ln = arg_router::policy::long_name<AR_STRING("a")>;
+    const auto ln = arg_router::policy::long_name_t{"a"_S};
     return 0;
 }
     )",
@@ -68,8 +63,10 @@ int main() {
                                   R"(
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
+#include "arg_router/literals.hpp"
+using namespace arg_router::literals;
 int main() {
-    const auto ln = arg_router::policy::long_name<AR_STRING("a b")>;
+    const auto ln = arg_router::policy::long_name_t{"a b"_S};
     return 0;
 }
     )",

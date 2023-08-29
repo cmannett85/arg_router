@@ -4,6 +4,7 @@
 
 #include "arg_router/arg.hpp"
 #include "arg_router/flag.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/runtime_enable.hpp"
 #include "arg_router/policy/short_name.hpp"
@@ -14,6 +15,7 @@
 #include "test_printers.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 using namespace std::string_view_literals;
 
 namespace
@@ -71,7 +73,7 @@ BOOST_AUTO_TEST_CASE(match_test)
 {
     {
         [[maybe_unused]] const auto f =
-            flag(policy::long_name<AR_STRING("hello")>, policy::short_name<'H'>);
+            flag(policy::long_name_t{"hello"_S}, policy::short_name_t{"H"_S});
         const auto result =
             parsing::match<std::decay_t<decltype(f)>>({parsing::prefix_type::long_, "hello"});
         BOOST_CHECK(result);
@@ -79,7 +81,7 @@ BOOST_AUTO_TEST_CASE(match_test)
 
     {
         [[maybe_unused]] const auto f =
-            flag(policy::long_name<AR_STRING("hello")>, policy::short_name<'H'>);
+            flag(policy::long_name_t{"hello"_S}, policy::short_name_t{"H"_S});
         const auto result =
             parsing::match<std::decay_t<decltype(f)>>({parsing::prefix_type::short_, "H"});
         BOOST_CHECK(result);
@@ -87,35 +89,35 @@ BOOST_AUTO_TEST_CASE(match_test)
 
     {
         [[maybe_unused]] const auto f =
-            flag(policy::long_name<AR_STRING("hello")>, policy::short_name<'H'>);
+            flag(policy::long_name_t{"hello"_S}, policy::short_name_t{"H"_S});
         const auto result =
             parsing::match<std::decay_t<decltype(f)>>({parsing::prefix_type::long_, "foo"});
         BOOST_CHECK(!result);
     }
 
     {
-        [[maybe_unused]] const auto f = flag(policy::long_name<AR_STRING("hello")>);
+        [[maybe_unused]] const auto f = flag(policy::long_name_t{"hello"_S});
         const auto result =
             parsing::match<std::decay_t<decltype(f)>>({parsing::prefix_type::long_, "hello"});
         BOOST_CHECK(result);
     }
 
     {
-        [[maybe_unused]] const auto f = flag(policy::long_name<AR_STRING("hello")>);
+        [[maybe_unused]] const auto f = flag(policy::long_name_t{"hello"_S});
         const auto result =
             parsing::match<std::decay_t<decltype(f)>>({parsing::prefix_type::long_, "foo"});
         BOOST_CHECK(!result);
     }
 
     {
-        [[maybe_unused]] const auto f = flag(policy::short_name<'H'>);
+        [[maybe_unused]] const auto f = flag(policy::short_name_t{"H"_S});
         const auto result =
             parsing::match<std::decay_t<decltype(f)>>({parsing::prefix_type::short_, "H"});
         BOOST_CHECK(result);
     }
 
     {
-        [[maybe_unused]] const auto f = flag(policy::short_name<'H'>);
+        [[maybe_unused]] const auto f = flag(policy::short_name_t{"H"_S});
         const auto result =
             parsing::match<std::decay_t<decltype(f)>>({parsing::prefix_type::short_, "a"});
         BOOST_CHECK(!result);
@@ -123,7 +125,7 @@ BOOST_AUTO_TEST_CASE(match_test)
 
     {
         [[maybe_unused]] const auto a =
-            arg<int>(policy::long_name<AR_STRING("arg")>, policy::value_separator<'='>);
+            arg<int>(policy::long_name_t{"arg"_S}, policy::value_separator_t{"="_S});
         const auto result =
             parsing::match<std::decay_t<decltype(a)>>({parsing::prefix_type::long_, "arg"});
         BOOST_CHECK(result);
@@ -154,19 +156,19 @@ BOOST_AUTO_TEST_CASE(get_token_type_test_with_node)
 
     test::data_set(f,
                    std::tuple{
-                       std::tuple{stub_node{policy::long_name<AR_STRING("hello")>},
+                       std::tuple{stub_node{policy::long_name_t{"hello"_S}},
                                   "--hello",
                                   parsing::token_type{parsing::prefix_type::long_, "hello"}},
-                       std::tuple{stub_node{policy::short_name<'h'>},
+                       std::tuple{stub_node{policy::short_name_t{"h"_S}},
                                   "-h",
                                   parsing::token_type{parsing::prefix_type::short_, "h"}},
-                       std::tuple{stub_node{policy::short_name<'h'>},
+                       std::tuple{stub_node{policy::short_name_t{"h"_S}},
                                   "hello",
                                   parsing::token_type{parsing::prefix_type::none, "hello"}},
-                       std::tuple{stub_node{policy::long_name<AR_STRING("hello")>},
+                       std::tuple{stub_node{policy::long_name_t{"hello"_S}},
                                   "",
                                   parsing::token_type{parsing::prefix_type::none, ""}},
-                       std::tuple{stub_node{policy::long_name<AR_STRING("hello")>},
+                       std::tuple{stub_node{policy::long_name_t{"hello"_S}},
                                   "-h",
                                   parsing::token_type{parsing::prefix_type::none, "-h"}},
                        std::tuple{stub_node{},
@@ -214,27 +216,27 @@ BOOST_AUTO_TEST_CASE(clean_parents_list_test)
                                   std::tuple{42, 3.14},
                               },
                               std::tuple{
-                                  std::tuple{flag(policy::long_name<AR_STRING("foo")>),
-                                             flag(policy::long_name<AR_STRING("bar")>),
-                                             arg<int>(policy::long_name<AR_STRING("foo")>)},
-                                  std::tuple{flag(policy::long_name<AR_STRING("foo")>),
-                                             flag(policy::long_name<AR_STRING("bar")>),
-                                             arg<int>(policy::long_name<AR_STRING("foo")>)},
+                                  std::tuple{flag(policy::long_name_t{"foo"_S}),
+                                             flag(policy::long_name_t{"bar"_S}),
+                                             arg<int>(policy::long_name_t{"foo"_S})},
+                                  std::tuple{flag(policy::long_name_t{"foo"_S}),
+                                             flag(policy::long_name_t{"bar"_S}),
+                                             arg<int>(policy::long_name_t{"foo"_S})},
                               },
                               std::tuple{
-                                  std::tuple{flag(policy::long_name<AR_STRING("foo")>),
-                                             custom_flag_t{policy::long_name<AR_STRING("foo")>},
-                                             arg<int>(policy::long_name<AR_STRING("foo")>)},
-                                  std::tuple{custom_flag_t{policy::long_name<AR_STRING("foo")>},
-                                             arg<int>(policy::long_name<AR_STRING("foo")>)},
+                                  std::tuple{flag(policy::long_name_t{"foo"_S}),
+                                             custom_flag_t{policy::long_name_t{"foo"_S}},
+                                             arg<int>(policy::long_name_t{"foo"_S})},
+                                  std::tuple{custom_flag_t{policy::long_name_t{"foo"_S}},
+                                             arg<int>(policy::long_name_t{"foo"_S})},
                               },
                               std::tuple{
-                                  std::tuple{custom_flag_t{policy::long_name<AR_STRING("bar")>},
-                                             flag(policy::long_name<AR_STRING("foo")>),
-                                             arg<int>(policy::long_name<AR_STRING("foo")>)},
-                                  std::tuple{custom_flag_t{policy::long_name<AR_STRING("bar")>},
-                                             flag(policy::long_name<AR_STRING("foo")>),
-                                             arg<int>(policy::long_name<AR_STRING("foo")>)},
+                                  std::tuple{custom_flag_t{policy::long_name_t{"bar"_S}},
+                                             flag(policy::long_name_t{"foo"_S}),
+                                             arg<int>(policy::long_name_t{"foo"_S})},
+                                  std::tuple{custom_flag_t{policy::long_name_t{"bar"_S}},
+                                             flag(policy::long_name_t{"foo"_S}),
+                                             arg<int>(policy::long_name_t{"foo"_S})},
                               }});
 }
 

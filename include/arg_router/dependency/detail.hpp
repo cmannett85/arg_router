@@ -18,13 +18,8 @@ template <typename ParentDocName, typename... Params>
 struct generate_string_of_child_names {
 private:
     template <typename Prefix, typename Strings>
-    using prepend_prefix =
-#ifdef AR_ENABLE_CPP20_STRINGS
-        std::decay_t<decltype(
-            Prefix{} + boost::mp11::mp_fold<Strings, utility::str<>, utility::str_concat>{})>;
-#else
-        boost::mp11::mp_flatten<boost::mp11::mp_insert_c<Strings, 0, typename Prefix::array_type>>;
-#endif
+    using prepend_prefix = std::decay_t<decltype(
+        Prefix{} + boost::mp11::mp_fold<Strings, utility::str<>, utility::str_concat>{})>;
 
     template <typename Child>
     struct build_name {
@@ -39,12 +34,7 @@ private:
     };
 
     template <typename ChildName>
-    using joiner =
-#ifdef AR_ENABLE_CPP20_STRINGS
-        typename ChildName::template append_t<utility::str<','>>;
-#else
-        boost::mp11::mp_push_back<typename ChildName::array_type, traits::integral_constant<','>>;
-#endif
+    using joiner = typename ChildName::template append_t<utility::str<','>>;
 
     using children_type = boost::mp11::mp_filter<is_tree_node, std::tuple<Params...>>;
 
@@ -60,14 +50,9 @@ private:
                 children_type>>>;
 
 public:
-// We only take the first N-1 characters to strip off the trailing comma
-#ifdef AR_ENABLE_CPP20_STRINGS
+    // We only take the first N-1 characters to strip off the trailing comma
     using type = std::decay_t<decltype(
         concatenated_string{}.template substr<0, concatenated_string::size() - 1>())>;
-#else
-    using type = utility::convert_to_cts_t<
-        boost::mp11::mp_take_c<concatenated_string, std::tuple_size_v<concatenated_string> - 1>>;
-#endif
 };
 
 // If a display_name has been specified, then use that otherwise use the dev-provided default.
@@ -167,9 +152,9 @@ protected:
             using children = std::tuple<>;
         };
 
-        using top_bar = AR_STRING("┌ ");
-        using middle_bar = AR_STRING("├ ");
-        using bottom_bar = AR_STRING("└ ");
+        using top_bar = str<"┌ ">;
+        using middle_bar = str<"├ ">;
+        using bottom_bar = str<"└ ">;
 
         template <typename Child>
         using first_prefixer = prefixer<Child, top_bar>;
@@ -188,8 +173,8 @@ protected:
             last_prefixer<boost::mp11::mp_back<children_type>>>;
 
         template <typename OwnerNode, typename FilterFn>
-        [[nodiscard]] static vector<runtime_help_data> runtime_children(const OwnerNode& owner,
-                                                                        FilterFn&& f)
+        [[nodiscard]] static std::vector<runtime_help_data> runtime_children(const OwnerNode& owner,
+                                                                             FilterFn&& f)
         {
             // Gather the basic data
             auto result = parent_type::template default_leaf_help_data_type<true>::runtime_children(

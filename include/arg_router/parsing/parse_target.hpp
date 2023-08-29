@@ -38,8 +38,11 @@ public:
      * @param parents Parents of @a node
      */
     template <typename Node, typename... Parents>
-    parse_target(vector<token_type> tokens, const Node& node, const Parents&... parents) noexcept :
-        node_type_{utility::type_hash<std::decay_t<Node>>()}, tokens_(std::move(tokens))
+    parse_target(std::vector<token_type> tokens,
+                 const Node& node,
+                 const Parents&... parents) noexcept :
+        node_type_{utility::type_hash<std::decay_t<Node>>()},
+        tokens_(std::move(tokens))
     {
         static_assert(is_tree_node_v<Node>, "Target must be a tree_node");
 
@@ -65,7 +68,7 @@ public:
     // NOLINTNEXTLINE(*-member-init)
     explicit parse_target(const Node& node,  //
                           const Parents&... parents) noexcept :
-        parse_target(vector<token_type>{}, node, parents...)
+        parse_target(std::vector<token_type>{}, node, parents...)
     {
     }
 
@@ -73,25 +76,28 @@ public:
      *
      * @return Tokens reference
      */
-    [[nodiscard]] vector<token_type>& tokens() noexcept { return tokens_; }
+    [[nodiscard]] std::vector<token_type>& tokens() noexcept { return tokens_; }
 
     /** Const overload.
      *
      * @return Tokens reference
      */
-    [[nodiscard]] const vector<token_type>& tokens() const noexcept { return tokens_; }
+    [[nodiscard]] const std::vector<token_type>& tokens() const noexcept { return tokens_; }
 
     /** The sub-targets associated with this target.
      *
      * @return Sub-targets reference
      */
-    [[nodiscard]] vector<parse_target>& sub_targets() noexcept { return sub_targets_; }
+    [[nodiscard]] std::vector<parse_target>& sub_targets() noexcept { return sub_targets_; }
 
     /** Const overload.
      *
      * @return Sub-targets reference
      */
-    [[nodiscard]] const vector<parse_target>& sub_targets() const noexcept { return sub_targets_; }
+    [[nodiscard]] const std::vector<parse_target>& sub_targets() const noexcept
+    {
+        return sub_targets_;
+    }
 
     /** Bool conversion operator.
      *
@@ -116,7 +122,7 @@ public:
      *
      * @param tokens New tokens
      */
-    void tokens(vector<token_type> tokens) { tokens_ = std::move(tokens); }
+    void tokens(std::vector<token_type> tokens) { tokens_ = std::move(tokens); }
 
     /** Trigger the parse of this target.
      *
@@ -135,8 +141,8 @@ public:
 
 private:
     std::size_t node_type_;
-    vector<token_type> tokens_;
-    vector<parse_target> sub_targets_;
+    std::vector<token_type> tokens_;
+    std::vector<parse_target> sub_targets_;
     std::function<utility::unsafe_any(parse_target)> parse_;
 };
 }  // namespace parsing

@@ -53,7 +53,7 @@ public:
                 boost::mp11::mp_find_if<policies_type, traits::has_display_name_method>::value;
             using name_type = typename std::tuple_element_t<name_index, policies_type>::string_type;
 
-            return AR_STRING("<"){} + name_type{} + AR_STRING("> "){} +
+            return str<"<">{} + name_type{} + str<"> ">{} +
                    parent_type::template default_leaf_help_data_type<Flatten>::count_suffix();
         }
 

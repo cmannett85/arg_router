@@ -4,6 +4,7 @@
 
 #include "arg_router/utility/utf8/levenshtein_distance.hpp"
 #include "arg_router/dependency/one_of.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/none_name.hpp"
 #include "arg_router/policy/runtime_enable.hpp"
@@ -14,6 +15,7 @@
 #include "test_printers.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 using namespace arg_router::utility;
 using namespace std::string_view_literals;
 
@@ -65,20 +67,19 @@ BOOST_AUTO_TEST_CASE(levenshtein_distance_test)
 
 BOOST_AUTO_TEST_CASE(closest_matching_child_node_test)
 {
-    const auto root =
-        stub_node{stub_node{policy::long_name<AR_STRING("cat")>,
-                            policy::short_name<'c'>,
-                            policy::runtime_enable{true}},
-                  stub_node{policy::long_name<AR_STRING("dog")>},
-                  stub_node{policy::none_name<AR_STRING("Cam")>},
-                  stub_node{policy::none_name<AR_STRING("Ella")>, policy::runtime_enable{false}},
-                  stub_node{policy::short_name<'a'>,
-                            policy::runtime_enable{false},
-                            stub_node{policy::short_name<'b'>}},
-                  dependency::one_of(
-                      policy::required,
-                      stub_node{policy::long_name<AR_STRING("hello")>, policy::short_name<'h'>},
-                      stub_node{policy::short_name<'w'>})};
+    const auto root = stub_node{
+        stub_node{policy::long_name_t{"cat"_S},
+                  policy::short_name_t{"c"_S},
+                  policy::runtime_enable{true}},
+        stub_node{policy::long_name_t{"dog"_S}},
+        stub_node{policy::none_name_t{"Cam"_S}},
+        stub_node{policy::none_name_t{"Ella"_S}, policy::runtime_enable{false}},
+        stub_node{policy::short_name_t{"a"_S},
+                  policy::runtime_enable{false},
+                  stub_node{policy::short_name_t{"b"_S}}},
+        dependency::one_of(policy::required,
+                           stub_node{policy::long_name_t{"hello"_S}, policy::short_name_t{"h"_S}},
+                           stub_node{policy::short_name_t{"w"_S}})};
 
     auto f = [&](auto token, auto expected) {
         const auto result = utf8::closest_matching_child_node(root, token);
@@ -89,25 +90,25 @@ BOOST_AUTO_TEST_CASE(closest_matching_child_node_test)
         f,
         {
             std::tuple{parsing::token_type{parsing::prefix_type::none, "--cat"},
-                       vector<parsing::token_type>{{parsing::prefix_type::long_, "cat"}}},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::long_, "cat"}}},
             std::tuple{parsing::token_type{parsing::prefix_type::none, "--bat"},
-                       vector<parsing::token_type>{{parsing::prefix_type::long_, "cat"}}},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::long_, "cat"}}},
             std::tuple{parsing::token_type{parsing::prefix_type::none, "--blob"},
-                       vector<parsing::token_type>{{parsing::prefix_type::long_, "dog"}}},
-            std::tuple{
-                parsing::token_type{parsing::prefix_type::none, "--Ella"},
-                vector<parsing::token_type>{{parsing::prefix_type::long_, "hello"},
-                                            {parsing::prefix_type::none, "One of: --hello,-w"}}},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::long_, "dog"}}},
+            std::tuple{parsing::token_type{parsing::prefix_type::none, "--Ella"},
+                       std::vector<parsing::token_type>{
+                           {parsing::prefix_type::long_, "hello"},
+                           {parsing::prefix_type::none, "One of: --hello,-w"}}},
             std::tuple{parsing::token_type{parsing::prefix_type::none, "Spam"},
-                       vector<parsing::token_type>{{parsing::prefix_type::none, "Cam"}}},
-            std::tuple{
-                parsing::token_type{parsing::prefix_type::none, "Yellow"},
-                vector<parsing::token_type>{{parsing::prefix_type::long_, "hello"},
-                                            {parsing::prefix_type::none, "One of: --hello,-w"}}},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "Cam"}}},
+            std::tuple{parsing::token_type{parsing::prefix_type::none, "Yellow"},
+                       std::vector<parsing::token_type>{
+                           {parsing::prefix_type::long_, "hello"},
+                           {parsing::prefix_type::none, "One of: --hello,-w"}}},
             std::tuple{parsing::token_type{parsing::prefix_type::none, "-f"},
-                       vector<parsing::token_type>{{parsing::prefix_type::short_, "c"}}},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::short_, "c"}}},
             std::tuple{parsing::token_type{parsing::prefix_type::none, "-b"},
-                       vector<parsing::token_type>{{parsing::prefix_type::short_, "c"}}},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::short_, "c"}}},
         });
 }
 

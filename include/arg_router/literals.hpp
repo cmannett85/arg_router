@@ -8,8 +8,7 @@
 
 namespace arg_router::literals
 {
-#ifdef AR_ENABLE_CPP20_STRINGS
-/** String literal to generate a C++20 compile-time string instance.
+/** String literal to generate a compile-time string instance.
  *
  * @tparam S Internal storage type
  * @return Compile-time string instance
@@ -19,5 +18,4 @@ template <utility::detail::compile_time_string_storage S>
 {
     return utility::str<S>{};
 }
-#endif
 }  // namespace arg_router::literals

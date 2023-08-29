@@ -66,39 +66,37 @@ enum class error_code : std::size_t {
  */
 struct default_error_code_translations {
     using error_code_translations = std::tuple<
-        std::pair<traits::integral_constant<error_code::unknown_argument>,
-                  AR_STRING("Unknown argument")>,
+        std::pair<traits::integral_constant<error_code::unknown_argument>, str<"Unknown argument">>,
         std::pair<traits::integral_constant<error_code::unhandled_arguments>,
-                  AR_STRING("Unhandled arguments")>,
+                  str<"Unhandled arguments">>,
         std::pair<traits::integral_constant<error_code::argument_has_already_been_set>,
-                  AR_STRING("Argument has already been set")>,
-        std::pair<traits::integral_constant<error_code::failed_to_parse>,
-                  AR_STRING("Failed to parse")>,
+                  str<"Argument has already been set">>,
+        std::pair<traits::integral_constant<error_code::failed_to_parse>, str<"Failed to parse">>,
         std::pair<traits::integral_constant<error_code::no_arguments_passed>,
-                  AR_STRING("No arguments passed")>,
+                  str<"No arguments passed">>,
         std::pair<traits::integral_constant<error_code::minimum_value_not_reached>,
-                  AR_STRING("Minimum value not reached")>,
+                  str<"Minimum value not reached">>,
         std::pair<traits::integral_constant<error_code::maximum_value_exceeded>,
-                  AR_STRING("Maximum value exceeded")>,
+                  str<"Maximum value exceeded">>,
         std::pair<traits::integral_constant<error_code::minimum_count_not_reached>,
-                  AR_STRING("Minimum count not reached")>,
+                  str<"Minimum count not reached">>,
         std::pair<traits::integral_constant<error_code::maximum_count_exceeded>,
-                  AR_STRING("Maximum count exceeded")>,
+                  str<"Maximum count exceeded">>,
         std::pair<traits::integral_constant<error_code::unknown_argument_with_suggestion>,
-                  AR_STRING("Unknown argument: {}. Did you mean { }?")>,
+                  str<"Unknown argument: {}. Did you mean { }?">>,
         std::pair<traits::integral_constant<error_code::mode_requires_arguments>,
-                  AR_STRING("Mode requires arguments")>,
+                  str<"Mode requires arguments">>,
         std::pair<traits::integral_constant<error_code::missing_required_argument>,
-                  AR_STRING("Missing required argument")>,
+                  str<"Missing required argument">>,
         std::pair<traits::integral_constant<error_code::too_few_values_for_alias>,
-                  AR_STRING("Too few values for alias")>,
+                  str<"Too few values for alias">>,
         std::pair<traits::integral_constant<error_code::dependent_argument_missing>,
-                  AR_STRING("Dependent argument missing (needs to be before the "
-                            "requiring token on the command line)")>,
+                  str<"Dependent argument missing (needs to be before the "
+                      "requiring token on the command line)">>,
         std::pair<traits::integral_constant<error_code::one_of_selected_type_mismatch>,
-                  AR_STRING("Only one argument from a \"One Of\" can be used at once")>,
+                  str<"Only one argument from a \"One Of\" can be used at once">>,
         std::pair<traits::integral_constant<error_code::missing_value_separator>,
-                  AR_STRING("Expected a value separator")>>;
+                  str<"Expected a value separator">>>;
 };
 
 /** Used internally by the library (and node developers) to indicate failure.
@@ -130,7 +128,7 @@ public:
      * @param ec Error code
      * @param tokens Tokens that caused the error
      */
-    multi_lang_exception(error_code ec, vector<parsing::token_type> tokens) noexcept :
+    multi_lang_exception(error_code ec, std::vector<parsing::token_type> tokens) noexcept :
         ec_{ec}, tokens_(std::move(tokens))
     {
     }
@@ -141,11 +139,14 @@ public:
 
     /** @return Token list
      */
-    [[nodiscard]] const vector<parsing::token_type>& tokens() const noexcept { return tokens_; }
+    [[nodiscard]] const std::vector<parsing::token_type>& tokens() const noexcept
+    {
+        return tokens_;
+    }
 
 private:
     error_code ec_;
-    vector<parsing::token_type> tokens_;
+    std::vector<parsing::token_type> tokens_;
 };
 
 /** An exception that represents a parsing failure.
@@ -165,8 +166,8 @@ public:
      * @param message Error message
      * @param tokens Tokens that caused the error
      */
-    explicit parse_exception(const string& message,
-                             const vector<parsing::token_type>& tokens = {}) :
+    explicit parse_exception(const std::string& message,
+                             const std::vector<parsing::token_type>& tokens = {}) :
         message_{message + (tokens.empty() ? "" : ": " + parsing::to_string(tokens))}
     {
     }
@@ -176,7 +177,7 @@ public:
      * @param message Error message
      * @param token Token that caused the error
      */
-    parse_exception(const string& message, const parsing::token_type& token) :
+    parse_exception(const std::string& message, const parsing::token_type& token) :
         message_{message + ": " + parsing::to_string(token)}
     {
     }
@@ -189,7 +190,7 @@ public:
      */
     template <typename S>
     explicit parse_exception(utility::exception_formatter<S> cts,
-                             const vector<parsing::token_type>& tokens = {}) :
+                             const std::vector<parsing::token_type>& tokens = {}) :
         message_{cts.format(tokens)}
     {
     }
@@ -197,6 +198,6 @@ public:
     [[nodiscard]] const char* what() const noexcept override { return message_.data(); }
 
 private:
-    string message_;
+    std::string message_;
 };
 }  // namespace arg_router

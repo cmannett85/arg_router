@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -18,7 +18,7 @@ BOOST_AUTO_TEST_SUITE(utf8_suite)
 
 BOOST_AUTO_TEST_CASE(code_point_iterator_test)
 {
-    using str = AR_STRING("a🙂bΔ猫");
+    using str = utility::str<"a🙂bΔ猫">;
     {
         constexpr auto it = utf8::code_point::iterator{str::get()};
         static_assert(*it == "a");
@@ -57,7 +57,7 @@ BOOST_AUTO_TEST_CASE(code_point_iterator_test)
         BOOST_CHECK_EQUAL(result, expected);
     }
     {
-        using empty_str = AR_STRING("");
+        using empty_str = utility::str<"">;
 
         auto it = utf8::code_point::iterator{empty_str::get()};
         BOOST_CHECK(it == utf8::code_point::iterator{});
@@ -66,7 +66,7 @@ BOOST_AUTO_TEST_CASE(code_point_iterator_test)
 
 BOOST_AUTO_TEST_CASE(iterator_test)
 {
-    using str = AR_STRING("क़m̃🙂b🇦🇬Δ猫");
+    using str = utility::str<"क़m̃🙂b🇦🇬Δ猫">;
     {
         constexpr auto it = utf8::iterator{str::get()};
         static_assert(*it == "क़");
@@ -106,7 +106,7 @@ BOOST_AUTO_TEST_CASE(iterator_test)
         BOOST_CHECK_EQUAL(result, expected);
     }
     {
-        using empty_str = AR_STRING("");
+        using empty_str = utility::str<"">;
 
         auto it = utf8::iterator{empty_str::get()};
         BOOST_CHECK(it == utf8::iterator{});
@@ -116,19 +116,19 @@ BOOST_AUTO_TEST_CASE(iterator_test)
 BOOST_AUTO_TEST_CASE(count_test)
 {
     {
-        using str = AR_STRING("");
+        using str = utility::str<"">;
         static_assert(utf8::count(str::get()) == 0);
     }
     {
-        using str = AR_STRING("🇦🇬");
+        using str = utility::str<"🇦🇬">;
         static_assert(utf8::count(str::get()) == 1);
     }
     {
-        using str = AR_STRING("🇦🇬m̃");
+        using str = utility::str<"🇦🇬m̃">;
         static_assert(utf8::count(str::get()) == 2);
     }
     {
-        using str = AR_STRING("hello");
+        using str = utility::str<"hello">;
         static_assert(utf8::count(str::get()) == 5);
     }
 }
@@ -136,23 +136,23 @@ BOOST_AUTO_TEST_CASE(count_test)
 BOOST_AUTO_TEST_CASE(is_whitespace_test)
 {
     {
-        using str = AR_STRING("");
+        using str = utility::str<"">;
         static_assert(!utf8::is_whitespace(str::get()));
     }
     {
-        using str = AR_STRING("a");
+        using str = utility::str<"a">;
         static_assert(!utf8::is_whitespace(str::get()));
     }
     {
-        using str = AR_STRING(" ");
+        using str = utility::str<" ">;
         static_assert(utf8::is_whitespace(str::get()));
     }
     {
-        using str = AR_STRING("🙂");
+        using str = utility::str<"🙂">;
         static_assert(!utf8::is_whitespace(str::get()));
     }
     {
-        using str = AR_STRING(" ");  // Thin space
+        using str = utility::str<" ">;  // Thin space
         static_assert(utf8::is_whitespace(str::get()));
     }
 }
@@ -160,44 +160,44 @@ BOOST_AUTO_TEST_CASE(is_whitespace_test)
 BOOST_AUTO_TEST_CASE(contains_whitespace_test)
 {
     {
-        using str = AR_STRING("");
+        using str = utility::str<"">;
         static_assert(!utf8::contains_whitespace(str::get()));
     }
     {
-        using str = AR_STRING("hello");
+        using str = utility::str<"hello">;
         static_assert(!utf8::contains_whitespace(str::get()));
     }
     {
-        using str = AR_STRING("zß水🍌");
+        using str = utility::str<"zß水🍌">;
         static_assert(!utf8::contains_whitespace(str::get()));
     }
     {
-        using str = AR_STRING(" ");
+        using str = utility::str<" ">;
         static_assert(utf8::contains_whitespace(str::get()));
     }
     {
-        using str = AR_STRING(" hello");
+        using str = utility::str<" hello">;
         static_assert(utf8::contains_whitespace(str::get()));
     }
     {
-        using str = AR_STRING("hello ");
+        using str = utility::str<"hello ">;
         static_assert(utf8::contains_whitespace(str::get()));
     }
     {
-        using str = AR_STRING("hel lo");
+        using str = utility::str<"hel lo">;
         static_assert(utf8::contains_whitespace(str::get()));
     }
     // Thin space
     {
-        using str = AR_STRING(" hello");
+        using str = utility::str<" hello">;
         static_assert(utf8::contains_whitespace(str::get()));
     }
     {
-        using str = AR_STRING("hello ");
+        using str = utility::str<"hello ">;
         static_assert(utf8::contains_whitespace(str::get()));
     }
     {
-        using str = AR_STRING("hel lo");
+        using str = utility::str<"hel lo">;
         static_assert(utf8::contains_whitespace(str::get()));
     }
 }
@@ -205,31 +205,31 @@ BOOST_AUTO_TEST_CASE(contains_whitespace_test)
 BOOST_AUTO_TEST_CASE(terminal_width_test)
 {
     {
-        using str = AR_STRING("");
+        using str = utility::str<"">;
         static_assert(utf8::terminal_width(str::get()) == 0);
     }
     {
-        using str = AR_STRING("hello");
+        using str = utility::str<"hello">;
         static_assert(utf8::terminal_width(str::get()) == 5);
     }
     {
-        using str = AR_STRING("zß水🍌");
+        using str = utility::str<"zß水🍌">;
         static_assert(utf8::terminal_width(str::get()) == 6);
     }
     {
-        using str = AR_STRING("🙂");
+        using str = utility::str<"🙂">;
         static_assert(utf8::terminal_width(str::get()) == 2);
     }
     {
-        using str = AR_STRING("猫");
+        using str = utility::str<"猫">;
         static_assert(utf8::terminal_width(str::get()) == 2);
     }
     {
-        using str = AR_STRING("🇦🇬");
+        using str = utility::str<"🇦🇬">;
         static_assert(utf8::terminal_width(str::get()) == 2);
     }
     {
-        using str = AR_STRING("m̃");
+        using str = utility::str<"m̃">;
         static_assert(utf8::terminal_width(str::get()) == 1);
     }
 }
@@ -237,7 +237,7 @@ BOOST_AUTO_TEST_CASE(terminal_width_test)
 BOOST_AUTO_TEST_CASE(line_iterator_test)
 {
     {
-        using str = AR_STRING("hello 🙂 zß水🍌   goodbye");
+        using str = utility::str<"hello 🙂 zß水🍌   goodbye">;
         {
             constexpr auto it = utf8::line_iterator{str::get(), 21};
             static_assert(it.max_columns() == 21);
@@ -263,7 +263,7 @@ BOOST_AUTO_TEST_CASE(line_iterator_test)
         BOOST_CHECK_EQUAL(result, expected);
     }
     {
-        using str = AR_STRING("hello 🙂 zß水🍌   goodbye");
+        using str = utility::str<"hello 🙂 zß水🍌   goodbye">;
 
         {
             constexpr auto it = utf8::line_iterator{str::get(), 80};
@@ -283,14 +283,14 @@ BOOST_AUTO_TEST_CASE(line_iterator_test)
         BOOST_CHECK_EQUAL(result, expected);
     }
     {
-        using str = AR_STRING("");
+        using str = utility::str<"">;
 
         constexpr auto it = utf8::line_iterator{str::get(), 11};
         static_assert(it.max_columns() == 11);
         static_assert(it == utf8::line_iterator{});
     }
     {
-        using str = AR_STRING("hello🙂zß水🍌 goodbye");
+        using str = utility::str<"hello🙂zß水🍌 goodbye">;
         {
             constexpr auto it = utf8::line_iterator{str::get(), 11};
             static_assert(it.max_columns() == 11);

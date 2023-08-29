@@ -1,0 +1,237 @@
+// Copyright (C) 2022-2023 by Camden Mannett.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
+
+#include "arg_router/policy/min_max_value.hpp"
+#include "arg_router/literals.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/tree_node.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+#include "test_helpers.hpp"
+#include "test_printers.hpp"
+
+using namespace arg_router;
+using namespace arg_router::literals;
+
+namespace
+{
+template <typename... Policies>
+class stub_node : public tree_node<Policies...>
+{
+public:
+    constexpr explicit stub_node(Policies... policies) :
+        tree_node<Policies...>{std::move(policies)...}
+    {
+    }
+
+    template <typename InputValueType, typename... Parents>
+    bool validation_phase(const InputValueType& value, const Parents&... parents) const
+    {
+        auto hit = false;
+        utility::tuple_type_iterator<typename stub_node::policies_type>(  //
+            [&](auto i) {
+                using this_policy = std::tuple_element_t<i, typename stub_node::policies_type>;
+                if constexpr (policy::has_validation_phase_method_v<this_policy, InputValueType> &&
+                              traits::is_specialisation_of_v<this_policy,
+                                                             policy::min_max_value_t>) {
+                    this->this_policy::validation_phase(value, parents...);
+                    hit = true;
+                }
+            });
+
+        return hit;
+    }
+};
+}  // namespace
+
+BOOST_AUTO_TEST_SUITE(policy_suite)
+
+BOOST_AUTO_TEST_SUITE(min_max_value_suite)
+
+BOOST_AUTO_TEST_CASE(is_policy_test)
+{
+    static_assert(policy::is_policy_v<policy::min_max_value_t<int>>, "Policy test has failed");
+}
+
+BOOST_AUTO_TEST_CASE(has_validation_phase_test)
+{
+    static_assert(policy::has_validation_phase_method_v<policy::min_max_value_t<int>, int>,
+                  "Phase method test has failed");
+}
+
+BOOST_AUTO_TEST_CASE(validation_phase_test)
+{
+    auto f = [](auto node, auto value, auto expected_hit, auto ec) {
+        try {
+            const auto hit = node.validation_phase(value, node);
+            BOOST_CHECK(!ec);
+            BOOST_CHECK_EQUAL(hit, expected_hit);
+        } catch (multi_lang_exception& e) {
+            BOOST_REQUIRE(ec);
+            BOOST_CHECK_EQUAL(e.ec(), ec->ec());
+            BOOST_CHECK_EQUAL(e.tokens(), ec->tokens());
+        }
+    };
+
+    test::data_set(
+        f,
+        std::tuple{
+            std::tuple{stub_node{policy::min_max_value(1, 4), policy::long_name_t{"node"_S}},
+                       2,
+                       true,
+                       std::optional<multi_lang_exception>{}},
+            std::tuple{stub_node{policy::min_max_value(1, 4), policy::long_name_t{"node"_S}},
+                       1,
+                       true,
+                       std::optional<multi_lang_exception>{}},
+            std::tuple{stub_node{policy::min_max_value(1, 4), policy::long_name_t{"node"_S}},
+                       4,
+                       true,
+                       std::optional<multi_lang_exception>{}},
+            std::tuple{
+                stub_node{policy::min_max_value(1, 4), policy::long_name_t{"node"_S}},
+                0,
+                true,
+                std::optional<multi_lang_exception>{
+                    test::create_exception(error_code::minimum_value_not_reached, {"--node"})}},
+            std::tuple{
+                stub_node{policy::min_max_value(1, 4), policy::long_name_t{"node"_S}},
+                -5,
+                true,
+                std::optional<multi_lang_exception>{
+                    test::create_exception(error_code::minimum_value_not_reached, {"--node"})}},
+            std::tuple{stub_node{policy::min_max_value(1, 4), policy::long_name_t{"node"_S}},
+                       6,
+                       true,
+                       std::optional<multi_lang_exception>{
+                           test::create_exception(error_code::maximum_value_exceeded, {"--node"})}},
+
+            std::tuple{stub_node{policy::min_value(2), policy::long_name_t{"node"_S}},  //
+                       2,
+                       true,
+                       std::optional<multi_lang_exception>{}},
+            std::tuple{stub_node{policy::min_value(2), policy::long_name_t{"node"_S}},  //
+                       20,
+                       true,
+                       std::optional<multi_lang_exception>{}},
+            std::tuple{
+                stub_node{policy::min_value(2), policy::long_name_t{"node"_S}},
+                1,
+                true,
+                std::optional<multi_lang_exception>{
+                    test::create_exception(error_code::minimum_value_not_reached, {"--node"})}},
+
+            std::tuple{stub_node{policy::max_value(2), policy::long_name_t{"node"_S}},  //
+                       2,
+                       true,
+                       std::optional<multi_lang_exception>{}},
+            std::tuple{stub_node{policy::max_value(2), policy::long_name_t{"node"_S}},  //
+                       1,
+                       true,
+                       std::optional<multi_lang_exception>{}},
+            std::tuple{stub_node{policy::max_value(2), policy::long_name_t{"node"_S}},
+                       20,
+                       true,
+                       std::optional<multi_lang_exception>{
+                           test::create_exception(error_code::maximum_value_exceeded, {"--node"})}},
+
+            std::tuple{stub_node{policy::min_max_value(
+                                     std::vector{5, 6},
+                                     std::vector{1, 3, 4, 2},
+                                     [](auto&& a, auto&& b) { return a.size() < b.size(); }),
+                                 policy::long_name_t{"node"_S}},
+                       std::vector{3, 4, 5},
+                       true,
+                       std::optional<multi_lang_exception>{}},
+            std::tuple{
+                stub_node{
+                    policy::min_max_value(std::vector{5, 6},
+                                          std::vector{1, 3, 4, 2},
+                                          [](auto&& a, auto&& b) { return a.size() < b.size(); }),
+                    policy::long_name_t{"node"_S}},
+                std::vector<int>{},
+                true,
+                std::optional<multi_lang_exception>{
+                    test::create_exception(error_code::minimum_value_not_reached, {"--node"})}},
+            std::tuple{
+                stub_node{
+                    policy::min_max_value(std::vector{5, 6},
+                                          std::vector{1, 3, 4, 2},
+                                          [](auto&& a, auto&& b) { return a.size() < b.size(); }),
+                    policy::long_name_t{"node"_S}},
+                std::vector{5},
+                true,
+                std::optional<multi_lang_exception>{
+                    test::create_exception(error_code::minimum_value_not_reached, {"--node"})}},
+            std::tuple{stub_node{policy::min_max_value(
+                                     std::vector{5, 6},
+                                     std::vector{1, 3, 4, 2},
+                                     [](auto&& a, auto&& b) { return a.size() < b.size(); }),
+                                 policy::long_name_t{"node"_S}},
+                       std::vector{1, 2, 3, 4, 5},
+                       true,
+                       std::optional<multi_lang_exception>{
+                           test::create_exception(error_code::maximum_value_exceeded, {"--node"})}},
+
+            std::tuple{stub_node{policy::long_name_t{"node"_S}},
+                       0,
+                       false,
+                       std::optional<multi_lang_exception>{}},
+        });
+}
+
+BOOST_AUTO_TEST_SUITE(death_suite)
+
+BOOST_AUTO_TEST_CASE(at_least_one_parent_test)
+{
+    test::death_test_compile(
+        R"(
+#include "arg_router/literals.hpp"
+#include "arg_router/policy/long_name.hpp"
+#include "arg_router/policy/min_max_value.hpp"
+#include "arg_router/tree_node.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
+
+#include <vector>
+
+using namespace arg_router;
+using namespace arg_router::literals;
+
+namespace
+{
+template <typename... Policies>
+class stub_node : public tree_node<Policies...>
+{
+public:
+    constexpr explicit stub_node(Policies... policies) :
+        tree_node<Policies...>{std::move(policies)...}
+    {
+    }
+
+    template <typename InputValueType, typename... Parents>
+    void validation_phase(const InputValueType& value,
+                          const Parents&... parents) const
+    {
+        using this_policy =
+            std::tuple_element_t<1, typename stub_node::policies_type>;
+        this->this_policy::validation_phase(value, parents...);
+    }
+};
+}  // namespace
+
+int main() {
+    const auto node = stub_node{policy::long_name_t{"test"_S},
+                                policy::min_max_value(1, 4)};
+    node.validation_phase(2);
+    return 0;
+}
+    )",
+        "Min/max value requires at least 1 parent");
+}
+
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE_END()

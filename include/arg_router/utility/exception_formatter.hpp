@@ -93,16 +93,16 @@ public:
      * @param tokens Tokens to use
      * @return Formatted string
      */
-    [[nodiscard]] static string format(const vector<parsing::token_type>& tokens)
+    [[nodiscard]] static std::string format(const std::vector<parsing::token_type>& tokens)
     {
         if constexpr ((std::tuple_size_v<initial_placeholders>) > 0) {
             return fmt<S>(tokens);
         } else if (!tokens.empty()) {
-            using greedy_appended = typename S::template append_t<AR_STRING(": {, }")>;
+            using greedy_appended = typename S::template append_t<str<": {, }">>;
             return fmt<greedy_appended>(tokens);
         }
 
-        return string{S::get()};
+        return std::string{S::get()};
     }
 
 private:
@@ -126,14 +126,14 @@ private:
     static_assert(placeholder_check(), "Greedy entry must be last in the formatted string");
 
     template <typename Str>
-    [[nodiscard]] static string fmt(const vector<parsing::token_type>& tokens)
+    [[nodiscard]] static std::string fmt(const std::vector<parsing::token_type>& tokens)
     {
         using std::to_string;
         using placeholders = generate_placeholders<Str>;
 
         constexpr auto bracket_width = std::size_t{2};
 
-        auto str = string{Str::get()};
+        auto str = std::string{Str::get()};
 
         // The placeholders positions need to take into account that previous placeholder's tokens
         // may be different with than the placeholders, so the start position needs to be shifted

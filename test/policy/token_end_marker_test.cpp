@@ -12,6 +12,7 @@
 
 using namespace arg_router;
 using namespace arg_router::literals;
+using namespace arg_router::literals;
 
 namespace
 {
@@ -38,29 +39,27 @@ BOOST_AUTO_TEST_SUITE(token_end_marker_suite)
 
 BOOST_AUTO_TEST_CASE(is_policy_test)
 {
-    static_assert(policy::is_policy_v<policy::token_end_marker_t<AR_STRING("--")>>,
+    static_assert(policy::is_policy_v<policy::token_end_marker_t<str<"--">>>,
                   "Policy test has failed");
 }
 
 BOOST_AUTO_TEST_CASE(constructor_and_get_test)
 {
-    constexpr auto hello_str = policy::token_end_marker<AR_STRING("hello")>;
+    constexpr auto hello_str = policy::token_end_marker_t{"hello"_S};
     static_assert(hello_str.token_end_marker() == "hello");
 
-    constexpr auto three_char_str = policy::token_end_marker<AR_STRING("boo")>;
+    constexpr auto three_char_str = policy::token_end_marker_t{"boo"_S};
     static_assert(three_char_str.token_end_marker() == "boo");
 
-    constexpr auto world_str = policy::token_end_marker_t{AR_STRING("world"){}};
+    constexpr auto world_str = policy::token_end_marker_t{"world"_S};
     static_assert(world_str.token_end_marker() == "world");
 }
 
-#ifdef AR_ENABLE_CPP20_STRINGS
 BOOST_AUTO_TEST_CASE(string_literal_test)
 {
     const auto world_str = policy::token_end_marker_t{"--"_S};
     static_assert(world_str.token_end_marker() == "--");
 }
-#endif
 
 BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
 {
@@ -72,11 +71,10 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
         auto processed_target = utility::compile_time_optional{parsing::parse_target{parents...}};
         auto target = parsing::parse_target{node};
 
-        const auto match =
-            policy::token_end_marker<AR_STRING("--")>.pre_parse_phase(adapter,
-                                                                      processed_target,
-                                                                      target,
-                                                                      parents...);
+        const auto match = policy::token_end_marker_t{"--"_S}.pre_parse_phase(adapter,
+                                                                              processed_target,
+                                                                              target,
+                                                                              parents...);
         BOOST_CHECK_EQUAL(match.get(), parsing::pre_parse_action::valid_node);
         BOOST_CHECK_EQUAL(result, expected_result);
         BOOST_CHECK_EQUAL(args, expected_args);
@@ -136,10 +134,14 @@ BOOST_AUTO_TEST_CASE(death_test)
 {
     test::death_test_compile({{
                                   R"(
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/token_end_marker.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router::literals;
+
 int main() {
-    const auto ln = arg_router::policy::token_end_marker<AR_STRING("")>;
+    const auto ln = arg_router::policy::token_end_marker_t{""_S};
     return 0;
 }
     )",
@@ -147,10 +149,14 @@ int main() {
                                   "empty_test"},
                               {
                                   R"(
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/token_end_marker.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
+
+using namespace arg_router::literals;
+
 int main() {
-    const auto ln = arg_router::policy::token_end_marker<AR_STRING("a b")>;
+    const auto ln = arg_router::policy::token_end_marker_t{"a b"_S};
     return 0;
 }
     )",
@@ -158,6 +164,7 @@ int main() {
                                   "space_test"},
                               {
                                   R"(
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/token_end_marker.hpp"
 #include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/tree_node.hpp"
@@ -166,6 +173,8 @@ int main() {
 #include <vector>
 
 using namespace arg_router;
+using namespace arg_router::literals;
+
 namespace
 {
 template <typename... Policies>
@@ -179,13 +188,13 @@ public:
 
     template <typename... Parents>
     void pre_parse_phase(
-        vector<parsing::token_type>& result,
+        std::vector<parsing::token_type>& result,
         const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<0, typename stub_node::policies_type>;
 
-        auto args = vector<parsing::token_type>{};
+        auto args = std::vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
         auto processed_target =
             utility::compile_time_optional{parsing::parse_target{parents...}};
@@ -205,8 +214,8 @@ public:
 }  // namespace
 
 int main() {
-    const auto parent = stub_node{policy::token_end_marker<AR_STRING("--")>};
-    auto tokens = vector<parsing::token_type>{
+    const auto parent = stub_node{policy::token_end_marker_t{"--"_S}};
+    auto tokens = std::vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "hello"}};
     parent.pre_parse_phase(tokens, parent);
     return 0;
@@ -216,6 +225,7 @@ int main() {
                                   "pre_parse_phase_test_no_min_max"},
                               {
                                   R"(
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/token_end_marker.hpp"
 #include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/tree_node.hpp"
@@ -224,6 +234,8 @@ int main() {
 #include <vector>
 
 using namespace arg_router;
+using namespace arg_router::literals;
+
 namespace
 {
 template <typename... Policies>
@@ -237,13 +249,13 @@ public:
 
     template <typename... Parents>
     void pre_parse_phase(
-        vector<parsing::token_type>& result,
+        std::vector<parsing::token_type>& result,
         const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<0, typename stub_node::policies_type>;
 
-        auto args = vector<parsing::token_type>{};
+        auto args = std::vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
         auto processed_target =
             utility::compile_time_optional{parsing::parse_target{parents...}};
@@ -263,9 +275,9 @@ public:
 }  // namespace
 
 int main() {
-    const auto parent = stub_node{policy::token_end_marker<AR_STRING("--")>,
+    const auto parent = stub_node{policy::token_end_marker_t{"--"_S},
                                   policy::fixed_count<1>};
-    auto tokens = vector<parsing::token_type>{
+    auto tokens = std::vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "hello"}};
     parent.pre_parse_phase(tokens, parent);
     return 0;
@@ -275,6 +287,7 @@ int main() {
                                   "pre_parse_phase_test_fixed_1"},
                               {
                                   R"(
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/token_end_marker.hpp"
 #include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/policy/multi_stage_value.hpp"
@@ -284,6 +297,8 @@ int main() {
 #include <vector>
 
 using namespace arg_router;
+using namespace arg_router::literals;
+
 namespace
 {
 template <typename... Policies>
@@ -297,13 +312,13 @@ public:
 
     template <typename... Parents>
     void pre_parse_phase(
-        vector<parsing::token_type>& result,
+        std::vector<parsing::token_type>& result,
         const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<0, typename stub_node::policies_type>;
 
-        auto args = vector<parsing::token_type>{};
+        auto args = std::vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
         auto processed_target =
             utility::compile_time_optional{parsing::parse_target{parents...}};
@@ -323,9 +338,9 @@ public:
 }  // namespace
 
 int main() {
-    const auto parent = stub_node{policy::token_end_marker<AR_STRING("--")>,
+    const auto parent = stub_node{policy::token_end_marker_t{"--"_S},
                                   policy::multi_stage_value<int, bool>{[](auto&, auto&&){}}};
-    auto tokens = vector<parsing::token_type>{
+    auto tokens = std::vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "hello"}};
     parent.pre_parse_phase(tokens, parent);
     return 0;

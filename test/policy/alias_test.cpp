@@ -4,6 +4,7 @@
 
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/flag.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/mode.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/router.hpp"
@@ -14,6 +15,7 @@
 #include "test_printers.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 using namespace std::string_literals;
 
 namespace
@@ -112,65 +114,64 @@ BOOST_AUTO_TEST_CASE(is_policy_test)
 BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
 {
     const auto root = stub_node{
-        policy::long_name<AR_STRING("test_root")>,
-        stub_node{policy::long_name<AR_STRING("test1")>,
-                  stub_node{policy::long_name<AR_STRING("flag1")>,
+        policy::long_name_t{"test_root"_S},
+        stub_node{policy::long_name_t{"test1"_S},
+                  stub_node{policy::long_name_t{"flag1"_S},
                             policy::fixed_count<0>,
-                            policy::alias(policy::long_name<AR_STRING("flag2")>)},
-                  stub_node{policy::long_name<AR_STRING("flag2")>, policy::fixed_count<0>},
-                  stub_node{policy::long_name<AR_STRING("flag3")>},
+                            policy::alias(policy::long_name_t{"flag2"_S})},
+                  stub_node{policy::long_name_t{"flag2"_S}, policy::fixed_count<0>},
+                  stub_node{policy::long_name_t{"flag3"_S}},
                   policy::router{[](bool, bool, bool) {}}},
-        stub_node{policy::long_name<AR_STRING("test2")>,
-                  stub_node{policy::long_name<AR_STRING("arg1")>,
+        stub_node{policy::long_name_t{"test2"_S},
+                  stub_node{policy::long_name_t{"arg1"_S},
                             policy::fixed_count<1>,
-                            policy::alias(policy::long_name<AR_STRING("arg3")>)},
-                  stub_node{policy::long_name<AR_STRING("arg2")>},
-                  stub_node{policy::long_name<AR_STRING("arg3")>, policy::fixed_count<1>},
+                            policy::alias(policy::long_name_t{"arg3"_S})},
+                  stub_node{policy::long_name_t{"arg2"_S}},
+                  stub_node{policy::long_name_t{"arg3"_S}, policy::fixed_count<1>},
                   policy::router{[](bool, bool, bool) {}}},
-        stub_node{policy::long_name<AR_STRING("test3")>,
-                  stub_node{policy::long_name<AR_STRING("flag1")>,
+        stub_node{policy::long_name_t{"test3"_S},
+                  stub_node{policy::long_name_t{"flag1"_S},
                             policy::fixed_count<0>,
-                            policy::alias(policy::long_name<AR_STRING("flag2")>,
-                                          policy::long_name<AR_STRING("flag3")>)},
-                  stub_node{policy::long_name<AR_STRING("flag2")>, policy::fixed_count<0>},
-                  stub_node{policy::long_name<AR_STRING("flag3")>, policy::fixed_count<0>},
-                  policy::router{[](bool, bool, bool) {}}},
-        stub_node{policy::long_name<AR_STRING("test4")>,
-                  stub_node{policy::long_name<AR_STRING("arg1")>,
-                            policy::fixed_count<3>,
-                            policy::alias(policy::long_name<AR_STRING("arg2")>,
-                                          policy::long_name<AR_STRING("arg3")>)},
-                  stub_node{policy::long_name<AR_STRING("arg2")>, policy::fixed_count<3>},
-                  stub_node{policy::long_name<AR_STRING("arg3")>, policy::fixed_count<3>},
+                            policy::alias(policy::long_name_t{"flag2"_S},
+                                          policy::long_name_t{"flag3"_S})},
+                  stub_node{policy::long_name_t{"flag2"_S}, policy::fixed_count<0>},
+                  stub_node{policy::long_name_t{"flag3"_S}, policy::fixed_count<0>},
                   policy::router{[](bool, bool, bool) {}}},
         stub_node{
-            policy::long_name<AR_STRING("test5")>,
-            stub_node{policy::long_name<AR_STRING("one_of")>,
-                      stub_node{policy::long_name<AR_STRING("flag1")>,
-                                policy::fixed_count<0>,
-                                policy::alias(policy::long_name<AR_STRING("flag2")>)},
-                      stub_node{policy::long_name<AR_STRING("flag2")>, policy::fixed_count<0>}},
-            stub_node{policy::long_name<AR_STRING("flag3")>},
-            policy::router{[](bool, bool) {}}},
-        stub_node{policy::long_name<AR_STRING("test6")>,
-                  stub_node{policy::long_name<AR_STRING("one_of")>,
-                            stub_node{policy::long_name<AR_STRING("flag1")>,
+            policy::long_name_t{"test4"_S},
+            stub_node{policy::long_name_t{"arg1"_S},
+                      policy::fixed_count<3>,
+                      policy::alias(policy::long_name_t{"arg2"_S}, policy::long_name_t{"arg3"_S})},
+            stub_node{policy::long_name_t{"arg2"_S}, policy::fixed_count<3>},
+            stub_node{policy::long_name_t{"arg3"_S}, policy::fixed_count<3>},
+            policy::router{[](bool, bool, bool) {}}},
+        stub_node{policy::long_name_t{"test5"_S},
+                  stub_node{policy::long_name_t{"one_of"_S},
+                            stub_node{policy::long_name_t{"flag1"_S},
                                       policy::fixed_count<0>,
-                                      policy::alias(policy::long_name<AR_STRING("flag3")>)},
-                            stub_node{policy::long_name<AR_STRING("flag2")>}},
-                  stub_node{policy::long_name<AR_STRING("flag3")>, policy::fixed_count<0>},
+                                      policy::alias(policy::long_name_t{"flag2"_S})},
+                            stub_node{policy::long_name_t{"flag2"_S}, policy::fixed_count<0>}},
+                  stub_node{policy::long_name_t{"flag3"_S}},
                   policy::router{[](bool, bool) {}}},
-        stub_node{policy::long_name<AR_STRING("test7")>,
-                  stub_node{policy::long_name<AR_STRING("flag1")>,
+        stub_node{policy::long_name_t{"test6"_S},
+                  stub_node{policy::long_name_t{"one_of"_S},
+                            stub_node{policy::long_name_t{"flag1"_S},
+                                      policy::fixed_count<0>,
+                                      policy::alias(policy::long_name_t{"flag3"_S})},
+                            stub_node{policy::long_name_t{"flag2"_S}}},
+                  stub_node{policy::long_name_t{"flag3"_S}, policy::fixed_count<0>},
+                  policy::router{[](bool, bool) {}}},
+        stub_node{policy::long_name_t{"test7"_S},
+                  stub_node{policy::long_name_t{"flag1"_S},
                             policy::fixed_count<0>,
-                            policy::alias(policy::long_name<AR_STRING("パラメータ一")>)},
-                  stub_node{policy::long_name<AR_STRING("パラメータ一")>, policy::fixed_count<0>},
-                  stub_node{policy::long_name<AR_STRING("flag3")>},
+                            policy::alias(policy::long_name_t{"パラメータ一"_S})},
+                  stub_node{policy::long_name_t{"パラメータ一"_S}, policy::fixed_count<0>},
+                  stub_node{policy::long_name_t{"flag3"_S}},
                   policy::router{[](bool, bool, bool) {}}},
     };
 
     auto f = [&](auto args, auto expected_target_data, auto expected_args, auto parents_tuple) {
-        auto result = vector<parsing::token_type>{};
+        auto result = std::vector<parsing::token_type>{};
 
         std::apply(
             [&](auto&& node, auto&&... parents) {
@@ -260,14 +261,13 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
 
 BOOST_AUTO_TEST_CASE(pre_parse_phase_too_small_view_test)
 {
-    const auto root =
-        stub_node{policy::long_name<AR_STRING("root")>,
-                  stub_node{policy::long_name<AR_STRING("arg1")>,
-                            policy::fixed_count<2>,
-                            policy::alias(policy::long_name<AR_STRING("arg2")>)},
-                  stub_node{policy::long_name<AR_STRING("arg2")>, policy::fixed_count<2>},
-                  stub_node{policy::long_name<AR_STRING("arg3")>},
-                  policy::router{[](bool, bool, bool) {}}};
+    const auto root = stub_node{policy::long_name_t{"root"_S},
+                                stub_node{policy::long_name_t{"arg1"_S},
+                                          policy::fixed_count<2>,
+                                          policy::alias(policy::long_name_t{"arg2"_S})},
+                                stub_node{policy::long_name_t{"arg2"_S}, policy::fixed_count<2>},
+                                stub_node{policy::long_name_t{"arg3"_S}},
+                                policy::router{[](bool, bool, bool) {}}};
 
     auto result = std::vector<parsing::token_type>{{parsing::prefix_type::long_, "arg1"},
                                                    {parsing::prefix_type::none, "42"}};
@@ -303,14 +303,16 @@ int main() {
          {
              R"(
 #include "arg_router/flag.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 int main() {
-    auto a = policy::alias(flag(policy::long_name<AR_STRING("flag1")>));
+    auto a = policy::alias(flag(policy::long_name_t{"flag1"_S}));
     return 0;
 }
     )",
@@ -320,12 +322,14 @@ int main() {
              R"(
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/policy/display_name.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 int main() {
-    auto a = policy::alias(policy::display_name<AR_STRING("hello")>);
+    auto a = policy::alias(policy::display_name_t{"hello"_S});
     return 0;
 }
     )",
@@ -334,11 +338,13 @@ int main() {
          {
              R"(
 #include "arg_router/policy/alias.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 namespace
 {
@@ -355,13 +361,13 @@ public:
 
     template <typename... Parents>
     void pre_parse_phase(
-        vector<parsing::token_type>& result,
+        std::vector<parsing::token_type>& result,
         [[maybe_unused]] const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<0, typename stub_node::policies_type>;
             
-        auto args = vector<parsing::token_type>{};
+        auto args = std::vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
         auto target = parsing::parse_target{*this, parents...};
         (void)this->this_policy::pre_parse_phase(adapter,
@@ -374,10 +380,10 @@ public:
 }  // namespace
 
 int main() {
-    const auto root = stub_node{policy::alias(policy::long_name<AR_STRING("flag2")>),
+    const auto root = stub_node{policy::alias(policy::long_name_t{"flag2"_S}),
                                 policy::fixed_count<0>};
 
-    auto result = vector<parsing::token_type>{
+    auto result = std::vector<parsing::token_type>{
                         {parsing::prefix_type::long_, "flag2"},
                         {parsing::prefix_type::long_, "flag3"}};
     root.pre_parse_phase(result);
@@ -389,10 +395,12 @@ int main() {
          {
              R"(
 #include "arg_router/policy/alias.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 namespace
 {
@@ -409,13 +417,13 @@ public:
 
     template <typename... Parents>
     void pre_parse_phase(
-        vector<parsing::token_type>& result,
+        std::vector<parsing::token_type>& result,
         [[maybe_unused]] const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<1, typename stub_node::policies_type>;
             
-        auto args = vector<parsing::token_type>{};
+        auto args = std::vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
         auto target = parsing::parse_target{*this, parents...};
         (void)this->this_policy::pre_parse_phase(adapter,
@@ -429,12 +437,12 @@ public:
 
 int main() {
     const auto root =
-        stub_node{policy::long_name<AR_STRING("mode")>,
-              stub_node{policy::long_name<AR_STRING("flag1")>,
-                        policy::alias(policy::long_name<AR_STRING("flag2")>)},
-              stub_node{policy::long_name<AR_STRING("flag2")>}};;
+        stub_node{policy::long_name_t{"mode"_S},
+              stub_node{policy::long_name_t{"flag1"_S},
+                        policy::alias(policy::long_name_t{"flag2"_S})},
+              stub_node{policy::long_name_t{"flag2"_S}}};;
 
-    auto result = vector<parsing::token_type>{
+    auto result = std::vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "flag2"}};
     const auto& owner = std::get<0>(root.children());
 
@@ -447,11 +455,13 @@ int main() {
          {
              R"(
 #include "arg_router/policy/alias.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 namespace
 {
@@ -468,13 +478,13 @@ public:
 
     template <typename... Parents>
     void pre_parse_phase(
-        vector<parsing::token_type>& result,
+        std::vector<parsing::token_type>& result,
         [[maybe_unused]] const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<2, typename stub_node::policies_type>;
             
-        auto args = vector<parsing::token_type>{};
+        auto args = std::vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
         auto target = parsing::parse_target{*this, parents...};
         (void)this->this_policy::pre_parse_phase(adapter,
@@ -488,13 +498,13 @@ public:
 
 int main() {
     const auto root =
-        stub_node{policy::long_name<AR_STRING("mode")>,
-              stub_node{policy::long_name<AR_STRING("flag1")>,
+        stub_node{policy::long_name_t{"mode"_S},
+              stub_node{policy::long_name_t{"flag1"_S},
                         policy::min_count<2>,
-                        policy::alias(policy::long_name<AR_STRING("flag2")>)},
-              stub_node{policy::long_name<AR_STRING("flag2")>}};;
+                        policy::alias(policy::long_name_t{"flag2"_S})},
+              stub_node{policy::long_name_t{"flag2"_S}}};;
 
-    auto result = vector<parsing::token_type>{
+    auto result = std::vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "flag2"}};
     const auto& owner = std::get<0>(root.children());
 
@@ -507,10 +517,12 @@ int main() {
          {
              R"(
 #include "arg_router/policy/alias.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 namespace
 {
@@ -527,13 +539,13 @@ public:
 
     template <typename... Parents>
     void pre_parse_phase(
-        vector<parsing::token_type>& result,
+        std::vector<parsing::token_type>& result,
         [[maybe_unused]] const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<1, typename stub_node::policies_type>;
             
-        auto args = vector<parsing::token_type>{};
+        auto args = std::vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
         auto target = parsing::parse_target{*this, parents...};
         (void)this->this_policy::pre_parse_phase(adapter,
@@ -547,13 +559,13 @@ public:
 
 int main() {
     const auto root =
-        stub_node{policy::long_name<AR_STRING("mode")>,
-              stub_node{policy::long_name<AR_STRING("flag1")>,
-                        policy::alias(policy::long_name<AR_STRING("flag2")>)},
-              stub_node{policy::long_name<AR_STRING("flag2")>},
-              stub_node{policy::long_name<AR_STRING("flag3")>}};
+        stub_node{policy::long_name_t{"mode"_S},
+              stub_node{policy::long_name_t{"flag1"_S},
+                        policy::alias(policy::long_name_t{"flag2"_S})},
+              stub_node{policy::long_name_t{"flag2"_S}},
+              stub_node{policy::long_name_t{"flag3"_S}}};
 
-    auto result = vector<parsing::token_type>{
+    auto result = std::vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "flag2"},
                     {parsing::prefix_type::long_, "flag3"}};
     const auto& owner = std::get<0>(root.children());
@@ -567,12 +579,14 @@ int main() {
          {
              R"(
 #include "arg_router/policy/alias.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/policy/router.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 namespace
 {
@@ -589,13 +603,13 @@ public:
 
     template <typename... Parents>
     void pre_parse_phase(
-        vector<parsing::token_type>& result,
+        std::vector<parsing::token_type>& result,
         [[maybe_unused]] const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<1, typename stub_node::policies_type>;
             
-        auto args = vector<parsing::token_type>{};
+        auto args = std::vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
         auto target = parsing::parse_target{*this, parents...};
         (void)this->this_policy::pre_parse_phase(adapter,
@@ -609,19 +623,19 @@ public:
 
 int main() {
     const auto root =
-        stub_node{policy::long_name<AR_STRING("mode")>,
-                  stub_node{policy::long_name<AR_STRING("flag1")>,
-                            policy::alias(policy::long_name<AR_STRING("flag2")>),
+        stub_node{policy::long_name_t{"mode"_S},
+                  stub_node{policy::long_name_t{"flag1"_S},
+                            policy::alias(policy::long_name_t{"flag2"_S}),
                             policy::fixed_count<1>},
-                  stub_node{policy::long_name<AR_STRING("flag2")>,
-                            policy::alias(policy::long_name<AR_STRING("flag3")>),
+                  stub_node{policy::long_name_t{"flag2"_S},
+                            policy::alias(policy::long_name_t{"flag3"_S}),
                             policy::fixed_count<1>},
-                  stub_node{policy::long_name<AR_STRING("flag3")>,
-                            policy::alias(policy::long_name<AR_STRING("flag1")>),
+                  stub_node{policy::long_name_t{"flag3"_S},
+                            policy::alias(policy::long_name_t{"flag1"_S}),
                             policy::fixed_count<1>},
                   policy::router{[](bool, bool, bool) {}}};
 
-    auto result = vector<parsing::token_type>{
+    auto result = std::vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "flag2"},
                     {parsing::prefix_type::long_, "flag3"}};
     const auto& owner = std::get<0>(root.children());
@@ -635,12 +649,14 @@ int main() {
          {
              R"(
 #include "arg_router/policy/alias.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/policy/router.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 namespace
 {
@@ -657,13 +673,13 @@ public:
 
     template <typename... Parents>
     void pre_parse_phase(
-        vector<parsing::token_type>& result,
+        std::vector<parsing::token_type>& result,
         [[maybe_unused]] const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<1, typename stub_node::policies_type>;
             
-        auto args = vector<parsing::token_type>{};
+        auto args = std::vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
         auto target = parsing::parse_target{*this, parents...};
         (void)this->this_policy::pre_parse_phase(adapter,
@@ -677,15 +693,15 @@ public:
 
 int main() {
     const auto root =
-        stub_node{policy::long_name<AR_STRING("mode")>,
-                  stub_node{policy::long_name<AR_STRING("flag1")>,
-                            policy::alias(policy::long_name<AR_STRING("flag4")>),
+        stub_node{policy::long_name_t{"mode"_S},
+                  stub_node{policy::long_name_t{"flag1"_S},
+                            policy::alias(policy::long_name_t{"flag4"_S}),
                             policy::fixed_count<1>},
-                  stub_node{policy::long_name<AR_STRING("flag2")>},
-                  stub_node{policy::long_name<AR_STRING("flag3")>},
+                  stub_node{policy::long_name_t{"flag2"_S}},
+                  stub_node{policy::long_name_t{"flag3"_S}},
                   policy::router{[](bool, bool, bool) {}}};
 
-    auto result = vector<parsing::token_type>{
+    auto result = std::vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "flag2"},
                     {parsing::prefix_type::long_, "flag3"}};
     const auto& owner = std::get<0>(root.children());
@@ -699,12 +715,14 @@ int main() {
          {
              R"(
 #include "arg_router/policy/alias.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/policy/router.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 namespace
 {
@@ -721,13 +739,13 @@ public:
 
     template <typename... Parents>
     void pre_parse_phase(
-        vector<parsing::token_type>& result,
+        std::vector<parsing::token_type>& result,
         [[maybe_unused]] const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<1, typename stub_node::policies_type>;
             
-        auto args = vector<parsing::token_type>{};
+        auto args = std::vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
         auto target = parsing::parse_target{*this, parents...};
         (void)this->this_policy::pre_parse_phase(adapter,
@@ -741,16 +759,16 @@ public:
 
 int main() {
     const auto root =
-        stub_node{policy::long_name<AR_STRING("mode")>,
-                  stub_node{policy::long_name<AR_STRING("flag1")>,
-                            policy::alias(policy::long_name<AR_STRING("flag2")>,
-                                          policy::long_name<AR_STRING("flag2")>),
+        stub_node{policy::long_name_t{"mode"_S},
+                  stub_node{policy::long_name_t{"flag1"_S},
+                            policy::alias(policy::long_name_t{"flag2"_S},
+                                          policy::long_name_t{"flag2"_S}),
                             policy::fixed_count<1>},
-                  stub_node{policy::long_name<AR_STRING("flag2")>},
-                  stub_node{policy::long_name<AR_STRING("flag3")>},
+                  stub_node{policy::long_name_t{"flag2"_S}},
+                  stub_node{policy::long_name_t{"flag3"_S}},
                   policy::router{[](bool, bool, bool) {}}};
 
-    auto result = vector<parsing::token_type>{
+    auto result = std::vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "flag2"},
                     {parsing::prefix_type::long_, "flag3"}};
     const auto& owner = std::get<0>(root.children());
@@ -764,6 +782,7 @@ int main() {
          {
              R"(
 #include "arg_router/policy/alias.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/policy/router.hpp"
@@ -771,6 +790,7 @@ int main() {
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 namespace
 {
@@ -787,13 +807,13 @@ public:
 
     template <typename... Parents>
     void pre_parse_phase(
-        vector<parsing::token_type>& result,
+        std::vector<parsing::token_type>& result,
         [[maybe_unused]] const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<1, typename stub_node::policies_type>;
             
-        auto args = vector<parsing::token_type>{};
+        auto args = std::vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
         auto target = parsing::parse_target{*this, parents...};
         (void)this->this_policy::pre_parse_phase(adapter,
@@ -807,17 +827,17 @@ public:
 
 int main() {
     const auto root =
-        stub_node{policy::long_name<AR_STRING("mode")>,
-                  stub_node{policy::long_name<AR_STRING("flag1")>,
-                            policy::alias(policy::long_name<AR_STRING("flag2")>,
-                                          policy::short_name<'a'>),
+        stub_node{policy::long_name_t{"mode"_S},
+                  stub_node{policy::long_name_t{"flag1"_S},
+                            policy::alias(policy::long_name_t{"flag2"_S},
+                                          policy::short_name_t{"a"_S}),
                             policy::fixed_count<1>},
-                  stub_node{policy::long_name<AR_STRING("flag2")>,
-                            policy::short_name<'a'>},
-                  stub_node{policy::long_name<AR_STRING("flag3")>},
+                  stub_node{policy::long_name_t{"flag2"_S},
+                            policy::short_name_t{"a"_S}},
+                  stub_node{policy::long_name_t{"flag3"_S}},
                   policy::router{[](bool, bool, bool) {}}};
 
-    auto result = vector<parsing::token_type>{
+    auto result = std::vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "flag2"},
                     {parsing::prefix_type::long_, "flag3"}};
     const auto& owner = std::get<0>(root.children());
@@ -832,11 +852,13 @@ int main() {
          {
              R"(
 #include "arg_router/policy/alias.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/custom_parser.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 namespace
 {
@@ -853,13 +875,13 @@ public:
 
     template <typename... Parents>
     void pre_parse_phase(
-        vector<parsing::token_type>& result,
+        std::vector<parsing::token_type>& result,
         [[maybe_unused]] const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<1, typename stub_node::policies_type>;
             
-        auto args = vector<parsing::token_type>{};
+        auto args = std::vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
         auto target = parsing::parse_target{*this, parents...};
         (void)this->this_policy::pre_parse_phase(adapter,
@@ -872,12 +894,12 @@ public:
 }  // namespace
 
 int main() {
-    const auto root = stub_node{policy::long_name<AR_STRING("flag1")>,
-                                policy::alias(policy::long_name<AR_STRING("flag2")>),
+    const auto root = stub_node{policy::long_name_t{"flag1"_S},
+                                policy::alias(policy::long_name_t{"flag2"_S}),
                                 policy::custom_parser<bool>{
                                     [](std::string_view) { return false; }}};
 
-    auto result = vector<parsing::token_type>{
+    auto result = std::vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "flag2"},
                     {parsing::prefix_type::long_, "flag3"}};
 
@@ -891,11 +913,13 @@ int main() {
          {
              R"(
 #include "arg_router/policy/alias.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_value.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 namespace
 {
@@ -912,13 +936,13 @@ public:
 
     template <typename... Parents>
     void pre_parse_phase(
-        vector<parsing::token_type>& result,
+        std::vector<parsing::token_type>& result,
         [[maybe_unused]] const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<1, typename stub_node::policies_type>;
             
-        auto args = vector<parsing::token_type>{};
+        auto args = std::vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
         auto target = parsing::parse_target{*this, parents...};
         (void)this->this_policy::pre_parse_phase(adapter,
@@ -931,11 +955,11 @@ public:
 }  // namespace
 
 int main() {
-    const auto root = stub_node{policy::long_name<AR_STRING("flag1")>,
-                                policy::alias(policy::long_name<AR_STRING("flag2")>),
+    const auto root = stub_node{policy::long_name_t{"flag1"_S},
+                                policy::alias(policy::long_name_t{"flag2"_S}),
                                 policy::min_max_value<3, 6>()};
 
-    auto result = vector<parsing::token_type>{
+    auto result = std::vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "flag2"},
                     {parsing::prefix_type::long_, "flag3"}};
 
@@ -949,11 +973,13 @@ int main() {
          {
              R"(
 #include "arg_router/policy/alias.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/router.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 namespace
 {
@@ -970,13 +996,13 @@ public:
 
     template <typename... Parents>
     void pre_parse_phase(
-        vector<parsing::token_type>& result,
+        std::vector<parsing::token_type>& result,
         [[maybe_unused]] const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<1, typename stub_node::policies_type>;
 
-        auto args = vector<parsing::token_type>{};
+        auto args = std::vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
         auto target = parsing::parse_target{*this, parents...};
         (void)this->this_policy::pre_parse_phase(adapter,
@@ -989,11 +1015,11 @@ public:
 }  // namespace
 
 int main() {
-    const auto root = stub_node{policy::long_name<AR_STRING("flag1")>,
-                                policy::alias(policy::long_name<AR_STRING("flag2")>),
+    const auto root = stub_node{policy::long_name_t{"flag1"_S},
+                                policy::alias(policy::long_name_t{"flag2"_S}),
                                 policy::router{[](bool) {}}};
 
-    auto result = vector<parsing::token_type>{
+    auto result = std::vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "flag2"},
                     {parsing::prefix_type::long_, "flag3"}};
 
@@ -1007,12 +1033,14 @@ int main() {
          {
              R"(
 #include "arg_router/policy/alias.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/policy/router.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 namespace
 {
@@ -1029,13 +1057,13 @@ public:
 
     template <typename... Parents>
     void pre_parse_phase(
-        vector<parsing::token_type>& result,
+        std::vector<parsing::token_type>& result,
         [[maybe_unused]] const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<1, typename stub_node::policies_type>;
 
-        auto args = vector<parsing::token_type>{};
+        auto args = std::vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
         auto target = parsing::parse_target{*this, parents...};
         (void)this->this_policy::pre_parse_phase(adapter,
@@ -1053,15 +1081,15 @@ public:
 
 int main() {
     const auto root =
-        stub_node{policy::long_name<AR_STRING("mode")>,
-                  stub_node{policy::long_name<AR_STRING("flag1")>,
-                            policy::alias(policy::long_name<AR_STRING("flag2")>),
+        stub_node{policy::long_name_t{"mode"_S},
+                  stub_node{policy::long_name_t{"flag1"_S},
+                            policy::alias(policy::long_name_t{"flag2"_S}),
                             policy::fixed_count<1>},
-                  stub_node{policy::long_name<AR_STRING("flag2")>,
+                  stub_node{policy::long_name_t{"flag2"_S},
                             policy::fixed_count<2>},
                   policy::router{[](bool, bool) {}}};
 
-    auto result = vector<parsing::token_type>{
+    auto result = std::vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "flag2"}};
 
     const auto& owner = std::get<0>(root.children());

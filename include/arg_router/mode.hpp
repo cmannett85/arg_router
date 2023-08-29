@@ -33,7 +33,7 @@ public:
         (boost::mp11::mp_find_if<policies_tuple, traits::has_error_name_method>::value !=
          std::tuple_size_v<policies_tuple>);
 
-    using error_name_type = policy::error_name_t<AR_STRING("(Anon mode)")>;
+    using error_name_type = policy::error_name_t<str<"(Anon mode)">>;
 
     using type = std::conditional_t<
         has_none_or_error_name,
@@ -118,7 +118,7 @@ public:
          */
         using label = std::conditional_t<
             is_anonymous,
-            AR_STRING(' '),
+            str<' '>,
             typename parent_type::template default_leaf_help_data_type<Flatten>::label>;
 
         using description =
@@ -130,8 +130,8 @@ public:
             std::tuple<>>;
 
         template <typename OwnerNode, typename FilterFn>
-        [[nodiscard]] static vector<runtime_help_data> runtime_children(const OwnerNode& owner,
-                                                                        FilterFn&& f)
+        [[nodiscard]] static std::vector<runtime_help_data> runtime_children(const OwnerNode& owner,
+                                                                             FilterFn&& f)
         {
             if constexpr (is_anonymous || Flatten) {
                 return parent_type::template default_leaf_help_data_type<true>::runtime_children(

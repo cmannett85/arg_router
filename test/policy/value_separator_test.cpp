@@ -41,29 +41,18 @@ BOOST_AUTO_TEST_SUITE(value_separator_suite)
 
 BOOST_AUTO_TEST_CASE(is_policy_test)
 {
-    static_assert(policy::is_policy_v<policy::value_separator_t<traits::integral_constant<'='>>>,
+    static_assert(policy::is_policy_v<policy::value_separator_t<str<"=">>>,
                   "Policy test has failed");
 }
 
 BOOST_AUTO_TEST_CASE(constructor_and_get_test)
 {
-    constexpr auto c_a = policy::value_separator<'='>;
+    constexpr auto c_a = policy::value_separator_t{"="_S};
     static_assert(c_a.value_separator() == "=");
 
-    constexpr auto c_4 = policy::value_separator<'/'>;
+    constexpr auto c_4 = policy::value_separator_t{"/"_S};
     static_assert(c_4.value_separator() == "/");
-
-    constexpr auto s_a = policy::value_separator_t{AR_STRING("="){}};
-    static_assert(s_a.value_separator() == "=");
 }
-
-#ifdef AR_ENABLE_CPP20_STRINGS
-BOOST_AUTO_TEST_CASE(string_literal_test)
-{
-    const auto s_a = policy::value_separator_t{"="_S};
-    static_assert(s_a.value_separator() == "=");
-}
-#endif
 
 BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
 {
@@ -73,7 +62,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                 auto expected_match,
                 auto expected_args,
                 const auto&... parents) {
-        const auto policy = policy::value_separator<'='>;
+        const auto policy = policy::value_separator_t{"="_S};
         auto node = stub_node{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
         auto processed_target = utility::compile_time_optional{};
@@ -107,14 +96,14 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                        std::vector<parsing::token_type>{},
                        parsing::pre_parse_action::valid_node,
                        std::vector<parsing::token_type>{},
-                       stub_node{policy::long_name<AR_STRING("hello")>, policy::fixed_count<1>}},
+                       stub_node{policy::long_name_t{"hello"_S}, policy::fixed_count<1>}},
             std::tuple{std::vector<parsing::token_type>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello=42"}},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"},
                                                         {parsing::prefix_type::none, "42"}},
                        parsing::pre_parse_action::valid_node,
                        std::vector<parsing::token_type>{},
-                       stub_node{policy::long_name<AR_STRING("hello")>, policy::fixed_count<1>}},
+                       stub_node{policy::long_name_t{"hello"_S}, policy::fixed_count<1>}},
             std::tuple{std::vector<parsing::token_type>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello=42"},
                                                         {parsing::prefix_type::none, "foo"}},
@@ -122,46 +111,46 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                                                         {parsing::prefix_type::none, "42"}},
                        parsing::pre_parse_action::valid_node,
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "foo"}},
-                       stub_node{policy::long_name<AR_STRING("hello")>, policy::fixed_count<1>}},
+                       stub_node{policy::long_name_t{"hello"_S}, policy::fixed_count<1>}},
             std::tuple{std::vector<parsing::token_type>{{parsing::prefix_type::long_, "hello=42"}},
                        std::vector<parsing::token_type>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::long_, "hello"},
                                                         {parsing::prefix_type::none, "42"}},
                        parsing::pre_parse_action::valid_node,
                        std::vector<parsing::token_type>{},
-                       stub_node{policy::long_name<AR_STRING("hello")>, policy::fixed_count<1>}},
+                       stub_node{policy::long_name_t{"hello"_S}, policy::fixed_count<1>}},
             std::tuple{std::vector<parsing::token_type>{{parsing::prefix_type::long_, "hello=42"}},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "foo"}},
                        std::vector<parsing::token_type>{{parsing::prefix_type::long_, "hello"},
                                                         {parsing::prefix_type::none, "42"}},
                        parsing::pre_parse_action::valid_node,
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "foo"}},
-                       stub_node{policy::long_name<AR_STRING("hello")>, policy::fixed_count<1>}},
+                       stub_node{policy::long_name_t{"hello"_S}, policy::fixed_count<1>}},
             std::tuple{std::vector<parsing::token_type>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "-d=42"}},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "-d"},
                                                         {parsing::prefix_type::none, "42"}},
                        parsing::pre_parse_action::valid_node,
                        std::vector<parsing::token_type>{},
-                       stub_node{policy::long_name<AR_STRING("hello")>, policy::fixed_count<1>}},
+                       stub_node{policy::long_name_t{"hello"_S}, policy::fixed_count<1>}},
             std::tuple{std::vector<parsing::token_type>{{parsing::prefix_type::short_, "h"}},
                        std::vector<parsing::token_type>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::short_, "h"}},
                        parsing::pre_parse_action::skip_node,
                        std::vector<parsing::token_type>{},
-                       stub_node{policy::long_name<AR_STRING("hello")>, policy::fixed_count<1>}},
+                       stub_node{policy::long_name_t{"hello"_S}, policy::fixed_count<1>}},
             std::tuple{std::vector<parsing::token_type>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"}},
                        std::vector<parsing::token_type>{},
                        error_code::missing_value_separator,
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"}},
-                       stub_node{policy::long_name<AR_STRING("hello")>, policy::fixed_count<1>}},
+                       stub_node{policy::long_name_t{"hello"_S}, policy::fixed_count<1>}},
             std::tuple{std::vector<parsing::token_type>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello="}},
                        std::vector<parsing::token_type>{},
                        parsing::pre_parse_action::skip_node,
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello="}},
-                       stub_node{policy::long_name<AR_STRING("hello")>, policy::fixed_count<1>}},
+                       stub_node{policy::long_name_t{"hello"_S}, policy::fixed_count<1>}},
             std::tuple{
                 std::vector<parsing::token_type>{},
                 std::vector<parsing::token_type>{{parsing::prefix_type::none, "--こんにちは=42"}},
@@ -169,7 +158,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                                                  {parsing::prefix_type::none, "42"}},
                 parsing::pre_parse_action::valid_node,
                 std::vector<parsing::token_type>{},
-                stub_node{policy::long_name<AR_STRING("こんにちは")>, policy::fixed_count<1>}},
+                stub_node{policy::long_name_t{"こんにちは"_S}, policy::fixed_count<1>}},
             std::tuple{
                 std::vector<parsing::token_type>{},
                 std::vector<parsing::token_type>{
@@ -178,7 +167,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                                                  {parsing::prefix_type::none, "よんじゅうに"}},
                 parsing::pre_parse_action::valid_node,
                 std::vector<parsing::token_type>{},
-                stub_node{policy::long_name<AR_STRING("hello")>, policy::fixed_count<1>}},
+                stub_node{policy::long_name_t{"hello"_S}, policy::fixed_count<1>}},
             std::tuple{
                 std::vector<parsing::token_type>{},
                 std::vector<parsing::token_type>{
@@ -187,7 +176,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                                                  {parsing::prefix_type::none, "よんじゅうに"}},
                 parsing::pre_parse_action::valid_node,
                 std::vector<parsing::token_type>{},
-                stub_node{policy::long_name<AR_STRING("こんにちは")>, policy::fixed_count<1>}},
+                stub_node{policy::long_name_t{"こんにちは"_S}, policy::fixed_count<1>}},
         });
 }
 
@@ -195,9 +184,13 @@ BOOST_AUTO_TEST_CASE(death_test)
 {
     test::death_test_compile(
         {{R"(
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/value_separator.hpp"
+
+using namespace arg_router::literals;
+
 int main() {
-    const auto ln = arg_router::policy::value_separator_utf8<AR_STRING("")>;
+    const auto ln = arg_router::policy::value_separator_t{""_S};
     return 0;
 }
     )",
@@ -205,9 +198,13 @@ int main() {
           "must_be_one_character_test"},
          {
              R"(
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/value_separator.hpp"
+
+using namespace arg_router::literals;
+
 int main() {
-    const auto ln = arg_router::policy::value_separator<' '>;
+    const auto ln = arg_router::policy::value_separator_t{" "_S};
     return 0;
 }
     )",
@@ -215,6 +212,7 @@ int main() {
              "whitespace_test"},
          {
              R"(
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/value_separator.hpp"
 #include "arg_router/tree_node.hpp"
@@ -223,6 +221,8 @@ int main() {
 #include <vector>
 
 using namespace arg_router;
+using namespace arg_router::literals;
+
 namespace
 {
 template <typename... Policies>
@@ -236,13 +236,13 @@ public:
 
     template <typename... Parents>
     void pre_parse_phase(
-        vector<parsing::token_type>& result,
+        std::vector<parsing::token_type>& result,
         [[maybe_unused]] const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<1, typename stub_node::policies_type>;
 
-        auto args = vector<parsing::token_type>{};
+        auto args = std::vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
         auto processed_target = utility::compile_time_optional{};
         auto target = parsing::parse_target{*this, parents...};
@@ -254,9 +254,9 @@ public:
 }  // namespace
 
 int main() {
-    const auto node = stub_node{policy::long_name<AR_STRING("test")>,
-                                policy::value_separator<'='>};
-    auto tokens = vector<parsing::token_type>{
+    const auto node = stub_node{policy::long_name_t{"test"_S},
+                                policy::value_separator_t{"="_S}};
+    auto tokens = std::vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "hello"},
                     {parsing::prefix_type::none, "42"}};
     node.pre_parse_phase(tokens);
@@ -267,11 +267,13 @@ int main() {
              "at_least_one_parent_test"},
          {
              R"(
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/value_separator.hpp"
 #include "arg_router/tree_node.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 namespace
 {
@@ -288,13 +290,13 @@ public:
 
     template <typename... Parents>
     void pre_parse_phase(
-        vector<parsing::token_type>& result,
+        std::vector<parsing::token_type>& result,
         [[maybe_unused]] const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<1, typename stub_node::policies_type>;
 
-        auto args = vector<parsing::token_type>{};
+        auto args = std::vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
         auto processed_target = utility::compile_time_optional{};
         auto target = parsing::parse_target{*this, parents...};
@@ -308,9 +310,9 @@ public:
 }  // namespace
 
 int main() {
-    const auto node = stub_node{policy::long_name<AR_STRING("hello")>,
-                                policy::value_separator<'='>};
-    auto tokens = vector<parsing::token_type>{
+    const auto node = stub_node{policy::long_name_t{"hello"_S},
+                                policy::value_separator_t{"="_S}};
+    auto tokens = std::vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "hello"}};
     node.pre_parse_phase(tokens);
     return 0;
@@ -321,12 +323,14 @@ int main() {
              "owner_must_have_count_policies_test"},
          {
              R"(
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/policy/value_separator.hpp"
 #include "arg_router/tree_node.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 namespace
 {
@@ -343,13 +347,13 @@ public:
 
     template <typename... Parents>
     void pre_parse_phase(
-        vector<parsing::token_type>& result,
+        std::vector<parsing::token_type>& result,
         [[maybe_unused]] const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<2, typename stub_node::policies_type>;
 
-        auto args = vector<parsing::token_type>{};
+        auto args = std::vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
         auto processed_target = utility::compile_time_optional{};
         auto target = parsing::parse_target{*this, parents...};
@@ -363,10 +367,10 @@ public:
 }  // namespace
 
 int main() {
-    const auto node = stub_node{policy::long_name<AR_STRING("hello")>,
+    const auto node = stub_node{policy::long_name_t{"hello"_S},
                                 policy::max_count<3>,
-                                policy::value_separator<'='>};
-    auto tokens = vector<parsing::token_type>{
+                                policy::value_separator_t{"="_S}};
+    auto tokens = std::vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "hello"}};
     node.pre_parse_phase(tokens);
     return 0;
@@ -377,12 +381,14 @@ int main() {
              "owner_must_have_fixed_count_test"},
          {
              R"(
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/policy/value_separator.hpp"
 #include "arg_router/tree_node.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 namespace
 {
@@ -399,13 +405,13 @@ public:
 
     template <typename... Parents>
     void pre_parse_phase(
-        vector<parsing::token_type>& result,
+        std::vector<parsing::token_type>& result,
         [[maybe_unused]] const Parents&... parents) const
     {
         using this_policy =
             std::tuple_element_t<2, typename stub_node::policies_type>;
 
-        auto args = vector<parsing::token_type>{};
+        auto args = std::vector<parsing::token_type>{};
         auto adapter = parsing::dynamic_token_adapter{result, args};
         auto processed_target = utility::compile_time_optional{};
         auto target = parsing::parse_target{*this, parents...};
@@ -419,10 +425,10 @@ public:
 }  // namespace
 
 int main() {
-    const auto node = stub_node{policy::long_name<AR_STRING("hello")>,
+    const auto node = stub_node{policy::long_name_t{"hello"_S},
                                 policy::fixed_count<3>,
-                                policy::value_separator<'='>};
-    auto tokens = vector<parsing::token_type>{
+                                policy::value_separator_t{"="_S}};
+    auto tokens = std::vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "hello"}};
     node.pre_parse_phase(tokens);
     return 0;

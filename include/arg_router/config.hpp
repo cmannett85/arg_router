@@ -12,10 +12,6 @@
  */
 
 // If changing these or adding new ones, reflect those changes in config.cmake
-#ifndef AR_MAX_CTS_SIZE
-#    define AR_MAX_CTS_SIZE 128
-#endif
-
 #ifndef AR_LONG_PREFIX
 #    define AR_LONG_PREFIX "--"
 #endif
@@ -24,16 +20,8 @@
 #    define AR_SHORT_PREFIX "-"
 #endif
 
-#ifndef AR_ALLOCATOR
-#    define AR_ALLOCATOR std::allocator
-#endif
-
 #ifndef AR_UTF8_TRAILING_WINDOW_SIZE
 #    define AR_UTF8_TRAILING_WINDOW_SIZE 16
-#endif
-
-#ifndef AR_DISABLE_CPP20_STRINGS
-#    define AR_DISABLE_CPP20_STRINGS false
 #endif
 
 #include "arg_router/utility/utf8.hpp"
@@ -61,17 +49,6 @@ static_assert(utility::utf8::count(short_prefix) == 1, "Short prefix must be one
 
 static_assert(utility::utf8::count(long_prefix) >= utility::utf8::count(short_prefix),
               "Long prefix must be longer or the same as short prefix");
-
-/** Allocator for all STL types.
- *
- * @tparam T Type to allocate for
- */
-template <typename T>
-using allocator = AR_ALLOCATOR<T>;
-
-#if (__cplusplus >= 202002L) && !AR_DISABLE_CPP20_STRINGS
-#    define AR_ENABLE_CPP20_STRINGS
-#endif
 
 /** There's a bizarre issue that appeared in MSVC 1936 where quoted metafunctions appeared to stop
  * working due to the <TT>Q::template fn</TT> definition not being accepted.

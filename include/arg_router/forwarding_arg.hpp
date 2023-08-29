@@ -23,9 +23,10 @@ namespace arg_router
  */
 template <typename... Policies>
 class forwarding_arg_t :
-    public multi_arg_base_t<vector<std::string_view>, 0, std::decay_t<Policies>...>
+    public multi_arg_base_t<std::vector<std::string_view>, 0, std::decay_t<Policies>...>
 {
-    using parent_type = multi_arg_base_t<vector<std::string_view>, 0, std::decay_t<Policies>...>;
+    using parent_type =
+        multi_arg_base_t<std::vector<std::string_view>, 0, std::decay_t<Policies>...>;
 
     static_assert(!traits::has_display_name_method_v<forwarding_arg_t> &&
                       !traits::has_long_name_method_v<forwarding_arg_t> &&
@@ -45,7 +46,7 @@ public:
     public:
         using label = std::decay_t<decltype(
             parent_type::template default_leaf_help_data_type<Flatten>::label_generator() +
-            AR_STRING(" "){} +
+            str<" ">{} +
             parent_type::template default_leaf_help_data_type<Flatten>::count_suffix())>;
         using description =
             typename parent_type::template default_leaf_help_data_type<Flatten>::description;
