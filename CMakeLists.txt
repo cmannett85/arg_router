@@ -9,7 +9,7 @@ include(CMakeDependentOption)
 option(INSTALLATION_ONLY "Just 'build' for installation" OFF)
 cmake_dependent_option(BUILD_UNIT_TESTS_AND_EXAMPLES "Build the unit tests and examples" ON
                        "NOT INSTALLATION_ONLY" OFF)
-cmake_dependent_option(BUILD_CPP20_EXAMPLES "Build the C++20 and above examples" ON
+cmake_dependent_option(BUILD_EXAMPLES "Build the examples" ON
                        "BUILD_UNIT_TESTS_AND_EXAMPLES" OFF)
 cmake_dependent_option(ENABLE_CLANG_TIDY "Enable clang-tidy warnings for unit tests and examples" OFF
                       "NOT INSTALLATION_ONLY" OFF)
@@ -33,7 +33,7 @@ project(arg_router
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(MSVC_FRONTEND OFF)
-if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" OR CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" OR CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
     set(MSVC_FRONTEND ON)
 endif()
 
@@ -51,7 +51,7 @@ if(NOT INSTALLATION_ONLY)
     find_package(Boost ${BOOST_VERSION} REQUIRED)
 
     find_package(span-lite QUIET)
-    if (NOT span-lite_FOUND)
+    if(NOT span-lite_FOUND)
         message(WARNING "span-lite package not found, you will need to compile against C++20 or higher")
     endif()
 endif()
@@ -77,8 +77,7 @@ path_prefixer(HEADERS
     include/arg_router/multi_arg.hpp
     include/arg_router/multi_arg_base.hpp
     include/arg_router/multi_lang/iso_locale.hpp
-    include/arg_router/multi_lang/root_wrapper.hpp
-    include/arg_router/multi_lang/string_selector.hpp
+    include/arg_router/multi_lang/root.hpp
     include/arg_router/multi_lang/translation.hpp
     include/arg_router/parsing/dynamic_token_adapter.hpp
     include/arg_router/parsing/global_parser.hpp

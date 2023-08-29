@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -31,10 +31,7 @@ public:
      */
     constexpr range(type first, type last, std::uint8_t meta = 0) noexcept : data_{}
     {
-        // array::fill is not constexpr until C++20...
-        for (auto& b : data_) {
-            b = 0;
-        }
+        data_.fill(0);
 
         // Can't use reinterpret_cast in constexpr function, so we have to do it the old fashioned
         // way!

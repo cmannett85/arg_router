@@ -3,6 +3,7 @@
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #include "arg_router/policy/short_form_expander.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/short_name.hpp"
 #include "arg_router/tree_node.hpp"
 
@@ -10,6 +11,7 @@
 #include "test_printers.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 namespace
 {
@@ -71,32 +73,32 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                        std::vector<parsing::token_type>{},
                        std::vector<parsing::token_type>{},
                        std::vector<parsing::token_type>{},
-                       stub_node{policy::short_name<'h'>}},
+                       stub_node{policy::short_name_t{"h"_S}}},
             std::tuple{std::vector<parsing::token_type>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"}},
                        std::vector<parsing::token_type>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "--hello"}},
-                       stub_node{policy::short_name<'h'>}},
+                       stub_node{policy::short_name_t{"h"_S}}},
             std::tuple{std::vector<parsing::token_type>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "-h"}},
                        std::vector<parsing::token_type>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "-h"}},
-                       stub_node{policy::short_name<'h'>}},
+                       stub_node{policy::short_name_t{"h"_S}}},
             std::tuple{std::vector<parsing::token_type>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "--h"}},
                        std::vector<parsing::token_type>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "--h"}},
-                       stub_node{policy::short_name<'h'>}},
+                       stub_node{policy::short_name_t{"h"_S}}},
             std::tuple{std::vector<parsing::token_type>{{parsing::prefix_type::long_, "h"}},
                        std::vector<parsing::token_type>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::long_, "h"}},
                        std::vector<parsing::token_type>{},
-                       stub_node{policy::short_name<'h'>}},
+                       stub_node{policy::short_name_t{"h"_S}}},
             std::tuple{std::vector<parsing::token_type>{{parsing::prefix_type::short_, "h"}},
                        std::vector<parsing::token_type>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::short_, "h"}},
                        std::vector<parsing::token_type>{},
-                       stub_node{policy::short_name<'h'>}},
+                       stub_node{policy::short_name_t{"h"_S}}},
             std::tuple{std::vector<parsing::token_type>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "-hello"}},
                        std::vector<parsing::token_type>{{parsing::prefix_type::short_, "h"}},
@@ -104,14 +106,14 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                                                         {parsing::prefix_type::short_, "l"},
                                                         {parsing::prefix_type::short_, "l"},
                                                         {parsing::prefix_type::short_, "o"}},
-                       stub_node{policy::short_name<'h'>}},
+                       stub_node{policy::short_name_t{"h"_S}}},
             std::tuple{std::vector<parsing::token_type>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "-h"},
                                                         {parsing::prefix_type::none, "-f"}},
                        std::vector<parsing::token_type>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "-h"},
                                                         {parsing::prefix_type::none, "-f"}},
-                       stub_node{policy::short_name<'h'>}},
+                       stub_node{policy::short_name_t{"h"_S}}},
             std::tuple{
                 std::vector<parsing::token_type>{},
                 std::vector<parsing::token_type>{{parsing::prefix_type::none, "-こんにちは"}},
@@ -120,7 +122,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                                                  {parsing::prefix_type::short_, "に"},
                                                  {parsing::prefix_type::short_, "ち"},
                                                  {parsing::prefix_type::short_, "は"}},
-                stub_node{policy::short_name_utf8<AR_STRING("こ")>}},
+                stub_node{policy::short_name_t{"こ"_S}}},
             std::tuple{std::vector<parsing::token_type>{},
                        std::vector<parsing::token_type>{{parsing::prefix_type::none, "-hello"}},
                        std::vector<parsing::token_type>{{parsing::prefix_type::short_, "h"}},
@@ -128,7 +130,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                                                         {parsing::prefix_type::short_, "l"},
                                                         {parsing::prefix_type::short_, "l"},
                                                         {parsing::prefix_type::short_, "o"}},
-                       stub_node{policy::short_name_utf8<AR_STRING("h")>}},
+                       stub_node{policy::short_name_t{"h"_S}}},
             std::tuple{std::vector<parsing::token_type>{},
                        std::vector<parsing::token_type>{
                            {parsing::prefix_type::none, "-🙂b🇦🇬Δ猫"}},
@@ -137,7 +139,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                                                         {parsing::prefix_type::short_, "🇦🇬"},
                                                         {parsing::prefix_type::short_, "Δ"},
                                                         {parsing::prefix_type::short_, "猫"}},
-                       stub_node{policy::short_name_utf8<AR_STRING("🙂")>}},
+                       stub_node{policy::short_name_t{"🙂"_S}}},
         });
 }
 
@@ -199,12 +201,14 @@ int main() {
 #undef AR_LONG_PREFIX
 #define AR_LONG_PREFIX "-"
 
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/short_form_expander.hpp"
 #include "arg_router/policy/short_name.hpp"
 #include "arg_router/tree_node.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 namespace
 {
@@ -242,8 +246,8 @@ public:
 
 int main() {
     const auto node = stub_node{policy::short_form_expander,
-                                policy::long_name<AR_STRING("hello")>,
-                                policy::short_name<'H'>};
+                                policy::long_name_t{"hello"_S},
+                                policy::short_name_t{"H"_S}};
     auto tokens = std::vector<parsing::token_type>{
                     {parsing::prefix_type::long_, "hello"}};
     node.pre_parse_phase(tokens);

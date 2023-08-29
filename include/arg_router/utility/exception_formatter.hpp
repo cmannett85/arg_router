@@ -98,7 +98,7 @@ public:
         if constexpr ((std::tuple_size_v<initial_placeholders>) > 0) {
             return fmt<S>(tokens);
         } else if (!tokens.empty()) {
-            using greedy_appended = typename S::template append_t<AR_STRING(": {, }")>;
+            using greedy_appended = typename S::template append_t<str<": {, }">>;
             return fmt<greedy_appended>(tokens);
         }
 

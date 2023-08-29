@@ -3,6 +3,7 @@
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #include "arg_router/forwarding_arg.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/multi_arg.hpp"
 #include "arg_router/policy/description.hpp"
 #include "arg_router/policy/token_end_marker.hpp"
@@ -12,6 +13,7 @@
 #include "test_printers.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 using namespace std::string_literals;
 using namespace std::string_view_literals;
 
@@ -22,10 +24,10 @@ BOOST_AUTO_TEST_CASE(variable_length_multi_arg_test)
     auto router_hit = false;
     auto result = std::tuple<bool, std::vector<int>>{};
     const auto r1 =
-        root(mode(flag(policy::short_name<'f'>, policy::description<AR_STRING("flag description")>),
-                  multi_arg<std::vector<int>>(policy::long_name<AR_STRING("arg")>,
+        root(mode(flag(policy::short_name_t{"f"_S}, policy::description_t{"flag description"_S}),
+                  multi_arg<std::vector<int>>(policy::long_name_t{"arg"_S},
                                               policy::min_max_count<1, 3>,
-                                              policy::description<AR_STRING("description")>),
+                                              policy::description_t{"description"_S}),
                   policy::router{[&](bool flag, std::vector<int> arg) {
                       result = {flag, std::move(arg)};
                       router_hit = true;
@@ -33,11 +35,11 @@ BOOST_AUTO_TEST_CASE(variable_length_multi_arg_test)
              policy::validation::default_validator);
 
     const auto r2 =
-        root(mode(flag(policy::short_name<'f'>, policy::description<AR_STRING("flag description")>),
-                  multi_arg<std::vector<int>>(policy::long_name<AR_STRING("arg")>,
+        root(mode(flag(policy::short_name_t{"f"_S}, policy::description_t{"flag description"_S}),
+                  multi_arg<std::vector<int>>(policy::long_name_t{"arg"_S},
                                               policy::min_max_count<1, 3>,
-                                              policy::token_end_marker<AR_STRING("--")>,
-                                              policy::description<AR_STRING("description")>),
+                                              policy::token_end_marker_t{"--"_S},
+                                              policy::description_t{"description"_S}),
                   policy::router{[&](bool flag, std::vector<int> arg) {
                       result = {flag, std::move(arg)};
                       router_hit = true;
@@ -95,12 +97,12 @@ BOOST_AUTO_TEST_CASE(variable_length_multi_arg_with_positional_arg_test)
     auto result = std::tuple<bool, std::vector<int>, std::vector<std::string_view>>{};
     const auto r = root(
         mode(
-            flag(policy::short_name<'f'>, policy::description<AR_STRING("flag description")>),
-            multi_arg<std::vector<int>>(policy::long_name<AR_STRING("arg")>,
+            flag(policy::short_name_t{"f"_S}, policy::description_t{"flag description"_S}),
+            multi_arg<std::vector<int>>(policy::long_name_t{"arg"_S},
                                         policy::min_max_count<1, 3>,
-                                        policy::token_end_marker<AR_STRING("--")>,
-                                        policy::description<AR_STRING("description")>),
-            positional_arg<std::vector<std::string_view>>(policy::display_name<AR_STRING("POS")>),
+                                        policy::token_end_marker_t{"--"_S},
+                                        policy::description_t{"description"_S}),
+            positional_arg<std::vector<std::string_view>>(policy::display_name_t{"POS"_S}),
             policy::router{[&](bool flag, std::vector<int> arg, std::vector<std::string_view> pos) {
                 result = {flag, std::move(arg), std::move(pos)};
                 router_hit = true;
@@ -157,10 +159,10 @@ BOOST_AUTO_TEST_CASE(variable_length_forwarding_arg_test)
     auto router_hit = false;
     auto result = std::tuple<bool, std::vector<std::string_view>>{};
     const auto r1 =
-        root(mode(flag(policy::short_name<'f'>, policy::description<AR_STRING("flag description")>),
-                  forwarding_arg(policy::none_name<AR_STRING("--")>,
+        root(mode(flag(policy::short_name_t{"f"_S}, policy::description_t{"flag description"_S}),
+                  forwarding_arg(policy::none_name_t{"--"_S},
                                  policy::max_count<3>,
-                                 policy::description<AR_STRING("description")>),
+                                 policy::description_t{"description"_S}),
                   policy::router{[&](bool flag, std::vector<std::string_view> arg) {
                       result = {flag, std::move(arg)};
                       router_hit = true;
@@ -168,11 +170,11 @@ BOOST_AUTO_TEST_CASE(variable_length_forwarding_arg_test)
              policy::validation::default_validator);
 
     const auto r2 =
-        root(mode(flag(policy::short_name<'f'>, policy::description<AR_STRING("flag description")>),
-                  forwarding_arg(policy::none_name<AR_STRING("--")>,
+        root(mode(flag(policy::short_name_t{"f"_S}, policy::description_t{"flag description"_S}),
+                  forwarding_arg(policy::none_name_t{"--"_S},
                                  policy::max_count<3>,
-                                 policy::token_end_marker<AR_STRING("--")>,
-                                 policy::description<AR_STRING("description")>),
+                                 policy::token_end_marker_t{"--"_S},
+                                 policy::description_t{"description"_S}),
                   policy::router{[&](bool flag, std::vector<std::string_view> arg) {
                       result = {flag, std::move(arg)};
                       router_hit = true;
@@ -231,12 +233,12 @@ BOOST_AUTO_TEST_CASE(variable_length_forwarding_arg_with_positional_arg_test)
     auto result = std::tuple<bool, std::vector<std::string_view>, std::vector<int>>{};
     const auto r = root(
         mode(
-            flag(policy::short_name<'f'>, policy::description<AR_STRING("flag description")>),
-            forwarding_arg(policy::none_name<AR_STRING("--")>,
+            flag(policy::short_name_t{"f"_S}, policy::description_t{"flag description"_S}),
+            forwarding_arg(policy::none_name_t{"--"_S},
                            policy::max_count<3>,
-                           policy::token_end_marker<AR_STRING("--")>,
-                           policy::description<AR_STRING("description")>),
-            positional_arg<std::vector<int>>(policy::display_name<AR_STRING("POS")>),
+                           policy::token_end_marker_t{"--"_S},
+                           policy::description_t{"description"_S}),
+            positional_arg<std::vector<int>>(policy::display_name_t{"POS"_S}),
             policy::router{[&](bool flag, std::vector<std::string_view> arg, std::vector<int> pos) {
                 result = {flag, std::move(arg), std::move(pos)};
                 router_hit = true;

@@ -107,8 +107,8 @@ public:
     class help_data_type
     {
     public:
-        using label = AR_STRING("");
-        using description = AR_STRING("");
+        using label = str<"">;
+        using description = str<"">;
         using children =
             typename parent_type::template default_leaf_help_data_type<Flatten>::all_children_help;
     };

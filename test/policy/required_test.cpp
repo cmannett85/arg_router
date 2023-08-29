@@ -3,6 +3,7 @@
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #include "arg_router/policy/required.hpp"
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/tree_node.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
@@ -11,6 +12,7 @@
 #include "test_printers.hpp"
 
 using namespace arg_router;
+using namespace arg_router::literals;
 
 namespace
 {
@@ -53,7 +55,7 @@ BOOST_AUTO_TEST_CASE(is_policy_test)
 BOOST_AUTO_TEST_CASE(missing_phase_test)
 {
     const auto root =
-        stub_node{stub_node{policy::long_name<AR_STRING("test")>, policy::required}, stub_node{}};
+        stub_node{stub_node{policy::long_name_t{"test"_S}, policy::required}, stub_node{}};
 
     auto f = [&](const auto& owner, auto ec) {
         try {
@@ -82,6 +84,7 @@ BOOST_AUTO_TEST_CASE(missing_phase_test)
 {
     test::death_test_compile(
         R"(
+#include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/required.hpp"
 #include "arg_router/tree_node.hpp"
@@ -90,6 +93,8 @@ BOOST_AUTO_TEST_CASE(missing_phase_test)
 #include <vector>
 
 using namespace arg_router;
+using namespace arg_router::literals;
+
 namespace
 {
 template <typename... Policies>
@@ -112,7 +117,7 @@ public:
 }  // namespace
 
 int main() {
-    const auto node = stub_node{policy::long_name<AR_STRING("test")>,
+    const auto node = stub_node{policy::long_name_t{"test"_S},
                                 policy::required};
     node.template missing_phase<int>();
     return 0;

@@ -76,7 +76,7 @@ jobs:
         mkdir -p ${{ env.BUILD_DIR }}
         cd ${{ env.BUILD_DIR }}
         cmake ${{ github.workspace }} -G "Ninja" -DCMAKE_CXX_COMPILER=clang++-14 -DENABLE_CLANG_TIDY=ON -DDEATH_TEST_PARALLEL=2 -DENABLE_CLANG_FORMAT_CHECKS=ON
-        cmake --build . --target arg_router_test_coverage cpp17_examples cpp20_examples
+        cmake --build . --target arg_router_test_coverage examples
 
     # We run the tests under Valgrind rather than ASan/UBSan because when combined with coverage
     # causes hangs in the death tests
@@ -154,7 +154,7 @@ jobs:
        mkdir ${{ env.CMD_BUILD_DIR }}
        cd ${{ env.CMD_BUILD_DIR }}
        "${{ env.CMAKE_EXE }}" ${{ github.workspace }} -G "Visual Studio 17 2022" -A x64 -DVCPKG_TARGET_TRIPLET:STRING="x64-windows-static" -DDEATH_TEST_PARALLEL=1
-       "${{ env.CMAKE_EXE }}" --build . --target arg_router_test cpp20_examples
+       "${{ env.CMAKE_EXE }}" --build . --target arg_router_test examples
 
    - name: Run unit tests
      timeout-minutes: 30
@@ -208,7 +208,7 @@ jobs:
       run: |
         mkdir ${{ env.PACKAGE_BUILD_DIR }}
         cd ${{ env.PACKAGE_BUILD_DIR }}
-        cmake ${{ github.workspace }}/ci/package_test_project -DCMAKE_CXX_STANDARD=20 -DDISABLE_VCPKG=ON
+        cmake ${{ github.workspace }}/ci/package_test_project -DDISABLE_VCPKG=ON
         cmake --build .
         sudo apt remove arg_router
         ! test -e /usr/include/arg_router

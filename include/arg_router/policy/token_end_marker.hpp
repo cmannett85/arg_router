@@ -17,10 +17,7 @@ namespace arg_router::policy
  * that marks the end of list.  This allows multiple variable length value list nodes to be used
  * under a single mode.
  *
- * If using C++17 then use the template variable helper with the <TT>S_</TT> macro; for C++20 and
- * higher, use the constructor directly with a compile-time string literal:
  * @code
- * constexpr auto a = ar::policy::token_end_marker<S_("hello")>;
  * constexpr auto b = ar::policy::token_end_marker_t{"hello"_S};
  * @endcode
  * @note Token must have at least one character and cannot contain any whitespace characters
@@ -99,13 +96,6 @@ private:
     static_assert(!utility::utf8::contains_whitespace(token_end_marker()),
                   "Token end markers cannot contain whitespace");
 };
-
-/** Constant variable helper.
- *
- * @tparam S compile_time_string
- */
-template <typename S>
-constexpr auto token_end_marker = token_end_marker_t<S>{};
 
 template <typename S>
 struct is_policy<token_end_marker_t<S>> : std::true_type {

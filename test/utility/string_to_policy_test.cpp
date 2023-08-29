@@ -45,17 +45,17 @@ BOOST_AUTO_TEST_CASE(first_string_mapper_test)
     using test1 = typename mapper::type<std::tuple<>>;
     static_assert(std::is_void_v<test1>);
 
-    using test2 = typename mapper::type<std::tuple<AR_STRING("h"), AR_STRING("hello")>>;
-    static_assert(std::is_same_v<test2, policy::long_name_t<AR_STRING("hello")>>);
+    using test2 = typename mapper::type<std::tuple<str<"h">, str<"hello">>>;
+    static_assert(std::is_same_v<test2, policy::long_name_t<str<"hello">>>);
 
-    using test3 = typename mapper::type<std::tuple<AR_STRING("hello"), AR_STRING("h")>>;
-    static_assert(std::is_same_v<test3, policy::long_name_t<AR_STRING("hello")>>);
+    using test3 = typename mapper::type<std::tuple<str<"hello">, str<"h">>>;
+    static_assert(std::is_same_v<test3, policy::long_name_t<str<"hello">>>);
 
-    using test4 = typename mapper::type<std::tuple<AR_STRING("h"), AR_STRING("h")>>;
+    using test4 = typename mapper::type<std::tuple<str<"h">, str<"h">>>;
     static_assert(std::is_void_v<test4>);
 
-    using test5 = typename mapper::type<std::tuple<AR_STRING("hello"), AR_STRING("world")>>;
-    static_assert(std::is_same_v<test5, policy::long_name_t<AR_STRING("hello")>>);
+    using test5 = typename mapper::type<std::tuple<str<"hello">, str<"world">>>;
+    static_assert(std::is_same_v<test5, policy::long_name_t<str<"hello">>>);
 }
 
 BOOST_AUTO_TEST_CASE(second_string_mapper_test)
@@ -65,17 +65,17 @@ BOOST_AUTO_TEST_CASE(second_string_mapper_test)
     using test1 = typename mapper::type<std::tuple<>>;
     static_assert(std::is_void_v<test1>);
 
-    using test2 = typename mapper::type<std::tuple<AR_STRING("h"), AR_STRING("hello")>>;
+    using test2 = typename mapper::type<std::tuple<str<"h">, str<"hello">>>;
     static_assert(std::is_void_v<test2>);
 
-    using test3 = typename mapper::type<std::tuple<AR_STRING("hello"), AR_STRING("h")>>;
+    using test3 = typename mapper::type<std::tuple<str<"hello">, str<"h">>>;
     static_assert(std::is_void_v<test3>);
 
-    using test4 = typename mapper::type<std::tuple<AR_STRING("h"), AR_STRING("h")>>;
+    using test4 = typename mapper::type<std::tuple<str<"h">, str<"h">>>;
     static_assert(std::is_void_v<test4>);
 
-    using test5 = typename mapper::type<std::tuple<AR_STRING("hello"), AR_STRING("world")>>;
-    static_assert(std::is_same_v<test5, policy::long_name_t<AR_STRING("world")>>);
+    using test5 = typename mapper::type<std::tuple<str<"hello">, str<"world">>>;
+    static_assert(std::is_same_v<test5, policy::long_name_t<str<"world">>>);
 }
 
 BOOST_AUTO_TEST_CASE(single_char_mapper_test)
@@ -85,16 +85,16 @@ BOOST_AUTO_TEST_CASE(single_char_mapper_test)
     using test1 = typename mapper::type<std::tuple<>>;
     static_assert(std::is_void_v<test1>);
 
-    using test2 = typename mapper::type<std::tuple<AR_STRING("h"), AR_STRING("hello")>>;
-    static_assert(std::is_same_v<test2, policy::short_name_t<AR_STRING("h")>>);
+    using test2 = typename mapper::type<std::tuple<str<"h">, str<"hello">>>;
+    static_assert(std::is_same_v<test2, policy::short_name_t<str<"h">>>);
 
-    using test3 = typename mapper::type<std::tuple<AR_STRING("hello"), AR_STRING("h")>>;
-    static_assert(std::is_same_v<test3, policy::short_name_t<AR_STRING("h")>>);
+    using test3 = typename mapper::type<std::tuple<str<"hello">, str<"h">>>;
+    static_assert(std::is_same_v<test3, policy::short_name_t<str<"h">>>);
 
-    using test4 = typename mapper::type<std::tuple<AR_STRING("h"), AR_STRING("h")>>;
-    static_assert(std::is_same_v<test4, policy::short_name_t<AR_STRING("h")>>);
+    using test4 = typename mapper::type<std::tuple<str<"h">, str<"h">>>;
+    static_assert(std::is_same_v<test4, policy::short_name_t<str<"h">>>);
 
-    using test5 = typename mapper::type<std::tuple<AR_STRING("hello"), AR_STRING("world")>>;
+    using test5 = typename mapper::type<std::tuple<str<"hello">, str<"world">>>;
     static_assert(std::is_void_v<test5>);
 }
 
@@ -105,17 +105,17 @@ BOOST_AUTO_TEST_CASE(first_text_mapper_test)
     using test1 = typename mapper::type<std::tuple<>>;
     static_assert(std::is_void_v<test1>);
 
-    using test2 = typename mapper::type<std::tuple<AR_STRING("h"), AR_STRING("hello")>>;
-    static_assert(std::is_same_v<test2, policy::display_name_t<AR_STRING("h")>>);
+    using test2 = typename mapper::type<std::tuple<str<"h">, str<"hello">>>;
+    static_assert(std::is_same_v<test2, policy::display_name_t<str<"h">>>);
 
-    using test3 = typename mapper::type<std::tuple<AR_STRING("hello"), AR_STRING("h")>>;
-    static_assert(std::is_same_v<test3, policy::display_name_t<AR_STRING("hello")>>);
+    using test3 = typename mapper::type<std::tuple<str<"hello">, str<"h">>>;
+    static_assert(std::is_same_v<test3, policy::display_name_t<str<"hello">>>);
 
-    using test4 = typename mapper::type<std::tuple<AR_STRING("h"), AR_STRING("h")>>;
-    static_assert(std::is_same_v<test4, policy::display_name_t<AR_STRING("h")>>);
+    using test4 = typename mapper::type<std::tuple<str<"h">, str<"h">>>;
+    static_assert(std::is_same_v<test4, policy::display_name_t<str<"h">>>);
 
-    using test5 = typename mapper::type<std::tuple<AR_STRING("hello"), AR_STRING("world")>>;
-    static_assert(std::is_same_v<test5, policy::display_name_t<AR_STRING("hello")>>);
+    using test5 = typename mapper::type<std::tuple<str<"hello">, str<"world">>>;
+    static_assert(std::is_same_v<test5, policy::display_name_t<str<"hello">>>);
 }
 
 BOOST_AUTO_TEST_CASE(second_text_mapper_test)
@@ -125,20 +125,20 @@ BOOST_AUTO_TEST_CASE(second_text_mapper_test)
     using test1 = typename mapper::type<std::tuple<>>;
     static_assert(std::is_void_v<test1>);
 
-    using test2 = typename mapper::type<std::tuple<AR_STRING("hello")>>;
+    using test2 = typename mapper::type<std::tuple<str<"hello">>>;
     static_assert(std::is_void_v<test2>);
 
-    using test3 = typename mapper::type<std::tuple<AR_STRING("h"), AR_STRING("hello")>>;
-    static_assert(std::is_same_v<test3, policy::display_name_t<AR_STRING("hello")>>);
+    using test3 = typename mapper::type<std::tuple<str<"h">, str<"hello">>>;
+    static_assert(std::is_same_v<test3, policy::display_name_t<str<"hello">>>);
 
-    using test4 = typename mapper::type<std::tuple<AR_STRING("hello"), AR_STRING("h")>>;
-    static_assert(std::is_same_v<test4, policy::display_name_t<AR_STRING("h")>>);
+    using test4 = typename mapper::type<std::tuple<str<"hello">, str<"h">>>;
+    static_assert(std::is_same_v<test4, policy::display_name_t<str<"h">>>);
 
-    using test5 = typename mapper::type<std::tuple<AR_STRING("h"), AR_STRING("h")>>;
-    static_assert(std::is_same_v<test5, policy::display_name_t<AR_STRING("h")>>);
+    using test5 = typename mapper::type<std::tuple<str<"h">, str<"h">>>;
+    static_assert(std::is_same_v<test5, policy::display_name_t<str<"h">>>);
 
-    using test6 = typename mapper::type<std::tuple<AR_STRING("hello"), AR_STRING("world")>>;
-    static_assert(std::is_same_v<test6, policy::display_name_t<AR_STRING("world")>>);
+    using test6 = typename mapper::type<std::tuple<str<"hello">, str<"world">>>;
+    static_assert(std::is_same_v<test6, policy::display_name_t<str<"world">>>);
 }
 
 BOOST_AUTO_TEST_CASE(convert_empty_test)
@@ -161,26 +161,26 @@ BOOST_AUTO_TEST_CASE(convert_first_string_test)
 
     test::data_set(f,
                    std::tuple{
-                       std::tuple{std::tuple{policy::description_t{AR_STRING("hello"){}}},
-                                  policy::description_t{AR_STRING("hello"){}}},
-                       std::tuple{std::tuple{policy::long_name_t{AR_STRING("long"){}},
+                       std::tuple{std::tuple{policy::description_t{"hello"_S}},
+                                  policy::description_t{"hello"_S}},
+                       std::tuple{std::tuple{policy::long_name_t{"long"_S},
                                              policy::max_value<42>(),
-                                             policy::description_t{AR_STRING("hello"){}}},
+                                             policy::description_t{"hello"_S}},
                                   policy::max_value<42>(),
-                                  AR_STRING("long"){},
-                                  policy::description_t{AR_STRING("hello"){}}},
-                       std::tuple{std::tuple{policy::long_name_t{AR_STRING("long"){}},
+                                  "long"_S,
+                                  policy::description_t{"hello"_S}},
+                       std::tuple{std::tuple{policy::long_name_t{"long"_S},
                                              policy::max_value<42>(),
-                                             policy::description_t{AR_STRING("hello"){}}},
-                                  AR_STRING("long"){},
+                                             policy::description_t{"hello"_S}},
+                                  "long"_S,
                                   policy::max_value<42>(),
-                                  policy::description_t{AR_STRING("hello"){}}},
-                       std::tuple{std::tuple{policy::long_name_t{AR_STRING("long"){}},
+                                  policy::description_t{"hello"_S}},
+                       std::tuple{std::tuple{policy::long_name_t{"long"_S},
                                              policy::max_value<42>(),
-                                             policy::description_t{AR_STRING("hello"){}}},
+                                             policy::description_t{"hello"_S}},
                                   policy::max_value<42>(),
-                                  policy::description_t{AR_STRING("hello"){}},
-                                  AR_STRING("long"){}},
+                                  policy::description_t{"hello"_S},
+                                  "long"_S},
                    });
 }
 
@@ -194,33 +194,33 @@ BOOST_AUTO_TEST_CASE(convert_second_string_test)
             std::move(params)...);
     };
 
-    test::data_set(f,
-                   std::tuple{
-                       std::tuple{std::tuple{policy::description_t{AR_STRING("hello"){}}},
-                                  policy::description_t{AR_STRING("hello"){}}},
-                       std::tuple{std::tuple{policy::long_name_t{AR_STRING("hello"){}},
-                                             policy::description_t{AR_STRING("desc"){}},
-                                             policy::max_value<42>()},
-                                  policy::max_value<42>(),
-                                  AR_STRING("hello"){},
-                                  AR_STRING("desc"){}},
-                       std::tuple{std::tuple{policy::long_name_t{AR_STRING("hello"){}},
-                                             policy::description_t{AR_STRING("desc"){}},
-                                             policy::max_value<42>()},
-                                  AR_STRING("hello"){},
-                                  policy::max_value<42>(),
-                                  AR_STRING("desc"){}},
-                       std::tuple{std::tuple{policy::long_name_t{AR_STRING("hello"){}},
-                                             policy::description_t{AR_STRING("desc"){}},
-                                             policy::max_value<42>()},
-                                  policy::max_value<42>(),
-                                  AR_STRING("hello"){},
-                                  AR_STRING("desc"){}},
-                       std::tuple{std::tuple{policy::long_name_t{AR_STRING("hello"){}},
-                                             policy::max_value<42>()},
-                                  policy::max_value<42>(),
-                                  AR_STRING("hello"){}},
-                   });
+    test::data_set(
+        f,
+        std::tuple{
+            std::tuple{std::tuple{policy::description_t{"hello"_S}},
+                       policy::description_t{"hello"_S}},
+            std::tuple{std::tuple{policy::long_name_t{"hello"_S},
+                                  policy::description_t{"desc"_S},
+                                  policy::max_value<42>()},
+                       policy::max_value<42>(),
+                       "hello"_S,
+                       "desc"_S},
+            std::tuple{std::tuple{policy::long_name_t{"hello"_S},
+                                  policy::description_t{"desc"_S},
+                                  policy::max_value<42>()},
+                       "hello"_S,
+                       policy::max_value<42>(),
+                       "desc"_S},
+            std::tuple{std::tuple{policy::long_name_t{"hello"_S},
+                                  policy::description_t{"desc"_S},
+                                  policy::max_value<42>()},
+                       policy::max_value<42>(),
+                       "hello"_S,
+                       "desc"_S},
+            std::tuple{std::tuple{policy::long_name_t{"hello"_S}, policy::max_value<42>()},
+                       policy::max_value<42>(),
+                       "hello"_S},
+        });
 }
 
 BOOST_AUTO_TEST_CASE(convert_single_char_test)
@@ -234,26 +234,26 @@ BOOST_AUTO_TEST_CASE(convert_single_char_test)
 
     test::data_set(f,
                    std::tuple{
-                       std::tuple{std::tuple{policy::description_t{AR_STRING("hello"){}}},
-                                  policy::description_t{AR_STRING("hello"){}}},
-                       std::tuple{std::tuple{policy::short_name_t{AR_STRING("l"){}},
+                       std::tuple{std::tuple{policy::description_t{"hello"_S}},
+                                  policy::description_t{"hello"_S}},
+                       std::tuple{std::tuple{policy::short_name_t{"l"_S},
                                              policy::max_value<42>(),
-                                             policy::description_t{AR_STRING("hello"){}}},
+                                             policy::description_t{"hello"_S}},
                                   policy::max_value<42>(),
-                                  AR_STRING("l"){},
-                                  policy::description_t{AR_STRING("hello"){}}},
-                       std::tuple{std::tuple{policy::short_name_t{AR_STRING("l"){}},
+                                  "l"_S,
+                                  policy::description_t{"hello"_S}},
+                       std::tuple{std::tuple{policy::short_name_t{"l"_S},
                                              policy::max_value<42>(),
-                                             policy::description_t{AR_STRING("hello"){}}},
-                                  AR_STRING("l"){},
+                                             policy::description_t{"hello"_S}},
+                                  "l"_S,
                                   policy::max_value<42>(),
-                                  policy::description_t{AR_STRING("hello"){}}},
-                       std::tuple{std::tuple{policy::short_name_t{AR_STRING("l"){}},
+                                  policy::description_t{"hello"_S}},
+                       std::tuple{std::tuple{policy::short_name_t{"l"_S},
                                              policy::max_value<42>(),
-                                             policy::description_t{AR_STRING("hello"){}}},
+                                             policy::description_t{"hello"_S}},
                                   policy::max_value<42>(),
-                                  policy::description_t{AR_STRING("hello"){}},
-                                  AR_STRING("l"){}},
+                                  policy::description_t{"hello"_S},
+                                  "l"_S},
                    });
 }
 
@@ -268,26 +268,26 @@ BOOST_AUTO_TEST_CASE(convert_first_text_test)
 
     test::data_set(f,
                    std::tuple{
-                       std::tuple{std::tuple{policy::display_name_t{AR_STRING("hello"){}}},
-                                  policy::display_name_t{AR_STRING("hello"){}}},
-                       std::tuple{std::tuple{policy::display_name_t{AR_STRING("l"){}},
+                       std::tuple{std::tuple{policy::display_name_t{"hello"_S}},
+                                  policy::display_name_t{"hello"_S}},
+                       std::tuple{std::tuple{policy::display_name_t{"l"_S},
                                              policy::max_value<42>(),
-                                             policy::description_t{AR_STRING("hello"){}}},
+                                             policy::description_t{"hello"_S}},
                                   policy::max_value<42>(),
-                                  AR_STRING("l"){},
-                                  policy::description_t{AR_STRING("hello"){}}},
-                       std::tuple{std::tuple{policy::display_name_t{AR_STRING("l"){}},
+                                  "l"_S,
+                                  policy::description_t{"hello"_S}},
+                       std::tuple{std::tuple{policy::display_name_t{"l"_S},
                                              policy::max_value<42>(),
-                                             policy::description_t{AR_STRING("hello"){}}},
-                                  AR_STRING("l"){},
+                                             policy::description_t{"hello"_S}},
+                                  "l"_S,
                                   policy::max_value<42>(),
-                                  policy::description_t{AR_STRING("hello"){}}},
-                       std::tuple{std::tuple{policy::display_name_t{AR_STRING("l"){}},
+                                  policy::description_t{"hello"_S}},
+                       std::tuple{std::tuple{policy::display_name_t{"l"_S},
                                              policy::max_value<42>(),
-                                             policy::description_t{AR_STRING("hello"){}}},
+                                             policy::description_t{"hello"_S}},
                                   policy::max_value<42>(),
-                                  policy::description_t{AR_STRING("hello"){}},
-                                  AR_STRING("l"){}},
+                                  policy::description_t{"hello"_S},
+                                  "l"_S},
                    });
 }
 
@@ -301,33 +301,33 @@ BOOST_AUTO_TEST_CASE(convert_second_text_test)
             std::move(params)...);
     };
 
-    test::data_set(f,
-                   std::tuple{
-                       std::tuple{std::tuple{policy::display_name_t{AR_STRING("hello"){}}},
-                                  policy::display_name_t{AR_STRING("hello"){}}},
-                       std::tuple{std::tuple{policy::display_name_t{AR_STRING("l"){}},
-                                             policy::description_t{AR_STRING("hello"){}}},
-                                  policy::display_name_t{AR_STRING("l"){}},
-                                  policy::description_t{AR_STRING("hello"){}}},
-                       std::tuple{std::tuple{policy::display_name_t{AR_STRING("l"){}},
-                                             policy::description_t{AR_STRING("hello"){}},
-                                             policy::max_value<42>()},
-                                  AR_STRING("l"){},
-                                  AR_STRING("hello"){},
+    test::data_set(
+        f,
+        std::tuple{
+            std::tuple{std::tuple{policy::display_name_t{"hello"_S}},
+                       policy::display_name_t{"hello"_S}},
+            std::tuple{std::tuple{policy::display_name_t{"l"_S}, policy::description_t{"hello"_S}},
+                       policy::display_name_t{"l"_S},
+                       policy::description_t{"hello"_S}},
+            std::tuple{std::tuple{policy::display_name_t{"l"_S},
+                                  policy::description_t{"hello"_S},
                                   policy::max_value<42>()},
-                       std::tuple{std::tuple{policy::display_name_t{AR_STRING("l"){}},
-                                             policy::description_t{AR_STRING("hello"){}},
-                                             policy::max_value<42>()},
-                                  AR_STRING("l"){},
-                                  policy::max_value<42>(),
-                                  AR_STRING("hello"){}},
-                       std::tuple{std::tuple{policy::display_name_t{AR_STRING("l"){}},
-                                             policy::description_t{AR_STRING("hello"){}},
-                                             policy::max_value<42>()},
-                                  policy::max_value<42>(),
-                                  AR_STRING("l"){},
-                                  AR_STRING("hello"){}},
-                   });
+                       "l"_S,
+                       "hello"_S,
+                       policy::max_value<42>()},
+            std::tuple{std::tuple{policy::display_name_t{"l"_S},
+                                  policy::description_t{"hello"_S},
+                                  policy::max_value<42>()},
+                       "l"_S,
+                       policy::max_value<42>(),
+                       "hello"_S},
+            std::tuple{std::tuple{policy::display_name_t{"l"_S},
+                                  policy::description_t{"hello"_S},
+                                  policy::max_value<42>()},
+                       policy::max_value<42>(),
+                       "l"_S,
+                       "hello"_S},
+        });
 }
 
 BOOST_AUTO_TEST_CASE(convert_main_three_test)
@@ -343,52 +343,52 @@ BOOST_AUTO_TEST_CASE(convert_main_three_test)
 
     test::data_set(f,
                    std::tuple{
-                       std::tuple{std::tuple{policy::description_t{AR_STRING("hello"){}}},
-                                  policy::description_t{AR_STRING("hello"){}}},
-                       std::tuple{std::tuple{policy::short_name_t{AR_STRING("s"){}},
+                       std::tuple{std::tuple{policy::description_t{"hello"_S}},
+                                  policy::description_t{"hello"_S}},
+                       std::tuple{std::tuple{policy::short_name_t{"s"_S},
                                              policy::max_value<42>(),
-                                             policy::description_t{AR_STRING("hello"){}}},
+                                             policy::description_t{"hello"_S}},
                                   policy::max_value<42>(),
-                                  AR_STRING("s"){},
-                                  policy::description_t{AR_STRING("hello"){}}},
-                       std::tuple{std::tuple{policy::long_name_t{AR_STRING("long"){}},
+                                  "s"_S,
+                                  policy::description_t{"hello"_S}},
+                       std::tuple{std::tuple{policy::long_name_t{"long"_S},
                                              policy::max_value<42>(),
-                                             policy::description_t{AR_STRING("hello"){}}},
+                                             policy::description_t{"hello"_S}},
                                   policy::max_value<42>(),
-                                  AR_STRING("long"){},
-                                  policy::description_t{AR_STRING("hello"){}}},
-                       std::tuple{std::tuple{policy::long_name_t{AR_STRING("long"){}},
-                                             policy::short_name_t{AR_STRING("s"){}},
+                                  "long"_S,
+                                  policy::description_t{"hello"_S}},
+                       std::tuple{std::tuple{policy::long_name_t{"long"_S},
+                                             policy::short_name_t{"s"_S},
                                              policy::max_value<42>(),
-                                             policy::description_t{AR_STRING("hello"){}}},
+                                             policy::description_t{"hello"_S}},
                                   policy::max_value<42>(),
-                                  AR_STRING("long"){},
-                                  policy::description_t{AR_STRING("hello"){}},
-                                  AR_STRING("s"){}},
-                       std::tuple{std::tuple{policy::long_name_t{AR_STRING("long"){}},
-                                             policy::description_t{AR_STRING("hello"){}},
-                                             policy::short_name_t{AR_STRING("s"){}},
+                                  "long"_S,
+                                  policy::description_t{"hello"_S},
+                                  "s"_S},
+                       std::tuple{std::tuple{policy::long_name_t{"long"_S},
+                                             policy::description_t{"hello"_S},
+                                             policy::short_name_t{"s"_S},
                                              policy::max_value<42>()},
                                   policy::max_value<42>(),
-                                  AR_STRING("long"){},
-                                  AR_STRING("hello"){},
-                                  AR_STRING("s"){}},
-                       std::tuple{std::tuple{policy::long_name_t{AR_STRING("long"){}},
-                                             policy::description_t{AR_STRING("hello"){}},
-                                             policy::short_name_t{AR_STRING("s"){}},
+                                  "long"_S,
+                                  "hello"_S,
+                                  "s"_S},
+                       std::tuple{std::tuple{policy::long_name_t{"long"_S},
+                                             policy::description_t{"hello"_S},
+                                             policy::short_name_t{"s"_S},
                                              policy::max_value<42>()},
-                                  AR_STRING("long"){},
+                                  "long"_S,
                                   policy::max_value<42>(),
-                                  AR_STRING("hello"){},
-                                  AR_STRING("s"){}},
-                       std::tuple{std::tuple{policy::long_name_t{AR_STRING("long"){}},
-                                             policy::description_t{AR_STRING("hello"){}},
-                                             policy::short_name_t{AR_STRING("s"){}},
+                                  "hello"_S,
+                                  "s"_S},
+                       std::tuple{std::tuple{policy::long_name_t{"long"_S},
+                                             policy::description_t{"hello"_S},
+                                             policy::short_name_t{"s"_S},
                                              policy::max_value<42>()},
-                                  AR_STRING("long"){},
-                                  AR_STRING("s"){},
+                                  "long"_S,
+                                  "s"_S,
                                   policy::max_value<42>(),
-                                  AR_STRING("hello"){}},
+                                  "hello"_S},
                    });
 }
 
@@ -408,8 +408,8 @@ using namespace arg_router::literals;
 int main() {
     const auto result = utility::string_to_policy::convert<
         utility::string_to_policy::first_string_mapper<policy::long_name_t>>(
-            AR_STRING("long"){},
-            AR_STRING("hello"){});
+            "long"_S,
+            "hello"_S);
     return 0;
 }
     )",
