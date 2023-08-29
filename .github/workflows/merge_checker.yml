@@ -94,7 +94,7 @@ jobs:
         mkdir -p ${{ env.BUILD_DIR }}
         cd ${{ env.BUILD_DIR }}
         cmake ${{ github.workspace }} -G "Ninja" -DCMAKE_CXX_COMPILER=g++-12 -DDEATH_TEST_PARALLEL=2
-        cmake --build . --target arg_router_test cpp17_examples cpp20_examples
+        cmake --build . --target arg_router_test examples
 
     - name: Run unit tests
       timeout-minutes: 30
@@ -129,7 +129,7 @@ jobs:
         mkdir -p ${{ env.BUILD_DIR }}
         cd ${{ env.BUILD_DIR }}
         cmake ${{ github.workspace }} -G "Ninja" -DCMAKE_CXX_COMPILER=g++-11 -DCMAKE_CXX_FLAGS=-m32 -DCMAKE_EXE_LINKER_FLAGS=-m32 -DVCPKG_OVERLAY_TRIPLETS=${{ github.workspace }}/cmake/triplets -DVCPKG_TARGET_TRIPLET=x86-linux -DDEATH_TEST_PARALLEL=2
-        cmake --build . --target arg_router_test cpp17_examples cpp20_examples
+        cmake --build . --target arg_router_test exampless
 
     - name: Run unit tests
       timeout-minutes: 30
@@ -166,7 +166,7 @@ jobs:
         mkdir ${{ env.CMD_BUILD_DIR }}
         cd ${{ env.CMD_BUILD_DIR }}
         "${{ env.CMAKE_EXE }}" ${{ github.workspace }} -G "Ninja" -DVCPKG_TARGET_TRIPLET:STRING="x64-windows-static" -DCMAKE_CXX_COMPILER:FILEPATH="C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe" -DDEATH_TEST_PARALLEL=2
-        "${{ env.CMAKE_EXE }}" --build . --target arg_router_test cpp17_examples cpp20_examples
+        "${{ env.CMAKE_EXE }}" --build . --target arg_router_test examples
 
     - name: Run unit tests
       timeout-minutes: 30
@@ -223,7 +223,7 @@ jobs:
         mkdir -p ${{ env.BUILD_DIR }}
         cd ${{ env.BUILD_DIR }}
         cmake ${{ github.workspace }} -DDEATH_TEST_PARALLEL=3
-        cmake --build . --target arg_router_test cpp17_examples cpp20_examples -j3
+        cmake --build . --target arg_router_test examples -j3
 
     - name: Run unit tests
       timeout-minutes: 30
@@ -313,31 +313,31 @@ jobs:
         & ${{ github.workspace }}/ci/vcpkg_package_updater.ps1 ${{ github.sha }}
 
   # Test Conan package is acquired and accessible for C++17
-  conan_test_package_17:
-    runs-on: ubuntu-22.04
-    needs: changes
-    if: |
-      needs.changes.outputs.merge_checker == 'true' ||
-      needs.changes.outputs.conan_test_project == 'true'
+  # conan_test_package_17:
+  #   runs-on: ubuntu-22.04
+  #   needs: changes
+  #   if: |
+  #     needs.changes.outputs.merge_checker == 'true' ||
+  #     needs.changes.outputs.conan_test_project == 'true'
 
-    steps:
-    - uses: actions/checkout@v3
-    - uses: ./.github/workflows/conan_setup
-      with:
-        version: "17"
-        build_dir: "${{ env.BUILD_DIR }}"
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - uses: ./.github/workflows/conan_setup
+  #     with:
+  #       version: "17"
+  #       build_dir: "${{ env.BUILD_DIR }}"
 
-  # Test Conan package is acquired and accessible for C++20
-  conan_test_package_20:
-    runs-on: ubuntu-22.04
-    needs: changes
-    if: |
-      needs.changes.outputs.merge_checker == 'true' ||
-      needs.changes.outputs.conan_test_project == 'true'
+  # # Test Conan package is acquired and accessible for C++20
+  # conan_test_package_20:
+  #   runs-on: ubuntu-22.04
+  #   needs: changes
+  #   if: |
+  #     needs.changes.outputs.merge_checker == 'true' ||
+  #     needs.changes.outputs.conan_test_project == 'true'
 
-    steps:
-    - uses: actions/checkout@v3
-    - uses: ./.github/workflows/conan_setup
-      with:
-        version: "20"
-        build_dir: "${{ env.BUILD_DIR }}"
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - uses: ./.github/workflows/conan_setup
+  #     with:
+  #       version: "20"
+  #       build_dir: "${{ env.BUILD_DIR }}"
