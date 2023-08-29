@@ -1,7 +1,7 @@
 ![Documentation Generator](https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg) [![Merge to main Checker](https://github.com/cmannett85/arg_router/actions/workflows/merge_checker.yml/badge.svg)](https://github.com/cmannett85/arg_router/actions/workflows/merge_checker.yml) ![Unit test coverage](https://img.shields.io/badge/Unit_Test_Coverage-97.2%25-brightgreen)
 
 # arg_router
-`arg_router` is a C++17/20 command line parser and router.  It uses policy-based objects hierarchically, so the parsing code is self-describing.  Rather than just providing a parsing service that returns a map of `variant`s/`any`s, it allows you to bind `Callable` instances to points in the parse structure, so complex command line arguments can directly call functions with the expected arguments - rather than you having to do this yourself.
+`arg_router` is a C++20 command line parser and router.  It uses policy-based objects hierarchically, so the parsing code is self-describing.  Rather than just providing a parsing service that returns a map of `variant`s/`any`s, it allows you to bind `Callable` instances to points in the parse structure, so complex command line arguments can directly call functions with the expected arguments - rather than you having to do this yourself.
 
 ## Features
 - Use policies to define the properties and constraints of arguments at compile-time
@@ -12,7 +12,6 @@
 - Easy custom parsers by using `Callable`s inline for specific arguments, or you can implement a specialisation to cover all instances of that type
 - Unicode compliant by supporting UTF-8 encoded compile-time strings ([details](#unicode-compliance))
 - Support of runtime language selection
-- Uses a macro to ease compile-time string generation when using C++17.  For C++20 and above, compile-time string literals can be used directly in constructors
 - [Available](https://github.com/microsoft/vcpkg/tree/master/ports/arg-router) on vcpkg!
 - [Available](https://conan.io/center/arg_router) on Conan Center!
 
@@ -91,8 +90,6 @@ There are several ways to install `arg_router`, the most appropriate depends on 
 If you're a library user, you will need the following dependencies in order to build:
 * Boost.mp11 v1.74+
 * Boost.Lexical_Cast v1.74+
-* Boost.Preprocessor v1.74+ (only needed if building against C++17)
-* [span-lite](https://github.com/martinmoene/span-lite) (only needed if building against C++17)
 
 If you're a vcpkg user, then these will be brought in automatically for you.  `arg_router` is header-only (due to all the templates) and so are the above dependencies.
 
@@ -156,7 +153,7 @@ The `help` node is used by the `root` to generate the argument documentation for
 
 Now let's introduce some 'policies'.  Policies define common behaviours across node types, a basic one is `long_name_t` which provides long-form argument definition.  By default, a standard unix double hyphen prefix for long names is added automatically.  `short_name_t` is the single character short-form name, by default a single hyphen is prefixed automatically.  `arg_router` supports short name collapsing for flags, so if you have defined flags like `-a -b -c` then `-abc` will be accepted or `-bca`, etc. (**note** short-form name collapsing is disabled if the library has been configured to have the same long and short prefix, which is common on Windows).
 
-Compile-time strings are created via the `""_S` string literal, which creates an instance of a `ar::str` type.  **Note** Advanced NTTP language support that allows for this is not present until C++20, see [compile-time string support](#compile-time-string-support) for what to do in C++17.
+Compile-time strings are created via the `""_S` string literal, which creates an instance of a `ar::str` type.
 
 In order to group arguments under a specific operating mode, you put them under a `mode` instance.  In this case our simple cat program only has one mode, so it is anonymous i.e. there's no long name or description associated with it - it is a build error to have more than one anonymous mode under the root of a parse tree.
 
@@ -983,16 +980,6 @@ target_include_directories(my_exe PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
 ```
 Creates a header for each language with the corresponding translation specialisation that can be included in your root source file.  You can see this in the [buildable example](https://cmannett85.github.io/arg_router/c_09_0920_2simple_ml_gen_2main_8cpp-example.html)).  This is now the recommended approach for writing translations, but is certainly not (and never will be) a requirement.
 
-### Note
-`multi_lang::root_wrapper` from v1.0 is still present and supported, but is now marked as deprecated - new code should use `multi_lang::root`.  It is not supported when using C++20 compile-time strings (see [compile-time string support](#compile-time-string-support)).
-
-## Compile-time String Support
-In v1.0 the library exclusively used the `S_()` macro for compile-time string generation, this was an almost necessary convenience as that version of C++ had relatively poor NTTP support.  In v1.1 we added an alternative for those using C++20 and above, which is the `str` type and its `""_S` string literal.
-
-For those targetting C++20 with existing v1.0 code, upgrading to a newer library version will cause a compilation failure as the two methods are not compatible.  But don't worry!  Code changes aren't ncessary, but you will need to add the define `AR_DISABLE_CPP20_STRINGS=true` to your build.  Those still targetting C++17 will not need to do anything.
-
-**Note** C++17 will be supported as a first class citizen until v2.0, after that C++20 will be the minimum so I can strip out a ton of code and get better diagnostics by using concepts.
-
 ## Error Handling
 Currently `arg_router` only supports exceptions as error handling.  If parsing fails for some reason a `arg_router::parse_exception` is thrown carrying information on the failure.
 
@@ -1002,10 +989,10 @@ Low-level tweaking of the library is achieved via some defines and/or CMake vari
 ## Supported Compilers/Platforms
 The CI system attached to this repo builds the unit tests and examples with:
 * Ubuntu 22.04 (Ninja), Clang 14, gcc-12, gcc-9, gcc-9 32bit
-* Windows Server 2022 (Ninja, MSBuild), Clang 14.0.5, MSVC 19.34(C++20 only)
+* Windows Server 2022 (Ninja, MSBuild), Clang 14.0.5, MSVC 19.34
 * MacOS 12 (Ninja), Clang 14
 
-You can build the unit tests on Windows using MSBuild but you must set the CMake variable `DEATH_TEST_PARALLEL` to 1 otherwise the parallel tests will attempt to write to the project-wide `lastSuccessfulBuild` file simultaneously, which causes the build to fail. MSVC is supported but only when using the C++20-style compile-time strings due [this](https://developercommunity.visualstudio.com/t/1395099) MSVC bug.
+You can build the unit tests on Windows using MSBuild but you must set the CMake variable `DEATH_TEST_PARALLEL` to 1 otherwise the parallel tests will attempt to write to the project-wide `lastSuccessfulBuild` file simultaneously, which causes the build to fail.
 
 Other compiler versions and platform combinations may work, but I'm currently limited by the built-in GitHub runners and how much I'm willing to spend on Actions!
 

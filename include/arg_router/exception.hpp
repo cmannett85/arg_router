@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include "arg_router/basic_types.hpp"
 #include "arg_router/traits.hpp"
 #include "arg_router/utility/exception_formatter.hpp"
 

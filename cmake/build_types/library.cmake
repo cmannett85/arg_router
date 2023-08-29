@@ -5,7 +5,6 @@
 add_library(arg_router INTERFACE ${HEADERS})
 target_link_libraries(arg_router INTERFACE
     Boost::boost
-    $<$<TARGET_EXISTS:nonstd::span-lite>:nonstd::span-lite>
 )
 
 target_include_directories(arg_router AFTER INTERFACE

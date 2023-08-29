@@ -162,7 +162,7 @@ jobs:
        cd ${{ env.BUILD_DIR }}/test/Debug
        ./arg_router_test.exe -l test_suite
 
-  # Test package integrity test where we use system libs and C++20 (so no nonstd::span)
+  # Test package integrity test where we use system libs and C++20
   system_test_package:
     runs-on: ubuntu-22.04
     needs: changes

@@ -47,7 +47,7 @@ inline std::ostream& operator<<(std::ostream& stream, pre_parse_result result)
 }  // namespace parsing
 
 template <typename T>
-std::ostream& operator<<(std::ostream& stream, span<T> v)
+std::ostream& operator<<(std::ostream& stream, std::span<T> v)
 {
     stream << "{";
     for (auto&& item : v) {

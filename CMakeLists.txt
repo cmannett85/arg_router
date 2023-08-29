@@ -49,18 +49,12 @@ if(NOT INSTALLATION_ONLY)
     include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/ccache.cmake")
 
     find_package(Boost ${BOOST_VERSION} REQUIRED)
-
-    find_package(span-lite QUIET)
-    if(NOT span-lite_FOUND)
-        message(WARNING "span-lite package not found, you will need to compile against C++20 or higher")
-    endif()
 endif()
 
 path_prefixer(HEADERS
     include/arg_router/algorithm.hpp
     include/arg_router/arg.hpp
     include/arg_router/arg_router.hpp
-    include/arg_router/basic_types.hpp
     include/arg_router/config.hpp
     include/arg_router/counting_flag.hpp
     include/arg_router/dependency/alias_group.hpp
