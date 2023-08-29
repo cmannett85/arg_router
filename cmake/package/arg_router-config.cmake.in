@@ -5,17 +5,12 @@
 @PACKAGE_INIT@
 
 # Prevent multiple inclusion
-if (DEFINED span-lite_FOUND)
+if (DEFINED Boost_FOUND)
     return()
 endif()
 
 include(CMakeFindDependencyMacro)
 find_dependency(Boost @BOOST_VERSION@)
-
-find_package(span-lite QUIET)
-if (NOT span-lite_FOUND)
-    message(STATUS "span-lite package not found, you will need to compile against C++20 or higher")
-endif()
 
 include("${CMAKE_CURRENT_LIST_DIR}/arg_router.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/translation_generator.cmake")
