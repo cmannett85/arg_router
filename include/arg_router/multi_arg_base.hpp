@@ -44,16 +44,13 @@ class multi_arg_base_t : public add_missing_min_max_policy<MinCount, Policies...
                       traits::has_display_name_method_v<multi_arg_base_t>,
                   "Arg must be named");
 
-protected:
+public:
     using typename parent_type::policies_type;
 
     /** Argument value type. */
     using value_type = T;
 
-    /** Help data type. */
-    template <bool Flatten>
-    using help_data_type = typename parent_type::template default_leaf_help_data_type<Flatten>;
-
+protected:
     /** Constructor.
      *
      * @param policies Policy instances

@@ -28,16 +28,6 @@ class mock_root : public tree_node<Params...>
 {
 public:
     constexpr explicit mock_root(Params... params) : tree_node<Params...>{std::move(params)...} {}
-
-    template <bool Flatten>
-    class help_data_type
-    {
-    public:
-        using label = str<"">;
-        using description = str<"">;
-        using children = typename tree_node<Params...>::template default_leaf_help_data_type<
-            Flatten>::all_children_help;
-    };
 };
 }  // namespace
 
@@ -53,20 +43,6 @@ BOOST_AUTO_TEST_CASE(has_generate_help_method_test)
 {
     static_assert(traits::has_generate_help_method_v<help_t<policy::long_name_t<str<"help">>>>,
                   "Tree node test has failed");
-}
-
-BOOST_AUTO_TEST_CASE(has_generate_runtime_help_data_method_test)
-{
-    static_assert(
-        traits::has_generate_runtime_help_data_method_v<help_t<policy::long_name_t<str<"help">>>>,
-        "Tree node test has failed");
-}
-
-BOOST_AUTO_TEST_CASE(has_runtime_generate_help_method_test)
-{
-    static_assert(
-        traits::has_runtime_generate_help_method_v<help_t<policy::long_name_t<str<"help">>>>,
-        "Tree node test has failed");
 }
 
 BOOST_AUTO_TEST_CASE(parse_test)
@@ -383,9 +359,9 @@ My foo is good for you
 
 My foo is good for you
 
-mode1             Mode1 description
+mode1          Mode1 description
     --flag2
-    -b            b description
+    -b         b description
 )"s}});
 }
 

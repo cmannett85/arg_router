@@ -5,12 +5,12 @@
 #pragma once
 
 #include "arg_router/algorithm.hpp"
+#include "arg_router/help_data.hpp"
 #include "arg_router/policy/program_addendum.hpp"
 #include "arg_router/policy/program_intro.hpp"
 #include "arg_router/policy/program_name.hpp"
 #include "arg_router/policy/program_version.hpp"
 #include "arg_router/tree_node_fwd.hpp"
-#include "arg_router/utility/compile_time_string.hpp"
 #include "arg_router/utility/terminal.hpp"
 #include "arg_router/utility/tuple_iterator.hpp"
 
@@ -21,9 +21,7 @@ namespace arg_router::policy
 {
 /** Namespace for the built-in help formatter components.
  *
- * These components are used with default_help_formatter_t to control help output.  Users can take
- * their concepts to customise the help customise output without needing to write an entire new
- * help node.
+ * These components are used with default_help_formatter_t to control help output.
  */
 namespace help_formatter_component
 {
@@ -38,50 +36,7 @@ class default_line_formatter
     static_assert(Indent > 0, "Indent must be greater than zero");
 
 public:
-    /** Formats the info in @a HelpData and writes it out to @a stream.
-     *
-     * @tparam DescStart Column at which the description should start
-     * @tparam Depth Tree depth of the node @a HelpData is representing
-     * @tparam HelpData Help data type from the node that needs printing
-     * @param stream Output stream
-     * @param columns Number of columns the terminal has, implementations can use this to perform
-     * attractive line wrapping
-     */
-    template <std::size_t DescStart, std::size_t Depth, typename HelpData>
-    void format(std::ostream& stream, std::size_t columns)
-    {
-        if constexpr (!HelpData::label::empty()) {
-            constexpr auto indent = indent_size<Depth>();
-            stream << utility::create_sequence_cts_t<indent, ' '>::get() << HelpData::label::get();
-
-            if constexpr (!HelpData::description::empty()) {
-                static_assert(HelpData::description::get().find('\t') == std::string_view::npos,
-                              "Help descriptions cannot contain tabs");
-
-                constexpr auto gap =
-                    DescStart - indent - utility::utf8::terminal_width(HelpData::label::get());
-
-                // Spacing between the end of the args label and start of description
-                stream << utility::create_sequence_cts_t<gap, ' '>::get();
-
-                // Print the description, breaking if a word will exceed the terminal width
-                for (auto it = utility::utf8::line_iterator{HelpData::description::get(),
-                                                            columns - DescStart};
-                     it != utility::utf8::line_iterator{};) {
-                    stream << *it;
-
-                    // If there's more data to follow, then add the offset
-                    if (++it != utility::utf8::line_iterator{}) {
-                        stream << '\n' << utility::create_sequence_cts_t<DescStart, ' '>::get();
-                    }
-                }
-            }
-
-            stream << '\n';
-        }
-    }
-
-    /** Overload for runtime_help_data.
+    /** Formats the per-entry data.
      *
      * @param stream Output stream
      * @param desc_start Column at which the description should start
@@ -94,7 +49,7 @@ public:
                 std::size_t desc_start,
                 std::size_t depth,
                 std::size_t columns,
-                const runtime_help_data& help_data)
+                const help_data::type& help_data)
     {
         if (!help_data.label.empty()) {
             const auto indent = depth * Indent;
@@ -127,12 +82,6 @@ public:
     }
 
 private:
-    template <std::size_t Depth>
-    [[nodiscard]] constexpr static std::size_t indent_size() noexcept
-    {
-        return Depth * Indent;
-    }
-
     static void set_gap(std::ostream& stream, std::size_t num_chars)
     {
         if (num_chars > 0) {
@@ -238,52 +187,22 @@ class default_help_formatter_t
     static_assert(DescColumnOffset{} > 0, "DescColumnOffset value_type must be greater than zero");
 
 public:
-    /** Generates the help string.
-     *
-     * Recurses through the parse tree, starting at @a Node, at compile time to build a string
-     * representation of it.  The program name, version, and info are always generated if the
-     * policies are available.
-     * @tparam Node The node type to begin help output generation from (typically the root)
-     * @tparam HelpNode Parent help node
-     * @tparam Flatten True to display all nested help data
-     * @param stream Output stream to write the output to
-     */
-    template <typename Node, typename HelpNode, bool Flatten>
-    static void generate_help(std::ostream& stream)
-    {
-        generate_help_impl<Node, HelpNode, Flatten>(stream);
-    }
-
-    /** Overload for runtime_help_data.
+    /** Generates the help output.
      *
      * @tparam Node The node type to begin help output generation from (typically the root)
      * @tparam HelpNode Parent help node
-     * @tparam Flatten True to display all nested help data
      * @param stream Output stream to write the output to
      * @param help_data Parent runtime help data
      */
-    template <typename Node, typename HelpNode, bool Flatten>
-    static void generate_help(std::ostream& stream, const runtime_help_data& help_data)
+    template <typename HelpNode>
+    static void generate_help(std::ostream& stream, const help_data::type& help_data)
     {
-        generate_help_impl<Node, HelpNode, Flatten>(stream, &help_data);
-    }
-
-private:
-    template <typename Node, typename HelpNode, bool Flatten>
-    static void generate_help_impl(std::ostream& stream,
-                                   const runtime_help_data* help_data = nullptr)
-    {
-        static_assert(traits::has_help_data_type_v<Node>,
-                      "Node must have a help_data_type to generate help from");
-
-        using help_data_type = typename Node::template help_data_type<Flatten>;
-
         // Write out the preamble
         auto preamble_formatter = PreambleFormatter{};
         preamble_formatter.template format<HelpNode>(stream);
 
         // Calculate description offset
-        constexpr auto desc_column = description_column_start<0, help_data_type>(0);
+        const auto desc_column = description_column_start(help_data, 0, 0);
 
         // Get the current number of console columns, so we can wrap the description nicely.  If
         // the call fails (it returns zero), or the description field start column plus a fixed
@@ -292,60 +211,34 @@ private:
 
         // Generate the args output
         auto line_formatter = LineFormatter{};
-        if (help_data) {
-            line_formatter_dispatch(stream,
-                                    desc_column,
-                                    0,
-                                    columns >= (desc_column + DescColumnOffset{}) ?
-                                        columns :
-                                        std::numeric_limits<std::size_t>::max(),
-                                    line_formatter,
-                                    *help_data);
-        } else {
-            line_formatter_dispatch<desc_column, 0, help_data_type>(
-                stream,
-                columns >= (desc_column + DescColumnOffset{}) ?
-                    columns :
-                    std::numeric_limits<std::size_t>::max(),
-                line_formatter);
-        }
+        line_formatter_dispatch(stream,
+                                desc_column,
+                                0,
+                                columns >= (desc_column + DescColumnOffset{}) ?
+                                    columns :
+                                    std::numeric_limits<std::size_t>::max(),
+                                line_formatter,
+                                help_data);
 
         // Write out the addendum
         auto addendum_formatter = AddendumFormatter{};
         addendum_formatter.template format<HelpNode>(stream);
     }
 
-    template <std::size_t Depth, typename HelpData>
-    [[nodiscard]] constexpr static std::size_t description_column_start(
-        std::size_t current_max) noexcept
+private:
+    [[nodiscard]] static std::size_t description_column_start(const help_data::type& help_data,
+                                                              std::size_t depth,
+                                                              std::size_t current_max) noexcept
     {
-        constexpr auto this_row_start =
-            (Depth * Indent{}) + utility::utf8::terminal_width(HelpData::label::get()) + Indent{};
+        const auto this_row_start =
+            (depth * Indent{}) + utility::utf8::terminal_width(help_data.label) + Indent{};
         current_max = std::max(current_max, this_row_start);
 
-        utility::tuple_type_iterator<typename HelpData::children>([&](auto i) {
-            using child_type = std::tuple_element_t<i, typename HelpData::children>;
-
-            current_max = description_column_start<Depth + 1, child_type>(current_max);
-        });
+        for (const auto& child : help_data.children) {
+            current_max = description_column_start(child, depth + 1, current_max);
+        }
 
         return current_max;
-    }
-
-    template <std::size_t DescStart, std::size_t Depth, typename HelpData>
-    static void line_formatter_dispatch(std::ostream& stream,
-                                        std::size_t columns,
-                                        LineFormatter& line_formatter)
-    {
-        line_formatter.template format<DescStart, Depth, HelpData>(stream, columns);
-
-        utility::tuple_type_iterator<typename HelpData::children>([&](auto i) {
-            using child_type = std::tuple_element_t<i, typename HelpData::children>;
-
-            line_formatter_dispatch<DescStart, Depth + 1, child_type>(stream,
-                                                                      columns,
-                                                                      line_formatter);
-        });
     }
 
     static void line_formatter_dispatch(std::ostream& stream,
@@ -353,7 +246,7 @@ private:
                                         std::size_t depth,
                                         std::size_t columns,
                                         LineFormatter& line_formatter,
-                                        const runtime_help_data& help_data)
+                                        const help_data::type& help_data)
     {
         line_formatter.format(stream, desc_start, depth, columns, help_data);
 

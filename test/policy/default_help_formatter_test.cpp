@@ -33,25 +33,6 @@ public:
     using typename parent_type::children_type;
 
     constexpr explicit mock_root(Params... params) : tree_node<Params...>{std::move(params)...} {}
-
-    template <bool Flatten>
-    class help_data_type
-    {
-    public:
-        using label = str<"">;
-        using description = str<"">;
-        using children = typename tree_node<Params...>::template default_leaf_help_data_type<
-            Flatten>::all_children_help;
-
-        template <typename OwnerNode, typename FilterFn>
-        [[nodiscard]] static std::vector<runtime_help_data> runtime_children(const OwnerNode& owner,
-                                                                             FilterFn&& f)
-        {
-            return parent_type::template default_leaf_help_data_type<Flatten>::runtime_children(
-                owner,
-                std::forward<FilterFn>(f));
-        }
-    };
 };
 }  // namespace
 
@@ -69,33 +50,18 @@ BOOST_AUTO_TEST_CASE(generate_help_test)
 {
     auto f = [](const auto& root, auto help_index, auto flatten, const auto& expected_result) {
         using root_type = std::decay_t<decltype(root)>;
-        using root_hdt = typename root_type::template help_data_type<flatten>;
         using help_type = std::tuple_element_t<help_index, typename root_type::children_type>;
 
         // For some baffling reason MSVC will not accept this alias, but does accept the full
         // name...
         // using formatter_type = std::tuple_element_t<0, typename help_type::policies_type>;
 
-        // Compile-time
-        {
-            auto stream = std::stringstream{};
-            std::tuple_element_t<0, typename help_type::policies_type>::
-                template generate_help<root_type, help_type, flatten>(stream);
-            BOOST_CHECK_EQUAL(stream.str(), expected_result);
-        }
+        const auto rhd = help_data::generate<flatten>(root);
 
-        // Runtime
-        {
-            const auto rhd =
-                runtime_help_data{root_hdt::label::get(),
-                                  root_hdt::description::get(),
-                                  root_hdt::runtime_children(root, [](auto&&) { return true; })};
-
-            auto stream = std::stringstream{};
-            std::tuple_element_t<0, typename help_type::policies_type>::
-                template generate_help<root_type, help_type, flatten>(stream, rhd);
-            BOOST_CHECK_EQUAL(stream.str(), expected_result);
-        }
+        auto stream = std::stringstream{};
+        std::tuple_element_t<0, typename help_type::policies_type>::template generate_help<
+            help_type>(stream, rhd);
+        BOOST_CHECK_EQUAL(stream.str(), expected_result);
     };
 
     test::data_set(
@@ -467,17 +433,16 @@ My foo is good for you
 BOOST_AUTO_TEST_CASE(generate_help_terminal_width_test)
 {
     auto f = [](const auto& root, auto help_index, auto term_width, const auto& expected_result) {
-        [[maybe_unused]] const auto columns1 = utility::terminal::columns();
         utility::terminal::test_columns_value = term_width;
-        [[maybe_unused]] const auto columns2 = utility::terminal::columns();
 
         using root_type = std::decay_t<decltype(root)>;
-        using help_type = std::tuple_element_t<help_index,  //
-                                               typename root_type::children_type>;
+        using help_type = std::tuple_element_t<help_index, typename root_type::children_type>;
+
+        const auto rhd = help_data::generate<false>(root);
 
         auto stream = std::stringstream{};
-        std::tuple_element_t<0, typename help_type::policies_type>::
-            template generate_help<root_type, help_type, false>(stream);
+        std::tuple_element_t<0, typename help_type::policies_type>::template generate_help<
+            help_type>(stream, rhd);
         BOOST_CHECK_EQUAL(stream.str(), expected_result);
     };
 
@@ -552,27 +517,6 @@ BOOST_AUTO_TEST_CASE(death_test)
     test::death_test_compile({{
                                   R"(
 #include "arg_router/help.hpp"
-#include "arg_router/literals.hpp"
-#include "arg_router/policy/long_name.hpp"
-#include "arg_router/utility/compile_time_string.hpp"
-
-using namespace arg_router;
-using namespace arg_router::literals;
-
-struct mock_root {};
-
-int main() {
-    const auto m = help(policy::long_name_t{"help"_S});
-    auto stream = std::stringstream{};
-    m.generate_help<mock_root, std::decay_t<decltype(m)>, false>(stream);
-    return 0;
-}
-    )",
-                                  "Node must have a help_data_type to generate help from",
-                                  "generate_help_node_must_have_help_data_test"},
-                              {
-                                  R"(
-#include "arg_router/help.hpp"
 
 using namespace arg_router;
 
@@ -644,17 +588,6 @@ int main() {
 
 using namespace arg_router;
 
-struct mock_root {
-    template <bool Flatten>
-    class help_data_type
-    {
-    public:
-        using label = str<"">;
-        using description = str<"">;
-        using children = std::tuple<>;
-    };
-};
-
 int main() {
     const auto m = policy::default_help_formatter_t<
         traits::integral_constant<std::size_t{4}>,
@@ -663,54 +596,12 @@ int main() {
         policy::help_formatter_component::default_preamble_formatter>{};
 
     auto stream = std::stringstream{};
-    m.generate_help<mock_root, std::decay_t<decltype(m)>, false>(stream);
+    m.generate_help<std::decay_t<decltype(m)>>(stream, help_data::type{"", "", {}});
     return 0;
 }
     )",
                                   "Indent must be greater than zero",
-                                  "indent_must_be_greater_than_zero"},
-                              {
-                                  R"(
-#include "arg_router/flag.hpp"
-#include "arg_router/help.hpp"
-#include "arg_router/literals.hpp"
-#include "arg_router/policy/description.hpp"
-#include "arg_router/policy/long_name.hpp"
-#include "arg_router/utility/compile_time_string.hpp"
-
-using namespace arg_router;
-using namespace arg_router::literals;
-
-template <typename... Params>
-class mock_root : public tree_node<Params...>
-{
-public:
-    constexpr explicit mock_root(Params... params) : tree_node<Params...>{std::move(params)...} {}
-
-    template <bool Flatten>
-    class help_data_type
-    {
-    public:
-        using label = str<"">;
-        using description = str<"">;
-        using children = typename tree_node<std::decay_t<Params>...>::template  //
-            default_leaf_help_data_type<Flatten>::all_children_help;
-    };
-};
-
-int main() {
-    const auto root = mock_root{flag(policy::long_name_t{"flag1"_S},
-                                     policy::description_t{"Flag1\tdescription"_S}),
-                                help(policy::long_name_t{"help"_S})};
-    const auto& h = std::get<1>(root.children());
-
-    auto stream = std::ostringstream{};
-    h.generate_help<std::decay_t<decltype(root)>, std::decay_t<decltype(h)>, false>(stream);
-    return 0;
-}
-    )",
-                                  "Help descriptions cannot contain tabs",
-                                  "no_tabs_in_description_test"}});
+                                  "indent_must_be_greater_than_zero"}});
 }
 
 BOOST_AUTO_TEST_SUITE_END()

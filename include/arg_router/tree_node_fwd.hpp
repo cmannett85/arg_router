@@ -4,25 +4,11 @@
 
 #pragma once
 
-#include "arg_router/utility/dynamic_string_view.hpp"
-
 #include <utility>
 #include <vector>
 
 namespace arg_router
 {
-/** Help data for runtime help collect.
- *
- * arg_router's help system supports compile-time (see @ref help_hdt) and runtime collation via this
- * structure.  The latter is intended to replace the former as it allows for dynamic filtering and
- * other adjustments.
- */
-struct runtime_help_data {
-    utility::dynamic_string_view label;        //!< Node name
-    utility::dynamic_string_view description;  //!< Node description
-    std::vector<runtime_help_data> children;   //!< Child node help data
-};
-
 template <typename... Params>
 class tree_node;
 

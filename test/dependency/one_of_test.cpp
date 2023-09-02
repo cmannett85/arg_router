@@ -199,82 +199,28 @@ BOOST_AUTO_TEST_CASE(one_of_fail_test)
 BOOST_AUTO_TEST_CASE(help_test)
 {
     auto f = [](const auto& node, auto expected_child_strings) {
-        using node_type = std::decay_t<decltype(node)>;
-
-        using help_data = typename node_type::template help_data_type<false>;
-        using flattened_help_data = typename node_type::template help_data_type<true>;
-
-        static_assert(help_data::label::get() == str<"One of: ">::get());
-        static_assert(
-            std::is_same_v<typename help_data::label, typename flattened_help_data::label>);
-
-        static_assert(std::is_same_v<typename help_data::description, str<"">>);
-        static_assert(std::is_same_v<typename help_data::description,
-                                     typename flattened_help_data::description>);
-
-        BOOST_REQUIRE_EQUAL(expected_child_strings.size(),
-                            std::tuple_size_v<typename help_data::children>);
-
-        utility::tuple_type_iterator<typename help_data::children>([&](auto i) {
-            using child_type = std::tuple_element_t<i, typename help_data::children>;
-
-            BOOST_CHECK_EQUAL(child_type::label::get(), expected_child_strings[i].first);
-            BOOST_CHECK_EQUAL(child_type::description::get(), expected_child_strings[i].second);
-        });
-    };
-
-    test::data_set(f,
-                   std::tuple{
-                       std::tuple{ard::one_of(arg<int>(policy::long_name_t{"arg1"_S}),
-                                              arg<double>(policy::long_name_t{"arg2"_S}),
-                                              policy::required),
-                                  std::vector{
-                                      std::pair{"┌ --arg1 <Value>", ""},
-                                      std::pair{"└ --arg2 <Value>", ""},
-                                  }},
-                       std::tuple{ard::one_of(arg<int>(policy::long_name_t{"arg1"_S}),
-                                              arg<double>(policy::short_name_t{"b"_S},
-                                                          policy::description_t{"A desc"_S}),
-                                              policy::required),
-                                  std::vector{
-                                      std::pair{"┌ --arg1 <Value>", ""},
-                                      std::pair{"└ -b <Value>", "A desc"},
-                                  }},
-                       std::tuple{ard::one_of(arg<int>(policy::long_name_t{"arg1"_S}),
-                                              flag(policy::long_name_t{"flag"_S},
-                                                   policy::short_name_t{"f"_S},
-                                                   policy::description_t{"Hello"_S}),
-                                              arg<double>(policy::short_name_t{"b"_S},
-                                                          policy::description_t{"A desc"_S}),
-                                              policy::required),
-                                  std::vector{
-                                      std::pair{"┌ --arg1 <Value>", ""},
-                                      std::pair{"├ --flag,-f", "Hello"},
-                                      std::pair{"└ -b <Value>", "A desc"},
-                                  }},
-                   });
-}
-
-BOOST_AUTO_TEST_CASE(runtime_help_test)
-{
-    auto f = [](const auto& node, auto expected_child_strings) {
-        using node_type = std::decay_t<decltype(node)>;
-        using node_help_data = typename node_type::template help_data_type<true>;
-
-        const auto result = node_help_data::runtime_children(node, [](const auto& child) {
+        const auto filter = [](const auto& child) {
             using child_type = std::decay_t<decltype(child)>;
 
             if constexpr (traits::has_runtime_enabled_method_v<child_type>) {
                 return child.runtime_enabled();
             }
             return true;
-        });
+        };
 
-        BOOST_REQUIRE_EQUAL(result.size(), expected_child_strings.size());
-        for (auto i = 0u; i < result.size(); ++i) {
-            BOOST_CHECK_EQUAL(result[i].label, expected_child_strings[i].first);
-            BOOST_CHECK_EQUAL(result[i].description, expected_child_strings[i].second);
-            BOOST_CHECK(result[i].children.empty());
+        const auto help_data = help_data::generate<false>(node, filter);
+        const auto flattened_help_data = help_data::generate<true>(node, filter);
+
+        BOOST_CHECK_EQUAL(help_data, flattened_help_data);
+
+        BOOST_CHECK_EQUAL(help_data.label, "One of: ");
+        BOOST_CHECK_EQUAL(help_data.description, "");
+
+        BOOST_REQUIRE_EQUAL(expected_child_strings.size(), help_data.children.size());
+        for (auto i = 0u; i < help_data.children.size(); ++i) {
+            BOOST_CHECK_EQUAL(help_data.children[i].label, expected_child_strings[i].first);
+            BOOST_CHECK_EQUAL(help_data.children[i].description, expected_child_strings[i].second);
+            BOOST_CHECK(help_data.children[i].children.empty());
         }
     };
 

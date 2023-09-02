@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "arg_router/help_data.hpp"
 #include "arg_router/parsing/unknown_argument_handling.hpp"
 #include "arg_router/policy/exception_translator.hpp"
 #include "arg_router/policy/flatten_help.hpp"
@@ -101,17 +102,6 @@ public:
     // Initially I wanted the default_validator to be used if one isn't user specified, but you get
     // into a circular dependency as the validator needs the root first
     using validator_type = std::tuple_element_t<validator_index, policies_type>;
-
-    /** Help data type. */
-    template <bool Flatten>
-    class help_data_type
-    {
-    public:
-        using label = str<"">;
-        using description = str<"">;
-        using children =
-            typename parent_type::template default_leaf_help_data_type<Flatten>::all_children_help;
-    };
 
     /** Constructor.
      *
@@ -255,15 +245,9 @@ public:
 
                 const auto& help_node = std::get<help_index>(this->children());
                 try {
-                    if constexpr (traits::has_generate_runtime_help_data_method_v<help_type> &&
-                                  traits::has_runtime_generate_help_method_v<help_type>) {
-                        const auto rhd =
-                            help_node.template generate_runtime_help_data<flatten>(*this);
-                        help_node.template generate_help<root_type, help_type, flatten>(stream,
-                                                                                        rhd);
-                    } else {
-                        help_node.template generate_help<root_type, help_type, flatten>(stream);
-                    }
+                    const auto rhd =
+                        help_node.template generate_help_data_from_node<flatten>(*this);
+                    help_node.template generate_help<help_type>(stream, rhd);
                 } catch (multi_lang_exception& e) {
                     this->translate_exception(e);
                 }

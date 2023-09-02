@@ -1,4 +1,4 @@
-![Documentation Generator](https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg) [![Merge to main Checker](https://github.com/cmannett85/arg_router/actions/workflows/merge_checker.yml/badge.svg)](https://github.com/cmannett85/arg_router/actions/workflows/merge_checker.yml) ![Unit test coverage](https://img.shields.io/badge/Unit_Test_Coverage-97.2%25-brightgreen)
+![Documentation Generator](https://github.com/cmannett85/arg_router/workflows/Documentation%20Generator/badge.svg) [![Merge to main Checker](https://github.com/cmannett85/arg_router/actions/workflows/merge_checker.yml/badge.svg)](https://github.com/cmannett85/arg_router/actions/workflows/merge_checker.yml) ![Unit test coverage](https://img.shields.io/badge/Unit_Test_Coverage-97.5%25-brightgreen)
 
 # arg_router
 `arg_router` is a C++20 command line parser and router.  It uses policy-based objects hierarchically, so the parsing code is self-describing.  Rather than just providing a parsing service that returns a map of `variant`s/`any`s, it allows you to bind `Callable` instances to points in the parse structure, so complex command line arguments can directly call functions with the expected arguments - rather than you having to do this yourself.
@@ -536,7 +536,7 @@ is, unlocks 'advanced' features.  If the license is available then the entire `a
 
 The help output adjusts to match:
 ```
-$ ./example_runtime_node_enable_cpp20 --help
+$ ./example_runtime_node_enable --help
 runtime_node_enable v3.14
 
     --help,-h                    Display this help and exit
@@ -549,7 +549,7 @@ An example program for arg_router.
 ```
 And with the license:
 ```
-$ AR_EXAMPLE_LICENSE=1 ./example_runtime_node_enable_cpp20 --help
+$ AR_EXAMPLE_LICENSE=1 ./example_runtime_node_enable --help
 runtime_node_enable v3.14
 
     --help,-h                    Display this help and exit
@@ -667,8 +667,8 @@ Often programmatic access is desired for the help output outside of the user req
 Help output can be customised in several ways:
 1. Use a `router` policy to capture the output and modify it.  This is useful for appending string data, but anything more sophisticated becomes a chore
 2. Write your own `help` node.  This is the nuclear option as it gives maximal control but is a lot of work, it is very rarely necessary to do this as the node is primarily just the `tree_node` implementation, the actual formatting is delegated
-3. Write your own help formatter policy for the built-in `help` node.  The `help` node delegates the formatting to a policy, if no formatter is specified when defining a `help` node specialisation the `default_help_formatter` is used.  This is still non-trivial as the formatter policy needs to perform the compile-time tree iteration in order to process the per-node help data
-4. Write your own line formatter and/or preamble formatter. The `default_help_formatter` further delegates formatting to three sub-policies, one that generates the 'preamble' text (i.e. the program name, version, intro), another that generates each argument in the argument output, and a final one to generate the addendum.  `default_helper_formatter` uses `help_formatter_component::default_preamble_formatter`, `help_formatter_component::default_line_formatter`, and `help_formatter_component::default_addendum_formatter` respectively by default
+3. Write your own help formatter policy for the built-in `help` node.  The `help` node delegates the formatting to a policy, if no formatter is specified when defining a `help` node specialisation the `default_help_formatter` is used
+4. Write your own formatter delegate. The `default_help_formatter` further delegates formatting to three sub-policies, one that generates the 'preamble' text (i.e. the program name, version, intro), another that generates each argument in the argument output, and a final one to generate the addendum.  `default_helper_formatter` uses `help_formatter_component::default_preamble_formatter`, `help_formatter_component::default_line_formatter`, and `help_formatter_component::default_addendum_formatter` respectively by default
 
 ## Unicode Compliance
 A faintly ridiculous example of Unicode support from the `just_cats` example:
@@ -1018,12 +1018,6 @@ D:/a/arg_router/arg_router/install/include\arg_router/utility/utf8/line_break.hp
 D:/a/arg_router/arg_router/install/include\arg_router/utility/utf8/code_point.hpp(50,9): message : constexpr evaluation hit maximum step limit; possible infinite loop? [D:\a\arg_router\arg_router\package_build\package_test_project.vcxproj] 
 ```
 Then `/clang:-fconstexpr-steps=10000000` (or the lowest number that passes) will need adding to the compiler invocation.
-
-If compiling with MSVC, you may see:
-```
-include\arg_router/basic_types.hpp(49,22): error C3083: 'span_lite': the symbol to the left of a '::' must be a type
-```
-This is due to another MSVC compiler bug where it doesn't recognise the `__cpluplus` define, fix by adding `/Zc:__cplusplus` to the compiler invocation.
 
 ## Extra Documentation
 Complete Doxygen-generated API documentation is available [here](https://cmannett85.github.io/arg_router/).  Examples are provided in the `examples` directory of the repo or online [here](https://cmannett85.github.io/arg_router/examples.html).  Doxygen theming is provided by [Doxygen Awesome CSS](https://github.com/jothepro/doxygen-awesome-css).

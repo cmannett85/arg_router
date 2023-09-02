@@ -56,20 +56,13 @@ BOOST_AUTO_TEST_CASE(parse_test)
 BOOST_AUTO_TEST_CASE(help_test)
 {
     auto f = [](const auto& node, auto expected_label, auto expected_description) {
-        using node_type = std::decay_t<decltype(node)>;
+        const auto help_data = help_data::generate<false>(node);
+        const auto flattened_help_data = help_data::generate<true>(node);
 
-        using help_data = typename node_type::template help_data_type<false>;
-        using flattened_help_data = typename node_type::template help_data_type<true>;
-
-        static_assert(
-            std::is_same_v<typename help_data::label, typename flattened_help_data::label>);
-        static_assert(std::is_same_v<typename help_data::description,
-                                     typename flattened_help_data::description>);
-        static_assert(std::tuple_size_v<typename help_data::children> == 0);
-        static_assert(std::tuple_size_v<typename flattened_help_data::children> == 0);
-
-        BOOST_CHECK_EQUAL(help_data::label::get(), expected_label);
-        BOOST_CHECK_EQUAL(help_data::description::get(), expected_description);
+        BOOST_CHECK_EQUAL(help_data, flattened_help_data);
+        BOOST_CHECK_EQUAL(help_data.label, expected_label);
+        BOOST_CHECK_EQUAL(help_data.description, expected_description);
+        BOOST_CHECK_EQUAL(help_data.children.size(), 0);
     };
 
     test::data_set(f,

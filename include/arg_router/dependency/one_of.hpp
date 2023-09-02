@@ -43,25 +43,6 @@ public:
                                           std::variant_alternative_t<0, variant_type>,
                                           variant_type>;
 
-    /** Help data type. */
-    template <bool Flatten>
-    class help_data_type
-    {
-    public:
-        using label = AR_STRING_SV(parent_type::display_name());
-        using description = str<"">;
-        using children = typename parent_type::template children_help_data_type<Flatten>::children;
-
-        template <typename OwnerNode, typename FilterFn>
-        [[nodiscard]] static std::vector<runtime_help_data> runtime_children(const OwnerNode& owner,
-                                                                             FilterFn&& f)
-        {
-            return parent_type::template children_help_data_type<Flatten>::runtime_children(
-                owner,
-                std::forward<FilterFn>(f));
-        }
-    };
-
     /** Constructor.
      *
      * @param params Policy and child instances
@@ -126,6 +107,15 @@ public:
             this->children());
 
         return found;
+    }
+
+    template <bool Flatten, typename FilterFn>
+    [[nodiscard]] help_data::type generate_help_data(const FilterFn& f) const
+    {
+        auto result = parent_type::template generate_help_data<Flatten>(f);
+        result.label = parent_type::display_name();
+
+        return result;
     }
 
 private:

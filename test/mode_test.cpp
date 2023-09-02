@@ -30,18 +30,15 @@ using namespace std::string_literals;
 
 namespace
 {
-template <typename ChildA, typename ChildB>
-constexpr void check_tree()
+void check_tree(const help_data::type& child_a, const help_data::type& child_b)
 {
-    static_assert(ChildA::label::get() == ChildB::label::get());
-    static_assert(ChildA::description::get() == ChildB::description::get());
-    static_assert(std::tuple_size_v<typename ChildA::children> ==
-                  std::tuple_size_v<typename ChildB::children>);
+    BOOST_CHECK_EQUAL(child_a.label, child_b.label);
+    BOOST_CHECK_EQUAL(child_a.description, child_b.description);
 
-    utility::tuple_type_iterator<typename ChildA::children>([](auto i) {
-        check_tree<std::tuple_element_t<i, typename ChildA::children>,
-                   std::tuple_element_t<i, typename ChildB::children>>();
-    });
+    BOOST_CHECK_EQUAL(child_a.children.size(), child_b.children.size());
+    for (auto i = 0u; i < std::min(child_a.children.size(), child_b.children.size()); ++i) {
+        check_tree(child_a.children[i], child_b.children[i]);
+    }
 }
 
 template <typename Label, typename Description, typename Children>
@@ -951,13 +948,8 @@ BOOST_AUTO_TEST_CASE(no_missing_phase_test)
 
 BOOST_AUTO_TEST_CASE(help_test)
 {
-    auto f = [](const auto& node, auto flatten, auto expected) {
-        using node_type = std::decay_t<decltype(node)>;
-        using expected_type = std::decay_t<decltype(expected)>;
-
-        using help_data = typename node_type::template help_data_type<flatten>;
-
-        check_tree<help_data, expected_type>();
+    auto f = [](const auto& node, auto flatten, const auto& expected) {
+        check_tree(help_data::generate<flatten>(node), expected);
     };
 
     test::data_set(
@@ -969,22 +961,20 @@ BOOST_AUTO_TEST_CASE(help_test)
                           policy::description_t{"Hello desc"_S}),
                      policy::router([](bool) {})),
                 std::true_type{},
-                test_help_data<
-                    str<" ">,
-                    str<"">,
-                    std::tuple<
-                        test_help_data<str<"--hello,-h">, str<"Hello desc">, std::tuple<>>>>{}},
+                help_data::type{" ",
+                                "",
+                                std::vector<help_data::type>{
+                                    {"--hello,-h", "Hello desc", std::vector<help_data::type>{}}}}},
             std::tuple{
                 mode(flag(policy::long_name_t{"hello"_S},
                           policy::short_name_t{"h"_S},
                           policy::description_t{"Hello desc"_S}),
                      policy::router([](bool) {})),
                 std::false_type{},
-                test_help_data<
-                    str<" ">,
-                    str<"">,
-                    std::tuple<
-                        test_help_data<str<"--hello,-h">, str<"Hello desc">, std::tuple<>>>>{}},
+                help_data::type{" ",
+                                "",
+                                std::vector<help_data::type>{
+                                    {"--hello,-h", "Hello desc", std::vector<help_data::type>{}}}}},
             std::tuple{
                 mode(flag(policy::long_name_t{"hello"_S},
                           policy::short_name_t{"h"_S},
@@ -994,12 +984,11 @@ BOOST_AUTO_TEST_CASE(help_test)
                           policy::description_t{"Flag1 desc"_S}),
                      policy::router([](bool, bool) {})),
                 std::true_type{},
-                test_help_data<
-                    str<" ">,
-                    str<"">,
-                    std::tuple<
-                        test_help_data<str<"--hello,-h">, str<"Hello desc">, std::tuple<>>,
-                        test_help_data<str<"--flag1,-a">, str<"Flag1 desc">, std::tuple<>>>>{}},
+                help_data::type{" ",
+                                "",
+                                std::vector<help_data::type>{
+                                    {"--hello,-h", "Hello desc", std::vector<help_data::type>{}},
+                                    {"--flag1,-a", "Flag1 desc", std::vector<help_data::type>{}}}}},
             std::tuple{mode("mode1"_S,
                             "Mode desc"_S,
                             flag(policy::long_name_t{"hello"_S},
@@ -1010,7 +999,7 @@ BOOST_AUTO_TEST_CASE(help_test)
                                  policy::description_t{"Flag1 desc"_S}),
                             policy::router([](bool, bool) {})),
                        std::false_type{},
-                       test_help_data<str<"mode1">, str<"Mode desc">, std::tuple<>>{}},
+                       help_data::type{"mode1", "Mode desc", std::vector<help_data::type>{}}},
             std::tuple{
                 mode(policy::none_name_t{"mode1"_S},
                      policy::description_t{"Mode desc"_S},
@@ -1022,12 +1011,11 @@ BOOST_AUTO_TEST_CASE(help_test)
                           policy::description_t{"Flag1 desc"_S}),
                      policy::router([](bool, bool) {})),
                 std::true_type{},
-                test_help_data<
-                    str<"mode1">,
-                    str<"Mode desc">,
-                    std::tuple<
-                        test_help_data<str<"--hello,-h">, str<"Hello desc">, std::tuple<>>,
-                        test_help_data<str<"--flag1,-a">, str<"Flag1 desc">, std::tuple<>>>>{}},
+                help_data::type{"mode1",
+                                "Mode desc",
+                                std::vector<help_data::type>{
+                                    {"--hello,-h", "Hello desc", std::vector<help_data::type>{}},
+                                    {"--flag1,-a", "Flag1 desc", std::vector<help_data::type>{}}}}},
             std::tuple{
                 mode(policy::none_name_t{"mode1"_S},
                      policy::description_t{"Mode1 desc"_S},
@@ -1044,18 +1032,16 @@ BOOST_AUTO_TEST_CASE(help_test)
                                policy::description_t{"Flag2 desc"_S})),
                      policy::router([](bool) {})),
                 std::true_type{},
-                test_help_data<
-                    str<"mode1">,
-                    str<"Mode1 desc">,
-                    std::tuple<test_help_data<str<"--hello,-h">, str<"Hello desc">, std::tuple<>>,
-                               test_help_data<str<"mode2">,
-                                              str<"Mode2 desc">,
-                                              std::tuple<test_help_data<str<"--goodbye,-g">,
-                                                                        str<"Goodbye desc">,
-                                                                        std::tuple<>>,
-                                                         test_help_data<str<"--flag2,-b">,
-                                                                        str<"Flag2 desc">,
-                                                                        std::tuple<>>>>>>{}},
+                help_data::type{
+                    "mode1",
+                    "Mode1 desc",
+                    std::vector<help_data::type>{
+                        {"--hello,-h", "Hello desc", std::vector<help_data::type>{}},
+                        {"mode2",
+                         "Mode2 desc",
+                         std::vector<help_data::type>{
+                             {"--goodbye,-g", "Goodbye desc", std::vector<help_data::type>{}},
+                             {"--flag2,-b", "Flag2 desc", std::vector<help_data::type>{}}}}}}},
             std::tuple{mode(policy::none_name_t{"mode1"_S},
                             policy::description_t{"Mode1 desc"_S},
                             flag(policy::long_name_t{"hello"_S},
@@ -1071,7 +1057,7 @@ BOOST_AUTO_TEST_CASE(help_test)
                                       policy::description_t{"Flag2 desc"_S})),
                             policy::router([](bool) {})),
                        std::false_type{},
-                       test_help_data<str<"mode1">, str<"Mode1 desc">, std::tuple<>>{}},
+                       help_data::type{"mode1", "Mode1 desc", std::vector<help_data::type>{}}},
         });
 }
 
