@@ -28,7 +28,7 @@ private:
         constexpr static auto build()
         {
             constexpr auto token = parsing::node_token_type<Child>();
-            return AR_STRING_SV(parsing::to_string(token.prefix)){} + AR_STRING_SV(token.name){};
+            return AR_STR_SV(parsing::to_string(token.prefix)){} + AR_STR_SV(token.name){};
         }
 
         using type = typename std::decay_t<decltype(build())>;

@@ -132,12 +132,9 @@ public:
         // Do not just use *this as the generate argument because it will trigger an infinite loop!
         auto result = ar::help_data::generate<Flatten>(static_cast<const parent_type&>(*this), f);
 
-        // This is unfortunately necessary due to C++ language limitations, we can't pass
-        // a std::string_view directly to ar::str
-        constexpr auto name = single_positional_arg_t::display_name();
-        constexpr auto name_span = std::span<const char, name.size()>{name};
-
-        result.label = ("<"_S + ar::str<name_span>{} + "> "_S +
+        // AR_STR_SV(..) is a macro that allows compile-time strings to be instantiated with a
+        // std::string_view.  This can't be done without a macro due to language limitations
+        result.label = ("<"_S + AR_STR_SV(single_positional_arg_t::display_name()){} + "> "_S +
                         ar::help_data::count_suffix<single_positional_arg_t>())
                            .get();
 

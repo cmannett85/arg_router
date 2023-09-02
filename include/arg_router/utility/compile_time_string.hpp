@@ -142,8 +142,8 @@ public:
     using append_t = typename append<T>::type;
 
 private:
-    // This is a necessary evil, as we can't use std::char_traits<char>::length(..) in a
-    // constant expression
+    // This is a necessary evil, as std::char_traits<char>::length(..) requires a null terminator
+    // but we can't guarantee that
     constexpr static std::size_t calculate_size() noexcept
     {
         auto count = std::size_t{0};
@@ -171,39 +171,6 @@ private:
  */
 template <typename S1, typename S2>
 using str_concat = typename S1::template append_t<S2>;
-
-/** Provides a compile time string that is a repeating sequence of @a C @a N characters long.
- *
- * @tparam N Number of times to repeat @a C
- * @tparam C Character to repeat
- */
-template <std::size_t N, char C>
-class create_sequence_cts
-{
-    template <std::size_t>
-    [[nodiscard]] constexpr static char get() noexcept
-    {
-        return C;
-    }
-
-    template <std::size_t... Is>
-    [[nodiscard]] constexpr static std::array<char, N> builder(
-        [[maybe_unused]] std::index_sequence<Is...> seq) noexcept
-    {
-        return {get<Is>()...};
-    }
-
-public:
-    using type = str<builder(std::make_index_sequence<N>{})>;
-};
-
-/** Helper alias for create_sequence_cts.
- *
- * @tparam N Number of times to repeat @a C
- * @tparam C Character to repeat
- */
-template <std::size_t N, char C>
-using create_sequence_cts_t = typename create_sequence_cts<N, C>::type;
 
 /** Converts the integral @a Value to a compile time string.
  *
@@ -275,4 +242,11 @@ constexpr bool is_compile_time_string_like_v = is_compile_time_string_like<T>::v
 }  // namespace traits
 }  // namespace arg_router
 
-#define AR_STRING_SV(tok) arg_router::utility::str<std::span<const char, tok.size()>{tok}>
+/** @file */
+/** Helper macro that allows <TT>std::string_view</TT> instances to instantiate a compile-time
+ * equivalent.
+ *
+ * This has to be a macro unfortunately due to language limitations.
+ * @param sv <TT>std::string_view</TT>
+ */
+#define AR_STR_SV(sv) arg_router::utility::str<std::span<const char, sv.size()>{sv}>

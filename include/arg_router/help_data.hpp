@@ -169,7 +169,7 @@ template <typename Node>
         std::tuple_size_v<typename Node::policies_type>;
 
     if constexpr (has_separator) {
-        return AR_STRING_SV(Node::value_separator()){} + value_str;
+        return AR_STR_SV(Node::value_separator()){} + value_str;
     } else if constexpr (fixed_count_of_one) {
         return str<" ">{} + value_str;
     } else {
@@ -196,17 +196,17 @@ template <typename Node>
         boost::mp11::mp_find_if<policies_type, traits::has_none_name_method>::value != num_policies;
 
     if constexpr (has_long_name && has_short_name) {
-        return AR_STRING_SV(config::long_prefix){} + AR_STRING_SV(Node::long_name()){} +
-               str<",">{} + AR_STRING_SV(config::short_prefix){} +
-               AR_STRING_SV(Node::short_name()){} + value_separator_suffix<Node>();
+        return AR_STR_SV(config::long_prefix){} + AR_STR_SV(Node::long_name()){} + str<",">{} +
+               AR_STR_SV(config::short_prefix){} + AR_STR_SV(Node::short_name()){} +
+               value_separator_suffix<Node>();
     } else if constexpr (has_long_name) {
-        return AR_STRING_SV(config::long_prefix){} + AR_STRING_SV(Node::long_name()){} +
+        return AR_STR_SV(config::long_prefix){} + AR_STR_SV(Node::long_name()){} +
                value_separator_suffix<Node>();
     } else if constexpr (has_short_name) {
-        return AR_STRING_SV(config::short_prefix){} + AR_STRING_SV(Node::short_name()){} +
+        return AR_STR_SV(config::short_prefix){} + AR_STR_SV(Node::short_name()){} +
                value_separator_suffix<Node>();
     } else if constexpr (has_none_name) {
-        return AR_STRING_SV(Node::none_name()){} + value_separator_suffix<Node>();
+        return AR_STR_SV(Node::none_name()){} + value_separator_suffix<Node>();
     } else {
         return str<"">{};
     }
@@ -224,7 +224,7 @@ template <typename Node>
         std::tuple_size_v<typename Node::policies_type>;
 
     if constexpr (has_description) {
-        return AR_STRING_SV(Node::description()){};
+        return AR_STR_SV(Node::description()){};
     } else {
         return str<"">{};
     }
