@@ -26,50 +26,7 @@ class colour_line_formatter
     constexpr static auto green_colour = std::string_view{"\033[32m"};
 
 public:
-    /** Formats the info in @a HelpData and writes it out to @a stream.
-     *
-     * @tparam DescStart Column at which the description should start
-     * @tparam Depth Tree depth of the node @a HelpData is representing
-     * @param stream Output stream
-     * @param columns Number columns the terminal has, implementations can use this to perform
-     * attractive line wrapping
-     */
-    template <std::size_t DescStart, std::size_t Depth, typename HelpData>
-    void format(std::ostream& stream, std::size_t columns)
-    {
-        if constexpr (!HelpData::label::empty()) {
-            constexpr auto indent = indent_size<Depth>();
-            stream << red_colour << utility::create_sequence_cts_t<indent, ' '>::get()
-                   << HelpData::label::get();
-
-            if constexpr (!HelpData::description::empty()) {
-                static_assert(HelpData::description::get().find('\t') == std::string_view::npos,
-                              "Help descriptions cannot contain tabs");
-
-                constexpr auto gap =
-                    DescStart - indent - utility::utf8::terminal_width(HelpData::label::get());
-
-                // Spacing between the end of the args label and start of description
-                stream << green_colour << utility::create_sequence_cts_t<gap, ' '>::get();
-
-                // Print the description, breaking if a word will exceed the terminal width
-                for (auto it = utility::utf8::line_iterator{HelpData::description::get(),
-                                                            columns - DescStart};
-                     it != utility::utf8::line_iterator{};) {
-                    stream << *it;
-
-                    // If there's more data to follow, then add the offset
-                    if (++it != utility::utf8::line_iterator{}) {
-                        stream << '\n' << utility::create_sequence_cts_t<DescStart, ' '>::get();
-                    }
-                }
-            }
-
-            stream << "\n" << reset_colour;
-        }
-    }
-
-    /** Overload for runtime_help_data.
+    /** Formats the per-entry data.
      *
      * @param stream Output stream
      * @param desc_start Column at which the description should start
@@ -82,7 +39,7 @@ public:
                 std::size_t desc_start,
                 std::size_t depth,
                 std::size_t columns,
-                const runtime_help_data& help_data)
+                const help_data::type& help_data)
     {
         if (!help_data.label.empty()) {
             const auto indent = depth * Indent;
@@ -110,13 +67,6 @@ public:
 
             stream << "\n" << reset_colour;
         }
-    }
-
-private:
-    template <std::size_t Depth>
-    [[nodiscard]] constexpr static std::size_t indent_size() noexcept
-    {
-        return Depth * Indent;
     }
 };
 }  // namespace help_formatter_component

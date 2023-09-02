@@ -6,6 +6,7 @@
 
 #include "arg_router/parsing/token_type.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
+#include "arg_router/utility/string_view_ops.hpp"
 #include "arg_router/utility/tuple_iterator.hpp"
 
 #include <boost/mp11/algorithm.hpp>
@@ -130,6 +131,7 @@ private:
     {
         using std::to_string;
         using placeholders = generate_placeholders<Str>;
+        using namespace utility::string_view_ops;
 
         constexpr auto bracket_width = std::size_t{2};
 

@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "arg_router/help_data.hpp"
 #include "arg_router/parsing/parsing.hpp"
 
 #include <boost/test/unit_test.hpp>
@@ -46,15 +47,20 @@ inline std::ostream& operator<<(std::ostream& stream, pre_parse_result result)
 }
 }  // namespace parsing
 
-template <typename T>
-std::ostream& operator<<(std::ostream& stream, std::span<T> v)
+namespace help_data
 {
-    stream << "{";
-    for (auto&& item : v) {
-        stream << item << ",";
+inline std::ostream& operator<<(std::ostream& stream, const type& hd)
+{
+    stream << "{\"" << hd.label << "\", \"" << hd.description << "\", [";
+    for (auto i = 0u; i < hd.children.size(); ++i) {
+        stream << hd.children[i];
+        if (i != (hd.children.size() - 1)) {
+            stream << ", ";
+        }
     }
-    return stream << "}";
+    return stream << "]";
 }
+}  // namespace help_data
 
 inline std::ostream& operator<<(std::ostream& stream, error_code ec)
 {
@@ -76,6 +82,16 @@ ostream& operator<<(ostream& stream, const optional<T>& o)
 
 template <typename T>
 ostream& operator<<(ostream& stream, const std::vector<T>& v)
+{
+    stream << "{";
+    for (auto&& item : v) {
+        stream << item << ",";
+    }
+    return stream << "}";
+}
+
+template <typename T>
+ostream& operator<<(ostream& stream, span<T> v)
 {
     stream << "{";
     for (auto&& item : v) {

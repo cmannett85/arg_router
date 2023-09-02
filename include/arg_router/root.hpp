@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "arg_router/help_data.hpp"
 #include "arg_router/parsing/unknown_argument_handling.hpp"
 #include "arg_router/policy/exception_translator.hpp"
 #include "arg_router/policy/flatten_help.hpp"
@@ -101,17 +102,6 @@ public:
     // Initially I wanted the default_validator to be used if one isn't user specified, but you get
     // into a circular dependency as the validator needs the root first
     using validator_type = std::tuple_element_t<validator_index, policies_type>;
-
-    /** Help data type. */
-    template <bool Flatten>
-    class help_data_type
-    {
-    public:
-        using label = str<"">;
-        using description = str<"">;
-        using children =
-            typename parent_type::template default_leaf_help_data_type<Flatten>::all_children_help;
-    };
 
     /** Constructor.
      *
@@ -238,37 +228,23 @@ public:
      */
     void help([[maybe_unused]] std::ostream& stream) const
     {
-        // Have to lambda wrap here due to MSVC where the if constexpr branch is evaluated even when
-        // false
-        [&](auto* type_ptr) {
-            using root_type = std::decay_t<std::remove_pointer_t<decltype(type_ptr)>>;
-            using root_children = typename root_type::children_type;
+        constexpr static auto help_index =
+            boost::mp11::mp_find_if<children_type, traits::has_generate_help_method>::value;
 
-            constexpr static auto help_index =
-                boost::mp11::mp_find_if<root_children, traits::has_generate_help_method>::value;
+        if constexpr (help_index < std::tuple_size_v<children_type>) {
+            using help_type = std::tuple_element_t<help_index, children_type>;
+            constexpr auto flatten =
+                algorithm::has_specialisation_v<policy::flatten_help_t,
+                                                typename help_type::policies_type>;
 
-            if constexpr (help_index < std::tuple_size_v<root_children>) {
-                using help_type = std::tuple_element_t<help_index, root_children>;
-                constexpr auto flatten =
-                    algorithm::has_specialisation_v<policy::flatten_help_t,
-                                                    typename help_type::policies_type>;
-
-                const auto& help_node = std::get<help_index>(this->children());
-                try {
-                    if constexpr (traits::has_generate_runtime_help_data_method_v<help_type> &&
-                                  traits::has_runtime_generate_help_method_v<help_type>) {
-                        const auto rhd =
-                            help_node.template generate_runtime_help_data<flatten>(*this);
-                        help_node.template generate_help<root_type, help_type, flatten>(stream,
-                                                                                        rhd);
-                    } else {
-                        help_node.template generate_help<root_type, help_type, flatten>(stream);
-                    }
-                } catch (multi_lang_exception& e) {
-                    this->translate_exception(e);
-                }
+            const auto& help_node = std::get<help_index>(this->children());
+            try {
+                const auto rhd = help_node.template generate_help_data_from_node<flatten>(*this);
+                help_node.template generate_help<help_type>(stream, rhd);
+            } catch (multi_lang_exception& e) {
+                this->translate_exception(e);
             }
-        }(this);
+        }
     }
 
     /** Overload that writes into a string and returns it.

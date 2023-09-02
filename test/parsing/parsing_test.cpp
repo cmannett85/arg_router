@@ -31,10 +31,6 @@ public:
     /** Flag value type. */
     using value_type = typename parent_type::value_type;
 
-    /** Help data type. */
-    template <bool Flatten>
-    using help_data_type = typename parent_type::template default_leaf_help_data_type<Flatten>;
-
     constexpr explicit custom_flag_t(Policies... policies) noexcept :
         parent_type{std::move(policies)...}
     {

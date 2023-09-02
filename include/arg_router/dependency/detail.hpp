@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "arg_router/help_data.hpp"
 #include "arg_router/policy/display_name.hpp"
 #include "arg_router/policy/error_name.hpp"
 #include "arg_router/policy/no_result_value.hpp"
@@ -141,64 +142,6 @@ protected:
     static_assert((std::tuple_size_v<basic_value_type> >= 1),
                   "basic_one_of_t must have at least one child with a value_type");
 
-    template <bool Flatten>
-    class children_help_data_type
-    {
-        template <typename Child, typename Prefix>
-        struct prefixer {
-            using label = typename Prefix::template append_t<
-                typename Child::template help_data_type<Flatten>::label>;
-            using description = typename Child::template help_data_type<Flatten>::description;
-            using children = std::tuple<>;
-        };
-
-        using top_bar = str<"┌ ">;
-        using middle_bar = str<"├ ">;
-        using bottom_bar = str<"└ ">;
-
-        template <typename Child>
-        using first_prefixer = prefixer<Child, top_bar>;
-
-        template <typename Child>
-        using middle_prefixer = prefixer<Child, middle_bar>;
-
-        template <typename Child>
-        using last_prefixer = prefixer<Child, bottom_bar>;
-
-    public:
-        using children = boost::mp11::mp_replace_at_c<
-            boost::mp11::mp_replace_first<boost::mp11::mp_transform<middle_prefixer, children_type>,
-                                          first_prefixer<boost::mp11::mp_first<children_type>>>,
-            std::tuple_size_v<children_type> - 1,
-            last_prefixer<boost::mp11::mp_back<children_type>>>;
-
-        template <typename OwnerNode, typename FilterFn>
-        [[nodiscard]] static std::vector<runtime_help_data> runtime_children(const OwnerNode& owner,
-                                                                             FilterFn&& f)
-        {
-            // Gather the basic data
-            auto result = parent_type::template default_leaf_help_data_type<true>::runtime_children(
-                owner,
-                std::forward<FilterFn>(f));
-
-            // Don't prepend bars if there are zero or one children
-            if (result.size() <= 1) {
-                return result;
-            }
-
-            // Prepend the bars
-            result.front().label =
-                utility::dynamic_string_view{top_bar::get()} + result.front().label;
-            for (auto i = 1u; i < (result.size() - 1); ++i) {
-                result[i].label = utility::dynamic_string_view{middle_bar::get()} + result[i].label;
-            }
-            result.back().label =
-                utility::dynamic_string_view{bottom_bar::get()} + result.back().label;
-
-            return result;
-        }
-    };
-
     template <auto has_display_name = add_names<ParentDocName, Params...>::has_display_name>
     constexpr explicit basic_one_of_t(Params... params,
                                       // NOLINTNEXTLINE(*-named-parameter)
@@ -216,6 +159,28 @@ protected:
                     std::tuple_element_t<1, policies_type>{},  // Error name
                     std::move(params)...}
     {
+    }
+
+    template <bool Flatten, typename FilterFn>
+    [[nodiscard]] help_data::type generate_help_data(const FilterFn& f) const
+    {
+        // Gather the basic data
+        auto result = help_data::generate<true>(static_cast<const parent_type&>(*this), f);
+
+        // Don't prepend bars if there are zero or one children
+        if (result.children.size() <= 1) {
+            return result;
+        }
+
+        // Prepend the bars
+        auto& help_children = result.children;
+        help_children[0].label = "┌ " + help_children[0].label;
+        for (auto i = 1u; i < (help_children.size() - 1); ++i) {
+            help_children[i].label = "├ " + help_children[i].label;
+        }
+        help_children.back().label = "└ " + help_children.back().label;
+
+        return result;
     }
 };
 }  // namespace arg_router::dependency::detail

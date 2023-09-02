@@ -65,28 +65,6 @@ public:
         "counting_flag) cannot have a validation phase as they won't be "
         "executed, move the implementing policies into the alias_group");
 
-    /** Help data type. */
-    template <bool Flatten>
-    class help_data_type
-    {
-    public:
-        using label =
-            decltype(AR_STRING_SV(parent_type::display_name()){} +
-                     parent_type::template default_leaf_help_data_type<Flatten>::value_suffix());
-        using description = str<"">;
-        using children = typename parent_type::template  //
-            children_help_data_type<Flatten>::children;
-
-        template <typename OwnerNode, typename FilterFn>
-        [[nodiscard]] static std::vector<runtime_help_data> runtime_children(const OwnerNode& owner,
-                                                                             FilterFn&& f)
-        {
-            return parent_type::template children_help_data_type<Flatten>::runtime_children(
-                owner,
-                std::forward<FilterFn>(f));
-        }
-    };
-
     /** Constructor.
      *
      * @param params Policy and child instances
@@ -123,6 +101,17 @@ public:
             this->children());
 
         return found;
+    }
+
+    template <bool Flatten, typename FilterFn>
+    [[nodiscard]] help_data::type generate_help_data(const FilterFn& f) const
+    {
+        auto result = parent_type::template generate_help_data<Flatten>(f);
+        result.label =
+            (AR_STRING_SV(parent_type::display_name()){} + help_data::value_suffix<alias_group_t>())
+                .get();
+
+        return result;
     }
 };
 

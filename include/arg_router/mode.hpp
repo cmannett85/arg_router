@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "arg_router/help_data.hpp"
 #include "arg_router/parsing/unknown_argument_handling.hpp"
 #include "arg_router/policy/description.hpp"
 #include "arg_router/policy/error_name.hpp"
@@ -108,41 +109,6 @@ public:
     static_assert(is_anonymous || (!is_anonymous && !traits::has_error_name_method_v<mode_t>),
                   "Named modes must not have an error name policy");
 
-    /** Help data type. */
-    template <bool Flatten>
-    class help_data_type
-    {
-    public:
-        /* Provide an 'invisible' label when anonymous to have a preceding blank line, so it's
-         * contents aren't confused with any previously declared named modes (or their contents).
-         */
-        using label = std::conditional_t<
-            is_anonymous,
-            str<' '>,
-            typename parent_type::template default_leaf_help_data_type<Flatten>::label>;
-
-        using description =
-            typename parent_type::template default_leaf_help_data_type<Flatten>::description;
-
-        using children = std::conditional_t<
-            is_anonymous || Flatten,
-            typename parent_type::template default_leaf_help_data_type<Flatten>::all_children_help,
-            std::tuple<>>;
-
-        template <typename OwnerNode, typename FilterFn>
-        [[nodiscard]] static std::vector<runtime_help_data> runtime_children(const OwnerNode& owner,
-                                                                             FilterFn&& f)
-        {
-            if constexpr (is_anonymous || Flatten) {
-                return parent_type::template default_leaf_help_data_type<true>::runtime_children(
-                    owner,
-                    std::forward<FilterFn>(f));
-            }
-
-            return {};
-        }
-    };
-
     /** Constructor.
      *
      * @param params Policy and child instances
@@ -177,8 +143,8 @@ public:
      * @param pre_parse_data Pre-parse data aggregate
      * @param parents Parent node instances
      * @return Non-empty if the leading tokens in @a args are consumable by this node
-     * @exception multi_lang_exception Thrown if a child node cannot be found, or a delegated child
-     * pre-parse policy throws
+     * @exception multi_lang_exception Thrown if a child node cannot be found, or a delegated
+     * child pre-parse policy throws
      */
     template <typename Validator, bool HasTarget, typename... Parents>
     [[nodiscard]] std::optional<parsing::parse_target> pre_parse(
@@ -206,6 +172,39 @@ public:
         return std::apply(
             [&](auto&&... ancestors) { return parse_impl(target, ancestors.get()...); },
             parsing::clean_node_ancestry_list(*this, parents...));
+    }
+
+    /** Generates the help data.
+     *
+     * This is customised for mode_t because we need to always flatten if anonymous.
+     * @tparam Flatten True to flatten the help output i.e. display all children
+     * @tparam FilterFn Child filtering function
+     * @param f Child filter instance
+     * @return Help data
+     */
+    template <bool Flatten, typename FilterFn>
+    [[nodiscard]] help_data::type generate_help_data(const FilterFn& f) const
+    {
+        const auto filter = [&](const auto& child) {
+            if constexpr (is_anonymous || Flatten) {
+                return f(child);
+            }
+
+            // If not flattened then ignore all children
+            return false;
+        };
+        auto result =
+            help_data::generate<(is_anonymous || Flatten)>(static_cast<const parent_type&>(*this),
+                                                           filter);
+
+        /* Provide an 'invisible' label when anonymous to have a preceding blank line, so it's
+         * contents aren't confused with any previously declared named modes (or their contents).
+         */
+        if constexpr (is_anonymous) {
+            result.label = " ";
+        }
+
+        return result;
     }
 
 private:
@@ -246,8 +245,8 @@ private:
 
         auto& args = pre_parse_data.args();
 
-        // If we're not anonymous then check the leading token is a match.  We can just delegate to
-        // the default implementation for this
+        // If we're not anonymous then check the leading token is a match.  We can just delegate
+        // to the default implementation for this
         if constexpr (!is_anonymous) {
             auto match = parent_type::pre_parse(pre_parse_data, this_mode, parents...);
             if (!match) {
@@ -279,8 +278,8 @@ private:
 
         auto target = parsing::parse_target{this_mode, parents...};
 
-        // Iterate over the tokens until consumed, skipping children already processed that cannot
-        // be repeated on the command line
+        // Iterate over the tokens until consumed, skipping children already processed that
+        // cannot be repeated on the command line
         auto matched = std::bitset<std::tuple_size_v<children_type>>{};
         while (!args.empty()) {
             // Take a copy of the front token for the error messages
@@ -343,8 +342,8 @@ private:
                     const Parents&... parents) const
     {
         // Create an internal-use results tuple, this is made from optional-wrapped children's
-        // value_types but any no_result_value children are replaced with skip_tag - this makes it
-        // easier to iterate
+        // value_types but any no_result_value children are replaced with skip_tag - this makes
+        // it easier to iterate
         using results_type = boost::mp11::mp_transform<optional_value_type_or_skip, children_type>;
         auto results = results_type{};
 
@@ -354,8 +353,8 @@ private:
 
             if (result.has_value()) {
                 // We need to find the matching node to the sub_target.  We do this by searching
-                // each child's subtree for a match - this gives us the index into the results tuple
-                // and the sub node type for the match
+                // each child's subtree for a match - this gives us the index into the results
+                // tuple and the sub node type for the match
                 auto found = false;
                 utility::tuple_iterator(
                     [&](auto i, const auto& child) {
@@ -384,10 +383,11 @@ private:
             },
             results);
 
-        // Handle multi-stage value validation.  Multi-stage value nodes cannot be validated during
-        // processing, as they will likely fail validation when partially processed.  So the
-        // multi-stage nodes do not perform validation themselves, but have their owner (i.e. modes)
-        // do it at the end of processing - including after any default values have been generated
+        // Handle multi-stage value validation.  Multi-stage value nodes cannot be validated
+        // during processing, as they will likely fail validation when partially processed.  So
+        // the multi-stage nodes do not perform validation themselves, but have their owner
+        // (i.e. modes) do it at the end of processing - including after any default values have
+        // been generated
         multi_stage_validation(results, this_mode, parents...);
 
         // Routing
@@ -423,8 +423,8 @@ private:
             [&](const auto& node, const auto&...) {
                 using node_type = std::decay_t<decltype(node)>;
 
-                // Skip modes and nodes without a parse function.  In reality the runtime code will
-                // never allow that, but let's help the compiler out...
+                // Skip modes and nodes without a parse function.  In reality the runtime code
+                // will never allow that, but let's help the compiler out...
                 if constexpr (!traits::is_specialisation_of_v<node_type, mode_t> &&
                               traits::has_parse_method_v<node_type>) {
                     if (!found && (utility::type_hash<node_type>() == hash)) {
@@ -441,8 +441,8 @@ private:
                                            [[maybe_unused]] parsing::token_type token)
     {
         if constexpr (!Child::is_named && !policy::has_multi_stage_value_v<Child>) {
-            // Child is not named and can only appear on the command line once, so only perform the
-            // pre-parse if it hasn't been matched already
+            // Child is not named and can only appear on the command line once, so only perform
+            // the pre-parse if it hasn't been matched already
             return !already_matched;
         } else if constexpr (Child::is_named && !policy::has_multi_stage_value_v<Child>) {
             // Child is named, but can only appear once on the command line, so perform the

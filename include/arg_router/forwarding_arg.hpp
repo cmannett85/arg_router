@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "arg_router/help_data.hpp"
 #include "arg_router/multi_arg_base.hpp"
 #include "arg_router/policy/description.hpp"
 #include "arg_router/policy/none_name.hpp"
@@ -39,20 +40,6 @@ public:
     /** Argument value type. */
     using value_type = typename parent_type::value_type;
 
-    /** Help data type. */
-    template <bool Flatten>
-    class help_data_type
-    {
-    public:
-        using label = std::decay_t<decltype(
-            parent_type::template default_leaf_help_data_type<Flatten>::label_generator() +
-            str<" ">{} +
-            parent_type::template default_leaf_help_data_type<Flatten>::count_suffix())>;
-        using description =
-            typename parent_type::template default_leaf_help_data_type<Flatten>::description;
-        using children = std::tuple<>;
-    };
-
     /** Constructor.
      *
      * @param policies Policy instances
@@ -75,6 +62,25 @@ public:
     value_type parse(parsing::parse_target&& target, const Parents&... parents) const
     {
         return parent_type::parse(target, *this, parents...);
+    }
+
+    /** Generates the help data.
+     *
+     * This is customised for forwarding_arg_t because we need to display the count suffix.
+     * @tparam Flatten True to flatten the help output i.e. display all children
+     * @tparam FilterFn Child filtering function
+     * @param f Child filter instance
+     * @return Help data
+     */
+    template <bool Flatten, typename FilterFn>
+    [[nodiscard]] help_data::type generate_help_data(const FilterFn& f) const
+    {
+        auto result = help_data::generate<Flatten>(static_cast<const parent_type&>(*this), f);
+        result.label = (help_data::label_generator<forwarding_arg_t>() + str<" ">{} +
+                        help_data::count_suffix<forwarding_arg_t>())
+                           .get();
+
+        return result;
     }
 
 private:

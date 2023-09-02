@@ -98,30 +98,6 @@ public:
     // You must expose the parsed type as a using declaration
     using value_type = typename parent_type::value_type;
 
-    /* This is a minor variation on the tree_node::default_leaf_help_data_type type, we're just
-     * wrapping the display name in chevrons.
-     */
-    template <bool Flatten>
-    class help_data_type
-    {
-        [[nodiscard]] constexpr static auto label_generator() noexcept
-        {
-            constexpr auto name = single_positional_arg_t::display_name();
-
-            // This is unfortunately necessary due to C++ language limitations, we can't pass
-            // a std::string_view directly to ar::str
-            constexpr auto name_span = std::span<const char, name.size()>{name};
-            return "<"_S + ar::str<name_span>{} + "> "_S +
-                   parent_type::template default_leaf_help_data_type<Flatten>::count_suffix();
-        }
-
-    public:
-        using label = std::decay_t<decltype(label_generator())>;
-        using description =
-            typename parent_type::template default_leaf_help_data_type<Flatten>::description;
-        using children = std::tuple<>;
-    };
-
     constexpr explicit single_positional_arg_t(Policies... policies) noexcept :
         parent_type{arp::min_max_count_t<ar::traits::integral_constant<std::size_t{1}>,
                                          ar::traits::integral_constant<std::size_t{1}>>{},
@@ -147,6 +123,25 @@ public:
                                    const Parents&... parents) const
     {
         return parent_type::parse(target, *this, parents...);
+    }
+
+    // For help output we want to wrap the display name in chevrons
+    template <bool Flatten, typename FilterFn>
+    [[nodiscard]] ar::help_data::type generate_help_data(const FilterFn& f) const
+    {
+        // Do not just use *this as the generate argument because it will trigger an infinite loop!
+        auto result = ar::help_data::generate<Flatten>(static_cast<const parent_type&>(*this), f);
+
+        // This is unfortunately necessary due to C++ language limitations, we can't pass
+        // a std::string_view directly to ar::str
+        constexpr auto name = single_positional_arg_t::display_name();
+        constexpr auto name_span = std::span<const char, name.size()>{name};
+
+        result.label = ("<"_S + ar::str<name_span>{} + "> "_S +
+                        ar::help_data::count_suffix<single_positional_arg_t>())
+                           .get();
+
+        return result;
     }
 
 private:

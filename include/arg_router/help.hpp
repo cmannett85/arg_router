@@ -81,10 +81,6 @@ public:
     using typename parent_type::policies_type;
     using parent_type::generate_help;
 
-    /** Help data type. */
-    template <bool Flatten>
-    using help_data_type = typename parent_type::template default_leaf_help_data_type<Flatten>;
-
     /** Constructor.
      *
      * @param policies Policy instances
@@ -127,41 +123,25 @@ public:
 
     /** Starting from @a start_node, iterate down through the tree generating runtime help data.
      *
+     * This removes runtime disabled children.
      * @tparam Flatten True to flatten output
      * @tparam Node Start node type
      * @param start_node Tree node to start generating from
      * @return Runtime help data
      */
     template <bool Flatten, typename Node>
-    [[nodiscard]] runtime_help_data generate_runtime_help_data(
-        const Node& start_node) const noexcept
+    [[nodiscard]] static help_data::type generate_help_data_from_node(
+        const Node& start_node) noexcept
     {
-        using node_hdt = typename Node::template help_data_type<Flatten>;
-
         const auto filter = [](const auto& child) {
             using child_type = std::decay_t<decltype(child)>;
-            if constexpr (traits::has_help_data_type_v<child_type>) {
-                if constexpr (traits::has_runtime_enabled_method_v<child_type>) {
-                    return child.runtime_enabled();
-                }
-                return true;
+            if constexpr (traits::has_runtime_enabled_method_v<child_type>) {
+                return child.runtime_enabled();
             }
-
-            return false;
+            return true;
         };
 
-        // Create a target runtime
-        auto rhd = runtime_help_data{node_hdt::label::get(), node_hdt::description::get(), {}};
-        if constexpr (traits::has_runtime_children_method_v<node_hdt>) {
-            rhd.children = node_hdt::runtime_children(start_node, filter);
-        } else {
-            rhd.children =
-                parent_type::template default_leaf_help_data_type<Flatten>::runtime_children(
-                    start_node,
-                    filter);
-        }
-
-        return rhd;
+        return help_data::generate<Flatten>(start_node, filter);
     }
 
     /** Parse function.
@@ -193,33 +173,19 @@ public:
                 !std::is_same_v<root_type, node_type>;
 
             // Create the runtime filter
-            if constexpr (traits::has_runtime_generate_help_method_v<formatter_type>) {
-                const auto rhd = generate_runtime_help_data<flatten>(target_node);
+            const auto rhd = generate_help_data_from_node<flatten>(target_node);
 
-                // If there is a routing policy then delegate to it, otherwise print the help output
-                // to std::cout and exit
-                using routing_policy =
-                    typename parent_type::template phase_finder_t<policy::has_routing_phase_method>;
-                if constexpr (std::is_void_v<routing_policy>) {
-                    formatter_type::template generate_help<node_type, help_t, flatten>(std::cout,
-                                                                                       rhd);
-                    std::exit(EXIT_SUCCESS);
-                } else {
-                    auto stream = std::ostringstream{};
-                    formatter_type::template generate_help<node_type, help_t, flatten>(stream, rhd);
-                    this->routing_policy::routing_phase(std::move(stream));
-                }
+            // If there is a routing policy then delegate to it, otherwise print the help output
+            // to std::cout and exit
+            using routing_policy =
+                typename parent_type::template phase_finder_t<policy::has_routing_phase_method>;
+            if constexpr (std::is_void_v<routing_policy>) {
+                formatter_type::template generate_help<help_t>(std::cout, rhd);
+                std::exit(EXIT_SUCCESS);
             } else {
-                using routing_policy =
-                    typename parent_type::template phase_finder_t<policy::has_routing_phase_method>;
-                if constexpr (std::is_void_v<routing_policy>) {
-                    formatter_type::template generate_help<node_type, help_t, flatten>(std::cout);
-                    std::exit(EXIT_SUCCESS);
-                } else {
-                    auto stream = std::ostringstream{};
-                    formatter_type::template generate_help<node_type, help_t, flatten>(stream);
-                    this->routing_policy::routing_phase(std::move(stream));
-                }
+                auto stream = std::ostringstream{};
+                formatter_type::template generate_help<help_t>(stream, rhd);
+                this->routing_policy::routing_phase(std::move(stream));
             }
         });
     }

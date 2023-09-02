@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "arg_router/help_data.hpp"
 #include "arg_router/multi_arg_base.hpp"
 #include "arg_router/policy/description.hpp"
 #include "arg_router/policy/display_name.hpp"
@@ -43,27 +44,6 @@ public:
     /** Argument value type. */
     using value_type = T;
 
-    /** Help data type. */
-    template <bool Flatten>
-    class help_data_type
-    {
-        [[nodiscard]] constexpr static auto label_generator() noexcept
-        {
-            constexpr auto name_index =
-                boost::mp11::mp_find_if<policies_type, traits::has_display_name_method>::value;
-            using name_type = typename std::tuple_element_t<name_index, policies_type>::string_type;
-
-            return str<"<">{} + name_type{} + str<"> ">{} +
-                   parent_type::template default_leaf_help_data_type<Flatten>::count_suffix();
-        }
-
-    public:
-        using label = std::decay_t<decltype(label_generator())>;
-        using description =
-            typename parent_type::template default_leaf_help_data_type<Flatten>::description;
-        using children = std::tuple<>;
-    };
-
     /** Constructor.
      *
      * @param policies Policy instances
@@ -85,6 +65,32 @@ public:
     [[nodiscard]] value_type parse(parsing::parse_target target, const Parents&... parents) const
     {
         return parent_type::parse(target, *this, parents...);
+    }
+
+    /** Generates the help data.
+     *
+     * This is customised for forwarding_arg_t because we need to display the display name in angle
+     * brackets.
+     * @tparam Flatten True to flatten the help output i.e. display all children
+     * @tparam FilterFn Child filtering function
+     * @param f Child filter instance
+     * @return Help data
+     */
+    template <bool Flatten, typename FilterFn>
+    [[nodiscard]] help_data::type generate_help_data(const FilterFn& f) const
+    {
+        auto result = help_data::generate<Flatten>(static_cast<const parent_type&>(*this), f);
+        result.label = []() {
+            constexpr auto name_index =
+                boost::mp11::mp_find_if<policies_type, traits::has_display_name_method>::value;
+            using name_type = typename std::tuple_element_t<name_index, policies_type>::string_type;
+
+            return (str<"<">{} + name_type{} + str<"> ">{} +
+                    help_data::count_suffix<positional_arg_t>())
+                .get();
+        }();
+
+        return result;
     }
 
 private:
