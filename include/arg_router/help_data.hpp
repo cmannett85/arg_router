@@ -74,11 +74,10 @@ constexpr bool has_generate_help_method_v = has_generate_help_method<T>::value;
  */
 template <typename T>
 struct has_generate_help_data_method {
-    using filter_fn_type = decltype([](const auto&) {});
     template <typename U>
     using type =
-        decltype(std::declval<const U&>().template generate_help_data<false, filter_fn_type>(
-            std::declval<const filter_fn_type&>()));
+        decltype(std::declval<const U&>().template generate_help_data<false, utility::always_true>(
+            std::declval<const utility::always_true&>()));
 
     constexpr static bool value = boost::mp11::mp_valid<type, T>::value;
 };
