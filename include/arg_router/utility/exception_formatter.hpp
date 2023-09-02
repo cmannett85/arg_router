@@ -70,8 +70,7 @@ class exception_formatter
                 Str,
                 boost::mp11::mp_push_back<
                     PHs,
-                    placeholder<start,
-                                AR_STRING_SV(Str::get().substr(start + 1, end - start - 1))>>,
+                    placeholder<start, AR_STR_SV(Str::get().substr(start + 1, end - start - 1))>>,
                 end + 1>();
         } else {
             return PHs{};

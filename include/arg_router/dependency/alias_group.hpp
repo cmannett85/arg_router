@@ -108,7 +108,7 @@ public:
     {
         auto result = parent_type::template generate_help_data<Flatten>(f);
         result.label =
-            (AR_STRING_SV(parent_type::display_name()){} + help_data::value_suffix<alias_group_t>())
+            (AR_STR_SV(parent_type::display_name()){} + help_data::value_suffix<alias_group_t>())
                 .get();
 
         return result;
