@@ -228,23 +228,31 @@ public:
      */
     void help([[maybe_unused]] std::ostream& stream) const
     {
-        constexpr static auto help_index =
-            boost::mp11::mp_find_if<children_type, traits::has_generate_help_method>::value;
+        // Have to lambda wrap here due to MSVC where the if constexpr branch is evaluated even when
+        // false
+        [&](auto* type_ptr) {
+            using root_type = std::decay_t<std::remove_pointer_t<decltype(type_ptr)>>;
+            using root_children = typename root_type::children_type;
 
-        if constexpr (help_index < std::tuple_size_v<children_type>) {
-            using help_type = std::tuple_element_t<help_index, children_type>;
-            constexpr auto flatten =
-                algorithm::has_specialisation_v<policy::flatten_help_t,
-                                                typename help_type::policies_type>;
+            constexpr static auto help_index =
+                boost::mp11::mp_find_if<root_children, traits::has_generate_help_method>::value;
 
-            const auto& help_node = std::get<help_index>(this->children());
-            try {
-                const auto rhd = help_node.template generate_help_data_from_node<flatten>(*this);
-                help_node.template generate_help<help_type>(stream, rhd);
-            } catch (multi_lang_exception& e) {
-                this->translate_exception(e);
+            if constexpr (help_index < std::tuple_size_v<root_children>) {
+                using help_type = std::tuple_element_t<help_index, root_children>;
+                constexpr auto flatten =
+                    algorithm::has_specialisation_v<policy::flatten_help_t,
+                                                    typename help_type::policies_type>;
+
+                const auto& help_node = std::get<help_index>(this->children());
+                try {
+                    const auto rhd =
+                        help_node.template generate_help_data_from_node<flatten>(*this);
+                    help_node.template generate_help<help_type>(stream, rhd);
+                } catch (multi_lang_exception& e) {
+                    this->translate_exception(e);
+                }
             }
-        }
+        }(this);
     }
 
     /** Overload that writes into a string and returns it.

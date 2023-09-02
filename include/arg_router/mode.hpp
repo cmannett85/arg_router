@@ -185,7 +185,7 @@ public:
     template <bool Flatten, typename FilterFn>
     [[nodiscard]] help_data::type generate_help_data(const FilterFn& f) const
     {
-        const auto filter = [&](const auto& child) {
+        const auto filter = [&]([[maybe_unused]] const auto& child) {
             if constexpr (is_anonymous || Flatten) {
                 return f(child);
             }

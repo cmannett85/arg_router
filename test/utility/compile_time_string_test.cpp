@@ -43,7 +43,7 @@ BOOST_AUTO_TEST_CASE(char_array_declaration_test)
 
 BOOST_AUTO_TEST_CASE(char_span_declaration_test)
 {
-    constexpr auto hello_array = std::array{'h', 'e', 'l', 'l', 'o'};
+    constexpr static auto hello_array = std::array{'h', 'e', 'l', 'l', 'o'};
     using hello_str = utility::str<std::span{hello_array}>;
     static_assert(hello_str::get().size() == 5);
     static_assert(hello_str::size() == 5);
