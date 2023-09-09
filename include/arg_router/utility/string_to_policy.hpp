@@ -21,7 +21,7 @@ struct is_second_element_policy_or_child {
 };
 
 template <typename T>
-using string_finder = traits::is_compile_time_string_like<boost::mp11::mp_second<T>>;
+using string_finder = traits::is_compile_time_string<boost::mp11::mp_second<T>>;
 
 template <typename T>
 using multi_char_finder = traits::integral_constant<(utility::utf8::count(T::get()) > 1)>;

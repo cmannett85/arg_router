@@ -193,8 +193,8 @@ BOOST_AUTO_TEST_CASE(clean_parents_list_test)
     auto f = [](auto nodes, auto expected) {
         using expected_type = std::decay_t<decltype(expected)>;
         auto result =
-            std::apply([&](auto&&... ns) { return parsing::clean_node_ancestry_list(ns...); },
-                       nodes);
+            utility::apply([&](auto&&... ns) { return parsing::clean_node_ancestry_list(ns...); },
+                           nodes);
         utility::tuple_iterator(
             [&](auto i, auto&& v) {
                 using result_element_type = std::decay_t<decltype(v.get())>;

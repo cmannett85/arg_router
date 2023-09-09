@@ -221,25 +221,35 @@ using str = utility::str<S>;
 
 namespace traits
 {
-/** Evaluates to true if @a T is a compile-time string-like type.
+/** Evaluates to true if @a T is a compile-time string.
  *
  * @tparam T Type to test
  */
 template <typename T>
-struct is_compile_time_string_like : std::false_type {
+struct is_compile_time_string : std::false_type {
 };
 
 template <auto S>
-struct is_compile_time_string_like<utility::str<S>> : std::true_type {
+struct is_compile_time_string<utility::str<S>> : std::true_type {
 };
 
-/** Helper variable for is_compile_time_string_like.
+/** Helper variable for is_compile_time_string.
  *
  * @tparam T Type to test
  */
 template <typename T>
-constexpr bool is_compile_time_string_like_v = is_compile_time_string_like<T>::value;
+constexpr bool is_compile_time_string_v = is_compile_time_string<T>::value;
 }  // namespace traits
+
+namespace concepts
+{
+/** Concept equivalent to traits::is_compile_time_string_v.
+ *
+ * @tparam T Type to test
+ */
+template <typename T>
+concept compile_time_string = traits::is_compile_time_string_v<T>;
+}  // namespace concepts
 }  // namespace arg_router
 
 /** @file */

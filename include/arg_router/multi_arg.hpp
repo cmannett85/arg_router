@@ -116,7 +116,7 @@ private:
 template <typename T, typename... Policies>
 [[nodiscard]] constexpr auto multi_arg(Policies... policies) noexcept
 {
-    return std::apply(
+    return utility::apply(
         [](auto... converted_policies) {
             return multi_arg_t<T, std::decay_t<decltype(converted_policies)>...>{
                 std::move(converted_policies)...};

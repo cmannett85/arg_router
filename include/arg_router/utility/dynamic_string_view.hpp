@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "arg_router/traits.hpp"
+
 #include <string>
 #include <string_view>
 
@@ -128,8 +130,7 @@ public:
      * @param other String-like instance to append
      * @return Reference to this
      */
-    template <typename T,
-              typename = std::enable_if_t<!std::is_same_v<std::decay_t<T>, dynamic_string_view>>>
+    template <concepts::is_not_same<dynamic_string_view> T>
     dynamic_string_view& operator+=(T&& other)
     {
         convert_to_internal_storage();

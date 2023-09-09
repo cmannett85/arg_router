@@ -61,7 +61,7 @@ void add_sub_targets(parsing::parse_target& target, const SubTargetsTuple& sub_t
 {
     utility::tuple_iterator(
         [&](auto /*i*/, const auto& sub_target_tuple) {
-            std::apply(
+            utility::apply(
                 [&](auto&& sub_target, auto&&... sub_target_parents) {
                     target.add_sub_target(
                         parsing::parse_target{sub_target.get(), (sub_target_parents.get())...});
@@ -126,7 +126,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
         auto adapter = parsing::dynamic_token_adapter{result, args};
 
         try {
-            const auto match = std::apply(
+            const auto match = utility::apply(
                 [&](auto&& node, auto&&... parents) {
                     auto target = parsing::parse_target{node.get(), (parents.get())...};
                     auto processed_target =

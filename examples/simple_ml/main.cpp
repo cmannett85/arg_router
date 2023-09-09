@@ -191,9 +191,7 @@ int main(int argc, char* argv[])
 {
     ar::multi_lang::root<ar::str<"en_GB">, ar::str<"fr">, ar::str<"ja">>(  //
         ar::multi_lang::iso_locale(locale_name()),
-        [&](auto tr_) {
-            using tr = decltype(tr_);
-
+        [&]<typename tr>(tr) {
             const auto common_args =
                 ar::list{ar::flag(typename tr::force{}, "f"_S, typename tr::force_description{}),
                          ar::positional_arg<fs::path>(arp::required,

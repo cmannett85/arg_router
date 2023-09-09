@@ -13,10 +13,11 @@ struct always_true {
     /** Always returns true.
      *
      * @tparam T Input arg types, all ignored
+     * @param args Args, all ignored
      * @return True
      */
     template <typename... T>
-    bool operator()(T&&...) const noexcept
+    bool operator()([[maybe_unused]] T&&... args) const noexcept
     {
         return true;
     }

@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -131,10 +131,8 @@ public:
      * This method is only available if there is a minimum value.
      * @return Minimum value
      */
-    template <typename T = MinType>
-    [[nodiscard]] constexpr static auto minimum_value(
-        // NOLINTNEXTLINE(*-named-parameter)
-        std::enable_if_t<!std::is_void_v<T>>* = nullptr) noexcept
+    template <concepts::is_not_void T = MinType>
+    [[nodiscard]] constexpr static auto minimum_value() noexcept
     {
         return MinType::value;
     }
@@ -144,10 +142,8 @@ public:
      * This method is only available if there is a maximum value.
      * @return Maximum value
      */
-    template <typename T = MaxType>
-    [[nodiscard]] constexpr static auto maximum_value(
-        // NOLINTNEXTLINE(*-named-parameter)
-        std::enable_if_t<!std::is_void_v<T>>* = nullptr) noexcept
+    template <concepts::is_not_void T = MaxType>
+    [[nodiscard]] constexpr static auto maximum_value() noexcept
     {
         return MaxType::value;
     }

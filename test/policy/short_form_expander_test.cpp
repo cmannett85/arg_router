@@ -132,8 +132,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
                                                         {parsing::prefix_type::short_, "o"}},
                        stub_node{policy::short_name_t{"h"_S}}},
             std::tuple{std::vector<parsing::token_type>{},
-                       std::vector<parsing::token_type>{
-                           {parsing::prefix_type::none, "-🙂b🇦🇬Δ猫"}},
+                       std::vector<parsing::token_type>{{parsing::prefix_type::none, "-🙂b🇦🇬Δ猫"}},
                        std::vector<parsing::token_type>{{parsing::prefix_type::short_, "🙂"}},
                        std::vector<parsing::token_type>{{parsing::prefix_type::short_, "b"},
                                                         {parsing::prefix_type::short_, "🇦🇬"},
