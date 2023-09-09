@@ -4,9 +4,7 @@
 
 #pragma once
 
-namespace arg_router
-{
-namespace utility
+namespace arg_router::utility
 {
 /** Trivial utility function object that always returns true regardless of input arguments. */
 struct always_true {
@@ -22,5 +20,4 @@ struct always_true {
         return true;
     }
 };
-}  // namespace utility
-}  // namespace arg_router
+}  // namespace arg_router::utility

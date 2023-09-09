@@ -19,8 +19,8 @@ template <typename ParentDocName, typename... Params>
 struct generate_string_of_child_names {
 private:
     template <typename Prefix, typename Strings>
-    using prepend_prefix = std::decay_t<
-        decltype(Prefix{} + boost::mp11::mp_fold<Strings, utility::str<>, utility::str_concat>{})>;
+    using prepend_prefix = std::decay_t<decltype(
+        Prefix{} + boost::mp11::mp_fold<Strings, utility::str<>, utility::str_concat>{})>;
 
     template <typename Child>
     struct build_name {
@@ -52,8 +52,8 @@ private:
 
 public:
     // We only take the first N-1 characters to strip off the trailing comma
-    using type = std::decay_t<
-        decltype(concatenated_string{}.template substr<0, concatenated_string::size() - 1>())>;
+    using type = std::decay_t<decltype(
+        concatenated_string{}.template substr<0, concatenated_string::size() - 1>())>;
 };
 
 // If a display_name has been specified, then use that otherwise use the dev-provided default.

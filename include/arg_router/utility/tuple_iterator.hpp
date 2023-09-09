@@ -29,7 +29,7 @@ namespace arg_router::utility
  * @param tuple Tuple instance
  */
 template <typename F, typename Tuple>
-    requires concepts::is_tuple_like<std::decay_t<Tuple>>
+requires concepts::is_tuple_like<std::decay_t<Tuple>>
 constexpr void tuple_iterator(F&& f, Tuple&& tuple)
 {
     constexpr auto N = std::tuple_size_v<std::decay_t<Tuple>>;
@@ -69,8 +69,7 @@ constexpr void tuple_iterator(F&& f, T&&... pack)
  * @param f Callable instance
  */
 template <typename Tuple, typename F>
-constexpr void tuple_type_iterator(F&& f)
-    requires concepts::is_tuple_like<std::decay_t<Tuple>>
+constexpr void tuple_type_iterator(F&& f) requires concepts::is_tuple_like<std::decay_t<Tuple>>
 {
     constexpr auto N = std::tuple_size_v<std::decay_t<Tuple>>;
     boost::mp11::mp_for_each<boost::mp11::mp_iota_c<N>>([&](auto i) { f(i); });

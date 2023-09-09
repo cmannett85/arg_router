@@ -107,9 +107,8 @@ struct parser<std::optional<T>> {
 // because an argument that can be parsed as a complete container will need a custom parser.  In
 // other words, this is only used for positional arg parsing
 template <typename T>
-    requires concepts::has_push_back_method<T> &&
-             (!concepts::is_specialisation_of<std::basic_string, T>)
-struct parser<T> {
+requires concepts::has_push_back_method<T> &&
+    (!concepts::is_specialisation_of<std::basic_string, T>)struct parser<T> {
     [[nodiscard]] static typename T::value_type parse(std::string_view token)
     {
         return parser<typename T::value_type>::parse(token);

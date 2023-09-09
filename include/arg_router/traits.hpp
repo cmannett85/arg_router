@@ -48,16 +48,14 @@ concept is_enum = std::is_enum_v<T>;
  * @tparam U Type to test
  */
 template <typename T, typename U>
-concept is_not_same = !
-std::is_same_v<T, U>;
+concept is_not_same = !std::is_same_v<T, U>;
 
 /** Concept wrapper for <TT>!std::is_void_v</TT>.
  *
  * @tparam T Type to test
  */
 template <typename T>
-concept is_not_void = !
-std::is_void_v<T>;
+concept is_not_void = !std::is_void_v<T>;
 
 /** Concept wrapper for <TT>!std::is_arithmetic_v</TT>.
  *
