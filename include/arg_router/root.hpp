@@ -177,7 +177,7 @@ public:
      * @param begin Iterator to the first element
      * @param end Iterator to the one-past-the-end element
      */
-    template <typename Iter, typename = std::enable_if_t<!std::is_same_v<std::decay_t<Iter>, int>>>
+    template <concepts::is_not_same<int> Iter>
     void parse(Iter begin, Iter end) const
     {
         auto args = std::vector<parsing::token_type>{};
@@ -197,9 +197,7 @@ public:
      * @tparam Container
      * @param c Elements to parse
      */
-    template <typename Container,
-              typename = std::enable_if_t<
-                  !std::is_same_v<std::decay_t<Container>, std::vector<parsing::token_type>>>>
+    template <concepts::is_not_same<std::vector<parsing::token_type>> Container>
     void parse(const Container& c) const
     {
         using std::begin;

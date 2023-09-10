@@ -152,7 +152,7 @@ private:
 template <typename T, typename... Policies>
 [[nodiscard]] constexpr auto single_positional_arg(Policies... policies) noexcept
 {
-    return std::apply(
+    return ar::utility::apply(
         [](auto... converted_policies) {
             return single_positional_arg_t<T, std::decay_t<decltype(converted_policies)>...>{
                 std::move(converted_policies)...};

@@ -4,22 +4,20 @@
 
 #pragma once
 
-namespace arg_router
-{
-namespace utility
+namespace arg_router::utility
 {
 /** Trivial utility function object that always returns true regardless of input arguments. */
 struct always_true {
     /** Always returns true.
      *
      * @tparam T Input arg types, all ignored
+     * @param args Args, all ignored
      * @return True
      */
     template <typename... T>
-    bool operator()(T&&...) const noexcept
+    bool operator()([[maybe_unused]] T&&... args) const noexcept
     {
         return true;
     }
 };
-}  // namespace utility
-}  // namespace arg_router
+}  // namespace arg_router::utility

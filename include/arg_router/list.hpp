@@ -6,6 +6,7 @@
 
 #include "arg_router/algorithm.hpp"
 #include "arg_router/tree_node_fwd.hpp"
+#include "arg_router/utility/apply.hpp"
 
 #include <tuple>
 
@@ -109,7 +110,7 @@ template <typename... Params>
 template <typename... Params>
 [[nodiscard]] constexpr auto list_expander(std::tuple<Params...> params) noexcept
 {
-    return std::apply(
+    return utility::apply(
         [](auto&... args) {
             return detail::list_expander_impl(std::tuple{}, std::forward<decltype(args)>(args)...);
         },

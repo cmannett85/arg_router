@@ -12,7 +12,6 @@
 #include <optional>
 #include <ostream>
 #include <tuple>
-#include <type_traits>
 
 // Surprised this is not already done somewhere in mp11, without it using
 // std::tuple and mp_list in generic situations doesn't work
@@ -33,6 +32,39 @@ namespace arg_router
 {
 class multi_lang_exception;
 
+/** Namespace for C++ Concepts. */
+namespace concepts
+{
+/** Concept wrapper for <TT>std::is_enum_v</TT>.
+ *
+ * @tparam T Type to test
+ */
+template <typename T>
+concept is_enum = std::is_enum_v<T>;
+
+/** Concept wrapper for <TT>!std::is_same_v</TT>.
+ *
+ * @tparam T Type to test against
+ * @tparam U Type to test
+ */
+template <typename T, typename U>
+concept is_not_same = !std::is_same_v<T, U>;
+
+/** Concept wrapper for <TT>!std::is_void_v</TT>.
+ *
+ * @tparam T Type to test
+ */
+template <typename T>
+concept is_not_void = !std::is_void_v<T>;
+
+/** Concept wrapper for <TT>!std::is_arithmetic_v</TT>.
+ *
+ * @tparam T Type to test
+ */
+template <typename T>
+concept is_arithmetic = std::is_arithmetic_v<T>;
+}  // namespace concepts
+
 /** Namespace for type traits. */
 namespace traits
 {
@@ -50,6 +82,21 @@ struct always_false : std::false_type {
  */
 template <typename... T>
 constexpr bool always_false_v = always_false<T...>::value;
+
+/** Regardless of @a T, always evaluates to true.
+ *
+ * @tparam T 'Sink' type
+ */
+template <typename... T>
+struct always_true : std::true_type {
+};
+
+/** Helper variable for always_true.
+ *
+ * @tparam T 'Sink' type
+ */
+template <typename... T>
+constexpr bool always_true_v = always_true<T...>::value;
 
 /** Alias for <TT>typename T::type</TT>.
  *
@@ -85,13 +132,13 @@ constexpr bool has_value_type_v = has_value_type<T>::value;
  *
  * @tparam T Type to query
  */
-template <typename T, typename Enable = void>
+template <typename T>
 struct underlying_type {
     using type = T;
 };
 
-template <typename T>
-struct underlying_type<T, std::enable_if_t<std::is_enum_v<T>>> {
+template <concepts::is_enum T>
+struct underlying_type<T> {
     using type = std::underlying_type_t<T>;
 };
 
@@ -646,4 +693,29 @@ constexpr std::size_t arity_v = std::tuple_size_v<arg_extractor_t<T>> - 1;
 template <typename T, std::size_t I>
 using arg_type_at_index = std::tuple_element_t<I + 1, arg_extractor_t<T>>;
 }  // namespace traits
+
+namespace concepts
+{
+/** Concept equivalent of traits::is_tuple_like_v.
+ *
+ * @tparam T Type to test
+ */
+template <typename T>
+concept is_tuple_like = traits::is_tuple_like_v<T>;
+
+/** Concept equivalent of traits::has_push_back_method_v.
+ *
+ * @tparam T Type to test
+ */
+template <typename T>
+concept has_push_back_method = traits::has_push_back_method_v<T>;
+
+/** Concept equivalent of traits::is_specialisation_of_v.
+ *
+ * @tparam T Type to test against
+ * @tparam U Type to test
+ */
+template <template <typename...> typename T, typename U>
+concept is_specialisation_of = traits::is_specialisation_of_v<U, T>;
+}  // namespace concepts
 }  // namespace arg_router

@@ -6,6 +6,7 @@
 
 #include "arg_router/multi_lang/translation.hpp"
 #include "arg_router/parsing/token_type.hpp"
+#include "arg_router/utility/compile_time_string.hpp"
 #include "arg_router/utility/tuple_iterator.hpp"
 
 #include <variant>
@@ -25,38 +26,36 @@ namespace arg_router::multi_lang
  * namespace ar::multi_lang
  * {
  * template <>
- * class translation<S_("en_GB")>
+ * class translation<str<"en_GB">>
  * {
  * public:
- *     using force = S_("force");
- *     using force_description = S_("Force overwrite existing files");
+ *     using force = str<"force">;
+ *     using force_description = str<"Force overwrite existing files">;
  *     ...
  * };
  *
  * template <>
- * class translation<S_("fr")>
+ * class translation<str<"fr">>
  * {
  * public:
- *     using force = S_("forcer");
- *     using force_description = S_("Forcer l'écrasement des fichiers existants");
+ *     using force = str<"forcer">;
+ *     using force_description = str<"Forcer l'écrasement des fichiers existants">;
  *     ...
  * };
  *
  * template <>
- * class translation<S_("ja")>
+ * class translation<str<"ja">>
  * {
  * public:
- *     using force = S_("強制");
- *     using force_description = S_("既存のファイルを強制的に上書きする");
+ *     using force = str<"強制">;
+ *     using force_description = str<"既存のファイルを強制的に上書きする">;
  *     ...
  * };
  * } // namespace ar::multi_lang
  *
- * ar::multi_lang::root<S_("en_GB"), S_("fr"), S_("ja")>(  //
+ * ar::multi_lang::root<str<"en_GB">, str<"fr">, str<"ja">>(  //
  *     ar::multi_lang::iso_locale(std::locale("").name()),
- *     [&](auto tr_) {
- *         using tr = decltype(tr_);
- *
+ *     [&]<typename tr>(tr) {
  *         const auto common_args = ar::list{
  *             ar::flag(arp::long_name<typename tr::force>,
  *                      arp::short_name<'f'>,
@@ -86,7 +85,9 @@ namespace arg_router::multi_lang
  * runtime input code does not match this or any of SupportedLanguageIDs
  * @tparam SupportedLanguageIDs The supported language IDs as compile time strings
  */
-template <typename RootFactory, typename DefaultLanguageID, typename... SupportedLanguageIDs>
+template <typename RootFactory,
+          concepts::compile_time_string DefaultLanguageID,
+          concepts::compile_time_string... SupportedLanguageIDs>
 class root_t
 {
     using supported_language_ids = std::tuple<DefaultLanguageID, SupportedLanguageIDs...>;
@@ -147,7 +148,7 @@ public:
      * @param begin Iterator to the first element
      * @param end Iterator to the one-past-the-end element
      */
-    template <typename Iter, typename = std::enable_if_t<!std::is_same_v<std::decay_t<Iter>, int>>>
+    template <concepts::is_not_same<int> Iter>
     void parse(Iter begin, Iter end) const
     {
         std::visit([&](const auto& root) { root.parse(begin, end); }, *root_);
@@ -161,9 +162,7 @@ public:
      * @tparam Container
      * @param c Elements to parse
      */
-    template <typename Container,
-              typename = std::enable_if_t<
-                  !std::is_same_v<std::decay_t<Container>, std::vector<parsing::token_type>>>>
+    template <concepts::is_not_same<std::vector<parsing::token_type>> Container>
     void parse(const Container& c) const
     {
         std::visit([&](const auto& root) { root.parse(c); }, *root_);
@@ -217,7 +216,9 @@ private:
  * @param f Function object that returns the root instance for a given supported language
  * @return root_t instance
  */
-template <typename DefaultLanguageID, typename... SupportedLanguageIDs, typename RootFactory>
+template <concepts::compile_time_string DefaultLanguageID,
+          concepts::compile_time_string... SupportedLanguageIDs,
+          typename RootFactory>
 auto root(std::string_view language_id, const RootFactory& f)
 {
     return root_t<RootFactory, DefaultLanguageID, SupportedLanguageIDs...>{language_id, f};

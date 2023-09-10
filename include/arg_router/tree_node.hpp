@@ -193,7 +193,7 @@ protected:
         const Node& node,
         const Parents&... parents) const
     {
-        return std::apply(
+        return utility::apply(
             [&](auto&&... ancestors) { return pre_parse_impl(pre_parse_data, ancestors.get()...); },
             parsing::clean_node_ancestry_list(node, parents...));
     }
@@ -215,7 +215,7 @@ protected:
                              const Node& node,
                              const Parents&... parents) const
     {
-        return std::apply(
+        return utility::apply(
             [&](auto&&... ancestors) { return parse_impl<ValueType>(token, ancestors.get()...); },
             parsing::clean_node_ancestry_list(node, parents...));
     }
@@ -253,7 +253,7 @@ private:
     [[nodiscard]] constexpr static auto common_filter_tuple(Tuple&& tuple_params) noexcept
     {
         // std::apply does not like templates, so we have to wrap in a lambda
-        return std::apply(
+        return utility::apply(
             [](auto&... args) { return common_filter<Fn>(std::forward<decltype(args)>(args)...); },
             tuple_params);
     }

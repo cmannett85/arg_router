@@ -118,6 +118,7 @@ path_prefixer(HEADERS
     include/arg_router/tree_node.hpp
     include/arg_router/tree_node_fwd.hpp
     include/arg_router/utility/always_true.hpp
+    include/arg_router/utility/apply.hpp
     include/arg_router/utility/compile_time_string.hpp
     include/arg_router/utility/compile_time_optional.hpp
     include/arg_router/utility/dynamic_string_view.hpp
@@ -157,6 +158,8 @@ target_sources(arg_router
   PRIVATE
     include/arg_router/help_data.hpp
     include/arg_router/utility/always_true.hpp
+
+    include/arg_router/utility/apply.hpp
 )
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/package/install.cmake")
 

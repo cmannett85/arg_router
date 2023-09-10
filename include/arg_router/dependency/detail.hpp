@@ -65,8 +65,8 @@ class add_names
     struct has_display_name_t : std::false_type {
     };
 
-    template <typename Policy>
-    struct has_display_name_t<Policy, std::enable_if_t<policy::is_policy_v<Policy>>> {
+    template <concepts::is_policy Policy>
+    struct has_display_name_t<Policy> {
         constexpr static bool value = traits::has_display_name_method_v<Policy>;
     };
 

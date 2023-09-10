@@ -173,7 +173,7 @@ BOOST_AUTO_TEST_CASE(pre_parse_phase_test)
     auto f = [&](auto args, auto expected_target_data, auto expected_args, auto parents_tuple) {
         auto result = std::vector<parsing::token_type>{};
 
-        std::apply(
+        utility::apply(
             [&](auto&& node, auto&&... parents) {
                 auto adapter = parsing::dynamic_token_adapter{result, args};
                 auto target = parsing::parse_target{node.get(), (parents.get())...};

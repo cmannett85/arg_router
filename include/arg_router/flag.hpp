@@ -131,7 +131,7 @@ private:
 template <typename... Policies>
 [[nodiscard]] constexpr auto flag(Policies... policies) noexcept
 {
-    return std::apply(
+    return utility::apply(
         [](auto... converted_policies) {
             // Add the short-form expander if one of the policies implements the short name method,
             // and if the short and long prefix are not the same

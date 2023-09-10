@@ -151,7 +151,7 @@ public:
         parsing::pre_parse_data<Validator, HasTarget> pre_parse_data,
         const Parents&... parents) const
     {
-        return std::apply(
+        return utility::apply(
             [&](auto&&... ancestors) { return pre_parse_impl(pre_parse_data, ancestors.get()...); },
             parsing::clean_node_ancestry_list(*this, parents...));
     }
@@ -169,7 +169,7 @@ public:
     template <typename... Parents>
     void parse(parsing::parse_target target, const Parents&... parents) const
     {
-        return std::apply(
+        return utility::apply(
             [&](auto&&... ancestors) { return parse_impl(target, ancestors.get()...); },
             parsing::clean_node_ancestry_list(*this, parents...));
     }
@@ -398,7 +398,7 @@ private:
             auto stripped_results = algorithm::tuple_filter_and_construct<
                 boost::mp11::mp_not_fn<is_skip_tag>::template fn>(std::move(results));
 
-            std::apply(
+            utility::apply(
                 [&](auto&&... args) {
                     this->routing_phase(std::forward<std::decay_t<decltype(*args)>>(*args)...);
                 },
@@ -569,7 +569,7 @@ private:
 template <typename... Params>
 constexpr auto mode(Params... params)
 {
-    return std::apply(
+    return utility::apply(
         [](auto... converted_params) {
             return mode_t<std::decay_t<decltype(converted_params)>...>{
                 std::move(converted_params)...};

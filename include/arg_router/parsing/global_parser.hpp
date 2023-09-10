@@ -22,7 +22,7 @@ namespace arg_router
  * @return The parsed instance
  * @exception multi_lang_exception Thrown if parsing failed
  */
-template <typename T, typename Enable = void>
+template <typename T>
 struct parser {
     [[noreturn]] constexpr static T parse([[maybe_unused]] std::string_view token) noexcept
     {
@@ -32,8 +32,8 @@ struct parser {
     }
 };
 
-template <typename T>
-struct parser<T, typename std::enable_if_t<std::is_arithmetic_v<T>>> {
+template <concepts::is_arithmetic T>
+struct parser<T> {
     [[nodiscard]] static T parse(std::string_view token)
     {
         using namespace utility::string_view_ops;
@@ -49,8 +49,8 @@ struct parser<T, typename std::enable_if_t<std::is_arithmetic_v<T>>> {
     }
 };
 
-template <typename T>
-struct parser<T, typename std::enable_if_t<std::is_constructible_v<T, std::string_view>>> {
+template <std::constructible_from<std::string_view> T>
+struct parser<T> {
     [[nodiscard]] static T parse(std::string_view token) { return T{token}; }
 };
 
@@ -107,9 +107,8 @@ struct parser<std::optional<T>> {
 // because an argument that can be parsed as a complete container will need a custom parser.  In
 // other words, this is only used for positional arg parsing
 template <typename T>
-struct parser<T,
-              typename std::enable_if_t<traits::has_push_back_method_v<T> &&
-                                        !traits::is_specialisation_of_v<T, std::basic_string>>> {
+requires concepts::has_push_back_method<T> &&
+    (!concepts::is_specialisation_of<std::basic_string, T>)struct parser<T> {
     [[nodiscard]] static typename T::value_type parse(std::string_view token)
     {
         return parser<typename T::value_type>::parse(token);

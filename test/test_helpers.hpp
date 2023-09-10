@@ -1,10 +1,11 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #pragma once
 
 #include "arg_router/exception.hpp"
+#include "arg_router/utility/apply.hpp"
 #include "arg_router/utility/tuple_iterator.hpp"
 #include "arg_router/utility/type_hash.hpp"
 
@@ -82,7 +83,7 @@ template <std::size_t I, std::size_t... Is, typename Root>
         // All this because you can't resize a tuple in std...
         using index_tuple = boost::mp11::mp_pop_back<
             std::tuple<traits::integral_constant<I>, traits::integral_constant<Is>...>>;
-        return std::apply(
+        return utility::apply(
             [&](auto... NewIs) { return std::tuple_cat(result, get_parents<NewIs...>(root)); },
             index_tuple{});
     } else {
@@ -128,7 +129,7 @@ void data_set(F&& f, std::vector<std::tuple<Args...>>&& args)
     auto count = 0u;
     for (auto&& a : args) {
         BOOST_TEST_MESSAGE("Performing test " << ++count);
-        std::apply(f, std::move(a));
+        utility::apply(f, std::move(a));
     }
 }
 
@@ -190,7 +191,7 @@ constexpr void data_set(F&& f, std::tuple<Args...>&& tuple)
     utility::tuple_iterator(
         [&](auto i, auto&& t) {
             BOOST_TEST_MESSAGE("Performing test " << (i + 1));
-            std::apply(f, std::forward<std::decay_t<decltype(t)>>(t));
+            utility::apply(f, std::forward<std::decay_t<decltype(t)>>(t));
         },
         std::forward<std::decay_t<decltype(tuple)>>(tuple));
 }

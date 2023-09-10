@@ -95,7 +95,7 @@ template <typename Node>
                 // fold-expression, whilst removing the root entry which requires converting the
                 // pack to a tuple first
                 [[maybe_unused]] const auto append_parents = [](parsing::token_type child_token) {
-                    return std::apply(
+                    return utility::apply(
                         [&](auto... parents_without_root) {
                             return std::vector<parsing::token_type>{
                                 child_token,

@@ -133,12 +133,12 @@ BOOST_AUTO_TEST_CASE(convert_integral_to_cts_test)
     }
 }
 
-BOOST_AUTO_TEST_CASE(is_compile_time_string_like_test)
+BOOST_AUTO_TEST_CASE(is_compile_time_string_test)
 {
-    static_assert(traits::is_compile_time_string_like_v<str<"hello">>);
-    static_assert(traits::is_compile_time_string_like_v<str<"">>);
-    static_assert(!traits::is_compile_time_string_like_v<int>);
-    static_assert(!traits::is_compile_time_string_like_v<std::vector<int>>);
+    static_assert(traits::is_compile_time_string_v<str<"hello">>);
+    static_assert(traits::is_compile_time_string_v<str<"">>);
+    static_assert(!traits::is_compile_time_string_v<int>);
+    static_assert(!traits::is_compile_time_string_v<std::vector<int>>);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
