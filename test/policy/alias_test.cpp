@@ -341,6 +341,7 @@ int main() {
 #include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_count.hpp"
+#include "arg_router/tree_node.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
@@ -397,6 +398,7 @@ int main() {
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
+#include "arg_router/tree_node.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
@@ -458,6 +460,7 @@ int main() {
 #include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_count.hpp"
+#include "arg_router/tree_node.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
@@ -519,6 +522,7 @@ int main() {
 #include "arg_router/policy/alias.hpp"
 #include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
+#include "arg_router/tree_node.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
@@ -583,6 +587,7 @@ int main() {
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/policy/router.hpp"
+#include "arg_router/tree_node.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
@@ -653,6 +658,7 @@ int main() {
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/policy/router.hpp"
+#include "arg_router/tree_node.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
@@ -719,6 +725,7 @@ int main() {
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/policy/router.hpp"
+#include "arg_router/tree_node.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
@@ -787,6 +794,7 @@ int main() {
 #include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/policy/router.hpp"
 #include "arg_router/policy/short_name.hpp"
+#include "arg_router/tree_node.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
@@ -855,6 +863,7 @@ int main() {
 #include "arg_router/literals.hpp"
 #include "arg_router/policy/custom_parser.hpp"
 #include "arg_router/policy/long_name.hpp"
+#include "arg_router/tree_node.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
@@ -916,6 +925,7 @@ int main() {
 #include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_value.hpp"
+#include "arg_router/tree_node.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
@@ -976,6 +986,7 @@ int main() {
 #include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/router.hpp"
+#include "arg_router/tree_node.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
@@ -1037,6 +1048,7 @@ int main() {
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/min_max_count.hpp"
 #include "arg_router/policy/router.hpp"
+#include "arg_router/tree_node.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;

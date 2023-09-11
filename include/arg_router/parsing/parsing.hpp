@@ -65,7 +65,7 @@ template <typename T>
  * @return token_type
  */
 template <typename Node>
-[[nodiscard]] constexpr token_type node_token_type() noexcept
+[[nodiscard]] consteval token_type node_token_type() noexcept
 {
     if constexpr (traits::has_error_name_method_v<Node>) {
         return {prefix_type::none, Node::error_name()};

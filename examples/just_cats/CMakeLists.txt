@@ -7,7 +7,7 @@ create_clangformat_target(
     SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp"
 )
 
-add_executable(example_just_cats "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp")
+add_executable(example_just_cats EXCLUDE_FROM_ALL "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp")
 add_dependencies(example_just_cats clangformat_example_just_cats)
 
 target_compile_features(example_just_cats PUBLIC cxx_std_20)

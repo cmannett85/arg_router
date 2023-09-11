@@ -4,7 +4,9 @@
 
 #pragma once
 
+#include "arg_router/parsing/parsing.hpp"
 #include "arg_router/parsing/token_type.hpp"
+#include "arg_router/utility/apply.hpp"
 #include "arg_router/utility/tree_recursor.hpp"
 
 #include <numeric>
@@ -19,7 +21,8 @@ namespace arg_router::utility::utf8
  * @param b Second string
  * @return 'Distance' metric as an integer
  */
-[[nodiscard]] inline std::size_t levenshtein_distance(std::string_view a, std::string_view b)
+[[nodiscard]] inline std::size_t levenshtein_distance(std::string_view a,
+                                                      std::string_view b) noexcept
 {
     if (a.empty()) {
         return count(b);
@@ -68,7 +71,7 @@ namespace arg_router::utility::utf8
  * available children are runtime disabled
  */
 template <typename Node>
-[[nodiscard]] std::vector<parsing::token_type> closest_matching_child_node(
+[[nodiscard]] constexpr std::vector<parsing::token_type> closest_matching_child_node(
     const Node& node,
     parsing::token_type token)
 {

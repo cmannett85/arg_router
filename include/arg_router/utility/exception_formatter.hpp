@@ -60,7 +60,7 @@ class exception_formatter
     };
 
     template <typename Str, typename PHs, std::size_t Current>
-    [[nodiscard]] static constexpr auto placeholders_impl() noexcept
+    [[nodiscard]] static consteval auto placeholders_impl() noexcept
     {
         constexpr auto start = Str::get().find('{', Current);
         constexpr auto end = Str::get().find('}', Current + 1);
@@ -108,7 +108,7 @@ public:
 private:
     // Make sure there's only one greedy_token_placeholder in the string at most, and it's at the
     // end
-    [[nodiscard]] static constexpr bool placeholder_check() noexcept
+    [[nodiscard]] static consteval bool placeholder_check() noexcept
     {
         if constexpr ((std::tuple_size_v<initial_placeholders>) > 1) {
             constexpr auto greedy_count =

@@ -138,7 +138,7 @@ class zip
                   "First and Second tuples must contain the same number of elements");
 
     template <std::size_t... N>
-    [[nodiscard]] constexpr static auto zip_impl_t(
+    [[nodiscard]] consteval static auto zip_impl_t(
         std::integer_sequence<std::size_t, N...>) noexcept
         -> std::tuple<
             std::pair<std::tuple_element_t<N, First>, std::tuple_element_t<N, Second>>...>;

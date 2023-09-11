@@ -7,7 +7,7 @@ create_clangformat_target(
     SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp"
 )
 
-add_executable(example_simple_ml "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp")
+add_executable(example_simple_ml EXCLUDE_FROM_ALL "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp")
 add_dependencies(example_simple_ml clangformat_example_simple_ml)
 
 target_compile_features(example_simple_ml PUBLIC cxx_std_20)

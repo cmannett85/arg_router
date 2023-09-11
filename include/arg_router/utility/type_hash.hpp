@@ -26,7 +26,7 @@ namespace arg_router::utility
  * @return Hash code of @a T
  */
 template <typename T>
-[[nodiscard]] std::size_t type_hash() noexcept
+[[nodiscard]] constexpr std::size_t type_hash() noexcept
 {
     return reinterpret_cast<std::size_t>(&type_hash<T>);
 }

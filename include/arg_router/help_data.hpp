@@ -97,7 +97,7 @@ namespace help_data
  *  not used
  */
 template <typename Node>
-[[nodiscard]] constexpr auto value_suffix() noexcept
+[[nodiscard]] consteval auto value_suffix() noexcept
 {
     constexpr auto has_min_value = traits::has_minimum_value_method_v<Node>;
     constexpr auto has_max_value = traits::has_maximum_value_method_v<Node>;
@@ -143,7 +143,7 @@ template <typename Node>
  *  separator, or an empty string if a value separator policy is not used
  */
 template <typename Node>
-[[nodiscard]] constexpr auto value_separator_suffix() noexcept
+[[nodiscard]] consteval auto value_separator_suffix() noexcept
 {
     [[maybe_unused]] constexpr bool fixed_count_of_one = []() {
         if constexpr (traits::has_minimum_count_method_v<Node> &&
@@ -182,7 +182,7 @@ template <typename Node>
  *  string if not present
  */
 template <typename Node>
-[[nodiscard]] constexpr auto label_generator() noexcept
+[[nodiscard]] consteval auto label_generator() noexcept
 {
     using policies_type = typename Node::policies_type;
     constexpr auto num_policies = std::tuple_size_v<typename Node::policies_type>;
@@ -216,7 +216,7 @@ template <typename Node>
  *  @return Description text for string, or empty string if providing policy not present
  */
 template <typename Node>
-[[nodiscard]] constexpr auto description_generator() noexcept
+[[nodiscard]] consteval auto description_generator() noexcept
 {
     [[maybe_unused]] constexpr auto has_description =
         boost::mp11::mp_find_if<typename Node::policies_type,
@@ -234,7 +234,7 @@ template <typename Node>
  *  @return Minimum and/or maximum count suffix string
  */
 template <typename Node>
-[[nodiscard]] constexpr auto count_suffix() noexcept
+[[nodiscard]] consteval auto count_suffix() noexcept
 {
     [[maybe_unused]] constexpr bool fixed_count = []() {
         if constexpr (traits::has_minimum_count_method_v<Node> &&

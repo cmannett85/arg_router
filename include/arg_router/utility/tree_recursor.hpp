@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "arg_router/tree_node.hpp"
+#include "arg_router/tree_node_fwd.hpp"
 #include "arg_router/utility/tuple_iterator.hpp"
 
 namespace arg_router::utility
