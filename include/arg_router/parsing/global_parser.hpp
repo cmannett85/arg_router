@@ -5,10 +5,7 @@
 #pragma once
 
 #include "arg_router/exception.hpp"
-#include "arg_router/traits.hpp"
-#include "arg_router/utility/string_view_ops.hpp"
-
-#include <boost/lexical_cast/try_lexical_convert.hpp>
+#include "arg_router/utility/from_chars.hpp"
 
 namespace arg_router
 {
@@ -36,16 +33,13 @@ template <concepts::is_arithmetic T>
 struct parser<T> {
     [[nodiscard]] static T parse(std::string_view token)
     {
-        using namespace utility::string_view_ops;
-        using namespace std::string_view_literals;
-
-        auto result = T{};
-        if (!boost::conversion::try_lexical_convert(token, result)) {
+        const auto result = utility::from_chars<T>(token);
+        if (!result) {
             throw multi_lang_exception{error_code::failed_to_parse,
                                        parsing::token_type{parsing::prefix_type::none, token}};
         }
 
-        return result;
+        return *result;
     }
 };
 
@@ -58,7 +52,6 @@ template <>
 struct parser<bool> {
     [[nodiscard]] static inline bool parse(std::string_view token)
     {
-        using namespace utility::string_view_ops;
         using namespace std::string_view_literals;
 
         constexpr auto true_tokens = std::array{

@@ -75,6 +75,7 @@ path_prefixer(TEST_SRCS
     utility/compile_time_optional_test.cpp
     utility/dynamic_string_view_test.cpp
     utility/exception_formatter_test.cpp
+    utility/from_chars_test.cpp
     utility/result_test.cpp
     utility/string_to_policy_test.cpp
     utility/string_view_ops_test.cpp

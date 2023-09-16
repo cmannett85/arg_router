@@ -202,6 +202,38 @@ BOOST_AUTO_TEST_CASE(contains_whitespace_test)
     }
 }
 
+BOOST_AUTO_TEST_CASE(strip_test)
+{
+    {
+        using str = utility::str<"hello">;
+        static_assert(utf8::strip(str::get()) == "hello");
+    }
+    {
+        using str = utility::str<" hello">;
+        static_assert(utf8::strip(str::get()) == "hello");
+    }
+    {
+        using str = utility::str<"hello ">;
+        static_assert(utf8::strip(str::get()) == "hello");
+    }
+    {
+        using str = utility::str<" hello ">;
+        static_assert(utf8::strip(str::get()) == "hello");
+    }
+    {
+        using str = utility::str<" \thello ">;
+        static_assert(utf8::strip(str::get()) == "hello");
+    }
+    {
+        using str = utility::str<"hel  lo">;
+        static_assert(utf8::strip(str::get()) == "hel  lo");
+    }
+    {
+        using str = utility::str<"  hel  lo  ">;
+        static_assert(utf8::strip(str::get()) == "hel  lo");
+    }
+}
+
 BOOST_AUTO_TEST_CASE(terminal_width_test)
 {
     {

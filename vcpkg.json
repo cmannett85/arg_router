@@ -6,7 +6,6 @@
       "name": "boost-asio",
       "features": []
     },
-    "boost-lexical-cast",
     "boost-mp11",
     "boost-preprocessor",
     "boost-process",

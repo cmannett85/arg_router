@@ -123,6 +123,7 @@ path_prefixer(HEADERS
     include/arg_router/utility/compile_time_optional.hpp
     include/arg_router/utility/dynamic_string_view.hpp
     include/arg_router/utility/exception_formatter.hpp
+    include/arg_router/utility/from_chars.hpp
     include/arg_router/utility/result.hpp
     include/arg_router/utility/string_to_policy.hpp
     include/arg_router/utility/string_view_ops.hpp
@@ -153,14 +154,6 @@ if(NOT INSTALLATION_ONLY)
 endif()
 
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/library.cmake")
-
-target_sources(arg_router
-  PRIVATE
-    include/arg_router/help_data.hpp
-    include/arg_router/utility/always_true.hpp
-
-    include/arg_router/utility/apply.hpp
-)
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/package/install.cmake")
 
 if(BUILD_UNIT_TESTS_AND_EXAMPLES)

@@ -303,6 +303,45 @@ private:
     return false;
 }
 
+/** Strips any trailing or leading whitespace.
+ *
+ * @param str String to strip
+ * @return Stripped string, or @a str if no whitespace was removed or if @a str is empty
+ */
+[[nodiscard]] inline constexpr std::string_view strip(std::string_view str) noexcept
+{
+    if (str.empty()) {
+        return str;
+    }
+
+    // Leading
+    {
+        auto index = std::size_t{0};
+        auto it = code_point::iterator{str};
+        while (is_whitespace(*it)) {
+            index += (*it).size();
+            ++it;
+        }
+        str.remove_prefix(index);
+    }
+
+    // Trailing.  We can't reverse iterate so we need to iterate over the whole string to get the
+    // trailing run of non-whitespace characters
+    {
+        auto count = std::size_t{0};
+        for (auto cp : code_point::iterator::range(str)) {
+            if (is_whitespace(cp)) {
+                ++count;
+            } else {
+                count = 0;
+            }
+        }
+        str.remove_suffix(count);
+    }
+
+    return str;
+}
+
 /** Returns the terminal width (i.e. number columns) required by @a str.
  *
  * This is equivalent to https://www.cl.cam.ac.uk/~mgk25/ucs/wcwidth.c, but constexpr.
