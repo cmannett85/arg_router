@@ -108,6 +108,7 @@ add_executable(arg_router_test ${TEST_HEADERS} ${TEST_SRCS})
 add_dependencies(arg_router_test translation_arg_router_test clangformat_test arg_router)
 
 set_target_properties(arg_router_test PROPERTIES CXX_EXTENSIONS OFF)
+target_compile_definitions(arg_router PRIVATE UNIT_TEST_BUILD)
 target_compile_definitions(arg_router_test PRIVATE UNIT_TEST_BUILD)
 target_compile_features(arg_router_test PUBLIC cxx_std_20)
 

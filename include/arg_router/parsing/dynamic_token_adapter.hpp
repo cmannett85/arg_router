@@ -387,17 +387,7 @@ public:
      * @param value Value to insert
      * @return Iterator to inserted value
      */
-    iterator insert(iterator it, value_type value)
-    {
-        // Only transfer up to the element before the target position, otherwise we transfer that
-        // and then insert the new value, which isn't expected
-        transfer(it - 1);
-        auto processed_it = it.is_end() ? processed_->end() :  //
-                                          processed_->begin() + it.i_;
-
-        processed_->insert(processed_it, value);
-        return {this, it.i_};
-    }
+    iterator insert(iterator it, value_type value);
 
     /** Inserts the value in the range [ @a first, @a last ) at position @a it.
      *
@@ -425,23 +415,7 @@ public:
      * @param it Element to remove.  If one-past-the-end iterator, this method is a no-op
      * @return Element following the one removed
      */
-    iterator erase(iterator it)
-    {
-        // If the iterator is an end(), it's a no-op
-        if (it.is_end()) {
-            return it;
-        }
-
-        const auto processed_size = static_cast<iterator::difference_type>(processed_->size());
-        if (it.i_ < processed_size) {
-            processed_->erase(processed_->begin() + it.i_);
-        } else {
-            const auto offset = it.i_ - processed_size;
-            unprocessed_->erase(unprocessed_->begin() + offset);
-        }
-
-        return it;
-    }
+    iterator erase(iterator it);
 
     /** Transfer elements from the raw command line token container to processed one up to and
      * including the one represented by @a it.
@@ -449,21 +423,7 @@ public:
      * If @a it is before or within the processed container, then this is a no-op.
      * @param it Iterator, and the preceding elements too, to transfer
      */
-    void transfer(iterator it)
-    {
-        // If the iterator is an end(), then consume all the unprocessed tokens
-        if (it.is_end()) {
-            it.i_ = size() - 1;
-        }
-
-        if ((it.i_ < 0) || (it.i_ < static_cast<iterator::difference_type>(processed_->size()))) {
-            return;
-        }
-
-        const auto count = (it.i_ + 1) - processed_->size();
-        processed_->insert(processed_->end(), unprocessed_->begin(), unprocessed_->begin() + count);
-        unprocessed_->erase(unprocessed_->begin(), unprocessed_->begin() + count);
-    }
+    void transfer(iterator it);
 
 private:
     std::vector<token_type>* processed_;

@@ -33,23 +33,5 @@ namespace arg_router::multi_lang
  * @param locale_name Local name to standardise
  * @return Standardised locale name
  */
-inline std::string iso_locale(std::string_view locale_name)
-{
-    // No need to worry about UTF-8 here as the codes are required to be ASCII
-    // Start by stripping off the encoding
-    auto result = std::string{};
-    {
-        const auto pos = locale_name.find('.');
-        result = locale_name.substr(0, pos);
-    }
-
-    // Change hypens to underscores
-    for (auto& c : result) {
-        if (c == '-') {
-            c = '_';
-        }
-    }
-
-    return result;
-}
+[[nodiscard]] std::string iso_locale(std::string_view locale_name) noexcept;
 }  // namespace arg_router::multi_lang

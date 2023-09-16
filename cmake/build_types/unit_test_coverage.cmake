@@ -19,6 +19,9 @@ add_dependencies(
 
 set_target_properties(arg_router_test_coverage PROPERTIES CXX_EXTENSIONS OFF)
 target_compile_features(arg_router_test_coverage PUBLIC cxx_std_20)
+target_compile_definitions(arg_router PRIVATE
+    UNIT_TEST_BUILD
+)
 target_compile_definitions(arg_router_test_coverage PRIVATE
     UNIT_TEST_BUILD
     AR_REPO_PATH="${CMAKE_SOURCE_DIR}"

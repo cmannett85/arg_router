@@ -83,17 +83,7 @@ struct token_type {
  * @param view Processed tokens to convert
  * @return String representation of @a view
  */
-[[nodiscard]] inline std::string to_string(const std::vector<token_type>& view)
-{
-    auto str = std::string{};
-    for (auto i = 0u; i < view.size(); ++i) {
-        str += to_string(view[i]);
-        if (i != (view.size() - 1)) {
-            str += ", ";
-        }
-    }
-    return str;
-}
+[[nodiscard]] std::string to_string(const std::vector<token_type>& view);
 
 /** Analyse @a token and return a pair consisting of the prefix type and @a token stripped of the
  * token.
@@ -101,20 +91,7 @@ struct token_type {
  * @param token Token to analyse
  * @return Token type
  */
-[[nodiscard]] inline token_type get_token_type(std::string_view token)
-{
-    using namespace config;
-
-    if (token.substr(0, long_prefix.size()) == long_prefix) {
-        token.remove_prefix(long_prefix.size());
-        return {prefix_type::long_, token};
-    }
-    if (token.substr(0, short_prefix.size()) == short_prefix) {
-        token.remove_prefix(short_prefix.size());
-        return {prefix_type::short_, token};
-    }
-    return {prefix_type::none, token};
-}
+[[nodiscard]] token_type get_token_type(std::string_view token);
 
 /** Overload that uses the naming policies of @a node to control the output.
  *
@@ -125,8 +102,7 @@ struct token_type {
  * @return Token type
  */
 template <typename Node>
-[[nodiscard]] inline token_type get_token_type([[maybe_unused]] const Node& node,
-                                               std::string_view token)
+[[nodiscard]] token_type get_token_type([[maybe_unused]] const Node& node, std::string_view token)
 {
     using namespace config;
 

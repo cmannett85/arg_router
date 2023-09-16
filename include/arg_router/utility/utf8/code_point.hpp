@@ -123,7 +123,7 @@ private:
  * @param str Input string
  * @return Number of code points
  */
-[[nodiscard]] inline constexpr std::size_t count(std::string_view str) noexcept
+[[nodiscard]] constexpr std::size_t count(std::string_view str) noexcept
 {
     // Only the leading code point byte (applies to ASCII too) will not lead with 0x80
     constexpr auto high_2_bit_mask = std::uint8_t{0xC0};
@@ -142,7 +142,7 @@ private:
  * @param str Input string
  * @return Size in bytes, zero if @a str is empty
  */
-[[nodiscard]] inline constexpr std::size_t size(std::string_view str) noexcept
+[[nodiscard]] constexpr std::size_t size(std::string_view str) noexcept
 {
     if (str.empty()) {
         return 0;
@@ -178,7 +178,7 @@ private:
  * @return Number, or empty optional if @a str is empty or there are not enough bytes in @a str to
  * read the entire code point
  */
-[[nodiscard]] inline constexpr std::optional<type> decode(std::string_view str) noexcept
+[[nodiscard]] constexpr std::optional<type> decode(std::string_view str) noexcept
 {
     const auto bytes_to_read = size(str);
     if (bytes_to_read == 0) {

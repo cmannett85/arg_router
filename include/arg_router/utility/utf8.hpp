@@ -266,7 +266,7 @@ private:
  * @param str Input string
  * @return Number of grapheme clusters
  */
-[[nodiscard]] inline constexpr std::size_t count(std::string_view str) noexcept
+[[nodiscard]] constexpr std::size_t count(std::string_view str) noexcept
 {
     return std::distance(iterator(str), iterator());
 }
@@ -277,7 +277,7 @@ private:
  * @return True if whitespace, also false if @a str is empty or there are not enough bytes in @a str
  * to read the entire code point
  */
-[[nodiscard]] inline constexpr bool is_whitespace(std::string_view str) noexcept
+[[nodiscard]] constexpr bool is_whitespace(std::string_view str) noexcept
 {
     const auto cp = code_point::decode(str);
     if (!cp) {
@@ -292,7 +292,7 @@ private:
  * @param str Input string
  * @return True if whitespace is present
  */
-[[nodiscard]] inline constexpr bool contains_whitespace(std::string_view str) noexcept
+[[nodiscard]] constexpr bool contains_whitespace(std::string_view str) noexcept
 {
     for (auto cp : code_point::iterator::range(str)) {
         if (is_whitespace(cp)) {
@@ -308,7 +308,7 @@ private:
  * @param str String to strip
  * @return Stripped string, or @a str if no whitespace was removed or if @a str is empty
  */
-[[nodiscard]] inline constexpr std::string_view strip(std::string_view str) noexcept
+[[nodiscard]] constexpr std::string_view strip(std::string_view str) noexcept
 {
     if (str.empty()) {
         return str;
@@ -348,7 +348,7 @@ private:
  * @param str Input string
  * @return Terminal width
  */
-[[nodiscard]] inline constexpr std::size_t terminal_width(std::string_view str) noexcept
+[[nodiscard]] constexpr std::size_t terminal_width(std::string_view str) noexcept
 {
     auto width = std::size_t{0};
     for (auto cp_str : code_point::iterator::range(str)) {

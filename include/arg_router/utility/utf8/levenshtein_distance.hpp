@@ -21,44 +21,7 @@ namespace arg_router::utility::utf8
  * @param b Second string
  * @return 'Distance' metric as an integer
  */
-[[nodiscard]] inline std::size_t levenshtein_distance(std::string_view a,
-                                                      std::string_view b) noexcept
-{
-    if (a.empty()) {
-        return count(b);
-    }
-    if (b.empty()) {
-        return count(a);
-    }
-
-    const auto n = count(b);
-
-    auto costs = std::vector<std::size_t>(n + 1);
-    std::iota(costs.begin(), costs.end(), 0);
-
-    auto i = std::size_t{0};
-    for (auto c1 : iterator::range(a)) {
-        costs[0] = i + 1;
-        auto corner = i;
-
-        auto j = std::size_t{0};
-        for (auto c2 : iterator::range(b)) {
-            const auto upper = costs[j + 1];
-            if (c1 == c2) {
-                costs[j + 1] = corner;
-            } else {
-                auto t = std::min(upper, corner);
-                costs[j + 1] = std::min(costs[j], t) + 1;
-            }
-
-            corner = upper;
-            ++j;
-        }
-        ++i;
-    }
-
-    return costs[n];
-}
+[[nodiscard]] std::size_t levenshtein_distance(std::string_view a, std::string_view b) noexcept;
 
 /** Uses the Levenshtein distance algorithm to find the closest matching child node to the given
  * token, and it's parents (if any).
@@ -71,7 +34,7 @@ namespace arg_router::utility::utf8
  * available children are runtime disabled
  */
 template <typename Node>
-[[nodiscard]] constexpr std::vector<parsing::token_type> closest_matching_child_node(
+[[nodiscard]] std::vector<parsing::token_type> closest_matching_child_node(
     const Node& node,
     parsing::token_type token)
 {

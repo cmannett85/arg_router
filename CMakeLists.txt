@@ -4,24 +4,16 @@
 
 cmake_minimum_required(VERSION 3.18)
 
-include(CMakeDependentOption)
-
-option(INSTALLATION_ONLY "Just 'build' for installation" OFF)
-cmake_dependent_option(BUILD_UNIT_TESTS_AND_EXAMPLES "Build the unit tests and examples" ON
-                       "NOT INSTALLATION_ONLY" OFF)
-cmake_dependent_option(BUILD_EXAMPLES "Build the examples" ON
-                       "BUILD_UNIT_TESTS_AND_EXAMPLES" OFF)
-cmake_dependent_option(ENABLE_CLANG_TIDY "Enable clang-tidy warnings for unit tests and examples" OFF
-                      "NOT INSTALLATION_ONLY" OFF)
-cmake_dependent_option(ENABLE_SANITIZERS "Enable ASan/UBSan for unit tests and examples" OFF
-                       "NOT INSTALLATION_ONLY" OFF)
-cmake_dependent_option(DISABLE_VCPKG "Disable vcpkg, use system libraries" OFF
-                       "NOT INSTALLATION_ONLY" OFF)
+option(BUILD_STATIC "Build a static library, otherwise shared" ON)
+option(BUILD_UNIT_TESTS_AND_EXAMPLES "Build the unit tests and examples" ON)
 option(ENABLE_CLANG_FORMAT_CHECKS "Enable clang-format checks, fails build in case of formatting error" OFF)
+option(ENABLE_CLANG_TIDY "Enable clang-tidy warnings for unit tests and examples" OFF)
+option(ENABLE_SANITIZERS "Enable ASan/UBSan for unit tests and examples" OFF)
+option(DISABLE_VCPKG "Disable vcpkg, use system libraries" OFF)
 
 # Use the libraries brought in from vcpkg rather than the system ones, unless overridden
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/path_prefixer.cmake")
-if((NOT INSTALLATION_ONLY) AND (NOT DISABLE_VCPKG))
+if(NOT DISABLE_VCPKG)
     path_prefixer(CMAKE_TOOLCHAIN_FILE external/vcpkg/scripts/buildsystems/vcpkg.cmake)
 endif()
 
@@ -38,18 +30,15 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" OR CMAKE_CXX_COMPILER_FRONTEND_VARIANT 
 endif()
 
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/documentation.cmake")
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/versioning/version.cmake")
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/copyright_checker.cmake")
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.cmake")
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/clang-tidy.cmake")
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/sanitizers.cmake")
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/ccache.cmake")
 
 set(BOOST_VERSION 1.74)
-if(NOT INSTALLATION_ONLY)
-    include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/versioning/version.cmake")
-    include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/copyright_checker.cmake")
-    include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.cmake")
-    include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/clang-tidy.cmake")
-    include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/sanitizers.cmake")
-    include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/ccache.cmake")
-
-    find_package(Boost ${BOOST_VERSION} REQUIRED)
-endif()
+find_package(Boost ${BOOST_VERSION} REQUIRED)
 
 path_prefixer(HEADERS
     include/arg_router/algorithm.hpp
@@ -140,8 +129,16 @@ path_prefixer(HEADERS
     include/arg_router/utility/utf8/line_break.hpp
     include/arg_router/utility/utf8/whitespace.hpp
     include/arg_router/utility/utf8/zero_width.hpp
-    include/arg_router/utility/win_api.hpp
     include/arg_router/version.hpp
+)
+
+path_prefixer(SOURCES
+    src/multi_lang/iso_locale.cpp
+    src/parsing/dynamic_token_adapter.cpp
+    src/parsing/global_parser.cpp
+    src/parsing/token_type.cpp
+    src/utility/terminal.cpp
+    src/utility/utf8/levenshtein_distance.cpp
 )
 
 if(NOT INSTALLATION_ONLY)
@@ -149,7 +146,7 @@ if(NOT INSTALLATION_ONLY)
     create_clangformat_target(
         NAME clangformat
         FORMAT_FILE ${CMAKE_SOURCE_DIR}/.clang-format
-        SOURCES ${HEADERS}
+        SOURCES ${HEADERS} ${SOURCES}
     )
 endif()
 

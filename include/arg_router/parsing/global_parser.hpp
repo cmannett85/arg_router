@@ -50,42 +50,7 @@ struct parser<T> {
 
 template <>
 struct parser<bool> {
-    [[nodiscard]] static inline bool parse(std::string_view token)
-    {
-        using namespace std::string_view_literals;
-
-        constexpr auto true_tokens = std::array{
-            "true"sv,
-            "yes"sv,
-            "y"sv,
-            "on"sv,
-            "1"sv,
-            "enable"sv,
-        };
-
-        constexpr auto false_tokens = std::array{
-            "false"sv,
-            "no"sv,
-            "n"sv,
-            "off"sv,
-            "0"sv,
-            "disable"sv,
-        };
-
-        const auto match = [&](const auto& list) {
-            return std::find(list.begin(), list.end(), token) != list.end();
-        };
-
-        if (match(true_tokens)) {
-            return true;
-        }
-        if (match(false_tokens)) {
-            return false;
-        }
-
-        throw multi_lang_exception{error_code::failed_to_parse,
-                                   parsing::token_type{parsing::prefix_type::none, token}};
-    }
+    [[nodiscard]] static bool parse(std::string_view token);
 };
 
 template <typename T>

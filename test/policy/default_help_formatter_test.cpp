@@ -20,8 +20,6 @@ using namespace arg_router;
 using namespace arg_router::literals;
 using namespace std::string_literals;
 
-std::size_t utility::terminal::test_columns_value = 80;
-
 namespace
 {
 template <typename... Params>
@@ -48,6 +46,8 @@ BOOST_AUTO_TEST_CASE(is_policy_test)
 
 BOOST_AUTO_TEST_CASE(generate_help_test)
 {
+    utility::terminal::test_columns_value() = 80;
+
     auto f = [](const auto& root, auto help_index, auto flatten, const auto& expected_result) {
         using root_type = std::decay_t<decltype(root)>;
         using help_type = std::tuple_element_t<help_index, typename root_type::children_type>;
@@ -433,7 +433,7 @@ My foo is good for you
 BOOST_AUTO_TEST_CASE(generate_help_terminal_width_test)
 {
     auto f = [](const auto& root, auto help_index, auto term_width, const auto& expected_result) {
-        utility::terminal::test_columns_value = term_width;
+        utility::terminal::test_columns_value() = term_width;
 
         using root_type = std::decay_t<decltype(root)>;
         using help_type = std::tuple_element_t<help_index, typename root_type::children_type>;
@@ -447,7 +447,7 @@ BOOST_AUTO_TEST_CASE(generate_help_terminal_width_test)
     };
 
     // Save the default value...
-    const auto default_test_columns_value = utility::terminal::test_columns_value;
+    const auto default_test_columns_value = utility::terminal::test_columns_value();
 
     test::data_set(
         f,
@@ -509,7 +509,7 @@ My foo is good for you
         });
 
     // ... And then reinstate so we don't break later tests
-    utility::terminal::test_columns_value = default_test_columns_value;
+    utility::terminal::test_columns_value() = default_test_columns_value;
 }
 
 BOOST_AUTO_TEST_CASE(death_test)
