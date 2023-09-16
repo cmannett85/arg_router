@@ -46,10 +46,10 @@ template <concepts::is_arithmetic T>
     auto result = T{};
     auto ec = std::errc{};
     if constexpr (std::is_integral_v<T>) {
-        ec = std::from_chars(str.begin(), str.end(), result, is_hex ? 16 : 10).ec;
+        ec = std::from_chars(str.data(), str.data() + str.size(), result, is_hex ? 16 : 10).ec;
     } else {
-        ec = std::from_chars(str.begin(),
-                             str.end(),
+        ec = std::from_chars(str.data(),
+                             str.data() + str.size(),
                              result,
                              is_hex ? std::chars_format::hex : std::chars_format::general)
                  .ec;
