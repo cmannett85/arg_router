@@ -21,27 +21,27 @@ template <std::size_t N>
 class compile_time_string_storage
 {
 public:
-    constexpr compile_time_string_storage() = default;
+    consteval compile_time_string_storage() = default;
 
     // We need all the constructors to support implicit conversion, because that's kind of the
     // point of this class...
     // NOLINTNEXTLINE(google-explicit-constructor,hicpp-explicit-conversions)
-    constexpr compile_time_string_storage(std::array<char, N> str) : value(str) {}
+    consteval compile_time_string_storage(std::array<char, N> str) : value(str) {}
 
     // NOLINTNEXTLINE(google-explicit-constructor,hicpp-explicit-conversions)
-    constexpr compile_time_string_storage(std::span<const char, N> str)
+    consteval compile_time_string_storage(std::span<const char, N> str)
     {
         std::copy(str.begin(), str.end(), value.begin());
     }
 
     // NOLINTNEXTLINE(google-explicit-constructor,hicpp-explicit-conversions,*-c-arrays)
-    constexpr compile_time_string_storage(const char (&str)[N])
+    consteval compile_time_string_storage(const char (&str)[N])
     {
         std::copy_n(&str[0], N, value.begin());
     }
 
     // NOLINTNEXTLINE(google-explicit-constructor,hicpp-explicit-conversions)
-    constexpr compile_time_string_storage(char c) : value{c} {}
+    consteval compile_time_string_storage(char c) : value{c} {}
 
     std::array<char, N> value = {};
 };
@@ -73,19 +73,19 @@ public:
      *
      * @return String size
      */
-    [[nodiscard]] constexpr static std::size_t size() noexcept { return size_; }
+    [[nodiscard]] consteval static std::size_t size() noexcept { return size_; }
 
     /** True if string is empty.
      *
      * @return True if number of characters is zero
      */
-    [[nodiscard]] constexpr static bool empty() noexcept { return size() == 0; }
+    [[nodiscard]] consteval static bool empty() noexcept { return size() == 0; }
 
     /** Returns the string data as a view.
      *
      * @return View of the string data
      */
-    [[nodiscard]] constexpr static std::string_view get() noexcept
+    [[nodiscard]] consteval static std::string_view get() noexcept
     {
         return {S.value.data(), size()};
     }
@@ -97,7 +97,7 @@ public:
      * @return New instance
      */
     template <detail::compile_time_string_storage S2>
-    [[nodiscard]] constexpr auto operator+([[maybe_unused]] const str<S2>& other) const noexcept
+    [[nodiscard]] consteval auto operator+([[maybe_unused]] const str<S2>& other) const noexcept
     {
         return []<std::size_t... LIs, std::size_t... RIs>(std::index_sequence<LIs...>,
                                                           std::index_sequence<RIs...>)
@@ -115,7 +115,7 @@ public:
      * @return Substring
      */
     template <std::size_t Pos, std::size_t Count>
-    [[nodiscard]] constexpr static auto substr() noexcept
+    [[nodiscard]] consteval static auto substr() noexcept
     {
         static_assert((Pos + Count) < size_, "Pos+Count must be less than string size");
 
@@ -156,7 +156,7 @@ private:
     }
 
     template <std::size_t Pos, std::size_t... Is>
-    constexpr static auto substr_impl([[maybe_unused]] std::index_sequence<Is...> seq)
+    consteval static auto substr_impl([[maybe_unused]] std::index_sequence<Is...> seq)
     {
         return str<std::array{S.value[Pos + Is]..., '\0'}>{};
     }
@@ -182,7 +182,7 @@ private:
     static_assert(std::is_integral_v<decltype(Value)>, "Value must be an integral");
 
     template <typename Str, auto NewValue>
-    [[nodiscard]] constexpr static auto build() noexcept
+    [[nodiscard]] consteval static auto build() noexcept
     {
         constexpr auto num_digits = math::num_digits(NewValue);
         constexpr auto power10 = math::pow<10>(num_digits - 1);

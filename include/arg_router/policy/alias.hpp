@@ -5,6 +5,7 @@
 #pragma once
 
 #include "arg_router/algorithm.hpp"
+#include "arg_router/parsing/parsing.hpp"
 #include "arg_router/policy/no_result_value.hpp"
 #include "arg_router/policy/policy.hpp"
 #include "arg_router/utility/compile_time_optional.hpp"
@@ -167,7 +168,7 @@ private:
                   "All parameters must provide a long and/or short form name");
 
     template <typename NodeType>
-    [[nodiscard]] constexpr static std::size_t node_fixed_count() noexcept
+    [[nodiscard]] consteval static std::size_t node_fixed_count() noexcept
     {
         static_assert(traits::has_minimum_count_method_v<NodeType> &&
                           traits::has_maximum_count_method_v<NodeType>,
@@ -241,7 +242,7 @@ private:
     };
 
     template <std::size_t Count, typename TargetsTuple>
-    constexpr static void check_target_counts() noexcept
+    consteval static void check_target_counts() noexcept
     {
         utility::tuple_type_iterator<TargetsTuple>([](auto i) {
             using target_type = std::tuple_element_t<i, TargetsTuple>;

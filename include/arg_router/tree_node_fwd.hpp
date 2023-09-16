@@ -20,9 +20,9 @@ template <typename T>
 struct is_tree_node {
 private:
     template <typename... Ts>
-    constexpr static std::true_type test(const tree_node<Ts...>*);
+    consteval static std::true_type test(const tree_node<Ts...>*);
 
-    constexpr static std::false_type test(...);
+    consteval static std::false_type test(...);
 
 public:
     // NOLINTNEXTLINE(hicpp-vararg)

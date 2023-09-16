@@ -6,7 +6,7 @@
 #include "arg_router/literals.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/router.hpp"
-#include "arg_router/utility/compile_time_string.hpp"
+#include "arg_router/tree_node.hpp"
 
 #include "test_helpers.hpp"
 #include "test_printers.hpp"
@@ -253,6 +253,7 @@ int main() {
 #include "arg_router/literals.hpp"
 #include "arg_router/policy/dependent.hpp"
 #include "arg_router/policy/long_name.hpp"
+#include "arg_router/tree_node.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
@@ -308,6 +309,7 @@ int main() {
 #include "arg_router/literals.hpp"
 #include "arg_router/policy/dependent.hpp"
 #include "arg_router/policy/long_name.hpp"
+#include "arg_router/tree_node.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
@@ -371,6 +373,7 @@ int main() {
 #include "arg_router/policy/dependent.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/router.hpp"
+#include "arg_router/tree_node.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
@@ -434,6 +437,7 @@ int main() {
 #include "arg_router/policy/dependent.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/router.hpp"
+#include "arg_router/tree_node.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
@@ -500,6 +504,7 @@ int main() {
 #include "arg_router/policy/dependent.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/router.hpp"
+#include "arg_router/tree_node.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
@@ -564,6 +569,7 @@ int main() {
 #include "arg_router/policy/dependent.hpp"
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/router.hpp"
+#include "arg_router/tree_node.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;
@@ -630,6 +636,7 @@ int main() {
 #include "arg_router/policy/long_name.hpp"
 #include "arg_router/policy/router.hpp"
 #include "arg_router/policy/short_name.hpp"
+#include "arg_router/tree_node.hpp"
 #include "arg_router/utility/compile_time_string.hpp"
 
 using namespace arg_router;

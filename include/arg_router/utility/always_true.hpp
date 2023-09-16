@@ -15,7 +15,7 @@ struct always_true {
      * @return True
      */
     template <typename... T>
-    bool operator()([[maybe_unused]] T&&... args) const noexcept
+    constexpr bool operator()([[maybe_unused]] T&&... args) const noexcept
     {
         return true;
     }

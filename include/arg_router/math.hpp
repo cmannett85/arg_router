@@ -17,7 +17,7 @@ namespace arg_router::math
  * @return Absolute value
  */
 template <typename T>
-[[nodiscard]] constexpr T abs(T value) noexcept
+[[nodiscard]] consteval T abs(T value) noexcept
 {
     static_assert(std::is_integral_v<T>, "T must be an integral");
     if constexpr (std::is_signed_v<T>) {
@@ -35,7 +35,7 @@ template <typename T>
  * @return Number of digits.
  */
 template <typename T>
-[[nodiscard]] constexpr T num_digits(T value) noexcept
+[[nodiscard]] consteval T num_digits(T value) noexcept
 {
     static_assert(std::is_integral_v<T>, "T must be an integral");
 
@@ -59,7 +59,7 @@ template <typename T>
  * @return @a Base raised to the power @a exp
  */
 template <auto Base, typename T>
-[[nodiscard]] constexpr T pow(T exp) noexcept
+[[nodiscard]] consteval T pow(T exp) noexcept
 {
     static_assert(std::is_integral_v<T>, "T must be an integral");
     static_assert(Base > 0, "Base must be greater than zero");
