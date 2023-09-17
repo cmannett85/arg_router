@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <cstddef>
 
 /** Namespace for terminal utilities. */
 namespace arg_router::utility::terminal

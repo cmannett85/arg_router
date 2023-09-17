@@ -9,7 +9,9 @@ endif()
 
 add_library(arg_router ${LIBRARY_TYPE} ${HEADERS} ${SOURCES})
 
-set_target_properties(arg_router PROPERTIES CXX_EXTENSIONS OFF)
+set_target_properties(arg_router PROPERTIES
+    CXX_EXTENSIONS OFF
+    MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>$<$<NOT:$<BOOL:${BUILD_STATIC}>>:DLL>")
 target_compile_features(arg_router PUBLIC cxx_std_20)
 
 target_link_libraries(arg_router PUBLIC

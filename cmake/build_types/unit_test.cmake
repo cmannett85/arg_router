@@ -122,8 +122,8 @@ function(configure_test_build TARGET)
         set(EXTRA_DEFINES NOMINMAX WIN32_LEAN_AND_MEAN BOOST_USE_WINDOWS_H _CRT_SECURE_NO_WARNINGS)
 
         # /MT by default as it simplifies the running of the unit tests
-        set_property(TARGET ${TARGET} PROPERTY
-                     MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+        set_target_properties(${TARGET} PROPERTIES
+            MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>$<$<NOT:$<BOOL:${BUILD_STATIC}>>:DLL>")
 
         if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
             set(EXTRA_FLAGS ${EXTRA_FLAGS} /clang:-fconstexpr-steps=10000000)
