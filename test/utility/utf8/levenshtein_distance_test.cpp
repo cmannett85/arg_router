@@ -50,19 +50,16 @@ BOOST_AUTO_TEST_CASE(levenshtein_distance_test)
         BOOST_CHECK_EQUAL(result, expected);
     };
 
-    test::data_set(f,
-                   {
-                       std::tuple{"cat", "dog", 3},
-                       std::tuple{"hello", "world", 4},
-                       std::tuple{"", "abc", 3},
-                       std::tuple{"abcd", "", 4},
-                       std::tuple{"こんにちは", "hello", 5},
-                       std::tuple{"こんにちは", "こんにち", 1},
-                       std::tuple{"こんにち", "こんにちは", 1},
-                       std::tuple{"🇬🇧🇦🇹🇮🇪", "🇬🇧🇮🇹🇮🇪", 1},
-                       std::tuple{"क़m̃🙂b🇦🇬Δ猫", "क़m̃🙂b🇦🇬ち", 2},
-                       std::tuple{"क़m̃abcΔ猫", "क़m̃🙂b🇦🇬Δ猫", 2},
-                   });
+    test::data_set(f, {
+        std::tuple{"cat", "dog", 3}, std::tuple{"hello", "world", 4}, std::tuple{"", "abc", 3},
+            std::tuple{"abcd", "", 4},
+#if AR_ENABLE_UTF8_SUPPORT == 1
+            std::tuple{"こんにちは", "hello", 5}, std::tuple{"こんにちは", "こんにち", 1},
+            std::tuple{"こんにち", "こんにちは", 1}, std::tuple{"🇬🇧🇦🇹🇮🇪", "🇬🇧🇮🇹🇮🇪", 1},
+            std::tuple{"क़m̃🙂b🇦🇬Δ猫", "क़m̃🙂b🇦🇬ち", 2},
+            std::tuple{"क़m̃abcΔ猫", "क़m̃🙂b🇦🇬Δ猫", 2},
+#endif
+    });
 }
 
 BOOST_AUTO_TEST_CASE(closest_matching_child_node_test)

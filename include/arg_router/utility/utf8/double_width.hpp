@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -15,6 +15,7 @@ namespace arg_router::utility::utf8
  * This table is generated using scripts/unicode_table_generators.py from
  * http://www.unicode.org/Public/UNIDATA/EastAsianWidth.txt v14.0.0.
  */
+#if AR_ENABLE_UTF8_SUPPORT == 1
 constexpr auto double_width_table = std::array<code_point::range, 281>{{
     {0x001100, 0x00115F}, {0x00231A, 0x00231B}, {0x002329, 0x002329}, {0x00232A, 0x00232A},
     {0x0023E9, 0x0023EC}, {0x0023F0, 0x0023F0}, {0x0023F3, 0x0023F3}, {0x0025FD, 0x0025FE},
@@ -88,4 +89,7 @@ constexpr auto double_width_table = std::array<code_point::range, 281>{{
     {0x02F800, 0x02FA1D}, {0x02FA1E, 0x02FA1F}, {0x02FA20, 0x02FFFD}, {0x030000, 0x03134A},
     {0x03134B, 0x03FFFD},
 }};
+#else
+constexpr auto double_width_table = std::array<code_point::range, 0>{};
+#endif
 }  // namespace arg_router::utility::utf8

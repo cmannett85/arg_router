@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright (C) 2022 by Camden Mannett.
+# Copyright (C) 2022-2023 by Camden Mannett.
 # Distributed under the Boost Software License, Version 1.0.
 # (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -8,6 +8,7 @@ from io import StringIO
 from enum import Enum, unique
 import re
 import requests
+import argparse
 
 RANGE_DIVIDER = '..'
 COMMENT = '#'
@@ -36,6 +37,7 @@ class GraphemeClusterBreak(Enum):
 @unique
 class LineBreak(Enum):
     # Any = 0, not used in the script but is in the C++
+    # v14.0.0
     AL = 1
     BA = 2
     BB = 3
@@ -74,24 +76,16 @@ class LineBreak(Enum):
     WJ = 36
     ZW = 37
     ZWJ = 38
+    # v15.1.0
+    AK = 39
+    AP = 40
+    AS = 41
+    VI = 42
+    VF = 43
 
 
 def download(url):
     return requests.get(url).text
-
-
-def extract_version(content):
-    line_end = content.find('\n')
-    if line_end == -1:
-        raise RuntimeError('Cannot find first line')
-
-    line = content[0:line_end]
-    rc = re.compile(r'\d+\.\d+\.\d+')
-    version = rc.search(line)
-    if version is None:
-        raise RuntimeError('Cannot find version')
-
-    print('\tVersion: {}'.format(version.group(0)))
 
 
 def get_abbreviation(line):
@@ -120,7 +114,19 @@ def create_range(line):
         return [start, end]
 
 
-def extract_code_points(abbrvs, content):
+def limit_to_ascii(start, end, ascii_only):
+    if not ascii_only:
+        return [start, end]
+
+    if end <= 0x7f:
+        return [start, end]
+    elif start > 0x7f:
+        return []
+    else:
+        return [start, 0x7f]
+
+
+def extract_code_points(abbrvs, content, ascii_only):
     # For each line split take the section between the semicolon and comment
     # start, and remove trailing whitespace.  This will give just the type
     # abbreviation
@@ -137,17 +143,17 @@ def extract_code_points(abbrvs, content):
         range_split = line.find(RANGE_DIVIDER)
         if range_split == -1:
             start = int(line, 16)
-            result.append([start, start])
+            result.append(limit_to_ascii(start, start, ascii_only))
         else:
             start = int(line[0:range_split], 16)
             end = int(line[range_split+len(RANGE_DIVIDER):], 16)
-            result.append([start, end])
+            result.append(limit_to_ascii(start, end, ascii_only))
 
     return result
 
 
 def sort_code_points(cps):
-    return sorted(cps, key=lambda cp_range: cp_range[0])
+    return sorted([rng for rng in cps if len(rng) > 1], key=lambda cp_range: cp_range[0])
 
 
 def print_code_points(cps):
@@ -161,11 +167,10 @@ def print_code_points(cps):
                 cp_range[0], cp_range[1]))
 
 
-def run(url, abbrvs, varname):
+def run(url, abbrvs, varname, ascii_only):
     print('\tURL: {}'.format(url))
     contents = download(url)
-    extract_version(contents)
-    cps = extract_code_points(abbrvs, contents)
+    cps = extract_code_points(abbrvs, contents, ascii_only)
     cps = sort_code_points(cps)
     print('constexpr auto {} = std::array<code_point::range, {}>{{{{'.format(
         varname, len(cps)))
@@ -173,13 +178,11 @@ def run(url, abbrvs, varname):
     print('}};')
 
 
-def run_grapheme_cluster_break():
+def run_grapheme_cluster_break(version, ascii_only):
     # First grab all the break properties
-    url = 'https://www.unicode.org/Public/UCD/latest/ucd/auxiliary/' \
-          'GraphemeBreakProperty.txt'
+    url = f'https://www.unicode.org/Public/{version}/ucd/auxiliary/GraphemeBreakProperty.txt'
     print('\tURL: {}'.format(url))
     contents = download(url)
-    extract_version(contents)
 
     result = []
     for line in StringIO(contents):
@@ -206,18 +209,17 @@ def run_grapheme_cluster_break():
         range_split = line.find(RANGE_DIVIDER)
         if range_split == -1:
             start = int(line, 16)
-            result.append([start, start, abbrv_value.value[0]])
+            result.append(limit_to_ascii(start, start, ascii_only) + [abbrv_value.value[0]])
         else:
             start = int(line[0:range_split], 16)
             end = int(line[range_split+len(RANGE_DIVIDER):], 16)
-            result.append([start, end, abbrv_value.value[0]])
+            result.append(limit_to_ascii(start, end, ascii_only) + [abbrv_value.value[0]])
 
     # Unfortuantely this doesn't include extended pictographic, so get that
     # separately
-    url = 'https://www.unicode.org/Public/14.0.0/ucd/emoji/emoji-data.txt'
+    url = f'https://www.unicode.org/Public/{version}/ucd/emoji/emoji-data.txt'
     print('\tURL: {}'.format(url))
     contents = download(url)
-    extract_version(contents)
 
     for line in StringIO(contents):
         line = line.strip()
@@ -239,11 +241,11 @@ def run_grapheme_cluster_break():
         range_split = line.find(RANGE_DIVIDER)
         if range_split == -1:
             start = int(line, 16)
-            result.append([start, start, abbrv_value.value[0]])
+            result.append(limit_to_ascii(start, start, ascii_only) + [abbrv_value.value[0]])
         else:
             start = int(line[0:range_split], 16)
             end = int(line[range_split+len(RANGE_DIVIDER):], 16)
-            result.append([start, end, abbrv_value.value[0]])
+            result.append(limit_to_ascii(start, end, ascii_only) + [abbrv_value.value[0]])
 
     cps = sort_code_points(result)
     print('constexpr auto grapheme_cluster_break_table = '
@@ -252,12 +254,11 @@ def run_grapheme_cluster_break():
     print('}};')
 
 
-def line_break():
+def line_break(version, ascii_only):
     # First grab all the break properties
-    url = 'https://www.unicode.org/Public/UCD/latest/ucd/LineBreak.txt'
+    url = f'https://www.unicode.org/Public/{version}/ucd/LineBreak.txt'
     print('\tURL: {}'.format(url))
     contents = download(url)
-    extract_version(contents)
 
     result = []
     for line in StringIO(contents):
@@ -271,8 +272,7 @@ def line_break():
 
         # Some values need resolving manually because they map to different classes
         abbrv_value = None
-        if abbrv == 'AI' or abbrv == 'SG' or \
-                abbrv == 'XX':
+        if abbrv == 'AI' or abbrv == 'SG' or abbrv == 'XX':
             abbrv_value = LineBreak.AL
         elif abbrv == 'CJ':
             abbrv_value = LineBreak.NS
@@ -303,11 +303,11 @@ def line_break():
         range_split = line.find(RANGE_DIVIDER)
         if range_split == -1:
             start = int(line, 16)
-            result.append([start, start, abbrv_value.value])
+            result.append(limit_to_ascii(start, start, ascii_only) + [abbrv_value.value])
         else:
             start = int(line[0:range_split], 16)
             end = int(line[range_split+len(RANGE_DIVIDER):], 16)
-            result.append([start, end, abbrv_value.value])
+            result.append(limit_to_ascii(start, end, ascii_only) + [abbrv_value.value])
 
     cps = sort_code_points(result)
     print('constexpr auto line_break_table = std::array<code_point::range, {}>{{{{'.format(len(cps)))
@@ -316,26 +316,37 @@ def line_break():
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Generates the Unicode tables for arg_router')
+    parser.add_argument('--unicode-version', default='latest')
+    parser.add_argument('--ascii-only', action='store_true')
+    args = parser.parse_args()
+
+    version = args.unicode_version
+    if version == 'latest':
+        version = 'UCD/latest'
+
     print('Whitespace:')
-    run('http://www.unicode.org/Public/UNIDATA/PropList.txt',
+    run(f'http://www.unicode.org/Public/{version}/ucd/PropList.txt',
         ['White_Space'],
-        'whitespace_table')
+        'whitespace_table',
+        args.ascii_only)
 
     print('\nDouble width:')
-    run('http://www.unicode.org/Public/UNIDATA/EastAsianWidth.txt',
+    run(f'http://www.unicode.org/Public/{version}/ucd/EastAsianWidth.txt',
         ['W', 'F'],
-        'double_width_table')
+        'double_width_table',
+        args.ascii_only)
 
     print('\nZero width:')
-    run('http://www.unicode.org/Public/UNIDATA/extracted/'
-        'DerivedGeneralCategory.txt',
+    run(f'http://www.unicode.org/Public/{version}/ucd/extracted/DerivedGeneralCategory.txt',
         ['Mn', 'Me'],
-        'zero_width_table')
+        'zero_width_table',
+        args.ascii_only)
 
     # The following property tables are done separately as they are a different structure to the
     # others
     print('\nGrapheme cluster break table')
-    run_grapheme_cluster_break()
+    run_grapheme_cluster_break(version, args.ascii_only)
 
     print('\nLine break table')
-    line_break()
+    line_break(version, args.ascii_only)

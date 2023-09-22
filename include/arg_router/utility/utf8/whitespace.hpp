@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -15,6 +15,7 @@ namespace arg_router::utility::utf8
  * This table is generated using scripts/unicode_table_generators.py from
  * http://www.unicode.org/Public/UNIDATA/PropList.txt v14.0.0.
  */
+#if AR_ENABLE_UTF8_SUPPORT == 1
 constexpr auto whitespace_table = std::array<code_point::range, 11>{{
     {0x000009, 0x00000D},
     {0x000020, 0x000020},
@@ -28,4 +29,10 @@ constexpr auto whitespace_table = std::array<code_point::range, 11>{{
     {0x00205F, 0x00205F},
     {0x003000, 0x003000},
 }};
+#else
+constexpr auto whitespace_table = std::array<code_point::range, 2>{{
+    {0x000009, 0x00000D},
+    {0x000020, 0x000020},
+}};
+#endif
 }  // namespace arg_router::utility::utf8
