@@ -24,6 +24,10 @@
 #    define AR_UTF8_TRAILING_WINDOW_SIZE 16
 #endif
 
+#ifndef AR_ENABLE_UTF8_SUPPORT
+#    define AR_ENABLE_UTF8_SUPPORT 1
+#endif
+
 #include "arg_router/utility/utf8.hpp"
 
 /** Build configuration-defined constants.

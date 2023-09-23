@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -15,6 +15,7 @@ namespace arg_router::utility::utf8
  * This table is generated using scripts/unicode_table_generators.py from
  * http://www.unicode.org/Public/UNIDATA/extracted/DerivedGeneralCategory.txt v14.0.0.
  */
+#if AR_ENABLE_UTF8_SUPPORT == 1
 constexpr auto zero_width_table = std::array<code_point::range, 341>{{
     {0x000300, 0x00036F}, {0x000483, 0x000487}, {0x000488, 0x000489}, {0x000591, 0x0005BD},
     {0x0005BF, 0x0005BF}, {0x0005C1, 0x0005C2}, {0x0005C4, 0x0005C5}, {0x0005C7, 0x0005C7},
@@ -103,4 +104,7 @@ constexpr auto zero_width_table = std::array<code_point::range, 341>{{
     {0x01E2AE, 0x01E2AE}, {0x01E2EC, 0x01E2EF}, {0x01E8D0, 0x01E8D6}, {0x01E944, 0x01E94A},
     {0x0E0100, 0x0E01EF},
 }};
+#else
+constexpr auto zero_width_table = std::array<code_point::range, 0>{};
+#endif
 }  // namespace arg_router::utility::utf8

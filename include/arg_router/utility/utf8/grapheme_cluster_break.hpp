@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Camden Mannett.
+// Copyright (C) 2022-2023 by Camden Mannett.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -241,6 +241,7 @@ constexpr auto grapheme_cluster = std::array{&GB3<N>,
  * https://www.unicode.org/Public/UCD/latest/ucd/auxiliary/GraphemeBreakProperty.txt v14.0.0 and
  * https://www.unicode.org/Public/14.0.0/ucd/emoji/emoji-data.txt v14.0.0
  */
+#if AR_ENABLE_UTF8_SUPPORT == 1
 constexpr auto grapheme_cluster_break_table = std::array<code_point::range, 1878>{{
     {0x000000, 0x000009, 0x000003}, {0x00000A, 0x00000A, 0x000002}, {0x00000B, 0x00000C, 0x000003},
     {0x00000D, 0x00000D, 0x000001}, {0x00000E, 0x00001F, 0x000003}, {0x00007F, 0x00009F, 0x000003},
@@ -869,4 +870,14 @@ constexpr auto grapheme_cluster_break_table = std::array<code_point::range, 1878
     {0x0E0001, 0x0E0001, 0x000003}, {0x0E0002, 0x0E001F, 0x000003}, {0x0E0020, 0x0E007F, 0x000004},
     {0x0E0080, 0x0E00FF, 0x000003}, {0x0E0100, 0x0E01EF, 0x000004}, {0x0E01F0, 0x0E0FFF, 0x000003},
 }};
+#else
+constexpr auto grapheme_cluster_break_table = std::array<code_point::range, 6>{{
+    {0x000000, 0x000009, 0x000003},
+    {0x00000A, 0x00000A, 0x000002},
+    {0x00000B, 0x00000C, 0x000003},
+    {0x00000D, 0x00000D, 0x000001},
+    {0x00000E, 0x00001F, 0x000003},
+    {0x00007F, 0x00007F, 0x000003},
+}};
+#endif
 }  // namespace arg_router::utility::utf8

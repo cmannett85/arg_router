@@ -9,8 +9,6 @@ include(CMakeDependentOption)
 option(INSTALLATION_ONLY "Just 'build' for installation" OFF)
 cmake_dependent_option(BUILD_UNIT_TESTS_AND_EXAMPLES "Build the unit tests and examples" ON
                        "NOT INSTALLATION_ONLY" OFF)
-cmake_dependent_option(BUILD_EXAMPLES "Build the examples" ON
-                       "BUILD_UNIT_TESTS_AND_EXAMPLES" OFF)
 cmake_dependent_option(ENABLE_CLANG_TIDY "Enable clang-tidy warnings for unit tests and examples" OFF
                       "NOT INSTALLATION_ONLY" OFF)
 cmake_dependent_option(ENABLE_SANITIZERS "Enable ASan/UBSan for unit tests and examples" OFF
