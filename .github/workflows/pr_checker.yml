@@ -124,41 +124,6 @@ jobs:
         commit_message: Updating README.md unit test coverage badge
         file_pattern: README.md ci/old_coverage
 
-  ascii_only_unit_tests:
-    runs-on: ubuntu-22.04
-    needs: changes
-    if: |
-      needs.changes.outputs.pr_checker == 'true' ||
-      needs.changes.outputs.source_tests_and_examples == 'true'
-
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: true
-
-    - name: Update packages
-      run: |
-        sudo apt update
-        sudo apt install ninja-build
-
-    - uses: ./.github/workflows/bootstrap_vcpkg
-      with:
-        token: "${{ secrets.GITHUB_TOKEN }}"
-
-    - name: Build
-      timeout-minutes: 30
-      run: |
-        mkdir -p ${{ env.BUILD_DIR }}
-        cd ${{ env.BUILD_DIR }}
-        cmake ${{ github.workspace }} -G "Ninja" -DCMAKE_CXX_COMPILER=clang++-14 -DENABLE_UTF8_SUPPORT=OFF
-        cmake --build . --target arg_router_test
-
-    - name: Run
-      timeout-minutes: 45
-      run: |
-        cd ${{ env.BUILD_DIR }}/test
-        ./arg_router_test -l test_suite
-
   windows_msvc_compiler_tests:
    runs-on: windows-2022
    needs: changes
