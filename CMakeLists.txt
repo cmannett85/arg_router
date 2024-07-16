@@ -40,6 +40,8 @@ endif()
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/documentation.cmake")
 
 set(BOOST_VERSION 1.74)
+find_package(Boost ${BOOST_VERSION} REQUIRED)
+
 if(NOT INSTALLATION_ONLY)
     include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/versioning/version.cmake")
     include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/copyright_checker.cmake")
@@ -47,8 +49,6 @@ if(NOT INSTALLATION_ONLY)
     include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/clang-tidy.cmake")
     include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/sanitizers.cmake")
     include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/ccache.cmake")
-
-    find_package(Boost ${BOOST_VERSION} REQUIRED)
 
     find_package(span-lite QUIET)
     if (NOT span-lite_FOUND)
